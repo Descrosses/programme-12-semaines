@@ -1,61 +1,59 @@
-.picker {
-  padding: var(--pad) var(--pad) var(--bottom-space);
+.app {
+  /* Écran séance : pas de navigation, la barre de chrono est au ras du bas et
+     gère elle-même l'encoche de l'iPhone. */
+  --rest-bottom: 0px;
+  --rest-pad-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  --bottom-space: calc(84px + env(safe-area-inset-bottom, 0px));
+  min-height: 100dvh;
 }
 
-.h1 {
-  font-family: var(--font-cond);
-  font-size: 1.75rem;
+/*
+ * Quand la navigation est visible, la barre de chrono se pose au-dessus d'elle
+ * plutôt que par-dessus. Les deux restent atteignables au pouce.
+ */
+.withNav {
+  --rest-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  --rest-pad-bottom: 10px;
+  --bottom-space: calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
-.sub {
-  margin-top: 6px;
-  color: var(--ink-2);
-  font-size: var(--fs-small);
-}
-
-.weeks {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 16px 0;
-  scrollbar-width: none;
-}
-
-.weeks::-webkit-scrollbar {
-  display: none;
-}
-
-.week {
-  flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   background: var(--surface);
-  color: var(--ink-2);
-  font-family: var(--font-cond);
-  font-size: 1.25rem;
-  font-weight: 700;
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-.weekOn {
-  background: var(--accent);
-  color: var(--ink-on-accent);
-}
-
-.days {
+.tab {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 62px;
+  padding: 4px 2px;
+  color: var(--ink-3);
 }
 
-.day {
-  flex: 1;
-  height: 56px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  color: var(--ink);
-  font-weight: 700;
+.tabOn {
+  color: var(--accent);
 }
 
-.day:disabled {
-  opacity: 0.3;
+.tabIcon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.tabLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }

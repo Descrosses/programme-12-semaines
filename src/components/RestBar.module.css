@@ -4,13 +4,16 @@
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  /* Se pose au-dessus de la navigation quand elle est là, au ras du bas sinon. */
+  bottom: var(--rest-bottom, 0px);
   z-index: 40;
   max-width: 560px;
   margin: 0 auto;
   background: var(--surface-2);
   border-top: 1px solid var(--line);
-  padding: 10px var(--pad) calc(10px + env(safe-area-inset-bottom, 0px));
+  /* Au ras du bas, la barre gère elle-même l'encoche ; posée sur la
+     navigation, c'est la navigation qui s'en charge. */
+  padding: 10px var(--pad) var(--rest-pad-bottom, 10px);
   box-shadow: 0 -8px 24px rgb(0 0 0 / 45%);
 }
 

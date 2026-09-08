@@ -1,100 +1,136 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { RestBar } from './components/RestBar';
-import { WEEK_DAYS } from './data/program';
-import { DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from './data/types';
-import { hasSession } from './engine/getSession';
+import type { DayIndex, WeekIndex } from './data/types';
+import { CombineScreen } from './screens/CombineScreen';
+import { ProgressScreen } from './screens/ProgressScreen';
 import { SessionScreen } from './screens/SessionScreen';
+import { SettingsScreen } from './screens/SettingsScreen';
+import { TodayScreen } from './screens/TodayScreen';
+import { WeekScreen } from './screens/WeekScreen';
 import { useRestTimer } from './state/useRestTimer';
-import { getSettingsRow, saveSettings } from './db/repo';
+import { useRoute, type Route } from './state/useRoute';
+import { getSettingsRow } from './db/repo';
 import styles from './App.module.css';
 
-/**
- * Coquille de l'application.
- *
- * Écran temporaire de sélection semaine / jour, en attendant l'écran
- * « Aujourd'hui » qui fera la détection automatique. Le chrono, lui, est déjà
- * global : il survit au changement d'écran.
- */
-export function App() {
-  const timer = useRestTimer();
-  const [target, setTarget] = useState<{ week: WeekIndex; day: DayIndex } | null>(null);
-  const [week, setWeek] = useState<WeekIndex>(1);
-  const [ready, setReady] = useState(false);
+type TabName = 'today' | 'week' | 'progress' | 'combine' | 'settings';
 
-  // Date de début : sans elle, aucun calendrier. Valeur de dépannage tant que
-  // l'écran Réglages n'existe pas.
+const TABS: Array<{ name: TabName; label: string; icon: string }> = [
+  { name: 'today', label: 'Aujourd’hui', icon: '▶' },
+  { name: 'week', label: 'Semaine', icon: '▦' },
+  { name: 'progress', label: 'Progrès', icon: '📈' },
+  { name: 'combine', label: 'Combine', icon: '⏱' },
+  { name: 'settings', label: 'Réglages', icon: '⚙' },
+];
+
+export function App() {
+  const [alerts, setAlerts] = useState({ sound: true, vibration: true });
+  const timer = useRestTimer(alerts);
+  const [route, navigate] = useRoute();
+  /** Incrémenté quand les réglages changent : force les écrans à se recharger. */
+  const [dataVersion, setDataVersion] = useState(0);
+
   useEffect(() => {
     void (async () => {
       const row = await getSettingsRow();
-      if (!row.startDate) {
-        await saveSettings({
-          startDate: lastSaturday(),
-          broadJumpBaselineCm: row.broadJumpBaselineCm ?? 240,
-          oneRM: Object.keys(row.oneRM).length
-            ? row.oneRM
-            : { 'back-squat': 140, 'bench-press': 120, deadlift: 130, 'weighted-pullup': 42 },
-        });
-      }
-      setReady(true);
+      setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
     })();
-  }, []);
+  }, [dataVersion]);
 
-  if (!ready) return null;
+  const openSession = useCallback(
+    (week: WeekIndex, day: DayIndex) => navigate({ name: 'session', week, day }),
+    [navigate],
+  );
 
-  if (target) {
-    return (
-      <>
-        <SessionScreen
-          week={target.week}
-          day={target.day}
-          timer={timer}
-          onBack={() => setTarget(null)}
-        />
-        <RestBar timer={timer} />
-      </>
-    );
-  }
+  const refresh = useCallback(() => setDataVersion((v) => v + 1), []);
+
+  // Pendant une séance, la barre de navigation disparaît : l'écran est long,
+  // le pouce navigue dedans, et une barre de plus multiplierait les appuis ratés.
+  const inSession = route.name === 'session';
 
   return (
-    <div className={styles.picker}>
-      <h1 className={styles.h1}>Programme 12 semaines</h1>
-      <p className={styles.sub}>Choisis une semaine et un jour.</p>
-
-      <div className={styles.weeks}>
-        {Array.from({ length: 13 }, (_, w) => (
-          <button
-            key={w}
-            type="button"
-            className={`${styles.week} ${w === week ? styles.weekOn : ''}`}
-            onClick={() => setWeek(w as WeekIndex)}
-          >
-            {w === 0 ? 'T' : w}
-          </button>
-        ))}
-      </div>
-
-      <div className={styles.days}>
-        {WEEK_DAYS[week].map((d) => (
-          <button
-            key={d}
-            type="button"
-            className={styles.day}
-            disabled={!hasSession(week, d)}
-            onClick={() => setTarget({ week, day: d })}
-          >
-            {DAY_LABELS_SHORT[d]}
-          </button>
-        ))}
-      </div>
+    <div className={inSession ? styles.app : `${styles.app} ${styles.withNav}`}>
+      <main>{renderScreen(route, dataVersion, openSession, navigate, refresh, timer)}</main>
 
       <RestBar timer={timer} />
+
+      {!inSession && (
+        <nav className={styles.nav} aria-label="Navigation principale">
+          {TABS.map((tab) => {
+            const active = route.name === tab.name;
+            return (
+              <button
+                key={tab.name}
+                type="button"
+                className={`${styles.tab} ${active ? styles.tabOn : ''}`}
+                onClick={() =>
+                  navigate(tab.name === 'week' ? { name: 'week', week: currentWeek(route) } : { name: tab.name })
+                }
+                aria-current={active ? 'page' : undefined}
+              >
+                <span className={styles.tabIcon} aria-hidden="true">
+                  {tab.icon}
+                </span>
+                <span className={styles.tabLabel}>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      )}
     </div>
   );
 }
 
-/** Samedi le plus récent — point de départ par défaut du combine initial. */
-function lastSaturday(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - ((d.getDay() + 1) % 7));
-  return d.toISOString().slice(0, 10);
+function currentWeek(route: Route): WeekIndex {
+  return route.name === 'week' || route.name === 'session' ? route.week : 1;
+}
+
+function renderScreen(
+  route: Route,
+  dataVersion: number,
+  openSession: (week: WeekIndex, day: DayIndex) => void,
+  navigate: (route: Route) => void,
+  refresh: () => void,
+  timer: ReturnType<typeof useRestTimer>,
+) {
+  switch (route.name) {
+    case 'session':
+      return (
+        <SessionScreen
+          key={`${route.week}-${route.day}-${dataVersion}`}
+          week={route.week}
+          day={route.day}
+          timer={timer}
+          onBack={() => navigate({ name: 'week', week: route.week })}
+        />
+      );
+
+    case 'week':
+      return (
+        <WeekScreen
+          key={`${route.week}-${dataVersion}`}
+          week={route.week}
+          onChangeWeek={(w) => navigate({ name: 'week', week: w })}
+          onOpen={openSession}
+        />
+      );
+
+    case 'progress':
+      return <ProgressScreen key={dataVersion} />;
+
+    case 'combine':
+      return <CombineScreen key={dataVersion} />;
+
+    case 'settings':
+      return <SettingsScreen key={dataVersion} onChanged={refresh} />;
+
+    default:
+      return (
+        <TodayScreen
+          key={dataVersion}
+          onOpen={openSession}
+          onGoWeek={(w) => navigate({ name: 'week', week: w })}
+          onGoSettings={() => navigate({ name: 'settings' })}
+        />
+      );
+  }
 }

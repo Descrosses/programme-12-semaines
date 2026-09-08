@@ -1,0 +1,439 @@
+/*
+ * Styles partagés par les écrans Aujourd'hui, Semaine, Progression, Combine et
+ * Réglages. Ils ont la même ossature — un en-tête, des cartes empilées — donc
+ * un seul fichier plutôt que cinq quasi identiques. L'écran Séance garde le
+ * sien : il est le seul à avoir une mise en page vraiment différente.
+ */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+.header {
+  padding: var(--pad) var(--pad) 12px;
+}
+
+.eyebrow {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* « mardi 8 septembre » et non « Mardi 8 Septembre » : en français seule la
+   première lettre prend la majuscule. */
+.eyebrow::first-letter {
+  text-transform: uppercase;
+}
+
+.h1 {
+  font-family: var(--font-cond);
+  font-size: 1.875rem;
+  margin-top: 2px;
+}
+
+.lead {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* ------------------------------------------------------------- cartes -- */
+
+.card {
+  margin: var(--gap) var(--pad);
+  padding: var(--pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+
+.cardFlush {
+  margin: var(--gap) var(--pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.cardTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.cardSub {
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.sectionTitle {
+  margin: 22px var(--pad) 0;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 6px var(--pad) 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+/* ------------------------------------------------------- bandeau bloc -- */
+
+.blockBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 var(--pad);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border-left: 6px solid var(--line);
+}
+
+.blockName {
+  font-weight: 700;
+}
+
+.blockMeta {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* ------------------------------------------------- séance d'aujourd'hui -- */
+
+.todayTitle {
+  font-family: var(--font-cond);
+  font-size: clamp(1.75rem, 8vw, 2.375rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--ink-on-accent);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 10px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.meta b {
+  color: var(--ink);
+}
+
+.primary {
+  display: block;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  height: 60px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 800;
+  font-size: 1.1875rem;
+}
+
+.secondary {
+  display: block;
+  width: calc(100% - 2 * var(--pad));
+  margin: 10px var(--pad) 0;
+  height: var(--tap);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.danger {
+  composes: secondary;
+  color: var(--rouge);
+}
+
+.alert {
+  margin: var(--gap) var(--pad);
+  padding: 12px var(--pad);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border-left: 4px solid var(--orange);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.alertRouge {
+  border-left-color: var(--rouge);
+}
+
+.alertVert {
+  border-left-color: var(--vert);
+}
+
+/* ------------------------------------------------------ liste de jours -- */
+
+.dayRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px var(--pad);
+  text-align: left;
+  border-top: 1px solid var(--line);
+  min-height: 68px;
+}
+
+.dayRow:first-child {
+  border-top: 0;
+}
+
+.dayName {
+  flex: 0 0 44px;
+  font-family: var(--font-cond);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.dayBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.dayTitle {
+  display: block;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.dayMeta {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.status {
+  flex: 0 0 auto;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.statusDone {
+  background: var(--vert);
+  color: var(--ink-on-accent);
+}
+
+.statusSkipped {
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+.statusTodo {
+  background: transparent;
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+}
+
+.statusToday {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+/* -------------------------------------------------- sélecteur semaines -- */
+
+.weeks {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px var(--pad);
+  scrollbar-width: none;
+}
+
+.weeks::-webkit-scrollbar {
+  display: none;
+}
+
+.week {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-bottom: 3px solid transparent;
+}
+
+.weekNum {
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.weekTag {
+  max-width: 100%;
+  padding: 0 2px;
+  font-size: 0.625rem;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekOn {
+  background: var(--surface-3);
+}
+
+.weekOn .weekNum {
+  color: var(--accent);
+}
+
+/* -------------------------------------------------------------- champs -- */
+
+.field {
+  margin-top: 16px;
+}
+
+.field:first-child {
+  margin-top: 0;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+
+.fieldHint {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.input {
+  width: 100%;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: var(--tap);
+  text-align: left;
+  font-weight: 600;
+}
+
+.switch {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+.switchOn {
+  background: var(--vert);
+  color: var(--ink-on-accent);
+}
+
+/* ------------------------------------------------------------ tableau -- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.table th,
+.table td {
+  padding: 8px 6px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+}
+
+.table th:first-child,
+.table td:first-child {
+  text-align: left;
+  color: var(--ink-2);
+}
+
+.table th {
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+
+.table td {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.delta {
+  font-weight: 700;
+}
+
+.deltaUp {
+  color: var(--vert);
+}
+
+.deltaDown {
+  color: var(--rouge);
+}
+
+/* --------------------------------------------------------- indicateur -- */
+
+.keyStat {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  text-align: center;
+}
+
+.keyStatValue {
+  font-family: var(--font-cond);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.keyStatLabel {
+  margin-top: 6px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.loading {
+  padding: 40px var(--pad);
+  color: var(--ink-2);
+  text-align: center;
+}

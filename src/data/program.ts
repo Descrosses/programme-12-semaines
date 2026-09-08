@@ -1,4 +1,4 @@
-/**
+﻿/**
  * `program.ts` — point d'entrée unique du programme.
  *
  * L'engine et les écrans importent d'ici, jamais des fichiers internes.
@@ -57,6 +57,8 @@ import type { Block, WeekIndex } from './types';
 export interface BlockInfo {
   block: Block;
   name: string;
+  /** Version courte, pour le sélecteur de semaines où la place manque. */
+  short: string;
   /** Intensité des lifts principaux, telle qu'écrite en §2. */
   intensityLabel: string;
   objective: string;
@@ -68,6 +70,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   test: {
     block: 'test',
     name: 'Combine initial',
+    short: 'Combine',
     intensityLabel: 'Tests 1RM',
     objective: 'Établir les références : 1RM, sauts, sprint, référence de readiness',
     color: '#7ac4a0',
@@ -75,6 +78,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   accumulation: {
     block: 'accumulation',
     name: 'Accumulation',
+    short: 'Accum',
     intensityLabel: '71-79 %',
     objective: 'Base de force, technique hinge, apprentissage des sauts',
     color: '#5aa7e0',
@@ -82,6 +86,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   deload: {
     block: 'deload',
     name: 'Deload',
+    short: 'Deload',
     intensityLabel: '65-70 %',
     objective: 'Dissipation de fatigue',
     color: '#8fa3b5',
@@ -89,6 +94,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   maxforce: {
     block: 'maxforce',
     name: 'Force maximale',
+    short: 'Force',
     intensityLabel: '82-90 %',
     objective: 'Force absolue, longs repos',
     color: '#e5533d',
@@ -96,6 +102,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   power: {
     block: 'power',
     name: 'Puissance',
+    short: 'Puiss.',
     intensityLabel: '84-89 % + vitesse 55-60 %',
     objective: 'Contraste, RFD, fraîcheur',
     color: '#f2b33d',
@@ -103,6 +110,7 @@ export const BLOCKS: Record<Block, BlockInfo> = {
   taper: {
     block: 'taper',
     name: 'Taper + combine final',
+    short: 'Taper',
     intensityLabel: 'Léger',
     objective: 'Tests',
     color: '#7ac4a0',
