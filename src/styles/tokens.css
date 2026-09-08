@@ -1,0 +1,64 @@
+/*
+ * Jetons de design.
+ *
+ * Contraintes : lu à un mètre, sous les néons d'une salle, une main, écran
+ * peut-être mouillé. Donc fond sombre, contrastes élevés, aucun gris clair sur
+ * gris, cibles tactiles de 48 px minimum.
+ *
+ * Tout ce qui se règle visuellement est ici. Une seule valeur à changer pour
+ * modifier l'appli entière.
+ */
+
+:root {
+  /* --- Fonds, du plus profond au plus clair --- */
+  --bg: #0d1014;
+  --surface: #171d24;
+  --surface-2: #222a34;
+  --surface-3: #2e3843;
+  --line: #3d4956;
+
+  /* --- Texte. Le secondaire reste à 8:1 sur --surface : jamais de gris pâle. */
+  --ink: #f4f7fa;
+  --ink-2: #c2cedb;
+  --ink-3: #8fa0b0; /* réservé aux libellés non essentiels */
+  --ink-on-accent: #10141a;
+
+  /* --- Couleur d'action --- */
+  --accent: #ffb628;
+  --accent-dim: #6b4a08;
+
+  /* --- Feu tricolore (§4) --- */
+  --vert: #3ddc84;
+  --orange: #ff9f1c;
+  --rouge: #ff5a4d;
+
+  /* --- Blocs (§2) --- */
+  --bloc-test: #7ac4a0;
+  --bloc-accumulation: #5aa7e0;
+  --bloc-deload: #9aabbc;
+  --bloc-maxforce: #e5533d;
+  --bloc-power: #f2b33d;
+  --bloc-taper: #7ac4a0;
+
+  /* --- Typographie --- */
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Barlow Condensed est embarqué dans le projet (voir styles/fonts.css) :
+     sans réseau, le repli système garde la mise en page lisible. */
+  --font-cond: 'Barlow Condensed', 'Roboto Condensed', 'Arial Narrow', var(--font);
+
+  --fs-load: clamp(2.25rem, 11vw, 3.25rem); /* la ligne de charge */
+  --fs-timer: clamp(2.75rem, 14vw, 4rem); /* le chrono */
+  --fs-title: 1.5rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  /* --- Géométrie --- */
+  --tap: 48px; /* cible tactile minimale, non négociable */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --gap: 12px;
+  --pad: 16px;
+
+  /* --- Hauteur réservée en bas pour la barre de chrono + la navigation --- */
+  --bottom-space: calc(76px + env(safe-area-inset-bottom, 0px));
+}

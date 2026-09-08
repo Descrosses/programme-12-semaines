@@ -1,0 +1,510 @@
+/* Écran séance : tout ce qui se lit et se saisit entre deux séries. */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+/* ---------------------------------------------------------------- en-tête -- */
+
+.header {
+  padding: var(--pad) var(--pad) 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: -8px;
+  padding: 0 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.title {
+  font-family: var(--font-cond);
+  font-size: var(--fs-title);
+  margin-top: 4px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 8px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.tag {
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--ink-on-accent);
+}
+
+.note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border-left: 3px solid var(--line);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------ sections -- */
+
+.section {
+  margin: var(--gap) var(--pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 12px var(--pad);
+  text-align: left;
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.sectionCount {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------- échauffement -- */
+
+.warmupItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0 var(--pad);
+  min-height: var(--tap);
+  text-align: left;
+  border-top: 1px solid var(--line);
+}
+
+.box {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 2px solid var(--ink-3);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  color: var(--ink-on-accent);
+}
+
+.boxOn {
+  background: var(--vert);
+  border-color: var(--vert);
+}
+
+.warmupLabel {
+  flex: 1;
+}
+
+.warmupDone .warmupLabel {
+  color: var(--ink-3);
+  text-decoration: line-through;
+}
+
+.warmupDetail {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* ------------------------------------------------------------ readiness -- */
+
+.ready {
+  margin: var(--gap) var(--pad);
+  padding: 14px var(--pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 6px solid var(--ink-3);
+}
+
+.readyVert {
+  border-left-color: var(--vert);
+}
+.readyOrange {
+  border-left-color: var(--orange);
+}
+.readyRouge {
+  border-left-color: var(--rouge);
+}
+
+.readyTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.readyHint {
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* Trois steppers empilés : à 375 px de large, les mettre côte à côte
+   rognerait les boutons sous la barre des 48 px. */
+.jumps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.readyValidate {
+  width: 100%;
+  height: var(--tap);
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 800;
+}
+
+.readyValidate:disabled {
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+
+.verdict {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+}
+
+.verdictLevel {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.levelVert {
+  color: var(--vert);
+}
+.levelOrange {
+  color: var(--orange);
+}
+.levelRouge {
+  color: var(--rouge);
+}
+
+/* -------------------------------------------------------------- exercice -- */
+
+.exercise {
+  margin: var(--gap) var(--pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.exerciseDone {
+  opacity: 0.62;
+}
+
+.exHead {
+  padding: 12px var(--pad) 10px;
+}
+
+.exName {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+/* LA ligne. L'élément le plus visible de l'écran. */
+.loadLine {
+  font-family: var(--font-cond);
+  font-size: var(--fs-load);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.exSub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.exSub b {
+  color: var(--ink);
+}
+
+.adjust {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  border-left: 3px solid var(--orange);
+}
+
+.adjustRouge {
+  border-left-color: var(--rouge);
+}
+
+/* ----------------------------------------------------------- suggestion -- */
+
+.suggestion {
+  margin: 0 var(--pad) 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--accent-dim);
+}
+
+.suggestionText {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.suggestionActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.accept,
+.refuse {
+  flex: 1;
+  height: var(--tap);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.accept {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.refuse {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- séries -- */
+
+.sets {
+  border-top: 1px solid var(--line);
+}
+
+.setRow {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 12px var(--pad);
+  border-bottom: 1px solid var(--line);
+}
+
+.setRow:last-child {
+  border-bottom: 0;
+}
+
+.setIndex {
+  font-family: var(--font-cond);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+.setDone .setIndex {
+  color: var(--vert);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/*
+ * Deux steppers par ligne au maximum : à 375 px, trois côte à côte rognent les
+ * boutons et cassent la règle des 48 px. Reps et charge se lisent ensemble,
+ * le RPE prend la ligne du dessous.
+ */
+.steppers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stepperWide {
+  grid-column: 1 / -1;
+}
+
+.validate {
+  height: var(--tap);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 800;
+  font-size: 1.0625rem;
+  width: 100%;
+}
+
+.validateDone {
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-weight: 700;
+}
+
+.setSummary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: var(--tap);
+  width: 100%;
+  text-align: left;
+}
+
+.setSummaryValue {
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.setSummaryUnit {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.failFlag {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--rouge);
+  color: var(--ink-on-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.failToggle {
+  align-self: flex-start;
+  padding: 0 12px;
+  height: var(--tap);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.failToggleOn {
+  background: var(--rouge);
+  color: var(--ink-on-accent);
+}
+
+/* ------------------------------------------------------------- consignes -- */
+
+.disclosure {
+  width: 100%;
+  padding: 0 var(--pad);
+  min-height: var(--tap);
+  text-align: left;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.cues {
+  padding: 0 var(--pad) 14px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cues b {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ bas -- */
+
+.notes {
+  margin: var(--gap) var(--pad);
+}
+
+.notesField {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.finish {
+  display: block;
+  width: calc(100% - 2 * var(--pad));
+  margin: 20px var(--pad) 8px;
+  height: 56px;
+  border-radius: var(--radius);
+  background: var(--vert);
+  color: var(--ink-on-accent);
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+
+.finishDone {
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+.summary {
+  margin: 0 var(--pad) 24px;
+  padding: 14px var(--pad);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.summary dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  margin: 8px 0 0;
+}
+
+.summary dt {
+  color: var(--ink-3);
+}
+
+.summary dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.loading {
+  padding: 40px var(--pad);
+  color: var(--ink-2);
+  text-align: center;
+}

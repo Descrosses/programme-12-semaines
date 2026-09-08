@@ -1,0 +1,63 @@
+.stepper {
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.controls {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.button {
+  flex: 0 0 var(--tap);
+  width: var(--tap);
+  height: var(--tap);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--surface-3);
+}
+
+.button:active {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.button:disabled {
+  color: var(--ink-3);
+  opacity: 0.45;
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.accent .value {
+  color: var(--accent);
+}
+
+.unit {
+  color: var(--ink-2);
+}

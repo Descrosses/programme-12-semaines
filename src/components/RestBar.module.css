@@ -1,0 +1,108 @@
+/* Barre de chrono, fixée en bas : le pouce l'atteint sans changer de prise. */
+
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  padding: 10px var(--pad) calc(10px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 24px rgb(0 0 0 / 45%);
+}
+
+.bar.over {
+  background: var(--vert);
+  color: var(--ink-on-accent);
+  border-top-color: var(--vert);
+}
+
+.track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.bar.over .track {
+  background: rgb(0 0 0 / 20%);
+}
+
+.fill {
+  height: 100%;
+  background: var(--accent);
+  /* Seule « animation » tolérée : elle rend compte d'un état réel. */
+  transition: width 250ms linear;
+}
+
+.bar.over .fill {
+  background: var(--ink-on-accent);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.time {
+  font-family: var(--font-cond);
+  font-size: var(--fs-timer);
+  font-weight: 700;
+  line-height: 0.95;
+  min-width: 3.2ch;
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink-2);
+  overflow: hidden;
+}
+
+.label > span,
+.label {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* État du verrou d'écran : Guillaume doit pouvoir vérifier d'un coup d'œil,
+   en salle, que l'écran ne va pas s'éteindre pendant son repos. */
+.hold {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-3);
+  overflow: hidden;
+}
+
+.bar.over .label {
+  color: var(--ink-on-accent);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action {
+  height: var(--tap);
+  min-width: 60px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.bar.over .action {
+  background: rgb(0 0 0 / 22%);
+  color: var(--ink-on-accent);
+}

@@ -1,0 +1,29 @@
+/*
+ * Barlow Condensed, embarqué dans le dépôt.
+ *
+ * Jamais chargé depuis internet : sans réseau dans la salle, la mise en page
+ * ne doit pas changer (défaut n°6 du prototype).
+ *
+ * Fichiers : sous-ensemble « latin » de Google Fonts, qui couvre tout ce dont
+ * l'appli a besoin — accents français, Œ/œ, le signe moins « − » des boutons
+ * de saisie, le « × » des lignes de charge et les tirets typographiques.
+ *
+ * Licence SIL Open Font License 1.1 (Jeremy Tribby). Voir
+ * src/assets/fonts/OFL.txt.
+ */
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-500-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-700-latin.woff2') format('woff2');
+}

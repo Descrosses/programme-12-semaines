@@ -1,0 +1,61 @@
+.picker {
+  padding: var(--pad) var(--pad) var(--bottom-space);
+}
+
+.h1 {
+  font-family: var(--font-cond);
+  font-size: 1.75rem;
+}
+
+.sub {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.weeks {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 16px 0;
+  scrollbar-width: none;
+}
+
+.weeks::-webkit-scrollbar {
+  display: none;
+}
+
+.week {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.weekOn {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.days {
+  display: flex;
+  gap: 8px;
+}
+
+.day {
+  flex: 1;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.day:disabled {
+  opacity: 0.3;
+}
