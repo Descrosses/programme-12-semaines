@@ -7,6 +7,7 @@ import { SessionScreen } from './screens/SessionScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
+import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
 import { useRoute, type Route } from './state/useRoute';
 import { getSettingsRow } from './db/repo';
@@ -26,6 +27,7 @@ export function App() {
   const [alerts, setAlerts] = useState({ sound: true, vibration: true });
   const timer = useRestTimer(alerts);
   const [route, navigate] = useRoute();
+  const appUpdate = useAppUpdate();
   /** Incrémenté quand les réglages changent : force les écrans à se recharger. */
   const [dataVersion, setDataVersion] = useState(0);
 
@@ -49,6 +51,18 @@ export function App() {
 
   return (
     <div className={inSession ? styles.app : `${styles.app} ${styles.withNav}`}>
+      {appUpdate.ready && (
+        <div className={styles.updateBar} role="status">
+          <span>Nouvelle version disponible.</span>
+          <button type="button" className={styles.updateButton} onClick={appUpdate.update}>
+            Mettre à jour
+          </button>
+          <button type="button" className={styles.updateLater} onClick={appUpdate.dismiss}>
+            Plus tard
+          </button>
+        </div>
+      )}
+
       <main>{renderScreen(route, dataVersion, openSession, navigate, refresh, timer)}</main>
 
       <RestBar timer={timer} />

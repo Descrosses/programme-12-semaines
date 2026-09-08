@@ -17,6 +17,42 @@
   --bottom-space: calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
+/* Bandeau de mise à jour : visible, mais il n'interrompt jamais une séance
+   de lui-même. C'est un appui volontaire qui recharge. */
+.updateBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px var(--pad);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.updateBar > span {
+  flex: 1;
+  min-width: 140px;
+}
+
+.updateButton {
+  height: var(--tap);
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  background: var(--ink-on-accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.updateLater {
+  height: var(--tap);
+  padding: 0 10px;
+  color: var(--ink-on-accent);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .nav {
   position: fixed;
   left: 0;

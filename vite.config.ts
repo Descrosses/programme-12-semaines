@@ -14,8 +14,13 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      /*
+       * `prompt` et non `autoUpdate` : une mise à jour automatique recharge la
+       * page sans prévenir, ce qui pourrait arriver en plein milieu d'une
+       * série. Ici l'appli affiche un bandeau et attend un appui.
+       */
+      registerType: 'prompt',
+      injectRegister: null,
       includeAssets: ['icons/apple-touch-icon.png'],
       workbox: {
         /*
