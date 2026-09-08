@@ -1,0 +1,8 @@
+# Fins de ligne normalisées en LF dans le dépôt : le test qui relit
+# programme-final-12-semaines.md doit donner le même résultat sur ta machine
+# Windows et sur le runner Linux de GitHub Actions.
+* text=auto eol=lf
+
+# Binaires : ne jamais y toucher.
+*.woff2 binary
+*.png binary
