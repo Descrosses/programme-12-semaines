@@ -89,6 +89,13 @@ export interface SettingsRow {
   startDate: string;
   broadJumpBaselineCm: number | null;
   oneRM: Record<string, number>;
+  /**
+   * §12 — « moyenne de 3 matinées, à jeun ». Relevé à la maison sur plusieurs
+   * jours, jamais pendant une séance : il vit ici et se saisit à tout moment.
+   */
+  bodyweightKg: number | null;
+  /** Date `YYYY-MM-DD` du dernier relevé de poids, pour dater le rappel. */
+  bodyweightDate: string;
   /** Son et vibration en fin de repos. */
   soundEnabled: boolean;
   vibrationEnabled: boolean;
@@ -110,6 +117,27 @@ export class ProgrammeDB extends Dexie {
       combines: '++id, &phase, date',
       settings: 'id',
     });
+
+    /*
+     * v2 — le 3e jour du combine initial était rangé en (semaine 1, lundi).
+     * Il appartient au combine, donc à la semaine 0 : l'onglet « T » doit le
+     * montrer avec ses deux frères, et la semaine 1 ne garder que ses séances.
+     * Tout ce qui a déjà été saisi ce jour-là suit le déménagement — sinon la
+     * séance rouvrirait vide.
+     */
+    this.version(2)
+      .stores({})
+      .upgrade(async (tx) => {
+        await tx.table('sessions').where('[week+day]').equals([1, 0]).modify({ week: 0 });
+        await tx.table('readiness').where('[week+day]').equals([1, 0]).modify({ week: 0 });
+        // `sets` n'a pas d'index sur `week` seul : un parcours complet, une fois.
+        await tx
+          .table('sets')
+          .toCollection()
+          .modify((r: { week: number; day: number }) => {
+            if (r.week === 1 && r.day === 0) r.week = 0;
+          });
+      });
   }
 }
 
@@ -120,6 +148,8 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   startDate: '',
   broadJumpBaselineCm: null,
   oneRM: {},
+  bodyweightKg: null,
+  bodyweightDate: '',
   soundEnabled: true,
   vibrationEnabled: true,
 };

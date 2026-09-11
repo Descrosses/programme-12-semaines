@@ -3,7 +3,7 @@ import { Stepper, stepValue } from '../components/Stepper';
 import { EXERCISES } from '../data/exercises';
 import { COMBINE_METRICS, COMBINE_S8_METRICS, RAMPS, TARGETS_12_WEEKS } from '../data/testSessions';
 import { fr } from '../engine/format';
-import { allCombines, saveCombine } from '../db/repo';
+import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
 import type { CombinePhase, CombineRow } from '../db/db';
 import styles from './Screens.module.css';
 
@@ -13,10 +13,17 @@ const PHASES: Array<{ id: CombinePhase; label: string; when: string }> = [
   { id: 'final', label: 'Final', when: 'Semaine 12' },
 ];
 
-/** Réglages du stepper par unité de mesure. */
+/**
+ * Réglages du stepper par unité de mesure.
+ *
+ * Le pas du chrono est de 0,1 s : sur un 10 m, deux séances peuvent se jouer à
+ * un dixième, et un pas plus gros effacerait le progrès qu'on cherche à voir.
+ * Pour un temps relevé à la vidéo au centième, la saisie clavier prend le
+ * relais — chaque mesure de cet écran l'accepte.
+ */
 const MEASURE = {
   cm: { step: 5, min: 50, max: 400, unit: 'cm' },
-  s: { step: 0.05, min: 0.5, max: 60, unit: 's' },
+  s: { step: 0.1, min: 0.5, max: 60, unit: 's' },
   m: { step: 5, min: 5, max: 200, unit: 'm' },
   kg: { step: 2.5, min: 0, max: 300, unit: 'kg' },
   reps: { step: 1, min: 0, max: 60, unit: 'reps' },
@@ -29,9 +36,14 @@ export function CombineScreen() {
   const [rows, setRows] = useState<CombineRow[] | null>(null);
   const [phase, setPhase] = useState<CombinePhase>('initial');
   const [draft, setDraft] = useState<Record<string, number | null>>({});
+  /** Poids de corps des Réglages : il ne se mesure pas en salle (§12). */
+  const [settingsBodyweight, setSettingsBodyweight] = useState<number | null>(null);
 
   useEffect(() => {
-    void (async () => setRows(await allCombines()))();
+    void (async () => {
+      setRows(await allCombines());
+      setSettingsBodyweight((await getSettingsRow()).bodyweightKg);
+    })();
   }, []);
 
   useEffect(() => {
@@ -190,6 +202,12 @@ export function CombineScreen() {
                   .join(' / ')}
               </p>
             )}
+            {id === 'test-bodyweight' && (
+              <p className={styles.fieldHint}>
+                Relevé à la maison, pas en salle : moyenne de 3 matins à jeun. Il se saisit aussi
+                dans Réglages, à n’importe quel moment.
+              </p>
+            )}
             <div style={{ marginTop: 12 }}>
               <Stepper
                 label={def.name}
@@ -205,8 +223,23 @@ export function CombineScreen() {
                     [id]: stepValue(prev[id] ?? null, d, cfg.min, cfg.max),
                   }))
                 }
+                onCommit={(v) => setDraft((prev) => ({ ...prev, [id]: v }))}
               />
             </div>
+            {id === 'test-bodyweight' &&
+              settingsBodyweight !== null &&
+              draft[id] !== settingsBodyweight && (
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{ width: '100%', margin: '10px 0 0' }}
+                  onClick={() =>
+                    setDraft((prev) => ({ ...prev, [id]: settingsBodyweight }))
+                  }
+                >
+                  Reprendre {fr(settingsBodyweight)} kg des Réglages
+                </button>
+              )}
           </section>
         );
       })}

@@ -4,7 +4,9 @@ import {
   dateFor,
   daysBetween,
   humanDate,
+  isSaturday,
   locateToday,
+  nearestSaturday,
   nextSession,
   previousSession,
   schedule,
@@ -14,10 +16,22 @@ import {
 const START = '2026-01-03';
 
 describe('calendrier — le calage décidé avec Guillaume', () => {
-  it('le combine initial occupe samedi, dimanche, puis le lundi', () => {
+  it('le combine initial occupe samedi, dimanche, puis le lundi — tous en semaine 0', () => {
     expect(dateFor(START, 0, 3)).toBe('2026-01-03'); // samedi
     expect(dateFor(START, 0, 4)).toBe('2026-01-04'); // dimanche
-    expect(dateFor(START, 1, 0)).toBe('2026-01-05'); // lundi = jour 3 du combine
+    expect(dateFor(START, 0, 0)).toBe('2026-01-05'); // lundi = jour 3 du combine
+  });
+
+  it('la semaine 1 n’a pas de lundi : ses 4 séances commencent le mercredi', () => {
+    const s1 = schedule(START).filter((s) => s.week === 1);
+    expect(s1.map((s) => s.day)).toEqual([1, 2, 3, 4]);
+    expect(s1[0]!.date).toBe('2026-01-07');
+  });
+
+  it('les trois jours du combine sont groupés sous la semaine 0', () => {
+    const s0 = schedule(START).filter((s) => s.week === 0);
+    expect(s0.map((s) => s.day)).toEqual([3, 4, 0]);
+    expect(s0.map((s) => s.date)).toEqual(['2026-01-03', '2026-01-04', '2026-01-05']);
   });
 
   it('la semaine 1 commence le mercredi', () => {
@@ -41,9 +55,9 @@ describe('calendrier — le calage décidé avec Guillaume', () => {
     }
   });
 
-  it('le programme compte 62 séances : 2 + 4 + 11 × 5 + 1 du combine initial', () => {
+  it('le programme compte 62 séances : 3 du combine + 4 en S1 + 11 × 5', () => {
     const all = schedule(START);
-    expect(all).toHaveLength(2 + 5 + 11 * 5);
+    expect(all).toHaveLength(3 + 4 + 11 * 5);
     expect(all[0]!.date).toBe('2026-01-03');
     expect(all[all.length - 1]!.week).toBe(12);
     expect(all[all.length - 1]!.day).toBe(4);
@@ -110,7 +124,8 @@ describe('écran Aujourd’hui', () => {
 
 describe('navigation manuelle', () => {
   it('recule et avance d’une séance', () => {
-    expect(previousSession(START, 1, 1)!.day).toBe(0); // avant mercredi S1 : lundi (combine J3)
+    expect(previousSession(START, 1, 1)!.week).toBe(0); // avant mercredi S1 : le lundi du combine
+    expect(previousSession(START, 1, 1)!.day).toBe(0);
     expect(nextSession(START, 1, 1)!.day).toBe(2); // après : vendredi
     expect(previousSession(START, 0, 3)).toBeNull(); // première séance du programme
     expect(nextSession(START, 12, 4)).toBeNull(); // dernière
@@ -127,5 +142,55 @@ describe('utilitaires de date', () => {
   it('écrit les dates en français', () => {
     expect(humanDate('2026-01-03')).toBe('samedi 3 janvier');
     expect(humanDate('2026-08-17')).toBe('lundi 17 août');
+  });
+});
+
+/*
+ * Le bug remonté par Guillaume : une séance datée depuis le jour de
+ * consultation au lieu de l'ancre fixe. Ces tests verrouillent l'inverse.
+ */
+describe('l’ancre de date ne bouge jamais avec le jour de consultation', () => {
+  it('les dates des 3 jours du combine sont identiques quel que soit « aujourd’hui »', () => {
+    // Scénario réel : combine jour 1 fait le mercredi 9, appli rouverte le 12.
+    const ancre = '2026-09-09';
+    const attendu = ['2026-09-09', '2026-09-10', '2026-09-11'];
+
+    for (const aujourdhui of ['2026-09-09', '2026-09-12', '2026-11-30']) {
+      const vu = schedule(ancre)
+        .filter((s) => s.week === 0)
+        .map((s) => s.date);
+      expect(vu, `consulté le ${aujourdhui}`).toEqual(attendu);
+      // `locateToday` lit la date du jour, mais ne la laisse pas déplacer les séances.
+      const etat = locateToday(ancre, aujourdhui)!;
+      const cible =
+        etat.kind === 'session' ? etat.session : etat.kind === 'rest' ? etat.next : null;
+      if (cible) expect(cible.date).toBe(dateFor(ancre, cible.week, cible.day));
+    }
+  });
+
+  it('jour 2 et jour 3 restent calés sur l’ancre, pas sur la date d’ouverture', () => {
+    const ancre = '2026-09-09';
+    expect(dateFor(ancre, 0, 4)).toBe('2026-09-10'); // jour 2
+    expect(dateFor(ancre, 0, 0)).toBe('2026-09-11'); // jour 3
+    // Aucune de ces fonctions ne lit l'horloge : même résultat, toujours.
+    expect(dateFor(ancre, 0, 0)).toBe(dateFor(ancre, 0, 0));
+  });
+
+  it('corriger l’ancre en Réglages décale tout le calendrier d’un bloc', () => {
+    const avant = schedule('2026-09-10'); // jeudi saisi par erreur
+    const apres = schedule('2026-09-12'); // samedi réel
+    expect(apres).toHaveLength(avant.length);
+    for (let i = 0; i < avant.length; i++) {
+      expect(daysBetween(avant[i]!.date, apres[i]!.date)).toBe(2);
+    }
+  });
+
+  it('reconnaît une ancre qui n’est pas un samedi et propose le bon samedi', () => {
+    expect(isSaturday('2026-09-12')).toBe(true);
+    expect(isSaturday('2026-09-10')).toBe(false); // le jeudi saisi par Guillaume
+    expect(nearestSaturday('2026-09-10')).toBe('2026-09-12');
+    expect(nearestSaturday('2026-09-09')).toBe('2026-09-12'); // mercredi → samedi suivant
+    expect(nearestSaturday('2026-09-13')).toBe('2026-09-12'); // dimanche → la veille
+    expect(nearestSaturday('2026-09-12')).toBe('2026-09-12');
   });
 });

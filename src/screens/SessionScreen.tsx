@@ -127,12 +127,24 @@ export function SessionScreen({
     if (row?.id) await updateSession(row.id, { notes: value });
   }
 
+  /**
+   * « Séance terminée » ramène à la vue Semaine : ce qu'on veut voir juste
+   * après avoir rangé les disques, c'est l'état des 5 jours et le prochain à
+   * faire — pas l'écran qu'on vient de finir. Dé-cocher, à l'inverse, sert à
+   * corriger une saisie : on reste alors sur place.
+   */
   async function handleFinish() {
     if (!row?.id) return;
+    const finishing = row.status !== 'done';
     await updateSession(row.id, {
-      status: row.status === 'done' ? 'planned' : 'done',
+      status: finishing ? 'done' : 'planned',
       finishedAt: Date.now(),
     });
+    if (finishing) {
+      timer.skip();
+      onBack();
+      return;
+    }
     await data.reload();
   }
 

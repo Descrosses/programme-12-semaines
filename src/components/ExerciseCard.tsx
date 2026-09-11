@@ -15,10 +15,18 @@ export interface SetPayload {
   failed: boolean;
 }
 
-/** Configuration du stepper de mesure pour les exercices qui ne comptent pas des reps. */
+/**
+ * Configuration du stepper de mesure pour les exercices qui ne comptent pas
+ * des reps.
+ *
+ * Chrono au dixième : sur 10 ou 20 m, l'écart entre deux séances se joue à
+ * 0,1 s. Et comme un chrono vidéo donne des centièmes, ces mesures acceptent
+ * aussi la saisie clavier (appui sur la valeur) — contrairement aux reps, à la
+ * charge et au RPE, où la grille du stepper est le bon outil.
+ */
 const MEASURE = {
   cm: { label: 'Distance', unit: 'cm', step: 5, min: 50, max: 400 },
-  s: { label: 'Temps', unit: 's', step: 0.05, min: 0.5, max: 60 },
+  s: { label: 'Temps', unit: 's', step: 0.1, min: 0.5, max: 60 },
   m: { label: 'Distance', unit: 'm', step: 5, min: 5, max: 200 },
   kg: { label: 'Charge', unit: 'kg', step: 2.5, min: 0, max: 300 },
   reps: { label: 'Reps', unit: '', step: 1, min: 0, max: 60 },
@@ -321,6 +329,7 @@ function SetEntry({
                 unit={measure.unit}
                 tone="accent"
                 onStep={(d) => setValue((v) => stepValue(v, d, measure.min, measure.max))}
+                onCommit={(v) => setValue(v ?? measure.min)}
               />
             ) : (
               <Stepper
