@@ -115,7 +115,11 @@ export function getSession(
 
   const block = WEEK_BLOCKS[week];
   const special = specialSession(week, day);
+  // `hasSession` a déjà écarté les jours vides ; si aucune trame ne répond ici,
+  // c'est que `WEEK_DAYS` et `BASE_SESSIONS` se contredisent — on refuse plutôt
+  // que d'afficher une séance inventée.
   const blueprint = special ?? BASE_SESSIONS[day];
+  if (!blueprint) return null;
   const sessionAdjustments: Adjustment[] = [];
 
   // 1-2. Trame + règles de bloc (jamais sur une séance écrite en toutes lettres).

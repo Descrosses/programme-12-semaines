@@ -53,7 +53,7 @@ export * from './types';
 // §2 — Périodisation. La seule table qui dit à quel bloc appartient une semaine.
 // ---------------------------------------------------------------------------
 
-import type { Block, WeekIndex } from './types';
+import { TRAINING_DAYS, type Block, type DayIndex, type WeekIndex } from './types';
 
 export interface BlockInfo {
   block: Block;
@@ -136,28 +136,38 @@ export const WEEK_BLOCKS: Record<WeekIndex, Block> = {
 };
 
 /**
- * §12 + décision de Guillaume : le combine initial tient sur TROIS jours, tous
- * rattachés à la semaine 0 — samedi, dimanche, puis le lundi qui suit. La
- * semaine 1 démarre le mercredi suivant et ne compte donc que 4 séances ; le
- * lundi n'existe pas pour elle. Les autres semaines ont leurs 5 séances.
+ * Jours réellement occupés par chaque semaine.
  *
- * Les jours de la semaine 0 sont listés dans l'ordre chronologique réel
- * (samedi, dimanche, lundi), pas dans l'ordre des `DayIndex`.
+ * §3 — la semaine type tient sur cinq jours : lundi, mercredi, vendredi,
+ * samedi, dimanche. Mardi et jeudi sont des repos.
+ *
+ * La semaine 0 est différente et c'est voulu : le combine initial étale ses
+ * quatre 1RM pour qu'aucun effort de tirage n'en suive un autre à moins de
+ * 48 h. Mercredi et dimanche y sont des repos, et le dimanche est là pour
+ * qu'on attaque la semaine 1 à froid, pas au lendemain d'un test max.
+ *
+ *   lundi    sauts, sprints, squat 1RM
+ *   mardi    tractions lestées 1RM
+ *   jeudi    deadlift 1RM        ← 48 h après les tractions lestées
+ *   vendredi bench 1RM, ab wheel
+ *   samedi   tractions strictes max, leg raise, farmer carry  ← 48 h après le deadlift
+ *
+ * La semaine 1 démarre le lundi suivant, avec ses cinq séances.
  */
-export const WEEK_DAYS: Record<WeekIndex, readonly (0 | 1 | 2 | 3 | 4)[]> = {
-  0: [3, 4, 0],
-  1: [1, 2, 3, 4],
-  2: [0, 1, 2, 3, 4],
-  3: [0, 1, 2, 3, 4],
-  4: [0, 1, 2, 3, 4],
-  5: [0, 1, 2, 3, 4],
-  6: [0, 1, 2, 3, 4],
-  7: [0, 1, 2, 3, 4],
-  8: [0, 1, 2, 3, 4],
-  9: [0, 1, 2, 3, 4],
-  10: [0, 1, 2, 3, 4],
-  11: [0, 1, 2, 3, 4],
-  12: [0, 1, 2, 3, 4],
+export const WEEK_DAYS: Record<WeekIndex, readonly DayIndex[]> = {
+  0: [0, 1, 3, 4, 5],
+  1: TRAINING_DAYS,
+  2: TRAINING_DAYS,
+  3: TRAINING_DAYS,
+  4: TRAINING_DAYS,
+  5: TRAINING_DAYS,
+  6: TRAINING_DAYS,
+  7: TRAINING_DAYS,
+  8: TRAINING_DAYS,
+  9: TRAINING_DAYS,
+  10: TRAINING_DAYS,
+  11: TRAINING_DAYS,
+  12: TRAINING_DAYS,
 };
 
 // ---------------------------------------------------------------------------

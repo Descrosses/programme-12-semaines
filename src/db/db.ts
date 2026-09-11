@@ -6,7 +6,7 @@
  */
 
 import Dexie, { type Table } from 'dexie';
-import type { DayIndex } from '../data/types';
+import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
 
 export type SessionStatus = 'planned' | 'done' | 'skipped';
 
@@ -233,7 +233,50 @@ export class ProgrammeDB extends Dexie {
       exerciseMedia: '++id, exerciseId, [exerciseId+date], week, date',
       exerciseVideoLog: '++id, exerciseId, [exerciseId+date], week, date',
     });
+
+    /*
+     * v5 — `DayIndex` passe de cinq jours (lun, mer, ven, sam, dim) aux sept
+     * jours réels, pour que le combine initial puisse occuper un mardi et un
+     * jeudi. Toutes les lignes déjà enregistrées portent l'ancienne
+     * numérotation et doivent être traduites : 0→0, 1→2, 2→4, 3→5, 4→6.
+     *
+     * L'ordre DÉCROISSANT n'est pas décoratif. `sessions` a un index unique
+     * sur `[week+day]` : traduire 1→2 avant d'avoir libéré le 2 ferait entrer
+     * deux lignes en collision au milieu du parcours. En partant du jour le
+     * plus élevé, la place visée est toujours déjà vide.
+     *
+     * L'ancre du calendrier change de sens au passage — elle désignait le
+     * samedi du combine, elle désigne maintenant son lundi — donc on avance la
+     * date enregistrée jusqu'au lundi suivant.
+     */
+    this.version(5).upgrade(async (tx) => {
+      for (const table of ['sessions', 'sets', 'readiness', 'exerciseMedia', 'exerciseVideoLog']) {
+        for (const oldDay of [4, 3, 2, 1]) {
+          const nouveau = LEGACY_DAY_MAP[oldDay]!;
+          await tx
+            .table(table)
+            .toCollection()
+            .modify((row: { day?: number }) => {
+              if (row.day === oldDay) row.day = nouveau;
+            });
+        }
+      }
+
+      const settings = await tx.table('settings').get(1);
+      if (settings?.startDate) {
+        await tx
+          .table('settings')
+          .update(1, { startDate: mondayOnOrAfter(settings.startDate as string) });
+      }
+    });
   }
+}
+
+/** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */
+function mondayOnOrAfter(iso: string): string {
+  const d = new Date(`${iso}T12:00:00Z`);
+  const shift = (8 - d.getUTCDay()) % 7; // 0 si déjà lundi
+  return new Date(d.getTime() + shift * 86_400_000).toISOString().slice(0, 10);
 }
 
 export const db = new ProgrammeDB();

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
-import { dateFor, humanDate, isSaturday, nearestSaturday } from '../engine/calendar';
+import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
 import {
@@ -94,7 +94,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
   }
 
   const start = row.startDate;
-  const ancreValide = start !== '' && isSaturday(start);
+  const ancreValide = start !== '' && isMonday(start);
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -114,12 +114,12 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Date de début</h2>
         <p className={styles.cardSub}>
-          Le <b>samedi</b> du combine initial. Tout le calendrier en découle : la semaine 1 commence
-          le mercredi suivant.
+          Le <b>lundi</b> du combine initial. Tout le calendrier en découle : le combine tient sur
+          six jours, puis la semaine 1 démarre le lundi suivant.
         </p>
         <div className={styles.field}>
           <label className={styles.label} htmlFor="start-date">
-            Samedi du combine initial
+            Lundi du combine initial
           </label>
           <input
             id="start-date"
@@ -131,26 +131,27 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
           {start !== '' && !ancreValide && (
             <>
               <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '10px 0 0' }}>
-                <b>{humanDate(start)} n’est pas un samedi.</b> Tout le calendrier est calé sur le
-                samedi du combine : avec cette date, les 62 séances tombent le mauvais jour de la
+                <b>{humanDate(start)} n’est pas un lundi.</b> Tout le calendrier est calé sur le
+                lundi du combine : avec cette date, toutes les séances tombent le mauvais jour de la
                 semaine.
               </p>
               <button
                 type="button"
                 className={styles.secondary}
                 style={{ width: '100%', margin: '10px 0 0' }}
-                onClick={() => void patch({ startDate: nearestSaturday(start) })}
+                onClick={() => void patch({ startDate: nearestMonday(start) })}
               >
-                Corriger : {humanDate(nearestSaturday(start))}
+                Corriger : {humanDate(nearestMonday(start))}
               </button>
             </>
           )}
           {ancreValide && (
             <p className={styles.fieldHint}>
-              Combine : {humanDate(dateFor(start, 0, 3))} (jour 1),{' '}
-              {humanDate(dateFor(start, 0, 4))} (jour 2), {humanDate(dateFor(start, 0, 0))} (jour 3,
-              deadlift). Semaine 1 le {humanDate(dateFor(start, 1, 1))}, dernière séance le{' '}
-              {humanDate(dateFor(start, 12, 4))}.
+              Combine : squat le {humanDate(dateFor(start, 0, 0))}, tractions lestées le{' '}
+              {humanDate(dateFor(start, 0, 1))}, deadlift le {humanDate(dateFor(start, 0, 3))}, bench
+              le {humanDate(dateFor(start, 0, 4))}, tractions max le {humanDate(dateFor(start, 0, 5))}.
+              Semaine 1 le {humanDate(dateFor(start, 1, 0))}, dernière séance le{' '}
+              {humanDate(dateFor(start, 12, 6))}.
             </p>
           )}
         </div>

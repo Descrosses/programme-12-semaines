@@ -4,9 +4,9 @@ import { BLOCKS, WEEK_BLOCKS, isCombineDay } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
   humanDate,
-  isSaturday,
+  isMonday,
   locateToday,
-  nearestSaturday,
+  nearestMonday,
   type TodayState,
 } from '../engine/calendar';
 import { fr } from '../engine/format';
@@ -153,14 +153,14 @@ export function TodayScreen({
         <header className={styles.header}>
           <h1 className={styles.h1}>Bienvenue</h1>
           <p className={styles.lead}>
-            Il manque une seule chose pour démarrer : le <b>samedi</b> de ton combine initial. Tout
+            Il manque une seule chose pour démarrer : le <b>lundi</b> de ton combine initial. Tout
             le calendrier en découle, et il ne bougera plus ensuite.
           </p>
         </header>
         <section className={styles.card}>
           <div className={styles.field}>
             <label className={styles.label} htmlFor="start-date-onboarding">
-              Samedi du combine initial
+              Lundi du combine initial
             </label>
             <input
               id="start-date-onboarding"
@@ -177,8 +177,8 @@ export function TodayScreen({
               }
             />
             <p className={styles.fieldHint}>
-              Jour 1 le samedi, jour 2 le dimanche, jour 3 (deadlift) le lundi. La semaine 1 démarre
-              le mercredi suivant.
+              Six jours de tests : squat lundi, tractions lestées mardi, deadlift jeudi, bench
+              vendredi, tractions max samedi. Dimanche repos, puis la semaine 1 démarre le lundi.
             </p>
           </div>
         </section>
@@ -272,15 +272,15 @@ export function TodayScreen({
         </span>
       </button>
 
-      {state.startDate !== '' && !isSaturday(state.startDate) && (
+      {state.startDate !== '' && !isMonday(state.startDate) && (
         <button
           type="button"
           className={`${styles.alert} ${styles.alertRouge} ${styles.alertAction}`}
           onClick={onGoSettings}
         >
-          Ta date de début est un {humanDate(state.startDate).split(' ')[0]}, pas un samedi : toutes
+          Ta date de début est un {humanDate(state.startDate).split(' ')[0]}, pas un lundi : toutes
           les séances tombent le mauvais jour. Appuie ici pour la corriger en{' '}
-          {humanDate(nearestSaturday(state.startDate))}.
+          {humanDate(nearestMonday(state.startDate))}.
         </button>
       )}
 

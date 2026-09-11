@@ -26,30 +26,55 @@ export type MovementFn =
 /** Blocs de périodisation (§2). */
 export type Block = 'test' | 'accumulation' | 'deload' | 'maxforce' | 'power' | 'taper';
 
-/** 0 = lundi, 1 = mercredi, 2 = vendredi, 3 = samedi, 4 = dimanche (§3). */
-export type DayIndex = 0 | 1 | 2 | 3 | 4;
+/**
+ * Jour de la semaine, 0 = lundi … 6 = dimanche.
+ *
+ * Les sept jours réels, et non les cinq jours d'entraînement du §3. La semaine
+ * type n'en occupe que cinq (lundi, mercredi, vendredi, samedi, dimanche) mais
+ * le combine initial, lui, s'étale sur mardi et jeudi : sans ces deux jours
+ * dans le type, il n'y avait aucun moyen de placer un test un mardi.
+ *
+ * Quels jours porte réellement une semaine se lit dans `WEEK_DAYS`, jamais
+ * dans ce type.
+ */
+export type DayIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /** Semaine 0 = combine initial (§12), semaines 1 à 12 = le programme. */
 export type WeekIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export const DAY_LABELS: Record<DayIndex, string> = {
   0: 'Lundi',
-  1: 'Mercredi',
-  2: 'Vendredi',
-  3: 'Samedi',
-  4: 'Dimanche',
+  1: 'Mardi',
+  2: 'Mercredi',
+  3: 'Jeudi',
+  4: 'Vendredi',
+  5: 'Samedi',
+  6: 'Dimanche',
 };
 
 export const DAY_LABELS_SHORT: Record<DayIndex, string> = {
   0: 'Lun',
-  1: 'Mer',
-  2: 'Ven',
-  3: 'Sam',
-  4: 'Dim',
+  1: 'Mar',
+  2: 'Mer',
+  3: 'Jeu',
+  4: 'Ven',
+  5: 'Sam',
+  6: 'Dim',
 };
 
 /** Jour de la semaine ISO (1 = lundi … 7 = dimanche) pour chaque DayIndex. */
-export const DAY_ISO: Record<DayIndex, number> = { 0: 1, 1: 3, 2: 5, 3: 6, 4: 7 };
+export const DAY_ISO: Record<DayIndex, number> = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7 };
+
+/** §3 — les cinq jours d'entraînement d'une semaine type. */
+export const TRAINING_DAYS = [0, 2, 4, 5, 6] as const satisfies readonly DayIndex[];
+
+/**
+ * Correspondance des anciens index (5 jours) vers les nouveaux (7 jours).
+ *
+ * Utilisée une seule fois, par la migration v5 de la base. Elle est ici et non
+ * dans `db.ts` pour rester à côté de la définition qu'elle traduit.
+ */
+export const LEGACY_DAY_MAP: Record<number, DayIndex> = { 0: 0, 1: 2, 2: 4, 3: 5, 4: 6 };
 
 // ---------------------------------------------------------------------------
 // Répétitions et travail
