@@ -176,15 +176,6 @@
   border-left-color: var(--vert);
 }
 
-/* Une alerte sur laquelle on peut appuyer : même apparence, mais elle emmène
-   là où le problème se corrige. Largeur calée sur `.secondary`. */
-.alertAction {
-  display: block;
-  width: calc(100% - 2 * var(--pad));
-  text-align: left;
-  line-height: 1.4;
-}
-
 /* ------------------------------------------------------ liste de jours -- */
 
 .dayRow {

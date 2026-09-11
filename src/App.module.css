@@ -1,15 +1,3 @@
-/*
- * `apple-mobile-web-app-status-bar-style: black-translucent` + `viewport-fit=cover`
- * (index.html) font passer la page SOUS l'heure et les icônes système d'iOS :
- * c'est voulu, le fond sombre remonte jusqu'en haut de l'écran. Mais le contenu
- * doit, lui, commencer sous la barre — sinon le bouton « retour » d'un en-tête
- * se retrouve à cheval sur l'horloge.
- *
- * La réserve est posée ICI, une seule fois, sur le conteneur qui enveloppe tous
- * les écrans : chaque en-tête en hérite, y compris ceux ajoutés plus tard. Les
- * éléments en `position: fixed` (navigation, barre de repos) ne sont pas
- * concernés — ils vivent en bas et gèrent déjà `safe-area-inset-bottom`.
- */
 .app {
   /* Écran séance : pas de navigation, la barre de chrono est au ras du bas et
      gère elle-même l'encoche de l'iPhone. */
@@ -17,7 +5,6 @@
   --rest-pad-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   --bottom-space: calc(84px + env(safe-area-inset-bottom, 0px));
   min-height: 100dvh;
-  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /*
@@ -27,12 +14,7 @@
 .withNav {
   --rest-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
   --rest-pad-bottom: 10px;
-  /*
-   * Navigation (62 px) + une respiration. La barre de repos se superpose
-   * au-dessus quand elle tourne, mais elle est temporaire : lui réserver
-   * 150 px en permanence laissait un grand vide au bas de chaque écran.
-   */
-  --bottom-space: calc(86px + env(safe-area-inset-bottom, 0px));
+  --bottom-space: calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Bandeau de mise à jour : visible, mais il n'interrompt jamais une séance

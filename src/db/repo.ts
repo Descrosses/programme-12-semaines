@@ -19,9 +19,7 @@ import {
 // --------------------------------------------------------------- réglages --
 
 export async function getSettingsRow(): Promise<SettingsRow> {
-  // Fusion avec les valeurs par défaut : une base créée par une version
-  // antérieure ne connaît pas les champs ajoutés depuis (poids de corps…).
-  return { ...DEFAULT_SETTINGS_ROW, ...(await db.settings.get(1)) };
+  return (await db.settings.get(1)) ?? DEFAULT_SETTINGS_ROW;
 }
 
 export async function saveSettings(patch: Partial<SettingsRow>): Promise<SettingsRow> {
@@ -41,24 +39,10 @@ export function toEngineSettings(row: SettingsRow): Settings {
 
 // ---------------------------------------------------------------- séances --
 
-/**
- * Crée la ligne de séance si elle n'existe pas encore.
- *
- * `date` est toujours recalculée depuis l'ancre des Réglages. Si Guillaume
- * corrige sa date de début, les lignes déjà créées portaient l'ancienne date :
- * on les réaligne ici, sinon l'écran Semaine et l'historique resteraient sur un
- * calendrier périmé jusqu'à une remise à zéro.
- */
+/** Crée la ligne de séance si elle n'existe pas encore. */
 export async function ensureSession(week: number, day: DayIndex, date: string): Promise<SessionRow> {
   const existing = await db.sessions.where('[week+day]').equals([week, day]).first();
-  if (existing) {
-    if (existing.date !== date && existing.id !== undefined) {
-      await db.sessions.update(existing.id, { date });
-      await db.sets.where('sessionId').equals(existing.id).modify({ date });
-      return { ...existing, date };
-    }
-    return existing;
-  }
+  if (existing) return existing;
   const row: SessionRow = {
     week,
     day,

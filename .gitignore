@@ -11,6 +11,3 @@ dev-dist/
 # Le service worker et le manifest sont générés au build.
 public/sw.js
 public/workbox-*.js
-
-# Artefact de compilation incrémentale TypeScript
-tsconfig.tsbuildinfo

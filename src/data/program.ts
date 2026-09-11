@@ -43,7 +43,6 @@ export {
   RAMP_SQUAT,
   SPECIAL_SESSIONS,
   TARGETS_12_WEEKS,
-  isCombineDay,
   specialSession,
 } from './testSessions';
 
@@ -136,17 +135,13 @@ export const WEEK_BLOCKS: Record<WeekIndex, Block> = {
 };
 
 /**
- * §12 + décision de Guillaume : le combine initial tient sur TROIS jours, tous
- * rattachés à la semaine 0 — samedi, dimanche, puis le lundi qui suit. La
- * semaine 1 démarre le mercredi suivant et ne compte donc que 4 séances ; le
- * lundi n'existe pas pour elle. Les autres semaines ont leurs 5 séances.
- *
- * Les jours de la semaine 0 sont listés dans l'ordre chronologique réel
- * (samedi, dimanche, lundi), pas dans l'ordre des `DayIndex`.
+ * §12 + décision de Guillaume : la semaine 1 commence le mercredi, son lundi
+ * étant occupé par le 3e jour du combine initial. Les autres semaines ont
+ * leurs 5 séances.
  */
 export const WEEK_DAYS: Record<WeekIndex, readonly (0 | 1 | 2 | 3 | 4)[]> = {
-  0: [3, 4, 0],
-  1: [1, 2, 3, 4],
+  0: [3, 4],
+  1: [0, 1, 2, 3, 4],
   2: [0, 1, 2, 3, 4],
   3: [0, 1, 2, 3, 4],
   4: [0, 1, 2, 3, 4],

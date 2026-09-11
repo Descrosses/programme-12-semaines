@@ -82,10 +82,8 @@ export function WeekScreen({
       <header className={styles.header}>
         <h1 className={styles.h1}>{week === 0 ? 'Combine initial' : `Semaine ${week}`}</h1>
         <p className={styles.lead}>
-          {week === 0 &&
-            'Trois jours de tests avant le programme : samedi, dimanche, puis le lundi pour le deadlift. Ton meilleur broad jump d’ici devient ta référence.'}
-          {week === 1 &&
-            'Quatre séances : elle démarre le mercredi, deux jours après le dernier test du combine.'}
+          {week === 1 && 'Elle commence le mercredi : le lundi est pris par le test deadlift.'}
+          {week === 0 && 'Avant la semaine 1. Ton meilleur broad jump d’ici devient ta référence.'}
           {week > 1 && block.objective}
         </p>
       </header>

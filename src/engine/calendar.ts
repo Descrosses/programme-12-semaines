@@ -1,21 +1,15 @@
 /**
  * Calendrier du programme.
  *
- * ANCRE : le SAMEDI du combine initial (`settings.startDate`), saisi une fois
- * en Réglages. Une séance ne se date JAMAIS à partir de la date du jour où on
- * consulte l'écran : `dateFor()` ne lit pas l'horloge, et deux ouvertures de
- * l'appli à deux dates différentes donnent exactement le même calendrier.
+ * Origine : le SAMEDI du combine initial (`settings.startDate`).
  *
- *   S0  samedi   = J+0      ← combine initial jour 1
- *   S0  dimanche = J+1      ← combine initial jour 2
- *   S0  lundi    = J+2      ← combine initial jour 3 (deadlift)
+ *   S0  samedi   = J+0      S0  dimanche = J+1
+ *   S1  lundi    = J+2      ← 3e jour du combine initial, il remplace le lundi
  *   S1  mercredi = J+4      ← début réel du programme
  *   S1  vendredi = J+6      S1 samedi = J+7      S1 dimanche = J+8
  *   S2  lundi    = J+9      … puis rythme hebdomadaire régulier
  *
- * Une formule couvre tout : J + 2 + (semaine − 1) × 7 + décalage du jour.
- * Seule exception, le lundi de la semaine 0 : il tombe APRÈS son week-end,
- * pas cinq jours avant. C'est le seul cas particulier du calendrier.
+ * Une seule formule couvre tout : J + 2 + (semaine − 1) × 7 + décalage du jour.
  */
 
 import { WEEK_DAYS } from '../data/program';
@@ -44,15 +38,8 @@ export function daysBetween(fromIso: string, toIso: string): number {
   return Math.round((parseDate(toIso).getTime() - parseDate(fromIso).getTime()) / MS_PER_DAY);
 }
 
-/**
- * Décalage, en jours depuis `startDate`, d'une case du calendrier.
- *
- * Cas particulier de la semaine 0 : ses trois séances sont samedi, dimanche et
- * le lundi SUIVANT. La formule générale placerait ce lundi cinq jours avant le
- * samedi ; on l'écrit donc en dur.
- */
+/** Décalage, en jours depuis `startDate`, d'une case du calendrier. */
 export function offsetFor(week: WeekIndex, day: DayIndex): number {
-  if (week === 0 && day === 0) return 2;
   return 2 + (week - 1) * 7 + DAY_OFFSET[day];
 }
 
@@ -127,22 +114,6 @@ export function nextSession(startDate: string, week: WeekIndex, day: DayIndex): 
   const all = schedule(startDate);
   const i = all.findIndex((s) => s.week === week && s.day === day);
   return i >= 0 && i < all.length - 1 ? all[i + 1]! : null;
-}
-
-/** Numéro de jour ISO d'une date `YYYY-MM-DD` (0 = dimanche … 6 = samedi). */
-export function weekdayOf(iso: string): number {
-  return parseDate(iso).getUTCDay();
-}
-
-/** L'ancre du calendrier doit être un samedi : tout le reste en découle. */
-export function isSaturday(iso: string): boolean {
-  return weekdayOf(iso) === 6;
-}
-
-/** Samedi le plus proche d'une date, pour proposer une correction d'ancre. */
-export function nearestSaturday(iso: string): string {
-  const delta = 6 - weekdayOf(iso); // -6 … +6 ; 0 si déjà samedi
-  return addDays(iso, delta > 3 ? delta - 7 : delta);
 }
 
 /** « samedi 8 mars », pour l'en-tête de l'écran Aujourd'hui. */

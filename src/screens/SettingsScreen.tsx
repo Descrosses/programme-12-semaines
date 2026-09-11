@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
-import { dateFor, humanDate, isSaturday, nearestSaturday } from '../engine/calendar';
+import { dateFor, humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
 import { downloadExport, importAll, parseExport, resetHistory } from '../db/export';
@@ -49,8 +49,6 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
   }
 
   const start = row.startDate;
-  const ancreValide = start !== '' && isSaturday(start);
-  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className={styles.screen}>
@@ -83,64 +81,12 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
             value={start}
             onChange={(e) => void patch({ startDate: e.target.value })}
           />
-          {start !== '' && !ancreValide && (
-            <>
-              <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '10px 0 0' }}>
-                <b>{humanDate(start)} n’est pas un samedi.</b> Tout le calendrier est calé sur le
-                samedi du combine : avec cette date, les 62 séances tombent le mauvais jour de la
-                semaine.
-              </p>
-              <button
-                type="button"
-                className={styles.secondary}
-                style={{ width: '100%', margin: '10px 0 0' }}
-                onClick={() => void patch({ startDate: nearestSaturday(start) })}
-              >
-                Corriger : {humanDate(nearestSaturday(start))}
-              </button>
-            </>
-          )}
-          {ancreValide && (
+          {start && (
             <p className={styles.fieldHint}>
-              Combine : {humanDate(dateFor(start, 0, 3))} (jour 1),{' '}
-              {humanDate(dateFor(start, 0, 4))} (jour 2), {humanDate(dateFor(start, 0, 0))} (jour 3,
-              deadlift). Semaine 1 le {humanDate(dateFor(start, 1, 1))}, dernière séance le{' '}
+              Semaine 1 le {humanDate(dateFor(start, 1, 1))}, dernière séance le{' '}
               {humanDate(dateFor(start, 12, 4))}.
             </p>
           )}
-        </div>
-      </section>
-
-      {/* ------------------------------------------------ poids de corps -- */}
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Poids de corps</h2>
-        <p className={styles.cardSub}>
-          §12 — <b>moyenne de 3 matinées, à jeun</b>. C’est un relevé de maison, pas une mesure de
-          séance : il ne figure plus dans le flux du combine. Saisis-le ici quand tu veux, la veille
-          ou le matin même.
-        </p>
-        <div className={styles.field}>
-          <Stepper
-            label="Poids de corps"
-            value={row.bodyweightKg}
-            step={0.5}
-            min={40}
-            max={160}
-            unit="kg"
-            tone="accent"
-            onStep={(d) =>
-              void patch({
-                bodyweightKg: stepValue(row.bodyweightKg, d, 40, 160),
-                bodyweightDate: today,
-              })
-            }
-            onCommit={(v) => void patch({ bodyweightKg: v, bodyweightDate: v === null ? '' : today })}
-          />
-          <p className={styles.fieldHint}>
-            {row.bodyweightKg === null
-              ? 'Pas encore renseigné. Appuie sur la valeur pour taper 78,3 au clavier.'
-              : `Relevé ${row.bodyweightDate ? `le ${humanDate(row.bodyweightDate)}` : 'sans date'}. Appuie sur la valeur pour la saisir au clavier, décimales comprises.`}
-          </p>
         </div>
       </section>
 
@@ -165,7 +111,6 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
                 broadJumpBaselineCm: stepValue(row.broadJumpBaselineCm, d, 100, 400),
               })
             }
-            onCommit={(v) => void patch({ broadJumpBaselineCm: v })}
           />
           <p className={styles.fieldHint}>
             {row.broadJumpBaselineCm === null
@@ -198,9 +143,6 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
                     [f.id]: stepValue(row.oneRM[f.id] ?? f.start, d, 0, 300),
                   },
                 })
-              }
-              onCommit={(v) =>
-                void patch({ oneRM: { ...row.oneRM, [f.id]: v ?? f.start } })
               }
             />
           </div>
