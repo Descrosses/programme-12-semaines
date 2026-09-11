@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { NUTRITION_TARGETS, type DayKind } from '../data/nutrition';
 import { BLOCKS, WEEK_BLOCKS, isCombineDay } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
@@ -35,13 +36,26 @@ export function TodayScreen({
   onOpen,
   onGoWeek,
   onGoSettings,
+  onGoNutrition,
+  onDataChanged,
+  todayKind,
 }: {
   onOpen: (week: WeekIndex, day: DayIndex) => void;
   onGoWeek: (week: WeekIndex) => void;
   onGoSettings: () => void;
+  onGoNutrition: () => void;
+  /**
+   * Prévient l'application qu'un réglage vient de changer.
+   *
+   * Indispensable après la saisie de la date de début : le palier alimentaire
+   * du jour (`todayKind`) est calculé au-dessus, à partir de cette date. Sans
+   * ce signal, la carte Nutrition resterait sur « jour de repos » alors qu'une
+   * séance est déjà prévue aujourd'hui.
+   */
+  onDataChanged: () => void;
+  /** Palier alimentaire du jour affiché — pas celui d'une semaine entière. */
+  todayKind: DayKind;
 }) {
-  /** Incrémenté après la saisie de la date de début : relance le chargement. */
-  const [reloadKey, setReloadKey] = useState(0);
   const [state, setState] = useState<{
     loading: boolean;
     today: TodayState | null;
@@ -122,7 +136,7 @@ export function TodayScreen({
         bodyweightKg: settingsRow.bodyweightKg,
       });
     })();
-  }, [reloadKey]);
+  }, []);
 
   if (state.loading) return <div className={styles.loading}>Chargement…</div>;
 
@@ -156,7 +170,9 @@ export function TodayScreen({
               onChange={(e) =>
                 void (async () => {
                   await saveSettings({ startDate: e.target.value });
-                  setReloadKey((k) => k + 1);
+                  // Remonte l'info : l'application recalcule le palier
+                  // alimentaire du jour et remonte l'écran avec la date.
+                  onDataChanged();
                 })()
               }
             />
@@ -234,6 +250,27 @@ export function TodayScreen({
           </>
         )}
       </header>
+
+      {/*
+        Raccourci nutrition. Il vit ici et nulle part ailleurs : l'écran Semaine
+        mélange des jours d'entraînement et des jours de repos, donc une carte
+        unique y afficherait une cible fausse pour au moins un des jours listés.
+      */}
+      <button type="button" className={styles.nutriCard} onClick={onGoNutrition}>
+        <span className={styles.nutriIcon} aria-hidden="true">
+          🍽
+        </span>
+        <span className={styles.nutriText}>
+          <b>Nutrition — {NUTRITION_TARGETS[todayKind].label.toLowerCase()}</b>
+          <span>
+            {NUTRITION_TARGETS[todayKind].kcal.toLocaleString('fr-FR')} kcal ·{' '}
+            {NUTRITION_TARGETS[todayKind].proteinG} g de protéines · voir le détail
+          </span>
+        </span>
+        <span className={styles.nutriChevron} aria-hidden="true">
+          ›
+        </span>
+      </button>
 
       {state.startDate !== '' && !isSaturday(state.startDate) && (
         <button

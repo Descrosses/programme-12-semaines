@@ -73,6 +73,22 @@ export interface ReadinessRow {
   pctDelta: number;
 }
 
+/**
+ * Une ligne par jour de relevé — poids du matin, tour de taille quand il y en a.
+ *
+ * Table séparée et non un champ de plus dans `settings` : le plan alimentaire
+ * ne décide rien sur une pesée isolée, il lui faut un historique. `date` est
+ * unique, donc se repeser deux fois le même jour corrige la ligne au lieu d'en
+ * créer une deuxième qui fausserait la moyenne.
+ */
+export interface MeasurementRow {
+  id?: number;
+  /** `YYYY-MM-DD`. */
+  date: string;
+  weightKg: number | null;
+  waistCm: number | null;
+}
+
 export type CombinePhase = 'initial' | 's8' | 'final';
 
 export interface CombineRow {
@@ -106,6 +122,7 @@ export class ProgrammeDB extends Dexie {
   sets!: Table<SetRow, number>;
   readiness!: Table<ReadinessRow, number>;
   combines!: Table<CombineRow, number>;
+  measurements!: Table<MeasurementRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
@@ -138,6 +155,13 @@ export class ProgrammeDB extends Dexie {
             if (r.week === 1 && r.day === 0) r.week = 0;
           });
       });
+
+    /*
+     * v3 — journal de poids et de tour de taille, pour l'onglet Nutrition.
+     * Ajout pur : aucune table existante n'est touchée, donc tout l'historique
+     * d'entraînement traverse la migration sans y toucher.
+     */
+    this.version(3).stores({ measurements: '++id, &date' });
   }
 }
 

@@ -8,6 +8,7 @@
 import {
   db,
   type CombineRow,
+  type MeasurementRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
@@ -26,15 +27,18 @@ export interface ExportFile {
   sets: SetRow[];
   readiness: ReadinessRow[];
   combines: CombineRow[];
+  /** Absent des exports antérieurs à l'onglet Nutrition : toujours optionnel. */
+  measurements?: MeasurementRow[];
 }
 
 export async function exportAll(): Promise<ExportFile> {
-  const [settings, sessions, sets, readiness, combines] = await Promise.all([
+  const [settings, sessions, sets, readiness, combines, measurements] = await Promise.all([
     db.settings.get(1),
     db.sessions.toArray(),
     db.sets.toArray(),
     db.readiness.toArray(),
     db.combines.toArray(),
+    db.measurements.toArray(),
   ]);
 
   return {
@@ -46,6 +50,7 @@ export async function exportAll(): Promise<ExportFile> {
     sets,
     readiness,
     combines,
+    measurements,
   };
 }
 
@@ -74,6 +79,7 @@ export interface ImportReport {
   sets: number;
   readiness: number;
   combines: number;
+  measurements: number;
   settings: boolean;
 }
 
@@ -103,6 +109,9 @@ export function parseExport(text: string): ExportFile {
     sets: f.sets ?? [],
     readiness: f.readiness ?? [],
     combines: f.combines ?? [],
+    // Un export d'avant l'onglet Nutrition n'a pas ce tableau : liste vide, pas
+    // une erreur — il reste parfaitement réimportable.
+    measurements: f.measurements ?? [],
   };
 }
 
@@ -116,25 +125,29 @@ export function parseExport(text: string): ExportFile {
 export async function importAll(file: ExportFile): Promise<ImportReport> {
   return db.transaction(
     'rw',
-    [db.settings, db.sessions, db.sets, db.readiness, db.combines],
+    [db.settings, db.sessions, db.sets, db.readiness, db.combines, db.measurements],
     async () => {
+      const measurements = file.measurements ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
         db.readiness.clear(),
         db.combines.clear(),
+        db.measurements.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
       await db.sets.bulkAdd(file.sets);
       await db.readiness.bulkAdd(file.readiness);
       await db.combines.bulkAdd(file.combines);
+      await db.measurements.bulkAdd(measurements);
 
       return {
         sessions: file.sessions.length,
         sets: file.sets.length,
         readiness: file.readiness.length,
         combines: file.combines.length,
+        measurements: measurements.length,
         settings: file.settings !== null,
       };
     },
@@ -143,12 +156,17 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
 
 /** Efface tout l'historique. Les réglages sont conservés. */
 export async function resetHistory(): Promise<void> {
-  await db.transaction('rw', [db.sessions, db.sets, db.readiness, db.combines], async () => {
-    await Promise.all([
-      db.sessions.clear(),
-      db.sets.clear(),
-      db.readiness.clear(),
-      db.combines.clear(),
-    ]);
-  });
+  await db.transaction(
+    'rw',
+    [db.sessions, db.sets, db.readiness, db.combines, db.measurements],
+    async () => {
+      await Promise.all([
+        db.sessions.clear(),
+        db.sets.clear(),
+        db.readiness.clear(),
+        db.combines.clear(),
+        db.measurements.clear(),
+      ]);
+    },
+  );
 }

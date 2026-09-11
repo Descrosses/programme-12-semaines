@@ -15,6 +15,7 @@ export type Route =
   | { name: 'week'; week: WeekIndex }
   | { name: 'session'; week: WeekIndex; day: DayIndex }
   | { name: 'progress' }
+  | { name: 'nutrition' }
   | { name: 'combine' }
   | { name: 'settings' };
 
@@ -27,6 +28,8 @@ export function parseRoute(hash: string): Route {
       return { name: 'session', week: clampWeek(parts[1]), day: clampDay(parts[2]) };
     case 'progress':
       return { name: 'progress' };
+    case 'nutrition':
+      return { name: 'nutrition' };
     case 'combine':
       return { name: 'combine' };
     case 'settings':
