@@ -4,7 +4,7 @@ import { dateFor, humanDate, isSaturday, nearestSaturday } from '../engine/calen
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
 import { downloadExport, importAll, parseExport, resetHistory } from '../db/export';
-import { getSettingsRow, saveSettings } from '../db/repo';
+import { allMeasurements, getSettingsRow, saveSettings } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import styles from './Screens.module.css';
 
@@ -17,12 +17,30 @@ const ONE_RM_FIELDS = [
 
 export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
   const [row, setRow] = useState<SettingsRow | null>(null);
+  /**
+   * Moyenne des 3 dernières pesées du journal Nutrition — exactement ce que
+   * §12 demande ici (« moyenne de 3 matinées, à jeun »). On ne la recopie pas
+   * d'office : le champ ci-dessous est le relevé officiel du combine, c'est
+   * Guillaume qui décide quand le figer.
+   */
+  const [last3, setLast3] = useState<number | null>(null);
   const [message, setMessage] = useState<{ text: string; kind: 'ok' | 'erreur' } | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    void (async () => setRow(await getSettingsRow()))();
+    void (async () => {
+      setRow(await getSettingsRow());
+      const weights = (await allMeasurements())
+        .filter((m) => m.weightKg !== null)
+        .slice(-3)
+        .map((m) => m.weightKg!);
+      setLast3(
+        weights.length === 3
+          ? Math.round((weights.reduce((a, b) => a + b, 0) / 3) * 10) / 10
+          : null,
+      );
+    })();
   }, []);
 
   if (!row) return <div className={styles.loading}>Chargement…</div>;
@@ -40,7 +58,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       setRow(await getSettingsRow());
       onChanged();
       setMessage({
-        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines.`,
+        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées.`,
         kind: 'ok',
       });
     } catch (e) {
@@ -141,6 +159,16 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
               ? 'Pas encore renseigné. Appuie sur la valeur pour taper 78,3 au clavier.'
               : `Relevé ${row.bodyweightDate ? `le ${humanDate(row.bodyweightDate)}` : 'sans date'}. Appuie sur la valeur pour la saisir au clavier, décimales comprises.`}
           </p>
+          {last3 !== null && last3 !== row.bodyweightKg && (
+            <button
+              type="button"
+              className={styles.secondary}
+              style={{ width: '100%', margin: '10px 0 0' }}
+              onClick={() => void patch({ bodyweightKg: last3, bodyweightDate: today })}
+            >
+              Reprendre {fr(last3)} kg — moyenne de tes 3 dernières pesées
+            </button>
+          )}
         </div>
       </section>
 

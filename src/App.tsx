@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
 import { CombineScreen } from './screens/CombineScreen';
+import { NutritionScreen } from './screens/NutritionScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
 import { SessionScreen } from './screens/SessionScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
@@ -10,14 +11,17 @@ import { WeekScreen } from './screens/WeekScreen';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
 import { useRoute, type Route } from './state/useRoute';
+import { locateToday } from './engine/calendar';
+import type { DayKind } from './data/nutrition';
 import { getSettingsRow } from './db/repo';
 import styles from './App.module.css';
 
-type TabName = 'today' | 'week' | 'progress' | 'combine' | 'settings';
+type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
 
 const TABS: Array<{ name: TabName; label: string; icon: string }> = [
   { name: 'today', label: 'Aujourd’hui', icon: '▶' },
   { name: 'week', label: 'Semaine', icon: '▦' },
+  { name: 'nutrition', label: 'Nutrition', icon: '🍽' },
   { name: 'progress', label: 'Progrès', icon: '📈' },
   { name: 'combine', label: 'Combine', icon: '⏱' },
   { name: 'settings', label: 'Réglages', icon: '⚙' },
@@ -25,6 +29,15 @@ const TABS: Array<{ name: TabName; label: string; icon: string }> = [
 
 export function App() {
   const [alerts, setAlerts] = useState({ sound: true, vibration: true });
+  /**
+   * Jour d'entraînement ou jour de repos, au sens du plan alimentaire.
+   *
+   * Calculé ici et non dans l'écran Nutrition : l'écran Aujourd'hui en a besoin
+   * aussi pour sa carte de raccourci, et deux calculs séparés finiraient par
+   * diverger. Une séance prévue aujourd'hui = jour d'entraînement, le reste
+   * (mardi, jeudi, avant le début, après la fin) = jour de repos.
+   */
+  const [todayKind, setTodayKind] = useState<DayKind>('rest');
   const timer = useRestTimer(alerts);
   const [route, navigate] = useRoute();
   const appUpdate = useAppUpdate();
@@ -35,6 +48,8 @@ export function App() {
     void (async () => {
       const row = await getSettingsRow();
       setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
+      const today = locateToday(row.startDate, new Date().toISOString().slice(0, 10));
+      setTodayKind(today?.kind === 'session' ? 'train' : 'rest');
     })();
   }, [dataVersion]);
 
@@ -63,7 +78,9 @@ export function App() {
         </div>
       )}
 
-      <main>{renderScreen(route, dataVersion, openSession, navigate, refresh, timer)}</main>
+      <main>
+        {renderScreen(route, dataVersion, todayKind, openSession, navigate, refresh, timer)}
+      </main>
 
       <RestBar timer={timer} />
 
@@ -101,6 +118,7 @@ function currentWeek(route: Route): WeekIndex {
 function renderScreen(
   route: Route,
   dataVersion: number,
+  todayKind: DayKind,
   openSession: (week: WeekIndex, day: DayIndex) => void,
   navigate: (route: Route) => void,
   refresh: () => void,
@@ -131,6 +149,9 @@ function renderScreen(
     case 'progress':
       return <ProgressScreen key={dataVersion} />;
 
+    case 'nutrition':
+      return <NutritionScreen key={dataVersion} todayKind={todayKind} />;
+
     case 'combine':
       return <CombineScreen key={dataVersion} />;
 
@@ -144,6 +165,9 @@ function renderScreen(
           onOpen={openSession}
           onGoWeek={(w) => navigate({ name: 'week', week: w })}
           onGoSettings={() => navigate({ name: 'settings' })}
+          onGoNutrition={() => navigate({ name: 'nutrition' })}
+          onDataChanged={refresh}
+          todayKind={todayKind}
         />
       );
   }

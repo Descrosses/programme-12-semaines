@@ -441,6 +441,217 @@
   color: var(--ink-2);
 }
 
+/* L'unité ne doit pas concurrencer le nombre : c'est le nombre qu'on lit. */
+.keyStatUnit {
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+/* Raccourci nutrition, sur l'écran Aujourd'hui uniquement. */
+.nutriCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: left;
+}
+
+.nutriCard:active {
+  background: var(--surface-2);
+}
+
+.nutriIcon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 1.125rem;
+}
+
+.nutriText {
+  flex: 1;
+  min-width: 0;
+}
+
+.nutriText b {
+  display: block;
+  font-size: var(--fs-small);
+}
+
+.nutriText span {
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.nutriChevron {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  font-size: 1.25rem;
+}
+
+/* ---------------------------------------------------------- nutrition -- */
+
+.macros {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.macro {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  text-align: center;
+}
+
+.macro b {
+  display: block;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+}
+
+.macro span {
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+}
+
+/* Sélecteur à deux positions : entraînement / repos. */
+.segment {
+  display: flex;
+  gap: 4px;
+  margin: var(--gap) var(--pad) 0;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.segmentButton {
+  flex: 1;
+  min-width: 0;
+  height: var(--tap);
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.segmentOn {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.mealList {
+  margin-top: 10px;
+}
+
+.meal {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.meal:last-child {
+  border-bottom: 0;
+}
+
+.mealName {
+  font-weight: 600;
+}
+
+.mealDetail {
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+
+.mealKcal {
+  flex: 0 0 auto;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.mealTotal {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-weight: 700;
+}
+
+/* Le détail qu'on ne relit qu'en faisant ses courses : replié par défaut. */
+.details {
+  margin: var(--gap) var(--pad);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--tap);
+  padding: 12px var(--pad);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary::after {
+  content: '+';
+  font-size: 1.375rem;
+  color: var(--ink-3);
+}
+
+.details[open] .summary::after {
+  content: '−';
+}
+
+.detailsBody {
+  padding: 0 var(--pad) var(--pad);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.detailsBody p + p {
+  margin-top: 10px;
+}
+
+.detailsBody b {
+  color: var(--ink);
+}
+
+.ruleList {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.ruleList li + li {
+  margin-top: 8px;
+}
+
 .loading {
   padding: 40px var(--pad);
   color: var(--ink-2);

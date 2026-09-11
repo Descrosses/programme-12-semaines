@@ -10,6 +10,7 @@ import {
   db,
   type CombinePhase,
   type CombineRow,
+  type MeasurementRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
@@ -207,6 +208,50 @@ export async function saveCombine(
 
 export async function allCombines(): Promise<CombineRow[]> {
   return db.combines.toArray();
+}
+
+// ----------------------------------------------------------- mesures corps --
+
+/**
+ * Écrit la pesée (et/ou le tour de taille) d'un jour.
+ *
+ * Une seule ligne par date : se repeser deux fois le même matin corrige la
+ * valeur, ça n'ajoute pas un second point qui pèserait double dans la moyenne.
+ * Les champs laissés à `undefined` ne sont pas écrasés — on peut saisir le
+ * tour de taille sans retaper le poids.
+ */
+export async function saveMeasurement(
+  date: string,
+  patch: { weightKg?: number | null; waistCm?: number | null },
+): Promise<MeasurementRow> {
+  const existing = await db.measurements.where('date').equals(date).first();
+  const next: MeasurementRow = {
+    date,
+    weightKg: patch.weightKg !== undefined ? patch.weightKg : (existing?.weightKg ?? null),
+    waistCm: patch.waistCm !== undefined ? patch.waistCm : (existing?.waistCm ?? null),
+  };
+
+  // Une ligne entièrement vide n'a rien à faire en base : elle diluerait les
+  // moyennes en se faisant passer pour un jour relevé.
+  if (next.weightKg === null && next.waistCm === null) {
+    if (existing?.id !== undefined) await db.measurements.delete(existing.id);
+    return next;
+  }
+
+  if (existing?.id !== undefined) {
+    await db.measurements.put({ ...next, id: existing.id });
+    return { ...next, id: existing.id };
+  }
+  const id = await db.measurements.add(next);
+  return { ...next, id };
+}
+
+export async function getMeasurement(date: string): Promise<MeasurementRow | undefined> {
+  return db.measurements.where('date').equals(date).first();
+}
+
+export async function allMeasurements(): Promise<MeasurementRow[]> {
+  return db.measurements.orderBy('date').toArray();
 }
 
 // -------------------------------------------------- historique pour l'engine --
