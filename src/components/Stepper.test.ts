@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { stepValue } from './Stepper';
+import { parseDecimal, stepValue } from './Stepper';
 
 describe('stepValue', () => {
   it('applique l’écart', () => {
@@ -44,5 +44,35 @@ describe('stepValue', () => {
     let r: number | null = 4;
     for (let i = 0; i < 7; i++) r = stepValue(r, 0.5, 4, 10);
     expect(r).toBe(7.5);
+  });
+});
+
+/**
+ * Saisie clavier (point 1) : la grille du stepper ne sait pas écrire 78,3 kg
+ * ni un 10 m à 1,74 s. Le clavier du téléphone, si.
+ */
+describe('parseDecimal — ce que Guillaume tape au clavier', () => {
+  it('accepte la virgule, qui est la touche décimale d’un clavier français', () => {
+    expect(parseDecimal('78,3')).toBe(78.3);
+    expect(parseDecimal('1,74')).toBe(1.74);
+  });
+
+  it('accepte aussi le point et les espaces parasites', () => {
+    expect(parseDecimal('78.3')).toBe(78.3);
+    expect(parseDecimal('  2,55 ')).toBe(2.55);
+  });
+
+  it('un champ vidé efface la mesure', () => {
+    expect(parseDecimal('')).toBeNull();
+    expect(parseDecimal('   ')).toBeNull();
+  });
+
+  it('une saisie illisible ne devient jamais un 0', () => {
+    expect(parseDecimal('abc')).toBeNull();
+    expect(parseDecimal('1,2,3')).toBeNull();
+  });
+
+  it('sait relire ce que le stepper affiche', () => {
+    expect(parseDecimal('107,5')).toBe(107.5);
   });
 });

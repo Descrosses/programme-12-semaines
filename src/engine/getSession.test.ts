@@ -43,15 +43,24 @@ const find = (s: { exercises: ResolvedExercise[] }, id: string) => {
 // ---------------------------------------------------------------------------
 
 describe('calendrier des séances', () => {
-  it('la semaine 0 n’a que samedi et dimanche', () => {
-    expect(hasSession(0, 0)).toBe(false);
+  it('la semaine 0 porte les trois jours du combine : samedi, dimanche, lundi', () => {
     expect(hasSession(0, 3)).toBe(true);
     expect(hasSession(0, 4)).toBe(true);
-    expect(getSession(0, 0, ctx())).toBeNull();
+    expect(hasSession(0, 0)).toBe(true);
+    // Mercredi et vendredi n'existent pas avant le début du programme.
+    expect(hasSession(0, 1)).toBe(false);
+    expect(hasSession(0, 2)).toBe(false);
+    expect(getSession(0, 1, ctx())).toBeNull();
   });
 
-  it('le lundi de la semaine 1 est le 3e jour du combine initial', () => {
-    const s = session(1, 0);
+  it('la semaine 1 n’a plus de lundi : elle démarre le mercredi', () => {
+    expect(hasSession(1, 0)).toBe(false);
+    expect(getSession(1, 0, ctx())).toBeNull();
+    expect(hasSession(1, 1)).toBe(true);
+  });
+
+  it('le lundi de la semaine 0 est le 3e jour du combine initial', () => {
+    const s = session(0, 0);
     expect(s.title).toBe('Combine initial — jour 3');
     expect(ids(s.exercises)).toEqual([
       'test-deadlift-1rm',
@@ -235,7 +244,6 @@ describe('semaine 8 — combine intermédiaire', () => {
   it('samedi : tests d’abord, deadlift et front squat de deload ensuite', () => {
     const s = session(8, 3);
     expect(ids(s.exercises)).toEqual([
-      'test-bodyweight',
       'test-broad-jump',
       'test-vertical-jump',
       'test-sprint-10m',

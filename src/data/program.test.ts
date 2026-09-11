@@ -161,13 +161,21 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
     for (const { day, blueprint } of SPECIAL_SESSIONS) expect(blueprint.day).toBe(day);
   });
 
-  it('le combine initial occupe sam + dim (S0) et le lundi de la S1', () => {
+  it('le combine initial tient entièrement dans la semaine 0 : sam, dim, lundi', () => {
     const cases = SPECIAL_SESSIONS.filter((s) => s.blueprint.title.startsWith('Combine initial'));
     expect(cases.map((s) => [s.week, s.day])).toEqual([
       [0, 3],
       [0, 4],
-      [1, 0],
+      [0, 0],
     ]);
+  });
+
+  it('§12 — le poids de corps ne figure dans aucune séance de combine', () => {
+    for (const s of SPECIAL_SESSIONS) {
+      expect(s.blueprint.slots.map((x) => x.exId), s.blueprint.title).not.toContain(
+        'test-bodyweight',
+      );
+    }
   });
 
   it('la semaine 12 couvre les 5 jours', () => {
@@ -237,14 +245,15 @@ describe('périodisation §2', () => {
     ]);
   });
 
-  it('la semaine 1 ne compte que 4 séances, son lundi étant le test deadlift', () => {
-    expect(WEEK_DAYS[1]).toEqual([0, 1, 2, 3, 4]);
-    const lundiS1 = SPECIAL_SESSIONS.find((s) => s.week === 1 && s.day === 0);
-    expect(lundiS1?.blueprint.title).toBe('Combine initial — jour 3');
+  it('la semaine 1 ne compte que 4 séances : elle démarre le mercredi', () => {
+    expect(WEEK_DAYS[1]).toEqual([1, 2, 3, 4]);
+    expect(SPECIAL_SESSIONS.find((s) => s.week === 1)).toBeUndefined();
   });
 
-  it('la semaine 0 ne contient que le samedi et le dimanche', () => {
-    expect(WEEK_DAYS[0]).toEqual([3, 4]);
+  it('la semaine 0 groupe les trois jours du combine initial', () => {
+    expect(WEEK_DAYS[0]).toEqual([3, 4, 0]);
+    const lundi = SPECIAL_SESSIONS.find((s) => s.week === 0 && s.day === 0);
+    expect(lundi?.blueprint.title).toBe('Combine initial — jour 3');
   });
 });
 

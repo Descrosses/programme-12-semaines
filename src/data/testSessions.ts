@@ -5,10 +5,17 @@
  * lettres dans le programme, donc transcrites en toutes lettres ici.
  *
  * Calendrier du test initial (§12 + décision de Guillaume) :
- *   samedi  → combine jour 1   (semaine 0, jour 3)
- *   dimanche → combine jour 2  (semaine 0, jour 4)
- *   lundi   → combine jour 3   (semaine 1, jour 0 — il REMPLACE le lundi de la S1)
+ *   samedi   → combine jour 1   (semaine 0, jour 3)
+ *   dimanche → combine jour 2   (semaine 0, jour 4)
+ *   lundi    → combine jour 3   (semaine 0, jour 0 — le lundi QUI SUIT)
  *   mercredi → début réel de la semaine 1
+ *
+ * Les trois jours appartiennent à la semaine 0 : l'onglet « T » les montre
+ * groupés, et la semaine 1 ne contient que ses propres séances.
+ *
+ * Le poids de corps ne figure dans AUCUNE de ces séances : §12 demande « une
+ * moyenne de 3 matins, à jeun », un relevé fait à la maison sur plusieurs
+ * jours. Il se saisit dans Réglages et se reporte dans l'écran Combine.
  */
 
 import {
@@ -112,9 +119,9 @@ const COMBINE_INITIAL_J1: SessionBlueprint = {
   notes: [
     'Même lieu, mêmes chaussures, même protocole, idéalement même heure — c’est ce qui rendra les trois combines comparables.',
     'Ton meilleur broad jump d’aujourd’hui devient ta référence de readiness pour les 12 semaines.',
+    'Le poids de corps ne se prend pas ici : c’est une moyenne de 3 matins à jeun, à saisir dans Réglages.',
   ],
   slots: [
-    t('test-bodyweight', maxSet(), 0, 'Moyenne de 3 matins, à jeun.'),
     t('test-broad-jump', attempts(3), 180),
     t('test-vertical-jump', attempts(5), 90),
     t('test-sprint-10m', attempts(4), 240, 'Si la surface ne s’y prête pas, saute ce test.'),
@@ -139,7 +146,7 @@ const COMBINE_INITIAL_J2: SessionBlueprint = {
   ],
 };
 
-/** Jour 3 du combine initial : il occupe le lundi de la semaine 1. */
+/** Jour 3 du combine initial : le lundi qui suit le week-end de tests. */
 const COMBINE_INITIAL_J3: SessionBlueprint = {
   day: 0,
   title: 'Combine initial — jour 3',
@@ -149,7 +156,7 @@ const COMBINE_INITIAL_J3: SessionBlueprint = {
   readinessTest: false,
   notes: [
     'Jamais squat et deadlift le même jour.',
-    'La semaine 1 commence mercredi par la séance Upper : elle ne compte que 4 séances.',
+    'Dernier jour du combine initial. La semaine 1 commence après-demain, mercredi, par la séance Upper : elle ne compte que 4 séances.',
   ],
   slots: [
     oneRM('test-deadlift-1rm', RAMP_DEADLIFT),
@@ -179,7 +186,6 @@ const COMBINE_S8_SAMEDI: SessionBlueprint = {
     'Tests d’abord, à froid. Le travail de deload vient après.',
   ],
   slots: [
-    t('test-bodyweight', maxSet(), 0, 'Moyenne de 3 matins.'),
     t('test-broad-jump', attempts(3), 180),
     t('test-vertical-jump', attempts(5), 90),
     t('test-sprint-10m', attempts(3), 240),
@@ -326,7 +332,7 @@ export interface SpecialSession {
 export const SPECIAL_SESSIONS: SpecialSession[] = [
   { week: 0, day: 3, blueprint: COMBINE_INITIAL_J1 },
   { week: 0, day: 4, blueprint: COMBINE_INITIAL_J2 },
-  { week: 1, day: 0, blueprint: COMBINE_INITIAL_J3 },
+  { week: 0, day: 0, blueprint: COMBINE_INITIAL_J3 },
   { week: 8, day: 3, blueprint: COMBINE_S8_SAMEDI },
   { week: 8, day: 4, blueprint: COMBINE_S8_DIMANCHE },
   { week: 12, day: 0, blueprint: S12_LUNDI },
@@ -339,6 +345,16 @@ export const SPECIAL_SESSIONS: SpecialSession[] = [
 /** Séance écrite en toutes lettres pour cette case du calendrier, sinon `null`. */
 export function specialSession(week: number, day: DayIndex): SessionBlueprint | null {
   return SPECIAL_SESSIONS.find((s) => s.week === week && s.day === day)?.blueprint ?? null;
+}
+
+/**
+ * Jour de combine ? Sert au rappel de poids de corps sur l'écran Aujourd'hui :
+ * la moyenne de 3 matins doit être prête AVANT, pas relevée sur place.
+ */
+export function isCombineDay(week: number, day: DayIndex): boolean {
+  return (
+    specialSession(week, day)?.title.startsWith('Combine') ?? false
+  );
 }
 
 /** Les mesures relevées à chaque combine (§12), dans l'ordre d'affichage. */

@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
-import { BLOCKS, WEEK_BLOCKS } from '../data/program';
+import { BLOCKS, WEEK_BLOCKS, isCombineDay } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
-import { humanDate, locateToday, type TodayState } from '../engine/calendar';
+import {
+  humanDate,
+  isSaturday,
+  locateToday,
+  nearestSaturday,
+  type TodayState,
+} from '../engine/calendar';
+import { fr } from '../engine/format';
 import { getSession } from '../engine/getSession';
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import {
@@ -10,6 +17,7 @@ import {
   allSets,
   buildHistoryIndex,
   getSettingsRow,
+  saveSettings,
   toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
@@ -32,6 +40,8 @@ export function TodayScreen({
   onGoWeek: (week: WeekIndex) => void;
   onGoSettings: () => void;
 }) {
+  /** Incrémenté après la saisie de la date de début : relance le chargement. */
+  const [reloadKey, setReloadKey] = useState(0);
   const [state, setState] = useState<{
     loading: boolean;
     today: TodayState | null;
@@ -40,6 +50,11 @@ export function TodayScreen({
     duration: string;
     rows: SessionRow[];
     trend: ExplosiveTrend;
+    /** Ancre du calendrier, telle qu'elle est en base. */
+    startDate: string;
+    /** Le combine est aujourd'hui ou c'est la prochaine séance. */
+    combineAhead: boolean;
+    bodyweightKg: number | null;
   }>({
     loading: true,
     today: null,
@@ -48,6 +63,9 @@ export function TodayScreen({
     duration: '',
     rows: [],
     trend: { declining: false, consecutiveDrops: 0, suggestEarlyDeload: false, weekly: [], message: '' },
+    startDate: '',
+    combineAhead: false,
+    bodyweightKg: null,
   });
 
   useEffect(() => {
@@ -69,8 +87,16 @@ export function TodayScreen({
       let title = '';
       let intensity = '';
       let duration = '';
+      // « before » compte aussi : c'est le meilleur moment pour rappeler le
+      // relevé de poids, quelques jours avant le premier test.
       const target =
-        today?.kind === 'session' ? today.session : today?.kind === 'rest' ? today.next : null;
+        today?.kind === 'session'
+          ? today.session
+          : today?.kind === 'rest'
+            ? today.next
+            : today?.kind === 'before'
+              ? today.first
+              : null;
       if (target) {
         const s = getSession(target.week, target.day, {
           settings,
@@ -83,26 +109,65 @@ export function TodayScreen({
         duration = s?.durationLabel ?? '';
       }
 
-      setState({ loading: false, today, title, intensity, duration, rows, trend });
+      setState({
+        loading: false,
+        today,
+        title,
+        intensity,
+        duration,
+        rows,
+        trend,
+        startDate: settings.startDate,
+        combineAhead: target ? isCombineDay(target.week, target.day) : false,
+        bodyweightKg: settingsRow.bodyweightKg,
+      });
     })();
-  }, []);
+  }, [reloadKey]);
 
   if (state.loading) return <div className={styles.loading}>Chargement…</div>;
 
   const { today, trend } = state;
 
+  /*
+   * Premier lancement : on demande l'ancre du calendrier ici, tout de suite,
+   * plutôt que de deviner une date. Rien d'autre ne s'affiche tant qu'elle
+   * manque — c'est elle qui date les 62 séances.
+   */
   if (!today) {
     return (
       <div className={styles.screen}>
         <header className={styles.header}>
           <h1 className={styles.h1}>Bienvenue</h1>
           <p className={styles.lead}>
-            Il manque une seule chose pour démarrer : la date du samedi de ton combine initial. Tout
-            le calendrier en découle.
+            Il manque une seule chose pour démarrer : le <b>samedi</b> de ton combine initial. Tout
+            le calendrier en découle, et il ne bougera plus ensuite.
           </p>
         </header>
-        <button type="button" className={styles.primary} onClick={onGoSettings}>
-          Renseigner la date de début
+        <section className={styles.card}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="start-date-onboarding">
+              Samedi du combine initial
+            </label>
+            <input
+              id="start-date-onboarding"
+              className={styles.input}
+              type="date"
+              value={state.startDate}
+              onChange={(e) =>
+                void (async () => {
+                  await saveSettings({ startDate: e.target.value });
+                  setReloadKey((k) => k + 1);
+                })()
+              }
+            />
+            <p className={styles.fieldHint}>
+              Jour 1 le samedi, jour 2 le dimanche, jour 3 (deadlift) le lundi. La semaine 1 démarre
+              le mercredi suivant.
+            </p>
+          </div>
+        </section>
+        <button type="button" className={styles.secondary} onClick={onGoSettings}>
+          Ouvrir les Réglages
         </button>
       </div>
     );
@@ -169,6 +234,31 @@ export function TodayScreen({
           </>
         )}
       </header>
+
+      {state.startDate !== '' && !isSaturday(state.startDate) && (
+        <button
+          type="button"
+          className={`${styles.alert} ${styles.alertRouge} ${styles.alertAction}`}
+          onClick={onGoSettings}
+        >
+          Ta date de début est un {humanDate(state.startDate).split(' ')[0]}, pas un samedi : toutes
+          les séances tombent le mauvais jour. Appuie ici pour la corriger en{' '}
+          {humanDate(nearestSaturday(state.startDate))}.
+        </button>
+      )}
+
+      {/* §12 — la moyenne de 3 matins se prépare avant, pas à Basic-Fit. */}
+      {state.combineAhead && (
+        <button
+          type="button"
+          className={`${styles.alert} ${styles.alertAction}`}
+          onClick={onGoSettings}
+        >
+          {state.bodyweightKg === null
+            ? 'Combine : n’oublie pas ta moyenne de poids de corps (3 matins, à jeun). Elle se saisit dans Réglages, pas en salle.'
+            : `Combine : poids de corps enregistré à ${fr(state.bodyweightKg)} kg. À mettre à jour dans Réglages si ta moyenne a bougé.`}
+        </button>
+      )}
 
       {trend.declining && (
         <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>

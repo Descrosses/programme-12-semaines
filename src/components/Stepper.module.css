@@ -58,6 +58,53 @@
   color: var(--accent);
 }
 
+/*
+ * Saisie clavier. La valeur devient une cible tactile : le crayon dit qu'on
+ * peut taper dessus, sans voler de place au chiffre (il reste centré, le
+ * crayon est posé à droite en discret).
+ */
+.valueEditable {
+  position: relative;
+  width: 100%;
+  padding: 0 18px;
+  border-radius: 0;
+}
+
+.valueEditable:active {
+  background: var(--surface-3);
+}
+
+.pencil {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8125rem;
+  line-height: 1;
+  color: var(--ink-3);
+}
+
+/* Le champ de saisie garde exactement la boîte de la valeur qu'il remplace :
+   rien ne bouge à l'écran quand le clavier s'ouvre. */
+.input {
+  flex: 1;
+  min-width: 0;
+  height: var(--tap);
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: var(--surface-3);
+  text-align: center;
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.accent .input {
+  color: var(--accent);
+}
+
 .unit {
   color: var(--ink-2);
 }
