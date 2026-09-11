@@ -143,6 +143,7 @@ function renderScreen(
           week={route.week}
           onChangeWeek={(w) => navigate({ name: 'week', week: w })}
           onOpen={openSession}
+          onGoNutrition={() => navigate({ name: 'nutrition' })}
         />
       );
 

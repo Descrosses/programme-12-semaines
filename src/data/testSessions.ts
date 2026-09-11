@@ -4,14 +4,35 @@
  * Ces séances ne se déduisent d'aucune trame : elles sont écrites en toutes
  * lettres dans le programme, donc transcrites en toutes lettres ici.
  *
- * Calendrier du test initial (§12 + décision de Guillaume) :
- *   samedi   → combine jour 1   (semaine 0, jour 3)
- *   dimanche → combine jour 2   (semaine 0, jour 4)
- *   lundi    → combine jour 3   (semaine 0, jour 0 — le lundi QUI SUIT)
- *   mercredi → début réel de la semaine 1
+ * COMBINE INITIAL — six jours, semaine 0 (décision de Guillaume, après une
+ * première version à trois jours).
  *
- * Les trois jours appartiennent à la semaine 0 : l'onglet « T » les montre
- * groupés, et la semaine 1 ne contient que ses propres séances.
+ * Le problème de la version à trois jours : elle enchaînait tractions lestées
+ * 1RM et tractions strictes max sur deux jours consécutifs, sans récupération
+ * de la préhension ni du dos entre deux efforts maximaux.
+ *
+ * La règle qui a produit la répartition ci-dessous : jamais deux efforts de
+ * tirage ou de préhension à moins de 48 h.
+ *
+ *   lundi    sauts, sprints, SQUAT 1RM
+ *   mardi    TRACTIONS LESTÉES 1RM, seule
+ *   mercredi repos
+ *   jeudi    DEADLIFT 1RM, seul            ← 48 h après les tractions lestées
+ *   vendredi BENCH 1RM, ab wheel max
+ *   samedi   tractions strictes max, leg raise max, farmer carry  ← 48 h après
+ *   dimanche repos complet
+ *   lundi    début de la semaine 1, à froid
+ *
+ * Le deadlift est le mieux protégé des quatre : un jour de repos complet la
+ * veille. C'est voulu — son 1RM alimente tout le tableau de charges du §9, et
+ * l'écart deadlift − squat est le critère central du §13. Le tester bas
+ * fausserait douze semaines.
+ *
+ * Le Farmer Carry a quitté le lundi pour le samedi : sa préhension chargée
+ * empêchait les tractions lestées du mardi. Il est donc mesuré en fin de
+ * séance, préhension déjà fatiguée — mais à l'identique aux semaines 8 et 12,
+ * donc les trois combines restent comparables. C'est ce qu'exige le §12 : même
+ * protocole, pas protocole parfait.
  *
  * Le poids de corps ne figure dans AUCUNE de ces séances : §12 demande « une
  * moyenne de 3 matins, à jeun », un relevé fait à la maison sur plusieurs
@@ -106,19 +127,21 @@ const fromTable = (exId: string, liftId: Slot['liftId'], restSec: number, note?:
 });
 
 // ---------------------------------------------------------------------------
-// Semaine 0 — combine initial, jours 1 et 2
+// Semaine 0 — combine initial, cinq séances sur six jours
 // ---------------------------------------------------------------------------
 
-const COMBINE_INITIAL_J1: SessionBlueprint = {
-  day: 3,
-  title: 'Combine initial — jour 1',
-  durationLabel: '90 min',
+/** Lundi — le jour qui fixe la référence de readiness pour les 12 semaines. */
+const COMBINE_LUNDI: SessionBlueprint = {
+  day: 0,
+  title: 'Combine initial — sauts, sprints, squat',
+  durationLabel: '75 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
   notes: [
     'Même lieu, mêmes chaussures, même protocole, idéalement même heure — c’est ce qui rendra les trois combines comparables.',
     'Ton meilleur broad jump d’aujourd’hui devient ta référence de readiness pour les 12 semaines.',
+    'Sauts et sprints avant le squat : peu fatigants, et ils préparent le système nerveux.',
     'Le poids de corps ne se prend pas ici : c’est une moyenne de 3 matins à jeun, à saisir dans Réglages.',
   ],
   slots: [
@@ -127,41 +150,76 @@ const COMBINE_INITIAL_J1: SessionBlueprint = {
     t('test-sprint-10m', attempts(4), 240, 'Si la surface ne s’y prête pas, saute ce test.'),
     t('test-sprint-20m', attempts(4), 240),
     oneRM('test-squat-1rm', RAMP_SQUAT, '147,5 seulement si 142,5 passe proprement.'),
-    t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max sans poser.'),
   ],
 };
 
-const COMBINE_INITIAL_J2: SessionBlueprint = {
-  day: 4,
-  title: 'Combine initial — jour 2',
-  durationLabel: '75 min',
+/** Mardi — seule, pour arriver frais sur la préhension. */
+const COMBINE_MARDI: SessionBlueprint = {
+  day: 1,
+  title: 'Combine initial — tractions lestées 1RM',
+  durationLabel: '40 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
-  notes: [],
-  slots: [
-    oneRM('test-bench-1rm', RAMP_BENCH),
-    oneRM('test-weighted-pullup-1rm', RAMP_PULLUP, 'Repos 4 min entre les tentatives.'),
-    t('test-ab-wheel-max', maxSet(), 0),
+  notes: [
+    'Séance volontairement courte : rien d’autre aujourd’hui.',
+    'Repos 4 min entre les tentatives. Dead hang, menton franchement au-dessus.',
   ],
+  slots: [oneRM('test-weighted-pullup-1rm', RAMP_PULLUP)],
 };
 
-/** Jour 3 du combine initial : le lundi qui suit le week-end de tests. */
-const COMBINE_INITIAL_J3: SessionBlueprint = {
-  day: 0,
-  title: 'Combine initial — jour 3',
-  durationLabel: '60 min',
+/** Jeudi — le lift prioritaire du programme, précédé d'un repos complet. */
+const COMBINE_JEUDI: SessionBlueprint = {
+  day: 3,
+  title: 'Combine initial — deadlift 1RM',
+  durationLabel: '45 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
   notes: [
-    'Jamais squat et deadlift le même jour.',
-    'Dernier jour du combine initial. La semaine 1 commence après-demain, mercredi, par la séance Upper : elle ne compte que 4 séances.',
+    'Jamais squat et deadlift 1RM le même jour — ici trois jours les séparent.',
+    'Le mercredi de repos est là pour ce test : c’est ton 1RM le plus important, il alimente tout le tableau de charges.',
+    'Rien d’autre aujourd’hui. Si la barre ralentit franchement, c’est le max.',
+  ],
+  slots: [oneRM('test-deadlift-1rm', RAMP_DEADLIFT)],
+};
+
+/** Vendredi — le bench ne touche ni la préhension ni les lats. */
+const COMBINE_VENDREDI: SessionBlueprint = {
+  day: 4,
+  title: 'Combine initial — bench 1RM + tronc',
+  durationLabel: '55 min',
+  intensity: 'TEST',
+  warmup: 'upper',
+  readinessTest: false,
+  notes: ['Le bench ne fatigue ni la préhension ni le dos : il ne compromet pas le test de demain.'],
+  slots: [oneRM('test-bench-1rm', RAMP_BENCH), t('test-ab-wheel-max', maxSet(), 0)],
+};
+
+/**
+ * Samedi — les trois tests « jusqu'à l'épuisement », aucun 1RM.
+ *
+ * Les grouper est assumé : ils sollicitent tous la préhension, donc les deux
+ * derniers seront sous-estimés. Mais ils le seront de la même façon aux
+ * semaines 8 et 12, et c'est la comparaison qui compte. L'ordre est fixe :
+ * tractions d'abord, c'est le test prioritaire.
+ */
+const COMBINE_SAMEDI: SessionBlueprint = {
+  day: 5,
+  title: 'Combine initial — tractions max, tronc, farmer',
+  durationLabel: '50 min',
+  intensity: 'TEST',
+  warmup: 'upper',
+  readinessTest: false,
+  notes: [
+    '48 h après le deadlift : ta préhension et ton dos sont récupérés.',
+    'Ordre imposé, et le même aux trois combines : tractions, puis leg raise, puis farmer.',
+    'Demain, repos complet. La semaine 1 démarre lundi, à froid.',
   ],
   slots: [
-    oneRM('test-deadlift-1rm', RAMP_DEADLIFT),
     t('test-strict-pullup-max', maxSet(), 0, 'Poitrine à la barre.'),
     t('test-leg-raise-max', maxSet(), 0),
+    t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max sans poser.'),
   ],
 };
 
@@ -175,7 +233,7 @@ const COMBINE_INITIAL_J3: SessionBlueprint = {
  * le front squat du tableau sont donc conservés en fin de séance.
  */
 const COMBINE_S8_SAMEDI: SessionBlueprint = {
-  day: 3,
+  day: 5,
   title: 'Combine intermédiaire',
   durationLabel: '75 min',
   intensity: 'TEST',
@@ -198,7 +256,7 @@ const COMBINE_S8_SAMEDI: SessionBlueprint = {
 };
 
 const COMBINE_S8_DIMANCHE: SessionBlueprint = {
-  day: 4,
+  day: 6,
   title: 'Combine intermédiaire (suite) + haut du corps',
   durationLabel: '55 min',
   intensity: 'TEST',
@@ -257,7 +315,7 @@ const S12_LUNDI: SessionBlueprint = {
 };
 
 const S12_MERCREDI: SessionBlueprint = {
-  day: 1,
+  day: 2,
   title: 'TEST Deadlift 1RM',
   durationLabel: '45 min',
   intensity: 'TEST',
@@ -271,7 +329,7 @@ const S12_MERCREDI: SessionBlueprint = {
 };
 
 const S12_VENDREDI: SessionBlueprint = {
-  day: 2,
+  day: 4,
   title: 'Tests athlétiques',
   durationLabel: '45 min max',
   intensity: 'TEST',
@@ -293,7 +351,7 @@ const S12_VENDREDI: SessionBlueprint = {
 };
 
 const S12_SAMEDI: SessionBlueprint = {
-  day: 3,
+  day: 5,
   title: 'TEST Back Squat 1RM + Farmer',
   durationLabel: '60 min',
   intensity: 'TEST',
@@ -307,7 +365,7 @@ const S12_SAMEDI: SessionBlueprint = {
 };
 
 const S12_DIMANCHE: SessionBlueprint = {
-  day: 4,
+  day: 6,
   title: 'TEST Bench + tractions + tronc',
   durationLabel: '75 min',
   intensity: 'TEST',
@@ -330,16 +388,18 @@ export interface SpecialSession {
 }
 
 export const SPECIAL_SESSIONS: SpecialSession[] = [
-  { week: 0, day: 3, blueprint: COMBINE_INITIAL_J1 },
-  { week: 0, day: 4, blueprint: COMBINE_INITIAL_J2 },
-  { week: 0, day: 0, blueprint: COMBINE_INITIAL_J3 },
-  { week: 8, day: 3, blueprint: COMBINE_S8_SAMEDI },
-  { week: 8, day: 4, blueprint: COMBINE_S8_DIMANCHE },
+  { week: 0, day: 0, blueprint: COMBINE_LUNDI },
+  { week: 0, day: 1, blueprint: COMBINE_MARDI },
+  { week: 0, day: 3, blueprint: COMBINE_JEUDI },
+  { week: 0, day: 4, blueprint: COMBINE_VENDREDI },
+  { week: 0, day: 5, blueprint: COMBINE_SAMEDI },
+  { week: 8, day: 5, blueprint: COMBINE_S8_SAMEDI },
+  { week: 8, day: 6, blueprint: COMBINE_S8_DIMANCHE },
   { week: 12, day: 0, blueprint: S12_LUNDI },
-  { week: 12, day: 1, blueprint: S12_MERCREDI },
-  { week: 12, day: 2, blueprint: S12_VENDREDI },
-  { week: 12, day: 3, blueprint: S12_SAMEDI },
-  { week: 12, day: 4, blueprint: S12_DIMANCHE },
+  { week: 12, day: 2, blueprint: S12_MERCREDI },
+  { week: 12, day: 4, blueprint: S12_VENDREDI },
+  { week: 12, day: 5, blueprint: S12_SAMEDI },
+  { week: 12, day: 6, blueprint: S12_DIMANCHE },
 ];
 
 /** Séance écrite en toutes lettres pour cette case du calendrier, sinon `null`. */

@@ -17,7 +17,8 @@ import { WARMUPS } from './warmups';
 import { WEEK_BLOCKS, WEEK_DAYS, BLOCKS } from './program';
 import { DAY_LABELS, type DayIndex } from './types';
 
-const DAYS: DayIndex[] = [0, 1, 2, 3, 4];
+/** Les cinq jours d'entraînement d'une semaine type, dans l'ordre réel. */
+const DAYS: DayIndex[] = [0, 2, 4, 5, 6];
 
 describe('catalogue d’exercices', () => {
   it('aucun id dupliqué', () => {
@@ -50,12 +51,12 @@ describe('catalogue d’exercices', () => {
 
 describe('trames §7', () => {
   it('couvrent les 5 jours', () => {
-    expect(DAYS.map((d) => BASE_SESSIONS[d].day)).toEqual(DAYS);
+    expect(DAYS.map((d) => BASE_SESSIONS[d]!.day)).toEqual(DAYS);
   });
 
   it('ne référencent que des exercices existants', () => {
     for (const d of DAYS) {
-      for (const slot of BASE_SESSIONS[d].slots) {
+      for (const slot of BASE_SESSIONS[d]!.slots) {
         expect(EXERCISES[slot.exId], `${DAY_LABELS[d]} → ${slot.exId}`).toBeDefined();
       }
     }
@@ -63,18 +64,18 @@ describe('trames §7', () => {
 
   it('n’ont pas deux fois le même exercice dans une séance', () => {
     for (const d of DAYS) {
-      const ids = BASE_SESSIONS[d].slots.map((s) => s.exId);
+      const ids = BASE_SESSIONS[d]!.slots.map((s) => s.exId);
       expect(new Set(ids).size, DAY_LABELS[d]).toBe(ids.length);
     }
   });
 
   it('le readiness test est prévu les jours jambes uniquement (§4 : lundi, vendredi, samedi)', () => {
-    expect(DAYS.map((d) => BASE_SESSIONS[d].readinessTest)).toEqual([true, false, true, true, false]);
+    expect(DAYS.map((d) => BASE_SESSIONS[d]!.readinessTest)).toEqual([true, false, true, true, false]);
   });
 
   it('un slot piloté par le tableau déclare bien son liftId', () => {
     for (const d of DAYS) {
-      for (const slot of BASE_SESSIONS[d].slots) {
+      for (const slot of BASE_SESSIONS[d]!.slots) {
         const def = EXERCISES[slot.exId]!;
         if (def.liftId) expect(slot.liftId, `${slot.exId}`).toBe(def.liftId);
       }
@@ -83,7 +84,7 @@ describe('trames §7', () => {
 
   it('les repos sont plausibles (0 à 5 min)', () => {
     for (const d of DAYS) {
-      for (const slot of BASE_SESSIONS[d].slots) {
+      for (const slot of BASE_SESSIONS[d]!.slots) {
         expect(slot.restSec, `${slot.exId}`).toBeGreaterThanOrEqual(0);
         expect(slot.restSec, `${slot.exId}`).toBeLessThanOrEqual(300);
       }
@@ -92,13 +93,13 @@ describe('trames §7', () => {
 
   it('les repos des lifts lourds respectent §7 et §10', () => {
     const rest = (d: DayIndex, exId: string) =>
-      BASE_SESSIONS[d].slots.find((s) => s.exId === exId)?.restSec;
-    expect(rest(0, 'back-squat')).toBe(210); // 3 min 30
-    expect(rest(3, 'deadlift')).toBe(210); // 3 min 30
-    expect(rest(1, 'bench-press')).toBe(180); // 3 min
-    expect(rest(1, 'weighted-pullup')).toBe(150); // 2 min 30
+      BASE_SESSIONS[d]!.slots.find((s) => s.exId === exId)?.restSec;
+    expect(rest(0, 'back-squat')).toBe(210); // lundi, 3 min 30
+    expect(rest(5, 'deadlift')).toBe(210); // samedi, 3 min 30
+    expect(rest(2, 'bench-press')).toBe(180); // mercredi, 3 min
+    expect(rest(2, 'weighted-pullup')).toBe(150); // 2 min 30
     expect(rest(0, 'rdl')).toBe(150); // 2 min 30
-    expect(rest(2, 'speed-squat')).toBe(60); // 60 s en accumulation
+    expect(rest(4, 'speed-squat')).toBe(60); // vendredi, 60 s en accumulation
   });
 });
 
@@ -115,7 +116,7 @@ describe('règles de bloc §8', () => {
   it('ne visent que des exercices présents dans la trame du jour', () => {
     for (const set of BLOCK_RULES) {
       if (set.day === undefined) continue;
-      const present = new Set(BASE_SESSIONS[set.day].slots.map((s) => s.exId));
+      const present = new Set(BASE_SESSIONS[set.day]!.slots.map((s) => s.exId));
       for (const rule of set.rules) {
         if (rule.op === 'insert') continue;
         expect(present.has(rule.exId), `${set.block} ${DAY_LABELS[set.day]} → ${rule.exId}`).toBe(true);
@@ -124,7 +125,7 @@ describe('règles de bloc §8', () => {
   });
 
   it('le contraste S9-11 couvre lundi, mercredi et samedi (§8)', () => {
-    expect(Object.keys(CONTRAST_BY_DAY).map(Number).sort()).toEqual([0, 1, 3]);
+    expect(Object.keys(CONTRAST_BY_DAY).map(Number).sort()).toEqual([0, 2, 5]);
     for (const [day, spec] of Object.entries(CONTRAST_BY_DAY)) {
       expect(EXERCISES[spec!.heavy], `lourd ${day}`).toBeDefined();
       expect(EXERCISES[spec!.explosive], `explosif ${day}`).toBeDefined();
@@ -161,13 +162,53 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
     for (const { day, blueprint } of SPECIAL_SESSIONS) expect(blueprint.day).toBe(day);
   });
 
-  it('le combine initial tient entièrement dans la semaine 0 : sam, dim, lundi', () => {
+  it('le combine initial tient entièrement dans la semaine 0, du lundi au samedi', () => {
     const cases = SPECIAL_SESSIONS.filter((s) => s.blueprint.title.startsWith('Combine initial'));
     expect(cases.map((s) => [s.week, s.day])).toEqual([
-      [0, 3],
-      [0, 4],
-      [0, 0],
+      [0, 0], // lundi
+      [0, 1], // mardi
+      [0, 3], // jeudi   — le mercredi est un repos
+      [0, 4], // vendredi
+      [0, 5], // samedi  — le dimanche aussi
     ]);
+  });
+
+  /*
+   * La règle qui a produit cette répartition, et la seule chose qui la rend
+   * meilleure que la version à trois jours. Ce test échouera si quelqu'un
+   * resserre le combine sans y penser.
+   */
+  it('jamais deux efforts de tirage ou de préhension à moins de 48 h', () => {
+    const TIRAGE = new Set([
+      'test-weighted-pullup-1rm',
+      'test-deadlift-1rm',
+      'test-strict-pullup-max',
+      'test-farmer-carry',
+      'test-leg-raise-max',
+    ]);
+    const jours = SPECIAL_SESSIONS.filter(
+      (s) => s.week === 0 && s.blueprint.slots.some((x) => TIRAGE.has(x.exId)),
+    )
+      .map((s) => s.day)
+      .sort((a, b) => a - b);
+
+    expect(jours.length).toBeGreaterThanOrEqual(3);
+    for (let i = 1; i < jours.length; i++) {
+      expect(jours[i]! - jours[i - 1]!, `jours ${jours[i - 1]} et ${jours[i]}`).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('le deadlift a un jour de repos complet la veille — c’est le 1RM prioritaire', () => {
+    const deadlift = SPECIAL_SESSIONS.find(
+      (s) => s.week === 0 && s.blueprint.slots.some((x) => x.exId === 'test-deadlift-1rm'),
+    )!;
+    expect(deadlift.day).toBe(3); // jeudi
+    expect(WEEK_DAYS[0]).not.toContain(2); // mercredi vide
+  });
+
+  it('le dimanche de la semaine 0 est libre : la semaine 1 démarre à froid', () => {
+    expect(WEEK_DAYS[0]).not.toContain(6);
+    expect(WEEK_DAYS[1]).toContain(0);
   });
 
   it('§12 — le poids de corps ne figure dans aucune séance de combine', () => {
@@ -180,7 +221,7 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
 
   it('la semaine 12 couvre les 5 jours', () => {
     const s12 = SPECIAL_SESSIONS.filter((s) => s.week === 12).map((s) => s.day);
-    expect(s12.sort()).toEqual([0, 1, 2, 3, 4]);
+    expect(s12.sort((a, b) => a - b)).toEqual([0, 2, 4, 5, 6]);
   });
 
   it('le lundi S12 accueille le bench et le push press du tableau (décision de Guillaume)', () => {
@@ -195,7 +236,7 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
       'push-press',
     ]);
     // Les quatre autres jours sont des tests purs : aucun lift chargé du tableau.
-    for (const day of [1, 2, 3, 4] as DayIndex[]) {
+    for (const day of [2, 4, 5, 6] as DayIndex[]) {
       const s = SPECIAL_SESSIONS.find((x) => x.week === 12 && x.day === day)!.blueprint;
       const lourds = s.slots.filter((slot) => slot.liftId && slot.liftId !== 'speed-squat');
       expect(lourds.map((l) => l.exId), `S12 ${DAY_LABELS[day]}`).toEqual([]);
@@ -245,15 +286,21 @@ describe('périodisation §2', () => {
     ]);
   });
 
-  it('la semaine 1 ne compte que 4 séances : elle démarre le mercredi', () => {
-    expect(WEEK_DAYS[1]).toEqual([1, 2, 3, 4]);
+  it('la semaine 1 est une semaine pleine : 5 séances, à partir du lundi', () => {
+    expect(WEEK_DAYS[1]).toEqual([0, 2, 4, 5, 6]);
     expect(SPECIAL_SESSIONS.find((s) => s.week === 1)).toBeUndefined();
   });
 
-  it('la semaine 0 groupe les trois jours du combine initial', () => {
-    expect(WEEK_DAYS[0]).toEqual([3, 4, 0]);
+  it('la semaine 0 groupe les cinq séances du combine, mercredi et dimanche exclus', () => {
+    expect(WEEK_DAYS[0]).toEqual([0, 1, 3, 4, 5]);
     const lundi = SPECIAL_SESSIONS.find((s) => s.week === 0 && s.day === 0);
-    expect(lundi?.blueprint.title).toBe('Combine initial — jour 3');
+    expect(lundi?.blueprint.title).toContain('sauts, sprints, squat');
+  });
+
+  it('toutes les semaines d’entraînement gardent la même grille de 5 jours', () => {
+    for (let w = 1; w <= 12; w++) {
+      expect(WEEK_DAYS[w as 1], `semaine ${w}`).toEqual([0, 2, 4, 5, 6]);
+    }
   });
 });
 

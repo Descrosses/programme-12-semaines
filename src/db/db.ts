@@ -6,7 +6,7 @@
  */
 
 import Dexie, { type Table } from 'dexie';
-import type { DayIndex } from '../data/types';
+import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
 
 export type SessionStatus = 'planned' | 'done' | 'skipped';
 
@@ -89,6 +89,60 @@ export interface MeasurementRow {
   waistCm: number | null;
 }
 
+/**
+ * Photo hebdomadaire du suivi visuel.
+ *
+ * `week` est unique : une photo par semaine, et en reprendre une remplace la
+ * précédente. Douze semaines de photos doivent rester comparables entre elles,
+ * pas devenir un album.
+ *
+ * La photo est stockée en `Blob` déjà compressé (voir `src/media/photo.ts`),
+ * jamais en base64 : une chaîne base64 pèse un tiers de plus et doit être
+ * décodée à chaque affichage.
+ */
+export interface ProgressPhotoRow {
+  id?: number;
+  week: number;
+  /** `YYYY-MM-DD` du jour de la prise. */
+  date: string;
+  blob: Blob;
+  /** Taille après compression, pour afficher l'encombrement sans tout relire. */
+  bytes: number;
+  width: number;
+  height: number;
+}
+
+/** Photo d'exécution d'un mouvement, prise depuis la fiche d'exercice. */
+export interface ExerciseMediaRow {
+  id?: number;
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  blob: Blob;
+  bytes: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Trace d'une vidéo — et rien d'autre.
+ *
+ * Le fichier vidéo reste dans la pellicule de l'iPhone. Sur iOS, le stockage
+ * d'une PWA peut être vidé par le système quand la place manque ; y mettre des
+ * dizaines de vidéos serait une perte de données annoncée. On ne garde donc
+ * que la date, de quoi dire « tu as filmé ton squat le 14 septembre ».
+ */
+export interface ExerciseVideoLogRow {
+  id?: number;
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  /** Note libre : « vue de profil », « 3e série ». */
+  note: string;
+}
+
 export type CombinePhase = 'initial' | 's8' | 'final';
 
 export interface CombineRow {
@@ -123,6 +177,9 @@ export class ProgrammeDB extends Dexie {
   readiness!: Table<ReadinessRow, number>;
   combines!: Table<CombineRow, number>;
   measurements!: Table<MeasurementRow, number>;
+  progressPhotos!: Table<ProgressPhotoRow, number>;
+  exerciseMedia!: Table<ExerciseMediaRow, number>;
+  exerciseVideoLog!: Table<ExerciseVideoLogRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
@@ -162,7 +219,64 @@ export class ProgrammeDB extends Dexie {
      * d'entraînement traverse la migration sans y toucher.
      */
     this.version(3).stores({ measurements: '++id, &date' });
+
+    /*
+     * v4 — suivi visuel. Trois tables, toujours en ajout pur.
+     *
+     * Les photos sont dans des tables à part et non dans `sessions` ou
+     * `measurements` : ce sont les seules lignes lourdes de la base, et les
+     * isoler permet de les exporter, de les compter et au besoin de les
+     * effacer sans toucher à une seule série d'entraînement.
+     */
+    this.version(4).stores({
+      progressPhotos: '++id, &week, date',
+      exerciseMedia: '++id, exerciseId, [exerciseId+date], week, date',
+      exerciseVideoLog: '++id, exerciseId, [exerciseId+date], week, date',
+    });
+
+    /*
+     * v5 — `DayIndex` passe de cinq jours (lun, mer, ven, sam, dim) aux sept
+     * jours réels, pour que le combine initial puisse occuper un mardi et un
+     * jeudi. Toutes les lignes déjà enregistrées portent l'ancienne
+     * numérotation et doivent être traduites : 0→0, 1→2, 2→4, 3→5, 4→6.
+     *
+     * L'ordre DÉCROISSANT n'est pas décoratif. `sessions` a un index unique
+     * sur `[week+day]` : traduire 1→2 avant d'avoir libéré le 2 ferait entrer
+     * deux lignes en collision au milieu du parcours. En partant du jour le
+     * plus élevé, la place visée est toujours déjà vide.
+     *
+     * L'ancre du calendrier change de sens au passage — elle désignait le
+     * samedi du combine, elle désigne maintenant son lundi — donc on avance la
+     * date enregistrée jusqu'au lundi suivant.
+     */
+    this.version(5).upgrade(async (tx) => {
+      for (const table of ['sessions', 'sets', 'readiness', 'exerciseMedia', 'exerciseVideoLog']) {
+        for (const oldDay of [4, 3, 2, 1]) {
+          const nouveau = LEGACY_DAY_MAP[oldDay]!;
+          await tx
+            .table(table)
+            .toCollection()
+            .modify((row: { day?: number }) => {
+              if (row.day === oldDay) row.day = nouveau;
+            });
+        }
+      }
+
+      const settings = await tx.table('settings').get(1);
+      if (settings?.startDate) {
+        await tx
+          .table('settings')
+          .update(1, { startDate: mondayOnOrAfter(settings.startDate as string) });
+      }
+    });
   }
+}
+
+/** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */
+function mondayOnOrAfter(iso: string): string {
+  const d = new Date(`${iso}T12:00:00Z`);
+  const shift = (8 - d.getUTCDay()) % 7; // 0 si déjà lundi
+  return new Date(d.getTime() + shift * 86_400_000).toISOString().slice(0, 10);
 }
 
 export const db = new ProgrammeDB();

@@ -1,0 +1,63 @@
+/* Boutons de capture et vignettes — partagés par le suivi visuel et les
+   fiches d'exercice, pour que les deux se ressemblent. */
+
+.primary {
+  display: block;
+  width: 100%;
+  height: var(--tap);
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+}
+
+.secondary {
+  display: block;
+  width: 100%;
+  height: var(--tap);
+  margin-top: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.6;
+}
+
+.error {
+  margin-top: 8px;
+  color: var(--rouge);
+  font-size: var(--fs-small);
+}
+
+.thumb {
+  margin: 0;
+  min-width: 0;
+}
+
+/* Une photo de silhouette est en portrait : sans plafond, elle occupe deux
+   écrans à elle seule et la comparaison passe sous le pli. `contain` garde la
+   photo entière, c'est le cadrage complet qui sert à comparer. */
+.img {
+  display: block;
+  width: 100%;
+  max-height: 52vh;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.caption {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.size {
+  color: var(--ink-3);
+}

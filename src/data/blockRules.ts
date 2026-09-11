@@ -103,7 +103,7 @@ const MAXFORCE: BlockRuleSet[] = [
   },
   {
     block: 'maxforce',
-    day: 1,
+    day: 2,
     rules: [
       patch('bench-press', { restSec: 210 }),
       patch('weighted-pullup', { restSec: 180 }),
@@ -114,7 +114,7 @@ const MAXFORCE: BlockRuleSet[] = [
   },
   {
     block: 'maxforce',
-    day: 2,
+    day: 4,
     rules: [
       patch('push-press', { restSec: 150 }),
       patch('speed-squat', { restSec: 75 }),
@@ -122,7 +122,7 @@ const MAXFORCE: BlockRuleSet[] = [
   },
   {
     block: 'maxforce',
-    day: 3,
+    day: 5,
     rules: [
       patch('deadlift', { restSec: 240 }),
       patch('front-squat', { restSec: 150 }),
@@ -132,7 +132,7 @@ const MAXFORCE: BlockRuleSet[] = [
   },
   {
     block: 'maxforce',
-    day: 4,
+    day: 6,
     notes: ['Dimanche : tout à 3 séries.'],
     rules: [
       // « Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s »
@@ -179,7 +179,7 @@ export const CONTRAST_BY_DAY: Partial<Record<DayIndex, ContrastSpec>> = {
     restAfterExplosiveSec: 120,
     cycleLabel: 'Cycle ≈ 4 min',
   },
-  1: {
+  2: {
     heavy: 'bench-press',
     explosive: 'plyo-push-up',
     explosiveReps: 3,
@@ -187,7 +187,7 @@ export const CONTRAST_BY_DAY: Partial<Record<DayIndex, ContrastSpec>> = {
     restAfterExplosiveSec: 120,
     cycleLabel: 'Cycle ≈ 3 min 30',
   },
-  3: {
+  5: {
     heavy: 'deadlift',
     explosive: 'broad-jump',
     explosiveReps: 2,
@@ -212,7 +212,7 @@ const POWER: BlockRuleSet[] = [
   },
   {
     block: 'power',
-    day: 1,
+    day: 2,
     rules: [
       remove('plyo-push-up'),
       patch('bench-press', { contrastWith: 'plyo-push-up' }),
@@ -224,7 +224,7 @@ const POWER: BlockRuleSet[] = [
   },
   {
     block: 'power',
-    day: 2,
+    day: 4,
     notes: ['Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.'],
     rules: [
       {
@@ -249,7 +249,7 @@ const POWER: BlockRuleSet[] = [
   },
   {
     block: 'power',
-    day: 3,
+    day: 5,
     rules: [
       remove('broad-jump'),
       patch('deadlift', { contrastWith: 'broad-jump' }),
@@ -261,7 +261,7 @@ const POWER: BlockRuleSet[] = [
   },
   {
     block: 'power',
-    day: 4,
+    day: 6,
     rules: [
       patch('incline-db-press', { sets: 3, work: reps({ min: 6, max: 8 }) }),
       patch('neutral-grip-pullup', { sets: 3, work: reps({ min: 5, max: 6 }) }),

@@ -43,37 +43,57 @@ const find = (s: { exercises: ResolvedExercise[] }, id: string) => {
 // ---------------------------------------------------------------------------
 
 describe('calendrier des séances', () => {
-  it('la semaine 0 porte les trois jours du combine : samedi, dimanche, lundi', () => {
-    expect(hasSession(0, 3)).toBe(true);
-    expect(hasSession(0, 4)).toBe(true);
-    expect(hasSession(0, 0)).toBe(true);
-    // Mercredi et vendredi n'existent pas avant le début du programme.
-    expect(hasSession(0, 1)).toBe(false);
-    expect(hasSession(0, 2)).toBe(false);
-    expect(getSession(0, 1, ctx())).toBeNull();
+  it('la semaine 0 porte les cinq jours du combine, mercredi et dimanche exclus', () => {
+    expect(hasSession(0, 0)).toBe(true); // lundi
+    expect(hasSession(0, 1)).toBe(true); // mardi
+    expect(hasSession(0, 3)).toBe(true); // jeudi
+    expect(hasSession(0, 4)).toBe(true); // vendredi
+    expect(hasSession(0, 5)).toBe(true); // samedi
+    expect(hasSession(0, 2)).toBe(false); // mercredi : repos avant le deadlift
+    expect(hasSession(0, 6)).toBe(false); // dimanche : repos avant la semaine 1
+    expect(getSession(0, 2, ctx())).toBeNull();
   });
 
-  it('la semaine 1 n’a plus de lundi : elle démarre le mercredi', () => {
-    expect(hasSession(1, 0)).toBe(false);
-    expect(getSession(1, 0, ctx())).toBeNull();
-    expect(hasSession(1, 1)).toBe(true);
+  it('la semaine 1 est une semaine pleine', () => {
+    expect(hasSession(1, 0)).toBe(true); // lundi
+    expect(hasSession(1, 1)).toBe(false); // mardi
+    expect(hasSession(1, 3)).toBe(false); // jeudi
   });
 
-  it('le lundi de la semaine 0 est le 3e jour du combine initial', () => {
+  it('le lundi de la semaine 0 ouvre le combine par les sauts et le squat', () => {
     const s = session(0, 0);
-    expect(s.title).toBe('Combine initial — jour 3');
+    expect(s.title).toContain('sauts, sprints, squat');
     expect(ids(s.exercises)).toEqual([
-      'test-deadlift-1rm',
+      'test-broad-jump',
+      'test-vertical-jump',
+      'test-sprint-10m',
+      'test-sprint-20m',
+      'test-squat-1rm',
+    ]);
+  });
+
+  it('le deadlift du jeudi est seul — c’est tout l’intérêt du jour', () => {
+    const s = session(0, 3);
+    expect(ids(s.exercises)).toEqual(['test-deadlift-1rm']);
+    expect(find(s, 'test-deadlift-1rm').ramp?.length).toBe(8);
+  });
+
+  it('les tractions lestées du mardi sont seules aussi', () => {
+    expect(ids(session(0, 1).exercises)).toEqual(['test-weighted-pullup-1rm']);
+  });
+
+  it('le samedi regroupe les trois tests à l’épuisement, dans un ordre fixe', () => {
+    expect(ids(session(0, 5).exercises)).toEqual([
       'test-strict-pullup-max',
       'test-leg-raise-max',
+      'test-farmer-carry',
     ]);
-    expect(find(s, 'test-deadlift-1rm').ramp?.length).toBe(8);
   });
 });
 
 describe('bloc accumulation (S1-3)', () => {
   it('mercredi S1 sort les charges du tableau', () => {
-    const s = session(1, 1);
+    const s = session(1, 2);
     expect(s.blockName).toBe('Accumulation');
     expect(find(s, 'bench-press').loadLine).toBe('5 × 5 × 87,5 kg');
     expect(find(s, 'bench-press').restSec).toBe(180);
@@ -97,19 +117,19 @@ describe('bloc accumulation (S1-3)', () => {
 
   it('le readiness test n’est prévu que les jours jambes', () => {
     expect(session(2, 0).readinessTest).toBe(true); // lundi
-    expect(session(2, 1).readinessTest).toBe(false); // mercredi
-    expect(session(2, 2).readinessTest).toBe(true); // vendredi
-    expect(session(2, 3).readinessTest).toBe(true); // samedi
-    expect(session(2, 4).readinessTest).toBe(false); // dimanche
+    expect(session(2, 2).readinessTest).toBe(false); // mercredi
+    expect(session(2, 4).readinessTest).toBe(true); // vendredi
+    expect(session(2, 5).readinessTest).toBe(true); // samedi
+    expect(session(2, 6).readinessTest).toBe(false); // dimanche
   });
 });
 
 describe('bloc force maximale (S5-7) — §8', () => {
   it('les repos passent à 4 min sur squat et deadlift', () => {
     expect(find(session(5, 0), 'back-squat').restSec).toBe(240);
-    expect(find(session(5, 3), 'deadlift').restSec).toBe(240);
-    expect(find(session(5, 1), 'bench-press').restSec).toBe(210);
-    expect(find(session(5, 1), 'weighted-pullup').restSec).toBe(180);
+    expect(find(session(5, 5), 'deadlift').restSec).toBe(240);
+    expect(find(session(5, 2), 'bench-press').restSec).toBe(210);
+    expect(find(session(5, 2), 'weighted-pullup').restSec).toBe(180);
   });
 
   it('box jump 4 × 2, Bulgarian 4 × 5 RPE 8, hip thrust 4 × 6', () => {
@@ -118,18 +138,18 @@ describe('bloc force maximale (S5-7) — §8', () => {
     expect(find(lundi, 'box-jump').work).toMatchObject({ reps: 2 });
     expect(find(lundi, 'bulgarian-split-squat').sets).toBe(4);
     expect(find(lundi, 'bulgarian-split-squat').targetRPE?.label).toBe('RPE 8');
-    expect(find(session(5, 3), 'hip-thrust').sets).toBe(4);
+    expect(find(session(5, 5), 'hip-thrust').sets).toBe(4);
   });
 
   it('les accessoires haut passent à 3 × 6 avec +10 %', () => {
-    const row = find(session(5, 1), 'chest-supported-row');
+    const row = find(session(5, 2), 'chest-supported-row');
     expect(row.sets).toBe(3);
     expect(row.work).toMatchObject({ reps: 6 });
     expect(row.load.kg).toBe(34); // 30 kg + 10 % = 33, arrondi au pas de 2 kg des haltères
   });
 
   it('dimanche passe tout à 3 séries et le conditioning à 6 × 20 s / 100 s', () => {
-    const s = session(5, 4);
+    const s = session(5, 6);
     expect(find(s, 'incline-db-press').sets).toBe(3);
     expect(find(s, 'conditioning').work).toMatchObject({ rounds: 6, easySec: 100 });
   });
@@ -147,7 +167,7 @@ describe('bloc puissance (S9-11) — contraste', () => {
   });
 
   it('mercredi : contraste bench / plyo push-up, 90 s après le bench (§10)', () => {
-    const s = session(9, 1);
+    const s = session(9, 2);
     expect(ids(s.exercises)).not.toContain('plyo-push-up');
     expect(find(s, 'bench-press').contrast).toMatchObject({
       explosive: 'plyo-push-up',
@@ -157,14 +177,14 @@ describe('bloc puissance (S9-11) — contraste', () => {
   });
 
   it('samedi : contraste deadlift / broad jump', () => {
-    const s = session(9, 3);
+    const s = session(9, 5);
     expect(ids(s.exercises)).not.toContain('broad-jump');
     expect(find(s, 'deadlift').contrast?.explosive).toBe('broad-jump');
     expect(find(s, 'nordic-curl').sets).toBe(2);
   });
 
   it('vendredi : pogos ajoutés, ni dead bug ni conditioning', () => {
-    const s = session(9, 2);
+    const s = session(9, 4);
     expect(ids(s.exercises)).toContain('pogo-jumps');
     expect(ids(s.exercises)).not.toContain('dead-bug-cable');
     expect(ids(s.exercises)).not.toContain('explosive-cable-row');
@@ -194,7 +214,7 @@ describe('deload (S4) — §8', () => {
   it('les lifts tabulés prennent la valeur du tableau, pas la formule', () => {
     expect(find(session(4, 0), 'back-squat').loadLine).toBe('3 × 3 × 90 kg');
     expect(find(session(4, 0), 'rdl').loadLine).toBe('2 × 8 × 72,5 kg');
-    expect(find(session(4, 3), 'front-squat').loadLine).toBe('2 × 5 × 65 kg');
+    expect(find(session(4, 5), 'front-squat').loadLine).toBe('2 × 5 × 65 kg');
   });
 
   it('les accessoires non tabulés passent à 2 séries et 80 % de la charge réelle', () => {
@@ -214,7 +234,7 @@ describe('deload (S4) — §8', () => {
         completed: true,
       },
     ];
-    const hip = find(session(4, 3, ctx({ history: { 'hip-thrust': historique } })), 'hip-thrust');
+    const hip = find(session(4, 5, ctx({ history: { 'hip-thrust': historique } })), 'hip-thrust');
     expect(hip.load.kg).toBe(95); // 120 réels × 0,8 = 96 → 95
     expect(hip.sets).toBe(2);
   });
@@ -223,16 +243,16 @@ describe('deload (S4) — §8', () => {
     const s = session(4, 0);
     expect(find(s, 'pogo-jumps').sets).toBe(2); // 3 → 2
     expect(find(s, 'box-jump').sets).toBe(2); // 4 → 2
-    expect(find(session(4, 2), 'broad-jump').sets).toBe(3); // 5 → 3
+    expect(find(session(4, 4), 'broad-jump').sets).toBe(3); // 5 → 3
   });
 
   it('ni Nordic ni conditioning', () => {
-    expect(ids(session(4, 3).exercises)).not.toContain('nordic-curl');
-    expect(ids(session(4, 4).exercises)).not.toContain('conditioning');
+    expect(ids(session(4, 5).exercises)).not.toContain('nordic-curl');
+    expect(ids(session(4, 6).exercises)).not.toContain('conditioning');
   });
 
   it('aucune cible au-dessus de RPE 6', () => {
-    for (const day of [0, 1, 2, 3, 4]) {
+    for (const day of [0, 2, 4, 5, 6]) {
       for (const ex of session(4, day).exercises) {
         if (ex.targetRPE) expect(ex.targetRPE.max, `${ex.id}`).toBeLessThanOrEqual(6);
       }
@@ -242,7 +262,7 @@ describe('deload (S4) — §8', () => {
 
 describe('semaine 8 — combine intermédiaire', () => {
   it('samedi : tests d’abord, deadlift et front squat de deload ensuite', () => {
-    const s = session(8, 3);
+    const s = session(8, 5);
     expect(ids(s.exercises)).toEqual([
       'test-broad-jump',
       'test-vertical-jump',
@@ -258,7 +278,7 @@ describe('semaine 8 — combine intermédiaire', () => {
   });
 
   it('mercredi S8 reste une séance de deload normale', () => {
-    expect(find(session(8, 1), 'bench-press').loadLine).toBe('3 × 3 × 85 kg');
+    expect(find(session(8, 2), 'bench-press').loadLine).toBe('3 × 3 × 85 kg');
   });
 });
 
@@ -271,12 +291,12 @@ describe('semaine 12 — taper', () => {
   });
 
   it('mercredi est le test deadlift, et rien d’autre', () => {
-    const s = session(12, 1);
+    const s = session(12, 2);
     expect(ids(s.exercises)).toEqual(['test-deadlift-1rm']);
   });
 
   it('vendredi reste athlétique : tests puis speed squat léger', () => {
-    const s = session(12, 2);
+    const s = session(12, 4);
     expect(ids(s.exercises)).toEqual([
       'test-broad-jump',
       'test-vertical-jump',
@@ -290,7 +310,7 @@ describe('semaine 12 — taper', () => {
   });
 
   it('le front squat disparaît de la semaine 12 (« — » au tableau)', () => {
-    for (const day of [0, 1, 2, 3, 4]) {
+    for (const day of [0, 2, 4, 5, 6]) {
       expect(ids(session(12, day).exercises), `jour ${day}`).not.toContain('front-squat');
     }
   });
@@ -362,11 +382,13 @@ describe('readiness ROUGE', () => {
 
   it('il ne reste que le lift principal, le tronc et la mobilité', () => {
     expect(ids(session(5, 0, rouge).exercises)).toEqual(['back-squat', 'ab-wheel']);
-    expect(ids(session(5, 3, rouge).exercises)).toEqual(['deadlift', 'copenhagen-plank']);
+    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift', 'copenhagen-plank']);
   });
 
   it('aucun mouvement explosif ne survit', () => {
-    for (const day of [0, 2, 3]) {
+    // Les trois jours jambes, ceux qui portent un readiness test : lundi,
+    // vendredi, samedi.
+    for (const day of [0, 4, 5]) {
       for (const ex of session(5, day, rouge).exercises) {
         expect(ex.def.explosive, `${ex.id}`).not.toBe(true);
       }
@@ -404,8 +426,8 @@ describe('§11 cas 7 — sauts en baisse', () => {
   });
 
   it('le conditioning disparaît', () => {
-    expect(ids(session(5, 4).exercises)).toContain('conditioning');
-    expect(ids(session(5, 4, decline).exercises)).not.toContain('conditioning');
+    expect(ids(session(5, 6).exercises)).toContain('conditioning');
+    expect(ids(session(5, 6, decline).exercises)).not.toContain('conditioning');
   });
 
   it('les accessoires ne sont pas touchés', () => {
@@ -418,7 +440,7 @@ describe('§11 cas 7 — sauts en baisse', () => {
 describe('robustesse — toutes les séances du programme', () => {
   it('se construisent sans erreur, avec une ligne de charge non vide', () => {
     for (let week = 0; week <= 12; week++) {
-      for (const day of [0, 1, 2, 3, 4] as DayIndex[]) {
+      for (const day of [0, 2, 4, 5, 6] as DayIndex[]) {
         if (!hasSession(week as WeekIndex, day)) continue;
         const s = getSession(week as WeekIndex, day, ctx())!;
         expect(s, `S${week} jour ${day}`).not.toBeNull();
@@ -435,7 +457,7 @@ describe('robustesse — toutes les séances du programme', () => {
     for (const cm of [245, 230, 215]) {
       const c = ctx({ readiness: readiness(240, cm) });
       for (let week = 1; week <= 12; week++) {
-        for (const day of [0, 1, 2, 3, 4] as DayIndex[]) {
+        for (const day of [0, 2, 4, 5, 6] as DayIndex[]) {
           if (!hasSession(week as WeekIndex, day)) continue;
           expect(() => getSession(week as WeekIndex, day, c)).not.toThrow();
         }

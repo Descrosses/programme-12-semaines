@@ -10,7 +10,10 @@ import {
   db,
   type CombinePhase,
   type CombineRow,
+  type ExerciseMediaRow,
+  type ExerciseVideoLogRow,
   type MeasurementRow,
+  type ProgressPhotoRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
@@ -252,6 +255,118 @@ export async function getMeasurement(date: string): Promise<MeasurementRow | und
 
 export async function allMeasurements(): Promise<MeasurementRow[]> {
   return db.measurements.orderBy('date').toArray();
+}
+
+// ----------------------------------------------------------- suivi visuel --
+
+/** Enregistre la photo de la semaine. Une seule par semaine : la reprise remplace. */
+export async function savePhoto(
+  row: Omit<ProgressPhotoRow, 'id'>,
+): Promise<ProgressPhotoRow> {
+  const existing = await db.progressPhotos.where('week').equals(row.week).first();
+  if (existing?.id !== undefined) {
+    await db.progressPhotos.put({ ...row, id: existing.id });
+    return { ...row, id: existing.id };
+  }
+  const id = await db.progressPhotos.add(row);
+  return { ...row, id };
+}
+
+export async function allPhotos(): Promise<ProgressPhotoRow[]> {
+  return db.progressPhotos.orderBy('week').toArray();
+}
+
+export async function deletePhoto(id: number): Promise<void> {
+  await db.progressPhotos.delete(id);
+}
+
+/**
+ * Photo d'exécution d'un mouvement. Plusieurs dates par exercice — c'est le
+ * but : comparer le squat de la semaine 1 à celui de la semaine 9.
+ */
+export async function saveExerciseMedia(
+  row: Omit<ExerciseMediaRow, 'id'>,
+): Promise<ExerciseMediaRow> {
+  const existing = await db.exerciseMedia
+    .where('[exerciseId+date]')
+    .equals([row.exerciseId, row.date])
+    .first();
+  if (existing?.id !== undefined) {
+    await db.exerciseMedia.put({ ...row, id: existing.id });
+    return { ...row, id: existing.id };
+  }
+  const id = await db.exerciseMedia.add(row);
+  return { ...row, id };
+}
+
+export async function mediaForExercise(exerciseId: string): Promise<ExerciseMediaRow[]> {
+  return db.exerciseMedia.where('exerciseId').equals(exerciseId).sortBy('date');
+}
+
+export async function allExerciseMedia(): Promise<ExerciseMediaRow[]> {
+  return db.exerciseMedia.orderBy('date').toArray();
+}
+
+export async function deleteExerciseMedia(id: number): Promise<void> {
+  await db.exerciseMedia.delete(id);
+}
+
+/** Trace de vidéo : la date, pas le fichier. */
+export async function logVideo(row: Omit<ExerciseVideoLogRow, 'id'>): Promise<void> {
+  const existing = await db.exerciseVideoLog
+    .where('[exerciseId+date]')
+    .equals([row.exerciseId, row.date])
+    .first();
+  if (existing?.id !== undefined) await db.exerciseVideoLog.put({ ...row, id: existing.id });
+  else await db.exerciseVideoLog.add(row);
+}
+
+export async function videoLogForExercise(exerciseId: string): Promise<ExerciseVideoLogRow[]> {
+  return db.exerciseVideoLog.where('exerciseId').equals(exerciseId).sortBy('date');
+}
+
+export async function allVideoLog(): Promise<ExerciseVideoLogRow[]> {
+  return db.exerciseVideoLog.orderBy('date').toArray();
+}
+
+export async function deleteVideoLog(id: number): Promise<void> {
+  await db.exerciseVideoLog.delete(id);
+}
+
+export interface PhotoUsage {
+  count: number;
+  bytes: number;
+  /** Place réellement disponible d'après le navigateur, si elle est connue. */
+  quotaBytes: number | null;
+  usedBytes: number | null;
+}
+
+/**
+ * Encombrement des photos, pour le dire avant qu'il devienne un problème.
+ *
+ * On somme les tailles déjà mémorisées à l'écriture plutôt que de relire les
+ * blobs : compter 200 photos ne doit pas coûter 50 Mo de lecture.
+ */
+export async function photoUsage(): Promise<PhotoUsage> {
+  const [photos, media] = await Promise.all([allPhotos(), allExerciseMedia()]);
+  const rows = [...photos, ...media];
+  let quotaBytes: number | null = null;
+  let usedBytes: number | null = null;
+  if (typeof navigator !== 'undefined' && navigator.storage?.estimate) {
+    try {
+      const est = await navigator.storage.estimate();
+      quotaBytes = est.quota ?? null;
+      usedBytes = est.usage ?? null;
+    } catch {
+      // Estimation indisponible : on affichera seulement notre propre total.
+    }
+  }
+  return {
+    count: rows.length,
+    bytes: rows.reduce((n, r) => n + r.bytes, 0),
+    quotaBytes,
+    usedBytes,
+  };
 }
 
 // -------------------------------------------------- historique pour l'engine --

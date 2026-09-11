@@ -449,6 +449,36 @@
   color: var(--ink-2);
 }
 
+/* ------------------------------------------------------ suivi visuel -- */
+
+.compareSelects {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.compareField {
+  flex: 1;
+  min-width: 0;
+}
+
+.compareField .input {
+  width: 100%;
+}
+
+/* Deux photos côte à côte : c'est la comparaison qui compte, pas la taille
+   d'une seule. Elles restent lisibles jusqu'à 320 px de large. */
+.comparePair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hintWarn {
+  color: var(--orange);
+}
+
 /* Raccourci nutrition, sur l'écran Aujourd'hui uniquement. */
 .nutriCard {
   display: flex;

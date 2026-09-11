@@ -78,7 +78,7 @@ const LUNDI: SessionBlueprint = {
 };
 
 const MERCREDI: SessionBlueprint = {
-  day: 1,
+  day: 2,
   title: 'Upper Strength — bench + tractions',
   durationLabel: '65 min',
   intensity: 'DUR',
@@ -98,7 +98,7 @@ const MERCREDI: SessionBlueprint = {
 };
 
 const VENDREDI: SessionBlueprint = {
-  day: 2,
+  day: 4,
   title: 'Total Body Power',
   durationLabel: '60 min',
   intensity: 'RAPIDE',
@@ -118,7 +118,7 @@ const VENDREDI: SessionBlueprint = {
 };
 
 const SAMEDI: SessionBlueprint = {
-  day: 3,
+  day: 5,
   title: 'Posterior Chain — deadlift',
   durationLabel: '90 min',
   intensity: 'DUR',
@@ -138,7 +138,7 @@ const SAMEDI: SessionBlueprint = {
 };
 
 const DIMANCHE: SessionBlueprint = {
-  day: 4,
+  day: 6,
   title: 'Upper Athletic + tronc',
   durationLabel: '80-90 min',
   intensity: 'MODÉRÉ',
@@ -165,10 +165,14 @@ const DIMANCHE: SessionBlueprint = {
   ],
 };
 
-export const BASE_SESSIONS: Record<DayIndex, SessionBlueprint> = {
+/**
+ * Les cinq trames, rangées par jour réel. Mardi, mercredi et jeudi n'ont pas de
+ * trame : ce sont des repos dans la semaine type (§3).
+ */
+export const BASE_SESSIONS: Partial<Record<DayIndex, SessionBlueprint>> = {
   0: LUNDI,
-  1: MERCREDI,
-  2: VENDREDI,
-  3: SAMEDI,
-  4: DIMANCHE,
+  2: MERCREDI,
+  4: VENDREDI,
+  5: SAMEDI,
+  6: DIMANCHE,
 };

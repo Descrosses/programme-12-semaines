@@ -31,10 +31,12 @@ export function WeekScreen({
   week,
   onChangeWeek,
   onOpen,
+  onGoNutrition,
 }: {
   week: WeekIndex;
   onChangeWeek: (week: WeekIndex) => void;
   onOpen: (week: WeekIndex, day: DayIndex) => void;
+  onGoNutrition: () => void;
 }) {
   const [lines, setLines] = useState<DayLine[] | null>(null);
 
@@ -83,9 +85,9 @@ export function WeekScreen({
         <h1 className={styles.h1}>{week === 0 ? 'Combine initial' : `Semaine ${week}`}</h1>
         <p className={styles.lead}>
           {week === 0 &&
-            'Trois jours de tests avant le programme : samedi, dimanche, puis le lundi pour le deadlift. Ton meilleur broad jump d’ici devient ta référence.'}
+            'Six jours de tests avant le programme, espacés pour qu’aucun effort de tirage n’en suive un autre à moins de 48 h. Ton meilleur broad jump du lundi devient ta référence.'}
           {week === 1 &&
-            'Quatre séances : elle démarre le mercredi, deux jours après le dernier test du combine.'}
+            'Première semaine complète, cinq séances. Tu arrives dessus après un dimanche de repos.'}
           {week > 1 && block.objective}
         </p>
       </header>
@@ -164,6 +166,16 @@ export function WeekScreen({
           ))}
         </div>
       )}
+
+      {/*
+        Un lien, pas un sous-onglet. La diet ne change pas d'une semaine à
+        l'autre : la recopier dans chacun des treize écrans Semaine afficherait
+        treize fois la même chose, et une cible fausse pour les jours de repos
+        de la semaine affichée.
+      */}
+      <button type="button" className={styles.secondary} onClick={onGoNutrition}>
+        🍽 Voir la nutrition
+      </button>
     </div>
   );
 }

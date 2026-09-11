@@ -1,28 +1,42 @@
 /**
  * Calendrier du programme.
  *
- * ANCRE : le SAMEDI du combine initial (`settings.startDate`), saisi une fois
- * en Réglages. Une séance ne se date JAMAIS à partir de la date du jour où on
+ * ANCRE : le LUNDI du combine initial (`settings.startDate`), saisi une fois en
+ * Réglages. Une séance ne se date JAMAIS à partir de la date du jour où on
  * consulte l'écran : `dateFor()` ne lit pas l'horloge, et deux ouvertures de
  * l'appli à deux dates différentes donnent exactement le même calendrier.
  *
- *   S0  samedi   = J+0      ← combine initial jour 1
- *   S0  dimanche = J+1      ← combine initial jour 2
- *   S0  lundi    = J+2      ← combine initial jour 3 (deadlift)
- *   S1  mercredi = J+4      ← début réel du programme
- *   S1  vendredi = J+6      S1 samedi = J+7      S1 dimanche = J+8
- *   S2  lundi    = J+9      … puis rythme hebdomadaire régulier
+ *   S0  lundi    = J+0   sauts, sprints, squat 1RM
+ *   S0  mardi    = J+1   tractions lestées 1RM
+ *   S0  jeudi    = J+3   deadlift 1RM
+ *   S0  vendredi = J+4   bench 1RM, ab wheel
+ *   S0  samedi   = J+5   tractions strictes max, leg raise, farmer
+ *   S0  dimanche = J+6   repos complet
+ *   S1  lundi    = J+7   ← début réel du programme, semaine pleine
+ *   S2  lundi    = J+14  … puis rythme hebdomadaire régulier
  *
- * Une formule couvre tout : J + 2 + (semaine − 1) × 7 + décalage du jour.
- * Seule exception, le lundi de la semaine 0 : il tombe APRÈS son week-end,
- * pas cinq jours avant. C'est le seul cas particulier du calendrier.
+ * Le mercredi et le dimanche de la semaine 0 sont vides : ce sont les repos qui
+ * séparent les efforts de tirage (§ restructuration du combine). Ils ne sont
+ * pas dans `WEEK_DAYS[0]`, donc aucune séance ne s'y crée.
+ *
+ * Une seule formule couvre tout, semaine 0 comprise :
+ *   J + semaine × 7 + décalage du jour.
+ * La semaine 0 occupe la première semaine calendaire, la semaine 1 la suivante.
+ * Plus aucun cas particulier, contrairement à la version à 3 jours.
  */
 
 import { WEEK_DAYS } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 
-/** Décalage en jours depuis le lundi de la semaine de programme. */
-const DAY_OFFSET: Record<DayIndex, number> = { 0: 0, 1: 2, 2: 4, 3: 5, 4: 6 };
+/**
+ * Décalage en jours depuis le lundi de la semaine de programme.
+ *
+ * Depuis que `DayIndex` couvre les sept jours réels, c'est l'identité — mais on
+ * garde la fonction nommée plutôt que d'écrire `day` partout : le jour du
+ * programme et le décalage calendaire sont deux idées distinctes, et les
+ * confondre est exactement ce qui a produit le bug de rangement du combine.
+ */
+const dayOffset = (day: DayIndex): number => day;
 
 const MS_PER_DAY = 86_400_000;
 
@@ -44,16 +58,9 @@ export function daysBetween(fromIso: string, toIso: string): number {
   return Math.round((parseDate(toIso).getTime() - parseDate(fromIso).getTime()) / MS_PER_DAY);
 }
 
-/**
- * Décalage, en jours depuis `startDate`, d'une case du calendrier.
- *
- * Cas particulier de la semaine 0 : ses trois séances sont samedi, dimanche et
- * le lundi SUIVANT. La formule générale placerait ce lundi cinq jours avant le
- * samedi ; on l'écrit donc en dur.
- */
+/** Décalage, en jours depuis `startDate`, d'une case du calendrier. */
 export function offsetFor(week: WeekIndex, day: DayIndex): number {
-  if (week === 0 && day === 0) return 2;
-  return 2 + (week - 1) * 7 + DAY_OFFSET[day];
+  return week * 7 + dayOffset(day);
 }
 
 /** Date d'une séance. */
@@ -129,20 +136,41 @@ export function nextSession(startDate: string, week: WeekIndex, day: DayIndex): 
   return i >= 0 && i < all.length - 1 ? all[i + 1]! : null;
 }
 
+/**
+ * Semaine de programme en cours, pour dater une photo ou un relevé.
+ *
+ * On prend la semaine de la dernière séance déjà passée : entre le dimanche de
+ * la semaine 3 et le lundi de la semaine 4, on est encore « en semaine 3 », ce
+ * qui est la lecture naturelle quand on se photographie le lundi matin.
+ * `null` tant que le calendrier n'a pas d'ancre.
+ */
+export function currentWeek(startDate: string, todayIso: string): WeekIndex | null {
+  if (!startDate) return null;
+  const all = schedule(startDate);
+  const first = all[0]!;
+  if (todayIso < first.date) return first.week;
+  let week = first.week;
+  for (const s of all) {
+    if (s.date > todayIso) break;
+    week = s.week;
+  }
+  return week;
+}
+
 /** Numéro de jour ISO d'une date `YYYY-MM-DD` (0 = dimanche … 6 = samedi). */
 export function weekdayOf(iso: string): number {
   return parseDate(iso).getUTCDay();
 }
 
-/** L'ancre du calendrier doit être un samedi : tout le reste en découle. */
-export function isSaturday(iso: string): boolean {
-  return weekdayOf(iso) === 6;
+/** L'ancre du calendrier doit être un lundi : tout le reste en découle. */
+export function isMonday(iso: string): boolean {
+  return weekdayOf(iso) === 1;
 }
 
-/** Samedi le plus proche d'une date, pour proposer une correction d'ancre. */
-export function nearestSaturday(iso: string): string {
-  const delta = 6 - weekdayOf(iso); // -6 … +6 ; 0 si déjà samedi
-  return addDays(iso, delta > 3 ? delta - 7 : delta);
+/** Lundi le plus proche d'une date, pour proposer une correction d'ancre. */
+export function nearestMonday(iso: string): string {
+  const delta = 1 - weekdayOf(iso); // -5 … +1 ; 0 si déjà lundi
+  return addDays(iso, delta < -3 ? delta + 7 : delta);
 }
 
 /** « samedi 8 mars », pour l'en-tête de l'écran Aujourd'hui. */
