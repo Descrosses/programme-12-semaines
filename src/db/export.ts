@@ -5,9 +5,11 @@
  * fichier JSON contient l'intégralité de l'historique, lisible et réimportable.
  */
 
+import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
 import {
   db,
   type CombineRow,
+  type ExerciseVideoLogRow,
   type MeasurementRow,
   type ReadinessRow,
   type SessionRow,
@@ -29,17 +31,58 @@ export interface ExportFile {
   combines: CombineRow[];
   /** Absent des exports antérieurs à l'onglet Nutrition : toujours optionnel. */
   measurements?: MeasurementRow[];
+  /** Traces de vidéo — quelques octets chacune, elles restent ici. */
+  videoLog?: ExerciseVideoLogRow[];
+  /**
+   * Toujours `false`. Les photos ont leur propre fichier : voir
+   * `exportPhotos()` et le commentaire qui l'accompagne.
+   */
+  photosIncluded: false;
+}
+
+/**
+ * Fichier de photos, séparé du fichier de données.
+ *
+ * Pourquoi deux fichiers plutôt qu'un :
+ *
+ * 1. Le base64 gonfle de 33 %. Douze semaines chargées en photos d'exercice
+ *    peuvent peser 50 Mo en base, soit ~67 Mo de chaîne JSON. `JSON.stringify`
+ *    sur une chaîne pareille fait tomber Safari sur iPhone bien avant la fin.
+ * 2. La sauvegarde de sécurité doit rester légère pour être faite souvent.
+ *    Un fichier de 60 Ko qu'on exporte chaque semaine protège l'historique
+ *    d'entraînement, qui est irremplaçable ; un fichier de 67 Mo ne serait
+ *    jamais exporté.
+ *
+ * Les photos partent donc à la demande, dans leur propre fichier, et l'import
+ * reconnaît tout seul lequel des deux on lui donne.
+ */
+export interface PhotoExportFile {
+  format: 'programme-12-semaines-photos';
+  version: number;
+  exportedAt: string;
+  progressPhotos: Array<{ week: number; date: string; dataUrl: string; width: number; height: number }>;
+  exerciseMedia: Array<{
+    exerciseId: string;
+    week: number;
+    day: number;
+    date: string;
+    dataUrl: string;
+    width: number;
+    height: number;
+  }>;
 }
 
 export async function exportAll(): Promise<ExportFile> {
-  const [settings, sessions, sets, readiness, combines, measurements] = await Promise.all([
-    db.settings.get(1),
-    db.sessions.toArray(),
-    db.sets.toArray(),
-    db.readiness.toArray(),
-    db.combines.toArray(),
-    db.measurements.toArray(),
-  ]);
+  const [settings, sessions, sets, readiness, combines, measurements, videoLog] =
+    await Promise.all([
+      db.settings.get(1),
+      db.sessions.toArray(),
+      db.sets.toArray(),
+      db.readiness.toArray(),
+      db.combines.toArray(),
+      db.measurements.toArray(),
+      db.exerciseVideoLog.toArray(),
+    ]);
 
   return {
     format: 'programme-12-semaines',
@@ -51,6 +94,41 @@ export async function exportAll(): Promise<ExportFile> {
     readiness,
     combines,
     measurements,
+    videoLog,
+    photosIncluded: false,
+  };
+}
+
+/** Le fichier de photos, construit à la demande. */
+export async function exportPhotos(): Promise<PhotoExportFile> {
+  const [photos, media] = await Promise.all([
+    db.progressPhotos.toArray(),
+    db.exerciseMedia.toArray(),
+  ]);
+  return {
+    format: 'programme-12-semaines-photos',
+    version: EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    progressPhotos: await Promise.all(
+      photos.map(async (p) => ({
+        week: p.week,
+        date: p.date,
+        width: p.width,
+        height: p.height,
+        dataUrl: await blobToDataUrl(p.blob),
+      })),
+    ),
+    exerciseMedia: await Promise.all(
+      media.map(async (m) => ({
+        exerciseId: m.exerciseId,
+        week: m.week,
+        day: m.day,
+        date: m.date,
+        width: m.width,
+        height: m.height,
+        dataUrl: await blobToDataUrl(m.blob),
+      })),
+    ),
   };
 }
 
@@ -59,19 +137,39 @@ export function exportFileName(now = new Date()): string {
   return `programme-12-semaines-${now.toISOString().slice(0, 10)}.json`;
 }
 
-/** Déclenche le téléchargement du fichier depuis le navigateur. */
-export async function downloadExport(): Promise<void> {
-  const data = await exportAll();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+function download(content: string, filename: string): void {
+  const blob = new Blob([content], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = exportFileName();
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();
   // Laisse le temps au navigateur de démarrer le téléchargement.
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
+}
+
+/** Déclenche le téléchargement du fichier de données depuis le navigateur. */
+export async function downloadExport(): Promise<void> {
+  download(JSON.stringify(await exportAll(), null, 2), exportFileName());
+}
+
+/**
+ * Téléchargement du fichier de photos.
+ *
+ * Sans indentation, contrairement au fichier de données : sur des dizaines de
+ * chaînes base64, les espaces ajoutent des mégaoctets pour une lisibilité dont
+ * personne n'a l'usage. Rend la taille produite, pour l'annoncer.
+ */
+export async function downloadPhotoExport(): Promise<{ bytes: number; count: number }> {
+  const file = await exportPhotos();
+  const json = JSON.stringify(file);
+  download(json, `programme-12-semaines-photos-${new Date().toISOString().slice(0, 10)}.json`);
+  return {
+    bytes: new Blob([json]).size,
+    count: file.progressPhotos.length + file.exerciseMedia.length,
+  };
 }
 
 export interface ImportReport {
@@ -80,7 +178,80 @@ export interface ImportReport {
   readiness: number;
   combines: number;
   measurements: number;
+  videoLog: number;
   settings: boolean;
+}
+
+export interface PhotoImportReport {
+  progressPhotos: number;
+  exerciseMedia: number;
+}
+
+/** Ce que contient un fichier déposé — l'import s'adapte au lieu d'exiger. */
+export type AnyExportFile =
+  | { kind: 'données'; file: ExportFile }
+  | { kind: 'photos'; file: PhotoExportFile };
+
+/**
+ * Reconnaît lequel des deux fichiers on vient de recevoir.
+ *
+ * Guillaume n'a pas à se souvenir du bouton qu'il avait utilisé : il dépose le
+ * fichier, l'appli voit ce que c'est.
+ */
+export function parseAnyExport(text: string): AnyExportFile {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('Ce fichier n’est pas du JSON valide.');
+  }
+  if ((parsed as { format?: string })?.format === 'programme-12-semaines-photos') {
+    const f = parsed as PhotoExportFile;
+    return {
+      kind: 'photos',
+      file: {
+        format: 'programme-12-semaines-photos',
+        version: f.version ?? EXPORT_VERSION,
+        exportedAt: f.exportedAt ?? '',
+        progressPhotos: f.progressPhotos ?? [],
+        exerciseMedia: f.exerciseMedia ?? [],
+      },
+    };
+  }
+  return { kind: 'données', file: parseExport(text) };
+}
+
+/** Remplace les photos par celles du fichier. Ne touche à aucune autre table. */
+export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportReport> {
+  const progress = await Promise.all(
+    file.progressPhotos.map(async (p) => {
+      const blob = await dataUrlToBlob(p.dataUrl);
+      return { week: p.week, date: p.date, width: p.width, height: p.height, blob, bytes: blob.size };
+    }),
+  );
+  const media = await Promise.all(
+    file.exerciseMedia.map(async (m) => {
+      const blob = await dataUrlToBlob(m.dataUrl);
+      return {
+        exerciseId: m.exerciseId,
+        week: m.week,
+        day: m.day as 0 | 1 | 2 | 3 | 4,
+        date: m.date,
+        width: m.width,
+        height: m.height,
+        blob,
+        bytes: blob.size,
+      };
+    }),
+  );
+
+  await db.transaction('rw', [db.progressPhotos, db.exerciseMedia], async () => {
+    await Promise.all([db.progressPhotos.clear(), db.exerciseMedia.clear()]);
+    await db.progressPhotos.bulkAdd(progress);
+    await db.exerciseMedia.bulkAdd(media);
+  });
+
+  return { progressPhotos: progress.length, exerciseMedia: media.length };
 }
 
 /** Vérifie qu'un fichier est bien un export de cette appli avant d'y toucher. */
@@ -112,6 +283,8 @@ export function parseExport(text: string): ExportFile {
     // Un export d'avant l'onglet Nutrition n'a pas ce tableau : liste vide, pas
     // une erreur — il reste parfaitement réimportable.
     measurements: f.measurements ?? [],
+    videoLog: f.videoLog ?? [],
+    photosIncluded: false,
   };
 }
 
@@ -125,15 +298,25 @@ export function parseExport(text: string): ExportFile {
 export async function importAll(file: ExportFile): Promise<ImportReport> {
   return db.transaction(
     'rw',
-    [db.settings, db.sessions, db.sets, db.readiness, db.combines, db.measurements],
+    [
+      db.settings,
+      db.sessions,
+      db.sets,
+      db.readiness,
+      db.combines,
+      db.measurements,
+      db.exerciseVideoLog,
+    ],
     async () => {
       const measurements = file.measurements ?? [];
+      const videoLog = file.videoLog ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
         db.readiness.clear(),
         db.combines.clear(),
         db.measurements.clear(),
+        db.exerciseVideoLog.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
@@ -141,6 +324,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       await db.readiness.bulkAdd(file.readiness);
       await db.combines.bulkAdd(file.combines);
       await db.measurements.bulkAdd(measurements);
+      await db.exerciseVideoLog.bulkAdd(videoLog);
 
       return {
         sessions: file.sessions.length,
@@ -148,6 +332,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         readiness: file.readiness.length,
         combines: file.combines.length,
         measurements: measurements.length,
+        videoLog: videoLog.length,
         settings: file.settings !== null,
       };
     },
@@ -158,7 +343,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
 export async function resetHistory(): Promise<void> {
   await db.transaction(
     'rw',
-    [db.sessions, db.sets, db.readiness, db.combines, db.measurements],
+    [db.sessions, db.sets, db.readiness, db.combines, db.measurements, db.exerciseVideoLog],
     async () => {
       await Promise.all([
         db.sessions.clear(),
@@ -166,7 +351,21 @@ export async function resetHistory(): Promise<void> {
         db.readiness.clear(),
         db.combines.clear(),
         db.measurements.clear(),
+        db.exerciseVideoLog.clear(),
       ]);
     },
   );
+}
+
+/**
+ * Efface uniquement les photos.
+ *
+ * Séparé de la remise à zéro de l'historique : ce sont les photos qui pèsent,
+ * et il faut pouvoir récupérer de la place sans perdre douze semaines de
+ * séries. L'inverse vaut aussi — repartir à zéro sans jeter les photos.
+ */
+export async function resetPhotos(): Promise<void> {
+  await db.transaction('rw', [db.progressPhotos, db.exerciseMedia], async () => {
+    await Promise.all([db.progressPhotos.clear(), db.exerciseMedia.clear()]);
+  });
 }

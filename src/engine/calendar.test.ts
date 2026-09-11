@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   addDays,
+  currentWeek,
   dateFor,
   daysBetween,
   humanDate,
@@ -192,5 +193,26 @@ describe('l’ancre de date ne bouge jamais avec le jour de consultation', () =>
     expect(nearestSaturday('2026-09-09')).toBe('2026-09-12'); // mercredi → samedi suivant
     expect(nearestSaturday('2026-09-13')).toBe('2026-09-12'); // dimanche → la veille
     expect(nearestSaturday('2026-09-12')).toBe('2026-09-12');
+  });
+});
+
+describe('semaine en cours', () => {
+  it('reste sur la semaine de la dernière séance passée', () => {
+    expect(currentWeek(START, '2026-01-03')).toBe(0); // samedi du combine
+    expect(currentWeek(START, '2026-01-06')).toBe(0); // mardi : le lundi vient de passer
+    expect(currentWeek(START, '2026-01-07')).toBe(1); // mercredi, début S1
+    expect(currentWeek(START, '2026-01-12')).toBe(2); // lundi S2
+  });
+
+  it('avant le début, annonce déjà la semaine 0', () => {
+    expect(currentWeek(START, '2025-12-20')).toBe(0);
+  });
+
+  it('après la fin, reste sur la dernière semaine', () => {
+    expect(currentWeek(START, '2026-12-31')).toBe(12);
+  });
+
+  it('sans ancre, ne devine rien', () => {
+    expect(currentWeek('', '2026-01-07')).toBeNull();
   });
 });

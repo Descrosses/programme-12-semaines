@@ -31,10 +31,12 @@ export function WeekScreen({
   week,
   onChangeWeek,
   onOpen,
+  onGoNutrition,
 }: {
   week: WeekIndex;
   onChangeWeek: (week: WeekIndex) => void;
   onOpen: (week: WeekIndex, day: DayIndex) => void;
+  onGoNutrition: () => void;
 }) {
   const [lines, setLines] = useState<DayLine[] | null>(null);
 
@@ -164,6 +166,16 @@ export function WeekScreen({
           ))}
         </div>
       )}
+
+      {/*
+        Un lien, pas un sous-onglet. La diet ne change pas d'une semaine à
+        l'autre : la recopier dans chacun des treize écrans Semaine afficherait
+        treize fois la même chose, et une cible fausse pour les jours de repos
+        de la semaine affichée.
+      */}
+      <button type="button" className={styles.secondary} onClick={onGoNutrition}>
+        🍽 Voir la nutrition
+      </button>
     </div>
   );
 }

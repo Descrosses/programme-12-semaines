@@ -3,6 +3,7 @@ import type { SetRow } from '../db/db';
 import { fr, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { RestTimer } from '../state/useRestTimer';
+import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { Stepper, stepValue } from './Stepper';
 import styles from '../screens/Session.module.css';
 
@@ -37,6 +38,7 @@ export function ExerciseCard({
   savedSets,
   overrideKg,
   timer,
+  media,
   onSaveSet,
   onOverride,
 }: {
@@ -44,6 +46,8 @@ export function ExerciseCard({
   savedSets: SetRow[];
   overrideKg: number | null;
   timer: RestTimer;
+  /** Où l'on se trouve dans le programme, pour dater photos et traces vidéo. */
+  media: MediaContext | null;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   onOverride: (exId: string, kg: number | null) => void;
 }) {
@@ -101,6 +105,10 @@ export function ExerciseCard({
           </div>
         ))}
       </div>
+
+      {media && (
+        <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />
+      )}
 
       {showSuggestion && (
         <div className={styles.suggestion}>

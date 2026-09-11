@@ -129,6 +129,27 @@ export function nextSession(startDate: string, week: WeekIndex, day: DayIndex): 
   return i >= 0 && i < all.length - 1 ? all[i + 1]! : null;
 }
 
+/**
+ * Semaine de programme en cours, pour dater une photo ou un relevé.
+ *
+ * On prend la semaine de la dernière séance déjà passée : entre le dimanche de
+ * la semaine 3 et le lundi de la semaine 4, on est encore « en semaine 3 », ce
+ * qui est la lecture naturelle quand on se photographie le lundi matin.
+ * `null` tant que le calendrier n'a pas d'ancre.
+ */
+export function currentWeek(startDate: string, todayIso: string): WeekIndex | null {
+  if (!startDate) return null;
+  const all = schedule(startDate);
+  const first = all[0]!;
+  if (todayIso < first.date) return first.week;
+  let week = first.week;
+  for (const s of all) {
+    if (s.date > todayIso) break;
+    week = s.week;
+  }
+  return week;
+}
+
 /** Numéro de jour ISO d'une date `YYYY-MM-DD` (0 = dimanche … 6 = samedi). */
 export function weekdayOf(iso: string): number {
   return parseDate(iso).getUTCDay();

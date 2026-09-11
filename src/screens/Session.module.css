@@ -508,3 +508,62 @@
   color: var(--ink-2);
   text-align: center;
 }
+
+/* ------------------------------------------- documentation du mouvement -- */
+
+.mediaRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px var(--pad) 0;
+}
+
+.mediaToggle {
+  height: 34px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.mediaBadge {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+.mediaPanel {
+  margin: 10px var(--pad) 0;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.mediaAction {
+  display: block;
+  width: 100%;
+  height: var(--tap);
+  margin-top: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.mediaNote {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.mediaCompare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}

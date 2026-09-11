@@ -3,8 +3,17 @@ import { Stepper, stepValue } from '../components/Stepper';
 import { dateFor, humanDate, isSaturday, nearestSaturday } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
-import { downloadExport, importAll, parseExport, resetHistory } from '../db/export';
-import { allMeasurements, getSettingsRow, saveSettings } from '../db/repo';
+import {
+  downloadExport,
+  downloadPhotoExport,
+  importAll,
+  importPhotos,
+  parseAnyExport,
+  resetHistory,
+  resetPhotos,
+} from '../db/export';
+import { formatBytes } from '../media/photo';
+import { allMeasurements, getSettingsRow, photoUsage, saveSettings, type PhotoUsage } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import styles from './Screens.module.css';
 
@@ -24,6 +33,8 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
    * Guillaume qui décide quand le figer.
    */
   const [last3, setLast3] = useState<number | null>(null);
+  const [usage, setUsage] = useState<PhotoUsage | null>(null);
+  const [confirmPhotos, setConfirmPhotos] = useState(false);
   const [message, setMessage] = useState<{ text: string; kind: 'ok' | 'erreur' } | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -40,6 +51,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
           ? Math.round((weights.reduce((a, b) => a + b, 0) / 3) * 10) / 10
           : null,
       );
+      setUsage(await photoUsage());
     })();
   }, []);
 
@@ -51,14 +63,29 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
     onChanged();
   }
 
+  /**
+   * Un seul bouton d'import pour les deux fichiers : celui des données et celui
+   * des photos. L'appli reconnaît lequel on lui donne, ce qui évite de choisir
+   * le mauvais bouton et d'écraser ce qu'on voulait garder.
+   */
   async function handleImport(file: File) {
     try {
-      const parsed = parseExport(await file.text());
-      const report = await importAll(parsed);
+      const parsed = parseAnyExport(await file.text());
+      if (parsed.kind === 'photos') {
+        const report = await importPhotos(parsed.file);
+        setUsage(await photoUsage());
+        onChanged();
+        setMessage({
+          text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice. L’historique d’entraînement n’a pas été touché.`,
+          kind: 'ok',
+        });
+        return;
+      }
+      const report = await importAll(parsed.file);
       setRow(await getSettingsRow());
       onChanged();
       setMessage({
-        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées.`,
+        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
         kind: 'ok',
       });
     } catch (e) {
@@ -303,15 +330,109 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         />
         <p className={styles.fieldHint}>
           L’import <b>remplace</b> tout ce qui est enregistré. Fusionner deux historiques créerait
-          des séries en double et fausserait les règles de progression.
+          des séries en double et fausserait les règles de progression. Le même bouton accepte les
+          deux fichiers : l’appli reconnaît lequel tu lui donnes.
         </p>
+      </section>
+
+      {/* --------------------------------------------- sauvegarde photos -- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Sauvegarde des photos</h2>
+        <p className={styles.cardSub}>
+          Fichier séparé, et volontairement. Les photos pèsent mille fois plus que le reste : les
+          mettre dans la sauvegarde quotidienne la rendrait si lourde que tu ne la ferais plus, et
+          c’est elle qui protège tes douze semaines de séries.
+        </p>
+        {usage && (
+          <p className={styles.fieldHint}>
+            {usage.count === 0
+              ? 'Aucune photo enregistrée pour l’instant.'
+              : `${usage.count} photo${usage.count > 1 ? 's' : ''} · ${formatBytes(usage.bytes)}${
+                  usage.quotaBytes !== null
+                    ? ` · place accordée par le navigateur : ${formatBytes(usage.quotaBytes)}`
+                    : ''
+                }`}
+          </p>
+        )}
+        <button
+          type="button"
+          className={styles.secondary}
+          style={{ width: '100%', margin: '12px 0 0' }}
+          disabled={!usage || usage.count === 0}
+          onClick={() =>
+            void (async () => {
+              const r = await downloadPhotoExport();
+              setMessage({
+                text: `${r.count} photo${r.count > 1 ? 's' : ''} exportée${r.count > 1 ? 's' : ''} — ${formatBytes(r.bytes)}. Range ce fichier ailleurs que sur le téléphone.`,
+                kind: 'ok',
+              });
+            })()
+          }
+        >
+          Exporter mes photos
+        </button>
+        <p className={styles.fieldHint}>
+          iOS peut vider le stockage d’une application web quand la place manque sur le téléphone.
+          C’est la raison pour laquelle l’appli ne garde aucune vidéo — et la raison d’exporter les
+          photos de temps en temps.
+        </p>
+        {usage && usage.count > 0 && (
+          <>
+            {!confirmPhotos ? (
+              <button
+                type="button"
+                className={styles.secondary}
+                style={{ width: '100%', margin: '10px 0 0', color: 'var(--rouge)' }}
+                onClick={() => setConfirmPhotos(true)}
+              >
+                Effacer toutes les photos
+              </button>
+            ) : (
+              <>
+                <p className={styles.fieldHint} style={{ color: 'var(--rouge)' }}>
+                  Irréversible. Ton historique d’entraînement, lui, n’est pas touché.
+                </p>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{
+                    width: '100%',
+                    margin: '10px 0 0',
+                    background: 'var(--rouge)',
+                    color: 'var(--ink-on-accent)',
+                  }}
+                  onClick={() =>
+                    void (async () => {
+                      await resetPhotos();
+                      setUsage(await photoUsage());
+                      setConfirmPhotos(false);
+                      onChanged();
+                      setMessage({ text: 'Photos effacées.', kind: 'ok' });
+                    })()
+                  }
+                >
+                  Oui, effacer les photos
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{ width: '100%', margin: '10px 0 0' }}
+                  onClick={() => setConfirmPhotos(false)}
+                >
+                  Annuler
+                </button>
+              </>
+            )}
+          </>
+        )}
       </section>
 
       {/* -------------------------------------------------- remise à zéro -- */}
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Remise à zéro</h2>
         <p className={styles.cardSub}>
-          Efface séances, séries, readiness et combines. Les réglages ci-dessus sont conservés.
+          Efface séances, séries, readiness, combines et pesées. Les réglages ci-dessus et les
+          photos sont conservés.
         </p>
         {!confirmReset ? (
           <button

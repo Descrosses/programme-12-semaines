@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart, LineChart, type Series } from '../components/Chart';
+import { VisualTracking } from '../components/VisualTracking';
 import { EXERCISES } from '../data/exercises';
 import { prescriptionFor } from '../data/mainLiftTable';
 import { DAY_LABELS_SHORT, type MainLiftId } from '../data/types';
@@ -24,7 +25,16 @@ const LIFTS: Array<{ id: MainLiftId; label: string }> = [
   { id: 'weighted-pullup', label: 'Tractions' },
 ];
 
+/**
+ * L'écran répond à une seule question — « est-ce que ça bouge ? » — par deux
+ * moyens : les chiffres et l'œil. Un sélecteur en haut plutôt que six sections
+ * empilées : les courbes se consultent le soir, les photos une fois par
+ * semaine, on ne veut pas faire défiler les unes pour atteindre les autres.
+ */
+type Vue = 'chiffres' | 'photos';
+
 export function ProgressScreen() {
+  const [vue, setVue] = useState<Vue>('chiffres');
   const [data, setData] = useState<{
     history: HistoryIndex;
     readiness: ReadinessRow[];
@@ -117,9 +127,36 @@ export function ProgressScreen() {
     <div className={styles.screen}>
       <header className={styles.header}>
         <h1 className={styles.h1}>Progression</h1>
-        <p className={styles.lead}>Ce que tu as réellement soulevé, comparé au plan.</p>
+        <p className={styles.lead}>
+          {vue === 'chiffres'
+            ? 'Ce que tu as réellement soulevé, comparé au plan.'
+            : 'Une photo par semaine. Ce que les courbes ne montrent pas.'}
+        </p>
       </header>
 
+      <div className={styles.segment} role="group" aria-label="Vue">
+        {(
+          [
+            ['chiffres', 'Chiffres'],
+            ['photos', 'Suivi visuel'],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={`${styles.segmentButton} ${vue === id ? styles.segmentOn : ''}`}
+            onClick={() => setVue(id)}
+            aria-pressed={vue === id}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {vue === 'photos' && <VisualTracking />}
+
+      {vue === 'chiffres' && (
+        <>
       {trend?.declining && (
         <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
           {trend.message}
@@ -178,6 +215,8 @@ export function ProgressScreen() {
         </p>
         <BarChart bars={rpeBars} emptyMessage="Aucun RPE saisi pour l’instant." />
       </section>
+        </>
+      )}
     </div>
   );
 }

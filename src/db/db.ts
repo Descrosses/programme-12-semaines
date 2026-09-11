@@ -89,6 +89,60 @@ export interface MeasurementRow {
   waistCm: number | null;
 }
 
+/**
+ * Photo hebdomadaire du suivi visuel.
+ *
+ * `week` est unique : une photo par semaine, et en reprendre une remplace la
+ * précédente. Douze semaines de photos doivent rester comparables entre elles,
+ * pas devenir un album.
+ *
+ * La photo est stockée en `Blob` déjà compressé (voir `src/media/photo.ts`),
+ * jamais en base64 : une chaîne base64 pèse un tiers de plus et doit être
+ * décodée à chaque affichage.
+ */
+export interface ProgressPhotoRow {
+  id?: number;
+  week: number;
+  /** `YYYY-MM-DD` du jour de la prise. */
+  date: string;
+  blob: Blob;
+  /** Taille après compression, pour afficher l'encombrement sans tout relire. */
+  bytes: number;
+  width: number;
+  height: number;
+}
+
+/** Photo d'exécution d'un mouvement, prise depuis la fiche d'exercice. */
+export interface ExerciseMediaRow {
+  id?: number;
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  blob: Blob;
+  bytes: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Trace d'une vidéo — et rien d'autre.
+ *
+ * Le fichier vidéo reste dans la pellicule de l'iPhone. Sur iOS, le stockage
+ * d'une PWA peut être vidé par le système quand la place manque ; y mettre des
+ * dizaines de vidéos serait une perte de données annoncée. On ne garde donc
+ * que la date, de quoi dire « tu as filmé ton squat le 14 septembre ».
+ */
+export interface ExerciseVideoLogRow {
+  id?: number;
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  /** Note libre : « vue de profil », « 3e série ». */
+  note: string;
+}
+
 export type CombinePhase = 'initial' | 's8' | 'final';
 
 export interface CombineRow {
@@ -123,6 +177,9 @@ export class ProgrammeDB extends Dexie {
   readiness!: Table<ReadinessRow, number>;
   combines!: Table<CombineRow, number>;
   measurements!: Table<MeasurementRow, number>;
+  progressPhotos!: Table<ProgressPhotoRow, number>;
+  exerciseMedia!: Table<ExerciseMediaRow, number>;
+  exerciseVideoLog!: Table<ExerciseVideoLogRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
@@ -162,6 +219,20 @@ export class ProgrammeDB extends Dexie {
      * d'entraînement traverse la migration sans y toucher.
      */
     this.version(3).stores({ measurements: '++id, &date' });
+
+    /*
+     * v4 — suivi visuel. Trois tables, toujours en ajout pur.
+     *
+     * Les photos sont dans des tables à part et non dans `sessions` ou
+     * `measurements` : ce sont les seules lignes lourdes de la base, et les
+     * isoler permet de les exporter, de les compter et au besoin de les
+     * effacer sans toucher à une seule série d'entraînement.
+     */
+    this.version(4).stores({
+      progressPhotos: '++id, &week, date',
+      exerciseMedia: '++id, exerciseId, [exerciseId+date], week, date',
+      exerciseVideoLog: '++id, exerciseId, [exerciseId+date], week, date',
+    });
   }
 }
 
