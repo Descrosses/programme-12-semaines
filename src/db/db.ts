@@ -126,6 +126,29 @@ export interface ExerciseMediaRow {
 }
 
 /**
+ * Fiche technique d'un mouvement — une image, pour toujours.
+ *
+ * À ne pas confondre avec `exerciseMedia`, et c'est pour ça que ce sont deux
+ * tables : celle-ci porte une infographie d'exécution, la même quelle que soit
+ * la semaine, donc clé unique sur `exerciseId` et AUCUNE date. L'autre porte
+ * des photos de Guillaume à une séance précise, donc datées.
+ *
+ * Les mélanger obligeait à réattacher la même image à chacune des dix
+ * occurrences du back squat sur douze semaines — dix copies du même fichier en
+ * base, et neuf gestes inutiles.
+ */
+export interface ExerciseReferenceRow {
+  id?: number;
+  exerciseId: string;
+  blob: Blob;
+  bytes: number;
+  width: number;
+  height: number;
+  /** `YYYY-MM-DD` d'ajout, pour savoir de quand date la fiche. */
+  addedAt: string;
+}
+
+/**
  * Trace d'une vidéo — et rien d'autre.
  *
  * Le fichier vidéo reste dans la pellicule de l'iPhone. Sur iOS, le stockage
@@ -188,6 +211,7 @@ export class ProgrammeDB extends Dexie {
   measurements!: Table<MeasurementRow, number>;
   progressPhotos!: Table<ProgressPhotoRow, number>;
   exerciseMedia!: Table<ExerciseMediaRow, number>;
+  exerciseReference!: Table<ExerciseReferenceRow, number>;
   exerciseVideoLog!: Table<ExerciseVideoLogRow, number>;
   settings!: Table<SettingsRow, number>;
 
@@ -315,6 +339,15 @@ export class ProgrammeDB extends Dexie {
         .filter((r: SessionRow) => r.week === 0)
         .delete();
     });
+
+    /*
+     * v7 — fiche technique par mouvement. Ajout pur, une table de plus.
+     *
+     * `&exerciseId` est unique : une seule fiche par mouvement. En reprendre
+     * une remplace la précédente au lieu d'empiler, ce qui est exactement le
+     * comportement attendu d'une fiche de référence.
+     */
+    this.version(7).stores({ exerciseReference: '++id, &exerciseId' });
   }
 }
 

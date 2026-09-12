@@ -11,6 +11,7 @@ import {
   type CombinePhase,
   type CombineRow,
   type ExerciseMediaRow,
+  type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
   type MeasurementRow,
   type ProgressPhotoRow,
@@ -311,6 +312,36 @@ export async function deleteExerciseMedia(id: number): Promise<void> {
   await db.exerciseMedia.delete(id);
 }
 
+/**
+ * Fiche technique d'un mouvement. Une seule par exercice : en poser une
+ * nouvelle remplace l'ancienne, sans laisser de doublon en base.
+ */
+export async function saveExerciseReference(
+  row: Omit<ExerciseReferenceRow, 'id'>,
+): Promise<ExerciseReferenceRow> {
+  const existing = await db.exerciseReference.where('exerciseId').equals(row.exerciseId).first();
+  if (existing?.id !== undefined) {
+    await db.exerciseReference.put({ ...row, id: existing.id });
+    return { ...row, id: existing.id };
+  }
+  const id = await db.exerciseReference.add(row);
+  return { ...row, id };
+}
+
+export async function referenceForExercise(
+  exerciseId: string,
+): Promise<ExerciseReferenceRow | undefined> {
+  return db.exerciseReference.where('exerciseId').equals(exerciseId).first();
+}
+
+export async function allExerciseReferences(): Promise<ExerciseReferenceRow[]> {
+  return db.exerciseReference.orderBy('exerciseId').toArray();
+}
+
+export async function deleteExerciseReference(id: number): Promise<void> {
+  await db.exerciseReference.delete(id);
+}
+
 /** Trace de vidéo : la date, pas le fichier. */
 export async function logVideo(row: Omit<ExerciseVideoLogRow, 'id'>): Promise<void> {
   const existing = await db.exerciseVideoLog
@@ -348,8 +379,12 @@ export interface PhotoUsage {
  * blobs : compter 200 photos ne doit pas coûter 50 Mo de lecture.
  */
 export async function photoUsage(): Promise<PhotoUsage> {
-  const [photos, media] = await Promise.all([allPhotos(), allExerciseMedia()]);
-  const rows = [...photos, ...media];
+  const [photos, media, references] = await Promise.all([
+    allPhotos(),
+    allExerciseMedia(),
+    allExerciseReferences(),
+  ]);
+  const rows = [...photos, ...media, ...references];
   let quotaBytes: number | null = null;
   let usedBytes: number | null = null;
   if (typeof navigator !== 'undefined' && navigator.storage?.estimate) {

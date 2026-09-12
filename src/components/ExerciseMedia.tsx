@@ -3,12 +3,15 @@ import { PhotoCapture, PhotoThumb } from './PhotoCapture';
 import { humanDate } from '../engine/calendar';
 import {
   deleteExerciseMedia,
+  deleteExerciseReference,
   logVideo,
   mediaForExercise,
+  referenceForExercise,
   saveExerciseMedia,
+  saveExerciseReference,
   videoLogForExercise,
 } from '../db/repo';
-import type { ExerciseMediaRow, ExerciseVideoLogRow } from '../db/db';
+import type { ExerciseMediaRow, ExerciseReferenceRow, ExerciseVideoLogRow } from '../db/db';
 import type { DayIndex } from '../data/types';
 import styles from '../screens/Session.module.css';
 
@@ -33,6 +36,20 @@ export interface MediaContext {
  * Appareil photo d'iOS, qu'une page web ne peut pas lancer. Le bouton dit donc
  * quoi faire et enregistre la trace une fois que c'est fait. C'est exactement
  * ce que la trace était censée accompagner, sans le piège.
+ *
+ * ── Deux blocs, deux natures d'image ────────────────────────────────────────
+ *
+ * FICHE TECHNIQUE : une infographie d'exécution, la même partout. Elle vit
+ * dans sa propre table, sans date, donc la poser une fois la fait apparaître
+ * sur les dix occurrences du back squat des douze semaines.
+ *
+ * TA PROGRESSION : des photos de Guillaume à une séance précise, datées, pour
+ * comparer son exécution dans le temps.
+ *
+ * Les deux se ressemblent à l'écran — ce sont deux images d'un même mouvement —
+ * donc ils sont séparés par un titre, une couleur de liseré et un espacement
+ * net. Sans ça, une infographie finirait dans l'historique de progression, ce
+ * qui est exactement le défaut qu'on corrige.
  */
 export function ExerciseMediaButton({
   exerciseId,
@@ -44,17 +61,20 @@ export function ExerciseMediaButton({
   context: MediaContext;
 }) {
   const [open, setOpen] = useState(false);
+  const [reference, setReference] = useState<ExerciseReferenceRow | null>(null);
   const [photos, setPhotos] = useState<ExerciseMediaRow[]>([]);
   const [videos, setVideos] = useState<ExerciseVideoLogRow[]>([]);
   const [compare, setCompare] = useState(false);
 
   async function reload() {
-    const [p, v] = await Promise.all([
+    const [p, v, r] = await Promise.all([
       mediaForExercise(exerciseId),
       videoLogForExercise(exerciseId),
+      referenceForExercise(exerciseId),
     ]);
     setPhotos(p);
     setVideos(v);
+    setReference(r ?? null);
   }
 
   useEffect(() => {
@@ -65,6 +85,24 @@ export function ExerciseMediaButton({
   const todayPhoto = photos.find((p) => p.date === context.date);
   const todayVideo = videos.find((v) => v.date === context.date);
   const lastVideo = videos[videos.length - 1];
+
+  /** Fiche technique : aucune semaine, aucun jour. C'est tout l'intérêt. */
+  async function captureReference(b: {
+    blob: Blob;
+    bytes: number;
+    width: number;
+    height: number;
+  }) {
+    await saveExerciseReference({
+      exerciseId,
+      blob: b.blob,
+      bytes: b.bytes,
+      width: b.width,
+      height: b.height,
+      addedAt: context.date,
+    });
+    await reload();
+  }
 
   async function capture(b: { blob: Blob; bytes: number; width: number; height: number }) {
     await saveExerciseMedia({
@@ -93,6 +131,7 @@ export function ExerciseMediaButton({
         </button>
 
         {/* Badges : ce qui existe déjà, sans rien charger. */}
+        {reference && <span className={styles.mediaBadge}>📘 fiche</span>}
         {photos.length > 0 && (
           <span className={styles.mediaBadge}>
             📷 {photos.length} photo{photos.length > 1 ? 's' : ''}
@@ -105,7 +144,54 @@ export function ExerciseMediaButton({
 
       {open && (
         <div className={styles.mediaPanel}>
-          {/* --- Photo ------------------------------------------------------ */}
+          {/* --- 1. Fiche technique : hors du temps ------------------------- */}
+          <section className={`${styles.mediaBlock} ${styles.mediaBlockReference}`}>
+            <h4 className={styles.mediaBlockTitle}>📘 Fiche technique</h4>
+            <p className={styles.mediaNote} style={{ marginTop: 4 }}>
+              L’exécution du mouvement. Posée une fois, elle s’affiche sur{' '}
+              <b>toutes les semaines</b> — rien à refaire.
+            </p>
+            {reference ? (
+              <>
+                <div style={{ marginTop: 10 }}>
+                  <PhotoThumb
+                    blob={reference.blob}
+                    caption={`${exerciseName} — fiche ajoutée le ${humanDate(reference.addedAt)}`}
+                    bytes={reference.bytes}
+                  />
+                </div>
+                <PhotoCapture
+                  label="Remplacer la fiche"
+                  onCapture={captureReference}
+                  variant="secondary"
+                />
+                <button
+                  type="button"
+                  className={styles.mediaAction}
+                  style={{ color: 'var(--rouge)' }}
+                  onClick={() =>
+                    void (async () => {
+                      if (reference.id !== undefined) await deleteExerciseReference(reference.id);
+                      await reload();
+                    })()
+                  }
+                >
+                  Supprimer la fiche
+                </button>
+              </>
+            ) : (
+              <PhotoCapture label="Ajouter la fiche" onCapture={captureReference} variant="secondary" />
+            )}
+          </section>
+
+          {/* --- 2. Ta progression : daté, séance par séance ---------------- */}
+          <section className={`${styles.mediaBlock} ${styles.mediaBlockProgress}`}>
+            <h4 className={styles.mediaBlockTitle}>
+              📷 Ta progression — semaine {context.week}
+            </h4>
+            <p className={styles.mediaNote} style={{ marginTop: 4 }}>
+              Ton exécution du jour, datée. C’est elle qu’on compare d’une semaine à l’autre.
+            </p>
           {todayPhoto ? (
             <>
               <PhotoThumb
@@ -196,6 +282,7 @@ export function ExerciseMediaButton({
               Filmé {videos.length} fois : {videos.map((v) => humanDate(v.date)).join(', ')}.
             </p>
           )}
+          </section>
         </div>
       )}
     </>

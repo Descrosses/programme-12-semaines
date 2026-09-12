@@ -70,6 +70,14 @@ export interface PhotoExportFile {
     width: number;
     height: number;
   }>;
+  /** Fiches techniques. Absentes des exports antérieurs : toujours optionnel. */
+  exerciseReference?: Array<{
+    exerciseId: string;
+    addedAt: string;
+    dataUrl: string;
+    width: number;
+    height: number;
+  }>;
 }
 
 export async function exportAll(): Promise<ExportFile> {
@@ -101,9 +109,10 @@ export async function exportAll(): Promise<ExportFile> {
 
 /** Le fichier de photos, construit à la demande. */
 export async function exportPhotos(): Promise<PhotoExportFile> {
-  const [photos, media] = await Promise.all([
+  const [photos, media, references] = await Promise.all([
     db.progressPhotos.toArray(),
     db.exerciseMedia.toArray(),
+    db.exerciseReference.toArray(),
   ]);
   return {
     format: 'programme-12-semaines-photos',
@@ -127,6 +136,15 @@ export async function exportPhotos(): Promise<PhotoExportFile> {
         width: m.width,
         height: m.height,
         dataUrl: await blobToDataUrl(m.blob),
+      })),
+    ),
+    exerciseReference: await Promise.all(
+      references.map(async (r) => ({
+        exerciseId: r.exerciseId,
+        addedAt: r.addedAt,
+        width: r.width,
+        height: r.height,
+        dataUrl: await blobToDataUrl(r.blob),
       })),
     ),
   };
@@ -185,6 +203,7 @@ export interface ImportReport {
 export interface PhotoImportReport {
   progressPhotos: number;
   exerciseMedia: number;
+  exerciseReference: number;
 }
 
 /** Ce que contient un fichier déposé — l'import s'adapte au lieu d'exiger. */
@@ -215,6 +234,7 @@ export function parseAnyExport(text: string): AnyExportFile {
         exportedAt: f.exportedAt ?? '',
         progressPhotos: f.progressPhotos ?? [],
         exerciseMedia: f.exerciseMedia ?? [],
+        exerciseReference: f.exerciseReference ?? [],
       },
     };
   }
@@ -245,13 +265,40 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
     }),
   );
 
-  await db.transaction('rw', [db.progressPhotos, db.exerciseMedia], async () => {
-    await Promise.all([db.progressPhotos.clear(), db.exerciseMedia.clear()]);
-    await db.progressPhotos.bulkAdd(progress);
-    await db.exerciseMedia.bulkAdd(media);
-  });
+  const references = await Promise.all(
+    (file.exerciseReference ?? []).map(async (r) => {
+      const blob = await dataUrlToBlob(r.dataUrl);
+      return {
+        exerciseId: r.exerciseId,
+        addedAt: r.addedAt,
+        width: r.width,
+        height: r.height,
+        blob,
+        bytes: blob.size,
+      };
+    }),
+  );
 
-  return { progressPhotos: progress.length, exerciseMedia: media.length };
+  await db.transaction(
+    'rw',
+    [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
+    async () => {
+      await Promise.all([
+        db.progressPhotos.clear(),
+        db.exerciseMedia.clear(),
+        db.exerciseReference.clear(),
+      ]);
+      await db.progressPhotos.bulkAdd(progress);
+      await db.exerciseMedia.bulkAdd(media);
+      await db.exerciseReference.bulkAdd(references);
+    },
+  );
+
+  return {
+    progressPhotos: progress.length,
+    exerciseMedia: media.length,
+    exerciseReference: references.length,
+  };
 }
 
 /** Vérifie qu'un fichier est bien un export de cette appli avant d'y toucher. */
@@ -365,7 +412,15 @@ export async function resetHistory(): Promise<void> {
  * séries. L'inverse vaut aussi — repartir à zéro sans jeter les photos.
  */
 export async function resetPhotos(): Promise<void> {
-  await db.transaction('rw', [db.progressPhotos, db.exerciseMedia], async () => {
-    await Promise.all([db.progressPhotos.clear(), db.exerciseMedia.clear()]);
-  });
+  await db.transaction(
+    'rw',
+    [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
+    async () => {
+      await Promise.all([
+        db.progressPhotos.clear(),
+        db.exerciseMedia.clear(),
+        db.exerciseReference.clear(),
+      ]);
+    },
+  );
 }

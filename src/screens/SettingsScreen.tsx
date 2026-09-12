@@ -93,7 +93,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         setUsage(await photoUsage());
         onChanged();
         setMessage({
-          text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice. L’historique d’entraînement n’a pas été touché.`,
+          text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice, ${report.exerciseReference} fiche${report.exerciseReference > 1 ? 's' : ''} technique${report.exerciseReference > 1 ? 's' : ''}. L’historique d’entraînement n’a pas été touché.`,
           kind: 'ok',
         });
         return;

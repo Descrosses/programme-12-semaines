@@ -567,3 +567,39 @@
   gap: 10px;
   margin-top: 10px;
 }
+
+/*
+ * Les deux blocs du panneau de documentation.
+ *
+ * Fiche technique et progression montrent toutes deux une image du même
+ * mouvement : à l'œil, rien ne les distingue. La séparation est donc portée
+ * par trois signaux redondants — un titre explicite, un liseré de couleur
+ * différente, et un fond plus profond que le panneau. Un seul de ces signaux
+ * ne suffirait pas à empêcher de ranger une infographie dans l'historique.
+ */
+.mediaBlock {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  border-left: 4px solid var(--line);
+}
+
+.mediaBlock + .mediaBlock {
+  margin-top: 16px;
+}
+
+/* Vert « test » : une référence, elle ne bouge pas. */
+.mediaBlockReference {
+  border-left-color: var(--bloc-test);
+}
+
+/* Jaune d'action : ce qui se met à jour séance après séance. */
+.mediaBlockProgress {
+  border-left-color: var(--accent);
+}
+
+.mediaBlockTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
