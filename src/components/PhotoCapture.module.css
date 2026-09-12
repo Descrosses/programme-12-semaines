@@ -12,15 +12,25 @@
   font-weight: 700;
 }
 
+/*
+ * `--surface-3` et non `--surface-2` : ces boutons apparaissent aussi bien sur
+ * une carte (`--surface`) que dans le panneau de documentation d'un exercice,
+ * qui est déjà en `--surface-2`. Au même ton que son fond, le bouton cesse
+ * d'en être un — il ressemble à du texte.
+ */
 .secondary {
   display: block;
   width: 100%;
   height: var(--tap);
   margin-top: 10px;
   border-radius: var(--radius-sm);
-  background: var(--surface-2);
+  background: var(--surface-3);
   color: var(--ink);
   font-weight: 700;
+}
+
+.secondary:active {
+  background: var(--line);
 }
 
 .primary:disabled,

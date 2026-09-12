@@ -129,7 +129,7 @@ export function ExerciseMediaButton({
               </button>
             </>
           ) : (
-            <PhotoCapture label="📷 Photo de l’exécution" onCapture={capture} />
+            <PhotoCapture label="Photo de l’exécution" onCapture={capture} />
           )}
 
           {/* --- Vidéo : une trace, pas un fichier --------------------------- */}

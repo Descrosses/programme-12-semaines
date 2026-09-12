@@ -132,7 +132,7 @@ export function VisualTracking() {
               </>
             ) : (
               <>
-                <PhotoCapture label="📷 Prendre la photo de la semaine" onCapture={capture} />
+                <PhotoCapture label="Prendre la photo de la semaine" onCapture={capture} />
                 {startDate && (
                   <p className={styles.fieldHint}>
                     Semaine {week}, à partir du {humanDate(dateFor(startDate, week as WeekIndex, 0))}.
