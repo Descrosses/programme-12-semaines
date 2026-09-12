@@ -166,6 +166,15 @@ export interface SettingsRow {
   bodyweightKg: number | null;
   /** Date `YYYY-MM-DD` du dernier relevé de poids, pour dater le rappel. */
   bodyweightDate: string;
+  /**
+   * Date `YYYY-MM-DD` du dernier recalage des charges sur les 1RM testés.
+   *
+   * Vide = les charges tournent encore sur les estimations d'avant le combine.
+   * Sert à dire à Guillaume à partir de quand le plan affiché repose sur ses
+   * vrais maxima — les séances validées avant, elles, restent telles quelles :
+   * elles enregistrent ce qu'il a réellement soulevé, pas ce qui était prévu.
+   */
+  oneRMCalibratedAt: string;
   /** Son et vibration en fin de repos. */
   soundEnabled: boolean;
   vibrationEnabled: boolean;
@@ -325,6 +334,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   oneRM: {},
   bodyweightKg: null,
   bodyweightDate: '',
+  oneRMCalibratedAt: '',
   soundEnabled: true,
   vibrationEnabled: true,
 };

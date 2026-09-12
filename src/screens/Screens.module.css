@@ -449,6 +449,18 @@
   color: var(--ink-2);
 }
 
+/* Liste des écarts de 1RM avant recalage des charges. */
+.changeList {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.changeList li + li {
+  margin-top: 6px;
+}
+
 /* ------------------------------------------------------ suivi visuel -- */
 
 .compareSelects {

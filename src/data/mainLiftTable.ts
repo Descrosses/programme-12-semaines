@@ -11,6 +11,7 @@
  * qu'on compare au RPE ressenti.
  */
 
+import { roundToStep } from '../engine/rounding';
 import {
   attempts,
   bb,
@@ -21,6 +22,7 @@ import {
   rpeRange,
   type LiftSchedule,
   type LoadSpec,
+  type MainLiftId,
   type MainLiftTable,
   type Reps,
   type RPETarget,
@@ -239,12 +241,110 @@ export const MAIN_LIFT_TABLE: MainLiftTable = {
   rdl: romanianDeadlift,
 };
 
+// ---------------------------------------------------------------------------
+// Recalage sur les 1RM réellement testés
+// ---------------------------------------------------------------------------
+
+/**
+ * Les 1RM avec lesquels le tableau du §9 a été écrit.
+ *
+ * Ce ne sont PAS des mesures : ce sont les estimations faites avant le combine
+ * initial, du temps où personne n'avait encore testé quoi que ce soit. Chaque
+ * case du tableau est un pourcentage de ces valeurs — 100 kg de squat en
+ * semaine 1, c'est 71 % de 140.
+ *
+ * Le jour où le combine donne les vrais maxima, les pourcentages ne changent
+ * pas ; c'est la base qui change. D'où ce tableau : il sert de dénominateur.
+ */
+export const REFERENCE_1RM = {
+  'back-squat': 140,
+  'bench-press': 120,
+  deadlift: 130,
+  'weighted-pullup': 42,
+} as const;
+
+export type CalibratedLift = keyof typeof REFERENCE_1RM;
+
+/**
+ * Quel 1RM testé pilote chaque colonne du tableau.
+ *
+ * Quatre mouvements sont testés au combine et se recalent sur eux-mêmes. Les
+ * trois autres n'ont pas de 1RM propre :
+ *
+ * - front squat et speed squat sont des variantes de squat, chargées en
+ *   pourcentage du back squat (§7 : « 55-60 % » pour le speed squat). Ils
+ *   suivent donc le back squat ;
+ * - le push press est une poussée verticale, la seule référence testée qui
+ *   s'en approche est le bench. Le lien est plus lâche, mais laisser le push
+ *   press seul figé pendant que tout le reste bouge serait pire.
+ *
+ * Le RDL n'est pas dans le tableau §9 : ses charges viennent d'ailleurs.
+ */
+const CALIBRATION_BASE: Partial<Record<MainLiftId, CalibratedLift>> = {
+  'back-squat': 'back-squat',
+  'bench-press': 'bench-press',
+  deadlift: 'deadlift',
+  'weighted-pullup': 'weighted-pullup',
+  'front-squat': 'back-squat',
+  'speed-squat': 'back-squat',
+  'push-press': 'bench-press',
+};
+
+/** 1RM testés, tels qu'ils arrivent des Réglages. Clés absentes = non testé. */
+export type TestedOneRM = Partial<Record<CalibratedLift, number>>;
+
+/**
+ * Facteur à appliquer aux charges d'une colonne.
+ *
+ * Vaut exactement 1 tant qu'aucun test n'a été saisi, ou quand le test tombe
+ * sur la valeur de référence : le tableau du .md reste alors intact, au
+ * kilogramme près. Rien ne bouge tant que Guillaume n'a pas recalé.
+ */
+export function calibrationFactor(lift: MainLiftId, tested: TestedOneRM | undefined): number {
+  const base = CALIBRATION_BASE[lift];
+  if (!base || !tested) return 1;
+  const kg = tested[base];
+  if (typeof kg !== 'number' || kg <= 0) return 1;
+  return kg / REFERENCE_1RM[base];
+}
+
+/** Applique le facteur à une prescription, en respectant le pas de la charge. */
+function calibrate(
+  presc: WeekPrescription,
+  lift: MainLiftId,
+  tested: TestedOneRM | undefined,
+): WeekPrescription {
+  const factor = calibrationFactor(lift, tested);
+  if (factor === 1 || !presc.load || !('kg' in presc.load) || presc.load.kg === null) {
+    return presc;
+  }
+  const load = presc.load;
+  const kg = roundToStep(load.kg * factor, load.step);
+  return {
+    ...presc,
+    load: {
+      ...load,
+      kg,
+      ...('kgMax' in load && typeof load.kgMax === 'number'
+        ? { kgMax: roundToStep(load.kgMax * factor, load.step) }
+        : {}),
+    },
+  };
+}
+
 /**
  * Prescription du tableau pour une semaine donnée.
+ *
  * @param week 1 à 12. Renvoie `null` hors de cet intervalle ou si le mouvement
  *             n'est pas programmé cette semaine-là.
+ * @param tested 1RM réellement testés. Omis = le tableau de référence tel quel.
  */
-export function prescriptionFor(lift: import('./types').MainLiftId, week: number): WeekPrescription | null {
+export function prescriptionFor(
+  lift: MainLiftId,
+  week: number,
+  tested?: TestedOneRM,
+): WeekPrescription | null {
   if (week < 1 || week > 12) return null;
-  return MAIN_LIFT_TABLE[lift][week - 1] ?? null;
+  const presc = MAIN_LIFT_TABLE[lift][week - 1] ?? null;
+  return presc && calibrate(presc, lift, tested);
 }

@@ -40,6 +40,7 @@ export function ProgressScreen() {
     readiness: ReadinessRow[];
     sets: SetRow[];
     baseline: number | null;
+    oneRM: Record<string, number>;
   } | null>(null);
   const [lift, setLift] = useState<MainLiftId>('deadlift');
 
@@ -55,6 +56,7 @@ export function ProgressScreen() {
         readiness,
         sets,
         baseline: settingsRow.broadJumpBaselineCm,
+        oneRM: settingsRow.oneRM,
       });
     })();
   }, []);
@@ -69,7 +71,9 @@ export function ProgressScreen() {
   // --- charge réelle vs plan, semaine par semaine ---------------------------
   const planPoints = [];
   for (let w = 1; w <= 12; w++) {
-    const p = prescriptionFor(lift, w);
+    // Même base que les séances : la courbe « Plan » doit montrer le plan
+    // recalé, pas celui d'avant le combine.
+    const p = prescriptionFor(lift, w, data.oneRM);
     const kg = p?.load && 'kg' in p.load ? p.load.kg : null;
     if (kg !== null) planPoints.push({ x: w, y: kg });
   }

@@ -114,13 +114,7 @@ export function CombineScreen() {
           >
             {gapNow === null ? '—' : `${gapNow > 0 ? '+' : ''}${fr(gapNow)} kg`}
           </div>
-          <div className={styles.keyStatLabel}>
-            {gapNow === null
-              ? 'Saisis un deadlift et un squat 1RM pour le calculer.'
-              : gapInitial !== null && gapFinal !== null
-                ? `Au départ ${fr(gapInitial)} kg, aujourd’hui ${fr(gapFinal)} kg.`
-                : 'Départ : deadlift 130, squat 140, soit −10 kg.'}
-          </div>
+          <div className={styles.keyStatLabel}>{gapLabel(byPhase, gapInitial, gapFinal)}</div>
         </div>
       </section>
 
@@ -249,4 +243,36 @@ export function CombineScreen() {
       </button>
     </div>
   );
+}
+
+/**
+ * Légende de l'écart deadlift − squat.
+ *
+ * Elle affichait une phrase écrite en dur — « Départ : deadlift 130, squat
+ * 140, soit −10 kg » — qui étaient les estimations d'avant le combine. Le
+ * chiffre au-dessus, lui, venait des vrais tests. Deux sources pour un même
+ * indicateur, et la légende contredisait le nombre qu'elle expliquait.
+ *
+ * Tout vient désormais des combines enregistrés, et rien d'autre.
+ */
+function gapLabel(
+  byPhase: (p: CombinePhase) => Record<string, number | null>,
+  gapInitial: number | null,
+  gapFinal: number | null,
+): string {
+  if (gapInitial === null && gapFinal === null) {
+    return 'Saisis un deadlift et un squat 1RM pour le calculer.';
+  }
+  if (gapInitial !== null && gapFinal !== null) {
+    return `Au départ ${fr(gapInitial)} kg, aujourd’hui ${fr(gapFinal)} kg.`;
+  }
+  const m = byPhase('initial');
+  const dl = m['test-deadlift-1rm'];
+  const sq = m['test-squat-1rm'];
+  if (typeof dl === 'number' && typeof sq === 'number') {
+    return `Combine initial : deadlift ${fr(dl)}, squat ${fr(sq)}, soit ${
+      gapInitial! > 0 ? '+' : ''
+    }${fr(gapInitial!)} kg.`;
+  }
+  return 'Mesuré au combine final. Saisis le combine initial pour voir la progression.';
 }

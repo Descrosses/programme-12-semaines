@@ -12,8 +12,21 @@ import {
   resetHistory,
   resetPhotos,
 } from '../db/export';
+import {
+  calibrationChanges,
+  largestChange,
+  liftLabel,
+  testedFromCombine,
+} from '../engine/calibration';
 import { formatBytes } from '../media/photo';
-import { allMeasurements, getSettingsRow, photoUsage, saveSettings, type PhotoUsage } from '../db/repo';
+import {
+  allCombines,
+  allMeasurements,
+  getSettingsRow,
+  photoUsage,
+  saveSettings,
+  type PhotoUsage,
+} from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import styles from './Screens.module.css';
 
@@ -34,6 +47,8 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
    */
   const [last3, setLast3] = useState<number | null>(null);
   const [usage, setUsage] = useState<PhotoUsage | null>(null);
+  /** 1RM mesurés au combine initial, pour les comparer à la base des charges. */
+  const [tested, setTested] = useState<Record<string, number>>({});
   const [confirmPhotos, setConfirmPhotos] = useState(false);
   const [message, setMessage] = useState<{ text: string; kind: 'ok' | 'erreur' } | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
@@ -52,6 +67,8 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
           : null,
       );
       setUsage(await photoUsage());
+      const initial = (await allCombines()).find((c) => c.phase === 'initial');
+      setTested(testedFromCombine(initial?.metrics) as Record<string, number>);
     })();
   }, []);
 
@@ -95,6 +112,8 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
 
   const start = row.startDate;
   const ancreValide = start !== '' && isMonday(start);
+  const ecarts = calibrationChanges(tested, row.oneRM);
+  const pire = largestChange(ecarts);
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -235,9 +254,61 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>1RM testés</h2>
         <p className={styles.cardSub}>
-          Servent au calcul des 65 % les jours de readiness rouge. À mettre à jour après le combine
-          final — le combine de la semaine 8 ne teste aucun 1RM.
+          Ce sont eux qui pilotent <b>toutes les charges du programme</b> : le tableau §9 n’est
+          qu’un jeu de pourcentages appliqués à ces valeurs. Ils servent aussi au calcul des 65 %
+          les jours de readiness rouge.
         </p>
+        {row.oneRMCalibratedAt ? (
+          <p className={styles.fieldHint}>
+            Charges recalées le {humanDate(row.oneRMCalibratedAt)}. Les séances validées avant cette
+            date ont été planifiées sur une estimation — ce que tu y as réellement soulevé reste
+            juste, seul le plan était faux.
+          </p>
+        ) : (
+          <p className={styles.fieldHint}>
+            Valeurs estimées avant le combine. Elles n’ont encore jamais été recalées sur un test.
+          </p>
+        )}
+
+        {ecarts.length > 0 && (
+          <>
+            <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '12px 0 0' }}>
+              <b>Ton combine initial ne dit pas la même chose.</b>{' '}
+              {pire &&
+                `${liftLabel(pire.lift)} : ${fr(pire.from)} kg estimé contre ${fr(pire.to)} kg testé, soit ${pire.pct > 0 ? '+' : ''}${fr(pire.pct)} %.`}{' '}
+              Tant que tu ne recales pas, les charges affichées restent calculées sur les
+              estimations.
+            </p>
+            <ul className={styles.changeList}>
+              {ecarts.map((c) => (
+                <li key={c.lift}>
+                  {liftLabel(c.lift)} : <b>{fr(c.from)}</b> → <b>{fr(c.to)} kg</b>{' '}
+                  <span style={{ color: c.pct < 0 ? 'var(--rouge)' : 'var(--vert)' }}>
+                    ({c.pct > 0 ? '+' : ''}
+                    {fr(c.pct)} %)
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className={styles.secondary}
+              style={{ width: '100%', margin: '12px 0 0', background: 'var(--accent)', color: 'var(--ink-on-accent)' }}
+              onClick={() =>
+                void patch({
+                  oneRM: { ...row.oneRM, ...tested },
+                  oneRMCalibratedAt: today,
+                })
+              }
+            >
+              Recaler les charges sur mes tests
+            </button>
+            <p className={styles.fieldHint}>
+              Rien n’est effacé : tes séances déjà validées gardent les charges que tu y as
+              réellement soulevées. Seul le plan des semaines à venir change.
+            </p>
+          </>
+        )}
         {ONE_RM_FIELDS.map((f) => (
           <div key={f.id} className={styles.field}>
             <Stepper
