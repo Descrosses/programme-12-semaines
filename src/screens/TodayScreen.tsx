@@ -9,10 +9,12 @@ import {
   nearestMonday,
   type TodayState,
 } from '../engine/calendar';
+import { calibrationChanges, largestChange, liftLabel, testedFromCombine } from '../engine/calibration';
 import { fr } from '../engine/format';
 import { getSession } from '../engine/getSession';
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import {
+  allCombines,
   allReadiness,
   allSessions,
   allSets,
@@ -69,6 +71,8 @@ export function TodayScreen({
     /** Le combine est aujourd'hui ou c'est la prochaine séance. */
     combineAhead: boolean;
     bodyweightKg: number | null;
+    /** Le combine a mesuré des 1RM qui ne pilotent pas encore les charges. */
+    aRecaler: ReturnType<typeof calibrationChanges>;
   }>({
     loading: true,
     today: null,
@@ -80,6 +84,7 @@ export function TodayScreen({
     startDate: '',
     combineAhead: false,
     bodyweightKg: null,
+    aRecaler: [],
   });
 
   useEffect(() => {
@@ -89,10 +94,11 @@ export function TodayScreen({
       const todayIso = new Date().toISOString().slice(0, 10);
       const today = locateToday(settings.startDate, todayIso);
 
-      const [sets, readinessRows, rows] = await Promise.all([
+      const [sets, readinessRows, rows, combines] = await Promise.all([
         allSets(),
         allReadiness(),
         allSessions(),
+        allCombines(),
       ]);
       const history = buildHistoryIndex(sets);
       const trend = explosiveTrend(toReadinessRecords(readinessRows), todayIso);
@@ -134,6 +140,10 @@ export function TodayScreen({
         startDate: settings.startDate,
         combineAhead: target ? isCombineDay(target.week, target.day) : false,
         bodyweightKg: settingsRow.bodyweightKg,
+        aRecaler: calibrationChanges(
+          testedFromCombine(combines.find((c) => c.phase === 'initial')?.metrics),
+          settingsRow.oneRM,
+        ),
       });
     })();
   }, []);
@@ -271,6 +281,26 @@ export function TodayScreen({
           ›
         </span>
       </button>
+
+      {/*
+        Les charges tournent encore sur des maxima estimés alors que le combine
+        en a mesuré d'autres. C'est le défaut le plus dangereux possible ici :
+        un squat surestimé de 30 kg transforme la semaine 1 en quasi-maximal.
+      */}
+      {state.aRecaler.length > 0 && (
+        <button
+          type="button"
+          className={`${styles.alert} ${styles.alertRouge} ${styles.alertAction}`}
+          onClick={onGoSettings}
+        >
+          <b>Tes charges ne sont pas calées sur ton combine.</b>{' '}
+          {(() => {
+            const pire = largestChange(state.aRecaler)!;
+            return `${liftLabel(pire.lift)} : le plan tourne sur ${fr(pire.from)} kg, tu as testé ${fr(pire.to)} kg.`;
+          })()}{' '}
+          Appuie ici pour recaler avant ta prochaine séance.
+        </button>
+      )}
 
       {state.startDate !== '' && !isMonday(state.startDate) && (
         <button
