@@ -269,6 +269,43 @@ export class ProgrammeDB extends Dexie {
           .update(1, { startDate: mondayOnOrAfter(settings.startDate as string) });
       }
     });
+
+    /*
+     * v6 — répare un effet de bord de la v5.
+     *
+     * La v5 traduit les numéros de jour, ce qui est juste pour une semaine
+     * d'entraînement : le lundi reste le lundi, la séance est la même avant et
+     * après. Mais la semaine 0 a été entièrement redessinée au même moment —
+     * trois séances sont devenues cinq, et leur contenu a changé. Traduire un
+     * numéro n'y avait donc aucun sens : un « fait » posé sur l'ancien jour 3
+     * (deadlift, lundi) se retrouvait sur la nouvelle séance sauts + squat.
+     *
+     * Les lignes de la semaine 0 ne décrivent plus rien : on les efface, ainsi
+     * que leurs séries. Les résultats du combine, eux, vivent dans la table
+     * `combines` (onglet Combine) et ne sont pas touchés — rien d'irremplaçable
+     * ne part.
+     */
+    this.version(6).upgrade(async (tx) => {
+      const sessions = (await tx.table('sessions').toArray()) as SessionRow[];
+      const week0 = sessions.filter((s) => s.week === 0);
+      const ids = new Set(week0.map((s) => s.id));
+
+      await tx
+        .table('sets')
+        .toCollection()
+        .filter((r: SetRow) => r.week === 0 || ids.has(r.sessionId))
+        .delete();
+      await tx
+        .table('readiness')
+        .toCollection()
+        .filter((r: ReadinessRow) => r.week === 0)
+        .delete();
+      await tx
+        .table('sessions')
+        .toCollection()
+        .filter((r: SessionRow) => r.week === 0)
+        .delete();
+    });
   }
 }
 

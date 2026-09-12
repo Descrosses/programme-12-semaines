@@ -133,7 +133,7 @@ const fromTable = (exId: string, liftId: Slot['liftId'], restSec: number, note?:
 /** Lundi — le jour qui fixe la référence de readiness pour les 12 semaines. */
 const COMBINE_LUNDI: SessionBlueprint = {
   day: 0,
-  title: 'Combine initial — sauts, sprints, squat',
+  title: 'Combine initial — sauts, sprints, squat 1RM',
   durationLabel: '75 min',
   intensity: 'TEST',
   warmup: 'lower',
@@ -187,7 +187,7 @@ const COMBINE_JEUDI: SessionBlueprint = {
 /** Vendredi — le bench ne touche ni la préhension ni les lats. */
 const COMBINE_VENDREDI: SessionBlueprint = {
   day: 4,
-  title: 'Combine initial — bench 1RM + tronc',
+  title: 'Combine initial — bench 1RM + ab wheel',
   durationLabel: '55 min',
   intensity: 'TEST',
   warmup: 'upper',
@@ -206,7 +206,7 @@ const COMBINE_VENDREDI: SessionBlueprint = {
  */
 const COMBINE_SAMEDI: SessionBlueprint = {
   day: 5,
-  title: 'Combine initial — tractions max, tronc, farmer',
+  title: 'Combine initial — tractions max, leg raise, farmer',
   durationLabel: '50 min',
   intensity: 'TEST',
   warmup: 'upper',

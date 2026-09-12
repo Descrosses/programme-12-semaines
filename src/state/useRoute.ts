@@ -77,7 +77,18 @@ function clampWeek(raw: string | undefined): WeekIndex {
   return (Number.isInteger(n) && n >= 0 && n <= 12 ? n : 1) as WeekIndex;
 }
 
+/**
+ * Borne haute = 6, les sept jours de la semaine.
+ *
+ * Elle était à 4 du temps où `DayIndex` ne comptait que cinq jours. Après
+ * l'élargissement, samedi (5) et dimanche (6) sortaient de la borne et
+ * retombaient silencieusement sur 0 : appuyer sur la séance du samedi ouvrait
+ * celle du lundi, dans toutes les semaines. La borne d'un garde-fou se lit
+ * désormais dans le type lui-même.
+ */
+const LAST_DAY = 6;
+
 function clampDay(raw: string | undefined): DayIndex {
   const n = Number(raw);
-  return (Number.isInteger(n) && n >= 0 && n <= 4 ? n : 0) as DayIndex;
+  return (Number.isInteger(n) && n >= 0 && n <= LAST_DAY ? n : 0) as DayIndex;
 }
