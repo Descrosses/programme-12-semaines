@@ -449,6 +449,108 @@
   color: var(--ink-2);
 }
 
+/* ------------------------------------------------- carburant du jour -- */
+
+/*
+ * Carte compacte : elle se lit en trois secondes avant de partir travailler.
+ * Le liseré gauche porte le niveau, comme les bandeaux de bloc ailleurs dans
+ * l'appli — on reste dans le vocabulaire visuel existant.
+ */
+.fuelCard {
+  border-left: 4px solid var(--line);
+}
+
+.fuel_high {
+  border-left-color: var(--rouge);
+}
+
+.fuel_medium {
+  border-left-color: var(--orange);
+}
+
+.fuel_standard {
+  border-left-color: var(--accent);
+}
+
+.fuel_rest {
+  border-left-color: var(--vert);
+}
+
+.fuelHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fuelDot {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.fuelTitle {
+  display: block;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.fuelSubtitle {
+  display: block;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.fuelFoods {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.fuelAmounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* Les trois lignes du total, alignées : base, bonus, somme. */
+.fuelTotals {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-small);
+}
+
+.fuelTotals dt {
+  color: var(--ink-2);
+}
+
+.fuelTotals dd {
+  margin: 0;
+  text-align: right;
+}
+
+/* La dernière ligne est celle qu'on retient. */
+.fuelTotals dt:last-of-type,
+.fuelTotals dd:last-of-type {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.fuelMessage {
+  margin-top: 12px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
 /* Liste des écarts de 1RM avant recalage des charges. */
 .changeList {
   margin: 10px 0 0;
