@@ -5,6 +5,8 @@
 
 import type { DayIndex, RPETarget } from '../data/types';
 import type { HistoryIndex, Occurrence, ReadinessRecord, Settings } from '../engine/types';
+import type { WeekIndex } from '../data/types';
+import { dateFor } from '../engine/calendar';
 import {
   DEFAULT_SETTINGS_ROW,
   db,
@@ -33,7 +35,48 @@ export async function saveSettings(patch: Partial<SettingsRow>): Promise<Setting
   const current = await getSettingsRow();
   const next = { ...current, ...patch, id: 1 as const };
   await db.settings.put(next);
+  if (next.startDate !== current.startDate && next.startDate !== '') {
+    await realignScheduleDates(next.startDate);
+  }
   return next;
+}
+
+/**
+ * Recale sur la nouvelle ancre les dates qui DÉCOULENT du calendrier.
+ *
+ * Décaler la date de début ne change aucune performance : une série est rangée
+ * sous `[semaine, jour]`, jamais sous sa date. Mais les lignes déjà écrites
+ * portent une copie de leur date, calculée avec l'ancienne ancre. Sans ce
+ * passage, l'écran Semaine afficherait la bonne date (il la recalcule) pendant
+ * que l'historique en garderait une périmée — deux vérités pour la même séance.
+ *
+ * Ce qui est recalé : les séances, leurs séries, et les tests de détente, parce
+ * que leur date n'est qu'une conséquence de la case du calendrier.
+ *
+ * Ce qui ne l'est JAMAIS : les pesées, les photos, les vidéos notées et les
+ * résultats du combine. Ces dates-là sont des faits — le jour où Guillaume
+ * s'est pesé, le jour où il a pris la photo. Les décaler falsifierait
+ * l'historique au lieu de le corriger.
+ */
+export async function realignScheduleDates(startDate: string): Promise<number> {
+  let recalees = 0;
+
+  for (const row of await db.sessions.toArray()) {
+    const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
+    if (row.date === attendue || row.id === undefined) continue;
+    await db.sessions.update(row.id, { date: attendue });
+    await db.sets.where('sessionId').equals(row.id).modify({ date: attendue });
+    recalees += 1;
+  }
+
+  for (const row of await db.readiness.toArray()) {
+    const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
+    if (row.date === attendue || row.id === undefined) continue;
+    await db.readiness.update(row.id, { date: attendue });
+    recalees += 1;
+  }
+
+  return recalees;
 }
 
 export function toEngineSettings(row: SettingsRow): Settings {
