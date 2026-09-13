@@ -48,92 +48,78 @@ export interface NutritionTarget {
 // §« Journée type — jour d'entraînement »
 // ---------------------------------------------------------------------------
 
+const REVEIL: Meal = {
+  name: 'Réveil — 6 h',
+  detail: '3 œufs entiers + 3 tranches de pain complet + 20 g de miel + 1 banane',
+  kcal: 645,
+  proteinG: 30,
+};
+
+const COLLATION_8H: Meal = {
+  name: 'Collation — 8 h',
+  detail: '60 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
+  kcal: 345,
+  proteinG: 16,
+};
+
+const COLLATION_10H: Meal = {
+  name: 'Collation — 10 h',
+  detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
+  kcal: 430,
+  proteinG: 34,
+};
+
+const DEJEUNER: Meal = {
+  name: 'Déjeuner',
+  detail: '180-200 g de protéine + 300 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
+  kcal: 865,
+  proteinG: 67,
+};
+
+const AUTOUR_SEANCE: Meal = {
+  name: 'Autour de la séance — 16 h',
+  detail:
+    'Avant (1 h 30) : banane + 2 tranches de pain avec 20 g de miel. Après (45 min) : shaker whey 30 g + 1 pomme',
+  kcal: 540,
+  proteinG: 32,
+};
+
+const DINER: Meal = {
+  name: 'Dîner',
+  detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
+  kcal: 785,
+  proteinG: 63,
+};
+
 const TRAIN: NutritionTarget = {
   kind: 'train',
   label: 'Jour d’entraînement',
   kcal: 3600,
-  proteinG: 170,
-  carbsG: 480,
-  fatG: 100,
+  proteinG: 240,
+  carbsG: 425,
+  fatG: 105,
   note: 'Les glucides se concentrent autour de la séance, pas le soir devant la télé.',
-  meals: [
-    {
-      name: 'Réveil',
-      detail: '3 œufs entiers + 2 tranches de pain complet + 1 fruit',
-      kcal: 550,
-      proteinG: 32,
-    },
-    {
-      name: 'Collation matin',
-      detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
-      kcal: 420,
-      proteinG: 34,
-    },
-    {
-      name: 'Déjeuner',
-      detail: '180-200 g de protéine + 200 g de féculent (cuit) + légumes + huile d’olive',
-      kcal: 790,
-      proteinG: 52,
-    },
-    {
-      name: 'Avant / après séance',
-      detail:
-        'Avant (1 h 30) : banane + pain miel. Après (45 min) : shaker whey 30 g + fruit, ou 2 yaourts + flocons d’avoine',
-      kcal: 350,
-      proteinG: 30,
-    },
-    {
-      name: 'Dîner',
-      detail: '180-200 g de protéine + 200 g de féculent + légumes + huile d’olive ou de colza',
-      kcal: 790,
-      proteinG: 52,
-    },
-  ],
+  meals: [REVEIL, COLLATION_8H, COLLATION_10H, DEJEUNER, AUTOUR_SEANCE, DINER],
 };
 
 // ---------------------------------------------------------------------------
 // §« Journée type — jour de repos (mardi, jeudi) »
 //
-// Le .md décrit ce palier par différence : « Retire la collation glucidique
-// spécifiquement post-training, et réduis les féculents du déjeuner et du dîner
-// d'environ 30-40 g chacun ». Les quantités ci-dessous sont cette soustraction,
-// telle que la maquette validée avec Guillaume l'a chiffrée.
+// Le .md ne décrit plus ce palier par des portions réduites : « Exactement les
+// mêmes repas, moins la prise autour de la séance. Aucune portion à
+// recalculer. » Les repas ci-dessous sont donc littéralement les mêmes objets,
+// la prise de 16 h en moins — ce qui garantit qu'ils ne peuvent pas diverger.
 // ---------------------------------------------------------------------------
 
 const REST: NutritionTarget = {
   kind: 'rest',
   label: 'Jour de repos',
-  kcal: 3150,
-  proteinG: 170,
-  carbsG: 380,
+  kcal: 3100,
+  proteinG: 210,
+  carbsG: 325,
   fatG: 100,
-  note: 'Ce n’est pas un jour « low carb » : mêmes protéines, seulement moins de féculents.',
-  meals: [
-    {
-      name: 'Réveil',
-      detail: '3 œufs entiers + 2 tranches de pain complet + 1 fruit',
-      kcal: 550,
-      proteinG: 32,
-    },
-    {
-      name: 'Collation matin',
-      detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
-      kcal: 420,
-      proteinG: 34,
-    },
-    {
-      name: 'Déjeuner',
-      detail: '180-200 g de protéine + 160-170 g de féculent + légumes + huile d’olive',
-      kcal: 720,
-      proteinG: 52,
-    },
-    {
-      name: 'Dîner',
-      detail: '180-200 g de protéine + 160 g de féculent + légumes + huile d’olive',
-      kcal: 660,
-      proteinG: 52,
-    },
-  ],
+  note: 'Ce n’est pas un jour « low carb » : mêmes repas, mêmes portions, simplement une prise en moins.',
+  meals: [REVEIL, COLLATION_8H, COLLATION_10H, DEJEUNER, DINER],
 };
 
 export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
@@ -144,14 +130,17 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
 /**
  * Ce que les repas listés totalisent réellement.
  *
- * Ce n'est PAS la cible : le .md annonce 3 600 kcal en tête, mais la somme de
- * ses cinq repas tombe à 2 900. L'écart est de −700 kcal, soit 19 % — bien
- * au-delà d'un arrondi. Suivre les portions écrites à la lettre revient donc à
- * manger nettement moins que la cible, et à ne pas prendre le poids visé.
+ * Longtemps, ce n'était PAS la cible : le .md annonçait 3 600 kcal en tête et la
+ * somme de ses repas tombait à 2 770, puis 2 900. L'écart, −23 % puis −19 %,
+ * n'avait rien d'un arrondi : suivre les portions écrites à la lettre revenait
+ * à manger nettement moins que la cible, donc à ne pas prendre le poids visé.
  *
- * Les portions relevées du déjeuner et du dîner (200 g de féculent cuit,
- * 180-200 g de protéine) ont réduit cet écart de 830 à 700 kcal, pas comblé :
- * l'alerte de l'écran Nutrition reste donc allumée, et c'est voulu.
+ * Le plan a été refait sur les valeurs de composition réelles des aliments
+ * listés, avec une sixième prise à 8 h : la somme tombe maintenant à moins de
+ * 2 % de la cible sur les deux paliers, donc sous la tolérance, donc l'alerte
+ * s'éteint. On continue à calculer la somme au lieu de la coder en dur : c'est
+ * précisément ce calcul qui a révélé l'écart, et c'est lui qui le signalera
+ * si une portion repart à la baisse.
  *
  * On calcule la somme au lieu de la coder en dur, et on l'affiche à côté de la
  * cible : deux nombres qui se contredisent doivent se voir, pas se cacher l'un
@@ -210,7 +199,7 @@ export const SIMPLE_RULES: string[] = [
   'Glucides concentrés avant et après l’entraînement.',
   'Légumes à volonté, ça ne compte quasiment pas.',
   'Moyenne 7 jours, jamais une pesée isolée.',
-  'Jours de repos : un peu moins de féculents, mêmes protéines.',
+  'Jour de repos : mêmes repas, on saute juste la prise autour de la séance.',
 ];
 
 /** §« Le seul complément qui vaut le coup ». */

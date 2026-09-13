@@ -115,8 +115,9 @@ export function NutritionScreen({
       <header className={styles.header}>
         <h1 className={styles.h1}>Nutrition</h1>
         <p className={styles.lead}>
-          Beaucoup de glucides, protéines élevées sans excès, lipides modérés. Cinq prises par jour,
-          pas plus — ça doit tenir avec le boulot et les enfants.
+          Beaucoup de glucides, protéines élevées, lipides modérés. Six prises un jour
+          d’entraînement, cinq au repos — la sixième est une collation de 8 h qui se prépare la
+          veille et se boit d’une main.
         </p>
       </header>
 

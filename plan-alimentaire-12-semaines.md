@@ -1,12 +1,12 @@
 # Plan alimentaire — 12 semaines
-Cible : 3 600 kcal · 170 g protéines · 480 g glucides · 100 g lipides (jour d'entraînement)
+Cible : 3 600 kcal · 240 g protéines · 425 g glucides · 105 g lipides (jour d'entraînement)
 Aucun aliment exotique, tout se trouve en supermarché standard, zéro allergène particulier.
 
 ## Principe général (style NFL, pas culturiste)
 
-Beaucoup de glucides, protéines élevées mais pas extrêmes, lipides modérés. Les glucides se concentrent autour de l'entraînement (avant/après), pas le soir devant la télé. 5 prises alimentaires, pas plus, pour que ça reste gérable avec le boulot et les enfants.
+Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se concentrent autour de l'entraînement (avant/après), pas le soir devant la télé. 6 prises alimentaires : cinq ne suffisaient pas à atteindre la cible sans des assiettes intenables, la sixième est une collation légère de 8 h qui se prépare la veille.
 
-**Deux paliers, pas plus** : jour d'entraînement (~3 600 kcal) et jour de repos (~3 150 kcal, féculents réduits). Une périodisation plus fine, séance par séance, ajouterait de la précision théorique que tu ne peux pas tenir sans peser chaque aliment — ce n'est pas ce que tu as demandé.
+**Deux paliers, pas plus** : jour d'entraînement (~3 600 kcal) et jour de repos (~3 100 kcal). Le jour de repos, c'est le même plan sans la prise autour de la séance — aucune portion à recalculer. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique que tu ne peux pas tenir sans peser chaque aliment — ce n'est pas ce que tu as demandé.
 
 **Hydratation** : bois régulièrement dans la journée, utilise la couleur des urines comme repère. Augmente eau et sel les jours de forte chaleur ou de transpiration importante sur chantier. Pas de règle rigide du type « 3 L obligatoires ».
 
@@ -16,47 +16,62 @@ Beaucoup de glucides, protéines élevées mais pas extrêmes, lipides modérés
 
 ## Journée type — jour d'entraînement
 
-**Réveil (avant le travail)**
-- 3 œufs entiers + 2 tranches de pain complet + 1 fruit (banane ou pomme)
+**Réveil (6 h)**
+- 3 œufs entiers
+- 3 tranches de pain complet + 20 g de miel ou de confiture
+- 1 banane
 - Café ou thé si tu veux
-≈ 550 kcal / 32 g protéines
+≈ 645 kcal / 30 g protéines
 
-**Collation milieu de matinée (chantier)**
+**Collation (8 h, sur la route ou au chantier)**
+- 60 g de flocons d'avoine + 250 ml de lait demi-écrémé
+- Se prépare la veille dans une bouteille ou un bocal, se boit d'une main
+≈ 345 kcal / 16 g protéines
+
+**Collation (10 h, chantier)**
 - 280 g de skyr nature (9,8 g protéines/100 g) + 30 g d'amandes + 1 pomme
-≈ 420 kcal / 34 g protéines
+≈ 430 kcal / 34 g protéines
 
 **Déjeuner**
 - 180-200 g de viande blanche ou rouge maigre (poulet, dinde, bœuf 5 %) ou poisson
-- 200 g de riz, pâtes ou pommes de terre (poids cuit)
-- Légumes à volonté (haricots verts, brocolis, carottes, salade)
-- 1 filet d'huile d'olive
-≈ 790 kcal / 52 g protéines
+- 300 g de riz, pâtes ou pommes de terre (poids cuit)
+- 250 g de légumes (haricots verts, brocolis, carottes, salade)
+- 10 g d'huile d'olive (1 cuillère à soupe)
+≈ 865 kcal / 67 g protéines
 
-**Avant/après séance (selon l'heure)**
-- *Avant* (1h30 avant) : 1 banane + 1 tranche de pain avec miel ou confiture
-- *Après* (dans les 45 min) : shaker whey (30 g) + 1 fruit, ou 2 yaourts + une poignée de flocons d'avoine
-≈ 350 kcal / 30 g protéines
+**Autour de la séance (16 h)**
+- *Avant* (1h30 avant) : 1 banane + 2 tranches de pain complet avec 20 g de miel
+- *Après* (dans les 45 min) : shaker whey (30 g) + 1 pomme
+≈ 540 kcal / 32 g protéines
 
 **Dîner**
 - 180-200 g de viande, poisson ou œufs (4-5 œufs si végé ce soir-là)
-- 200 g de féculent (riz, pâtes, patate douce, pommes de terre)
-- Légumes à volonté
-- 1 filet d'huile d'olive ou de colza
-≈ 790 kcal / 52 g protéines
+- 200 g de féculent (riz, pâtes, patate douce, pommes de terre — poids cuit)
+- 250 g de légumes
+- 15 g d'huile d'olive ou de colza
+≈ 785 kcal / 63 g protéines
 
-**Total approximatif** : 3 600 kcal / 170 g protéines — ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids hebdomadaire.
+**Total** : ≈ 3 600 kcal / 240 g protéines / 425 g glucides / 105 g lipides.
+
+Ce total est calculé sur les valeurs de composition réelles des aliments listés, pas estimé à la louche : les portions écrites ci-dessus atteignent vraiment la cible. Les versions précédentes de ce plan s'arrêtaient 700 à 800 kcal en dessous.
+
+Ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids hebdomadaire.
 
 ---
 
 ## Journée type — jour de repos (mardi, jeudi)
 
-Même structure, mêmes protéines. Retire la collation glucidique spécifiquement post-training, et réduis les féculents du déjeuner et du dîner d'environ 30-40 g chacun (moins de dépense énergétique ce jour-là). Ce n'est pas un jour « low carb » : tu continues à manger normalement, tu allèges juste les féculents.
+Exactement les mêmes repas, moins la prise autour de la séance. Aucune portion à recalculer : tu retires la banane/pain-miel d'avant et le shaker d'après, qui n'ont de sens qu'un jour d'entraînement, et tu ne touches à rien d'autre.
+
+Ça fait ≈ 3 100 kcal / 210 g protéines / 325 g glucides / 100 g lipides, soit 500 kcal de moins — ce qui correspond à la dépense en moins. Ce n'est pas un jour « low carb » : tu continues à manger normalement, il y a juste une prise en moins.
+
+Une seule liste de repas à retenir, une prise à sauter. C'est plus simple que deux jeux de portions, et ça tombe pile sur le palier visé.
 
 ---
 
 ## Liste de courses hebdomadaire type
 
-**Protéines** : œufs (2 douzaines), poulet ou dinde (1 kg), viande hachée 5 % (500 g), poisson (2-3 pavés, saumon ou colin), yaourts grecs/skyr (10 unités), fromage blanc, whey protéine (1 boîte)
+**Protéines** : œufs (2 douzaines), poulet ou dinde (1 kg), viande hachée 5 % (500 g), poisson (2-3 pavés, saumon ou colin), yaourts grecs/skyr (10 unités), fromage blanc, lait demi-écrémé (2 L), whey protéine (1 boîte)
 
 **Glucides** : riz, pâtes, pain complet, flocons d'avoine, pommes de terre, patates douces, fruits (bananes, pommes, fruits de saison)
 
