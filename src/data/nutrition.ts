@@ -65,9 +65,9 @@ const TRAIN: NutritionTarget = {
     },
     {
       name: 'Collation matin',
-      detail: '1 yaourt grec ou skyr + 30 g d’amandes + 1 fruit',
-      kcal: 400,
-      proteinG: 25,
+      detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
+      kcal: 420,
+      proteinG: 34,
     },
     {
       name: 'Déjeuner',
@@ -117,9 +117,9 @@ const REST: NutritionTarget = {
     },
     {
       name: 'Collation matin',
-      detail: '1 yaourt grec ou skyr + 30 g d’amandes + 1 fruit',
-      kcal: 400,
-      proteinG: 25,
+      detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
+      kcal: 420,
+      proteinG: 34,
     },
     {
       name: 'Déjeuner',
@@ -140,6 +140,34 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
   train: TRAIN,
   rest: REST,
 };
+
+/**
+ * Ce que les repas listés totalisent réellement.
+ *
+ * Ce n'est PAS la cible : le .md annonce 3 600 kcal en tête, mais la somme de
+ * ses cinq repas tombe à 2 770. L'écart est de −830 kcal, soit 23 % — bien
+ * au-delà d'un arrondi. Suivre les portions écrites à la lettre revient donc à
+ * manger nettement moins que la cible, et à ne pas prendre le poids visé.
+ *
+ * On calcule la somme au lieu de la coder en dur, et on l'affiche à côté de la
+ * cible : deux nombres qui se contredisent doivent se voir, pas se cacher l'un
+ * derrière l'autre.
+ */
+export function mealsTotal(target: NutritionTarget): { kcal: number; proteinG: number } {
+  return target.meals.reduce(
+    (acc, m) => ({ kcal: acc.kcal + m.kcal, proteinG: acc.proteinG + m.proteinG }),
+    { kcal: 0, proteinG: 0 },
+  );
+}
+
+/** Écart entre les repas listés et la cible, en kcal et en pourcentage. */
+export function mealsGap(target: NutritionTarget): { kcal: number; pct: number } {
+  const kcal = mealsTotal(target).kcal - target.kcal;
+  return { kcal, pct: Math.round((kcal / target.kcal) * 1000) / 10 };
+}
+
+/** Au-delà, l'écart n'est plus un arrondi et doit être signalé. */
+export const MEALS_GAP_TOLERANCE_PCT = 5;
 
 // ---------------------------------------------------------------------------
 // §« Liste de courses hebdomadaire type »

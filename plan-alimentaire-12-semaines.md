@@ -22,8 +22,8 @@ Beaucoup de glucides, protéines élevées mais pas extrêmes, lipides modérés
 ≈ 550 kcal / 32 g protéines
 
 **Collation milieu de matinée (chantier)**
-- 1 yaourt grec ou skyr (type Danone High Protein) + 1 poignée d'amandes (30 g) + 1 fruit
-≈ 400 kcal / 25 g protéines
+- 280 g de skyr nature (9,8 g protéines/100 g) + 30 g d'amandes + 1 pomme
+≈ 420 kcal / 34 g protéines
 
 **Déjeuner**
 - 150-180 g de viande blanche ou rouge maigre (poulet, dinde, bœuf 5 %) ou poisson
