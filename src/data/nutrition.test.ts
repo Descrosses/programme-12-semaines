@@ -12,9 +12,8 @@ import {
   SHOPPING_LIST,
   SIMPLE_RULES,
   TARGET_GAIN_KG_PER_WEEK,
-  mealsGap,
-  mealsTotal,
 } from './nutrition';
+import { mealMacros, mealsGap, mealsTotal } from '../engine/nutrition';
 
 const MD = readFileSync(new URL('../../plan-alimentaire-12-semaines.md', import.meta.url), 'utf8');
 
@@ -166,5 +165,49 @@ describe('liste de courses et règles', () => {
 
   it('rappelle la règle qui pilote tout le reste', () => {
     expect(SIMPLE_RULES.some((r) => r.includes('Moyenne 7 jours'))).toBe(true);
+  });
+});
+
+describe('aliments décomposés', () => {
+  /*
+   * Le garde-fou du nouveau modèle : dès qu'un repas est décomposé, ses deux
+   * nombres écrits doivent valoir la somme de ses aliments. Sans ce test, on
+   * récrée exactement l'écart de 830 kcal qu'on vient de corriger, mais à
+   * l'échelle d'un repas.
+   */
+  it('un repas décomposé annonce le total de ses aliments', () => {
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const m of t.meals.filter((x) => x.items)) {
+        const calc = mealMacros(m);
+        expect(calc.kcal, `${t.label} — ${m.name} (kcal)`).toBe(m.kcal);
+        expect(calc.proteinG, `${t.label} — ${m.name} (protéines)`).toBe(m.proteinG);
+      }
+    }
+  });
+
+  it('chaque aliment a un identifiant unique et une base de composition cohérente', () => {
+    const vus = new Set<string>();
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const m of t.meals) {
+        for (const i of m.items ?? []) {
+          // Un même aliment peut revenir dans les deux paliers : c'est voulu,
+          // une valeur corrigée doit valoir partout. On vérifie donc que le
+          // même id porte bien le même aliment, pas qu'il n'apparaît qu'une fois.
+          const signature = `${i.id}|${i.label}|${i.per}|${i.unit}`;
+          if (vus.has(i.id)) expect(vus.has(signature), i.id).toBe(true);
+          vus.add(i.id);
+          vus.add(signature);
+          expect(i.per, i.id).toBe(i.unit === 'unité' ? 1 : 100);
+          expect(i.qty, i.id).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it('la collation de 10 h est le premier repas décomposé', () => {
+    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
+    expect(c.items?.map((i) => i.id)).toEqual(['skyr', 'amandes', 'pomme']);
+    // Le même objet dans les deux paliers : une correction vaut pour les deux.
+    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name === 'Collation — 10 h')).toBe(c);
   });
 });

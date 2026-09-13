@@ -23,6 +23,41 @@
 /** Jour d'entraînement ou jour de repos — les deux seuls paliers du plan. */
 export type DayKind = 'train' | 'rest';
 
+/**
+ * Comment se pèse un aliment. `unité` sert à ce qui ne se pèse pas en pratique
+ * — une banane, une pomme, un œuf : Guillaume n'a pas de balance au chantier.
+ */
+export type FoodUnit = 'g' | 'ml' | 'unité';
+
+/**
+ * Une ligne d'aliment d'un repas, avec sa composition.
+ *
+ * Avant ça, un repas n'était qu'une phrase (« 280 g de skyr… ») et deux nombres
+ * écrits à la main. Impossible d'en changer une marque de yaourt sans réécrire
+ * le total à la main — et sans se tromper.
+ *
+ * `per` dit sur quelle base la composition est donnée : 100 pour ce qui se pèse,
+ * 1 pour ce qui se compte. C'est ce que portent les étiquettes, donc c'est ce que
+ * Guillaume recopie sans conversion.
+ *
+ * `id` est stable et ne doit jamais changer : c'est lui qui relie une valeur
+ * modifiée à sa ligne. Renommer un libellé est sans conséquence, renommer un id
+ * ferait silencieusement oublier une modification.
+ */
+export interface FoodItem {
+  id: string;
+  label: string;
+  /** Quantité consommée, dans `unit`. */
+  qty: number;
+  unit: FoodUnit;
+  /** Base de la composition : 100 (g/ml) ou 1 (unité). */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
 export interface Meal {
   /** « Réveil », « Déjeuner »… */
   name: string;
@@ -30,6 +65,15 @@ export interface Meal {
   detail: string;
   kcal: number;
   proteinG: number;
+  /**
+   * Les aliments de ce repas, quand il a été décomposé.
+   *
+   * Absent = repas encore décrit par sa seule phrase, `kcal` et `proteinG` font
+   * foi. Présent = les aliments font foi, et `kcal`/`proteinG` doivent valoir
+   * leur somme (un test le vérifie) : deux nombres qui se contredisent, on en a
+   * déjà fait les frais avec l'écart de 830 kcal.
+   */
+  items?: FoodItem[];
 }
 
 export interface NutritionTarget {
@@ -62,11 +106,55 @@ const COLLATION_8H: Meal = {
   proteinG: 16,
 };
 
+/**
+ * Premier repas décomposé en aliments modifiables.
+ *
+ * Les compositions sont celles des produits standards de supermarché. Ce sont
+ * des valeurs de départ, pas des lois : c'est exactement ce que Guillaume peut
+ * remplacer par l'étiquette de SA marque, depuis l'écran Nutrition.
+ */
 const COLLATION_10H: Meal = {
   name: 'Collation — 10 h',
   detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
   kcal: 430,
   proteinG: 34,
+  items: [
+    {
+      id: 'skyr',
+      label: 'Skyr nature',
+      qty: 280,
+      unit: 'g',
+      per: 100,
+      kcal: 63,
+      proteinG: 9.8,
+      carbsG: 4,
+      fatG: 0.2,
+    },
+    {
+      id: 'amandes',
+      label: 'Amandes',
+      qty: 30,
+      unit: 'g',
+      per: 100,
+      kcal: 580,
+      proteinG: 21,
+      carbsG: 10,
+      fatG: 50,
+    },
+    {
+      id: 'pomme',
+      label: 'Pomme',
+      qty: 1,
+      unit: 'unité',
+      per: 1,
+      // Une pomme moyenne, ~155 g. Comptée à l'unité : Guillaume ne pèse pas
+      // un fruit sur un chantier.
+      kcal: 80,
+      proteinG: 0.5,
+      carbsG: 21.5,
+      fatG: 0.3,
+    },
+  ],
 };
 
 const DEJEUNER: Meal = {
@@ -173,38 +261,6 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
   train: TRAIN,
   rest: REST,
 };
-
-/**
- * Ce que les repas listés totalisent réellement.
- *
- * Longtemps, ce n'était PAS la cible : le .md annonçait 3 600 kcal en tête et la
- * somme de ses repas tombait à 2 770, puis 2 900. L'écart, −23 % puis −19 %,
- * n'avait rien d'un arrondi : suivre les portions écrites à la lettre revenait
- * à manger nettement moins que la cible, donc à ne pas prendre le poids visé.
- *
- * Le plan a été refait sur les valeurs de composition réelles des aliments
- * listés, avec une sixième prise à 8 h : la somme tombe maintenant à moins de
- * 2 % de la cible sur les deux paliers, donc sous la tolérance, donc l'alerte
- * s'éteint. On continue à calculer la somme au lieu de la coder en dur : c'est
- * précisément ce calcul qui a révélé l'écart, et c'est lui qui le signalera
- * si une portion repart à la baisse.
- *
- * On calcule la somme au lieu de la coder en dur, et on l'affiche à côté de la
- * cible : deux nombres qui se contredisent doivent se voir, pas se cacher l'un
- * derrière l'autre.
- */
-export function mealsTotal(target: NutritionTarget): { kcal: number; proteinG: number } {
-  return target.meals.reduce(
-    (acc, m) => ({ kcal: acc.kcal + m.kcal, proteinG: acc.proteinG + m.proteinG }),
-    { kcal: 0, proteinG: 0 },
-  );
-}
-
-/** Écart entre les repas listés et la cible, en kcal et en pourcentage. */
-export function mealsGap(target: NutritionTarget): { kcal: number; pct: number } {
-  const kcal = mealsTotal(target).kcal - target.kcal;
-  return { kcal, pct: Math.round((kcal / target.kcal) * 1000) / 10 };
-}
 
 /** Au-delà, l'écart n'est plus un arrondi et doit être signalé. */
 export const MEALS_GAP_TOLERANCE_PCT = 5;

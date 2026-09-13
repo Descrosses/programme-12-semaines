@@ -14,7 +14,10 @@ import {
   FUEL_ADVICE,
   FUEL_BY_TRAINING_DAY,
   TARGET_GAIN_KG_PER_WEEK,
+  type FoodItem,
   type FuelAdvice,
+  type Meal,
+  type NutritionTarget,
 } from '../data/nutrition';
 import type { DayIndex } from '../data/types';
 
@@ -261,4 +264,126 @@ export const COOKED_STARCH_KCAL_PER_G = 1;
  */
 export function starchToCloseGap(gapKcal: number): number {
   return Math.round(Math.abs(gapKcal) / COOKED_STARCH_KCAL_PER_G / 50) * 50;
+}
+
+// ---------------------------------------------------------------------------
+// Totaux d'un repas, de ses aliments, et valeurs modifiées par Guillaume
+// ---------------------------------------------------------------------------
+
+/**
+ * Ce que Guillaume a changé sur un aliment, par rapport au .md.
+ *
+ * Tous les champs sont optionnels : changer la seule quantité ne doit pas
+ * obliger à recopier la composition. Ce qui n'est pas là vient de l'aliment
+ * d'origine, donc corriger le .md profite aux champs non modifiés.
+ */
+export interface FoodOverride {
+  qty?: number;
+  kcal?: number;
+  proteinG?: number;
+  carbsG?: number;
+  fatG?: number;
+}
+
+/** Valeurs modifiées, rangées par identifiant d'aliment. */
+export type FoodOverrides = Record<string, FoodOverride>;
+
+export interface Macros {
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+/** L'aliment tel qu'il compte vraiment : le .md, corrigé de ce qu'a saisi Guillaume. */
+export function effectiveItem(item: FoodItem, overrides: FoodOverrides = {}): FoodItem {
+  const o = overrides[item.id];
+  if (!o) return item;
+  return {
+    ...item,
+    qty: o.qty ?? item.qty,
+    kcal: o.kcal ?? item.kcal,
+    proteinG: o.proteinG ?? item.proteinG,
+    carbsG: o.carbsG ?? item.carbsG,
+    fatG: o.fatG ?? item.fatG,
+  };
+}
+
+/** Cet aliment est-il modifié par rapport au .md ? */
+export function isEdited(item: FoodItem, overrides: FoodOverrides = {}): boolean {
+  const e = effectiveItem(item, overrides);
+  return (
+    e.qty !== item.qty ||
+    e.kcal !== item.kcal ||
+    e.proteinG !== item.proteinG ||
+    e.carbsG !== item.carbsG ||
+    e.fatG !== item.fatG
+  );
+}
+
+/**
+ * Ce qu'apporte une ligne d'aliment. Non arrondi : arrondir ici puis
+ * additionner ferait dériver le total du repas de plusieurs kcal.
+ */
+export function itemMacros(item: FoodItem, overrides: FoodOverrides = {}): Macros {
+  const e = effectiveItem(item, overrides);
+  const f = e.qty / e.per;
+  return { kcal: e.kcal * f, proteinG: e.proteinG * f, carbsG: e.carbsG * f, fatG: e.fatG * f };
+}
+
+const ZERO: Macros = { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 };
+const somme = (a: Macros, b: Macros): Macros => ({
+  kcal: a.kcal + b.kcal,
+  proteinG: a.proteinG + b.proteinG,
+  carbsG: a.carbsG + b.carbsG,
+  fatG: a.fatG + b.fatG,
+});
+const arrondir = (m: Macros): Macros => ({
+  kcal: Math.round(m.kcal),
+  proteinG: Math.round(m.proteinG),
+  carbsG: Math.round(m.carbsG),
+  fatG: Math.round(m.fatG),
+});
+
+/**
+ * Ce que pèse un repas.
+ *
+ * Un repas décomposé est calculé depuis ses aliments — c'est ce qui fait que
+ * changer une marque de skyr met tout à jour. Un repas pas encore décomposé
+ * garde les valeurs écrites du .md : glucides et lipides sont alors inconnus,
+ * et valent 0 plutôt qu'un chiffre inventé.
+ */
+export function mealMacros(meal: Meal, overrides: FoodOverrides = {}): Macros {
+  if (!meal.items) {
+    return { kcal: meal.kcal, proteinG: meal.proteinG, carbsG: 0, fatG: 0 };
+  }
+  return arrondir(meal.items.reduce((acc, i) => somme(acc, itemMacros(i, overrides)), ZERO));
+}
+
+/**
+ * Ce que les repas listés totalisent réellement.
+ *
+ * Ce n'est PAS la cible : c'est la somme de ce qui est écrit. Les deux ont
+ * longtemps différé de 830 kcal, et c'est ce calcul qui l'a révélé. On continue
+ * donc à sommer au lieu de coder un total en dur, et on affiche le résultat à
+ * côté de la cible : deux nombres qui se contredisent doivent se voir.
+ *
+ * Un seul chemin de calcul pour tout l'écran : la carte de carburant, le total
+ * du jour et le total d'un repas passent tous par ici.
+ */
+export function mealsTotal(
+  target: NutritionTarget,
+  overrides: FoodOverrides = {},
+): { kcal: number; proteinG: number } {
+  const t = target.meals.reduce((acc, m) => somme(acc, mealMacros(m, overrides)), ZERO);
+  return { kcal: Math.round(t.kcal), proteinG: Math.round(t.proteinG) };
+}
+
+/** Écart entre les repas listés et la cible, en kcal et en pourcentage. */
+export function mealsGap(
+  target: NutritionTarget,
+  overrides: FoodOverrides = {},
+): { kcal: number; pct: number } {
+  const kcal = mealsTotal(target, overrides).kcal - target.kcal;
+  return { kcal, pct: Math.round((kcal / target.kcal) * 1000) / 10 };
 }

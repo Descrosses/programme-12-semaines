@@ -5,6 +5,7 @@
 
 import type { DayIndex, RPETarget } from '../data/types';
 import type { HistoryIndex, Occurrence, ReadinessRecord, Settings } from '../engine/types';
+import type { FoodOverride, FoodOverrides } from '../engine/nutrition';
 import type { WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
 import {
@@ -15,6 +16,7 @@ import {
   type ExerciseMediaRow,
   type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
+  type FoodOverrideRow,
   type MeasurementRow,
   type ProgressPhotoRow,
   type ReadinessRow,
@@ -501,4 +503,44 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
 
 export async function loadHistoryIndex(): Promise<HistoryIndex> {
   return buildHistoryIndex(await allSets());
+}
+
+// ------------------------------------------------- aliments personnalisés --
+
+/**
+ * Les valeurs d'aliment corrigées, prêtes pour l'engine.
+ *
+ * Une ligne absente n'est pas une valeur à zéro : c'est un aliment auquel
+ * Guillaume n'a pas touché, donc celui du .md. `undefined` est donc conservé
+ * champ par champ, jamais remplacé par 0.
+ */
+export async function allFoodOverrides(): Promise<FoodOverrides> {
+  const out: FoodOverrides = {};
+  for (const r of await db.foodOverrides.toArray()) {
+    out[r.foodId] = { qty: r.qty, kcal: r.kcal, proteinG: r.proteinG, carbsG: r.carbsG, fatG: r.fatG };
+  }
+  return out;
+}
+
+/** Écrit les valeurs corrigées d'un aliment, ou efface la ligne si elle redevient vide. */
+export async function saveFoodOverride(foodId: string, patch: FoodOverride): Promise<void> {
+  const vide = Object.values(patch).every((v) => v === undefined);
+  const existing = await db.foodOverrides.where('foodId').equals(foodId).first();
+  if (vide) {
+    if (existing?.id !== undefined) await db.foodOverrides.delete(existing.id);
+    return;
+  }
+  const row: FoodOverrideRow = { foodId, ...patch };
+  if (existing?.id !== undefined) await db.foodOverrides.update(existing.id, row);
+  else await db.foodOverrides.add(row);
+}
+
+/** Revient au .md pour un aliment, ou pour tous quand `foodId` est omis. */
+export async function resetFoodOverrides(foodId?: string): Promise<void> {
+  if (foodId === undefined) {
+    await db.foodOverrides.clear();
+    return;
+  }
+  const existing = await db.foodOverrides.where('foodId').equals(foodId).first();
+  if (existing?.id !== undefined) await db.foodOverrides.delete(existing.id);
 }

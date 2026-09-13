@@ -212,6 +212,7 @@ export class ProgrammeDB extends Dexie {
   progressPhotos!: Table<ProgressPhotoRow, number>;
   exerciseMedia!: Table<ExerciseMediaRow, number>;
   exerciseReference!: Table<ExerciseReferenceRow, number>;
+  foodOverrides!: Table<FoodOverrideRow, number>;
   exerciseVideoLog!: Table<ExerciseVideoLogRow, number>;
   settings!: Table<SettingsRow, number>;
 
@@ -348,7 +349,36 @@ export class ProgrammeDB extends Dexie {
      * comportement attendu d'une fiche de référence.
      */
     this.version(7).stores({ exerciseReference: '++id, &exerciseId' });
+
+    /*
+     * v8 — valeurs d'aliment modifiées par Guillaume.
+     *
+     * Une ligne par aliment MODIFIÉ, pas par aliment du plan : tant qu'il ne
+     * touche à rien, la table est vide et c'est le .md qui parle. Supprimer la
+     * ligne suffit donc à revenir aux valeurs d'origine, sans avoir à stocker
+     * quelque part ce qu'étaient ces valeurs.
+     *
+     * Chaque champ est optionnel : changer la seule quantité ne fige pas la
+     * composition, qui continue de suivre le .md.
+     */
+    this.version(8).stores({ foodOverrides: '++id, &foodId' });
   }
+}
+
+/**
+ * Valeurs d'un aliment telles que Guillaume les a corrigées.
+ *
+ * `foodId` est l'identifiant stable de `FoodItem`, jamais son libellé : un
+ * libellé peut être reformulé sans rien casser, un identifiant non.
+ */
+export interface FoodOverrideRow {
+  id?: number;
+  foodId: string;
+  qty?: number;
+  kcal?: number;
+  proteinG?: number;
+  carbsG?: number;
+  fatG?: number;
 }
 
 /** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */

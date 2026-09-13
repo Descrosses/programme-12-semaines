@@ -6,8 +6,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   ADJUST_RULES,
+  effectiveItem,
   fuelForToday,
+  isEdited,
+  itemMacros,
+  mealMacros,
+  mealsTotal,
   starchToCloseGap,
+  type FoodOverrides,
   latestWaist,
   nutritionAdvice,
   weeklyAverages,
@@ -15,7 +21,8 @@ import {
   windowAverage,
   type Measurement,
 } from './nutrition';
-import { FUEL_ADVICE } from '../data/nutrition';
+import { FUEL_ADVICE, NUTRITION_TARGETS } from '../data/nutrition';
+import { lireDecimal } from '../components/MealItems';
 import type { DayIndex } from '../data/types';
 
 const AUJOURDHUI = '2026-03-01';
@@ -245,5 +252,83 @@ describe('féculent nécessaire pour combler l’écart', () => {
 
   it('ne dépend pas du signe : c’est un manque, pas une soustraction', () => {
     expect(starchToCloseGap(700)).toBe(starchToCloseGap(-700));
+  });
+});
+
+describe('aliments modifiables', () => {
+  const COLLATION = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
+  const skyr = COLLATION.items!.find((i) => i.id === 'skyr')!;
+  const pomme = COLLATION.items!.find((i) => i.id === 'pomme')!;
+
+  it('un aliment pesé compte au prorata de sa quantité', () => {
+    // 280 g de skyr à 63 kcal/100 g.
+    expect(itemMacros(skyr).kcal).toBeCloseTo(176.4, 1);
+    expect(itemMacros(skyr).proteinG).toBeCloseTo(27.44, 2);
+  });
+
+  it('un aliment compté à l’unité ne divise pas par 100', () => {
+    expect(pomme.per).toBe(1);
+    expect(itemMacros(pomme).kcal).toBe(80);
+  });
+
+  /*
+   * Le point de tout le mécanisme : changer la marque de skyr ne demande que
+   * de recopier l'étiquette. Le repas, puis la journée, suivent.
+   */
+  it('changer la composition d’un aliment change le total du repas et du jour', () => {
+    const avantRepas = mealMacros(COLLATION).kcal;
+    const avantJour = mealsTotal(NUTRITION_TARGETS.train).kcal;
+
+    // Un skyr plus riche : 86 kcal/100 g au lieu de 63.
+    const ov: FoodOverrides = { skyr: { kcal: 86 } };
+    const apresRepas = mealMacros(COLLATION, ov).kcal;
+    const apresJour = mealsTotal(NUTRITION_TARGETS.train, ov).kcal;
+
+    // 280 g × (86 − 63) / 100 = 64,4 kcal exactement. Le repas est arrondi une
+    // fois, à la fin : 430 → 495, soit 65. Arrondir chaque aliment d'abord
+    // aurait donné un autre chiffre — d'où l'arrondi unique, au repas.
+    expect(apresRepas - avantRepas).toBe(65);
+    expect(apresJour - avantJour).toBe(apresRepas - avantRepas);
+  });
+
+  it('changer la seule quantité ne fige pas la composition', () => {
+    const ov: FoodOverrides = { skyr: { qty: 400 } };
+    expect(effectiveItem(skyr, ov).kcal).toBe(skyr.kcal);
+    expect(itemMacros(skyr, ov).kcal).toBeCloseTo(252, 1);
+  });
+
+  it('un aliment sans valeur modifiée reste exactement celui du .md', () => {
+    expect(effectiveItem(skyr, {})).toBe(skyr);
+    expect(effectiveItem(skyr, { amandes: { kcal: 1 } })).toBe(skyr);
+    expect(isEdited(skyr, {})).toBe(false);
+    expect(isEdited(skyr, { skyr: { qty: 280 } })).toBe(false); // même valeur = pas modifié
+    expect(isEdited(skyr, { skyr: { qty: 300 } })).toBe(true);
+  });
+
+  it('un repas pas encore décomposé garde les valeurs écrites du .md', () => {
+    const diner = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Dîner')!;
+    expect(diner.items).toBeUndefined();
+    expect(mealMacros(diner)).toEqual({
+      kcal: diner.kcal,
+      proteinG: diner.proteinG,
+      carbsG: 0, // inconnus tant que le repas n'est pas décomposé — pas inventés
+      fatG: 0,
+    });
+  });
+
+  it('les valeurs modifiées ne changent rien aux repas qu’elles ne concernent pas', () => {
+    const diner = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Dîner')!;
+    expect(mealMacros(diner, { skyr: { kcal: 999 } })).toEqual(mealMacros(diner));
+  });
+
+  it('lit une saisie au clavier français, virgule comprise', () => {
+    expect(lireDecimal('9,8')).toBe(9.8);
+    expect(lireDecimal('9.8')).toBe(9.8);
+    expect(lireDecimal(' 280 ')).toBe(280);
+    // Vide ou illisible = « ne touche à rien », jamais 0 : une faute de frappe
+    // ne doit pas faire disparaître un aliment du total.
+    expect(lireDecimal('')).toBeNull();
+    expect(lireDecimal('abc')).toBeNull();
+    expect(lireDecimal('-5')).toBeNull();
   });
 });
