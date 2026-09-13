@@ -14,6 +14,7 @@ import {
   windowAverage,
   type Measurement,
 } from './nutrition';
+import { FUEL_ADVICE } from '../data/nutrition';
 import type { DayIndex } from '../data/types';
 
 const AUJOURDHUI = '2026-03-01';
@@ -207,6 +208,22 @@ describe('carburant du jour', () => {
     // un jour de test serait faux : on affiche le plan de base, sans bonus.
     expect(fuelForToday(1).level).toBe('standard');
     expect(fuelForToday(3).level).toBe('standard');
+  });
+
+  /*
+   * Le sous-titre est le même texte les 84 jours du programme : il ne peut donc
+   * pas nommer un contenu de séance. « Force du haut du corps » était vrai le
+   * mercredi et faux les mardis et jeudis de la combine (tests de 1RM), où le
+   * niveau retombe sur `standard`.
+   */
+  it('aucun sous-titre ne nomme un contenu de séance', () => {
+    const interdits = ['haut du corps', 'bas du corps', 'squat', 'traction', 'soulevé'];
+    for (const niveau of Object.values(FUEL_ADVICE)) {
+      for (const mot of interdits) {
+        expect(niveau.subtitle.toLowerCase().includes(mot), `${niveau.level} — ${mot}`).toBe(false);
+      }
+    }
+    expect(FUEL_ADVICE.standard.subtitle).toBe('Séance modérée');
   });
 
   it('seuls les glucides bougent : aucun niveau ne touche protéines ni lipides', () => {

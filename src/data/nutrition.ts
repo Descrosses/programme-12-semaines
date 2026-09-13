@@ -280,7 +280,7 @@ export const FUEL_ADVICE: Record<FuelLevel, FuelAdvice> = {
     level: 'standard',
     emoji: '🟡',
     title: 'STANDARD',
-    subtitle: 'Force du haut du corps',
+    subtitle: 'Séance modérée',
     foods: [],
     kcal: 0,
     kcalLabel: '',
