@@ -11,6 +11,9 @@ import {
   gapVerdict,
   isEdited,
   itemMacros,
+  kcalFromMacros,
+  macroCoherence,
+  macrosLookWrong,
   mealMacros,
   mealsGap,
   mealsTotal,
@@ -396,5 +399,51 @@ describe('sens de l’écart entre les repas et la cible', () => {
     const large = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.2) };
     expect(gapVerdict(large)).toBe('surplus');
     expect(cible).toBe(3600); // garde-fou : le test parle bien de la vraie cible
+  });
+});
+
+describe('cohérence d’une étiquette recopiée', () => {
+  it('toutes les compositions du plan sont cohérentes avec leurs macros', () => {
+    // Si ce test casse en ajoutant un produit, c'est le produit qui est faux,
+    // pas le seuil : aucune étiquette réelle ne s'écarte de 25 %.
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const m of t.meals) {
+        for (const i of m.items ?? []) {
+          expect(macrosLookWrong(i), `${i.label} (${i.kcal} kcal)`).toBe(false);
+        }
+      }
+    }
+  });
+
+  /*
+   * Le cas réel : Guillaume passe ses légumes à 416 kcal/100 g en laissant les
+   * macros d'origine, qui n'en valent que 31. Rien dans l'appli ne le signalait.
+   */
+  it('repère des kcal que les macros ne peuvent pas produire', () => {
+    const legumes = NUTRITION_TARGETS.train.meals
+      .find((m) => m.name === 'Dîner')!
+      .items!.find((i) => i.product === 'legumes')!;
+    expect(macrosLookWrong(legumes)).toBe(false);
+    expect(macrosLookWrong(legumes, { legumes: { kcal: 416 } })).toBe(true);
+  });
+
+  it('accepte une étiquette réellement dense quand ses macros suivent', () => {
+    const legumes = NUTRITION_TARGETS.train.meals
+      .find((m) => m.name === 'Dîner')!
+      .items!.find((i) => i.product === 'legumes')!;
+    // Un mélange sec de légumineuses et de graines : dense, mais cohérent.
+    const ov: FoodOverrides = {
+      legumes: { kcal: 416, proteinG: 22, carbsG: 48, fatG: 14 },
+    };
+    expect(kcalFromMacros({ proteinG: 22, carbsG: 48, fatG: 14 })).toBe(406);
+    expect(macrosLookWrong(legumes, ov)).toBe(false);
+  });
+
+  it('ne dit rien quand il n’y a rien à comparer', () => {
+    expect(macroCoherence({ kcal: 100, proteinG: 0, carbsG: 0, fatG: 0 })).toBeNull();
+  });
+
+  it('l’huile pure, le cas le plus dense du plan, reste cohérente', () => {
+    expect(kcalFromMacros({ proteinG: 0, carbsG: 0, fatG: 100 })).toBe(900);
   });
 });
