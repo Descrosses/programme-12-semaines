@@ -8,9 +8,11 @@ import {
   ADJUST_RULES,
   effectiveItem,
   fuelForToday,
+  gapVerdict,
   isEdited,
   itemMacros,
   mealMacros,
+  mealsGap,
   mealsTotal,
   starchToCloseGap,
   type FoodOverrides,
@@ -352,5 +354,47 @@ describe('aliments modifiables', () => {
     expect(lireDecimal('')).toBeNull();
     expect(lireDecimal('abc')).toBeNull();
     expect(lireDecimal('-5')).toBeNull();
+  });
+});
+
+describe('sens de l’écart entre les repas et la cible', () => {
+  /*
+   * Le bug que ce bloc verrouille : l'écran annonçait « il manque N kcal »
+   * quel que soit le sens, parce qu'il prenait la valeur absolue de l'écart.
+   * Une journée à 5 156 kcal pour une cible de 3 600 se lisait donc comme un
+   * manque de 1 556 kcal, avec le conseil d'ajouter du féculent.
+   */
+  const TRAIN = NUTRITION_TARGETS.train;
+  const painDuReveil = TRAIN.meals
+    .find((m) => m.name === 'Réveil — 6 h')!
+    .items!.find((i) => i.product === 'pain')!;
+
+  it('le plan tel qu’écrit tombe dans la tolérance', () => {
+    expect(gapVerdict(TRAIN)).toBe('ok');
+    expect(gapVerdict(NUTRITION_TARGETS.rest)).toBe('ok');
+  });
+
+  it('une valeur d’aliment gonflée donne un EXCÉDENT, pas un manque', () => {
+    // Une étiquette mal recopiée : 2 500 kcal/100 g de pain.
+    const ov: FoodOverrides = { [painDuReveil.product]: { kcal: 2500 } };
+    expect(mealsGap(TRAIN, ov).kcal).toBeGreaterThan(0);
+    expect(gapVerdict(TRAIN, ov)).toBe('surplus');
+  });
+
+  it('une quantité effondrée donne bien un DÉFICIT', () => {
+    const ov: FoodOverrides = {};
+    for (const m of TRAIN.meals) for (const i of m.items ?? []) ov[i.id] = { qty: 1 };
+    expect(mealsGap(TRAIN, ov).kcal).toBeLessThan(0);
+    expect(gapVerdict(TRAIN, ov)).toBe('deficit');
+  });
+
+  it('la tolérance vaut des deux côtés, symétriquement', () => {
+    const cible = TRAIN.kcal;
+    // Juste sous la tolérance, en excédent comme en déficit : « ok ».
+    const bord = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.04) };
+    expect(gapVerdict(bord)).toBe('ok');
+    const large = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.2) };
+    expect(gapVerdict(large)).toBe('surplus');
+    expect(cible).toBe(3600); // garde-fou : le test parle bien de la vraie cible
   });
 });

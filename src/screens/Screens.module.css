@@ -834,14 +834,19 @@
 }
 
 /* Le nom est la seule colonne qui a le droit de passer à la ligne : une
-   quantité coupée en deux (« 400 » puis « g ») ne se lit pas. */
+   quantité coupée en deux (« 400 » puis « g ») ne se lit pas.
+   En flex avec retour à la ligne, le badge « modifié » passe SOUS le nom quand
+   la place manque, au lieu de déborder sur la colonne de la quantité. */
 .foodName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
   min-width: 0;
   font-weight: 600;
 }
 
 .foodBadge {
-  margin-left: 8px;
   padding: 1px 6px;
   border-radius: 999px;
   background: var(--surface-3);
