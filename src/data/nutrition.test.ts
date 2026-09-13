@@ -67,17 +67,53 @@ describe('cibles transcrites du .md', () => {
    * l'écart se réduira et le test le dira.
    */
   it('les repas listés ne totalisent PAS la cible annoncée — écart connu du .md', () => {
-    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 2770, proteinG: 186 });
-    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: -830, pct: -23.1 });
+    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 2900, proteinG: 200 });
+    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: -700, pct: -19.4 });
 
-    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 2220, proteinG: 156 });
-    expect(mealsGap(NUTRITION_TARGETS.rest).kcal).toBe(-930);
+    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 2350, proteinG: 170 });
+    expect(mealsGap(NUTRITION_TARGETS.rest).kcal).toBe(-800);
 
     // L'écart dépasse largement ce qu'un arrondi expliquerait : l'appli doit
     // donc l'afficher, pas montrer la seule cible.
     for (const t of Object.values(NUTRITION_TARGETS)) {
       expect(Math.abs(mealsGap(t).pct)).toBeGreaterThan(MEALS_GAP_TOLERANCE_PCT);
     }
+  });
+
+  it('les portions relevées du déjeuner et du dîner suivent le .md', () => {
+    expect(MD).toContain('180-200 g de viande blanche ou rouge maigre');
+    expect(MD).toContain('200 g de riz, pâtes ou pommes de terre (poids cuit)');
+    expect(MD).toContain('180-200 g de viande, poisson ou œufs');
+
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const nom of ['Déjeuner', 'Dîner']) {
+        const m = t.meals.find((x) => x.name === nom)!;
+        expect(m.detail, `${t.label} — ${nom}`).toContain('180-200 g de protéine');
+        expect(m.proteinG, `${t.label} — ${nom}`).toBe(52);
+      }
+    }
+    // Le jour de repos reste défini par différence : « réduis les féculents du
+    // déjeuner et du dîner d'environ 30-40 g chacun », protéines inchangées.
+    expect(MD).toContain('d’environ 30-40 g chacun'.replace('’', "'"));
+    for (const nom of ['Déjeuner', 'Dîner']) {
+      const train = NUTRITION_TARGETS.train.meals.find((x) => x.name === nom)!;
+      const rest = NUTRITION_TARGETS.rest.meals.find((x) => x.name === nom)!;
+      expect(rest.proteinG, nom).toBe(train.proteinG);
+      expect(rest.kcal, nom).toBeLessThan(train.kcal);
+    }
+  });
+
+  /*
+   * Les protéines des repas dépassent maintenant la cible de l'en-tête (200 g
+   * contre 170). Ce test le CONSTATE : c'est la conséquence assumée du passage
+   * à 180-200 g au déjeuner et au dîner, et l'en-tête du .md n'a pas été
+   * retouché. Si un jour la cible est relevée, ce test le dira.
+   */
+  it('les repas dépassent désormais la cible de protéines annoncée', () => {
+    expect(mealsTotal(NUTRITION_TARGETS.train).proteinG).toBeGreaterThan(
+      NUTRITION_TARGETS.train.proteinG,
+    );
+    expect(mealsTotal(NUTRITION_TARGETS.rest).proteinG).toBe(NUTRITION_TARGETS.rest.proteinG);
   });
 
   it('cinq prises maximum le jour d’entraînement — c’est la contrainte du .md', () => {

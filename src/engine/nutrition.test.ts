@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ADJUST_RULES,
   fuelForToday,
+  starchToCloseGap,
   latestWaist,
   nutritionAdvice,
   weeklyAverages,
@@ -232,5 +233,17 @@ describe('carburant du jour', () => {
       expect(f.carbsLabel.includes('protéines'), `jour ${day}`).toBe(false);
       expect(f.carbsLabel.includes('lipides'), `jour ${day}`).toBe(false);
     }
+  });
+});
+
+describe('féculent nécessaire pour combler l’écart', () => {
+  it('convertit l’écart au taux du plan, arrondi à 50 g', () => {
+    expect(starchToCloseGap(-700)).toBe(700);
+    expect(starchToCloseGap(-830)).toBe(850);
+    expect(starchToCloseGap(-20)).toBe(0);
+  });
+
+  it('ne dépend pas du signe : c’est un manque, pas une soustraction', () => {
+    expect(starchToCloseGap(700)).toBe(starchToCloseGap(-700));
   });
 });

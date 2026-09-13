@@ -71,9 +71,9 @@ const TRAIN: NutritionTarget = {
     },
     {
       name: 'Déjeuner',
-      detail: '150-180 g de protéine + 150 g de féculent (cuit) + légumes + huile d’olive',
-      kcal: 700,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 200 g de féculent (cuit) + légumes + huile d’olive',
+      kcal: 790,
+      proteinG: 52,
     },
     {
       name: 'Avant / après séance',
@@ -84,9 +84,9 @@ const TRAIN: NutritionTarget = {
     },
     {
       name: 'Dîner',
-      detail: '150-180 g de protéine + 200 g de féculent + légumes + huile d’olive ou de colza',
-      kcal: 750,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 200 g de féculent + légumes + huile d’olive ou de colza',
+      kcal: 790,
+      proteinG: 52,
     },
   ],
 };
@@ -123,15 +123,15 @@ const REST: NutritionTarget = {
     },
     {
       name: 'Déjeuner',
-      detail: '150-180 g de protéine + 110-120 g de féculent + légumes + huile d’olive',
-      kcal: 630,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 160-170 g de féculent + légumes + huile d’olive',
+      kcal: 720,
+      proteinG: 52,
     },
     {
       name: 'Dîner',
-      detail: '150-180 g de protéine + 160 g de féculent + légumes + huile d’olive',
-      kcal: 620,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 160 g de féculent + légumes + huile d’olive',
+      kcal: 660,
+      proteinG: 52,
     },
   ],
 };
@@ -145,9 +145,13 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
  * Ce que les repas listés totalisent réellement.
  *
  * Ce n'est PAS la cible : le .md annonce 3 600 kcal en tête, mais la somme de
- * ses cinq repas tombe à 2 770. L'écart est de −830 kcal, soit 23 % — bien
+ * ses cinq repas tombe à 2 900. L'écart est de −700 kcal, soit 19 % — bien
  * au-delà d'un arrondi. Suivre les portions écrites à la lettre revient donc à
  * manger nettement moins que la cible, et à ne pas prendre le poids visé.
+ *
+ * Les portions relevées du déjeuner et du dîner (200 g de féculent cuit,
+ * 180-200 g de protéine) ont réduit cet écart de 830 à 700 kcal, pas comblé :
+ * l'alerte de l'écran Nutrition reste donc allumée, et c'est voulu.
  *
  * On calcule la somme au lieu de la coder en dur, et on l'affiche à côté de la
  * cible : deux nombres qui se contredisent doivent se voir, pas se cacher l'un

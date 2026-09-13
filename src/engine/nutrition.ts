@@ -242,3 +242,23 @@ export function fuelForToday(day: DayIndex | null): FuelAdvice {
   if (day === null) return FUEL_ADVICE.rest;
   return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? 'standard'];
 }
+
+/**
+ * Densité du féculent cuit retenue par le plan : 1 kcal par gramme.
+ *
+ * Ce n'est pas une valeur de table de composition — le riz cuit est à ~1,3, les
+ * pâtes à ~1,6, la pomme de terre à ~0,9. C'est le taux que le .md s'applique à
+ * lui-même : son déjeuner et son dîner ne diffèrent que de 50 g de féculent et
+ * de 50 kcal. Reprendre son taux garde le conseil cohérent avec les portions
+ * qu'il écrit, au lieu d'y mêler une précision qu'il ne revendique pas.
+ */
+export const COOKED_STARCH_KCAL_PER_G = 1;
+
+/**
+ * Combien de féculent cuit il faudrait ajouter pour combler l'écart, arrondi à
+ * 50 g. Calculé et non écrit en dur : changer une portion du plan doit changer
+ * ce conseil, sinon l'écran affirme deux choses incompatibles.
+ */
+export function starchToCloseGap(gapKcal: number): number {
+  return Math.round(Math.abs(gapKcal) / COOKED_STARCH_KCAL_PER_G / 50) * 50;
+}

@@ -26,11 +26,11 @@ Beaucoup de glucides, protéines élevées mais pas extrêmes, lipides modérés
 ≈ 420 kcal / 34 g protéines
 
 **Déjeuner**
-- 150-180 g de viande blanche ou rouge maigre (poulet, dinde, bœuf 5 %) ou poisson
-- 150 g de riz, pâtes ou pommes de terre (poids cuit)
+- 180-200 g de viande blanche ou rouge maigre (poulet, dinde, bœuf 5 %) ou poisson
+- 200 g de riz, pâtes ou pommes de terre (poids cuit)
 - Légumes à volonté (haricots verts, brocolis, carottes, salade)
 - 1 filet d'huile d'olive
-≈ 700 kcal / 45 g protéines
+≈ 790 kcal / 52 g protéines
 
 **Avant/après séance (selon l'heure)**
 - *Avant* (1h30 avant) : 1 banane + 1 tranche de pain avec miel ou confiture
@@ -38,11 +38,11 @@ Beaucoup de glucides, protéines élevées mais pas extrêmes, lipides modérés
 ≈ 350 kcal / 30 g protéines
 
 **Dîner**
-- 150-180 g de viande, poisson ou œufs (3-4 œufs si végé ce soir-là)
+- 180-200 g de viande, poisson ou œufs (4-5 œufs si végé ce soir-là)
 - 200 g de féculent (riz, pâtes, patate douce, pommes de terre)
 - Légumes à volonté
 - 1 filet d'huile d'olive ou de colza
-≈ 750 kcal / 45 g protéines
+≈ 790 kcal / 52 g protéines
 
 **Total approximatif** : 3 600 kcal / 170 g protéines — ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids hebdomadaire.
 

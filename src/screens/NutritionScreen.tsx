@@ -18,6 +18,7 @@ import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import {
   fuelForToday,
+  starchToCloseGap,
   latestWaist,
   nutritionAdvice,
   weeklyAverages,
@@ -251,8 +252,10 @@ export function NutritionScreen({
               de {target.kcal.toLocaleString('fr-FR')}.
             </b>{' '}
             Ces portions écrites à la lettre te font manger {fr(Math.abs(ecart.pct))} % de moins que
-            prévu — à ce niveau tu ne prendras pas de poids. Sers-toi plus généreusement : environ
-            200 g de féculent cuit en plus répartis sur la journée, ou une sixième prise.
+            prévu — à ce niveau tu ne prendras pas de poids. Il faudrait environ{' '}
+            {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit en plus sur la
+            journée : à ce volume, une sixième prise est plus tenable que des assiettes plus
+            grosses.
           </p>
         ) : (
           <p className={styles.fieldHint}>
