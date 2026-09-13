@@ -28,14 +28,22 @@ describe('cibles transcrites du .md', () => {
     expect(t.fatG).toBe(105);
   });
 
-  it('le jour de repos est le jour d’entraînement moins une prise', () => {
-    expect(MD).toContain('moins la prise autour de la séance');
-    const train = NUTRITION_TARGETS.train.meals;
-    const rest = NUTRITION_TARGETS.rest.meals;
-    // Pas « des repas qui se ressemblent » : les MÊMES objets, donc ils ne
-    // peuvent pas diverger au fil des retouches.
-    expect(rest).toEqual(train.filter((m) => m.name !== 'Autour de la séance — 16 h'));
-    expect(train.length - rest.length).toBe(1);
+  it('le jour de repos garde les six prises et n’allège que les glucides', () => {
+    expect(MD).toContain('Mêmes six prises, mêmes protéines, mêmes lipides');
+    const train = NUTRITION_TARGETS.train;
+    const rest = NUTRITION_TARGETS.rest;
+    expect(rest.meals).toHaveLength(train.meals.length);
+    // Les lipides ne bougent pas : ce sont les féculents qui baissent, pas
+    // l'huile ni les amandes.
+    expect(rest.fatG).toBeGreaterThanOrEqual(train.fatG - 5);
+    expect(rest.carbsG).toBeLessThan(train.carbsG);
+    // Les repas porteurs de viande, de poisson ou d'œufs gardent leur portion.
+    for (const nom of ['Déjeuner', 'Dîner']) {
+      const t = train.meals.find((m) => m.name === nom)!;
+      const r = rest.meals.find((m) => m.name === nom)!;
+      expect(r.detail, nom).toContain('180-200 g de protéine');
+      expect(t.detail, nom).toContain('180-200 g de protéine');
+    }
   });
 
   it('le jour de repos n’allège que les féculents', () => {
@@ -47,14 +55,16 @@ describe('cibles transcrites du .md', () => {
     const train = NUTRITION_TARGETS.train.meals;
     const rest = NUTRITION_TARGETS.rest.meals;
     expect(train).not.toEqual(rest);
-    // Seule la prise autour de la séance distingue les deux paliers.
+    // La prise de 16 h change de nature : elle entoure une séance un jour
+    // d'entraînement, ce n'est qu'une collation un jour de repos.
     expect(train.map((m) => m.name)).toContain('Autour de la séance — 16 h');
-    expect(rest.map((m) => m.name)).not.toContain('Autour de la séance — 16 h');
-    // Les portions, elles, sont identiques : rien à recalculer un jour de repos.
+    expect(rest.map((m) => m.name)).toContain('Collation — 16 h');
+    // Et chaque prise du repos pèse moins, sauf celle de 10 h, inchangée.
     const kcal = (meals: typeof train, name: string) => meals.find((m) => m.name === name)!.kcal;
-    for (const nom of ['Déjeuner', 'Dîner']) {
-      expect(kcal(rest, nom), nom).toBe(kcal(train, nom));
+    for (const nom of ['Réveil — 6 h', 'Collation — 8 h', 'Déjeuner', 'Dîner']) {
+      expect(kcal(rest, nom), nom).toBeLessThan(kcal(train, nom));
     }
+    expect(kcal(rest, 'Collation — 10 h')).toBe(kcal(train, 'Collation — 10 h'));
   });
 
   it('la collation du matin suit la dernière version du .md', () => {
@@ -77,8 +87,8 @@ describe('cibles transcrites du .md', () => {
     expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 3610, proteinG: 242 });
     expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: 10, pct: 0.3 });
 
-    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 3070, proteinG: 210 });
-    expect(mealsGap(NUTRITION_TARGETS.rest)).toEqual({ kcal: -30, pct: -1 });
+    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 3060, proteinG: 227 });
+    expect(mealsGap(NUTRITION_TARGETS.rest)).toEqual({ kcal: 10, pct: 0.3 });
 
     for (const t of Object.values(NUTRITION_TARGETS)) {
       expect(Math.abs(mealsGap(t).pct), t.label).toBeLessThanOrEqual(MEALS_GAP_TOLERANCE_PCT);
@@ -120,10 +130,13 @@ describe('cibles transcrites du .md', () => {
     expect(feculent('Déjeuner')).toBeGreaterThan(feculent('Dîner'));
   });
 
-  it('six prises le jour d’entraînement, cinq au repos — la contrainte a bougé', () => {
+  it('six prises les deux jours — la contrainte a bougé', () => {
     expect(MD).toContain('6 prises alimentaires');
+    // Guillaume a tranché : même rythme tous les jours, portions réduites au
+    // repos. Un jour à cinq prises serait le seul de la semaine, donc celui
+    // qu'on oublie de suivre.
     expect(NUTRITION_TARGETS.train.meals).toHaveLength(6);
-    expect(NUTRITION_TARGETS.rest.meals).toHaveLength(5);
+    expect(NUTRITION_TARGETS.rest.meals).toHaveLength(6);
   });
 
   it('une protéine à chaque repas, sur les deux paliers', () => {
