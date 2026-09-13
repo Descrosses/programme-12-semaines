@@ -21,7 +21,7 @@ import {
   windowAverage,
   type Measurement,
 } from './nutrition';
-import { FUEL_ADVICE, NUTRITION_TARGETS } from '../data/nutrition';
+import { FUEL_ADVICE, NUTRITION_TARGETS, type Meal } from '../data/nutrition';
 import { lireDecimal } from '../components/MealItems';
 import type { DayIndex } from '../data/types';
 
@@ -257,8 +257,8 @@ describe('féculent nécessaire pour combler l’écart', () => {
 
 describe('aliments modifiables', () => {
   const COLLATION = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
-  const skyr = COLLATION.items!.find((i) => i.id === 'skyr')!;
-  const pomme = COLLATION.items!.find((i) => i.id === 'pomme')!;
+  const skyr = COLLATION.items!.find((i) => i.product === 'skyr')!;
+  const pomme = COLLATION.items!.find((i) => i.product === 'pomme')!;
 
   it('un aliment pesé compte au prorata de sa quantité', () => {
     // 280 g de skyr à 63 kcal/100 g.
@@ -280,7 +280,7 @@ describe('aliments modifiables', () => {
     const avantJour = mealsTotal(NUTRITION_TARGETS.train).kcal;
 
     // Un skyr plus riche : 86 kcal/100 g au lieu de 63.
-    const ov: FoodOverrides = { skyr: { kcal: 86 } };
+    const ov: FoodOverrides = { [skyr.product]: { kcal: 86 } };
     const apresRepas = mealMacros(COLLATION, ov).kcal;
     const apresJour = mealsTotal(NUTRITION_TARGETS.train, ov).kcal;
 
@@ -292,7 +292,7 @@ describe('aliments modifiables', () => {
   });
 
   it('changer la seule quantité ne fige pas la composition', () => {
-    const ov: FoodOverrides = { skyr: { qty: 400 } };
+    const ov: FoodOverrides = { [skyr.id]: { qty: 400 } };
     expect(effectiveItem(skyr, ov).kcal).toBe(skyr.kcal);
     expect(itemMacros(skyr, ov).kcal).toBeCloseTo(252, 1);
   });
@@ -301,24 +301,46 @@ describe('aliments modifiables', () => {
     expect(effectiveItem(skyr, {})).toBe(skyr);
     expect(effectiveItem(skyr, { amandes: { kcal: 1 } })).toBe(skyr);
     expect(isEdited(skyr, {})).toBe(false);
-    expect(isEdited(skyr, { skyr: { qty: 280 } })).toBe(false); // même valeur = pas modifié
-    expect(isEdited(skyr, { skyr: { qty: 300 } })).toBe(true);
+    expect(isEdited(skyr, { [skyr.id]: { qty: 280 } })).toBe(false); // même valeur = pas modifié
+    expect(isEdited(skyr, { [skyr.id]: { qty: 300 } })).toBe(true);
   });
 
-  it('un repas pas encore décomposé garde les valeurs écrites du .md', () => {
-    const diner = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Dîner')!;
-    expect(diner.items).toBeUndefined();
-    expect(mealMacros(diner)).toEqual({
-      kcal: diner.kcal,
-      proteinG: diner.proteinG,
+  it('un repas pas encore décomposé garderait les valeurs écrites du .md', () => {
+    // Tous les repas sont décomposés aujourd'hui. Ce test protège le repli :
+    // ajouter un repas sans ses aliments ne doit pas le compter pour zéro.
+    const brut: Meal = { name: 'Test', detail: '', kcal: 500, proteinG: 40 };
+    expect(brut.items).toBeUndefined();
+    expect(mealMacros(brut)).toEqual({
+      kcal: 500,
+      proteinG: 40,
       carbsG: 0, // inconnus tant que le repas n'est pas décomposé — pas inventés
       fatG: 0,
     });
   });
 
-  it('les valeurs modifiées ne changent rien aux repas qu’elles ne concernent pas', () => {
-    const diner = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Dîner')!;
-    expect(mealMacros(diner, { skyr: { kcal: 999 } })).toEqual(mealMacros(diner));
+  it('une correction de composition vaut pour toutes les lignes du même produit', () => {
+    // Le pain apparaît au réveil ET à la collation de 16 h, sur les deux
+    // paliers : une seule saisie doit suffire.
+    const lignesPain = Object.values(NUTRITION_TARGETS)
+      .flatMap((t) => t.meals)
+      .flatMap((m) => m.items ?? [])
+      .filter((i) => i.product === 'pain');
+    expect(lignesPain.length).toBeGreaterThanOrEqual(4);
+    for (const l of lignesPain) {
+      expect(effectiveItem(l, { pain: { kcal: 300 } }).kcal, l.id).toBe(300);
+    }
+  });
+
+  it('une correction de quantité ne touche QUE la ligne ouverte', () => {
+    const reveil = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Réveil — 6 h')!;
+    const painReveil = reveil.items!.find((i) => i.product === 'pain')!;
+    const autres = Object.values(NUTRITION_TARGETS)
+      .flatMap((t) => t.meals)
+      .flatMap((m) => m.items ?? [])
+      .filter((i) => i.product === 'pain' && i.id !== painReveil.id);
+    const ov: FoodOverrides = { [painReveil.id]: { qty: 140 } };
+    expect(effectiveItem(painReveil, ov).qty).toBe(140);
+    for (const a of autres) expect(effectiveItem(a, ov).qty, a.id).toBe(a.qty);
   });
 
   it('lit une saisie au clavier français, virgule comprise', () => {

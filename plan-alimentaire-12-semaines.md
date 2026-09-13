@@ -21,12 +21,12 @@ Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se c
 - 3 tranches de pain complet + 20 g de miel ou de confiture
 - 1 banane
 - Café ou thé si tu veux
-≈ 645 kcal / 30 g protéines
+≈ 644 kcal / 30 g protéines
 
 **Collation (8 h, sur la route ou au chantier)**
 - 60 g de flocons d'avoine + 250 ml de lait demi-écrémé
 - Se prépare la veille dans une bouteille ou un bocal, se boit d'une main
-≈ 345 kcal / 16 g protéines
+≈ 343 kcal / 16 g protéines
 
 **Collation (10 h, chantier)**
 - 280 g de skyr nature (9,8 g protéines/100 g) + 30 g d'amandes + 1 pomme
@@ -37,23 +37,25 @@ Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se c
 - 300 g de riz, pâtes ou pommes de terre (poids cuit)
 - 250 g de légumes (haricots verts, brocolis, carottes, salade)
 - 10 g d'huile d'olive (1 cuillère à soupe)
-≈ 865 kcal / 67 g protéines
+≈ 863 kcal / 67 g protéines
 
 **Autour de la séance (16 h)**
 - *Avant* (1h30 avant) : 1 banane + 2 tranches de pain complet avec 20 g de miel
 - *Après* (dans les 45 min) : shaker whey (30 g) + 1 pomme
-≈ 540 kcal / 32 g protéines
+≈ 542 kcal / 32 g protéines
 
 **Dîner**
 - 180-200 g de viande, poisson ou œufs (4-5 œufs si végé ce soir-là)
 - 200 g de féculent (riz, pâtes, patate douce, pommes de terre — poids cuit)
 - 250 g de légumes
 - 15 g d'huile d'olive ou de colza
-≈ 785 kcal / 63 g protéines
+≈ 783 kcal / 63 g protéines
 
 **Total** : ≈ 3 600 kcal / 240 g protéines / 425 g glucides / 105 g lipides.
 
 Ce total est calculé sur les valeurs de composition réelles des aliments listés, pas estimé à la louche : les portions écrites ci-dessus atteignent vraiment la cible. Les versions précédentes de ce plan s'arrêtaient 700 à 800 kcal en dessous.
+
+Chaque ligne est désormais un aliment avec sa composition dans l'appli, et non plus une phrase. Les kcal d'un repas sont la somme de ses aliments, jamais un nombre écrit à part — et les valeurs se corrigent depuis l'écran Nutrition, étiquette en main.
 
 Ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids hebdomadaire.
 
@@ -67,11 +69,11 @@ Mêmes six prises, mêmes protéines, mêmes lipides. On allège uniquement les 
 - 3 œufs entiers
 - 2 tranches de pain complet + 20 g de miel *(au lieu de 3 tranches)*
 - 1 banane
-≈ 555 kcal / 27 g protéines
+≈ 557 kcal / 27 g protéines
 
 **Collation (8 h)**
 - 40 g de flocons d'avoine + 250 ml de lait demi-écrémé *(au lieu de 60 g)*
-≈ 270 kcal / 13 g protéines
+≈ 267 kcal / 13 g protéines
 
 **Collation (10 h)**
 - 280 g de skyr nature + 30 g d'amandes + 1 pomme *(inchangée)*
@@ -81,7 +83,7 @@ Mêmes six prises, mêmes protéines, mêmes lipides. On allège uniquement les 
 - 180-200 g de viande blanche ou rouge maigre ou poisson *(inchangé)*
 - 200 g de riz, pâtes ou pommes de terre, poids cuit *(au lieu de 300 g)*
 - 250 g de légumes + 10 g d'huile d'olive
-≈ 740 kcal / 63 g protéines
+≈ 738 kcal / 63 g protéines
 
 **Collation (16 h)**
 - 1 banane + 1 tranche de pain complet avec 10 g de miel *(au lieu de 2 tranches et d'une pomme)*
@@ -92,7 +94,7 @@ Mêmes six prises, mêmes protéines, mêmes lipides. On allège uniquement les 
 - 180-200 g de viande, poisson ou œufs *(inchangé)*
 - 150 g de féculent, poids cuit *(au lieu de 200 g)*
 - 250 g de légumes + 15 g d'huile d'olive ou de colza
-≈ 720 kcal / 62 g protéines
+≈ 721 kcal / 62 g protéines
 
 **Total** : ≈ 3 050 kcal / 227 g protéines / 315 g glucides / 100 g lipides.
 

@@ -295,19 +295,35 @@ export interface Macros {
   fatG: number;
 }
 
-/** L'aliment tel qu'il compte vraiment : le .md, corrigé de ce qu'a saisi Guillaume. */
+/**
+ * L'aliment tel qu'il compte vraiment : le .md, corrigé de ce qu'a saisi
+ * Guillaume.
+ *
+ * Deux clés, et c'est essentiel : la QUANTITÉ est rangée sous l'identifiant de
+ * la ligne, la COMPOSITION sous celui du produit. Changer de marque de pain se
+ * saisit donc une fois et vaut pour les quatre lignes de pain du plan, alors
+ * que mettre une tranche de plus au réveil ne touche qu'au réveil.
+ *
+ * Tout mettre sous une seule clé donnait le choix entre retaper une étiquette
+ * quatre fois et voir une quantité se propager là où elle n'a rien à faire.
+ */
 export function effectiveItem(item: FoodItem, overrides: FoodOverrides = {}): FoodItem {
-  const o = overrides[item.id];
-  if (!o) return item;
+  const surLigne = overrides[item.id];
+  const surProduit = overrides[item.product];
+  if (!surLigne && !surProduit) return item;
   return {
     ...item,
-    qty: o.qty ?? item.qty,
-    kcal: o.kcal ?? item.kcal,
-    proteinG: o.proteinG ?? item.proteinG,
-    carbsG: o.carbsG ?? item.carbsG,
-    fatG: o.fatG ?? item.fatG,
+    qty: surLigne?.qty ?? item.qty,
+    kcal: surProduit?.kcal ?? item.kcal,
+    proteinG: surProduit?.proteinG ?? item.proteinG,
+    carbsG: surProduit?.carbsG ?? item.carbsG,
+    fatG: surProduit?.fatG ?? item.fatG,
   };
 }
+
+/** Les deux clés sous lesquelles se range une correction de cette ligne. */
+export const CLE_QUANTITE = (item: FoodItem): string => item.id;
+export const CLE_COMPOSITION = (item: FoodItem): string => item.product;
 
 /** Cet aliment est-il modifié par rapport au .md ? */
 export function isEdited(item: FoodItem, overrides: FoodOverrides = {}): boolean {
