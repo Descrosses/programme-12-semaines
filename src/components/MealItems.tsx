@@ -3,9 +3,12 @@ import { linesForProduct, type FoodItem, type Meal } from '../data/nutrition';
 import {
   CLE_COMPOSITION,
   CLE_QUANTITE,
+  MACRO_COHERENCE_TOLERANCE_PCT,
   effectiveItem,
   isEdited,
   itemMacros,
+  macroCoherence,
+  macrosLookWrong,
   type FoodOverride,
   type FoodOverrides,
 } from '../engine/nutrition';
@@ -118,6 +121,23 @@ function FoodLine({
   }
 
   const autresLignes = linesForProduct(item.product).length - 1;
+
+  /*
+   * Contrôle en direct pendant la saisie : les kcal tapées doivent valoir ce que
+   * valent les macros tapées. C'est le seul moyen de repérer une étiquette lue
+   * de travers sans avoir à juger l'aliment lui-même — l'appli ne sait pas ce
+   * que Guillaume mange, mais elle sait qu'un nombre en contredit trois autres.
+   */
+  const brouillon = {
+    kcal: lireDecimal(draft.kcal) ?? item.kcal,
+    proteinG: lireDecimal(draft.proteinG) ?? item.proteinG,
+    carbsG: lireDecimal(draft.carbsG) ?? item.carbsG,
+    fatG: lireDecimal(draft.fatG) ?? item.fatG,
+  };
+  const coherence = macroCoherence(brouillon);
+  const incoherent =
+    coherence !== null && Math.abs(coherence.ecartPct) > MACRO_COHERENCE_TOLERANCE_PCT;
+  const ligneDouteuse = macrosLookWrong(item, overrides);
   const unite = item.unit === 'unité' ? (courant.qty > 1 ? 'unités' : 'unité') : item.unit;
   const base = item.per === 1 ? 'par unité' : 'pour 100 g';
 
@@ -129,6 +149,14 @@ function FoodLine({
           {modifie && (
             <span className={styles.foodBadge} title="Valeur modifiée">
               modifié
+            </span>
+          )}
+          {ligneDouteuse && (
+            <span
+              className={`${styles.foodBadge} ${styles.foodBadgeAlerte}`}
+              title="Les kcal et les macros de cette ligne ne concordent pas"
+            >
+              à vérifier
             </span>
           )}
         </span>
@@ -175,6 +203,16 @@ function FoodLine({
               </label>
             ))}
           </div>
+          {incoherent && coherence && (
+            <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '12px 0 0' }}>
+              <b>Ces nombres ne peuvent pas décrire le même aliment.</b> Tes macros
+              ({fr(brouillon.proteinG)} P · {fr(brouillon.carbsG)} G · {fr(brouillon.fatG)} L)
+              valent <b>{Math.round(coherence.attendues)} kcal</b> {base}, pas{' '}
+              {fr(brouillon.kcal)}. Sur une étiquette, les kcal sont toujours 4 × protéines
+              + 4 × glucides + 9 × lipides. Recopie les quatre nombres de la même colonne, celle
+              {item.per === 1 ? ' de la portion' : ' des 100 g'}.
+            </p>
+          )}
           <div className={styles.foodActions}>
             <button type="button" className={styles.primary} onClick={() => void enregistrer()}>
               Enregistrer
