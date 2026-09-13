@@ -801,3 +801,109 @@
   color: var(--ink-2);
   text-align: center;
 }
+
+/* --- Aliments modifiables d'un repas ------------------------------------ */
+
+.foodList {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.foodItem {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Toute la ligne est la cible tactile : viser un crayon de 20 px sur un
+   chantier, les mains froides, ne marche pas. */
+.foodRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 2px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Le nom est la seule colonne qui a le droit de passer à la ligne : une
+   quantité coupée en deux (« 400 » puis « g ») ne se lit pas. */
+.foodName {
+  min-width: 0;
+  font-weight: 600;
+}
+
+.foodBadge {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.foodQty {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.foodKcal {
+  min-width: 68px;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.foodEdit {
+  padding: 4px 2px 14px;
+}
+
+/* Deux colonnes au doigt, une seule sur les écrans étroits. */
+.foodGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.foodField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.foodFieldLabel {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.foodActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.foodActions > button {
+  flex: 1;
+  margin: 0;
+}
+
+@media (max-width: 360px) {
+  .foodGrid {
+    grid-template-columns: 1fr;
+  }
+}

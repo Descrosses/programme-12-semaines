@@ -9,8 +9,6 @@ import {
   SIMPLE_RULES,
   SUPPLEMENTS_NOTE,
   TARGET_GAIN_KG_PER_WEEK,
-  mealsGap,
-  mealsTotal,
   type DayKind,
 } from '../data/nutrition';
 import type { DayIndex } from '../data/types';
@@ -18,6 +16,10 @@ import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import {
   fuelForToday,
+  mealMacros,
+  mealsGap,
+  mealsTotal,
+  type FoodOverrides,
   starchToCloseGap,
   latestWaist,
   nutritionAdvice,
@@ -25,7 +27,15 @@ import {
   weightTrend,
   type Measurement,
 } from '../engine/nutrition';
-import { allMeasurements, getMeasurement, saveMeasurement } from '../db/repo';
+import {
+  allFoodOverrides,
+  allMeasurements,
+  getMeasurement,
+  resetFoodOverrides,
+  saveFoodOverride,
+  saveMeasurement,
+} from '../db/repo';
+import { MealItems } from '../components/MealItems';
 import styles from './Screens.module.css';
 
 /**
@@ -49,6 +59,7 @@ export function NutritionScreen({
   todayDay: DayIndex | null;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
+  const [overrides, setOverrides] = useState<FoodOverrides>({});
   const [kind, setKind] = useState<DayKind>(todayKind);
   const [todayRow, setTodayRow] = useState<{ weightKg: number | null; waistCm: number | null }>({
     weightKg: null,
@@ -60,6 +71,7 @@ export function NutritionScreen({
   async function reload() {
     const all = await allMeasurements();
     setRows(all.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })));
+    setOverrides(await allFoodOverrides());
     const t = await getMeasurement(todayIso);
     setTodayRow({ weightKg: t?.weightKg ?? null, waistCm: t?.waistCm ?? null });
   }
@@ -72,15 +84,15 @@ export function NutritionScreen({
   if (!rows) return <div className={styles.loading}>Chargement…</div>;
 
   const target = NUTRITION_TARGETS[kind];
-  const totalRepas = mealsTotal(target);
-  const ecart = mealsGap(target);
+  const totalRepas = mealsTotal(target, overrides);
+  const ecart = mealsGap(target, overrides);
   /*
    * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
    * pour regarder l'autre journée type ne doit pas faire croire que la séance
    * a changé. La carte reste donc sur aujourd'hui.
    */
   const carburant = fuelForToday(todayDay);
-  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind]);
+  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind], overrides);
   const trend = weightTrend(rows, todayIso);
   const advice = nutritionAdvice(rows, todayIso);
   const waist = latestWaist(rows);
@@ -229,9 +241,34 @@ export function NutritionScreen({
             <div key={m.name} className={styles.meal}>
               <div>
                 <div className={styles.mealName}>{m.name}</div>
-                <div className={styles.mealDetail}>{m.detail}</div>
+                {/*
+                  La phrase du .md disparaît dès que le repas est décomposé :
+                  elle dit « 280 g de skyr » alors que la ligne en dessous peut
+                  dire 400 g. Deux versions du même repas à l'écran, c'est
+                  exactement l'incohérence qu'on vient de chasser des totaux.
+                */}
+                {!m.items && <div className={styles.mealDetail}>{m.detail}</div>}
+                {/*
+                  Un repas décomposé affiche ses aliments : le détail écrit
+                  reste au-dessus comme rappel du plan, la liste en dessous est
+                  ce qui compte vraiment et ce qui se modifie.
+                */}
+                <MealItems
+                  meal={m}
+                  overrides={overrides}
+                  onSave={async (foodId, patch) => {
+                    await saveFoodOverride(foodId, patch);
+                    setOverrides(await allFoodOverrides());
+                  }}
+                  onReset={async (foodId) => {
+                    await resetFoodOverrides(foodId);
+                    setOverrides(await allFoodOverrides());
+                  }}
+                />
               </div>
-              <div className={`${styles.mealKcal} tnum`}>{m.kcal} kcal</div>
+              <div className={`${styles.mealKcal} tnum`}>
+                {mealMacros(m, overrides).kcal} kcal
+              </div>
             </div>
           ))}
         </div>
@@ -240,6 +277,21 @@ export function NutritionScreen({
           de 830 kcal dans le .md : montrer la cible sous une liste qui ne
           l'atteint pas laisserait croire que manger ces cinq repas suffit.
         */}
+        {Object.keys(overrides).length > 0 && (
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '10px 0 0' }}
+            onClick={() =>
+              void (async () => {
+                await resetFoodOverrides();
+                setOverrides(await allFoodOverrides());
+              })()
+            }
+          >
+            Réinitialiser aux valeurs par défaut ({Object.keys(overrides).length})
+          </button>
+        )}
         <div className={styles.mealTotal}>
           <span>Total des repas listés</span>
           <span className="tnum">

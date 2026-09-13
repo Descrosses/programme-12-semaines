@@ -159,7 +159,21 @@ function renderScreen(
       return <ProgressScreen key={dataVersion} />;
 
     case 'nutrition':
-      return <NutritionScreen key={dataVersion} todayKind={todayKind} todayDay={todayDay} />;
+      /*
+       * `todayKind` fait partie de la clé, pas seulement des props : l'écran
+       * s'en sert pour choisir le palier affiché à l'ouverture, et cette
+       * décision est prise une seule fois, au montage. Or au démarrage à froid
+       * les réglages sont encore en train d'être lus, donc `todayKind` vaut
+       * « repos » pendant un instant — sans cette clé, un lundi s'ouvrait sur
+       * la journée de repos et y restait.
+       */
+      return (
+        <NutritionScreen
+          key={`${dataVersion}-${todayKind}`}
+          todayKind={todayKind}
+          todayDay={todayDay}
+        />
+      );
 
     case 'combine':
       return <CombineScreen key={dataVersion} />;
