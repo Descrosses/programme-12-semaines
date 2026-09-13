@@ -3,11 +3,14 @@ import { LineChart, type Series } from '../components/Chart';
 import { Stepper, stepValue } from '../components/Stepper';
 import {
   HYDRATION_NOTE,
+  MEALS_GAP_TOLERANCE_PCT,
   NUTRITION_TARGETS,
   SHOPPING_LIST,
   SIMPLE_RULES,
   SUPPLEMENTS_NOTE,
   TARGET_GAIN_KG_PER_WEEK,
+  mealsGap,
+  mealsTotal,
   type DayKind,
 } from '../data/nutrition';
 import { humanDate } from '../engine/calendar';
@@ -59,6 +62,8 @@ export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
   if (!rows) return <div className={styles.loading}>Chargement…</div>;
 
   const target = NUTRITION_TARGETS[kind];
+  const totalRepas = mealsTotal(target);
+  const ecart = mealsGap(target);
   const trend = weightTrend(rows, todayIso);
   const advice = nutritionAdvice(rows, todayIso);
   const waist = latestWaist(rows);
@@ -163,14 +168,33 @@ export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
             </div>
           ))}
         </div>
+        {/*
+          On affiche la SOMME des repas listés, pas la cible. Les deux diffèrent
+          de 830 kcal dans le .md : montrer la cible sous une liste qui ne
+          l'atteint pas laisserait croire que manger ces cinq repas suffit.
+        */}
         <div className={styles.mealTotal}>
-          <span>Total</span>
-          <span className="tnum">≈ {target.kcal.toLocaleString('fr-FR')} kcal</span>
+          <span>Total des repas listés</span>
+          <span className="tnum">
+            ≈ {totalRepas.kcal.toLocaleString('fr-FR')} kcal · {totalRepas.proteinG} g
+          </span>
         </div>
-        <p className={styles.fieldHint}>
-          Ajuste les féculents de ±30 g selon la faim et ta moyenne hebdomadaire. Les quantités sont
-          des repères, pas des lois.
-        </p>
+        {Math.abs(ecart.pct) > MEALS_GAP_TOLERANCE_PCT ? (
+          <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '12px 0 0' }}>
+            <b>
+              Il manque {Math.abs(ecart.kcal).toLocaleString('fr-FR')} kcal pour atteindre la cible
+              de {target.kcal.toLocaleString('fr-FR')}.
+            </b>{' '}
+            Ces portions écrites à la lettre te font manger {fr(Math.abs(ecart.pct))} % de moins que
+            prévu — à ce niveau tu ne prendras pas de poids. Sers-toi plus généreusement : environ
+            200 g de féculent cuit en plus répartis sur la journée, ou une sixième prise.
+          </p>
+        ) : (
+          <p className={styles.fieldHint}>
+            Ajuste les féculents de ±30 g selon la faim et ta moyenne hebdomadaire. Les quantités
+            sont des repères, pas des lois.
+          </p>
+        )}
       </section>
 
       {/* --- 2 et 3. Suivi de poids et tour de taille ----------------------- */}

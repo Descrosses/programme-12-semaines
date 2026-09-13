@@ -7,10 +7,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  MEALS_GAP_TOLERANCE_PCT,
   NUTRITION_TARGETS,
   SHOPPING_LIST,
   SIMPLE_RULES,
   TARGET_GAIN_KG_PER_WEEK,
+  mealsGap,
+  mealsTotal,
 } from './nutrition';
 
 const MD = readFileSync(new URL('../../plan-alimentaire-12-semaines.md', import.meta.url), 'utf8');
@@ -47,6 +50,34 @@ describe('cibles transcrites du .md', () => {
     const kcal = (meals: typeof train, name: string) => meals.find((m) => m.name === name)!.kcal;
     expect(kcal(rest, 'Déjeuner')).toBeLessThan(kcal(train, 'Déjeuner'));
     expect(kcal(rest, 'Dîner')).toBeLessThan(kcal(train, 'Dîner'));
+  });
+
+  it('la collation du matin suit la dernière version du .md', () => {
+    expect(MD).toContain('280 g de skyr nature');
+    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation matin')!;
+    expect(c.kcal).toBe(420);
+    expect(c.proteinG).toBe(34);
+    // La même collation les deux jours : le .md ne la change pas au repos.
+    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name === 'Collation matin')).toEqual(c);
+  });
+
+  /*
+   * Ce test ne verrouille pas une valeur « correcte » : il CONSTATE un écart
+   * du .md et empêche qu'on l'oublie. Si Guillaume rééquilibre ses portions,
+   * l'écart se réduira et le test le dira.
+   */
+  it('les repas listés ne totalisent PAS la cible annoncée — écart connu du .md', () => {
+    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 2770, proteinG: 186 });
+    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: -830, pct: -23.1 });
+
+    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 2220, proteinG: 156 });
+    expect(mealsGap(NUTRITION_TARGETS.rest).kcal).toBe(-930);
+
+    // L'écart dépasse largement ce qu'un arrondi expliquerait : l'appli doit
+    // donc l'afficher, pas montrer la seule cible.
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      expect(Math.abs(mealsGap(t).pct)).toBeGreaterThan(MEALS_GAP_TOLERANCE_PCT);
+    }
   });
 
   it('cinq prises maximum le jour d’entraînement — c’est la contrainte du .md', () => {
