@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import type { FoodItem, Meal } from '../data/nutrition';
+import { linesForProduct, type FoodItem, type Meal } from '../data/nutrition';
 import {
+  CLE_COMPOSITION,
+  CLE_QUANTITE,
   effectiveItem,
   isEdited,
   itemMacros,
@@ -37,8 +39,8 @@ export function MealItems({
 }: {
   meal: Meal;
   overrides: FoodOverrides;
-  onSave: (foodId: string, patch: FoodOverride) => Promise<void>;
-  onReset: (foodId: string) => Promise<void>;
+  onSave: (cle: string, patch: FoodOverride) => Promise<void>;
+  onReset: (cle: string) => Promise<void>;
 }) {
   const [open, setOpen] = useState<string | null>(null);
   if (!meal.items) return null;
@@ -72,8 +74,8 @@ function FoodLine({
   overrides: FoodOverrides;
   open: boolean;
   onToggle: () => void;
-  onSave: (foodId: string, patch: FoodOverride) => Promise<void>;
-  onReset: (foodId: string) => Promise<void>;
+  onSave: (cle: string, patch: FoodOverride) => Promise<void>;
+  onReset: (cle: string) => Promise<void>;
 }) {
   const courant = effectiveItem(item, overrides);
   const macros = itemMacros(item, overrides);
@@ -91,19 +93,31 @@ function FoodLine({
     onToggle();
   }
 
+  /*
+   * Deux enregistrements, deux portées : la quantité sous l'identifiant de la
+   * ligne, la composition sous celui du produit. C'est ce qui fait qu'une
+   * étiquette de pain se recopie une fois pour les quatre lignes de pain, sans
+   * que la quantité du réveil parte s'appliquer à la collation de 16 h.
+   *
+   * On ne stocke que ce qui DIFFÈRE du .md : une valeur recopiée à l'identique
+   * ne doit pas figer la ligne, sinon corriger le plan ne profiterait plus
+   * jamais à Guillaume.
+   */
   async function enregistrer() {
-    const patch: FoodOverride = {};
+    const quantite: FoodOverride = {};
+    const composition: FoodOverride = {};
     for (const c of CHAMPS) {
       const lu = lireDecimal(draft[c.cle]);
-      // On ne stocke que ce qui DIFFÈRE du .md : une valeur recopiée à
-      // l'identique ne doit pas figer la ligne, sinon corriger le plan ne
-      // profiterait plus jamais à Guillaume.
-      if (lu !== null && lu !== item[c.cle]) patch[c.cle] = lu;
+      if (lu === null || lu === item[c.cle]) continue;
+      if (c.cle === 'qty') quantite.qty = lu;
+      else composition[c.cle] = lu;
     }
-    await onSave(item.id, patch);
+    await onSave(CLE_QUANTITE(item), quantite);
+    await onSave(CLE_COMPOSITION(item), composition);
     onToggle();
   }
 
+  const autresLignes = linesForProduct(item.product).length - 1;
   const unite = item.unit === 'unité' ? (courant.qty > 1 ? 'unités' : 'unité') : item.unit;
   const base = item.per === 1 ? 'par unité' : 'pour 100 g';
 
@@ -130,6 +144,18 @@ function FoodLine({
             Recopie l’étiquette de ton produit. Les macros sont <b>{base}</b>, la quantité est à
             part — comme sur l’emballage.
           </p>
+          {item.hint && (
+            <p className={styles.fieldHint} style={{ margin: '0 0 10px' }}>
+              {item.hint}
+            </p>
+          )}
+          {autresLignes > 0 && (
+            <p className={styles.fieldHint} style={{ margin: '0 0 10px' }}>
+              La composition vaut pour <b>toutes les lignes « {item.label} » du plan</b> ({autresLignes}{' '}
+              autre{autresLignes > 1 ? 's' : ''}) — une étiquette se recopie une seule fois. La
+              quantité, elle, ne concerne que cette ligne.
+            </p>
+          )}
           <div className={styles.foodGrid}>
             {CHAMPS.map((c) => (
               <label key={c.cle} className={styles.foodField}>
@@ -159,7 +185,8 @@ function FoodLine({
                 className={styles.secondary}
                 onClick={() =>
                   void (async () => {
-                    await onReset(item.id);
+                    await onReset(CLE_QUANTITE(item));
+                    await onReset(CLE_COMPOSITION(item));
                     onToggle();
                   })()
                 }

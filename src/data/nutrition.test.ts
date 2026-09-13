@@ -83,11 +83,11 @@ describe('cibles transcrites du .md', () => {
    * ce qui la rallumera si une portion repart à la baisse.
    */
   it('les repas listés totalisent bien la cible annoncée', () => {
-    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 3610, proteinG: 242 });
-    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: 10, pct: 0.3 });
+    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 3605, proteinG: 242 });
+    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: 5, pct: 0.1 });
 
-    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 3060, proteinG: 227 });
-    expect(mealsGap(NUTRITION_TARGETS.rest)).toEqual({ kcal: 10, pct: 0.3 });
+    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 3058, proteinG: 227 });
+    expect(mealsGap(NUTRITION_TARGETS.rest)).toEqual({ kcal: 8, pct: 0.3 });
 
     for (const t of Object.values(NUTRITION_TARGETS)) {
       expect(Math.abs(mealsGap(t).pct), t.label).toBeLessThanOrEqual(MEALS_GAP_TOLERANCE_PCT);
@@ -204,10 +204,44 @@ describe('aliments décomposés', () => {
     }
   });
 
-  it('la collation de 10 h est le premier repas décomposé', () => {
+  it('tous les repas des deux paliers sont décomposés', () => {
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const m of t.meals) {
+        expect(m.items, `${t.label} — ${m.name}`).toBeDefined();
+        expect(m.items!.length, `${t.label} — ${m.name}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('la collation de 10 h est le même objet dans les deux paliers', () => {
     const c = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
-    expect(c.items?.map((i) => i.id)).toEqual(['skyr', 'amandes', 'pomme']);
-    // Le même objet dans les deux paliers : une correction vaut pour les deux.
+    expect(c.items?.map((i) => i.product)).toEqual(['skyr', 'amandes', 'pomme']);
     expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name === 'Collation — 10 h')).toBe(c);
+  });
+
+  /*
+   * Le point du catalogue de produits : le pain du réveil et celui de la
+   * collation de 16 h doivent être LE MÊME pain, sinon changer de marque se
+   * saisit quatre fois.
+   */
+  it('un même produit a partout la même composition', () => {
+    const parProduit = new Map<string, string>();
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      for (const m of t.meals) {
+        for (const i of m.items ?? []) {
+          const compo = `${i.label}|${i.unit}|${i.per}|${i.kcal}|${i.proteinG}|${i.carbsG}|${i.fatG}`;
+          const vu = parProduit.get(i.product);
+          if (vu === undefined) parProduit.set(i.product, compo);
+          else expect(compo, i.product).toBe(vu);
+        }
+      }
+    }
+    // Et le pain apparaît bien plusieurs fois : sinon le test ne prouve rien.
+    const lignesPain = Object.values(NUTRITION_TARGETS)
+      .flatMap((t) => t.meals)
+      .flatMap((m) => m.items ?? [])
+      .filter((i) => i.product === 'pain');
+    expect(lignesPain.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(lignesPain.map((i) => i.id)).size).toBe(lignesPain.length);
   });
 });

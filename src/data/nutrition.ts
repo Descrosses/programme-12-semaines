@@ -46,6 +46,8 @@ export type FoodUnit = 'g' | 'ml' | 'unité';
  */
 export interface FoodItem {
   id: string;
+  /** Le produit dont cette ligne sert une quantité. Porte la composition. */
+  product: string;
   label: string;
   /** Quantité consommée, dans `unit`. */
   qty: number;
@@ -56,6 +58,8 @@ export interface FoodItem {
   proteinG: number;
   carbsG: number;
   fatG: number;
+  /** Précision pratique affichée à la saisie. */
+  hint?: string;
 }
 
 export interface Meal {
@@ -89,94 +93,141 @@ export interface NutritionTarget {
 }
 
 // ---------------------------------------------------------------------------
+// Produits — la composition, partagée par toutes les lignes qui les utilisent
+//
+// Le pain complet apparaît dans quatre lignes du plan : réveil et collation de
+// 16 h, sur les deux paliers. Si chacune portait sa propre composition, changer
+// de marque de pain demanderait de la retaper quatre fois — et trois oublis sur
+// quatre. La composition vit donc UNE fois, ici, et les lignes n'y ajoutent
+// qu'une quantité.
+//
+// C'est aussi ce que ça veut dire à l'écran : corriger le pain corrige tout le
+// pain du plan ; changer une quantité ne touche que la ligne ouverte.
+// ---------------------------------------------------------------------------
+
+interface FoodProduct {
+  label: string;
+  unit: FoodUnit;
+  /** 100 pour ce qui se pèse, 1 pour ce qui se compte. */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  /** Précision pratique affichée à la saisie : « poids cuit », « la tranche »… */
+  hint?: string;
+}
+
+const PRODUITS = {
+  oeuf: { label: 'Œuf entier', unit: 'unité', per: 1, kcal: 71.5, proteinG: 6.3, carbsG: 0.35, fatG: 4.95, hint: 'Un œuf moyen, environ 50 g.' },
+  pain: { label: 'Pain complet', unit: 'g', per: 100, kcal: 250, proteinG: 9, carbsG: 43, fatG: 3.3, hint: 'Une tranche pèse environ 35 g.' },
+  miel: { label: 'Miel ou confiture', unit: 'g', per: 100, kcal: 300, proteinG: 0.3, carbsG: 82, fatG: 0 },
+  banane: { label: 'Banane', unit: 'unité', per: 1, kcal: 107, proteinG: 1.3, carbsG: 27.6, fatG: 0.4, hint: 'Une banane moyenne, environ 120 g épluchée.' },
+  pomme: { label: 'Pomme', unit: 'unité', per: 1, kcal: 80, proteinG: 0.5, carbsG: 21.5, fatG: 0.3, hint: 'Une pomme moyenne, environ 155 g.' },
+  flocons: { label: 'Flocons d’avoine', unit: 'g', per: 100, kcal: 380, proteinG: 13, carbsG: 60, fatG: 7 },
+  lait: { label: 'Lait demi-écrémé', unit: 'ml', per: 100, kcal: 46, proteinG: 3.3, carbsG: 4.8, fatG: 1.6 },
+  skyr: { label: 'Skyr nature', unit: 'g', per: 100, kcal: 63, proteinG: 9.8, carbsG: 4, fatG: 0.2 },
+  amandes: { label: 'Amandes', unit: 'g', per: 100, kcal: 580, proteinG: 21, carbsG: 10, fatG: 50 },
+  viande: { label: 'Viande ou poisson', unit: 'g', per: 100, kcal: 170, proteinG: 27, carbsG: 0, fatG: 7, hint: 'Poulet, dinde, bœuf 5 %, poisson — pesé cuit.' },
+  feculent: { label: 'Féculent', unit: 'g', per: 100, kcal: 125, proteinG: 3.5, carbsG: 26, fatG: 0.5, hint: 'Riz, pâtes, pommes de terre — pesé CUIT.' },
+  legumes: { label: 'Légumes', unit: 'g', per: 100, kcal: 30, proteinG: 2, carbsG: 5, fatG: 0.3 },
+  huile: { label: 'Huile d’olive ou de colza', unit: 'g', per: 100, kcal: 900, proteinG: 0, carbsG: 0, fatG: 100 },
+  whey: { label: 'Whey', unit: 'g', per: 100, kcal: 400, proteinG: 80, carbsG: 8, fatG: 5 },
+} as const satisfies Record<string, FoodProduct>;
+
+export type ProductId = keyof typeof PRODUITS;
+
+/**
+ * Une ligne du plan : un produit, une quantité, et un identifiant à elle.
+ *
+ * `id` identifie la LIGNE (« le pain du réveil, jour d'entraînement ») et porte
+ * la quantité. `product` identifie le PRODUIT et porte la composition. Les deux
+ * se corrigent séparément, et c'est tout l'intérêt.
+ */
+function ligne(id: string, product: ProductId, qty: number): FoodItem {
+  return { id, product, qty, ...PRODUITS[product] };
+}
+
+// ---------------------------------------------------------------------------
 // §« Journée type — jour d'entraînement »
 // ---------------------------------------------------------------------------
 
 const REVEIL: Meal = {
   name: 'Réveil — 6 h',
   detail: '3 œufs entiers + 3 tranches de pain complet + 20 g de miel + 1 banane',
-  kcal: 645,
+  kcal: 644,
   proteinG: 30,
+  items: [
+    ligne('t.reveil.oeuf', 'oeuf', 3),
+    ligne('t.reveil.pain', 'pain', 105),
+    ligne('t.reveil.miel', 'miel', 20),
+    ligne('t.reveil.banane', 'banane', 1),
+  ],
 };
 
 const COLLATION_8H: Meal = {
   name: 'Collation — 8 h',
   detail: '60 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
-  kcal: 345,
+  kcal: 343,
   proteinG: 16,
+  items: [ligne('t.collation8.flocons', 'flocons', 60), ligne('t.collation8.lait', 'lait', 250)],
 };
 
-/**
- * Premier repas décomposé en aliments modifiables.
- *
- * Les compositions sont celles des produits standards de supermarché. Ce sont
- * des valeurs de départ, pas des lois : c'est exactement ce que Guillaume peut
- * remplacer par l'étiquette de SA marque, depuis l'écran Nutrition.
+/*
+ * Seule prise identique aux deux paliers : le même objet sert aux deux, donc
+ * ses lignes portent le préfixe « x » et non « t » ou « r ».
  */
 const COLLATION_10H: Meal = {
   name: 'Collation — 10 h',
-  detail: '280 g de skyr nature (9,8 g de protéines / 100 g) + 30 g d’amandes + 1 pomme',
+  detail: '280 g de skyr nature + 30 g d’amandes + 1 pomme',
   kcal: 430,
   proteinG: 34,
   items: [
-    {
-      id: 'skyr',
-      label: 'Skyr nature',
-      qty: 280,
-      unit: 'g',
-      per: 100,
-      kcal: 63,
-      proteinG: 9.8,
-      carbsG: 4,
-      fatG: 0.2,
-    },
-    {
-      id: 'amandes',
-      label: 'Amandes',
-      qty: 30,
-      unit: 'g',
-      per: 100,
-      kcal: 580,
-      proteinG: 21,
-      carbsG: 10,
-      fatG: 50,
-    },
-    {
-      id: 'pomme',
-      label: 'Pomme',
-      qty: 1,
-      unit: 'unité',
-      per: 1,
-      // Une pomme moyenne, ~155 g. Comptée à l'unité : Guillaume ne pèse pas
-      // un fruit sur un chantier.
-      kcal: 80,
-      proteinG: 0.5,
-      carbsG: 21.5,
-      fatG: 0.3,
-    },
+    ligne('x.collation10.skyr', 'skyr', 280),
+    ligne('x.collation10.amandes', 'amandes', 30),
+    ligne('x.collation10.pomme', 'pomme', 1),
   ],
 };
 
 const DEJEUNER: Meal = {
   name: 'Déjeuner',
   detail: '180-200 g de protéine + 300 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
-  kcal: 865,
+  kcal: 863,
   proteinG: 67,
+  items: [
+    ligne('t.dejeuner.viande', 'viande', 190),
+    ligne('t.dejeuner.feculent', 'feculent', 300),
+    ligne('t.dejeuner.legumes', 'legumes', 250),
+    ligne('t.dejeuner.huile', 'huile', 10),
+  ],
 };
 
 const AUTOUR_SEANCE: Meal = {
   name: 'Autour de la séance — 16 h',
   detail:
     'Avant (1 h 30) : banane + 2 tranches de pain avec 20 g de miel. Après (45 min) : shaker whey 30 g + 1 pomme',
-  kcal: 540,
+  kcal: 542,
   proteinG: 32,
+  items: [
+    ligne('t.autour.banane', 'banane', 1),
+    ligne('t.autour.pain', 'pain', 70),
+    ligne('t.autour.miel', 'miel', 20),
+    ligne('t.autour.whey', 'whey', 30),
+    ligne('t.autour.pomme', 'pomme', 1),
+  ],
 };
 
 const DINER: Meal = {
   name: 'Dîner',
   detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
-  kcal: 785,
+  kcal: 783,
   proteinG: 63,
+  items: [
+    ligne('t.diner.viande', 'viande', 190),
+    ligne('t.diner.feculent', 'feculent', 200),
+    ligne('t.diner.legumes', 'legumes', 250),
+    ligne('t.diner.huile', 'huile', 15),
+  ],
 };
 
 const TRAIN: NutritionTarget = {
@@ -207,22 +258,35 @@ const TRAIN: NutritionTarget = {
 const REVEIL_REPOS: Meal = {
   name: 'Réveil — 6 h',
   detail: '3 œufs entiers + 2 tranches de pain complet + 20 g de miel + 1 banane',
-  kcal: 555,
+  kcal: 557,
   proteinG: 27,
+  items: [
+    ligne('r.reveil.oeuf', 'oeuf', 3),
+    ligne('r.reveil.pain', 'pain', 70),
+    ligne('r.reveil.miel', 'miel', 20),
+    ligne('r.reveil.banane', 'banane', 1),
+  ],
 };
 
 const COLLATION_8H_REPOS: Meal = {
   name: 'Collation — 8 h',
   detail: '40 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
-  kcal: 270,
+  kcal: 267,
   proteinG: 13,
+  items: [ligne('r.collation8.flocons', 'flocons', 40), ligne('r.collation8.lait', 'lait', 250)],
 };
 
 const DEJEUNER_REPOS: Meal = {
   name: 'Déjeuner',
   detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
-  kcal: 740,
+  kcal: 738,
   proteinG: 63,
+  items: [
+    ligne('r.dejeuner.viande', 'viande', 190),
+    ligne('r.dejeuner.feculent', 'feculent', 200),
+    ligne('r.dejeuner.legumes', 'legumes', 250),
+    ligne('r.dejeuner.huile', 'huile', 10),
+  ],
 };
 
 const COLLATION_16H_REPOS: Meal = {
@@ -230,13 +294,25 @@ const COLLATION_16H_REPOS: Meal = {
   detail: '1 banane + 1 tranche de pain avec 10 g de miel + shaker whey 30 g (ou 2 yaourts)',
   kcal: 345,
   proteinG: 28,
+  items: [
+    ligne('r.collation16.banane', 'banane', 1),
+    ligne('r.collation16.pain', 'pain', 35),
+    ligne('r.collation16.miel', 'miel', 10),
+    ligne('r.collation16.whey', 'whey', 30),
+  ],
 };
 
 const DINER_REPOS: Meal = {
   name: 'Dîner',
   detail: '180-200 g de protéine + 150 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
-  kcal: 720,
+  kcal: 721,
   proteinG: 62,
+  items: [
+    ligne('r.diner.viande', 'viande', 190),
+    ligne('r.diner.feculent', 'feculent', 150),
+    ligne('r.diner.legumes', 'legumes', 250),
+    ligne('r.diner.huile', 'huile', 15),
+  ],
 };
 
 const REST: NutritionTarget = {
@@ -261,6 +337,26 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
   train: TRAIN,
   rest: REST,
 };
+
+/**
+ * Toutes les lignes du plan qui servent un produit donné, paliers confondus.
+ *
+ * Sert à dire à Guillaume, avant qu'il saisisse, combien d'autres lignes sa
+ * correction de composition va toucher. On dédoublonne par identifiant de
+ * ligne : la collation de 10 h est le même objet dans les deux paliers, elle ne
+ * doit pas compter double.
+ */
+export function linesForProduct(product: string): FoodItem[] {
+  const parId = new Map<string, FoodItem>();
+  for (const t of Object.values(NUTRITION_TARGETS)) {
+    for (const m of t.meals) {
+      for (const i of m.items ?? []) {
+        if (i.product === product) parId.set(i.id, i);
+      }
+    }
+  }
+  return [...parId.values()];
+}
 
 /** Au-delà, l'écart n'est plus un arrondi et doit être signalé. */
 export const MEALS_GAP_TOLERANCE_PCT = 5;
