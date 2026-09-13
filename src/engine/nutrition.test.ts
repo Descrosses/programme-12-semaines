@@ -6,6 +6,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   ADJUST_RULES,
+  fuelForToday,
+  starchToCloseGap,
   latestWaist,
   nutritionAdvice,
   weeklyAverages,
@@ -13,6 +15,8 @@ import {
   windowAverage,
   type Measurement,
 } from './nutrition';
+import { FUEL_ADVICE } from '../data/nutrition';
+import type { DayIndex } from '../data/types';
 
 const AUJOURDHUI = '2026-03-01';
 
@@ -159,5 +163,87 @@ describe('tour de taille', () => {
 
   it('rend null s’il n’y en a aucune', () => {
     expect(latestWaist(serie([80, 80]))).toBeNull();
+  });
+});
+
+/**
+ * Bonus glucidique : le niveau suit la séance réellement programmée, jamais un
+ * nom de jour tenu à part. Ces tests figent les sept jours de la semaine type.
+ */
+describe('carburant du jour', () => {
+  it('la semaine type, jour par jour', () => {
+    const attendu: Array<[DayIndex | null, string, string]> = [
+      [0, 'high', 'lundi — Lower Strength, squat lourd'],
+      [null, 'rest', 'mardi — pas de séance'],
+      [2, 'standard', 'mercredi — Upper Strength'],
+      [null, 'rest', 'jeudi — pas de séance'],
+      [4, 'medium', 'vendredi — Total Body Power'],
+      [5, 'high', 'samedi — Posterior Chain, deadlift'],
+      [6, 'medium', 'dimanche — Upper Athletic'],
+    ];
+    for (const [day, niveau, libelle] of attendu) {
+      expect(fuelForToday(day).level, libelle).toBe(niveau);
+    }
+  });
+
+  it('le mercredi est « standard » malgré la charge la plus lourde de la semaine', () => {
+    // Choix assumé : la force du haut du corps puise peu dans le glycogène.
+    expect(fuelForToday(2).level).toBe('standard');
+    expect(fuelForToday(2).foods).toEqual([]);
+    expect(fuelForToday(2).kcal).toBe(0);
+  });
+
+  it('les deux jours lourds proposent le même bonus', () => {
+    expect(fuelForToday(0)).toEqual(fuelForToday(5));
+    expect(fuelForToday(0).foods).toEqual(['+ 1 banane', '+ 40 g pain', '+ 20 g miel']);
+    expect(fuelForToday(0).kcal).toBe(240);
+  });
+
+  it('un jour sans séance ne propose jamais de bonus', () => {
+    expect(fuelForToday(null).level).toBe('rest');
+    expect(fuelForToday(null).kcal).toBe(0);
+  });
+
+  it('une séance posée un mardi ou un jeudi — semaine de combine — reste sans bonus', () => {
+    // Ces jours n'existent pas dans la table de Guillaume. Annoncer « repos »
+    // un jour de test serait faux : on affiche le plan de base, sans bonus.
+    expect(fuelForToday(1).level).toBe('standard');
+    expect(fuelForToday(3).level).toBe('standard');
+  });
+
+  /*
+   * Le sous-titre est le même texte les 84 jours du programme : il ne peut donc
+   * pas nommer un contenu de séance. « Force du haut du corps » était vrai le
+   * mercredi et faux les mardis et jeudis de la combine (tests de 1RM), où le
+   * niveau retombe sur `standard`.
+   */
+  it('aucun sous-titre ne nomme un contenu de séance', () => {
+    const interdits = ['haut du corps', 'bas du corps', 'squat', 'traction', 'soulevé'];
+    for (const niveau of Object.values(FUEL_ADVICE)) {
+      for (const mot of interdits) {
+        expect(niveau.subtitle.toLowerCase().includes(mot), `${niveau.level} — ${mot}`).toBe(false);
+      }
+    }
+    expect(FUEL_ADVICE.standard.subtitle).toBe('Séance modérée');
+  });
+
+  it('seuls les glucides bougent : aucun niveau ne touche protéines ni lipides', () => {
+    for (const day of [0, 1, 2, 3, 4, 5, 6] as DayIndex[]) {
+      const f = fuelForToday(day);
+      expect(f.carbsLabel.includes('protéines'), `jour ${day}`).toBe(false);
+      expect(f.carbsLabel.includes('lipides'), `jour ${day}`).toBe(false);
+    }
+  });
+});
+
+describe('féculent nécessaire pour combler l’écart', () => {
+  it('convertit l’écart au taux du plan, arrondi à 50 g', () => {
+    expect(starchToCloseGap(-700)).toBe(700);
+    expect(starchToCloseGap(-830)).toBe(850);
+    expect(starchToCloseGap(-20)).toBe(0);
+  });
+
+  it('ne dépend pas du signe : c’est un manque, pas une soustraction', () => {
+    expect(starchToCloseGap(700)).toBe(starchToCloseGap(-700));
   });
 });

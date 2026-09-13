@@ -10,7 +10,13 @@
  * de semaines consécutives — mais appliquée au poids.
  */
 
-import { TARGET_GAIN_KG_PER_WEEK } from '../data/nutrition';
+import {
+  FUEL_ADVICE,
+  FUEL_BY_TRAINING_DAY,
+  TARGET_GAIN_KG_PER_WEEK,
+  type FuelAdvice,
+} from '../data/nutrition';
+import type { DayIndex } from '../data/types';
 
 /** Une pesée du matin, et éventuellement le tour de taille du jour. */
 export interface Measurement {
@@ -213,4 +219,46 @@ export function nutritionAdvice(entries: Measurement[], todayIso: string): Nutri
   }
 
   return NO_ADVICE;
+}
+
+// ---------------------------------------------------------------------------
+// Bonus glucidique du jour
+// ---------------------------------------------------------------------------
+
+/**
+ * Niveau de carburant recommandé aujourd'hui.
+ *
+ * Deux entrées seulement, et les deux viennent du calendrier d'entraînement
+ * existant : le jour de programme d'une séance prévue, ou `null` s'il n'y en a
+ * pas. Aucune liste de jours de la semaine n'est maintenue en parallèle.
+ *
+ * Le repli en `standard` couvre un cas que la table de Guillaume ne prévoit
+ * pas : les semaines de combine posent des séances un mardi ou un jeudi, jours
+ * qui n'existent pas dans une semaine d'entraînement normale. Annoncer « jour
+ * de récupération » un jour où il va tester son 1RM serait absurde ; on affiche
+ * donc le plan de base sans bonus plutôt que rien.
+ */
+export function fuelForToday(day: DayIndex | null): FuelAdvice {
+  if (day === null) return FUEL_ADVICE.rest;
+  return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? 'standard'];
+}
+
+/**
+ * Densité du féculent cuit retenue par le plan : 1 kcal par gramme.
+ *
+ * Ce n'est pas une valeur de table de composition — le riz cuit est à ~1,3, les
+ * pâtes à ~1,6, la pomme de terre à ~0,9. C'est le taux que le .md s'applique à
+ * lui-même : son déjeuner et son dîner ne diffèrent que de 50 g de féculent et
+ * de 50 kcal. Reprendre son taux garde le conseil cohérent avec les portions
+ * qu'il écrit, au lieu d'y mêler une précision qu'il ne revendique pas.
+ */
+export const COOKED_STARCH_KCAL_PER_G = 1;
+
+/**
+ * Combien de féculent cuit il faudrait ajouter pour combler l'écart, arrondi à
+ * 50 g. Calculé et non écrit en dur : changer une portion du plan doit changer
+ * ce conseil, sinon l'écran affirme deux choses incompatibles.
+ */
+export function starchToCloseGap(gapKcal: number): number {
+  return Math.round(Math.abs(gapKcal) / COOKED_STARCH_KCAL_PER_G / 50) * 50;
 }

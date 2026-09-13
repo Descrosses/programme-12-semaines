@@ -13,9 +13,12 @@ import {
   mealsTotal,
   type DayKind,
 } from '../data/nutrition';
+import type { DayIndex } from '../data/types';
 import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import {
+  fuelForToday,
+  starchToCloseGap,
   latestWaist,
   nutritionAdvice,
   weeklyAverages,
@@ -37,7 +40,14 @@ import styles from './Screens.module.css';
  * métier et deux enfants. La seule saisie ici est la pesée du matin, qui prend
  * cinq secondes et qui est la seule donnée qui pilote réellement le plan.
  */
-export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
+export function NutritionScreen({
+  todayKind,
+  todayDay,
+}: {
+  todayKind: DayKind;
+  /** Jour de programme de la séance du jour, `null` si repos. */
+  todayDay: DayIndex | null;
+}) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [kind, setKind] = useState<DayKind>(todayKind);
   const [todayRow, setTodayRow] = useState<{ weightKg: number | null; waistCm: number | null }>({
@@ -64,6 +74,13 @@ export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
   const target = NUTRITION_TARGETS[kind];
   const totalRepas = mealsTotal(target);
   const ecart = mealsGap(target);
+  /*
+   * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
+   * pour regarder l'autre journée type ne doit pas faire croire que la séance
+   * a changé. La carte reste donc sur aujourd'hui.
+   */
+  const carburant = fuelForToday(todayDay);
+  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind]);
   const trend = weightTrend(rows, todayIso);
   const advice = nutritionAdvice(rows, todayIso);
   const waist = latestWaist(rows);
@@ -131,6 +148,55 @@ export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
         <p className={styles.fieldHint}>{target.note}</p>
       </section>
 
+      {/* --- Carburant du jour : une recommandation, jamais un ajout auto --- */}
+      <section className={`${styles.card} ${styles.fuelCard} ${styles[`fuel_${carburant.level}`]}`}>
+        <div className={styles.fuelHead}>
+          <span className={styles.fuelDot} aria-hidden="true">
+            {carburant.emoji}
+          </span>
+          <span>
+            <b className={styles.fuelTitle}>{carburant.title}</b>
+            <span className={styles.fuelSubtitle}>{carburant.subtitle}</span>
+          </span>
+        </div>
+
+        {carburant.foods.length > 0 && (
+          <>
+            <ul className={styles.fuelFoods}>
+              {carburant.foods.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+            <div className={styles.fuelAmounts}>
+              <span className="tnum">{carburant.kcalLabel}</span>
+              <span className="tnum">{carburant.carbsLabel}</span>
+            </div>
+            {/*
+              Les trois lignes séparées que Guillaume a demandées : le bonus ne
+              doit jamais se fondre dans le plan de base.
+            */}
+            <dl className={styles.fuelTotals}>
+              <dt>Plan de base</dt>
+              <dd className="tnum">≈ {baseAujourdhui.kcal.toLocaleString('fr-FR')} kcal</dd>
+              <dt>Bonus séance</dt>
+              <dd className="tnum">≈ +{carburant.kcal} kcal</dd>
+              <dt>Total avec bonus</dt>
+              <dd className="tnum">
+                ≈ {(baseAujourdhui.kcal + carburant.kcal).toLocaleString('fr-FR')} kcal
+              </dd>
+            </dl>
+          </>
+        )}
+
+        <p className={styles.fuelMessage}>{carburant.message}</p>
+        {carburant.foods.length > 0 && (
+          <p className={styles.fieldHint}>
+            Une recommandation, pas une obligation : tu la prends selon ta faim, ta fatigue et
+            l’évolution de ton poids. Protéines et lipides ne bougent jamais.
+          </p>
+        )}
+      </section>
+
       {/* --- 4. Suggestion d'ajustement ------------------------------------ */}
       {advice.kind !== 'none' && (
         <p
@@ -186,8 +252,10 @@ export function NutritionScreen({ todayKind }: { todayKind: DayKind }) {
               de {target.kcal.toLocaleString('fr-FR')}.
             </b>{' '}
             Ces portions écrites à la lettre te font manger {fr(Math.abs(ecart.pct))} % de moins que
-            prévu — à ce niveau tu ne prendras pas de poids. Sers-toi plus généreusement : environ
-            200 g de féculent cuit en plus répartis sur la journée, ou une sixième prise.
+            prévu — à ce niveau tu ne prendras pas de poids. Il faudrait environ{' '}
+            {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit en plus sur la
+            journée : à ce volume, une sixième prise est plus tenable que des assiettes plus
+            grosses.
           </p>
         ) : (
           <p className={styles.fieldHint}>

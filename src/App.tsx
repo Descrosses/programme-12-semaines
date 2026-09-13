@@ -38,6 +38,12 @@ export function App() {
    * (mardi, jeudi, avant le début, après la fin) = jour de repos.
    */
   const [todayKind, setTodayKind] = useState<DayKind>('rest');
+  /**
+   * Jour de programme de la séance prévue aujourd'hui, `null` s'il n'y en a
+   * pas. Lu ici, à la même source que `todayKind`, pour que la carte de
+   * carburant de l'écran Nutrition n'ait pas sa propre idée du planning.
+   */
+  const [todayDay, setTodayDay] = useState<DayIndex | null>(null);
   const timer = useRestTimer(alerts);
   const [route, navigate] = useRoute();
   const appUpdate = useAppUpdate();
@@ -50,6 +56,7 @@ export function App() {
       setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
       const today = locateToday(row.startDate, new Date().toISOString().slice(0, 10));
       setTodayKind(today?.kind === 'session' ? 'train' : 'rest');
+      setTodayDay(today?.kind === 'session' ? today.session.day : null);
     })();
   }, [dataVersion]);
 
@@ -79,7 +86,7 @@ export function App() {
       )}
 
       <main>
-        {renderScreen(route, dataVersion, todayKind, openSession, navigate, refresh, timer)}
+        {renderScreen(route, dataVersion, todayKind, todayDay, openSession, navigate, refresh, timer)}
       </main>
 
       <RestBar timer={timer} />
@@ -119,6 +126,7 @@ function renderScreen(
   route: Route,
   dataVersion: number,
   todayKind: DayKind,
+  todayDay: DayIndex | null,
   openSession: (week: WeekIndex, day: DayIndex) => void,
   navigate: (route: Route) => void,
   refresh: () => void,
@@ -151,7 +159,7 @@ function renderScreen(
       return <ProgressScreen key={dataVersion} />;
 
     case 'nutrition':
-      return <NutritionScreen key={dataVersion} todayKind={todayKind} />;
+      return <NutritionScreen key={dataVersion} todayKind={todayKind} todayDay={todayDay} />;
 
     case 'combine':
       return <CombineScreen key={dataVersion} />;

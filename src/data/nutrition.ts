@@ -71,9 +71,9 @@ const TRAIN: NutritionTarget = {
     },
     {
       name: 'Déjeuner',
-      detail: '150-180 g de protéine + 150 g de féculent (cuit) + légumes + huile d’olive',
-      kcal: 700,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 200 g de féculent (cuit) + légumes + huile d’olive',
+      kcal: 790,
+      proteinG: 52,
     },
     {
       name: 'Avant / après séance',
@@ -84,9 +84,9 @@ const TRAIN: NutritionTarget = {
     },
     {
       name: 'Dîner',
-      detail: '150-180 g de protéine + 200 g de féculent + légumes + huile d’olive ou de colza',
-      kcal: 750,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 200 g de féculent + légumes + huile d’olive ou de colza',
+      kcal: 790,
+      proteinG: 52,
     },
   ],
 };
@@ -123,15 +123,15 @@ const REST: NutritionTarget = {
     },
     {
       name: 'Déjeuner',
-      detail: '150-180 g de protéine + 110-120 g de féculent + légumes + huile d’olive',
-      kcal: 630,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 160-170 g de féculent + légumes + huile d’olive',
+      kcal: 720,
+      proteinG: 52,
     },
     {
       name: 'Dîner',
-      detail: '150-180 g de protéine + 160 g de féculent + légumes + huile d’olive',
-      kcal: 620,
-      proteinG: 45,
+      detail: '180-200 g de protéine + 160 g de féculent + légumes + huile d’olive',
+      kcal: 660,
+      proteinG: 52,
     },
   ],
 };
@@ -145,9 +145,13 @@ export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
  * Ce que les repas listés totalisent réellement.
  *
  * Ce n'est PAS la cible : le .md annonce 3 600 kcal en tête, mais la somme de
- * ses cinq repas tombe à 2 770. L'écart est de −830 kcal, soit 23 % — bien
+ * ses cinq repas tombe à 2 900. L'écart est de −700 kcal, soit 19 % — bien
  * au-delà d'un arrondi. Suivre les portions écrites à la lettre revient donc à
  * manger nettement moins que la cible, et à ne pas prendre le poids visé.
+ *
+ * Les portions relevées du déjeuner et du dîner (200 g de féculent cuit,
+ * 180-200 g de protéine) ont réduit cet écart de 830 à 700 kcal, pas comblé :
+ * l'alerte de l'écran Nutrition reste donc allumée, et c'est voulu.
  *
  * On calcule la somme au lieu de la coder en dur, et on l'affiche à côté de la
  * cible : deux nombres qui se contredisent doivent se voir, pas se cacher l'un
@@ -219,3 +223,112 @@ export const HYDRATION_NOTE =
 
 /** §« Suivi et ajustement » — la vitesse de prise visée. */
 export const TARGET_GAIN_KG_PER_WEEK = { min: 0.15, max: 0.3 } as const;
+
+// ---------------------------------------------------------------------------
+// Bonus glucidique par séance — décision de Guillaume, hors .md
+// ---------------------------------------------------------------------------
+
+/**
+ * Carburant supplémentaire les jours où la séance coûte cher en glycogène.
+ *
+ * Ce n'est PAS un second plan alimentaire. Le plan de base ne bouge pas d'un
+ * gramme, les protéines et les lipides ne varient jamais selon la séance :
+ * seul un bonus de glucides s'ajoute, affiché à part, et Guillaume le prend ou
+ * non selon sa faim, sa fatigue et l'évolution de son poids.
+ *
+ * Rien n'est fondu dans les totaux du plan de base — un bonus invisible
+ * deviendrait une obligation silencieuse, ce qui est l'inverse du but.
+ */
+export type FuelLevel = 'high' | 'medium' | 'standard' | 'rest';
+
+export interface FuelAdvice {
+  level: FuelLevel;
+  emoji: string;
+  title: string;
+  /** Ce que coûte la séance, en une ligne. */
+  subtitle: string;
+  /** Aliments à ajouter. Vide pour « standard » et « repos ». */
+  foods: string[];
+  /** Pour le calcul du total avec bonus. 0 quand il n'y a pas de bonus. */
+  kcal: number;
+  /** Fourchette telle que Guillaume l'a écrite, pour l'affichage. */
+  kcalLabel: string;
+  carbsLabel: string;
+  message: string;
+}
+
+export const FUEL_ADVICE: Record<FuelLevel, FuelAdvice> = {
+  high: {
+    level: 'high',
+    emoji: '🔴',
+    title: 'CARBURANT ++',
+    subtitle: 'Séance très exigeante',
+    foods: ['+ 1 banane', '+ 40 g pain', '+ 20 g miel'],
+    kcal: 240,
+    kcalLabel: '≈ +240 kcal',
+    carbsLabel: '≈ +55-60 g glucides',
+    message: 'À répartir dans la journée, avec priorité avant l’entraînement.',
+  },
+  medium: {
+    level: 'medium',
+    emoji: '🟠',
+    title: 'CARBURANT +',
+    subtitle: 'Séance exigeante',
+    foods: ['+ 1 banane', '+ 20 g miel'],
+    kcal: 145,
+    kcalLabel: '≈ +145 kcal',
+    carbsLabel: '≈ +35-40 g glucides',
+    message: 'À consommer de préférence avant l’entraînement.',
+  },
+  standard: {
+    level: 'standard',
+    emoji: '🟡',
+    title: 'STANDARD',
+    subtitle: 'Séance modérée',
+    foods: [],
+    kcal: 0,
+    kcalLabel: '',
+    carbsLabel: '',
+    message: 'Plan alimentaire de base — aucun ajout nécessaire.',
+  },
+  rest: {
+    level: 'rest',
+    emoji: '🟢',
+    title: 'REPOS',
+    subtitle: 'Pas de séance aujourd’hui',
+    foods: [],
+    kcal: 0,
+    kcalLabel: '',
+    carbsLabel: '',
+    message: 'Jour de récupération — plan alimentaire de base.',
+  },
+};
+
+/**
+ * Niveau de carburant par jour d'entraînement du programme (§3).
+ *
+ * La clé est le `DayIndex` de la séance réellement programmée, pas un nom de
+ * jour écrit à part : chaque jour du programme porte une et une seule trame
+ * (`BASE_SESSIONS`), donc ce numéro EST l'identité du type de séance. Si le
+ * calendrier évolue, la carte suit sans retouche.
+ *
+ *   0 lundi     Lower Strength — squat lourd, RDL, unilatéral, sauts
+ *   2 mercredi  Upper Strength — bench et tractions lestées
+ *   4 vendredi  Total Body Power — vitesse, sauts, speed squat
+ *   5 samedi    Posterior Chain — deadlift, front squat, hip thrust, sauts
+ *   6 dimanche  Upper Athletic + tronc
+ *
+ * Le mercredi est la séance la plus lourde en charge de la semaine, et pourtant
+ * « standard » : un travail de force du haut du corps puise beaucoup moins dans
+ * le glycogène qu'une séance jambes ou sauts. C'est un choix de Guillaume, pas
+ * un oubli.
+ *
+ * Mardi et jeudi sont absents : sans séance, le niveau est « repos ».
+ */
+export const FUEL_BY_TRAINING_DAY: Partial<Record<0 | 1 | 2 | 3 | 4 | 5 | 6, FuelLevel>> = {
+  0: 'high',
+  2: 'standard',
+  4: 'medium',
+  5: 'high',
+  6: 'medium',
+};
