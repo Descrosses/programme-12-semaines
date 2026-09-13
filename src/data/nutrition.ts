@@ -105,21 +105,68 @@ const TRAIN: NutritionTarget = {
 // ---------------------------------------------------------------------------
 // §« Journée type — jour de repos (mardi, jeudi) »
 //
-// Le .md ne décrit plus ce palier par des portions réduites : « Exactement les
-// mêmes repas, moins la prise autour de la séance. Aucune portion à
-// recalculer. » Les repas ci-dessous sont donc littéralement les mêmes objets,
-// la prise de 16 h en moins — ce qui garantit qu'ils ne peuvent pas diverger.
+// Six prises aussi, et non cinq : Guillaume préfère manger au même rythme tous
+// les jours et se servir un peu moins, plutôt que sauter une prise. Sauter la
+// prise de 16 h aurait été plus simple à écrire, mais ça crée un jour qui ne
+// ressemble à aucun autre, donc un jour qu'on oublie de suivre.
+//
+// Ce qui baisse : le pain, les flocons, les féculents, le miel — les glucides,
+// parce que c'est la dépense de la séance qui disparaît. Ce qui ne bouge PAS :
+// la viande, le poisson, les œufs, le skyr, les amandes, l'huile. Le besoin de
+// construire du muscle, lui, ne prend pas de jour de repos.
 // ---------------------------------------------------------------------------
+
+const REVEIL_REPOS: Meal = {
+  name: 'Réveil — 6 h',
+  detail: '3 œufs entiers + 2 tranches de pain complet + 20 g de miel + 1 banane',
+  kcal: 555,
+  proteinG: 27,
+};
+
+const COLLATION_8H_REPOS: Meal = {
+  name: 'Collation — 8 h',
+  detail: '40 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
+  kcal: 270,
+  proteinG: 13,
+};
+
+const DEJEUNER_REPOS: Meal = {
+  name: 'Déjeuner',
+  detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
+  kcal: 740,
+  proteinG: 63,
+};
+
+const COLLATION_16H_REPOS: Meal = {
+  name: 'Collation — 16 h',
+  detail: '1 banane + 1 tranche de pain avec 10 g de miel + shaker whey 30 g (ou 2 yaourts)',
+  kcal: 345,
+  proteinG: 28,
+};
+
+const DINER_REPOS: Meal = {
+  name: 'Dîner',
+  detail: '180-200 g de protéine + 150 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
+  kcal: 720,
+  proteinG: 62,
+};
 
 const REST: NutritionTarget = {
   kind: 'rest',
   label: 'Jour de repos',
-  kcal: 3100,
-  proteinG: 210,
-  carbsG: 325,
+  kcal: 3050,
+  proteinG: 227,
+  carbsG: 315,
   fatG: 100,
-  note: 'Ce n’est pas un jour « low carb » : mêmes repas, mêmes portions, simplement une prise en moins.',
-  meals: [REVEIL, COLLATION_8H, COLLATION_10H, DEJEUNER, DINER],
+  note: 'Ce n’est pas un jour « low carb » : mêmes six prises, mêmes protéines, seuls les féculents baissent.',
+  meals: [
+    REVEIL_REPOS,
+    COLLATION_8H_REPOS,
+    COLLATION_10H, // la seule prise identique aux deux paliers
+    DEJEUNER_REPOS,
+    COLLATION_16H_REPOS,
+    DINER_REPOS,
+  ],
 };
 
 export const NUTRITION_TARGETS: Record<DayKind, NutritionTarget> = {
@@ -199,7 +246,7 @@ export const SIMPLE_RULES: string[] = [
   'Glucides concentrés avant et après l’entraînement.',
   'Légumes à volonté, ça ne compte quasiment pas.',
   'Moyenne 7 jours, jamais une pesée isolée.',
-  'Jour de repos : mêmes repas, on saute juste la prise autour de la séance.',
+  'Jour de repos : mêmes six prises, on allège seulement les féculents.',
 ];
 
 /** §« Le seul complément qui vaut le coup ». */

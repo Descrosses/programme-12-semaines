@@ -6,7 +6,7 @@ Aucun aliment exotique, tout se trouve en supermarché standard, zéro allergèn
 
 Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se concentrent autour de l'entraînement (avant/après), pas le soir devant la télé. 6 prises alimentaires : cinq ne suffisaient pas à atteindre la cible sans des assiettes intenables, la sixième est une collation légère de 8 h qui se prépare la veille.
 
-**Deux paliers, pas plus** : jour d'entraînement (~3 600 kcal) et jour de repos (~3 100 kcal). Le jour de repos, c'est le même plan sans la prise autour de la séance — aucune portion à recalculer. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique que tu ne peux pas tenir sans peser chaque aliment — ce n'est pas ce que tu as demandé.
+**Deux paliers, pas plus** : jour d'entraînement (~3 600 kcal) et jour de repos (~3 050 kcal). Le jour de repos garde les six prises et les mêmes protéines : on allège uniquement les féculents. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique que tu ne peux pas tenir sans peser chaque aliment — ce n'est pas ce que tu as demandé.
 
 **Hydratation** : bois régulièrement dans la journée, utilise la couleur des urines comme repère. Augmente eau et sel les jours de forte chaleur ou de transpiration importante sur chantier. Pas de règle rigide du type « 3 L obligatoires ».
 
@@ -61,11 +61,42 @@ Ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids he
 
 ## Journée type — jour de repos (mardi, jeudi)
 
-Exactement les mêmes repas, moins la prise autour de la séance. Aucune portion à recalculer : tu retires la banane/pain-miel d'avant et le shaker d'après, qui n'ont de sens qu'un jour d'entraînement, et tu ne touches à rien d'autre.
+Mêmes six prises, mêmes protéines, mêmes lipides. On allège uniquement les féculents et les sucres rapides : c'est la dépense de la séance qui disparaît, pas le besoin de construire du muscle. Tu manges six fois comme les autres jours, tu te sers juste un peu moins.
 
-Ça fait ≈ 3 100 kcal / 210 g protéines / 325 g glucides / 100 g lipides, soit 500 kcal de moins — ce qui correspond à la dépense en moins. Ce n'est pas un jour « low carb » : tu continues à manger normalement, il y a juste une prise en moins.
+**Réveil (6 h)**
+- 3 œufs entiers
+- 2 tranches de pain complet + 20 g de miel *(au lieu de 3 tranches)*
+- 1 banane
+≈ 555 kcal / 27 g protéines
 
-Une seule liste de repas à retenir, une prise à sauter. C'est plus simple que deux jeux de portions, et ça tombe pile sur le palier visé.
+**Collation (8 h)**
+- 40 g de flocons d'avoine + 250 ml de lait demi-écrémé *(au lieu de 60 g)*
+≈ 270 kcal / 13 g protéines
+
+**Collation (10 h)**
+- 280 g de skyr nature + 30 g d'amandes + 1 pomme *(inchangée)*
+≈ 430 kcal / 34 g protéines
+
+**Déjeuner**
+- 180-200 g de viande blanche ou rouge maigre ou poisson *(inchangé)*
+- 200 g de riz, pâtes ou pommes de terre, poids cuit *(au lieu de 300 g)*
+- 250 g de légumes + 10 g d'huile d'olive
+≈ 740 kcal / 63 g protéines
+
+**Collation (16 h)**
+- 1 banane + 1 tranche de pain complet avec 10 g de miel *(au lieu de 2 tranches et d'une pomme)*
+- Shaker whey (30 g), ou 2 yaourts nature
+≈ 345 kcal / 28 g protéines
+
+**Dîner**
+- 180-200 g de viande, poisson ou œufs *(inchangé)*
+- 150 g de féculent, poids cuit *(au lieu de 200 g)*
+- 250 g de légumes + 15 g d'huile d'olive ou de colza
+≈ 720 kcal / 62 g protéines
+
+**Total** : ≈ 3 050 kcal / 227 g protéines / 315 g glucides / 100 g lipides.
+
+550 kcal de moins qu'un jour d'entraînement, pris entièrement sur les féculents. Ce n'est pas un jour « low carb » : il reste 315 g de glucides.
 
 ---
 
