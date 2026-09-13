@@ -3,7 +3,6 @@ import { LineChart, type Series } from '../components/Chart';
 import { Stepper, stepValue } from '../components/Stepper';
 import {
   HYDRATION_NOTE,
-  MEALS_GAP_TOLERANCE_PCT,
   NUTRITION_TARGETS,
   SHOPPING_LIST,
   SIMPLE_RULES,
@@ -16,6 +15,7 @@ import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import {
   fuelForToday,
+  gapVerdict,
   mealMacros,
   mealsGap,
   mealsTotal,
@@ -86,6 +86,7 @@ export function NutritionScreen({
   const target = NUTRITION_TARGETS[kind];
   const totalRepas = mealsTotal(target, overrides);
   const ecart = mealsGap(target, overrides);
+  const verdict = gapVerdict(target, overrides);
   /*
    * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
    * pour regarder l'autre journée type ne doit pas faire croire que la séance
@@ -298,19 +299,39 @@ export function NutritionScreen({
             ≈ {totalRepas.kcal.toLocaleString('fr-FR')} kcal · {totalRepas.proteinG} g
           </span>
         </div>
-        {Math.abs(ecart.pct) > MEALS_GAP_TOLERANCE_PCT ? (
+        {/*
+          Le SENS de l'écart décide du message, pas seulement sa taille. Avant,
+          l'alerte disait « il manque N kcal » dans les deux cas, en prenant la
+          valeur absolue : un excédent s'annonçait comme un manque, et le conseil
+          proposait d'ajouter du féculent à quelqu'un qui en avait déjà trop.
+        */}
+        {verdict === 'deficit' && (
           <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '12px 0 0' }}>
             <b>
               Il manque {Math.abs(ecart.kcal).toLocaleString('fr-FR')} kcal pour atteindre la cible
               de {target.kcal.toLocaleString('fr-FR')}.
             </b>{' '}
-            Ces portions écrites à la lettre te font manger {fr(Math.abs(ecart.pct))} % de moins que
-            prévu — à ce niveau tu ne prendras pas de poids. Il faudrait environ{' '}
+            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de <b>moins</b> que prévu — à ce
+            niveau tu ne prendras pas de poids. Il faudrait environ{' '}
             {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit en plus sur la
             journée : à ce volume, une sixième prise est plus tenable que des assiettes plus
             grosses.
           </p>
-        ) : (
+        )}
+        {verdict === 'surplus' && (
+          <p className={styles.alert} style={{ margin: '12px 0 0' }}>
+            <b>
+              Tu dépasses la cible de {ecart.kcal.toLocaleString('fr-FR')} kcal
+              {' '}({target.kcal.toLocaleString('fr-FR')} visées).
+            </b>{' '}
+            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de <b>plus</b> que prévu — au-delà
+            de la cible, ce que tu prends en trop part surtout en gras. Il faudrait retirer environ{' '}
+            {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit sur la journée.
+            Vérifie aussi les lignes marquées « modifié » : une étiquette mal recopiée se voit ici
+            avant de se voir sur la balance.
+          </p>
+        )}
+        {verdict === 'ok' && (
           <p className={styles.fieldHint}>
             Ajuste les féculents de ±30 g selon la faim et ta moyenne hebdomadaire. Les quantités
             sont des repères, pas des lois.

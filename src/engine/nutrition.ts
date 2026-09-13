@@ -13,6 +13,7 @@
 import {
   FUEL_ADVICE,
   FUEL_BY_TRAINING_DAY,
+  MEALS_GAP_TOLERANCE_PCT,
   TARGET_GAIN_KG_PER_WEEK,
   type FoodItem,
   type FuelAdvice,
@@ -393,6 +394,31 @@ export function mealsTotal(
 ): { kcal: number; proteinG: number } {
   const t = target.meals.reduce((acc, m) => somme(acc, mealMacros(m, overrides)), ZERO);
   return { kcal: Math.round(t.kcal), proteinG: Math.round(t.proteinG) };
+}
+
+/**
+ * De quel côté de la cible on est tombé.
+ *
+ * L'écran affichait « il manque N kcal » quoi qu'il arrive, en prenant la
+ * valeur absolue de l'écart : une journée à 5 156 kcal pour une cible de 3 600
+ * s'annonçait donc comme un manque de 1 556 kcal. Tant que les portions du .md
+ * étaient toutes en dessous de la cible, le défaut ne se voyait pas — les
+ * aliments modifiables l'ont fait sortir le jour où un excédent est devenu
+ * possible.
+ *
+ * Le signe fait donc partie du verdict, et non de la seule mise en forme.
+ */
+export type GapVerdict = 'deficit' | 'surplus' | 'ok';
+
+export function gapVerdict(
+  target: NutritionTarget,
+  overrides: FoodOverrides = {},
+  tolerancePct = MEALS_GAP_TOLERANCE_PCT,
+): GapVerdict {
+  const { pct } = mealsGap(target, overrides);
+  if (pct < -tolerancePct) return 'deficit';
+  if (pct > tolerancePct) return 'surplus';
+  return 'ok';
 }
 
 /** Écart entre les repas listés et la cible, en kcal et en pourcentage. */
