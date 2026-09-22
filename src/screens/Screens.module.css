@@ -912,3 +912,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Un badge qui alerte au lieu d'informer : même forme, couleur d'avertissement.
+   Il reste discret — l'appli signale une incohérence, elle n'interdit rien. */
+.foodBadgeAlerte {
+  background: var(--surface-2);
+  color: var(--rouge);
+}

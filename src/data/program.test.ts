@@ -36,8 +36,20 @@ describe('catalogue d’exercices', () => {
     }
   });
 
-  it('chaque exercice a une intention d’exécution non vide', () => {
-    for (const id of EXERCISE_IDS) expect(EXERCISES[id]!.intent.length, id).toBeGreaterThan(0);
+  /*
+   * L'intention est transcrite du .md, elle n'est pas obligatoire : deux
+   * mouvements n'ont AUCUNE consigne dans le programme. Les forcer à en avoir
+   * une revenait à en inventer, ce qui s'est produit (« Tempo 2-0-1 » sur
+   * l'Incline DB Press, qui n'est écrit nulle part). La liste des exceptions
+   * est donc explicite : en ajouter une doit être un geste conscient.
+   */
+  const SANS_CONSIGNE_DANS_LE_MD = ['incline-db-press', 'one-arm-cable-row'];
+
+  it('chaque exercice a une intention, sauf ceux que le .md laisse muets', () => {
+    for (const id of EXERCISE_IDS) {
+      const attendu = !SANS_CONSIGNE_DANS_LE_MD.includes(id);
+      expect((EXERCISES[id]!.intent ?? '').length > 0, id).toBe(attendu);
+    }
   });
 
   it('la règle §5 est rappelée sur tous les mouvements explosifs', () => {

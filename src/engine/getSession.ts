@@ -283,7 +283,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     // Les charges du tableau §9 sont des pourcentages d'un 1RM de référence.
     // On les recale sur les maxima réellement testés au combine — ne pas le
     // faire donnerait, avec un squat testé à 110, une semaine 1 à 91 % du max.
-    const presc = prescriptionFor(slot.liftId, o.week, o.ctx.settings.oneRM);
+    const presc = prescriptionFor(slot.liftId, o.week);
     // Le mouvement n'est pas programmé cette semaine (front squat en S12).
     if (!presc) return null;
     sets = presc.sets;

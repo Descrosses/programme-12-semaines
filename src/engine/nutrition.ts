@@ -429,3 +429,57 @@ export function mealsGap(
   const kcal = mealsTotal(target, overrides).kcal - target.kcal;
   return { kcal, pct: Math.round((kcal / target.kcal) * 1000) / 10 };
 }
+
+// ---------------------------------------------------------------------------
+// Cohérence d'une étiquette recopiée
+// ---------------------------------------------------------------------------
+
+/**
+ * Les kcal que valent les macros saisies : 4 par gramme de protéines et de
+ * glucides, 9 par gramme de lipides. C'est le calcul que fait tout fabricant
+ * pour imprimer son étiquette.
+ *
+ * Ça ne tombe jamais parfaitement juste — les fibres, les polyols et les
+ * arrondis de l'emballage creusent quelques pour cent d'écart. D'où une
+ * tolérance large : on ne cherche pas à corriger une étiquette, seulement à
+ * repérer une saisie qui ne peut pas être vraie.
+ */
+export function kcalFromMacros(m: { proteinG: number; carbsG: number; fatG: number }): number {
+  return m.proteinG * 4 + m.carbsG * 4 + m.fatG * 9;
+}
+
+/**
+ * Au-delà, les kcal saisies et les macros saisies ne parlent plus du même
+ * aliment. 25 % laisse passer toutes les étiquettes réelles (le plus gros écart
+ * du plan est de 13 % sur la pomme, à cause des fibres) et attrape le cas
+ * courant : ne changer QUE les kcal et laisser les macros de l'ancien produit.
+ */
+export const MACRO_COHERENCE_TOLERANCE_PCT = 25;
+
+/**
+ * Écart entre les kcal annoncées et les kcal que valent les macros, en %.
+ * `null` quand les macros sont toutes à zéro : il n'y a alors rien à comparer.
+ */
+export function macroCoherence(m: {
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}): { attendues: number; ecartPct: number } | null {
+  const attendues = kcalFromMacros(m);
+  if (attendues <= 0) return null;
+  return { attendues, ecartPct: Math.round(((m.kcal - attendues) / attendues) * 1000) / 10 };
+}
+
+/**
+ * Cette ligne annonce-t-elle des kcal que ses macros ne peuvent pas produire ?
+ *
+ * Le cas qui a motivé ce garde-fou : des légumes passés à 416 kcal/100 g avec
+ * les macros d'origine, qui n'en valent que 31. Aucun aliment ne fait ça — même
+ * l'huile pure, à 900 kcal, est cohérente avec ses 100 g de lipides. L'appli ne
+ * juge pas l'aliment, elle signale que les deux saisies se contredisent.
+ */
+export function macrosLookWrong(item: FoodItem, overrides: FoodOverrides = {}): boolean {
+  const c = macroCoherence(effectiveItem(item, overrides));
+  return c !== null && Math.abs(c.ecartPct) > MACRO_COHERENCE_TOLERANCE_PCT;
+}
