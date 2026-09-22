@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { SetRow } from '../db/db';
 import { fr, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
+import type { LoadShape } from '../engine/loadResolver';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { Stepper, stepValue } from './Stepper';
@@ -195,7 +196,13 @@ export function ExerciseCard({
         </div>
       )}
 
-      {(ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule) && (
+      {/*
+        L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une
+        alternative ou une règle de progression : un exercice qui n'avait que
+        son intention — Explosive Cable Row, One-Arm Cable Row, Cable Chop… —
+        ne montrait donc RIEN, alors que le .md écrit bien quelque chose sur lui.
+      */}
+      {(ex.def.intent || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule) && (
         <>
           <button
             type="button"
@@ -203,13 +210,19 @@ export function ExerciseCard({
             onClick={() => setOpenCues((v) => !v)}
             aria-expanded={openCues}
           >
-            {openCues ? '▲ Masquer les consignes' : '▼ Consignes et alternative Basic-Fit'}
+            {openCues
+              ? '▲ Masquer les consignes'
+              : ex.def.altBasicFit
+                ? '▼ Consignes et alternative Basic-Fit'
+                : '▼ Consignes'}
           </button>
           {openCues && (
             <div className={styles.cues}>
-              <p>
-                <b>Intention :</b> {ex.def.intent}
-              </p>
+              {ex.def.intent && (
+                <p>
+                  <b>Intention :</b> {ex.def.intent}
+                </p>
+              )}
               {ex.def.cues?.map((c, i) => <p key={i}>{c}</p>)}
               {ex.def.progressionRule && (
                 <p>
@@ -251,7 +264,13 @@ function SetEntry({
 
   const [editing, setEditing] = useState(false);
   const [reps, setReps] = useState<number>(saved?.actualReps ?? plannedReps ?? 1);
-  const [kg, setKg] = useState<number>(saved?.actualKg ?? plannedKg ?? 0);
+  /*
+   * `null` et non 0 quand rien n'est planifié : un « 0 kg » affiché sur une
+   * poulie ressemble à une charge prescrite, alors que le programme n'en donne
+   * aucune. Le stepper montre « — » tant que Guillaume n'a rien saisi, puis la
+   * séance suivante part de ce qu'il a réellement tiré (`lastCompleted`).
+   */
+  const [kg, setKg] = useState<number | null>(saved?.actualKg ?? plannedKg ?? null);
   const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
   const [value, setValue] = useState<number>(saved?.measureValue ?? measure?.min ?? 0);
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
@@ -262,13 +281,25 @@ function SetEntry({
     if (saved === null && plannedKg !== null) setKg(plannedKg);
   }, [plannedKg, saved]);
 
+  /*
+   * Le stepper de charge dépend de la FORME du mouvement, pas de l'existence
+   * d'une charge planifiée. Les poulies et le landmine debout portent une
+   * charge externe que le programme ne chiffre nulle part : les afficher sans
+   * stepper revenait à ne jamais pouvoir noter ce qu'on a vraiment tiré.
+   *
+   * L'inverse — inventer une charge « planifiée » pour faire apparaître le
+   * champ — serait pire : le .md n'en donne aucune, l'appli n'a pas à en
+   * fabriquer une.
+   */
+  const hasKg = plannedKg !== null || PORTE_UNE_CHARGE.has(ex.load.shape);
+
   const done = saved !== null && !editing;
 
   async function validate() {
     timer.prime();
     await onSave(ex, {
       setIndex: index,
-      actualKg: plannedKg === null ? null : kg,
+      actualKg: hasKg ? kg : null,
       actualReps: measure ? null : reps,
       actualRpe: ex.targetRPE ? rpeValue : null,
       measureValue: measure ? value : null,
@@ -316,7 +347,6 @@ function SetEntry({
 
   // Trois champs au maximum. Dès qu'il y en a un nombre impair, le dernier
   // prend toute la largeur pour que les boutons gardent leurs 48 px.
-  const hasKg = plannedKg !== null;
   const hasRpe = ex.targetRPE !== null;
   const count = 1 + (hasKg ? 1 : 0) + (hasRpe ? 1 : 0);
   const wide = (position: number) => (count % 2 === 1 && position === count ? styles.stepperWide : '');
@@ -360,7 +390,7 @@ function SetEntry({
                 min={0}
                 max={300}
                 unit="kg"
-                onStep={(d) => setKg((v) => stepValue(v, d, 0, 300))}
+                onStep={(d) => setKg((v) => stepValue(v ?? 0, d, 0, 300))}
               />
             </div>
           )}
@@ -414,6 +444,13 @@ function SetEntry({
 }
 
 // ---------------------------------------------------------------------------
+
+/**
+ * Les formes qui portent une charge externe. Pour elles, le champ de saisie
+ * s'affiche même quand le programme ne chiffre rien : c'est la machine ou la
+ * barre qui décide, et seule la saisie de Guillaume peut la connaître.
+ */
+const PORTE_UNE_CHARGE = new Set<LoadShape>(['barbell', 'added', 'dbPair', 'dbSingle', 'cable']);
 
 function plannedRepsOf(ex: ResolvedExercise): number | null {
   if (ex.work.kind !== 'reps') return null;

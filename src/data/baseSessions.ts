@@ -91,9 +91,9 @@ const MERCREDI: SessionBlueprint = {
     fromTable('weighted-pullup', 'weighted-pullup', 150),
     s('landmine-press-kneeling', 3, reps(8, true), bb(20), rpe(7), 75, 'Barre + 20 kg.'),
     s('chest-supported-row', 3, reps(8), dbPair(30), rpe(8), 90),
-    s('face-pull', 2, reps(15), noLoad(), null, 45),
-    s('cable-external-rotation', 2, reps(12, true), noLoad(), null, 45),
-    s('pallof-press', 3, reps(6, true), noLoad(), null, 60),
+    s('face-pull', 2, reps(15), autoreg(undefined, 1, 'cable'), null, 45),
+    s('cable-external-rotation', 2, reps(12, true), autoreg(undefined, 1, 'cable'), null, 45),
+    s('pallof-press', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 60),
   ],
 };
 
@@ -111,9 +111,9 @@ const VENDREDI: SessionBlueprint = {
     fromTable('push-press', 'push-press', 120),
     fromTable('speed-squat', 'speed-squat', 60),
     s('jump-squat-db', 4, reps(4), textLoad('2 × 6-8 kg'), null, 90),
-    s('explosive-cable-row', 3, reps(5), noLoad(), rpe(6), 75),
+    s('explosive-cable-row', 3, reps(5), autoreg(undefined, 1, 'cable'), rpe(6), 75),
     s('farmer-carry', 4, meters(25), dbPair(34), null, 90),
-    s('dead-bug-cable', 3, reps(6, true), noLoad(), null, 45),
+    s('dead-bug-cable', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 45),
   ],
 };
 
@@ -148,9 +148,9 @@ const DIMANCHE: SessionBlueprint = {
   slots: [
     s('incline-db-press', 4, reps(8), dbPair(30), rpeRange(7, 8), 90),
     s('neutral-grip-pullup', 4, reps({ min: 6, max: 8 }), textLoad('+5 à +10 kg'), rpe(7), 90),
-    s('one-arm-cable-row', 3, reps(10, true), noLoad(), null, 75),
-    s('landmine-press-standing', 3, reps(8, true), noLoad(), null, 75),
-    s('cable-chop', 3, reps(8, true), noLoad(), null, 60),
+    s('one-arm-cable-row', 3, reps(10, true), autoreg(undefined, 1, 'cable'), null, 75),
+    s('landmine-press-standing', 3, reps(8, true), autoreg(undefined, 2.5, 'barbell'), null, 75),
+    s('cable-chop', 3, reps(8, true), autoreg(undefined, 1, 'cable'), null, 60),
     s('hanging-leg-raise', 3, reps({ min: 8, max: 12 }), bodyweight(), null, 60),
     s('bear-crawl', 3, meters(20), noLoad(), null, 60),
     s(

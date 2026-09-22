@@ -75,7 +75,6 @@ const LIST: ExerciseDef[] = [
     measure: 'kg',
     intent:
       'Tempo 3-1-X-1. Descends jusqu’à l’étirement maximal des ischios sans perdre la neutralité lombaire.',
-    cues: ['Barre collée aux cuisses.'],
   }),
   def({
     id: 'ab-wheel',
@@ -232,7 +231,7 @@ const LIST: ExerciseDef[] = [
     name: 'Dead Bug avec câble',
     fn: 'core',
     role: 'core',
-    intent: 'Anti-extension. Lombaires plaquées au sol.',
+    intent: 'Anti-extension.',
   }),
 
   // ---------------------------------------------------------------- SAMEDI --
@@ -308,7 +307,6 @@ const LIST: ExerciseDef[] = [
     fn: 'push',
     role: 'accessory',
     measure: 'kg',
-    intent: 'Tempo 2-0-1.',
   }),
   def({
     id: 'neutral-grip-pullup',
@@ -323,7 +321,6 @@ const LIST: ExerciseDef[] = [
     name: 'One-Arm Cable Row',
     fn: 'pull',
     role: 'accessory',
-    intent: 'Rotation scapulaire naturelle.',
   }),
   def({
     id: 'landmine-press-standing',

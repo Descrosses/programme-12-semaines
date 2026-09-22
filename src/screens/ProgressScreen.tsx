@@ -73,7 +73,7 @@ export function ProgressScreen() {
   for (let w = 1; w <= 12; w++) {
     // Même base que les séances : la courbe « Plan » doit montrer le plan
     // recalé, pas celui d'avant le combine.
-    const p = prescriptionFor(lift, w, data.oneRM);
+    const p = prescriptionFor(lift, w);
     const kg = p?.load && 'kg' in p.load ? p.load.kg : null;
     if (kg !== null) planPoints.push({ x: w, y: kg });
   }

@@ -13,7 +13,16 @@ import { roundToStep } from './rounding';
 import type { HistoryIndex, Settings } from './types';
 import { lastCompleted } from './progression';
 
-export type LoadShape = 'barbell' | 'added' | 'dbPair' | 'dbSingle' | 'bodyweight' | 'text' | 'none';
+export type LoadShape =
+  | 'barbell'
+  | 'added'
+  | 'dbPair'
+  | 'dbSingle'
+  /** Poulie : le programme ne chiffre rien, la charge vient de la machine. */
+  | 'cable'
+  | 'bodyweight'
+  | 'text'
+  | 'none';
 
 export interface ResolvedLoad {
   kg: number | null;

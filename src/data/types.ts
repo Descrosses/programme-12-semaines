@@ -118,7 +118,12 @@ export const maxSet = (): Work => ({ kind: 'maxSet' });
  * (65 % du 1RM), deload (80 %) et progression (§11). 2,5 kg pour la barre,
  * 2 kg pour les haltères — décidé avec Guillaume.
  */
-export type LoadStep = 2.5 | 2;
+/**
+ * Pas du stepper de charge. 1 kg pour les poulies : leurs plaques montent de
+ * 1 à 2,5 kg selon la machine, et un pas de 2,5 empêcherait de saisir la
+ * charge réelle.
+ */
+export type LoadStep = 2.5 | 2 | 1;
 
 export type LoadSpec =
   /** Barre chargée. `kgMax` = plafond assumé (RDL S9-11 : 90-95 kg). */
@@ -136,7 +141,7 @@ export type LoadSpec =
    * l'historique réel (Bulgarian, Hip Thrust). `seed` = point de départ
    * s'il n'y a encore aucun historique.
    */
-  | { kind: 'autoreg'; seed?: number; step: LoadStep; as: 'barbell' | 'dbPair' | 'dbSingle' }
+  | { kind: 'autoreg'; seed?: number; step: LoadStep; as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable' }
   | { kind: 'bodyweight' }
   /** Charge non chiffrable, on affiche le texte du programme tel quel. */
   | { kind: 'text'; label: string }
@@ -150,7 +155,7 @@ export const added = (kg: number): LoadSpec => ({ kind: 'added', kg, step: 2.5 }
 export const autoreg = (
   seed: number | undefined,
   step: LoadStep,
-  as: 'barbell' | 'dbPair' | 'dbSingle',
+  as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable',
 ): LoadSpec =>
   seed === undefined ? { kind: 'autoreg', step, as } : { kind: 'autoreg', seed, step, as };
 export const bodyweight = (): LoadSpec => ({ kind: 'bodyweight' });
@@ -230,8 +235,14 @@ export interface ExerciseDef {
   name: string;
   fn: MovementFn;
   role: ExerciseRole;
-  /** Intention d'exécution, transcrite du .md. */
-  intent: string;
+  /**
+   * Intention d'exécution, transcrite du .md — absente quand le .md n'écrit
+   * rien sur ce mouvement. Deux exercices sont dans ce cas (Incline Dumbbell
+   * Press, One-Arm Cable Row) : le programme n'y donne que les séries, la
+   * charge et le repos. Leur inventer une consigne serait parler à la place du
+   * programme.
+   */
+  intent?: string;
   /** Critère de progression écrit dans le programme (§7). */
   progressionRule?: string;
   /** Repli quand le matériel Basic-Fit ne suit pas. */
