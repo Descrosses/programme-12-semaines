@@ -42,7 +42,7 @@ import type {
 } from '../data/types';
 import { loadLine as formatLoadLine } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
-import { applyProgression, type ProgressionResult } from './progression';
+import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
 import type { OneRMKey, SessionContext } from './types';
 
@@ -70,6 +70,14 @@ export interface ResolvedExercise {
   contrast?: ContrastSpec;
   /** Paliers d'un test 1RM (§12). */
   ramp?: RampStep[];
+  /**
+   * Dernière charge réellement enregistrée sur cet exercice, ou `null`.
+   *
+   * Sert UNIQUEMENT à pré-remplir le champ de saisie, jamais la ligne de plan :
+   * un mouvement au poids du corps ou sur poulie n'a pas de charge planifiée, et
+   * le .md ne doit pas se voir attribuer un chiffre qu'il n'écrit pas.
+   */
+  lastKg: number | null;
   /** §11 — proposition de charge, à accepter ou refuser. Jamais appliquée seule. */
   suggestion: ProgressionResult | null;
   adjustments: Adjustment[];
@@ -371,6 +379,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     targetRPE,
     restSec: slot.restSec,
     loadLine: formatLoadLine(sets, work, load),
+    lastKg: lastCompleted(o.ctx.history[def.id] ?? [])?.kg ?? null,
     notes,
     ...(contrastWith && o.contrast ? { contrast: o.contrast } : {}),
     ...(slot.ramp ? { ramp: slot.ramp } : {}),
