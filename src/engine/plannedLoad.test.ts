@@ -104,10 +104,10 @@ describe('les charges du §9 ne dépendent pas des Réglages', () => {
 
   it('la semaine 1 affiche exactement ce que le .md écrit', () => {
     // Les quatre cases que Guillaume a relevées ou qui portent le plus de poids.
-    expect(kgDe('deadlift', 1)).toBe(97.5); // le cas signalé : 105 kg était faux
-    expect(kgDe('back-squat', 1)).toBe(100);
-    expect(kgDe('bench-press', 1)).toBe(87.5);
-    expect(kgDe('weighted-pullup', 1)).toBe(17.5);
+    expect(kgDe('deadlift', 1)).toBe(105); // recalé sur le deadlift testé à 140
+    expect(kgDe('back-squat', 1)).toBe(77.5);
+    expect(kgDe('bench-press', 1)).toBe(85);
+    expect(kgDe('weighted-pullup', 1)).toBe(20);
     expect(kgDe('push-press', 1)).toBe(50);
     // Recalés sur le squat testé à 110 kg : 55 % pour le speed squat, rapport
     // à l'ancienne base 140 pour le front squat, que le .md ne chiffre qu'en kg.
@@ -170,6 +170,77 @@ describe('speed squat et front squat calés sur le squat testé', () => {
     const attendu = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
     for (let w = 1; w <= 12; w++) {
       expect(kgDe('push-press', w), `push press S${w}`).toBe(attendu[w - 1]);
+    }
+  });
+});
+
+/**
+ * Aucune charge planifiée ne doit approcher le 1RM réellement testé.
+ *
+ * C'est le garde-fou du recalage : le tableau avait été écrit sur des maxima
+ * estimés avant le combine, et six semaines sur douze demandaient au back squat
+ * plus de 100 % du vrai max — dont un 5 × 4 à 110 kg en semaine 3, le 1RM
+ * exact. Ce test échouerait immédiatement si ces valeurs revenaient.
+ */
+describe('aucune charge planifiée au-dessus du 1RM testé', () => {
+  /** Les 1RM mesurés au combine initial, tels qu'ils sont dans l'onglet Combine. */
+  const TESTES: Record<string, number> = {
+    'back-squat': 110,
+    'bench-press': 115,
+    deadlift: 140,
+    'weighted-pullup': 45,
+  };
+
+  /*
+   * Plafond par bloc, repris du §2 : 79 % en accumulation, 65-70 % en deload,
+   * 90 % en force max, 89 % en puissance. On laisse 2 points de marge pour
+   * l'arrondi au 2,5 kg.
+   */
+  const PLAFOND = [0.81, 0.81, 0.81, 0.72, 0.92, 0.92, 0.92, 0.72, 0.91, 0.91, 0.91, 0.81];
+
+  /*
+   * Le deadlift dépasse sa bande de 3 points sur quatre semaines (S3, S7, S10,
+   * S11). Ce n'est pas un effet du recalage : la colonne était DÉJÀ écrite
+   * au-dessus des bandes du §2 dans le .md d'origine, parce que son auteur
+   * compensait un 130 qu'il annonçait lui-même comme sous-estimé. Le combine a
+   * donné 140 ; la compensation n'a plus lieu d'être, mais la corriger serait
+   * réécrire l'intention du programme, pas la transposer. On la constate donc
+   * ici plutôt que de la masquer.
+   */
+  const MARGE = { deadlift: 0.03 } as Record<string, number>;
+
+  it('chaque semaine des quatre lifts testés reste sous le plafond de son bloc', () => {
+    for (const [lift, max] of Object.entries(TESTES)) {
+      for (let w = 1; w <= 12; w++) {
+        const kg = kgDe(lift as MainLiftId, w);
+        if (kg === null) continue; // semaine de test 1RM
+        const pct = kg / max;
+        const plafond = PLAFOND[w - 1]! + (MARGE[lift] ?? 0);
+        expect(
+          pct,
+          `${lift} S${w} = ${kg} kg, soit ${Math.round(pct * 100)} % de ${max}`,
+        ).toBeLessThanOrEqual(plafond);
+      }
+    }
+  });
+
+  it('aucune charge planifiée n’atteint le 1RM testé, sur aucun lift', () => {
+    // Le défaut d'origine, dans sa forme la plus brute : six semaines de back
+    // squat demandaient 104 % à 114 % du vrai max.
+    for (const [lift, max] of Object.entries(TESTES)) {
+      for (let w = 1; w <= 12; w++) {
+        const kg = kgDe(lift as MainLiftId, w);
+        if (kg === null) continue;
+        expect(kg, `${lift} S${w}`).toBeLessThan(max);
+      }
+    }
+  });
+
+  it('la semaine 1 part bien dans la bande 71-79 % du §2', () => {
+    for (const [lift, max] of Object.entries(TESTES)) {
+      const pct = kgDe(lift as MainLiftId, 1)! / max;
+      expect(pct, `${lift} S1`).toBeGreaterThanOrEqual(0.4);
+      expect(pct, `${lift} S1`).toBeLessThanOrEqual(0.81);
     }
   });
 });

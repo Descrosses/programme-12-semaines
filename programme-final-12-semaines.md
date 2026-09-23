@@ -80,7 +80,7 @@ Tu arrêtes l'exercice quand : la distance ou la hauteur baisse d'environ 5 %, l
 
 **B. Box Jump — 4 × 3** — Repos 90 s — Hauteur où tu atterris souple sans rentrer les genoux (60-75 cm). Basic-Fit : box zone fonctionnelle ; sinon Vertical Jump sur cible.
 
-**C. Back Squat — 5 × 5 × 100 kg** — RPE 7 — Repos 3 min 30
+**C. Back Squat — 5 × 5 × 77,5 kg** — RPE 7 — Repos 3 min 30
 Tempo 3-0-X : descente 3 s sur les semaines 1-3, remontée avec intention d'accélération maximale.
 
 **D. Bulgarian Split Squat — 3 × 8/jambe, haltères 2 × 18 kg** — RPE 7-8 — Repos 90 s — Tempo 3-1-X-0.
@@ -97,9 +97,9 @@ Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lo
 
 **A. Plyo Push-Up — 4 × 4** — Repos 90 s — Mains décollent, réception souple. Arrêt si les mains décollent moins.
 
-**B. Bench Press — 5 × 5 × 87,5 kg** — RPE 7 — Repos 3 min — Tempo 2-1-X-0 : pause réelle 1 s sur le torse, poussée explosive.
+**B. Bench Press — 5 × 5 × 85 kg** — RPE 7 — Repos 3 min — Tempo 2-1-X-0 : pause réelle 1 s sur le torse, poussée explosive.
 
-**C. Tractions lestées — 4 × 5 × +17,5 kg** — RPE 7 — Repos 2 min 30 — Dead hang complet, zéro kipping, poitrine vers la barre.
+**C. Tractions lestées — 4 × 5 × +20 kg** — RPE 7 — Repos 2 min 30 — Dead hang complet, zéro kipping, poitrine vers la barre.
 
 **D. Landmine Press half-kneeling — 3 × 8/côté, barre + 20 kg** — RPE 7 — Repos 75 s
 Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou, 22 kg.
@@ -140,9 +140,9 @@ Progression : +2 kg quand les 25 m sont tenus sans ralentir.
 
 **A. Broad Jump — 3 × 2** — Repos 90 s — Potentiation (après le readiness).
 
-**B. Deadlift conventionnel — 4 × 5 × 97,5 kg** — RPE 7 — Repos 3 min 30
+**B. Deadlift conventionnel — 4 × 5 × 105 kg** — RPE 7 — Repos 3 min 30
 Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant décollage, barre contre les tibias, montée avec intention de vitesse maximale.
-**Ton 130 est très probablement sous-estimé** : si la semaine 1 sort à RPE ≤ 6, applique la règle « trop facile » dès la semaine 2.
+**Le 130 estimé l'était bel et bien** : le combine initial a mesuré 140. La colonne est recalée dessus.
 
 **C. Front Squat — 3 × 6 × 60 kg** — RPE 7 — Repos 2 min — Progression +2,5 kg/semaine si RPE conforme.
 
@@ -214,7 +214,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine 2 × 8, chop 3 × 6, leg raise 3 × 8, bear crawl 3 × 15 m. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
-- **Lundi** : Box Jump 3 × 2, Squat 3 × 2 × 97,5 kg RPE 5-6, Bulgarian 2 × 5 léger, Ab Wheel 2 × 6. Terminé.
+- **Lundi** : Box Jump 3 × 2, Squat 3 × 2 × 77,5 kg RPE 5-6, Bulgarian 2 × 5 léger, Ab Wheel 2 × 6. Terminé.
 - **Mercredi** : échauffement, puis **TEST Deadlift 1RM**. Rien d'autre.
 - **Vendredi** : **TESTS Broad Jump, Vertical Jump, sprint 10/20 m, tractions strictes max, Hanging Leg Raise max.** Durée 45 min max.
 - **Samedi** : **TEST Back Squat 1RM + Farmer Carry.**
@@ -226,24 +226,28 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 | Sem | Back Squat (lun) | Bench (mer) | Deadlift (sam) | Tractions lestées (mer) | Push Press (ven) | Front Squat (sam) | Speed Squat (ven) |
 |---|---|---|---|---|---|---|---|
-| 1 | 5×5×100 – RPE 7 | 5×5×87,5 – RPE 7 | 4×5×97,5 – RPE 7 | 4×5×+17,5 | 5×3×50 | 3×6×60 | 6×2×60 |
-| 2 | 5×5×105 – RPE 7,5 | 5×5×90 – RPE 7,5 | 4×5×102,5 – RPE 7,5 | 4×5×+20 | 5×3×52,5 | 3×6×60 | 6×2×60 |
-| 3 | 5×4×110 – RPE 8 | 5×4×95 – RPE 8 | 4×4×107,5 – RPE 8 | 4×4×+22,5 | 6×2×55 | 3×6×62,5 | 6×2×60 |
-| 4 | 3×3×90 – RPE 5 | 3×3×80 – RPE 5 | 3×3×85 – RPE 5 | 3×3×+10 | 3×3×45 | 2×5×50 | 4×2×55 |
-| 5 | 5×3×115 – RPE 8 | 5×3×100 – RPE 8 | 4×3×110 – RPE 8 | 4×3×+27,5 | 6×2×55 | 4×5×65 | 6×2×65 |
-| 6 | 4×3×120 – RPE 8,5 | 4×3×102,5 – RPE 8,5 | 3×3×115 – RPE 8,5 | 4×3×+30 | 6×2×57,5 | 4×4×70 | 6×2×65 |
-| 7 | 4×2×125 – RPE 9 | 4×2×107,5 – RPE 9 | 3×2×120 – RPE 9 | 4×2×+32,5 | 6×2×60 | 4×4×70 | 6×2×65 |
-| 8 | 3×3×97,5 – RPE 5 | 3×3×85 – RPE 5 | 3×3×90 – RPE 5 | 3×2×+15 | 3×2×45 | 2×4×55 | 4×2×55 |
-| 9 | 4×2×117,5 + contraste | 4×2×100 + contraste | 3×2×112,5 + contraste | 3×3×+27,5 | 6×2×57,5 | 3×3×70 | 8×2×65 |
-| 10 | 4×2×120 + contraste | 4×2×102,5 + contraste | 3×2×117,5 + contraste | 3×3×+30 | 6×2×60 | 3×3×72,5 | 8×2×65 |
-| 11 | 4×1-2×125 + contraste | 4×1-2×107,5 + contraste | 3×1-2×120 + contraste | 3×2×+32,5 | 6×2×62,5 | 3×3×75 | 8×2×65 |
-| 12 | 3×2×97,5 puis TEST sam | 3×2×85 puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×55 |
+| 1 | 5×5×77,5 – RPE 7 | 5×5×85 – RPE 7 | 4×5×105 – RPE 7 | 4×5×+20 | 5×3×50 | 3×6×60 | 6×2×60 |
+| 2 | 5×5×82,5 – RPE 7,5 | 5×5×87,5 – RPE 7,5 | 4×5×110 – RPE 7,5 | 4×5×+22,5 | 5×3×52,5 | 3×6×60 | 6×2×60 |
+| 3 | 5×4×87,5 – RPE 8 | 5×4×90 – RPE 8 | 4×4×115 – RPE 8 | 4×4×+25 | 6×2×55 | 3×6×62,5 | 6×2×60 |
+| 4 | 3×3×70 – RPE 5 | 3×3×77,5 – RPE 5 | 3×3×92,5 – RPE 5 | 3×3×+10 | 3×3×45 | 2×5×50 | 4×2×55 |
+| 5 | 5×3×90 – RPE 8 | 5×3×95 – RPE 8 | 4×3×117,5 – RPE 8 | 4×3×+30 | 6×2×55 | 4×5×65 | 6×2×65 |
+| 6 | 4×3×95 – RPE 8,5 | 4×3×97,5 – RPE 8,5 | 3×3×125 – RPE 8,5 | 4×3×+32,5 | 6×2×57,5 | 4×4×70 | 6×2×65 |
+| 7 | 4×2×97,5 – RPE 9 | 4×2×102,5 – RPE 9 | 3×2×130 – RPE 9 | 4×2×+35 | 6×2×60 | 4×4×70 | 6×2×65 |
+| 8 | 3×3×77,5 – RPE 5 | 3×3×82,5 – RPE 5 | 3×3×97,5 – RPE 5 | 3×2×+15 | 3×2×45 | 2×4×55 | 4×2×55 |
+| 9 | 4×2×92,5 + contraste | 4×2×95 + contraste | 3×2×120 + contraste | 3×3×+30 | 6×2×57,5 | 3×3×70 | 8×2×65 |
+| 10 | 4×2×95 + contraste | 4×2×97,5 + contraste | 3×2×127,5 + contraste | 3×3×+32,5 | 6×2×60 | 3×3×72,5 | 8×2×65 |
+| 11 | 4×1-2×97,5 + contraste | 4×1-2×102,5 + contraste | 3×1-2×130 + contraste | 3×2×+35 | 6×2×62,5 | 3×3×75 | 8×2×65 |
+| 12 | 3×2×77,5 puis TEST sam | 3×2×82,5 puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×55 |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.
 
+**Tout le tableau est recalé sur les 1RM réellement testés au combine initial** : back squat 110 (estimé 140), bench 115 (estimé 120), deadlift 140 (estimé 130), tractions lestées +45 (estimé +42). Chaque case garde le pourcentage que le programme visait, appliqué au vrai maximum et arrondi au 2,5 kg. Le back squat était le plus faux : six semaines sur douze demandaient plus de 100 % du vrai max, dont un 5 × 4 à 110 kg en semaine 3, soit le 1RM exact.
+
 **Speed Squat et Front Squat — recalés sur le squat réellement testé (110 kg).** Les deux colonnes avaient été écrites sur un back squat supposé à 140 kg. Le combine initial en a mesuré 110 : le Speed Squat de la semaine 1, annoncé à 55 %, en valait en réalité 70 %, ce qui est une charge de force, pas de vitesse.
 
-Le Speed Squat est recalculé directement sur les pourcentages écrits ici même — 55 % en accumulation, 60 % en force max et en puissance, 50 % en deload et au taper — appliqués à 110 kg, arrondis au 2,5 kg le plus proche. Les colonnes squat, bench, deadlift et tractions lestées ne bougent pas : elles portent les charges réelles du programme, pas des pourcentages d'un maximum.
+Le Speed Squat est recalculé directement sur les pourcentages écrits ici même — 55 % en accumulation, 60 % en force max et en puissance, 50 % en deload et au taper — appliqués à 110 kg, arrondis au 2,5 kg le plus proche.
+
+Le Push Press ne bouge pas : il est donné en kilos absolus avec un plafond de RPE et sa propre règle de progression, et aucune de ses cases ne tombe sur un pourcentage d'un maximum de squat. Le RDL non plus, pour la même raison.
 
 ---
 

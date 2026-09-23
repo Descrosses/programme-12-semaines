@@ -12,11 +12,12 @@ import { readiness } from './readiness';
 import { EMPTY_CONTEXT, type Occurrence, type SessionContext } from './types';
 import type { DayIndex, WeekIndex } from '../data/types';
 
+/** Les 1RM réellement mesurés au combine initial. */
 const ONE_RM = {
-  'back-squat': 140,
-  'bench-press': 120,
-  deadlift: 130,
-  'weighted-pullup': 42,
+  'back-squat': 110,
+  'bench-press': 115,
+  deadlift: 140,
+  'weighted-pullup': 45,
 } as const;
 
 function ctx(over: Partial<SessionContext> = {}): SessionContext {
@@ -95,15 +96,15 @@ describe('bloc accumulation (S1-3)', () => {
   it('mercredi S1 sort les charges du tableau', () => {
     const s = session(1, 2);
     expect(s.blockName).toBe('Accumulation');
-    expect(find(s, 'bench-press').loadLine).toBe('5 × 5 × 87,5 kg');
+    expect(find(s, 'bench-press').loadLine).toBe('5 × 5 × 85 kg');
     expect(find(s, 'bench-press').restSec).toBe(180);
     expect(find(s, 'bench-press').targetRPE?.label).toBe('RPE 7');
-    expect(find(s, 'weighted-pullup').loadLine).toBe('4 × 5 × +17,5 kg');
+    expect(find(s, 'weighted-pullup').loadLine).toBe('4 × 5 × +20 kg');
   });
 
-  it('lundi S2 : squat 5 × 5 × 105 et RDL 3 × 8 × 85', () => {
+  it('lundi S2 : squat 5 × 5 × 82,5 et RDL 3 × 8 × 85', () => {
     const s = session(2, 0);
-    expect(find(s, 'back-squat').loadLine).toBe('5 × 5 × 105 kg');
+    expect(find(s, 'back-squat').loadLine).toBe('5 × 5 × 82,5 kg');
     expect(find(s, 'rdl').loadLine).toBe('3 × 8 × 85 kg');
     expect(find(s, 'bulgarian-split-squat').loadLine).toBe('3 × 8 / jambe — 2 × 18 kg');
   });
@@ -163,7 +164,7 @@ describe('bloc puissance (S9-11) — contraste', () => {
     const squat = find(s, 'back-squat');
     expect(squat.contrast?.explosive).toBe('box-jump');
     expect(squat.contrast?.restAfterHeavySec).toBe(120);
-    expect(squat.loadLine).toBe('4 × 2 × 117,5 kg');
+    expect(squat.loadLine).toBe('4 × 2 × 92,5 kg');
   });
 
   it('mercredi : contraste bench / plyo push-up, 90 s après le bench (§10)', () => {
@@ -196,8 +197,8 @@ describe('bloc puissance (S9-11) — contraste', () => {
       {
         exerciseId: 'back-squat',
         week: 7,
-        kg: 125,
-        plannedKg: 125,
+        kg: 97.5,
+        plannedKg: 97.5,
         rpe: 6,
         failed: false,
         targetRPE: { min: 9, max: 9, label: 'RPE 9' },
@@ -206,13 +207,13 @@ describe('bloc puissance (S9-11) — contraste', () => {
     ];
     const s = session(9, 0, ctx({ history: { 'back-squat': historique } }));
     expect(find(s, 'back-squat').suggestion?.case).toBeNull();
-    expect(find(s, 'back-squat').load.kg).toBe(117.5);
+    expect(find(s, 'back-squat').load.kg).toBe(92.5);
   });
 });
 
 describe('deload (S4) — §8', () => {
   it('les lifts tabulés prennent la valeur du tableau, pas la formule', () => {
-    expect(find(session(4, 0), 'back-squat').loadLine).toBe('3 × 3 × 90 kg');
+    expect(find(session(4, 0), 'back-squat').loadLine).toBe('3 × 3 × 70 kg');
     expect(find(session(4, 0), 'rdl').loadLine).toBe('2 × 8 × 72,5 kg');
     expect(find(session(4, 5), 'front-squat').loadLine).toBe('2 × 5 × 50 kg');
   });
@@ -273,21 +274,21 @@ describe('semaine 8 — combine intermédiaire', () => {
       'deadlift',
       'front-squat',
     ]);
-    expect(find(s, 'deadlift').loadLine).toBe('3 × 3 × 90 kg');
+    expect(find(s, 'deadlift').loadLine).toBe('3 × 3 × 97,5 kg');
     expect(find(s, 'front-squat').loadLine).toBe('2 × 4 × 55 kg');
   });
 
   it('mercredi S8 reste une séance de deload normale', () => {
-    expect(find(session(8, 2), 'bench-press').loadLine).toBe('3 × 3 × 85 kg');
+    expect(find(session(8, 2), 'bench-press').loadLine).toBe('3 × 3 × 82,5 kg');
   });
 });
 
 describe('semaine 12 — taper', () => {
   it('lundi accueille le bench et le push press du tableau', () => {
     const s = session(12, 0);
-    expect(find(s, 'bench-press').loadLine).toBe('3 × 2 × 85 kg');
+    expect(find(s, 'bench-press').loadLine).toBe('3 × 2 × 82,5 kg');
     expect(find(s, 'push-press').loadLine).toBe('3 × 2 × 50 kg');
-    expect(find(s, 'back-squat').loadLine).toBe('3 × 2 × 97,5 kg');
+    expect(find(s, 'back-squat').loadLine).toBe('3 × 2 × 77,5 kg');
   });
 
   it('mercredi est le test deadlift, et rien d’autre', () => {
@@ -325,7 +326,7 @@ describe('readiness ORANGE', () => {
 
   it('−5 % sur les gros mouvements, arrondi au 2,5 kg', () => {
     const s = session(5, 0, orange);
-    expect(find(s, 'back-squat').load.kg).toBe(110); // 115 × 0,95 = 109,25 → 110
+    expect(find(s, 'back-squat').load.kg).toBe(85); // 90 × 0,95 = 85,5 → 85
     expect(find(s, 'rdl').load.kg).toBe(85); // 90 × 0,95 = 85,5 → 85
   });
 
@@ -352,8 +353,8 @@ describe('readiness ORANGE', () => {
       {
         exerciseId: 'back-squat',
         week: 4,
-        kg: 90,
-        plannedKg: 90,
+        kg: 70,
+        plannedKg: 70,
         rpe: 3,
         failed: false,
         targetRPE: { min: 5, max: 5, label: 'RPE 5' },
@@ -363,8 +364,8 @@ describe('readiness ORANGE', () => {
     const s = session(5, 0, ctx({ readiness: readiness(240, 230), history: { 'back-squat': historique } }));
     const squat = find(s, 'back-squat');
     expect(squat.suggestion?.case).toBe(2);
-    // 115 + 5 = 120, puis −5 % = 114 → 115
-    expect(squat.suggestion?.suggestedKg).toBe(115);
+    // 90 + 5 = 95, puis −5 % = 90,25 → 90
+    expect(squat.suggestion?.suggestedKg).toBe(90);
   });
 });
 
@@ -375,8 +376,8 @@ describe('readiness ROUGE', () => {
     const squat = find(session(5, 0, rouge), 'back-squat');
     expect(squat.sets).toBe(3);
     expect(squat.work).toMatchObject({ reps: 3 });
-    expect(squat.load.kg).toBe(90); // 140 × 0,65 = 91 → 90
-    expect(squat.loadLine).toBe('3 × 3 × 90 kg');
+    expect(squat.load.kg).toBe(72.5); // 110 × 0,65 = 71,5 → 72,5
+    expect(squat.loadLine).toBe('3 × 3 × 72,5 kg');
     expect(squat.targetRPE).toBeNull();
   });
 

@@ -5,6 +5,21 @@
  * charges de départ. `src/data/mainLiftTable.test.ts` relit le fichier
  * `programme-final-12-semaines.md` et vérifie chaque case.
  *
+ * TOUTES les colonnes indexées sur un maximum sont calées sur les 1RM
+ * réellement testés au combine initial — back squat 110 (estimé 140 avant le
+ * test), bench 115 (estimé 120), deadlift 140 (estimé 130), tractions lestées
+ * +45 (estimé +42) — et non sur les estimations d'avant le combine. Chaque case
+ * garde le pourcentage que le programme visait, appliqué au vrai maximum,
+ * arrondi au 2,5 kg.
+ *
+ * Le back squat était de loin le plus faux : six semaines sur douze demandaient
+ * plus de 100 % du vrai max, dont un 5 × 4 à 110 kg en semaine 3 — le 1RM
+ * exact, cinq fois quatre répétitions. Ce n'étaient pas des séances dures,
+ * c'étaient des séances qui ne pouvaient pas exister.
+ *
+ * Push press et RDL ne sont PAS indexés : kilos absolus, plafond de RPE, règle
+ * de progression propre. Ils ne bougent pas.
+ *
  * Rappel de la règle décidée avec Guillaume : ce tableau n'est qu'un plan par
  * défaut. Dès qu'une séance dévie, la charge réelle devient la nouvelle base
  * (`applyProgression`). En revanche la colonne RPE reste fixe : c'est elle
@@ -65,51 +80,51 @@ const CONTRASTE = 'Contraste : série lourde → 2 min → explosif → 2 min �
  * barre, §8), laissé à `null` volontairement — voir note dans README.
  */
 const backSquat: LiftSchedule = [
-  p(5, 5, bb(100), rpe(7)),
-  p(5, 5, bb(105), rpe(7.5)),
-  p(5, 4, bb(110), rpe(8)),
-  p(3, 3, bb(90), rpe(5)),
-  p(5, 3, bb(115), rpe(8)),
-  p(4, 3, bb(120), rpe(8.5)),
-  p(4, 2, bb(125), rpe(9)),
-  p(3, 3, bb(97.5), rpe(5)),
-  p(4, 2, bb(117.5), null, { contrast: true, note: CONTRASTE }),
-  p(4, 2, bb(120), null, { contrast: true, note: CONTRASTE }),
-  p(4, r1to2, bb(125), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(97.5), rpeRange(5, 6), { note: 'Puis TEST 1RM le samedi.' }),
+  p(5, 5, bb(77.5), rpe(7)),
+  p(5, 5, bb(82.5), rpe(7.5)),
+  p(5, 4, bb(87.5), rpe(8)),
+  p(3, 3, bb(70), rpe(5)),
+  p(5, 3, bb(90), rpe(8)),
+  p(4, 3, bb(95), rpe(8.5)),
+  p(4, 2, bb(97.5), rpe(9)),
+  p(3, 3, bb(77.5), rpe(5)),
+  p(4, 2, bb(92.5), null, { contrast: true, note: CONTRASTE }),
+  p(4, 2, bb(95), null, { contrast: true, note: CONTRASTE }),
+  p(4, r1to2, bb(97.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, bb(77.5), rpeRange(5, 6), { note: 'Puis TEST 1RM le samedi.' }),
 ];
 
 /** Colonne « Bench (mer) ». */
 const benchPress: LiftSchedule = [
-  p(5, 5, bb(87.5), rpe(7)),
-  p(5, 5, bb(90), rpe(7.5)),
-  p(5, 4, bb(95), rpe(8)),
-  p(3, 3, bb(80), rpe(5)),
-  p(5, 3, bb(100), rpe(8)),
-  p(4, 3, bb(102.5), rpe(8.5)),
-  p(4, 2, bb(107.5), rpe(9)),
-  p(3, 3, bb(85), rpe(5)),
-  p(4, 2, bb(100), null, { contrast: true, note: CONTRASTE }),
-  p(4, 2, bb(102.5), null, { contrast: true, note: CONTRASTE }),
-  p(4, r1to2, bb(107.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(85), rpeAtMost(6), {
+  p(5, 5, bb(85), rpe(7)),
+  p(5, 5, bb(87.5), rpe(7.5)),
+  p(5, 4, bb(90), rpe(8)),
+  p(3, 3, bb(77.5), rpe(5)),
+  p(5, 3, bb(95), rpe(8)),
+  p(4, 3, bb(97.5), rpe(8.5)),
+  p(4, 2, bb(102.5), rpe(9)),
+  p(3, 3, bb(82.5), rpe(5)),
+  p(4, 2, bb(95), null, { contrast: true, note: CONTRASTE }),
+  p(4, 2, bb(97.5), null, { contrast: true, note: CONTRASTE }),
+  p(4, r1to2, bb(102.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, bb(82.5), rpeAtMost(6), {
     note: 'Placé le lundi, après le squat (décision de Guillaume). TEST 1RM le dimanche.',
   }),
 ];
 
 /** Colonne « Deadlift (sam) ». */
 const deadlift: LiftSchedule = [
-  p(4, 5, bb(97.5), rpe(7)),
-  p(4, 5, bb(102.5), rpe(7.5)),
-  p(4, 4, bb(107.5), rpe(8)),
-  p(3, 3, bb(85), rpe(5)),
-  p(4, 3, bb(110), rpe(8)),
-  p(3, 3, bb(115), rpe(8.5)),
-  p(3, 2, bb(120), rpe(9)),
-  p(3, 3, bb(90), rpe(5)),
-  p(3, 2, bb(112.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(117.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, r1to2, bb(120), null, { contrast: true, note: CONTRASTE }),
+  p(4, 5, bb(105), rpe(7)),
+  p(4, 5, bb(110), rpe(7.5)),
+  p(4, 4, bb(115), rpe(8)),
+  p(3, 3, bb(92.5), rpe(5)),
+  p(4, 3, bb(117.5), rpe(8)),
+  p(3, 3, bb(125), rpe(8.5)),
+  p(3, 2, bb(130), rpe(9)),
+  p(3, 3, bb(97.5), rpe(5)),
+  p(3, 2, bb(120), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, bb(127.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, r1to2, bb(130), null, { contrast: true, note: CONTRASTE }),
   test1RM('TEST 1RM le mercredi.'),
 ];
 
@@ -123,17 +138,17 @@ const deadlift: LiftSchedule = [
  * pilote, pas de progression automatique.
  */
 const weightedPullup: LiftSchedule = [
-  p(4, 5, added(17.5), rpe(7)),
-  p(4, 5, added(20), rpe(7.5)),
-  p(4, 4, added(22.5), rpe(8)),
+  p(4, 5, added(20), rpe(7)),
+  p(4, 5, added(22.5), rpe(7.5)),
+  p(4, 4, added(25), rpe(8)),
   p(3, 3, added(10), rpe(5)),
-  p(4, 3, added(27.5), rpe(8)),
-  p(4, 3, added(30), rpe(8.5)),
-  p(4, 2, added(32.5), rpe(9)),
+  p(4, 3, added(30), rpe(8)),
+  p(4, 3, added(32.5), rpe(8.5)),
+  p(4, 2, added(35), rpe(9)),
   p(3, 2, added(15), rpe(5)),
-  p(3, 3, added(27.5), null, { note: 'Intention explosive (§8).' }),
   p(3, 3, added(30), null, { note: 'Intention explosive (§8).' }),
-  p(3, 2, added(32.5), null, { note: 'Intention explosive (§8).' }),
+  p(3, 3, added(32.5), null, { note: 'Intention explosive (§8).' }),
+  p(3, 2, added(35), null, { note: 'Intention explosive (§8).' }),
   test1RM('TEST 1RM le dimanche.'),
 ];
 
