@@ -123,7 +123,7 @@ Tu dois sortir en te disant « j'aurais pu en faire plus ».
 **C. Push Press — 5 × 3 × 50 kg** — RPE ≤ 7 — Repos 2 min — Dip court (10-15 cm), drive explosif. La barre doit voler. Si la dernière rep devient un strict press : trop lourd.
 Progression : +2,5 kg quand les 3 reps de toutes les séries sont rapides.
 
-**D. Speed Squat — 6 × 2 × 77,5 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
+**D. Speed Squat — 6 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
 
 **E. Jump Squat haltères — 4 × 4, 2 × 6-8 kg** — Repos 90 s — Vitesse de projection, pas de charge lourde.
 
@@ -144,7 +144,7 @@ Progression : +2 kg quand les 25 m sont tenus sans ralentir.
 Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant décollage, barre contre les tibias, montée avec intention de vitesse maximale.
 **Ton 130 est très probablement sous-estimé** : si la semaine 1 sort à RPE ≤ 6, applique la règle « trop facile » dès la semaine 2.
 
-**C. Front Squat — 3 × 6 × 75 kg** — RPE 7 — Repos 2 min — Progression +2,5 kg/semaine si RPE conforme.
+**C. Front Squat — 3 × 6 × 60 kg** — RPE 7 — Repos 2 min — Progression +2,5 kg/semaine si RPE conforme.
 
 **D. Hip Thrust — 4 × 8 × 100 kg** — RPE 8 — Repos 90 s — 2 s de contraction en haut, menton rentré. Progression +10 kg quand RPE ≤ 7.
 
@@ -201,7 +201,7 @@ Pas de gros travail excentrique jambes.
 - Hip Thrust 4 × 6 RPE 8, repos 2 min
 - Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30
-- Speed Squat 6 × 2 × 85 kg (60 %), repos 75 s
+- Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
 
 ### Semaines 9-11 — Conversion force → puissance (contraste)
@@ -209,7 +209,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5.
-**Vendredi** : Broad Jump 5 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 85 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+**Vendredi** : Broad Jump 5 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 **Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, Copenhagen 3 × 5, Suitcase 3 × 20 m.
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine 2 × 8, chop 3 × 6, leg raise 3 × 8, bear crawl 3 × 15 m. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
@@ -226,20 +226,24 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 | Sem | Back Squat (lun) | Bench (mer) | Deadlift (sam) | Tractions lestées (mer) | Push Press (ven) | Front Squat (sam) | Speed Squat (ven) |
 |---|---|---|---|---|---|---|---|
-| 1 | 5×5×100 – RPE 7 | 5×5×87,5 – RPE 7 | 4×5×97,5 – RPE 7 | 4×5×+17,5 | 5×3×50 | 3×6×75 | 6×2×77,5 |
-| 2 | 5×5×105 – RPE 7,5 | 5×5×90 – RPE 7,5 | 4×5×102,5 – RPE 7,5 | 4×5×+20 | 5×3×52,5 | 3×6×77,5 | 6×2×77,5 |
-| 3 | 5×4×110 – RPE 8 | 5×4×95 – RPE 8 | 4×4×107,5 – RPE 8 | 4×4×+22,5 | 6×2×55 | 3×6×80 | 6×2×80 |
-| 4 | 3×3×90 – RPE 5 | 3×3×80 – RPE 5 | 3×3×85 – RPE 5 | 3×3×+10 | 3×3×45 | 2×5×65 | 4×2×70 |
-| 5 | 5×3×115 – RPE 8 | 5×3×100 – RPE 8 | 4×3×110 – RPE 8 | 4×3×+27,5 | 6×2×55 | 4×5×82,5 | 6×2×85 |
-| 6 | 4×3×120 – RPE 8,5 | 4×3×102,5 – RPE 8,5 | 3×3×115 – RPE 8,5 | 4×3×+30 | 6×2×57,5 | 4×4×87,5 | 6×2×85 |
-| 7 | 4×2×125 – RPE 9 | 4×2×107,5 – RPE 9 | 3×2×120 – RPE 9 | 4×2×+32,5 | 6×2×60 | 4×4×90 | 6×2×85 |
-| 8 | 3×3×97,5 – RPE 5 | 3×3×85 – RPE 5 | 3×3×90 – RPE 5 | 3×2×+15 | 3×2×45 | 2×4×70 | 4×2×70 |
-| 9 | 4×2×117,5 + contraste | 4×2×100 + contraste | 3×2×112,5 + contraste | 3×3×+27,5 | 6×2×57,5 | 3×3×90 | 8×2×85 |
-| 10 | 4×2×120 + contraste | 4×2×102,5 + contraste | 3×2×117,5 + contraste | 3×3×+30 | 6×2×60 | 3×3×92,5 | 8×2×85 |
-| 11 | 4×1-2×125 + contraste | 4×1-2×107,5 + contraste | 3×1-2×120 + contraste | 3×2×+32,5 | 6×2×62,5 | 3×3×95 | 8×2×87,5 |
-| 12 | 3×2×97,5 puis TEST sam | 3×2×85 puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×70 |
+| 1 | 5×5×100 – RPE 7 | 5×5×87,5 – RPE 7 | 4×5×97,5 – RPE 7 | 4×5×+17,5 | 5×3×50 | 3×6×60 | 6×2×60 |
+| 2 | 5×5×105 – RPE 7,5 | 5×5×90 – RPE 7,5 | 4×5×102,5 – RPE 7,5 | 4×5×+20 | 5×3×52,5 | 3×6×60 | 6×2×60 |
+| 3 | 5×4×110 – RPE 8 | 5×4×95 – RPE 8 | 4×4×107,5 – RPE 8 | 4×4×+22,5 | 6×2×55 | 3×6×62,5 | 6×2×60 |
+| 4 | 3×3×90 – RPE 5 | 3×3×80 – RPE 5 | 3×3×85 – RPE 5 | 3×3×+10 | 3×3×45 | 2×5×50 | 4×2×55 |
+| 5 | 5×3×115 – RPE 8 | 5×3×100 – RPE 8 | 4×3×110 – RPE 8 | 4×3×+27,5 | 6×2×55 | 4×5×65 | 6×2×65 |
+| 6 | 4×3×120 – RPE 8,5 | 4×3×102,5 – RPE 8,5 | 3×3×115 – RPE 8,5 | 4×3×+30 | 6×2×57,5 | 4×4×70 | 6×2×65 |
+| 7 | 4×2×125 – RPE 9 | 4×2×107,5 – RPE 9 | 3×2×120 – RPE 9 | 4×2×+32,5 | 6×2×60 | 4×4×70 | 6×2×65 |
+| 8 | 3×3×97,5 – RPE 5 | 3×3×85 – RPE 5 | 3×3×90 – RPE 5 | 3×2×+15 | 3×2×45 | 2×4×55 | 4×2×55 |
+| 9 | 4×2×117,5 + contraste | 4×2×100 + contraste | 3×2×112,5 + contraste | 3×3×+27,5 | 6×2×57,5 | 3×3×70 | 8×2×65 |
+| 10 | 4×2×120 + contraste | 4×2×102,5 + contraste | 3×2×117,5 + contraste | 3×3×+30 | 6×2×60 | 3×3×72,5 | 8×2×65 |
+| 11 | 4×1-2×125 + contraste | 4×1-2×107,5 + contraste | 3×1-2×120 + contraste | 3×2×+32,5 | 6×2×62,5 | 3×3×75 | 8×2×65 |
+| 12 | 3×2×97,5 puis TEST sam | 3×2×85 puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×55 |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.
+
+**Speed Squat et Front Squat — recalés sur le squat réellement testé (110 kg).** Les deux colonnes avaient été écrites sur un back squat supposé à 140 kg. Le combine initial en a mesuré 110 : le Speed Squat de la semaine 1, annoncé à 55 %, en valait en réalité 70 %, ce qui est une charge de force, pas de vitesse.
+
+Le Speed Squat est recalculé directement sur les pourcentages écrits ici même — 55 % en accumulation, 60 % en force max et en puissance, 50 % en deload et au taper — appliqués à 110 kg, arrondis au 2,5 kg le plus proche. Les colonnes squat, bench, deadlift et tractions lestées ne bougent pas : elles portent les charges réelles du programme, pas des pourcentages d'un maximum.
 
 ---
 

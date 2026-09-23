@@ -109,7 +109,67 @@ describe('les charges du §9 ne dépendent pas des Réglages', () => {
     expect(kgDe('bench-press', 1)).toBe(87.5);
     expect(kgDe('weighted-pullup', 1)).toBe(17.5);
     expect(kgDe('push-press', 1)).toBe(50);
-    expect(kgDe('front-squat', 1)).toBe(75);
-    expect(kgDe('speed-squat', 1)).toBe(77.5);
+    // Recalés sur le squat testé à 110 kg : 55 % pour le speed squat, rapport
+    // à l'ancienne base 140 pour le front squat, que le .md ne chiffre qu'en kg.
+    expect(kgDe('front-squat', 1)).toBe(60);
+    expect(kgDe('speed-squat', 1)).toBe(60);
+  });
+});
+
+/**
+ * Speed Squat et Front Squat, recalés sur le squat réellement testé (110 kg).
+ *
+ * Les deux colonnes avaient été écrites sur un back squat supposé à 140. Le
+ * speed squat de la semaine 1, annoncé « 55 % », en valait 70 % du vrai max :
+ * à cette charge la barre ne peut pas être rapide, donc l'exercice ne fait plus
+ * ce pour quoi il existe.
+ */
+describe('speed squat et front squat calés sur le squat testé', () => {
+  const SQUAT_TESTE = 110;
+  /** Les pourcentages que le .md écrit, bloc par bloc. */
+  const PCT_SPEED = [0.55, 0.55, 0.55, 0.5, 0.6, 0.6, 0.6, 0.5, 0.6, 0.6, 0.6, 0.5];
+
+  it('chaque semaine du speed squat vaut le pourcentage du .md appliqué à 110 kg', () => {
+    for (let w = 1; w <= 12; w++) {
+      const attendu = Math.round((PCT_SPEED[w - 1]! * SQUAT_TESTE) / 2.5) * 2.5;
+      expect(kgDe('speed-squat', w), `speed squat S${w}`).toBe(attendu);
+    }
+  });
+
+  it('aucune charge de speed squat ne dépasse 62 % du squat testé', () => {
+    // Au-delà, ce n'est plus un exercice de vitesse. 62 % laisse la marge de
+    // l'arrondi au 2,5 kg sur le palier 60 %.
+    for (let w = 1; w <= 12; w++) {
+      const kg = kgDe('speed-squat', w)!;
+      expect(kg / SQUAT_TESTE, `speed squat S${w} = ${kg} kg`).toBeLessThanOrEqual(0.62);
+    }
+  });
+
+  /*
+   * Le front squat n'a aucun pourcentage écrit : on vérifie le résultat, pas la
+   * formule. Un front squat vaut ~85 % d'un back squat, soit ~93 kg ici. Du
+   * 3 × 6 à RPE 7 doit tomber autour de 65-70 % de ce max, jamais à 80 %
+   * comme les 75 kg d'avant.
+   */
+  it('le front squat d’accumulation reste dans la zone d’un 3 × 6 à RPE 7', () => {
+    const maxFrontSquatEstime = SQUAT_TESTE * 0.85;
+    for (const w of [1, 2, 3]) {
+      const pct = kgDe('front-squat', w)! / maxFrontSquatEstime;
+      expect(pct, `front squat S${w}`).toBeLessThan(0.72);
+    }
+  });
+
+  /*
+   * Le push press n'est PAS concerné : le .md le donne en kilos absolus avec un
+   * plafond de RPE et sa propre règle de progression (« +2,5 kg quand les reps
+   * sont rapides »). Aucune de ses cases ne tombe sur un pourcentage rond d'un
+   * squat, ni de 140 ni de 110 — c'est une poussée verticale, elle n'a rien à
+   * voir avec un maximum de squat.
+   */
+  it('le push press ne suit aucun 1RM de squat', () => {
+    const attendu = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
+    for (let w = 1; w <= 12; w++) {
+      expect(kgDe('push-press', w), `push press S${w}`).toBe(attendu[w - 1]);
+    }
   });
 });

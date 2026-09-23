@@ -188,7 +188,7 @@ describe('bloc puissance (S9-11) — contraste', () => {
     expect(ids(s.exercises)).toContain('pogo-jumps');
     expect(ids(s.exercises)).not.toContain('dead-bug-cable');
     expect(ids(s.exercises)).not.toContain('explosive-cable-row');
-    expect(find(s, 'speed-squat').loadLine).toBe('8 × 2 × 85 kg');
+    expect(find(s, 'speed-squat').loadLine).toBe('8 × 2 × 65 kg');
   });
 
   it('aucune progression automatique : le tableau tient, la vitesse pilote', () => {
@@ -214,7 +214,7 @@ describe('deload (S4) — §8', () => {
   it('les lifts tabulés prennent la valeur du tableau, pas la formule', () => {
     expect(find(session(4, 0), 'back-squat').loadLine).toBe('3 × 3 × 90 kg');
     expect(find(session(4, 0), 'rdl').loadLine).toBe('2 × 8 × 72,5 kg');
-    expect(find(session(4, 5), 'front-squat').loadLine).toBe('2 × 5 × 65 kg');
+    expect(find(session(4, 5), 'front-squat').loadLine).toBe('2 × 5 × 50 kg');
   });
 
   it('les accessoires non tabulés passent à 2 séries et 80 % de la charge réelle', () => {
@@ -274,7 +274,7 @@ describe('semaine 8 — combine intermédiaire', () => {
       'front-squat',
     ]);
     expect(find(s, 'deadlift').loadLine).toBe('3 × 3 × 90 kg');
-    expect(find(s, 'front-squat').loadLine).toBe('2 × 4 × 70 kg');
+    expect(find(s, 'front-squat').loadLine).toBe('2 × 4 × 55 kg');
   });
 
   it('mercredi S8 reste une séance de deload normale', () => {
@@ -306,7 +306,7 @@ describe('semaine 12 — taper', () => {
       'test-leg-raise-max',
       'speed-squat',
     ]);
-    expect(find(s, 'speed-squat').loadLine).toBe('2 × 2 × 70 kg');
+    expect(find(s, 'speed-squat').loadLine).toBe('2 × 2 × 55 kg');
   });
 
   it('le front squat disparaît de la semaine 12 (« — » au tableau)', () => {
