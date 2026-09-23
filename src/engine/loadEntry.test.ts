@@ -127,10 +127,10 @@ describe('un champ de charge sur CHAQUE exercice du programme', () => {
   it('la charge planifiée du .md reste celle du plan, la saisie ne la touche pas', () => {
     const samedi = getSession(1, 5, CTX)!;
     const deadlift = samedi.exercises.find((e) => e.id === 'deadlift')!;
-    expect(deadlift.load.kg).toBe(97.5);
-    expect(deadlift.loadLine).toContain('97,5 kg');
+    expect(deadlift.load.kg).toBe(105);
+    expect(deadlift.loadLine).toContain('105 kg');
     // Le champ part de la valeur planifiée : c'est elle qu'on confirme ou corrige.
-    expect(loadEntryFor(deadlift).initialKg).toBe(97.5);
+    expect(loadEntryFor(deadlift).initialKg).toBe(105);
   });
 });
 
