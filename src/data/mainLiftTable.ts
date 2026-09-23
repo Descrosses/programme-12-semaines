@@ -164,18 +164,31 @@ const pushPress: LiftSchedule = [
  * S8 = 70 kg : c'est la valeur du tableau. La formule de deload (80 % de 90 =
  * 72,5) donnerait 72,5 mais §9 fait foi pour les mouvements tabulés.
  */
+/**
+ * Colonne « Front Squat (sam) » — recalée sur le squat testé à 110 kg.
+ *
+ * Contrairement au speed squat, le .md n'écrit AUCUN pourcentage sur cette
+ * colonne : elle est donnée en kilos absolus avec un RPE 7 et une progression
+ * de +2,5 kg/semaine. Le seul recalage possible est donc le rapport à
+ * l'ancienne base supposée — chaque case × 110/140, arrondie au 2,5 kg.
+ *
+ * Que la colonne ait bien été écrite sur 140 se vérifie au résultat : un front
+ * squat vaut environ 85 % d'un back squat, soit ~93 kg ici. Les 75 kg de la
+ * semaine 1 en faisaient 80 %, pour 3 × 6 annoncés à RPE 7 — impossible. Les
+ * 60 kg recalés en font 64 %, ce qui correspond.
+ */
 const frontSquat: LiftSchedule = [
-  p(3, 6, bb(75), rpe(7)),
-  p(3, 6, bb(77.5), rpe(7)),
-  p(3, 6, bb(80), rpe(7)),
-  p(2, 5, bb(65), rpeAtMost(6)),
-  p(4, 5, bb(82.5), null),
-  p(4, 4, bb(87.5), null),
-  p(4, 4, bb(90), null),
-  p(2, 4, bb(70), rpeAtMost(6)),
-  p(3, 3, bb(90), rpe(7)),
-  p(3, 3, bb(92.5), rpe(7)),
-  p(3, 3, bb(95), rpe(7)),
+  p(3, 6, bb(60), rpe(7)),
+  p(3, 6, bb(60), rpe(7)),
+  p(3, 6, bb(62.5), rpe(7)),
+  p(2, 5, bb(50), rpeAtMost(6)),
+  p(4, 5, bb(65), null),
+  p(4, 4, bb(70), null),
+  p(4, 4, bb(70), null),
+  p(2, 4, bb(55), rpeAtMost(6)),
+  p(3, 3, bb(70), rpe(7)),
+  p(3, 3, bb(72.5), rpe(7)),
+  p(3, 3, bb(75), rpe(7)),
   null, // « — » : absent de la semaine 12
 ];
 
@@ -184,19 +197,36 @@ const frontSquat: LiftSchedule = [
  * Jamais de RPE : l'exercice est piloté par la vitesse (§7 « arrêt dès que la
  * vitesse baisse visiblement »). Les pourcentages viennent de §7 et §8.
  */
+/*
+ * Recalée sur le squat réellement testé (110 kg), et non sur les 140 kg
+ * supposés avant le combine.
+ *
+ * C'est la seule colonne du §9 que le .md exprime en pourcentage : « 55 % » au
+ * §7, « 60 % » au §8. Les kilos n'en étaient que la traduction sur la base
+ * estimée. Avec un vrai max de 110, les 77,5 kg de la semaine 1 valaient 70 %
+ * — une charge de force, à laquelle la barre ne peut pas être rapide, donc
+ * l'exercice ne faisait plus ce pour quoi il est là.
+ *
+ * Chaque case est donc `% × 110` arrondi au 2,5 kg, jamais l'ancienne valeur
+ * mise à l'échelle : partir des kilos accumulerait deux arrondis.
+ *
+ * Les +2,5 kg des semaines 3 et 11 disparaissent : ils venaient d'un arrondi
+ * de l'ancienne base (57,1 % et 62,5 %), pas d'une intention écrite. Sur un
+ * mouvement de vitesse la progression se lit à la barre, pas au chargement.
+ */
 const speedSquat: LiftSchedule = [
-  p(6, 2, bb(77.5), null, { note: '55 % — vitesse maximale.' }),
-  p(6, 2, bb(77.5), null, { note: '55 % — vitesse maximale.' }),
-  p(6, 2, bb(80), null, { note: '55 % — vitesse maximale.' }),
-  p(4, 2, bb(70), null, { note: 'Deload : volume divisé, intention conservée.' }),
-  p(6, 2, bb(85), null, { note: '60 %.' }),
-  p(6, 2, bb(85), null, { note: '60 %.' }),
-  p(6, 2, bb(85), null, { note: '60 %.' }),
-  p(4, 2, bb(70), null, { note: 'Deload.' }),
-  p(8, 2, bb(85), null, { note: '60 % — 8 séries (§8).' }),
-  p(8, 2, bb(85), null, { note: '60 % — 8 séries (§8).' }),
-  p(8, 2, bb(87.5), null, { note: '60 % — 8 séries (§8).' }),
-  p(2, 2, bb(70), null, {
+  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
+  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
+  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
+  p(4, 2, bb(55), null, { note: 'Deload : volume divisé, intention conservée.' }),
+  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
+  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
+  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
+  p(4, 2, bb(55), null, { note: 'Deload.' }),
+  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
+  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
+  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
+  p(2, 2, bb(55), null, {
     note: 'Après les tests athlétiques du vendredi, charge légère (décision de Guillaume).',
   }),
 ];
