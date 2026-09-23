@@ -33,8 +33,10 @@ export function Stepper({
   min,
   max,
   unit,
+  emptyLabel = '—',
   onStep,
   onCommit,
+  onCommitText,
   tone = 'normal',
 }: {
   label: string;
@@ -43,9 +45,24 @@ export function Stepper({
   min: number;
   max: number;
   unit?: string;
+  /**
+   * Ce qui s'affiche quand il n'y a pas de valeur. « — » par défaut, « PDC »
+   * sur un mouvement au poids du corps : il n'y a pas absence de charge, il y
+   * a le corps — et le champ sert à noter un lest.
+   */
+  emptyLabel?: string;
   onStep: (delta: number) => void;
   /** Fourni = saisie clavier possible sur la valeur. Absent = steppers seuls. */
   onCommit?: (value: number | null) => void;
+  /**
+   * Variante qui rend la chaîne BRUTE au lieu d'un nombre.
+   *
+   * Le Stepper n'a alors plus d'avis sur ce qui est valide : bornes, décimales
+   * et repli sur la valeur précédente sont décidés par l'appelant. C'est ce
+   * qu'il faut pour la charge, dont la règle (« en cas de doute, on garde ce
+   * qu'il y avait ») ne se dit pas avec un simple `number | null`.
+   */
+  onCommitText?: (raw: string) => void;
   tone?: 'normal' | 'accent';
 }) {
   const current = value ?? min;
@@ -64,6 +81,7 @@ export function Stepper({
 
   function commit() {
     setEditing(false);
+    if (onCommitText) return onCommitText(draft);
     if (!onCommit) return;
     // Champ vidé = mesure effacée. Saisie illisible = on ne touche à rien,
     // plutôt que d'écrire un 0 qui passerait pour un résultat.
@@ -71,6 +89,8 @@ export function Stepper({
     const parsed = parseDecimal(draft);
     if (parsed !== null) onCommit(clamp(parsed, min, max));
   }
+
+  const saisissable = onCommit !== undefined || onCommitText !== undefined;
 
   return (
     <div className={`${styles.stepper} ${tone === 'accent' ? styles.accent : ''}`}>
@@ -107,21 +127,21 @@ export function Stepper({
               if (e.key === 'Escape') setEditing(false);
             }}
           />
-        ) : onCommit ? (
+        ) : saisissable ? (
           <button
             type="button"
             className={`${styles.value} ${styles.valueEditable} tnum`}
             onClick={open}
             aria-label={`${label} — saisir la valeur au clavier`}
           >
-            {value === null ? '—' : fr(value)}
+            {value === null ? emptyLabel : fr(value)}
             <span className={styles.pencil} aria-hidden="true">
               ✎
             </span>
           </button>
         ) : (
           <output className={`${styles.value} tnum`} aria-labelledby={`lbl-${label}`}>
-            {value === null ? '—' : fr(value)}
+            {value === null ? emptyLabel : fr(value)}
           </output>
         )}
 

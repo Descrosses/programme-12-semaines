@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import type { SetRow } from '../db/db';
 import { fr, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
-import type { LoadShape } from '../engine/loadResolver';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { Stepper, stepValue } from './Stepper';
+import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -265,12 +265,16 @@ function SetEntry({
   const [editing, setEditing] = useState(false);
   const [reps, setReps] = useState<number>(saved?.actualReps ?? plannedReps ?? 1);
   /*
-   * `null` et non 0 quand rien n'est planifié : un « 0 kg » affiché sur une
-   * poulie ressemble à une charge prescrite, alors que le programme n'en donne
-   * aucune. Le stepper montre « — » tant que Guillaume n'a rien saisi, puis la
-   * séance suivante part de ce qu'il a réellement tiré (`lastCompleted`).
+   * Le champ de charge existe sur TOUS les exercices, y compris au poids du
+   * corps — il sert alors à noter un lest. Sa valeur de départ et son pas sont
+   * décidés dans l'engine (`loadEntryFor`), pas ici : c'est ce qui les rend
+   * testables sans monter un rendu React.
+   *
+   * `null` et non 0 : un « 0 kg » affiché ressemble à une charge prescrite,
+   * alors que le programme n'en donne aucune sur ces mouvements-là.
    */
-  const [kg, setKg] = useState<number | null>(saved?.actualKg ?? plannedKg ?? null);
+  const entry = loadEntryFor(ex, saved?.actualKg ?? (plannedKg ?? undefined));
+  const [kg, setKg] = useState<number | null>(entry.initialKg);
   const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
   const [value, setValue] = useState<number>(saved?.measureValue ?? measure?.min ?? 0);
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
@@ -281,17 +285,6 @@ function SetEntry({
     if (saved === null && plannedKg !== null) setKg(plannedKg);
   }, [plannedKg, saved]);
 
-  /*
-   * Le stepper de charge dépend de la FORME du mouvement, pas de l'existence
-   * d'une charge planifiée. Les poulies et le landmine debout portent une
-   * charge externe que le programme ne chiffre nulle part : les afficher sans
-   * stepper revenait à ne jamais pouvoir noter ce qu'on a vraiment tiré.
-   *
-   * L'inverse — inventer une charge « planifiée » pour faire apparaître le
-   * champ — serait pire : le .md n'en donne aucune, l'appli n'a pas à en
-   * fabriquer une.
-   */
-  const hasKg = plannedKg !== null || PORTE_UNE_CHARGE.has(ex.load.shape);
 
   const done = saved !== null && !editing;
 
@@ -299,7 +292,7 @@ function SetEntry({
     timer.prime();
     await onSave(ex, {
       setIndex: index,
-      actualKg: hasKg ? kg : null,
+      actualKg: kg,
       actualReps: measure ? null : reps,
       actualRpe: ex.targetRPE ? rpeValue : null,
       measureValue: measure ? value : null,
@@ -345,10 +338,11 @@ function SetEntry({
     );
   }
 
-  // Trois champs au maximum. Dès qu'il y en a un nombre impair, le dernier
-  // prend toute la largeur pour que les boutons gardent leurs 48 px.
+  // Trois champs au maximum — reps/mesure, charge, RPE. La charge est
+  // toujours là, donc au minimum deux. Dès qu'il y en a un nombre impair, le
+  // dernier prend toute la largeur pour que les boutons gardent leurs 48 px.
   const hasRpe = ex.targetRPE !== null;
-  const count = 1 + (hasKg ? 1 : 0) + (hasRpe ? 1 : 0);
+  const count = 2 + (hasRpe ? 1 : 0);
   const wide = (position: number) => (count % 2 === 1 && position === count ? styles.stepperWide : '');
 
   return (
@@ -381,19 +375,26 @@ function SetEntry({
             )}
           </div>
 
-          {hasKg && (
-            <div className={wide(2)}>
-              <Stepper
-                label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
-                value={kg}
-                step={ex.load.step}
-                min={0}
-                max={300}
-                unit="kg"
-                onStep={(d) => setKg((v) => stepValue(v ?? 0, d, 0, 300))}
-              />
-            </div>
-          )}
+          <div className={wide(2)}>
+            <Stepper
+              label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
+              value={kg}
+              emptyLabel={entry.emptyLabel}
+              step={entry.step}
+              min={KG_MIN}
+              max={KG_MAX}
+              unit="kg"
+              onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
+              /*
+               * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper
+               * rend la chaîne brute : c'est `parseKg` qui décide, et sa règle
+               * est « en cas de doute, on garde ce qu'il y avait ». Une faute
+               * de frappe ne doit jamais écrire un NaN ni un 0 dans
+               * l'historique — un 0 passerait pour une série faite à vide.
+               */
+              onCommitText={(brut: string) => setKg((v) => parseKg(brut, v))}
+            />
+          </div>
 
           {hasRpe && (
             <div className={wide(count)}>
@@ -444,13 +445,6 @@ function SetEntry({
 }
 
 // ---------------------------------------------------------------------------
-
-/**
- * Les formes qui portent une charge externe. Pour elles, le champ de saisie
- * s'affiche même quand le programme ne chiffre rien : c'est la machine ou la
- * barre qui décide, et seule la saisie de Guillaume peut la connaître.
- */
-const PORTE_UNE_CHARGE = new Set<LoadShape>(['barbell', 'added', 'dbPair', 'dbSingle', 'cable']);
 
 function plannedRepsOf(ex: ResolvedExercise): number | null {
   if (ex.work.kind !== 'reps') return null;
