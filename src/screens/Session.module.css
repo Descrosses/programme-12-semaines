@@ -603,3 +603,83 @@
   font-size: 1rem;
   font-weight: 700;
 }
+
+/* --- Remarque par exercice ------------------------------------------------ */
+
+/*
+ * Sous les séries, avant les consignes. Discret par défaut : un liseré, pas une
+ * carte — c'est un champ facultatif, il ne doit pas peser autant qu'une série.
+ */
+.exNote {
+  margin: 10px var(--pad) 0;
+  padding: 10px 12px;
+  border-left: 2px solid var(--line);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+}
+
+.exNoteHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.exNoteLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+/* Dit en toutes lettres que rien n'est attendu ici. */
+.exNoteOptional {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.exNoteBadge {
+  flex: none;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 0.75rem;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.exNotePast {
+  margin: 0 0 8px;
+  padding: 0 0 0 14px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.exNotePast li + li {
+  margin-top: 4px;
+}
+
+.exNotePastWhen {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.exNoteField {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.exNoteField::placeholder {
+  color: var(--ink-3);
+}

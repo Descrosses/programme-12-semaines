@@ -6,6 +6,7 @@
 import type { DayIndex, RPETarget } from '../data/types';
 import type { HistoryIndex, Occurrence, ReadinessRecord, Settings } from '../engine/types';
 import type { FoodOverride, FoodOverrides } from '../engine/nutrition';
+import { normalizeNote } from '../engine/exerciseNotes';
 import type { WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
 import {
@@ -14,6 +15,7 @@ import {
   type CombinePhase,
   type CombineRow,
   type ExerciseMediaRow,
+  type ExerciseNoteRow,
   type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
   type FoodOverrideRow,
@@ -407,6 +409,59 @@ export async function allVideoLog(): Promise<ExerciseVideoLogRow[]> {
 
 export async function deleteVideoLog(id: number): Promise<void> {
   await db.exerciseVideoLog.delete(id);
+}
+
+// ---------------------------------------------------------------------------
+// Remarques par exercice
+// ---------------------------------------------------------------------------
+
+/**
+ * Écrit la remarque du jour sur un exercice, à chaque frappe.
+ *
+ * Pas de bouton « enregistrer » : c'est la règle de toute l'appli, une saisie
+ * n'est jamais en attente. La clé unique `[exerciseId+week+day]` fait que la
+ * ligne est corrigée, pas empilée.
+ *
+ * Un champ vidé SUPPRIME la ligne plutôt que d'écrire une chaîne vide, sans
+ * quoi le badge de relecture s'allumerait sur des remarques sans contenu.
+ */
+export async function saveExerciseNote(input: {
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  text: string;
+}): Promise<void> {
+  const existing = await db.exerciseNotes
+    .where('[exerciseId+week+day]')
+    .equals([input.exerciseId, input.week, input.day])
+    .first();
+
+  const texte = normalizeNote(input.text);
+  if (texte === null) {
+    if (existing?.id !== undefined) await db.exerciseNotes.delete(existing.id);
+    return;
+  }
+
+  const row: ExerciseNoteRow = {
+    exerciseId: input.exerciseId,
+    week: input.week,
+    day: input.day,
+    date: input.date,
+    text: texte,
+    updatedAt: Date.now(),
+    ...(existing?.id !== undefined ? { id: existing.id } : {}),
+  };
+  await db.exerciseNotes.put(row);
+}
+
+/** Toutes les remarques laissées sur un mouvement, sur les 12 semaines. */
+export async function notesForExercise(exerciseId: string): Promise<ExerciseNoteRow[]> {
+  return db.exerciseNotes.where('exerciseId').equals(exerciseId).toArray();
+}
+
+export async function allExerciseNotes(): Promise<ExerciseNoteRow[]> {
+  return db.exerciseNotes.toArray();
 }
 
 export interface PhotoUsage {

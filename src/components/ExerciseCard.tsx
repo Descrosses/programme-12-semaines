@@ -4,6 +4,7 @@ import { fr, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
+import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import styles from '../screens/Session.module.css';
@@ -40,6 +41,7 @@ export function ExerciseCard({
   overrideKg,
   timer,
   media,
+  note,
   onSaveSet,
   onOverride,
 }: {
@@ -49,6 +51,14 @@ export function ExerciseCard({
   timer: RestTimer;
   /** Où l'on se trouve dans le programme, pour dater photos et traces vidéo. */
   media: MediaContext | null;
+  /**
+   * Semaine et jour de la séance. Séparé de `media` à dessein : les photos ont
+   * besoin d'une date en base, la remarque non — elle se range sous (exercice,
+   * semaine, jour). Les lier avait un effet de bord silencieux : tant que la
+   * date de début du programme n'était pas réglée, `media` valait `null` et le
+   * champ de remarque disparaissait de toutes les séances.
+   */
+  note: NoteContext;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   onOverride: (exId: string, kg: number | null) => void;
 }) {
@@ -195,6 +205,9 @@ export function ExerciseCard({
           ))}
         </div>
       )}
+
+      {/* Remarque libre sur ce mouvement, sous les séries. Toujours là. */}
+      <ExerciseNote exerciseId={ex.id} context={note} />
 
       {/*
         L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une
