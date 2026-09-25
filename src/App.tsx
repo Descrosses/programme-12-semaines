@@ -11,6 +11,7 @@ import { WeekScreen } from './screens/WeekScreen';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
 import { useRoute, type Route } from './state/useRoute';
+import { weekForTab, writeLastWeek } from './state/lastWeek';
 import { locateToday } from './engine/calendar';
 import type { DayKind } from './data/nutrition';
 import { getSettingsRow } from './db/repo';
@@ -67,6 +68,18 @@ export function App() {
 
   const refresh = useCallback(() => setDataVersion((v) => v + 1), []);
 
+  /*
+   * La semaine consultée se retient d'un onglet à l'autre.
+   *
+   * Elle ne vivait que dans l'URL : en passant par Nutrition, elle disparaissait
+   * avec elle, et l'onglet Semaine rouvrait la 1. On la note donc à chaque fois
+   * qu'on la regarde, y compris depuis une séance ouverte — c'est bien la
+   * semaine où l'on se trouve.
+   */
+  useEffect(() => {
+    if (route.name === 'week' || route.name === 'session') writeLastWeek(route.week);
+  }, [route]);
+
   // Pendant une séance, la barre de navigation disparaît : l'écran est long,
   // le pouce navigue dedans, et une barre de plus multiplierait les appuis ratés.
   const inSession = route.name === 'session';
@@ -101,7 +114,7 @@ export function App() {
                 type="button"
                 className={`${styles.tab} ${active ? styles.tabOn : ''}`}
                 onClick={() =>
-                  navigate(tab.name === 'week' ? { name: 'week', week: currentWeek(route) } : { name: tab.name })
+                  navigate(tab.name === 'week' ? { name: 'week', week: weekForTab(route) } : { name: tab.name })
                 }
                 aria-current={active ? 'page' : undefined}
               >
@@ -116,10 +129,6 @@ export function App() {
       )}
     </div>
   );
-}
-
-function currentWeek(route: Route): WeekIndex {
-  return route.name === 'week' || route.name === 'session' ? route.week : 1;
 }
 
 function renderScreen(
