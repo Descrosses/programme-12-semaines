@@ -202,6 +202,7 @@ export function SessionScreen({
           overrideKg={overrides[ex.id] ?? null}
           timer={timer}
           media={data.date ? { week, day, date: data.date } : null}
+          note={{ week, day, date: data.date ?? '' }}
           onSaveSet={handleSaveSet}
           onOverride={(id, kg) => void handleOverride(id, kg)}
         />

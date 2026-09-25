@@ -166,6 +166,32 @@ export interface ExerciseVideoLogRow {
   note: string;
 }
 
+/**
+ * Remarque libre sur UN exercice d'UNE séance.
+ *
+ * À ne pas confondre avec `sessions.notes`, la remarque de fin de séance, qui
+ * parle de la séance entière — douleur, sommeil, sensation générale. Celle-ci
+ * parle d'un mouvement précis un jour précis : « le squat m'a paru très lourd
+ * dès la deuxième série ». C'est le signal qui aurait fait remarquer, dès la
+ * semaine 1, que la charge de squat ne correspondait pas au vrai niveau.
+ *
+ * La clé est `[exerciseId+week+day]`, donc une remarque par exercice et par
+ * OCCURRENCE — ni par série (trop fin : on ne se souvient pas série par série),
+ * ni par exercice tout court (trop grossier : la remarque de la semaine 3
+ * écraserait celle de la semaine 1, qu'on veut justement pouvoir relire).
+ */
+export interface ExerciseNoteRow {
+  id?: number;
+  exerciseId: string;
+  week: number;
+  day: DayIndex;
+  /** `YYYY-MM-DD` de la séance, pour dater la remarque à la relecture. */
+  date: string;
+  text: string;
+  /** ms epoch de la dernière frappe. */
+  updatedAt: number;
+}
+
 export type CombinePhase = 'initial' | 's8' | 'final';
 
 export interface CombineRow {
@@ -214,6 +240,7 @@ export class ProgrammeDB extends Dexie {
   exerciseReference!: Table<ExerciseReferenceRow, number>;
   foodOverrides!: Table<FoodOverrideRow, number>;
   exerciseVideoLog!: Table<ExerciseVideoLogRow, number>;
+  exerciseNotes!: Table<ExerciseNoteRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
@@ -362,6 +389,20 @@ export class ProgrammeDB extends Dexie {
      * composition, qui continue de suivre le .md.
      */
     this.version(8).stores({ foodOverrides: '++id, &foodId' });
+
+    /*
+     * v9 — remarque par exercice et par séance. Ajout pur, une table de plus :
+     * aucune ligne existante n'est lue ni modifiée, tout l'historique traverse
+     * la migration sans y toucher.
+     *
+     * `&[exerciseId+week+day]` est unique — c'est ce qui fait qu'écrire au fil
+     * de la frappe corrige la remarque du jour au lieu d'en empiler une par
+     * caractère tapé. L'index `exerciseId` sert à relire, à la semaine 7, ce
+     * qui avait été noté sur ce mouvement en semaine 1.
+     */
+    this.version(9).stores({
+      exerciseNotes: '++id, &[exerciseId+week+day], exerciseId, [exerciseId+week], date',
+    });
   }
 }
 
