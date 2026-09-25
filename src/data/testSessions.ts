@@ -438,16 +438,32 @@ export const COMBINE_METRICS = [
 export const COMBINE_S8_METRICS = COMBINE_METRICS.filter((m) => !m.endsWith('-1rm'));
 
 /** §13 — objectifs à 12 semaines, pour l'écran Progression. */
+/**
+ * §13 — cibles à 12 semaines, transcrites du .md.
+ *
+ * Les départs sont ceux du COMBINE INITIAL et non les estimations d'avant test.
+ * Le squat avait été estimé à 140 pour 110 réels : garder l'ancienne cible de
+ * 150-155 kg revenait à demander +40 kg en douze semaines.
+ *
+ * Chaque cible garde la progression relative que le programme visait, appliquée
+ * au vrai départ — squat +7 à +11 %, bench +4 à +6 %, tractions lestées +13 %,
+ * deadlift +15 à +19 %.
+ */
 export const TARGETS_12_WEEKS: Record<string, { start: string; target: string }> = {
-  'test-deadlift-1rm': { start: '130 kg', target: '150-155 kg' },
-  'test-squat-1rm': { start: '140 kg', target: '150-155 kg' },
-  'test-bench-1rm': { start: '120 kg', target: '125-127,5 kg' },
-  'test-weighted-pullup-1rm': { start: '≈ +42 kg', target: '+47,5 kg' },
-  'test-strict-pullup-max': { start: '≈ 20', target: '22-25' },
+  /*
+   * Seule ligne à prendre comme une borne haute : ces +15 à +19 % avaient été
+   * écrits sur un 130 que le programme annonçait lui-même comme sous-estimé.
+   * Appliqués aux 140 mesurés, ils demandent +22,5 à +27,5 kg.
+   */
+  'test-deadlift-1rm': { start: '140 kg', target: '162,5-167,5 kg' },
+  'test-squat-1rm': { start: '110 kg', target: '117,5-122,5 kg' },
+  'test-bench-1rm': { start: '115 kg', target: '120-122,5 kg' },
+  'test-weighted-pullup-1rm': { start: '+45 kg', target: '+50 kg' },
+  'test-strict-pullup-max': { start: '18', target: '20-23' },
   'test-broad-jump': { start: 'référence', target: '+5 à 8 %' },
   'test-vertical-jump': { start: 'référence', target: '+4 à 6 cm' },
   'test-sprint-10m': { start: 'référence', target: '−2 à 4 %' },
   'test-farmer-carry': { start: 'référence', target: '+20 % de distance' },
   'test-ab-wheel-max': { start: 'référence', target: '+20-30 % de reps' },
-  'test-bodyweight': { start: '78 kg', target: '78-81 kg' },
+  'test-bodyweight': { start: '77 kg', target: '77-80 kg' },
 };
