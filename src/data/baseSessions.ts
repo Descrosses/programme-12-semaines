@@ -107,6 +107,25 @@ const VENDREDI: SessionBlueprint = {
   notes: ['Tu dois sortir en te disant « j’aurais pu en faire plus ».'],
   slots: [
     s('broad-jump', 5, reps(2), noLoad(), null, 120, 'Les 3 sauts du readiness comptent comme échauffement.'),
+    /*
+     * Hang High Pull — deuxième, juste derrière le Broad Jump.
+     *
+     * Le Broad Jump garde la première place parce qu'il sert aussi de test de
+     * readiness : sa mesure n'a de sens qu'à froid. Vient ensuite le mouvement
+     * chargé et technique du bloc, celui qui demande le plus de fraîcheur
+     * nerveuse — avant les bonds, avant la barre.
+     *
+     * Aucun 1RM ne le chiffre : la charge est autorégulée, amorcée à 40 kg et
+     * reprise ensuite de ce qui a réellement été soulevé. 40 kg = la barre et
+     * 10 kg par côté, soit 29 % du deadlift testé — assez léger pour que la
+     * vitesse, et non la charge, soit ce qui limite le mouvement. C'est tout
+     * l'objet de l'exercice, et c'est aussi un geste que Guillaume découvre :
+     * les trois premières semaines sont techniques.
+     *
+     * Pas de RPE cible, volontairement : §11 reporte alors le décalage réel
+     * sans proposer de règle, et c'est la vitesse de barre qui décide.
+     */
+    s('hang-high-pull', 3, reps(3), autoreg(40, 2.5, 'barbell'), null, 90),
     s('lateral-bound', 3, reps(3, true), noLoad(), null, 75),
     fromTable('push-press', 'push-press', 120),
     fromTable('speed-squat', 'speed-squat', 60),

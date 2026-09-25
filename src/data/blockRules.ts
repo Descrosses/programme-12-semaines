@@ -116,6 +116,8 @@ const MAXFORCE: BlockRuleSet[] = [
     block: 'maxforce',
     day: 4,
     rules: [
+      // « Hang High Pull 4 × 3, repos 2 min » (§8).
+      patch('hang-high-pull', { sets: 4, restSec: 120 }),
       patch('push-press', { restSec: 150 }),
       patch('speed-squat', { restSec: 75 }),
     ],
@@ -228,8 +230,13 @@ const POWER: BlockRuleSet[] = [
     notes: ['Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.'],
     rules: [
       {
+        /*
+         * Les pogos passent derrière le Hang High Pull, pas devant : c'est lui
+         * qui demande le plus de fraîcheur nerveuse du bloc, et trente contacts
+         * de pogo juste avant iraient contre sa seule raison d'être.
+         */
         op: 'insert',
-        after: 'broad-jump',
+        after: 'hang-high-pull',
         slot: {
           exId: 'pogo-jumps',
           sets: 3,
@@ -240,6 +247,16 @@ const POWER: BlockRuleSet[] = [
         },
       },
       patch('lateral-bound', { sets: 4, work: reps(2, true), restSec: 90 }),
+      /*
+       * Le schéma ne bouge pas de force max à puissance : 4 × 3. Ce qui change
+       * est ce qu'on cherche — la vitesse de barre, pas le kilo de plus. Sans
+       * RPE cible, §11 se contente de reporter le décalage réel.
+       */
+      patch('hang-high-pull', {
+        sets: 4,
+        restSec: 120,
+        note: 'Vitesse de barre : la charge ne monte que si les reps restent vives.',
+      }),
       patch('speed-squat', { restSec: 90 }),
       patch('jump-squat-db', { sets: 5, work: reps(3), restSec: 120 }),
       patch('farmer-carry', { sets: 3, work: meters(20) }),

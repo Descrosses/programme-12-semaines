@@ -118,21 +118,24 @@ Tu dois sortir en te disant « j'aurais pu en faire plus ».
 
 **A. Broad Jump — 5 × 2** — Repos 2 min — Les 3 sauts du readiness comptent comme échauffement. Mesure les distances.
 
-**B. Lateral Bound — 3 × 3/côté** — Repos 75 s — Tiens la réception 2 s.
+**B. Hang High Pull — 3 × 3 × 40 kg** — Repos 90 s — Barre au niveau des cuisses, extension explosive hanches-genoux-chevilles, tirage jusqu'à hauteur de poitrine environ. Sans réception : ce n'est pas un hang clean. Priorité à la vitesse, jamais à la charge. Reset complet entre chaque répétition (barre reposée ou position réinitialisée), 5 à 10 s de pause avant la rep suivante — jamais enchaîné en continu.
+Progression : +2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.
 
-**C. Push Press — 5 × 3 × 50 kg** — RPE ≤ 7 — Repos 2 min — Dip court (10-15 cm), drive explosif. La barre doit voler. Si la dernière rep devient un strict press : trop lourd.
+**C. Lateral Bound — 3 × 3/côté** — Repos 75 s — Tiens la réception 2 s.
+
+**D. Push Press — 5 × 3 × 50 kg** — RPE ≤ 7 — Repos 2 min — Dip court (10-15 cm), drive explosif. La barre doit voler. Si la dernière rep devient un strict press : trop lourd.
 Progression : +2,5 kg quand les 3 reps de toutes les séries sont rapides.
 
-**D. Speed Squat — 6 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
+**E. Speed Squat — 6 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
 
-**E. Jump Squat haltères — 4 × 4, 2 × 6-8 kg** — Repos 90 s — Vitesse de projection, pas de charge lourde.
+**F. Jump Squat haltères — 4 × 4, 2 × 6-8 kg** — Repos 90 s — Vitesse de projection, pas de charge lourde.
 
-**F. Explosive Cable Row — 3 × 5** — RPE 6 — Repos 75 s — Tirer vite, retour contrôlé.
+**G. Explosive Cable Row — 3 × 5** — RPE 6 — Repos 75 s — Tirer vite, retour contrôlé.
 
-**G. Farmer Carry — 4 × 25 m, haltères 2 × 34 kg** — Repos 90 s — Buste haut, marche agressive.
+**H. Farmer Carry — 4 × 25 m, haltères 2 × 34 kg** — Repos 90 s — Buste haut, marche agressive.
 Progression : +2 kg quand les 25 m sont tenus sans ralentir.
 
-**H. Dead Bug avec câble — 3 × 6/côté** — Repos 45 s — Anti-extension.
+**I. Dead Bug avec câble — 3 × 6/côté** — Repos 45 s — Anti-extension.
 
 ---
 
@@ -200,6 +203,7 @@ Pas de gros travail excentrique jambes.
 - Front Squat 4 × 5 → 4 × 4
 - Hip Thrust 4 × 6 RPE 8, repos 2 min
 - Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %
+- Hang High Pull 4 × 3, repos 2 min
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30
 - Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
@@ -209,7 +213,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5.
-**Vendredi** : Broad Jump 5 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+**Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 **Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, Copenhagen 3 × 5, Suitcase 3 × 20 m.
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine 2 × 8, chop 3 × 6, leg raise 3 × 8, bear crawl 3 × 15 m. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 

@@ -181,6 +181,42 @@ const LIST: ExerciseDef[] = [
     intent: 'Tiens la réception 2 s. Puissance dans le plan frontal.',
   }),
   def({
+    /*
+     * `hang-high-pull` et non `hangHighPull` : tous les identifiants du
+     * catalogue sont en tiret-minuscule, et c'est la clé de douze semaines
+     * d'historique. Un seul identifiant écrit autrement serait la première
+     * chose qu'on oublierait en cherchant un bug.
+     */
+    id: 'hang-high-pull',
+    name: 'Hang High Pull',
+    /*
+     * `hinge` et non `pull` : la puissance vient de l'extension de hanche. Les
+     * bras ne font que finir le geste — et tirer avec eux trop tôt est
+     * justement l'erreur que la consigne ci-dessous vise.
+     */
+    fn: 'hinge',
+    /*
+     * `power` : c'est ce rôle qui fait appliquer la règle de deload des
+     * mouvements explosifs (§8, « volume divisé par 2, intention maximale
+     * conservée ») en semaines 4 et 8, sans rien écrire de spécifique.
+     */
+    role: 'power',
+    /* Injecte la règle §5 — reset entre les reps, arrêt dès que ça ralentit. */
+    explosive: true,
+    measure: 'kg',
+    intent:
+      'Extension explosive hanches-genoux-chevilles, barre proche du corps, tirage jusqu’à hauteur de poitrine environ. Priorité à la vitesse, jamais à la charge.',
+    progressionRule:
+      '+2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.',
+    altBasicFit: 'Aucune nécessaire : une barre olympique et des disques suffisent.',
+    cues: [
+      'Erreur à éviter : tirer avec les bras avant l’extension complète des hanches.',
+      'Erreur à éviter : la barre qui s’éloigne du corps.',
+      'Pas de réception : la barre monte, tu ne passes jamais dessous. Ce n’est pas un hang clean.',
+      'Reset complet entre chaque répétition (barre reposée ou position réinitialisée), 5 à 10 secondes de pause avant la rep suivante — jamais enchaîné en continu.',
+    ],
+  }),
+  def({
     id: 'push-press',
     name: 'Push Press',
     fn: 'push',
