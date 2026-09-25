@@ -312,19 +312,23 @@ Voir section 8 : deadlift mercredi, athlétique vendredi, squat + farmer samedi,
 
 ## 13. Le programme fonctionne si...
 
-| Paramètre | Départ | Cible à 12 semaines |
+| Paramètre | Départ mesuré | Cible à 12 semaines |
 |---|---|---|
-| Deadlift 1RM | 130 | 150-155 kg |
-| Back Squat 1RM | 140 | 150-155 kg |
-| Bench 1RM | 120 | 125-127,5 kg |
-| Tractions lestées 1RM | ≈ +42 | +47,5 kg |
-| Tractions strictes | ≈ 20 | 22-25 |
+| Deadlift 1RM | 140 | 162,5-167,5 kg |
+| Back Squat 1RM | 110 | 117,5-122,5 kg |
+| Bench 1RM | 115 | 120-122,5 kg |
+| Tractions lestées 1RM | +45 | +50 kg |
+| Tractions strictes | 18 | 20-23 |
 | Broad Jump | baseline | +5 à 8 % |
 | Vertical Jump | baseline | +4 à 6 cm |
 | Sprint 10 m | baseline | −2 à 4 % |
 | Farmer Carry 2 × 40 | baseline | +20 % distance |
 | Ab Wheel | baseline | +20-30 % reps |
-| Poids | 78 | 78-81 kg |
+| Poids | 77 | 77-80 kg |
+
+Les départs sont ceux du **combine initial**, pas les estimations d'avant test. Chaque cible garde la progression relative que le programme visait, appliquée au vrai départ : le squat visait +7 à +11 %, le bench +4 à +6 %, les tractions lestées +13 %, le deadlift +15 à +19 %.
+
+**Réserve sur le deadlift** : ces +15 à +19 % avaient été écrits sur un 130 que le programme annonçait lui-même comme sous-estimé. Appliqués aux 140 réels, ils demandent +22,5 à +27,5 kg en douze semaines, ce qui est beaucoup pour un deadlift déjà à ce niveau. La cible est transposée telle quelle par cohérence, mais c'est la seule ligne du tableau à prendre comme une borne haute plutôt que comme un objectif.
 
 **Le vrai critère** : l'écart deadlift − squat. S'il devient nul ou positif, la chaîne postérieure a rattrapé son retard. Si les 1RM montent mais que les sauts stagnent, le programme n'a produit que de la force : demi-échec, le bloc suivant sera orienté vitesse.
 

@@ -7,12 +7,13 @@
  * absent de la séance qu'elle prétend modifier.
  */
 
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BASE_SESSIONS } from './baseSessions';
 import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_POLICY } from './blockRules';
 import { EXERCISES, EXERCISE_IDS } from './exercises';
 import { MAIN_LIFT_TABLE } from './mainLiftTable';
-import { SPECIAL_SESSIONS, RAMPS } from './testSessions';
+import { SPECIAL_SESSIONS, RAMPS, TARGETS_12_WEEKS } from './testSessions';
 import { WARMUPS } from './warmups';
 import { WEEK_BLOCKS, WEEK_DAYS, BLOCKS } from './program';
 import { DAY_LABELS, type DayIndex } from './types';
@@ -322,5 +323,65 @@ describe('échauffements §6', () => {
     expect(new Set(ids).size).toBe(ids.length);
     expect(WARMUPS.lower.items.length).toBe(7);
     expect(WARMUPS.upper.items.length).toBe(6);
+  });
+});
+
+/**
+ * §13 — les cibles à 12 semaines affichées dans l'onglet Combine.
+ *
+ * Rien ne les reliait au .md : elles sont restées sur les estimations d'avant
+ * le combine alors que toutes les charges avaient été recalées. L'écran
+ * annonçait « Back Squat 110 → cible 150-155 kg », soit +40 kg en douze
+ * semaines, pendant que le programme n'en visait que +7 à +11 %.
+ */
+describe('§13 — cibles à 12 semaines', () => {
+  const MD_13 = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  ).split('## 13.')[1]!;
+
+  /** Le départ mesuré au combine initial, tel que Guillaume l'a saisi. */
+  const MESURE: Record<string, number> = {
+    'test-deadlift-1rm': 140,
+    'test-squat-1rm': 110,
+    'test-bench-1rm': 115,
+    'test-weighted-pullup-1rm': 45,
+  };
+
+  const nombres = (t: string): number[] =>
+    [...t.matchAll(/[\d]+(?:,\d+)?/g)].map((m) => Number(m[0]!.replace(',', '.')));
+
+  it('chaque cible du code se retrouve mot pour mot dans le .md', () => {
+    for (const [id, { start, target }] of Object.entries(TARGETS_12_WEEKS)) {
+      if (start === 'référence') continue;
+      expect(MD_13, `${id} — départ`).toContain(start.replace(' kg', ''));
+      expect(MD_13, `${id} — cible`).toContain(target.replace(' kg', ''));
+    }
+  });
+
+  it('les départs sont les 1RM réellement mesurés, pas les estimations', () => {
+    for (const [id, kg] of Object.entries(MESURE)) {
+      expect(nombres(TARGETS_12_WEEKS[id]!.start)[0], id).toBe(kg);
+    }
+    // Les anciennes estimations ne doivent plus figurer nulle part.
+    for (const ancien of ['130 kg', '140 kg', '120 kg', '+42']) {
+      const departs = Object.values(TARGETS_12_WEEKS).map((t) => t.start);
+      if (ancien === '140 kg') continue; // c'est le VRAI deadlift désormais
+      expect(departs, ancien).not.toContain(ancien);
+    }
+  });
+
+  /*
+   * Le garde-fou qui aurait attrapé le défaut : une cible doit rester au-dessus
+   * de son départ, sans lui demander l'impossible. 30 % en douze semaines est
+   * déjà énorme ; l'ancienne cible du squat en demandait 36 %.
+   */
+  it('aucune cible ne demande plus de 30 % de progression', () => {
+    for (const [id, kg] of Object.entries(MESURE)) {
+      const hautes = nombres(TARGETS_12_WEEKS[id]!.target);
+      const haute = hautes[hautes.length - 1]!;
+      expect(haute, `${id} — cible sous le départ`).toBeGreaterThan(kg);
+      expect(haute / kg, `${id} — ${haute} sur ${kg}`).toBeLessThanOrEqual(1.3);
+    }
   });
 });
