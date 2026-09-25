@@ -308,6 +308,17 @@ Poids, Broad Jump, Vertical Jump, sprint, tractions strictes max, Farmer Carry, 
 ### Combine final (semaine 12)
 Voir section 8 : deadlift mercredi, athlétique vendredi, squat + farmer samedi, bench + tractions + tronc dimanche.
 
+Les paliers du test initial ne sont PAS réutilisables : ils avaient été écrits sur des maxima estimés avant le combine, et le combine a donné autre chose. Monter au squat par 100 / 115 / 130 quand le 1RM mesuré vaut 110 fait passer trois séries au-dessus du maximum avant même le premier essai.
+
+Les paliers ci-dessous appliquent au maximum **mesuré** les mêmes rapports de montée que le test initial, arrondis au 2,5 kg. Les essais vont du record personnel à la cible de la section 13.
+
+- **Back Squat 1RM** (mesuré 110) : 47,5×5 / 62,5×3 / 77,5×2 / 90×1 / 102,5×1, puis essais 112,5 / 117,5 / 122,5 si le précédent monte vite.
+- **Bench 1RM** (mesuré 115) : 57,5×5 / 77,5×3 / 90×1 / 102,5×1, puis essais 117,5 / 120 / 122,5 si rapide.
+- **Deadlift 1RM** (mesuré 140) : 65×5 / 85×3 / 107,5×2 / 125×1 / 130×1, puis essais 147,5 / 155 / 162,5 selon vitesse. Le dernier palier du test initial montait à 100 % du maximum supposé : il est ramené à 93 %, un maximum mesuré ne se soulève pas à l'échauffement.
+- **Tractions lestées 1RM** (mesuré +45) : +20×3 / +30×1 / +40×1, puis essais +47,5 / +50 / +52,5 si rapide.
+
+Le 162,5 du deadlift est la borne basse de la cible de la section 13, et déjà +16 % sur douze semaines : c'est un troisième essai, pas un objectif de départ. Le 167,5 du haut de la bande n'est volontairement pas un palier — voir la réserve en section 13.
+
 ---
 
 ## 13. Le programme fonctionne si...

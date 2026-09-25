@@ -261,6 +261,7 @@ function SetEntry({
 }) {
   const plannedReps = plannedRepsOf(ex);
   const measure = measureOf(ex);
+  const showLoad = showsLoadField(ex);
 
   const [editing, setEditing] = useState(false);
   const [reps, setReps] = useState<number>(saved?.actualReps ?? plannedReps ?? 1);
@@ -292,7 +293,11 @@ function SetEntry({
     timer.prime();
     await onSave(ex, {
       setIndex: index,
-      actualKg: kg,
+      /*
+       * Pas de champ, pas de charge : sans ça un saut hériterait de la dernière
+       * charge connue et la traînerait dans l'historique.
+       */
+      actualKg: showLoad ? kg : null,
       actualReps: measure ? null : reps,
       actualRpe: ex.targetRPE ? rpeValue : null,
       measureValue: measure ? value : null,
@@ -338,11 +343,11 @@ function SetEntry({
     );
   }
 
-  // Trois champs au maximum — reps/mesure, charge, RPE. La charge est
-  // toujours là, donc au minimum deux. Dès qu'il y en a un nombre impair, le
-  // dernier prend toute la largeur pour que les boutons gardent leurs 48 px.
+  // Trois champs au maximum — reps/mesure, charge, RPE. Dès qu'il y en a un
+  // nombre impair, le dernier prend toute la largeur pour que les boutons
+  // gardent leurs 48 px.
   const hasRpe = ex.targetRPE !== null;
-  const count = 2 + (hasRpe ? 1 : 0);
+  const count = (showLoad ? 2 : 1) + (hasRpe ? 1 : 0);
   const wide = (position: number) => (count % 2 === 1 && position === count ? styles.stepperWide : '');
 
   return (
@@ -375,26 +380,28 @@ function SetEntry({
             )}
           </div>
 
-          <div className={wide(2)}>
-            <Stepper
-              label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
-              value={kg}
-              emptyLabel={entry.emptyLabel}
-              step={entry.step}
-              min={KG_MIN}
-              max={KG_MAX}
-              unit="kg"
-              onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
-              /*
-               * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper
-               * rend la chaîne brute : c'est `parseKg` qui décide, et sa règle
-               * est « en cas de doute, on garde ce qu'il y avait ». Une faute
-               * de frappe ne doit jamais écrire un NaN ni un 0 dans
-               * l'historique — un 0 passerait pour une série faite à vide.
-               */
-              onCommitText={(brut: string) => setKg((v) => parseKg(brut, v))}
-            />
-          </div>
+          {showLoad && (
+            <div className={wide(2)}>
+              <Stepper
+                label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
+                value={kg}
+                emptyLabel={entry.emptyLabel}
+                step={entry.step}
+                min={KG_MIN}
+                max={KG_MAX}
+                unit="kg"
+                onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
+                /*
+                 * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper
+                 * rend la chaîne brute : c'est `parseKg` qui décide, et sa règle
+                 * est « en cas de doute, on garde ce qu'il y avait ». Une faute
+                 * de frappe ne doit jamais écrire un NaN ni un 0 dans
+                 * l'historique — un 0 passerait pour une série faite à vide.
+                 */
+                onCommitText={(brut: string) => setKg((v) => parseKg(brut, v))}
+              />
+            </div>
+          )}
 
           {hasRpe && (
             <div className={wide(count)}>
@@ -453,12 +460,42 @@ function plannedRepsOf(ex: ResolvedExercise): number | null {
   return typeof r === 'number' ? r : r.max;
 }
 
-function measureOf(ex: ResolvedExercise): (typeof MEASURE)[keyof typeof MEASURE] | null {
+/**
+ * Mesures qui remplacent le compte de reps : une distance, un temps.
+ *
+ * `kg` n'en fait pas partie — une charge se note dans le champ de charge, pas
+ * une deuxième fois à côté.
+ */
+const MESURE_CHIFFREE = new Set(['cm', 'm', 's']);
+
+export function measureOf(ex: ResolvedExercise): (typeof MEASURE)[keyof typeof MEASURE] | null {
   if (ex.work.kind === 'distance') return MEASURE.m;
-  if (ex.def.role !== 'test' && !ex.def.measure) return null;
-  if (ex.def.role !== 'test') return null;
+  /*
+   * Un saut se note par sa distance, et pas seulement en semaine de combine.
+   * Un « 5 × 2 » de Broad Jump sans champ de distance ne garde rien de la
+   * séance : c'est le seul chiffre qui progresse d'une semaine à l'autre.
+   */
   const m = ex.def.measure;
+  if (m && MESURE_CHIFFREE.has(m)) return MEASURE[m];
+  if (ex.def.role !== 'test') return null;
   return m ? MEASURE[m] : MEASURE.reps;
+}
+
+/**
+ * Le champ de charge a-t-il un sens sur cet exercice ?
+ *
+ * Il est là partout ailleurs, y compris au poids du corps, où il sert à noter
+ * un lest. Mais sur un saut ou un sprint il n'y a rien à lester et rien à
+ * porter : « PDC » y prend la moitié de la ligne pour ne jamais rien dire,
+ * alors que la distance, elle, est la seule valeur de la séance.
+ *
+ * Un porté garde ses deux champs : sa charge existe (`shape` vaut `dbPair`) et
+ * sa distance aussi.
+ */
+export function showsLoadField(ex: ResolvedExercise): boolean {
+  if (ex.load.shape !== 'none') return true;
+  const m = ex.def.measure;
+  return !(m !== undefined && MESURE_CHIFFREE.has(m));
 }
 
 /** Reprend la ligne de charge en tenant compte d'une charge ajustée. */

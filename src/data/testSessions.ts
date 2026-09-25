@@ -61,6 +61,27 @@ import {
 const w = (kg: number, r: number): RampStep => ({ kg, reps: r });
 const a = (kg: number, optional = false): RampStep => ({ kg, reps: 1, attempt: true, optional });
 
+/*
+ * Deux jeux de paliers, et c'est volontaire.
+ *
+ * Ceux du test INITIAL sont ceux du §12, transcrits tels quels. Ils avaient été
+ * écrits sur des maxima estimés avant le combine — un squat supposé à 140, un
+ * deadlift à 130. Ce sont les paliers qui ont réellement été montés ce jour-là :
+ * les réécrire après coup reviendrait à réécrire la séance qui a produit les
+ * mesures.
+ *
+ * Ceux du test FINAL sont recalculés sur les maxima MESURÉS. Réutiliser les
+ * premiers en semaine 12 ferait monter le squat par 100 / 115 / 130 pour un 1RM
+ * mesuré à 110 : trois séries au-dessus du maximum avant le premier essai.
+ * C'est ce que faisait l'appli jusqu'ici.
+ *
+ * Méthode, identique à celle du §9 et du §13 : les mêmes rapports de montée que
+ * le §12, appliqués au maximum mesuré, arrondis au 2,5 kg. Les essais vont du
+ * record personnel à la cible du §13.
+ */
+
+// --- Test initial (§12) — maxima estimés d'avant combine ---------------------
+
 /** « 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 142,5 / 147,5 si rapide » */
 export const RAMP_SQUAT: RampStep[] = [
   w(60, 5), w(80, 3), w(100, 2), w(115, 1), w(130, 1), a(142.5), a(147.5, true),
@@ -90,6 +111,59 @@ export const RAMPS = {
   'bench-press': RAMP_BENCH,
   deadlift: RAMP_DEADLIFT,
   'weighted-pullup': RAMP_PULLUP,
+} as const;
+
+// --- Test final (semaine 12) — maxima mesurés au combine ---------------------
+
+/** Les 1RM du combine initial. Ce sont eux qui calibrent les paliers ci-dessous. */
+export const MESURES_COMBINE = {
+  'back-squat': 110,
+  'bench-press': 115,
+  deadlift: 140,
+  'weighted-pullup': 45,
+} as const;
+
+/** 110 mesuré → essais 112,5 (record) / 117,5 / 122,5 (cible §13). */
+export const RAMP_SQUAT_S12: RampStep[] = [
+  w(47.5, 5), w(62.5, 3), w(77.5, 2), w(90, 1), w(102.5, 1), a(112.5), a(117.5, true), a(122.5, true),
+];
+
+/** 115 mesuré → essais 117,5 (record) / 120 / 122,5 (cible §13). */
+export const RAMP_BENCH_S12: RampStep[] = [
+  w(57.5, 5), w(77.5, 3), w(90, 1), w(102.5, 1), a(117.5), a(120, true), a(122.5, true),
+];
+
+/**
+ * 140 mesuré → essais 147,5 / 155 / 162,5.
+ *
+ * Le §12 finissait son échauffement à 130, soit 100 % du maximum supposé —
+ * l'auteur compensait un 130 qu'il annonçait lui-même comme sous-estimé. Le
+ * combine a donné 140 : le dernier palier revient à 93 %, parce qu'un maximum
+ * mesuré ne se soulève pas à l'échauffement.
+ *
+ * Le 162,5 est la borne BASSE de la cible §13, déjà +16 % en douze semaines.
+ * C'est un troisième essai, pas un objectif. Le 167,5 du haut de la bande n'est
+ * volontairement pas un palier — voir la réserve sur TARGETS_12_WEEKS.
+ */
+export const RAMP_DEADLIFT_S12: RampStep[] = [
+  w(65, 5), w(85, 3), w(107.5, 2), w(125, 1), w(130, 1), a(147.5), a(155, true), a(162.5, true),
+];
+
+/** +45 mesuré → essais +47,5 (record) / +50 (cible §13) / +52,5. */
+export const RAMP_PULLUP_S12: RampStep[] = [
+  { kg: 20, reps: 3, added: true },
+  { kg: 30, reps: 1, added: true },
+  { kg: 40, reps: 1, added: true },
+  { kg: 47.5, reps: 1, added: true, attempt: true },
+  { kg: 50, reps: 1, added: true, attempt: true, optional: true },
+  { kg: 52.5, reps: 1, added: true, attempt: true, optional: true },
+];
+
+export const RAMPS_S12 = {
+  'back-squat': RAMP_SQUAT_S12,
+  'bench-press': RAMP_BENCH_S12,
+  deadlift: RAMP_DEADLIFT_S12,
+  'weighted-pullup': RAMP_PULLUP_S12,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -325,7 +399,7 @@ const S12_MERCREDI: SessionBlueprint = {
     'Rien d’autre aujourd’hui.',
     'Les paliers affichés sont ceux du test initial : au-delà de 147,5 kg, monte à la sensation et à la vitesse de barre.',
   ],
-  slots: [oneRM('test-deadlift-1rm', RAMP_DEADLIFT, 'Si la barre ralentit franchement, c’est le max.')],
+  slots: [oneRM('test-deadlift-1rm', RAMP_DEADLIFT_S12, 'Si la barre ralentit franchement, c’est le max.')],
 };
 
 const S12_VENDREDI: SessionBlueprint = {
@@ -359,7 +433,7 @@ const S12_SAMEDI: SessionBlueprint = {
   readinessTest: true,
   notes: ['Un squat propre à 152,5 vaut plus qu’un grinder hideux à 160.'],
   slots: [
-    oneRM('test-squat-1rm', RAMP_SQUAT),
+    oneRM('test-squat-1rm', RAMP_SQUAT_S12),
     t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max sans poser.'),
   ],
 };
@@ -373,8 +447,8 @@ const S12_DIMANCHE: SessionBlueprint = {
   readinessTest: false,
   notes: ['Dernière séance du programme. Note tout.'],
   slots: [
-    oneRM('test-bench-1rm', RAMP_BENCH),
-    oneRM('test-weighted-pullup-1rm', RAMP_PULLUP, 'Repos 4 min. Dead hang, menton franchement au-dessus.'),
+    oneRM('test-bench-1rm', RAMP_BENCH_S12),
+    oneRM('test-weighted-pullup-1rm', RAMP_PULLUP_S12, 'Repos 4 min. Dead hang, menton franchement au-dessus.'),
     t('test-ab-wheel-max', maxSet(), 0, 'Arrêt à la perte de rétroversion.'),
   ],
 };
