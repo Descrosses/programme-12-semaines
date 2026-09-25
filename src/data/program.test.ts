@@ -13,7 +13,14 @@ import { BASE_SESSIONS } from './baseSessions';
 import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_POLICY } from './blockRules';
 import { EXERCISES, EXERCISE_IDS } from './exercises';
 import { MAIN_LIFT_TABLE } from './mainLiftTable';
-import { SPECIAL_SESSIONS, RAMPS, TARGETS_12_WEEKS } from './testSessions';
+import {
+  COMBINE_METRICS,
+  SPECIAL_SESSIONS,
+  MESURES_COMBINE,
+  RAMPS,
+  RAMPS_S12,
+  TARGETS_12_WEEKS,
+} from './testSessions';
 import { WARMUPS } from './warmups';
 import { WEEK_BLOCKS, WEEK_DAYS, BLOCKS } from './program';
 import { DAY_LABELS, type DayIndex } from './types';
@@ -264,11 +271,90 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
   });
 
   it('les paliers de montée de charge sont croissants', () => {
-    for (const [lift, ramp] of Object.entries(RAMPS)) {
-      for (let i = 1; i < ramp.length; i++) {
-        expect(ramp[i]!.kg, `${lift} palier ${i}`).toBeGreaterThan(ramp[i - 1]!.kg);
+    for (const jeu of [RAMPS, RAMPS_S12]) {
+      for (const [lift, ramp] of Object.entries(jeu)) {
+        for (let i = 1; i < ramp.length; i++) {
+          expect(ramp[i]!.kg, `${lift} palier ${i}`).toBeGreaterThan(ramp[i - 1]!.kg);
+        }
       }
     }
+  });
+});
+
+/**
+ * §12 — les paliers du test final sont calés sur les maxima MESURÉS.
+ *
+ * L'appli réutilisait en semaine 12 les paliers du test initial. Ceux-là
+ * avaient été écrits sur un squat supposé à 140 : pour un 1RM mesuré à 110,
+ * l'échauffement montait à 100, 115 puis 130 kg — trois séries au-dessus du
+ * maximum avant le premier essai. Ces tests échouent si ces paliers reviennent.
+ */
+describe('§12 — paliers du test final', () => {
+  const md = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
+
+  it('aucun échauffement n’atteint le 1RM mesuré', () => {
+    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+      const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
+      for (const step of ramp.filter((r) => !r.attempt)) {
+        expect(step.kg, `${lift} — échauffement à ${step.kg} pour un max de ${max}`).toBeLessThan(
+          max,
+        );
+      }
+    }
+  });
+
+  it('le dernier échauffement reste sous 95 % du maximum mesuré', () => {
+    // Un maximum mesuré ne se soulève pas à l'échauffement. Le §12 finissait à
+    // 130 pour un deadlift annoncé à 130, soit 100 % : c'était une compensation
+    // d'un chiffre que son auteur savait faux, pas un palier.
+    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+      const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
+      const dernier = [...ramp].reverse().find((r) => !r.attempt)!;
+      expect(dernier.kg / max, `${lift} — dernier échauffement`).toBeLessThanOrEqual(0.95);
+    }
+  });
+
+  it('chaque premier essai dépasse le maximum mesuré', () => {
+    // Un test de 1RM qui n'ouvre pas au-dessus du record ne peut rien prouver.
+    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+      const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
+      const premier = ramp.find((r) => r.attempt)!;
+      expect(premier.kg, `${lift} — premier essai`).toBeGreaterThan(max);
+    }
+  });
+
+  it('le dernier essai atteint la cible du §13, sans la dépasser', () => {
+    // C'est ce qui relie les deux tableaux : la cible annoncée dans Combine doit
+    // être atteignable par un essai du protocole, sinon elle n'est qu'un chiffre.
+    const CIBLE_BASSE: Record<string, number> = {
+      'back-squat': 117.5,
+      'bench-press': 120,
+      deadlift: 162.5,
+      'weighted-pullup': 50,
+    };
+    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+      const essais = ramp.filter((r) => r.attempt).map((r) => r.kg);
+      expect(Math.max(...essais), `${lift} — le protocole n’atteint pas la cible §13`)
+        .toBeGreaterThanOrEqual(CIBLE_BASSE[lift]!);
+    }
+  });
+
+  it('les paliers du test initial restent ceux du .md, intacts', () => {
+    // Ils décrivent la séance qui a réellement été montée ce jour-là. La
+    // réécrire après coup reviendrait à réécrire ce qui a produit les mesures.
+    expect(RAMPS['back-squat'].map((r) => r.kg)).toEqual([60, 80, 100, 115, 130, 142.5, 147.5]);
+    expect(md).toContain('60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 142,5 / 147,5 si rapide');
+  });
+
+  it('les paliers du test final sont écrits dans le .md', () => {
+    const fr = (n: number) => String(n).replace('.', ',');
+    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+      for (const step of ramp) {
+        expect(md, `${lift} — palier ${step.kg} absent du §12`).toContain(fr(step.kg));
+      }
+    }
+    expect(md).toContain('47,5×5 / 62,5×3 / 77,5×2 / 90×1 / 102,5×1');
+    expect(md).toContain('65×5 / 85×3 / 107,5×2 / 125×1 / 130×1');
   });
 });
 
@@ -382,6 +468,30 @@ describe('§13 — cibles à 12 semaines', () => {
       const haute = hautes[hautes.length - 1]!;
       expect(haute, `${id} — cible sous le départ`).toBeGreaterThan(kg);
       expect(haute / kg, `${id} — ${haute} sur ${kg}`).toBeLessThanOrEqual(1.3);
+    }
+  });
+});
+
+/**
+ * Le lien entre une mesure du combine et sa colonne de charges.
+ *
+ * Il était déduit du nom : « test-squat-1rm » → « squat ». La colonne du §9
+ * s'appelle « back-squat », et celle du bench « bench-press » : les paliers de
+ * ces deux mouvements ne s'affichaient nulle part, sans aucune erreur.
+ */
+describe('chaque test de 1RM trouve ses paliers', () => {
+  it('les quatre mesures en -1rm ont un jeu de paliers, initial et final', () => {
+    const CLE: Record<string, keyof typeof RAMPS> = {
+      'test-squat-1rm': 'back-squat',
+      'test-bench-1rm': 'bench-press',
+      'test-deadlift-1rm': 'deadlift',
+      'test-weighted-pullup-1rm': 'weighted-pullup',
+    };
+    const mesures1RM = COMBINE_METRICS.filter((m) => m.endsWith('-1rm'));
+    expect([...mesures1RM].sort()).toEqual(Object.keys(CLE).sort());
+    for (const m of mesures1RM) {
+      expect(RAMPS[CLE[m]!], `${m} — paliers initiaux`).toBeDefined();
+      expect(RAMPS_S12[CLE[m]!], `${m} — paliers finaux`).toBeDefined();
     }
   });
 });

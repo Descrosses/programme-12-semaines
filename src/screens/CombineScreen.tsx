@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
 import { EXERCISES } from '../data/exercises';
-import { COMBINE_METRICS, COMBINE_S8_METRICS, RAMPS, TARGETS_12_WEEKS } from '../data/testSessions';
+import {
+  COMBINE_METRICS,
+  COMBINE_S8_METRICS,
+  RAMPS,
+  RAMPS_S12,
+  TARGETS_12_WEEKS,
+} from '../data/testSessions';
 import { fr } from '../engine/format';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
 import type { CombinePhase, CombineRow } from '../db/db';
@@ -28,6 +34,21 @@ const MEASURE = {
   kg: { step: 2.5, min: 0, max: 300, unit: 'kg' },
   reps: { step: 1, min: 0, max: 60, unit: 'reps' },
 } as const;
+
+/**
+ * De la mesure du combine vers la colonne du tableau de charges.
+ *
+ * La correspondance est écrite, pas déduite : « test-squat-1rm » donnait
+ * « squat » en retirant les affixes, alors que la colonne s'appelle
+ * « back-squat ». Les paliers du squat et du bench ne s'affichaient donc
+ * jamais — sans erreur, juste rien.
+ */
+const RAMP_KEY: Record<string, keyof typeof RAMPS | undefined> = {
+  'test-squat-1rm': 'back-squat',
+  'test-bench-1rm': 'bench-press',
+  'test-deadlift-1rm': 'deadlift',
+  'test-weighted-pullup-1rm': 'weighted-pullup',
+};
 
 /** Un temps de sprint plus bas est meilleur : la flèche doit s'inverser. */
 const LOWER_IS_BETTER = new Set(['test-sprint-10m', 'test-sprint-20m']);
@@ -178,7 +199,13 @@ export function CombineScreen() {
         const def = EXERCISES[id];
         if (!def) return null;
         const cfg = MEASURE[def.measure ?? 'reps'];
-        const ramp = RAMPS[id.replace('test-', '').replace('-1rm', '') as keyof typeof RAMPS];
+        /*
+         * Les paliers du test final ne sont pas ceux du test initial : ils sont
+         * calculés sur les maxima mesurés ce jour-là. Montrer ceux du §12 en
+         * semaine 12 ferait monter le squat à 130 pour un 1RM de 110.
+         */
+        const cle = RAMP_KEY[id];
+        const ramp = cle ? (phase === 'final' ? RAMPS_S12 : RAMPS)[cle] : undefined;
         return (
           <section key={id} className={styles.card}>
             <h3 className={styles.cardTitle}>{def.name}</h3>
