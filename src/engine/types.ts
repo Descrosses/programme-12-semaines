@@ -64,6 +64,15 @@ export interface Occurrence {
   targetRPE: RPETarget | null;
   /** Au moins une série validée. Une séance sautée ne produit pas d'occurrence. */
   completed: boolean;
+  /**
+   * Meilleure mesure de la semaine pour un mouvement qui ne se compte pas en
+   * kilos : distance d'un saut en cm, d'un porté en m, temps d'un sprint en s.
+   *
+   * Absent sur les mouvements chargés, et absent des anciennes données : c'est
+   * `buildHistoryIndex` qui le remplit, depuis les mêmes séries que le reste.
+   * `applyProgression` l'ignore — §11 ne parle que de kilos.
+   */
+  measure?: number | null;
 }
 
 /** Historique indexé par exercice, occurrences triées par semaine croissante. */
