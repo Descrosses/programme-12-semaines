@@ -136,11 +136,17 @@ describe('un champ de charge sur CHAQUE exercice du programme', () => {
 
 describe('une charge saisie en S1 est reproposée en S2', () => {
   /** Historique minimal : une occurrence complétée à la charge donnée. */
-  const historique = (exerciseId: string, week: number, kg: number): HistoryIndex => ({
+  const historique = (
+    exerciseId: string,
+    week: number,
+    kg: number,
+    day: DayIndex = 4,
+  ): HistoryIndex => ({
     [exerciseId]: [
       {
         exerciseId,
         week,
+        day,
         kg,
         plannedKg: null,
         rpe: 6,

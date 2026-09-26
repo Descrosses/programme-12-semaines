@@ -28,6 +28,7 @@
 
 import { fr } from './format';
 import type { Occurrence } from './types';
+import type { DayIndex } from '../data/types';
 
 /**
  * Mesures où un chiffre plus BAS est meilleur.
@@ -43,6 +44,17 @@ export function lowerIsBetter(exerciseId: string): boolean {
 }
 
 export type Trend = 'up' | 'flat' | 'down';
+
+/** Une séance : c'est le couple qui identifie une occurrence, pas la semaine. */
+export interface Seance {
+  week: number;
+  day: DayIndex;
+}
+
+/** `a` vient-elle strictement avant `b` dans le programme ? */
+function estAvant(a: Seance, b: Seance): boolean {
+  return a.week !== b.week ? a.week < b.week : a.day < b.day;
+}
 
 export interface LastPerformance {
   /** Semaine de la dernière occurrence réelle. */
@@ -76,20 +88,27 @@ interface Champ {
  */
 export function lastPerformance(
   occurrences: Occurrence[] | undefined,
-  opts: { exerciseId: string; measureUnit?: string | null; before: number },
+  opts: { exerciseId: string; measureUnit?: string | null; before: Seance },
 ): LastPerformance | null {
   /*
-   * On s'arrête AVANT la semaine en cours. Sans ça, dès la première série
-   * validée du jour, l'encart afficherait « Semaine 3 » en parlant de la série
-   * que Guillaume vient de faire — il veut savoir ce qu'il avait fait LA
-   * DERNIÈRE FOIS.
+   * On s'arrête à la SÉANCE en cours, pas à la semaine.
+   *
+   * Il faut bien s'arrêter quelque part : l'historique est reconstruit à
+   * chaque série validée, donc dès la première série du jour, la séance en
+   * cours y entre — et l'encart afficherait « Semaine 3 » en parlant de la
+   * série que Guillaume vient de faire sous ses yeux.
+   *
+   * Mais exclure la semaine ENTIÈRE excluait trop : le Broad Jump du samedi
+   * ne voyait plus celui du vendredi, deux jours plus tôt, et l'encart
+   * disparaissait complètement. C'était le bug. On exclut donc exactement la
+   * séance en cours et ce qui vient après, rien de plus.
    *
    * Pas de filtre sur `completed` : ce champ vaut `false` sur les mouvements
    * mesurés, parce qu'un saut n'enregistre pas de reps. Le vrai critère est
    * qu'il y ait une valeur à montrer, et c'est celui qu'on applique plus bas.
    * Une séance sautée ne produit aucune ligne, donc aucune occurrence.
    */
-  const faites = (occurrences ?? []).filter((o) => o.week < opts.before);
+  const faites = (occurrences ?? []).filter((o) => estAvant(o, opts.before));
   if (faites.length === 0) return null;
 
   const derniere = faites[faites.length - 1]!;

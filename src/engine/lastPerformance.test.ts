@@ -11,11 +11,18 @@
 import { describe, expect, it } from 'vitest';
 import { lastPerformance } from './lastPerformance';
 import type { Occurrence } from './types';
+import type { DayIndex } from '../data/types';
 
 /** Une occurrence chargée : ce que Guillaume a réellement soulevé. */
-const kg = (week: number, k: number | null, rpe: number | null = null): Occurrence => ({
+const kg = (
+  week: number,
+  k: number | null,
+  rpe: number | null = null,
+  day: DayIndex = 0,
+): Occurrence => ({
   exerciseId: 'back-squat',
   week,
+  day,
   kg: k,
   plannedKg: 999, // volontairement absurde : le plan ne doit JAMAIS s'afficher
   rpe,
@@ -25,9 +32,15 @@ const kg = (week: number, k: number | null, rpe: number | null = null): Occurren
 });
 
 /** Une occurrence mesurée : un saut, un sprint, un porté. */
-const mes = (week: number, m: number | null, exerciseId = 'broad-jump'): Occurrence => ({
+const mes = (
+  week: number,
+  m: number | null,
+  exerciseId = 'broad-jump',
+  day: DayIndex = 4,
+): Occurrence => ({
   exerciseId,
   week,
+  day,
   kg: null,
   plannedKg: null,
   rpe: null,
@@ -39,10 +52,16 @@ const mes = (week: number, m: number | null, exerciseId = 'broad-jump'): Occurre
   measure: m,
 });
 
-const squat = (occ: Occurrence[] | undefined, before: number) =>
-  lastPerformance(occ, { exerciseId: 'back-squat', before });
-const saut = (occ: Occurrence[], before: number, unit = 'cm', id = 'broad-jump') =>
-  lastPerformance(occ, { exerciseId: id, measureUnit: unit, before });
+/** Le squat se fait le lundi ; « before » est la séance, pas la semaine. */
+const squat = (occ: Occurrence[] | undefined, week: number, day: DayIndex = 0) =>
+  lastPerformance(occ, { exerciseId: 'back-squat', before: { week, day } });
+const saut = (
+  occ: Occurrence[],
+  week: number,
+  unit = 'cm',
+  id = 'broad-jump',
+  day: DayIndex = 4,
+) => lastPerformance(occ, { exerciseId: id, measureUnit: unit, before: { week, day } });
 
 describe('les mouvements chargés', () => {
   it('affiche la charge et le RPE réellement saisis', () => {
@@ -128,7 +147,9 @@ describe('les sauts, sprints et portés', () => {
 
   it('sans unité de mesure connue, on ne montre rien', () => {
     // Un chiffre sans unité ne veut rien dire : mieux vaut se taire.
-    expect(lastPerformance([mes(1, 230)], { exerciseId: 'broad-jump', before: 3 })).toBeNull();
+    expect(
+      lastPerformance([mes(1, 230)], { exerciseId: 'broad-jump', before: { week: 3, day: 4 } }),
+    ).toBeNull();
   });
 });
 
@@ -176,5 +197,66 @@ describe('« la dernière fois » n’est pas aujourd’hui', () => {
     const p = squat([kg(1, 77.5), kg(2, null), kg(5, 85)], 6)!;
     expect(p.week).toBe(5);
     expect(p.delta).toBe('+7,5 kg');
+  });
+});
+
+/**
+ * Le bug du Broad Jump : vendredi le voyait, samedi non.
+ *
+ * Le Broad Jump est le SEUL mouvement du programme qui revient deux fois dans
+ * la même semaine — 5 × 2 le vendredi, 3 × 2 le samedi en potentiation du
+ * deadlift. Le même identifiant dans les deux cas : ce n'était pas là le
+ * problème.
+ *
+ * Le problème était la granularité de l'historique. Une occurrence valait une
+ * SEMAINE, donc les deux séances n'en faisaient qu'une ; et comme l'encart
+ * exclut la semaine en cours pour ne pas se montrer à lui-même, le saut du
+ * vendredi partait avec. Résultat : aucun encart le samedi.
+ */
+describe('un mouvement qui revient deux fois dans la semaine', () => {
+  const VEN = 4 as DayIndex;
+  const SAM = 5 as DayIndex;
+
+  it('le samedi voit le saut du vendredi de la MÊME semaine', () => {
+    const p = saut([mes(2, 265, 'broad-jump', VEN)], 2, 'cm', 'broad-jump', SAM)!;
+    expect(p.week).toBe(2);
+    expect(p.value).toBe('265 cm');
+  });
+
+  it('le vendredi, lui, ne se voit pas lui-même', () => {
+    // C'est la raison d'être de l'exclusion : sans elle, l'encart afficherait
+    // la série que Guillaume vient de valider sous ses yeux.
+    expect(saut([mes(2, 265, 'broad-jump', VEN)], 2, 'cm', 'broad-jump', VEN)).toBeNull();
+  });
+
+  it('et il compare bien deux séances, pas deux semaines', () => {
+    const p = saut(
+      [mes(2, 250, 'broad-jump', VEN), mes(2, 265, 'broad-jump', SAM)],
+      3,
+      'cm',
+      'broad-jump',
+      VEN,
+    )!;
+    // La dernière séance est celle du samedi, et l'écart se lit depuis vendredi.
+    expect(p.value).toBe('265 cm');
+    expect(p.delta).toBe('+15 cm');
+  });
+
+  it('le samedi de la semaine suivante remonte au samedi précédent, pas au vendredi', () => {
+    const p = saut(
+      [
+        mes(2, 250, 'broad-jump', VEN),
+        mes(2, 260, 'broad-jump', SAM),
+        mes(3, 270, 'broad-jump', VEN),
+      ],
+      3,
+      'cm',
+      'broad-jump',
+      SAM,
+    )!;
+    // Vendredi de la semaine 3 est la dernière séance avant samedi 3.
+    expect(p.week).toBe(3);
+    expect(p.value).toBe('270 cm');
+    expect(p.delta).toBe('+10 cm');
   });
 });

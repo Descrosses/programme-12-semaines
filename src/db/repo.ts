@@ -516,22 +516,37 @@ export async function photoUsage(): Promise<PhotoUsage> {
  * la difficulté réelle) et le moindre échec.
  */
 export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
-  const byExerciseWeek = new Map<string, Map<number, SetRow[]>>();
+  /*
+   * Groupé par SÉANCE — semaine ET jour — et non par semaine seule.
+   *
+   * Un seul mouvement du programme revient deux fois dans la même semaine : le
+   * Broad Jump, vendredi puis samedi. Groupées par semaine, ces deux séances
+   * n'en faisaient qu'une, et le saut du vendredi devenait invisible depuis le
+   * samedi. Pour les quarante autres exercices, qui n'apparaissent qu'un jour
+   * par semaine, le regroupement est identique au précédent — un test le
+   * vérifie plutôt que de le supposer.
+   */
+  const parSeance = new Map<string, Map<string, SetRow[]>>();
 
   for (const s of sets) {
     if (s.actualReps === null && s.actualKg === null && s.actualRpe === null && s.measureValue == null)
       continue;
-    let weeks = byExerciseWeek.get(s.exerciseId);
-    if (!weeks) byExerciseWeek.set(s.exerciseId, (weeks = new Map()));
-    const list = weeks.get(s.week);
+    let seances = parSeance.get(s.exerciseId);
+    if (!seances) parSeance.set(s.exerciseId, (seances = new Map()));
+    const cle = `${s.week}/${s.day}`;
+    const list = seances.get(cle);
     if (list) list.push(s);
-    else weeks.set(s.week, [s]);
+    else seances.set(cle, [s]);
   }
 
   const index: HistoryIndex = {};
-  for (const [exerciseId, weeks] of byExerciseWeek) {
+  for (const [exerciseId, seances] of parSeance) {
     const occurrences: Occurrence[] = [];
-    for (const [week, rows] of [...weeks.entries()].sort((a, b) => a[0] - b[0])) {
+    const triees = [...seances.values()].sort((a, b) =>
+      a[0]!.week !== b[0]!.week ? a[0]!.week - b[0]!.week : a[0]!.day - b[0]!.day,
+    );
+    for (const rows of triees) {
+      const week = rows[0]!.week;
       const kgs = rows.map((r) => r.actualKg).filter((k): k is number => k !== null);
       const rpes = rows.map((r) => r.actualRpe).filter((r): r is number => r !== null);
       /*
@@ -553,6 +568,7 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
       occurrences.push({
         exerciseId,
         week,
+        day: first.day,
         kg: kgs.length ? Math.max(...kgs) : null,
         plannedKg: first.plannedKg,
         rpe: rpes.length ? Math.max(...rpes) : null,

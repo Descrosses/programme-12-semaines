@@ -197,6 +197,7 @@ describe('bloc puissance (S9-11) — contraste', () => {
       {
         exerciseId: 'back-squat',
         week: 7,
+        day: 0,
         kg: 97.5,
         plannedKg: 97.5,
         rpe: 6,
@@ -227,6 +228,7 @@ describe('deload (S4) — §8', () => {
       {
         exerciseId: 'hip-thrust',
         week: 3,
+        day: 0,
         kg: 120,
         plannedKg: 100,
         rpe: 7,
@@ -353,6 +355,7 @@ describe('readiness ORANGE', () => {
       {
         exerciseId: 'back-squat',
         week: 4,
+        day: 0,
         kg: 70,
         plannedKg: 70,
         rpe: 3,
