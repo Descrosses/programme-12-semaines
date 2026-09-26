@@ -51,6 +51,19 @@ export interface SetRecord {
 export interface Occurrence {
   exerciseId: string;
   week: number;
+  /**
+   * Jour de la séance.
+   *
+   * Une occurrence est une SÉANCE, pas une semaine. La nuance n'a l'air de
+   * rien parce qu'un seul mouvement du programme revient deux fois dans la
+   * même semaine — le Broad Jump, vendredi puis samedi. Sans le jour, ces deux
+   * séances se confondaient en une seule ligne, et le saut du vendredi
+   * devenait invisible depuis le samedi.
+   *
+   * Pour les quarante autres exercices, qui n'apparaissent qu'un jour par
+   * semaine, ce champ ne change strictement rien : une semaine = une séance.
+   */
+  day: DayIndex;
   kg: number | null;
   /**
    * Charge que le plan annonçait ce jour-là. La différence `kg − plannedKg`

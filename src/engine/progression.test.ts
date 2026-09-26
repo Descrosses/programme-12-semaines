@@ -20,6 +20,7 @@ function occ(
   return {
     exerciseId: 'back-squat',
     week,
+    day: 0,
     kg,
     plannedKg: kg,
     rpe: actualRpe,

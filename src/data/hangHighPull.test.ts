@@ -249,6 +249,7 @@ describe('la charge est autonome — aucun 1RM d’un autre mouvement', () => {
           {
             exerciseId: ID,
             week: 1,
+            day: VENDREDI,
             kg: 45,
             plannedKg: 40,
             rpe: null,

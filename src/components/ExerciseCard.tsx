@@ -9,6 +9,7 @@ import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
 import type { Occurrence } from '../engine/types';
+import type { DayIndex } from '../data/types';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -126,7 +127,7 @@ export function ExerciseCard({
         ))}
       </div>
 
-      <LastTime ex={ex} history={history} week={note.week} />
+      <LastTime ex={ex} history={history} seance={{ week: note.week, day: note.day }} />
 
       {media && (
         <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />
@@ -284,16 +285,16 @@ export function ExerciseCard({
 function LastTime({
   ex,
   history,
-  week,
+  seance,
 }: {
   ex: ResolvedExercise;
   history: Occurrence[] | undefined;
-  week: number;
+  seance: { week: number; day: DayIndex };
 }) {
   const perf = lastPerformance(history, {
     exerciseId: ex.id,
     measureUnit: measureOf(ex)?.unit ?? null,
-    before: week,
+    before: seance,
   });
   if (perf === null) return null;
 
