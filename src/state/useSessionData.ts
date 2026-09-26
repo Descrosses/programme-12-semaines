@@ -9,7 +9,7 @@ import { dateFor } from '../engine/calendar';
 import { getSession as buildSession, type ResolvedSession } from '../engine/getSession';
 import { readiness as computeReadiness } from '../engine/readiness';
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
-import type { ReadinessResult } from '../engine/types';
+import type { HistoryIndex, ReadinessResult } from '../engine/types';
 import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
 import {
   allReadiness,
@@ -29,6 +29,12 @@ export interface SessionData {
   row: SessionRow | null;
   /** Séries déjà enregistrées, groupées par exercice. */
   savedSets: Record<string, SetRow[]>;
+  /**
+   * Les occurrences réelles des 12 semaines, déjà construites ici pour §11.
+   * L'encart « la dernière fois » lit la MÊME chose : une seule requête, une
+   * seule vérité. Deux sources finiraient par se contredire.
+   */
+  history: HistoryIndex;
   readinessRow: ReadinessRow | null;
   readiness: ReadinessResult | null;
   baselineCm: number | null;
@@ -86,6 +92,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       baselineCm: settings.broadJumpBaselineCm,
       trend,
       date,
+      history,
     });
   }, [week, day]);
 
@@ -108,5 +115,6 @@ function empty(): Omit<SessionData, 'reload'> {
     baselineCm: null,
     trend: { declining: false, consecutiveDrops: 0, suggestEarlyDeload: false, weekly: [], message: '' },
     date: '',
+    history: {},
   };
 }

@@ -9,6 +9,7 @@ import type { FoodOverride, FoodOverrides } from '../engine/nutrition';
 import { normalizeNote } from '../engine/exerciseNotes';
 import type { WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
+import { lowerIsBetter } from '../engine/lastPerformance';
 import {
   DEFAULT_SETTINGS_ROW,
   db,
@@ -533,6 +534,16 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
     for (const [week, rows] of [...weeks.entries()].sort((a, b) => a[0] - b[0])) {
       const kgs = rows.map((r) => r.actualKg).filter((k): k is number => k !== null);
       const rpes = rows.map((r) => r.actualRpe).filter((r): r is number => r !== null);
+      /*
+       * Les mesures viennent des MÊMES lignes que les kilos : un seul passage,
+       * une seule source. Le meilleur essai de la semaine, comme pour la
+       * charge — un saut se juge à sa meilleure distance, pas à sa moyenne.
+       * Un sprint aussi se juge à son meilleur essai, donc au plus COURT : le
+       * sens est décidé par `LOWER_IS_BETTER`, pas ici.
+       */
+      const mesures = rows
+        .map((r) => r.measureValue)
+        .filter((m): m is number => m !== null && m !== undefined);
       const first = rows[0]!;
       const target: RPETarget | null =
         first.targetRpeMin !== null && first.targetRpeMax !== null
@@ -548,6 +559,11 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
         failed: rows.some((r) => r.failed),
         targetRPE: target,
         completed: rows.some((r) => r.actualReps !== null),
+        measure: mesures.length
+          ? lowerIsBetter(exerciseId)
+            ? Math.min(...mesures)
+            : Math.max(...mesures)
+          : null,
       });
     }
     index[exerciseId] = occurrences;

@@ -683,3 +683,45 @@
 .exNoteField::placeholder {
   color: var(--ink-3);
 }
+
+/* --- « La dernière fois » -------------------------------------------------- */
+
+/*
+ * Une ligne, pas une carte : l'encart s'intercale entre la charge prévue et les
+ * champs de saisie, il ne doit pas peser autant que l'une ou les autres.
+ */
+.lastTime {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px var(--pad) 0;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 0.8rem;
+}
+
+.lastTimeWhen {
+  color: var(--ink-3);
+}
+
+.lastTimeValue {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.lastTimeRpe {
+  color: var(--ink-2);
+}
+
+/* Neutre par défaut — une baisse de deload n'est pas un échec. */
+.lastTimeDelta {
+  margin-left: auto;
+  color: var(--ink-3);
+}
+
+.lastTimeUp {
+  color: var(--vert);
+  font-weight: 600;
+}

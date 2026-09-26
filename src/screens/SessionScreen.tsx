@@ -200,6 +200,7 @@ export function SessionScreen({
           ex={ex}
           savedSets={data.savedSets[ex.id] ?? []}
           overrideKg={overrides[ex.id] ?? null}
+          history={data.history[ex.id]}
           timer={timer}
           media={data.date ? { week, day, date: data.date } : null}
           note={{ week, day, date: data.date ?? '' }}

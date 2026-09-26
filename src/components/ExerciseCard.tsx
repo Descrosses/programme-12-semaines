@@ -7,6 +7,8 @@ import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
+import { lastPerformance } from '../engine/lastPerformance';
+import type { Occurrence } from '../engine/types';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -39,6 +41,7 @@ export function ExerciseCard({
   ex,
   savedSets,
   overrideKg,
+  history,
   timer,
   media,
   note,
@@ -49,6 +52,12 @@ export function ExerciseCard({
   savedSets: SetRow[];
   overrideKg: number | null;
   timer: RestTimer;
+  /**
+   * Les occurrences réelles de CET exercice, telles que §11 les lit. On ne
+   * refait pas la requête : c'est la même matière, donc le même chiffre que
+   * celui sur lequel la suggestion de charge est calculée.
+   */
+  history: Occurrence[] | undefined;
   /** Où l'on se trouve dans le programme, pour dater photos et traces vidéo. */
   media: MediaContext | null;
   /**
@@ -116,6 +125,8 @@ export function ExerciseCard({
           </div>
         ))}
       </div>
+
+      <LastTime ex={ex} history={history} week={note.week} />
 
       {media && (
         <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />
@@ -252,6 +263,62 @@ export function ExerciseCard({
         </>
       )}
     </article>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+/**
+ * « La dernière fois : tant. »
+ *
+ * Entre la ligne de charge prévue et les champs de saisie — à l'endroit exact
+ * où la question se pose, juste avant de charger la barre. Sans ça il fallait
+ * quitter la séance pour l'onglet Progrès, ce que personne ne fait entre deux
+ * séries.
+ *
+ * Rien à la première occurrence d'un mouvement, plutôt qu'un encart vide : en
+ * semaine 1, neuf exercices afficheraient neuf lignes identiques sans
+ * information, qui repousseraient les champs de saisie hors de l'écran. Un
+ * encart qui ne dit rien vaut moins que pas d'encart.
+ */
+function LastTime({
+  ex,
+  history,
+  week,
+}: {
+  ex: ResolvedExercise;
+  history: Occurrence[] | undefined;
+  week: number;
+}) {
+  const perf = lastPerformance(history, {
+    exerciseId: ex.id,
+    measureUnit: measureOf(ex)?.unit ?? null,
+    before: week,
+  });
+  if (perf === null) return null;
+
+  /*
+   * `down` n'a pas de classe à lui : une semaine de deload EST une baisse de
+   * charge, un ajustement orange aussi. Les peindre en rouge apprendrait à
+   * Guillaume à ignorer la couleur le jour où elle compte vraiment.
+   */
+  const fleche = perf.trend === 'up' ? '↑' : perf.delta === null ? '—' : '';
+
+  return (
+    <div className={styles.lastTime}>
+      <span className={styles.lastTimeWhen}>📊 Semaine {perf.week}</span>
+      <span className={`${styles.lastTimeValue} tnum`}>{perf.value}</span>
+      {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
+      {(perf.delta || fleche) && (
+        <span
+          className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
+        >
+          {fleche}
+          {fleche && perf.delta ? ' ' : ''}
+          {perf.delta}
+        </span>
+      )}
+    </div>
   );
 }
 
