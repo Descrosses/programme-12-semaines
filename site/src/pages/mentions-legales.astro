@@ -1,0 +1,37 @@
+---
+/** Mentions légales — les informations viennent de src/config.ts (LEGAL). */
+import Legal from '../layouts/Legal.astro';
+import { SITE, LEGAL } from '../config';
+---
+
+<Legal titre="Mentions légales" description="Mentions légales du site.">
+  <h2>Éditeur du site</h2>
+  <p>
+    {LEGAL.nomComplet}<br />
+    {LEGAL.statut}<br />
+    SIRET : {LEGAL.siret}<br />
+    Adresse : {LEGAL.adresse}<br />
+    Email : <a href={`mailto:${SITE.email}`}>{SITE.email}</a><br />
+    {LEGAL.mentionTva}
+  </p>
+  <p>Directeur de la publication : {LEGAL.nomComplet}.</p>
+
+  <h2>Hébergeur</h2>
+  <p>{LEGAL.hebergeur}</p>
+
+  <h2>Propriété intellectuelle</h2>
+  <p>
+    L'ensemble des contenus du site et des programmes vendus (textes, tableaux, images, PDF)
+    est protégé par le droit d'auteur. Toute reproduction, diffusion ou revente, totale ou
+    partielle, sans autorisation écrite est interdite.
+  </p>
+
+  <h2>Responsabilité</h2>
+  <p>
+    Les informations publiées sur ce site sont générales et ne constituent pas un avis médical.
+    Voir l'<a href="/avertissement-sante">avertissement santé</a>.
+  </p>
+
+  <h2>Données personnelles</h2>
+  <p>Voir la <a href="/confidentialite">politique de confidentialité</a>.</p>
+</Legal>

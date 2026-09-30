@@ -1,0 +1,26 @@
+---
+/** Mise en page des pages juridiques. */
+import Base from './Base.astro';
+import { LEGAL } from '../config';
+interface Props {
+  titre: string;
+  description: string;
+}
+const { titre, description } = Astro.props;
+---
+
+<Base titre={titre} description={description}>
+  <article class="conteneur pt-12 sm:pt-16">
+    <h1 class="text-4xl sm:text-5xl">{titre}</h1>
+    <p class="mt-2 text-sm text-texte-2">Dernière mise à jour : {LEGAL.dateMiseAJour}</p>
+    {import.meta.env.DEV && (
+      <p class="mt-4 max-w-3xl rounded-xl border border-alerte p-4 text-sm text-alerte">
+        [Visible seulement en local] Modèle à compléter. Il ne constitue pas un conseil juridique :
+        fais-le relire (juriste, expert-comptable, CCI) avant d'ouvrir les ventes.
+      </p>
+    )}
+    <div class="prose-site mt-8">
+      <slot />
+    </div>
+  </article>
+</Base>

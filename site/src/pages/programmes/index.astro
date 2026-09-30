@@ -1,0 +1,67 @@
+---
+/** Catalogue : tous les produits publiés, avec filtre par catégorie. */
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getProduits, CATEGORIES } from '../../data/produits';
+
+const produits = await getProduits();
+const filtres = [{ valeur: 'tous', libelle: 'Tous' }, ...Object.entries(CATEGORIES).map(([valeur, libelle]) => ({ valeur, libelle }))];
+---
+
+<Base titre="Tous les programmes" description="Programmes de musculation, plans alimentaires et packs combinés, au format PDF.">
+  <section class="conteneur pt-12 sm:pt-16">
+    <p class="surtitre">Catalogue</p>
+    <h1 class="mt-2 text-5xl sm:text-6xl">Les programmes</h1>
+
+    <!-- Filtres : sans JavaScript, tous les produits restent visibles. -->
+    <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
+      {filtres.map((f, i) => (
+        <button
+          type="button"
+          data-filtre={f.valeur}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          class="min-h-11 rounded-full border border-ligne px-5 font-titre text-base font-semibold uppercase tracking-wider text-texte-2 transition hover:border-accent aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-sur-accent"
+        >
+          {f.libelle}
+        </button>
+      ))}
+    </div>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-grille>
+      {produits.map((p) => <div data-carte={p.data.categorie}><ProductCard produit={p} /></div>)}
+    </div>
+    <p class="mt-8 hidden text-texte-2" data-vide>Aucun programme dans cette catégorie pour le moment.</p>
+  </section>
+</Base>
+
+<script>
+  // Filtre du catalogue. L'URL garde le filtre choisi (ex. /programmes?cat=diete).
+  const boutons = document.querySelectorAll<HTMLButtonElement>('[data-filtre]');
+  const cartes = document.querySelectorAll<HTMLElement>('[data-carte]');
+  const vide = document.querySelector<HTMLElement>('[data-vide]');
+
+  function filtrer(cat: string) {
+    let visibles = 0;
+    cartes.forEach((c) => {
+      const ok = cat === 'tous' || c.dataset.carte === cat;
+      c.hidden = !ok;
+      if (ok) visibles++;
+    });
+    boutons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filtre === cat)));
+    vide?.classList.toggle('hidden', visibles > 0);
+  }
+
+  boutons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const cat = b.dataset.filtre ?? 'tous';
+      filtrer(cat);
+      const url = new URL(location.href);
+      if (cat === 'tous') url.searchParams.delete('cat');
+      else url.searchParams.set('cat', cat);
+      history.replaceState(null, '', url);
+    }),
+  );
+
+  const depart = new URLSearchParams(location.search).get('cat');
+  if (depart && [...boutons].some((b) => b.dataset.filtre === depart)) filtrer(depart);
+</script>

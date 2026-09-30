@@ -1,0 +1,88 @@
+/*
+ * Styles globaux + palette de couleurs.
+ * Pour changer la couleur d'accent du site : modifie --color-accent ci-dessous.
+ * (Couleurs reprises de l'appli « Programme 12 semaines » pour garder la même identité.)
+ */
+@import '@fontsource/barlow-condensed/latin-600.css';
+@import '@fontsource/barlow-condensed/latin-700.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-fond: #0d1014;        /* arrière-plan */
+  --color-surface: #171d24;     /* cartes */
+  --color-surface-2: #222a34;   /* cartes survolées, champs */
+  --color-ligne: #3d4956;       /* bordures */
+  --color-texte: #f4f7fa;       /* texte principal */
+  --color-texte-2: #c2cedb;     /* texte secondaire */
+  --color-accent: #ffb628;      /* ⭐ couleur d'accent */
+  --color-sur-accent: #10141a;  /* texte posé sur l'accent */
+  --color-alerte: #ff5a4d;      /* avertissements */
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-titre: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-fond text-texte font-sans antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-titre font-bold uppercase leading-[1.05] tracking-wide;
+  }
+  a {
+    @apply underline-offset-4;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+@layer components {
+  /* Conteneur centré avec marges latérales */
+  .conteneur {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  /* Bouton principal (accent) */
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6
+      font-titre text-lg font-bold uppercase tracking-wider text-sur-accent no-underline
+      transition hover:brightness-110 active:scale-[0.98];
+  }
+  /* Bouton secondaire (contour) */
+  .btn-contour {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-ligne px-6
+      font-titre text-lg font-bold uppercase tracking-wider text-texte no-underline
+      transition hover:border-accent hover:text-accent;
+  }
+  /* Petit libellé au-dessus des titres */
+  .surtitre {
+    @apply font-titre text-sm font-semibold uppercase tracking-[0.2em] text-accent;
+  }
+  /* Texte long (descriptions, pages juridiques) */
+  .prose-site {
+    @apply max-w-3xl space-y-4 text-texte-2 leading-relaxed;
+  }
+  .prose-site h2 {
+    @apply pt-6 text-2xl text-texte sm:text-3xl;
+  }
+  .prose-site h3 {
+    @apply pt-2 text-xl text-texte;
+  }
+  .prose-site a {
+    @apply text-accent underline;
+  }
+  .prose-site ul {
+    @apply list-disc space-y-1 pl-5;
+  }
+  .prose-site strong {
+    @apply text-texte;
+  }
+  /* Repère visuel des textes à compléter, pour les trouver d'un coup d'œil */
+  .a-completer {
+    @apply rounded bg-alerte/15 px-1 text-alerte;
+  }
+}

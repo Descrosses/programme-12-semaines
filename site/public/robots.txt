@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /merci/
+
+# ⚠️ Remplace l'adresse par celle de ton site (la même que dans astro.config.mjs).
+Sitemap: https://REMPLACER-PAR-TON-DOMAINE.netlify.app/sitemap-index.xml

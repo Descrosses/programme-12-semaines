@@ -1,0 +1,151 @@
+---
+/**
+ * FICHE PRODUIT — un seul modèle pour tous les produits.
+ * Une page est créée automatiquement pour chaque fichier de src/content/produits/.
+ * Adresse : /programmes/<nom-du-fichier-sans-.md>
+ */
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BuyButton from '../../components/BuyButton.astro';
+import Faq from '../../components/Faq.astro';
+import HealthBanner from '../../components/HealthBanner.astro';
+import { getProduits, CATEGORIES, libellePrix, prixSepares, formatPrix, type Produit } from '../../data/produits';
+
+export async function getStaticPaths() {
+  const produits = await getProduits();
+  return produits.map((produit) => ({ params: { slug: produit.id }, props: { produit, produits } }));
+}
+
+interface Props {
+  produit: Produit;
+  produits: Produit[];
+}
+const { produit, produits } = Astro.props;
+const d = produit.data;
+const { Content } = await render(produit);
+
+// Pack : prix des produits achetés séparément (affiché seulement si tous les prix sont connus).
+const valeurSeparee = prixSepares(produit, produits);
+// Produits inclus dans ce pack, et packs qui contiennent ce produit.
+const inclusDansPack = produits.filter((p) => d.contient.includes(p.id));
+const packsAssocies = produits.filter((p) => p.data.contient.includes(produit.id));
+
+const fiche = [
+  { libelle: 'Durée', valeur: d.duree },
+  { libelle: 'Niveau', valeur: d.niveau },
+  { libelle: 'Fréquence', valeur: d.frequence },
+  { libelle: 'Lieu', valeur: d.lieu },
+];
+---
+
+<Base titre={d.titre} description={d.resume}>
+  <div class="conteneur pt-10 sm:pt-14">
+    <nav aria-label="Fil d'Ariane" class="text-sm text-texte-2">
+      <a href="/programmes" class="hover:text-texte">Programmes</a>
+      <span aria-hidden="true"> / </span>
+      <a href={`/programmes?cat=${d.categorie}`} class="hover:text-texte">{CATEGORIES[d.categorie]}</a>
+    </nav>
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-[1fr_380px]">
+      <!-- COLONNE PRINCIPALE -->
+      <div class="min-w-0">
+        <p class="surtitre">{CATEGORIES[d.categorie]}</p>
+        <h1 class="mt-2 text-5xl sm:text-6xl">{d.titre}</h1>
+        <p class="mt-4 text-lg text-texte-2">{d.sousTitre}</p>
+
+        {d.avertissementRenforce && <div class="mt-8"><HealthBanner variante="renforce" /></div>}
+
+        <!-- Fiche technique -->
+        <dl class="mt-8 grid grid-cols-2 gap-3">
+          {fiche.map((f) => (
+            <div class="rounded-xl border border-ligne bg-surface p-4">
+              <dt class="text-xs uppercase tracking-wider text-texte-2">{f.libelle}</dt>
+              <dd class="mt-1 font-semibold leading-snug">{f.valeur}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <!-- Raccourci achat, uniquement sur téléphone (le bloc complet est en bas) -->
+        <div class="mt-6 flex items-center justify-between gap-4 rounded-xl border border-accent/40 bg-surface p-4 lg:hidden">
+          <p class="font-titre text-3xl font-bold">{libellePrix(produit)}</p>
+          <a href="#acheter" class="btn">Acheter</a>
+        </div>
+
+        <!-- Description (texte du fichier .md) -->
+        <section class="mt-12" aria-labelledby="titre-description">
+          <h2 id="titre-description" class="text-3xl sm:text-4xl">Le programme</h2>
+          <div class="prose-site mt-4"><Content /></div>
+        </section>
+
+        <!-- Contenu détaillé -->
+        <section class="mt-12" aria-labelledby="titre-contenu">
+          <h2 id="titre-contenu" class="text-3xl sm:text-4xl">Ce que tu reçois</h2>
+          <ul class="mt-5 space-y-3">
+            {d.inclus.map((ligne) => (
+              <li class="flex gap-3">
+                <span class="mt-1 text-accent" aria-hidden="true">✓</span>
+                <span class="text-texte-2">{ligne}</span>
+              </li>
+            ))}
+          </ul>
+          {inclusDansPack.length > 0 && (
+            <p class="mt-5 text-sm text-texte-2">
+              Inclus :{' '}
+              {inclusDansPack.map((p, i) => (
+                <>
+                  {i > 0 && ' + '}
+                  <a href={`/programmes/${p.id}`} class="text-accent underline">{p.data.titre}</a>
+                </>
+              ))}
+            </p>
+          )}
+        </section>
+
+        <!-- Aperçu de quelques pages -->
+        {d.apercus.length > 0 && (
+          <section class="mt-12" aria-labelledby="titre-apercu">
+            <h2 id="titre-apercu" class="text-3xl sm:text-4xl">Aperçu</h2>
+            <div class="-mx-4 mt-5 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+              {d.apercus.map((a) => (
+                <figure class="w-[70%] shrink-0 snap-start sm:w-auto">
+                  <img src={a.image} alt={`Aperçu : ${a.legende}`} width="600" height="848" loading="lazy" decoding="async" class="w-full rounded-xl border border-ligne" />
+                  <figcaption class="mt-2 text-sm text-texte-2">{a.legende}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- FAQ -->
+        {d.faq.length > 0 && (
+          <section class="mt-12" aria-labelledby="titre-faq-produit">
+            <h2 id="titre-faq-produit" class="text-3xl sm:text-4xl">Questions fréquentes</h2>
+            <div class="mt-5"><Faq questions={d.faq} /></div>
+          </section>
+        )}
+      </div>
+
+      <!-- COLONNE ACHAT (à droite sur ordinateur, sous le contenu sur téléphone) -->
+      <aside id="acheter" class="scroll-mt-24">
+        <div class="rounded-2xl border border-ligne bg-surface p-6 lg:sticky lg:top-24">
+          <p class="text-sm text-texte-2">Prix</p>
+          <p class="font-titre text-5xl font-bold">{libellePrix(produit)}</p>
+          {valeurSeparee && (
+            <p class="mt-1 text-sm text-texte-2">
+              au lieu de <s>{formatPrix(valeurSeparee)}</s> achetés séparément
+            </p>
+          )}
+          <p class="mt-1 text-xs text-texte-2">Paiement unique · PDF</p>
+          <div class="mt-6"><BuyButton produit={produit} /></div>
+          {packsAssocies.map((pack) => (
+            <p class="mt-5 border-t border-ligne pt-4 text-sm text-texte-2">
+              Aussi disponible dans le{' '}
+              <a href={`/programmes/${pack.id}`} class="text-accent underline">{pack.data.titre}</a>
+              , à prix réduit.
+            </p>
+          ))}
+        </div>
+      </aside>
+    </div>
+  </div>
+</Base>

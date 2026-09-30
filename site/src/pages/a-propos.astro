@@ -1,0 +1,64 @@
+---
+/**
+ * PAGE À PROPOS — ton parcours.
+ * Remplace les passages [À COMPLÉTER] par ton histoire. Reste factuel :
+ * pas de diplôme ou de titre que tu n'as pas (« coach », « préparateur physique »
+ * diplômé sont des titres encadrés).
+ */
+import Base from '../layouts/Base.astro';
+---
+
+<Base titre="À propos" description="Qui se cache derrière les programmes : un père de famille passionné de préparation physique.">
+  <section class="conteneur pt-12 sm:pt-16">
+    <div class="grid gap-10 md:grid-cols-[280px_1fr] md:items-start">
+      <!-- Photo : remplace par <img src="/photo.jpg" alt="…" /> une fois ta photo placée dans public/ -->
+      <div class="flex aspect-[4/5] items-center justify-center rounded-2xl border border-dashed border-ligne bg-surface text-center text-sm text-texte-2">
+        Ta photo ici<br />(public/photo.jpg)
+      </div>
+
+      <div>
+        <p class="surtitre">À propos</p>
+        <h1 class="mt-2 text-5xl sm:text-6xl">Père de famille, passionné de préparation physique</h1>
+
+        <div class="prose-site mt-6">
+          <p>
+            Je m'appelle Guillaume, j'ai <span class="a-completer">[âge]</span> ans et je suis père de
+            <span class="a-completer">[nombre]</span> enfants. Comme beaucoup, j'ai un travail prenant,
+            une vie de famille bien remplie… et une vraie passion pour l'entraînement.
+          </p>
+          <p>
+            <span class="a-completer">[À COMPLÉTER : comment tu as commencé, ton sport, ce qui t'a fait plonger dans la préparation physique.]</span>
+          </p>
+
+          <h2>Pourquoi ces programmes</h2>
+          <p>
+            Je me suis intéressé aux méthodes de préparation des athlètes, notamment celles utilisées
+            en football américain, qui cherchent à développer la force, la vitesse et l'explosivité
+            plutôt que l'apparence. J'ai voulu les adapter à quelqu'un qui n'a ni le temps ni
+            l'encadrement d'un athlète professionnel.
+          </p>
+          <p>
+            <span class="a-completer">[À COMPLÉTER : ce que tu as testé sur toi-même, ce que tu as appris, ce qui t'a donné envie de partager.]</span>
+          </p>
+
+          <h2>Ma façon de voir l'entraînement</h2>
+          <ul>
+            <li><strong>Un plan clair</strong> : chaque séance est écrite, on n'improvise pas.</li>
+            <li><strong>Réaliste</strong> : conçu pour tenir avec un travail et des enfants.</li>
+            <li><strong>Honnête</strong> : pas de promesse de transformation miracle. La progression dépend de chacun.</li>
+            <li><strong>Prudent</strong> : écouter son corps et demander l'avis d'un professionnel de santé fait partie du programme.</li>
+          </ul>
+
+          <p class="text-sm">
+            <span class="a-completer">[Si tu as des diplômes ou certifications, liste-les ici. Sinon, supprime cette ligne.]</span>
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/programmes" class="btn">Voir les programmes</a>
+          <a href="/contact" class="btn-contour">Me contacter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

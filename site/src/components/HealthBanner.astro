@@ -1,0 +1,41 @@
+---
+/**
+ * Bandeau d'avertissement santé.
+ * - variante « bandeau » : fine barre en haut de chaque page
+ * - variante « renforce » : encadré visible, pour les programmes sensibles (post-partum)
+ */
+interface Props {
+  variante?: 'bandeau' | 'renforce';
+}
+const { variante = 'bandeau' } = Astro.props;
+---
+
+{variante === 'bandeau' ? (
+  <div class="border-b border-ligne bg-surface text-center text-xs text-texte-2 sm:text-sm">
+    <p class="conteneur py-2">
+      <span aria-hidden="true">⚠️</span>
+      Consultez un professionnel de santé avant de commencer un programme.{' '}
+      <a href="/avertissement-sante" class="text-accent underline">En savoir plus</a>
+    </p>
+  </div>
+) : (
+  <aside
+    class="rounded-2xl border-2 border-alerte bg-alerte/10 p-5 sm:p-6"
+    role="note"
+    aria-labelledby="avertissement-renforce"
+  >
+    <p id="avertissement-renforce" class="font-titre text-xl font-bold uppercase tracking-wide text-alerte">
+      ⚠️ Avis médical obligatoire avant de commencer
+    </p>
+    <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-texte sm:text-base">
+      <li>Attends la consultation postnatale et l'<strong>accord explicite de ton médecin ou de ta sage-femme</strong>.</li>
+      <li>La rééducation du périnée prescrite passe <strong>avant</strong> ce programme.</li>
+      <li>Césarienne, diastasis, fuites urinaires, douleurs pelviennes ou lombaires : demande un avis spécialisé avant toute reprise.</li>
+      <li>Arrête immédiatement et consulte en cas de douleur, saignement, pesanteur pelvienne ou fuite pendant l'effort.</li>
+    </ul>
+    <p class="mt-3 text-sm text-texte-2">
+      Ce programme ne remplace ni un suivi médical ni une rééducation.
+      <a href="/avertissement-sante" class="text-accent underline">Lire l'avertissement santé complet</a>
+    </p>
+  </aside>
+)}

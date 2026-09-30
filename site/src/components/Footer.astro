@@ -1,0 +1,42 @@
+---
+/** Pied de page : liens juridiques et contact. */
+import { SITE } from '../config';
+const annee = new Date().getFullYear();
+const liensLegaux = [
+  { libelle: 'Mentions légales', href: '/mentions-legales' },
+  { libelle: 'CGV', href: '/cgv' },
+  { libelle: 'Confidentialité', href: '/confidentialite' },
+  { libelle: 'Avertissement santé', href: '/avertissement-sante' },
+];
+---
+
+<footer class="mt-24 border-t border-ligne bg-surface">
+  <div class="conteneur grid gap-8 py-10 sm:grid-cols-3">
+    <div>
+      <p class="font-titre text-2xl font-bold uppercase tracking-wider">
+        {SITE.nom}<span class="text-accent">.</span>
+      </p>
+      <p class="mt-2 text-sm text-texte-2">Programmes numériques (PDF) d'entraînement et de nutrition.</p>
+    </div>
+    <div>
+      <p class="surtitre">Informations</p>
+      <ul class="mt-3 space-y-2 text-sm">
+        {liensLegaux.map((l) => (
+          <li><a href={l.href} class="text-texte-2 hover:text-texte">{l.libelle}</a></li>
+        ))}
+      </ul>
+    </div>
+    <div>
+      <p class="surtitre">Contact</p>
+      <p class="mt-3 text-sm">
+        <a href={`mailto:${SITE.email}`} class="break-all text-texte-2 hover:text-texte">{SITE.email}</a>
+      </p>
+      {SITE.instagram && (
+        <p class="mt-2 text-sm"><a href={SITE.instagram} class="text-texte-2 hover:text-texte" rel="noopener">Instagram</a></p>
+      )}
+    </div>
+  </div>
+  <p class="border-t border-ligne/60 py-4 text-center text-xs text-texte-2">
+    © {annee} {SITE.nom} — Les programmes ne remplacent pas un avis médical.
+  </p>
+</footer>

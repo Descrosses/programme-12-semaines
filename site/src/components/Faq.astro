@@ -1,0 +1,19 @@
+---
+/** Liste de questions/réponses dépliables (fonctionne sans JavaScript). */
+interface Props {
+  questions: { question: string; reponse: string }[];
+}
+const { questions } = Astro.props;
+---
+
+<div class="divide-y divide-ligne rounded-2xl border border-ligne bg-surface">
+  {questions.map((q) => (
+    <details class="group px-5">
+      <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+        {q.question}
+        <span class="text-2xl leading-none text-accent transition group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <p class="pb-5 leading-relaxed text-texte-2">{q.reponse}</p>
+    </details>
+  ))}
+</div>

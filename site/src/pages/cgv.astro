@@ -1,0 +1,104 @@
+---
+/**
+ * CONDITIONS GÉNÉRALES DE VENTE — modèle pour la vente de contenus numériques (PDF).
+ * À relire par un professionnel avant la mise en ligne.
+ */
+import Legal from '../layouts/Legal.astro';
+import { SITE, LEGAL } from '../config';
+---
+
+<Legal titre="Conditions générales de vente" description="Conditions générales de vente des programmes numériques.">
+  <h2>1. Objet</h2>
+  <p>
+    Les présentes conditions régissent la vente, par {LEGAL.nomComplet} ({LEGAL.statut}, SIRET {LEGAL.siret},
+    {LEGAL.adresse}, ci-après « le Vendeur »), de programmes d'entraînement et de nutrition au format
+    numérique (fichiers PDF) à des consommateurs (ci-après « le Client »), via le site {SITE.nom}.
+    Tout achat implique l'acceptation sans réserve des présentes CGV.
+  </p>
+
+  <h2>2. Produits</h2>
+  <p>
+    Les produits sont des contenus numériques téléchargeables, non fournis sur un support matériel.
+    Leurs caractéristiques essentielles (contenu, durée, niveau, fréquence, matériel nécessaire)
+    sont décrites sur chaque fiche produit. Il s'agit de programmes généraux, non personnalisés,
+    qui ne constituent ni un suivi individuel ni un avis médical.
+  </p>
+
+  <h2>3. Prix</h2>
+  <p>
+    Les prix sont indiqués en euros, toutes taxes comprises. {LEGAL.mentionTva}
+    Le prix applicable est celui affiché au moment de la commande.
+  </p>
+
+  <h2>4. Commande et paiement</h2>
+  <p>
+    La commande s'effectue en cliquant sur le bouton « Acheter » de la fiche produit, après avoir
+    coché la case d'acceptation des CGV et de renonciation au droit de rétractation (article 6).
+    Le paiement est réalisé en une fois par carte bancaire (ou tout autre moyen proposé) sur la
+    page sécurisée de notre prestataire Stripe. Le Vendeur n'a jamais accès aux données bancaires
+    du Client. La commande est définitive après confirmation du paiement.
+  </p>
+
+  <h2>5. Livraison</h2>
+  <p>
+    Dès la confirmation du paiement, le Client est redirigé vers une page lui permettant de
+    télécharger le programme. Un email de confirmation lui est également adressé.
+    En cas de difficulté, le Client peut écrire à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+  </p>
+
+  <h2>6. Droit de rétractation</h2>
+  <p>
+    En principe, le consommateur dispose d'un délai de 14 jours pour se rétracter d'un achat à distance
+    (article L.221-18 du Code de la consommation).
+  </p>
+  <p>
+    <strong>Toutefois, conformément à l'article L.221-28, 13° du Code de la consommation, ce droit ne
+    peut pas être exercé pour la fourniture d'un contenu numérique non fourni sur un support matériel
+    dont l'exécution a commencé après accord préalable exprès du consommateur et renoncement exprès
+    à son droit de rétractation.</strong>
+  </p>
+  <p>
+    En cochant la case prévue avant le paiement, le Client demande expressément l'accès immédiat au
+    contenu et reconnaît perdre son droit de rétractation dès le début du téléchargement. Cet accord
+    et cette renonciation lui sont confirmés dans l'email de confirmation de commande.
+  </p>
+
+  <h2>7. Garantie légale de conformité</h2>
+  <p>
+    Le Client bénéficie de la garantie légale de conformité applicable aux contenus numériques
+    (articles L.224-25-12 et suivants du Code de la consommation). En cas de fichier défectueux,
+    illisible ou non conforme à sa description, le Client contacte le Vendeur, qui fournit un fichier
+    conforme ou, à défaut, procède au remboursement.
+  </p>
+
+  <h2>8. Licence d'utilisation</h2>
+  <p>
+    L'achat donne droit à un usage strictement personnel et non commercial du programme.
+    Il est interdit de le copier, partager, diffuser ou revendre, en tout ou partie.
+  </p>
+
+  <h2>9. Santé et responsabilité</h2>
+  <p>
+    Le Client reconnaît avoir pris connaissance de l'<a href="/avertissement-sante">avertissement santé</a>
+    et s'engage à consulter un professionnel de santé avant de commencer. Les programmes ne garantissent
+    aucun résultat : la progression dépend de nombreux facteurs propres à chacun. Le Vendeur ne saurait
+    être tenu responsable d'une blessure ou d'un problème de santé résultant d'une mauvaise exécution
+    des exercices, du non-respect des consignes ou de l'absence d'avis médical préalable.
+  </p>
+
+  <h2>10. Données personnelles</h2>
+  <p>Voir la <a href="/confidentialite">politique de confidentialité</a>.</p>
+
+  <h2>11. Réclamations et médiation</h2>
+  <p>
+    Toute réclamation peut être adressée à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+    En cas de litige non résolu, le Client peut recourir gratuitement au médiateur de la consommation
+    suivant : {LEGAL.mediateur}.
+  </p>
+
+  <h2>12. Droit applicable</h2>
+  <p>
+    Les présentes CGV sont soumises au droit français. À défaut de résolution amiable, le litige
+    sera porté devant les juridictions compétentes selon les règles de droit commun.
+  </p>
+</Legal>

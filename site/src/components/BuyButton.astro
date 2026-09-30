@@ -1,0 +1,72 @@
+---
+/**
+ * Bouton « Acheter » vers Stripe Payment Links.
+ *
+ * Droit de rétractation (contenu numérique) : la loi exige l'accord exprès du client
+ * pour un accès immédiat et sa renonciation expresse au délai de 14 jours.
+ * Le client coche donc une case avant que le bouton ne s'active.
+ *
+ * Tant que le lien Stripe ou le prix est un placeholder, le bouton est désactivé
+ * et affiche « Bientôt disponible ».
+ */
+import { lienStripeADefinir, prixADefinir, libellePrix, type Produit } from '../data/produits';
+interface Props {
+  produit: Produit;
+}
+const { produit } = Astro.props;
+const pasPret = lienStripeADefinir(produit) || prixADefinir(produit);
+const idCase = `accord-${produit.id}`;
+---
+
+{pasPret ? (
+  <div>
+    <button type="button" class="btn w-full cursor-not-allowed opacity-50" disabled>
+      Bientôt disponible
+    </button>
+    {import.meta.env.DEV && (
+      <p class="mt-2 text-xs text-alerte">
+        [Visible seulement en local] Prix ou lien Stripe à renseigner dans
+        src/content/produits/{produit.id}.md
+      </p>
+    )}
+  </div>
+) : (
+  <div class="achat" data-achat>
+    <label for={idCase} class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-texte-2">
+      <input id={idCase} type="checkbox" class="mt-0.5 size-5 shrink-0 accent-accent" data-accord />
+      <span>
+        J'accepte les <a href="/cgv" class="text-accent underline">CGV</a>, je demande l'accès
+        immédiat au programme et je renonce expressément à mon droit de rétractation dès
+        le téléchargement.
+      </span>
+    </label>
+    <a
+      href={produit.data.lienStripe}
+      class="btn mt-4 w-full aria-disabled:pointer-events-none aria-disabled:opacity-40"
+      aria-disabled="true"
+      data-bouton
+      rel="noopener"
+    >
+      Acheter — {libellePrix(produit)}
+    </a>
+    <p class="mt-2 text-center text-xs text-texte-2">Paiement sécurisé par Stripe · PDF téléchargeable</p>
+  </div>
+)}
+
+<script>
+  // Active le bouton uniquement quand la case est cochée.
+  document.querySelectorAll<HTMLElement>('[data-achat]').forEach((bloc) => {
+    const caseAccord = bloc.querySelector<HTMLInputElement>('[data-accord]');
+    const bouton = bloc.querySelector<HTMLAnchorElement>('[data-bouton]');
+    if (!caseAccord || !bouton) return;
+    const maj = () => bouton.setAttribute('aria-disabled', String(!caseAccord.checked));
+    caseAccord.addEventListener('change', maj);
+    bouton.addEventListener('click', (e) => {
+      if (!caseAccord.checked) {
+        e.preventDefault();
+        caseAccord.focus();
+      }
+    });
+    maj();
+  });
+</script>

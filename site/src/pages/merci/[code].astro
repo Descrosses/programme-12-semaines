@@ -1,0 +1,53 @@
+---
+/**
+ * PAGE APRÈS PAIEMENT — une par produit, adresse /merci/<codeMerci>.
+ * Dans Stripe (Payment Link → Après le paiement → Rediriger vers votre site),
+ * colle l'adresse complète, ex. https://ton-site.netlify.app/merci/force-k7p2x9
+ *
+ * Page exclue de Google et du sitemap. Le code doit rester difficile à deviner.
+ */
+import Base from '../../layouts/Base.astro';
+import { getProduits, type Produit } from '../../data/produits';
+import { SITE } from '../../config';
+
+export async function getStaticPaths() {
+  const produits = await getProduits();
+  return produits.map((produit) => ({ params: { code: produit.data.codeMerci }, props: { produit } }));
+}
+
+interface Props {
+  produit: Produit;
+}
+const { produit } = Astro.props;
+const lienPret = !produit.data.lienTelechargement.includes('REMPLACER');
+---
+
+<Base titre="Merci pour ton achat" noindex>
+  <section class="conteneur max-w-2xl py-16 text-center">
+    <p class="text-5xl" aria-hidden="true">✓</p>
+    <h1 class="mt-4 text-5xl">Merci !</h1>
+    <p class="mt-4 text-lg text-texte-2">
+      Ton paiement pour <strong class="text-texte">{produit.data.titre}</strong> est confirmé.
+      Tu recevras aussi un reçu de Stripe par email.
+    </p>
+
+    {lienPret ? (
+      <a href={produit.data.lienTelechargement} class="btn mt-8" rel="noopener" download>
+        Télécharger mon programme
+      </a>
+    ) : (
+      <p class="mt-8 rounded-xl border border-alerte p-4 text-alerte">
+        Lien de téléchargement à renseigner dans src/content/produits/{produit.id}.md (champ lienTelechargement).
+      </p>
+    )}
+
+    <p class="mt-6 text-sm text-texte-2">
+      Pense à enregistrer le fichier sur ton téléphone ou ton ordinateur.
+      Un problème ? Écris à <a href={`mailto:${SITE.email}`} class="text-accent underline">{SITE.email}</a>
+      en indiquant l'adresse email utilisée pour le paiement.
+    </p>
+    <p class="mt-4 text-sm text-texte-2">
+      Rappel : consulte un professionnel de santé avant de commencer.
+    </p>
+  </section>
+</Base>

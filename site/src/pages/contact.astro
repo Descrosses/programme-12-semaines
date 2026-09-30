@@ -1,0 +1,31 @@
+---
+/** Page Contact : un simple lien email (aucun formulaire = aucune donnée stockée par le site). */
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+---
+
+<Base titre="Contact" description="Une question sur un programme ou une commande ? Écris-moi.">
+  <section class="conteneur max-w-2xl pt-12 sm:pt-16">
+    <p class="surtitre">Contact</p>
+    <h1 class="mt-2 text-5xl sm:text-6xl">Une question ?</h1>
+    <p class="mt-4 text-lg text-texte-2">
+      Sur un programme, une commande ou un téléchargement : écris-moi, je réponds sous {SITE.delaiReponse}.
+    </p>
+
+    <a href={`mailto:${SITE.email}`} class="btn mt-8 w-full break-all sm:w-auto">
+      {SITE.email}
+    </a>
+
+    <div class="mt-10 rounded-2xl border border-ligne bg-surface p-6 text-sm leading-relaxed text-texte-2">
+      <p class="font-semibold text-texte">Pour une commande, pense à indiquer :</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>l'adresse email utilisée lors du paiement ;</li>
+        <li>le nom du programme acheté.</li>
+      </ul>
+      <p class="mt-4">
+        Je ne peux pas donner de conseil médical ni adapter un programme à une blessure ou une
+        pathologie : dans ce cas, adresse-toi à un professionnel de santé.
+      </p>
+    </div>
+  </section>
+</Base>

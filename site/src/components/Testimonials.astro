@@ -1,0 +1,25 @@
+---
+/** Section témoignages. Les avis se gèrent dans src/data/temoignages.ts. */
+import { TEMOIGNAGES } from '../data/temoignages';
+const afficherEmplacements = TEMOIGNAGES.length === 0 && import.meta.env.DEV;
+const avis = afficherEmplacements
+  ? [1, 2, 3].map((n) => ({ texte: `Emplacement témoignage n°${n} — à remplir dans src/data/temoignages.ts`, auteur: 'Prénom', programme: 'Programme' }))
+  : TEMOIGNAGES;
+---
+
+{avis.length > 0 && (
+  <section class="conteneur mt-24" aria-labelledby="titre-avis">
+    <p class="surtitre">Ils ont suivi les programmes</p>
+    <h2 id="titre-avis" class="mt-2 text-4xl sm:text-5xl">Témoignages</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      {avis.map((a) => (
+        <figure class:list={['rounded-2xl border bg-surface p-6', afficherEmplacements ? 'border-dashed border-alerte' : 'border-ligne']}>
+          <blockquote class="leading-relaxed text-texte">« {a.texte} »</blockquote>
+          <figcaption class="mt-4 text-sm text-texte-2">
+            <strong class="text-texte">{a.auteur}</strong> — {a.programme}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+)}

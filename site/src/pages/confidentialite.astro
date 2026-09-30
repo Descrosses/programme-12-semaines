@@ -1,0 +1,54 @@
+---
+/** Politique de confidentialité (RGPD). Le site n'utilise ni cookies ni outil de statistiques. */
+import Legal from '../layouts/Legal.astro';
+import { SITE, LEGAL } from '../config';
+---
+
+<Legal titre="Politique de confidentialité" description="Comment vos données personnelles sont traitées.">
+  <h2>Responsable du traitement</h2>
+  <p>{LEGAL.nomComplet} — {LEGAL.adresse} — <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+
+  <h2>Données collectées</h2>
+  <ul>
+    <li>
+      <strong>Achat</strong> : le paiement est traité par Stripe, qui collecte les informations
+      nécessaires (nom, email, moyen de paiement). Nous recevons le nom, l'email et le détail de la
+      commande, mais jamais les données bancaires complètes. Base légale : exécution du contrat.
+    </li>
+    <li>
+      <strong>Contact</strong> : si vous nous écrivez par email, nous conservons votre message et votre
+      adresse pour vous répondre. Base légale : intérêt légitime.
+    </li>
+    <li>
+      <strong>Navigation</strong> : l'hébergeur du site peut enregistrer des données techniques
+      (adresse IP, navigateur) dans ses journaux, pour la sécurité du service.
+    </li>
+  </ul>
+
+  <h2>Cookies</h2>
+  <p>
+    Ce site n'utilise aucun cookie publicitaire ni outil de mesure d'audience. Stripe peut déposer
+    des cookies nécessaires au paiement sur ses propres pages.
+  </p>
+
+  <h2>Destinataires</h2>
+  <p>
+    Vos données ne sont ni vendues ni cédées. Elles sont accessibles uniquement au Vendeur et à ses
+    prestataires techniques : Stripe (paiement), l'hébergeur du site et le fournisseur de messagerie.
+    Certains de ces prestataires peuvent traiter des données hors de l'Union européenne, dans le
+    cadre des garanties prévues par le RGPD.
+  </p>
+
+  <h2>Durée de conservation</h2>
+  <ul>
+    <li>Données de facturation : 10 ans (obligation comptable).</li>
+    <li>Échanges par email : 3 ans après le dernier contact.</li>
+  </ul>
+
+  <h2>Vos droits</h2>
+  <p>
+    Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition
+    et de portabilité de vos données. Pour les exercer : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+    Vous pouvez aussi introduire une réclamation auprès de la CNIL (<a href="https://www.cnil.fr" rel="noopener">www.cnil.fr</a>).
+  </p>
+</Legal>

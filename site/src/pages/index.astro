@@ -1,0 +1,92 @@
+---
+/** Page d'accueil. Les 3 produits affichés sont ceux avec `misEnAvant: true`. */
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Faq from '../components/Faq.astro';
+import { getProduits } from '../data/produits';
+import { SITE } from '../config';
+
+const produits = await getProduits();
+const misEnAvant = produits.filter((p) => p.data.misEnAvant).slice(0, 3);
+
+const etapes = [
+  { titre: 'Choisis ton programme', texte: 'Chaque fiche détaille la durée, le niveau, la fréquence et le matériel nécessaire.' },
+  { titre: 'Télécharge le PDF', texte: 'Paiement sécurisé par Stripe, accès au téléchargement immédiatement après.' },
+  { titre: 'Suis le plan', texte: 'Tu sais à chaque séance quoi faire et comment progresser. Aucune improvisation.' },
+];
+
+const faq = [
+  { question: 'Sous quelle forme je reçois le programme ?', reponse: "Un fichier PDF, à télécharger juste après le paiement. Il se lit sur téléphone, tablette ou ordinateur, et peut s'imprimer." },
+  { question: 'Y a-t-il un abonnement ?', reponse: 'Non. Tu paies une seule fois et le programme est à toi.' },
+  { question: 'Puis-je être remboursé ?', reponse: "S'agissant d'un contenu numérique fourni immédiatement, tu renonces à ton droit de rétractation en validant l'achat. Les détails sont dans les CGV." },
+  { question: 'Est-ce adapté à ma situation médicale ?', reponse: "Les programmes sont généraux et ne remplacent pas un avis médical. Consulte un professionnel de santé avant de commencer, surtout en cas de blessure, de pathologie ou après une grossesse." },
+];
+---
+
+<Base titre={SITE.nom}>
+  <!-- ACCROCHE -->
+  <section class="relative overflow-hidden border-b border-ligne">
+    <div class="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full bg-accent/15 blur-3xl" aria-hidden="true"></div>
+    <div class="conteneur relative py-16 sm:py-24">
+      <p class="surtitre">Programmes d'entraînement & de nutrition</p>
+      <h1 class="mt-3 max-w-3xl text-5xl sm:text-7xl">
+        Entraîne-toi <span class="text-accent">comme un athlète</span>, même avec une vie chargée.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-texte-2">
+        Des programmes structurés, semaine par semaine, conçus par un père de famille passionné
+        de préparation physique. Tu sais quoi faire, quand, et pourquoi.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="/programmes" class="btn">Voir les programmes</a>
+        <a href="/a-propos" class="btn-contour">Qui suis-je ?</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUITS MIS EN AVANT -->
+  <section class="conteneur mt-20" aria-labelledby="titre-produits">
+    <p class="surtitre">Les programmes</p>
+    <h2 id="titre-produits" class="mt-2 text-4xl sm:text-5xl">Choisis ton objectif</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      {misEnAvant.map((p) => <ProductCard produit={p} />)}
+    </div>
+    <p class="mt-6"><a href="/programmes" class="font-semibold text-accent">Voir tout le catalogue →</a></p>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE -->
+  <section class="conteneur mt-24" aria-labelledby="titre-etapes">
+    <p class="surtitre">Simple</p>
+    <h2 id="titre-etapes" class="mt-2 text-4xl sm:text-5xl">Comment ça marche</h2>
+    <ol class="mt-8 grid gap-4 md:grid-cols-3">
+      {etapes.map((e, i) => (
+        <li class="rounded-2xl border border-ligne bg-surface p-6">
+          <span class="font-titre text-5xl font-bold text-accent">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="mt-2 text-2xl">{e.titre}</h3>
+          <p class="mt-2 text-texte-2">{e.texte}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- TÉMOIGNAGES (masqués en ligne tant qu'il n'y en a pas) -->
+  <Testimonials />
+
+  <!-- FAQ -->
+  <section class="conteneur mt-24" aria-labelledby="titre-faq">
+    <p class="surtitre">Questions fréquentes</p>
+    <h2 id="titre-faq" class="mt-2 text-4xl sm:text-5xl">FAQ</h2>
+    <div class="mt-8 max-w-3xl"><Faq questions={faq} /></div>
+  </section>
+
+  <!-- APPEL À L'ACTION FINAL -->
+  <section class="conteneur mt-24">
+    <div class="rounded-3xl bg-accent px-6 py-12 text-center text-sur-accent sm:px-12">
+      <h2 class="text-4xl sm:text-5xl">Prêt à t'y mettre ?</h2>
+      <p class="mx-auto mt-3 max-w-lg">Un plan clair, à ton rythme. Commence par choisir le programme qui correspond à ton objectif.</p>
+      <a href="/programmes" class="mt-6 inline-flex min-h-12 items-center rounded-xl bg-fond px-6 font-titre text-lg font-bold uppercase tracking-wider text-texte no-underline hover:bg-surface">
+        Découvrir les programmes
+      </a>
+    </div>
+  </section>
+</Base>

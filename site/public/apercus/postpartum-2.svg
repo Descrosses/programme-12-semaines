@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 848" width="600" height="848">
+  <rect width="600" height="848" fill="#f4f7fa"/>
+  <rect width="600" height="120" fill="#0d1014"/>
+  <rect x="40" y="48" width="220" height="26" rx="4" fill="#ffb628"/>
+  <text x="40" y="190" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#0d1014">Séance maison</text>
+  <g fill="#c2cedb">
+    <rect x="40" y="230" width="520" height="14" rx="4"/><rect x="40" y="260" width="470" height="14" rx="4"/>
+    <rect x="40" y="290" width="500" height="14" rx="4"/><rect x="40" y="340" width="520" height="180" rx="8"/>
+    <rect x="40" y="550" width="480" height="14" rx="4"/><rect x="40" y="580" width="510" height="14" rx="4"/>
+    <rect x="40" y="610" width="440" height="14" rx="4"/>
+  </g>
+  <rect x="40" y="680" width="520" height="110" rx="10" fill="#ff5a4d" fill-opacity=".12" stroke="#ff5a4d" stroke-dasharray="8 6"/>
+  <text x="300" y="728" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#c0392b">APERÇU À REMPLACER</text>
+  <text x="300" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#c0392b">public/apercus/postpartum-2.svg (ou .jpg)</text>
+</svg>

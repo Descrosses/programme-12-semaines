@@ -1,0 +1,32 @@
+---
+/** En-tête : logo texte + menu. Le menu se règle dans src/config.ts (NAVIGATION). */
+import { SITE, NAVIGATION } from '../config';
+const chemin = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-ligne/60 bg-fond/90 backdrop-blur">
+  <nav class="conteneur flex min-h-16 items-center justify-between gap-4" aria-label="Navigation principale">
+    <a href="/" class="shrink-0 whitespace-nowrap font-titre text-xl font-bold uppercase tracking-wider text-texte no-underline sm:text-2xl">
+      {SITE.nom}<span class="text-accent">.</span>
+    </a>
+    <ul class="flex items-center sm:gap-4">
+      {NAVIGATION.map((lien) => {
+        const actif = chemin === lien.href || chemin.startsWith(lien.href + '/');
+        return (
+          <li>
+            <a
+              href={lien.href}
+              class:list={[
+                'inline-flex min-h-12 items-center whitespace-nowrap px-1.5 font-titre text-[0.95rem] font-semibold uppercase tracking-wide no-underline transition sm:px-2 sm:text-lg sm:tracking-wider',
+                actif ? 'text-accent' : 'text-texte-2 hover:text-texte',
+              ]}
+              aria-current={actif ? 'page' : undefined}
+            >
+              {lien.libelle}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+</header>

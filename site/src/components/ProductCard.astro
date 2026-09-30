@@ -1,0 +1,32 @@
+---
+/** Carte produit (accueil + catalogue). Toutes les infos viennent du fichier .md du produit. */
+import { CATEGORIES, libellePrix, type Produit } from '../data/produits';
+interface Props {
+  produit: Produit;
+}
+const { produit } = Astro.props;
+const d = produit.data;
+---
+
+<article
+  class="group relative flex h-full flex-col rounded-2xl border border-ligne bg-surface p-6 transition hover:border-accent"
+  data-categorie={d.categorie}
+>
+  <p class="surtitre">{CATEGORIES[d.categorie]}</p>
+  <h3 class="mt-2 text-3xl">
+    <a href={`/programmes/${produit.id}`} class="text-texte no-underline after:absolute after:inset-0">
+      {d.titre}
+    </a>
+  </h3>
+  <p class="mt-3 flex-1 text-texte-2">{d.resume}</p>
+  <ul class="mt-5 flex flex-wrap gap-2 text-xs text-texte-2">
+    <li class="rounded-full border border-ligne px-3 py-1">{d.duree}</li>
+    <li class="rounded-full border border-ligne px-3 py-1">{d.lieu}</li>
+  </ul>
+  <div class="mt-6 flex items-center justify-between border-t border-ligne pt-4">
+    <p class="font-titre text-2xl font-bold">{libellePrix(produit)}</p>
+    <span class="font-titre font-semibold uppercase tracking-wider text-accent" aria-hidden="true">
+      Voir le détail →
+    </span>
+  </div>
+</article>

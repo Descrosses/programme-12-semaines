@@ -3,6 +3,9 @@
 Application web installable (PWA) pour suivre le programme de préparation
 physique décrit dans [`programme-final-12-semaines.md`](programme-final-12-semaines.md).
 
+> Le **site vitrine** de vente des programmes est dans le dossier [`site/`](site/README.md),
+> indépendant de l'appli (Astro, déployé sur Netlify).
+
 Fonctionne à 100 % hors ligne après la première ouverture. Toutes les données
 restent sur l'appareil : pas de compte, pas de serveur, pas de base distante.
 
