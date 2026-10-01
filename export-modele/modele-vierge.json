@@ -1,0 +1,6261 @@
+{
+  "_meta": {
+    "titre": "Modèle de référence — programme de préparation athlétique (12 semaines + semaine de tests)",
+    "source": "dépôt programme-12-semaines, src/data/*.ts (format interne de l’appli, sérialisé en JSON)",
+    "convention": "{{variable}} = valeur à renseigner pour chaque personne. Tout le reste est la structure de référence, reprise telle quelle.",
+    "champs_derives": "pct_derive / formule_proposee / pct_derive_base = PROPOSITION (calculée par division charge ÷ 1RM mesuré), absente du dépôt sous cette forme. À valider.",
+    "jours": "0 = lundi … 6 = dimanche",
+    "semaines": "0 = semaine de tests (combine initial), 1 à 12 = programme"
+  },
+  "profil": {
+    "prenom": "{{prenom}}",
+    "age": "{{age}}",
+    "sexe": "{{sexe}}",
+    "taille_cm": "{{taille_cm}}",
+    "poids_kg": "{{poids_kg}}",
+    "salle": "{{salle}}",
+    "contexte_travail": "{{contexte_travail}}",
+    "date_debut_lundi": "{{date_debut_lundi}}",
+    "seances_par_semaine": "{{seances_par_semaine}}",
+    "duree_seance_min_par_jour": "{{duree_seance_min_par_jour}}"
+  },
+  "reglages": {
+    "_source": "src/engine/types.ts Settings",
+    "startDate": "{{date_debut_lundi}}",
+    "broadJumpBaselineCm": "{{broad_jump_reference_cm}}",
+    "oneRM": {
+      "back-squat": "{{back_squat_1rm}}",
+      "bench-press": "{{bench_1rm}}",
+      "deadlift": "{{deadlift_1rm}}",
+      "weighted-pullup": "{{tractions_lestees_1rm_lest}}"
+    }
+  },
+  "blocs": {
+    "test": {
+      "block": "test",
+      "name": "Combine initial",
+      "short": "Combine",
+      "intensityLabel": "Tests 1RM",
+      "objective": "Établir les références : 1RM, sauts, sprint, référence de readiness",
+      "color": "#7ac4a0"
+    },
+    "accumulation": {
+      "block": "accumulation",
+      "name": "Accumulation",
+      "short": "Accum",
+      "intensityLabel": "71-79 %",
+      "objective": "Base de force, technique hinge, apprentissage des sauts",
+      "color": "#5aa7e0"
+    },
+    "deload": {
+      "block": "deload",
+      "name": "Deload",
+      "short": "Deload",
+      "intensityLabel": "65-70 %",
+      "objective": "Dissipation de fatigue",
+      "color": "#8fa3b5"
+    },
+    "maxforce": {
+      "block": "maxforce",
+      "name": "Force maximale",
+      "short": "Force",
+      "intensityLabel": "82-90 %",
+      "objective": "Force absolue, longs repos",
+      "color": "#e5533d"
+    },
+    "power": {
+      "block": "power",
+      "name": "Puissance",
+      "short": "Puiss.",
+      "intensityLabel": "84-89 % + vitesse 55-60 %",
+      "objective": "Contraste, RFD, fraîcheur",
+      "color": "#f2b33d"
+    },
+    "taper": {
+      "block": "taper",
+      "name": "Taper + combine final",
+      "short": "Taper",
+      "intensityLabel": "Léger",
+      "objective": "Tests",
+      "color": "#7ac4a0"
+    }
+  },
+  "bloc_par_semaine": {
+    "0": "test",
+    "1": "accumulation",
+    "2": "accumulation",
+    "3": "accumulation",
+    "4": "deload",
+    "5": "maxforce",
+    "6": "maxforce",
+    "7": "maxforce",
+    "8": "deload",
+    "9": "power",
+    "10": "power",
+    "11": "power",
+    "12": "taper"
+  },
+  "jours_par_semaine": {
+    "0": [
+      0,
+      1,
+      3,
+      4,
+      5
+    ],
+    "1": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "2": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "3": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "4": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "5": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "6": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "7": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "8": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "9": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "10": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "11": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ],
+    "12": [
+      0,
+      2,
+      4,
+      5,
+      6
+    ]
+  },
+  "seuils_readiness": {
+    "greenPct": -2,
+    "orangePct": -5,
+    "orange": {
+      "mainLoadFactor": 0.95,
+      "accessorySetsDelta": -1
+    },
+    "red": {
+      "pctOf1RM": 0.65,
+      "sets": 3,
+      "reps": 3
+    }
+  },
+  "gros_mouvements_orange": [
+    "back-squat",
+    "bench-press",
+    "deadlift",
+    "front-squat",
+    "rdl",
+    "hip-thrust",
+    "bulgarian-split-squat"
+  ],
+  "regles_progression": {
+    "wayTooEasy": {
+      "rpeGapAtLeast": 1.5,
+      "lowerBodyKg": 5,
+      "upperBodyKg": 2.5
+    },
+    "slightlyTooEasy": {
+      "rpeGapAtLeast": 0.5,
+      "kg": 2.5
+    },
+    "tooHard": {
+      "repeatSameLoad": true,
+      "recalcAfterOccurrences": 2,
+      "recalcFactor": 0.95
+    },
+    "missedRep": {
+      "loadFactor": 0.925,
+      "rebuildWeeks": 2
+    },
+    "explosiveDecline": {
+      "weeks": 2,
+      "mainLiftSets": 3,
+      "removeConditioning": true,
+      "deloadAfterDays": 10
+    }
+  },
+  "politique_deload": {
+    "accessorySets": 2,
+    "accessoryLoadFactor": 0.8,
+    "jumpVolumeDivisor": 2,
+    "maxRPE": 6,
+    "removeExIds": [
+      "nordic-curl",
+      "conditioning",
+      "zone2-bike"
+    ],
+    "notes": [
+      "Deload : 2 séries sur les accessoires à −20 %, volume de sauts divisé par 2 (intention maximale conservée), zéro série au-dessus de RPE 6.",
+      "Aucun Nordic difficile, aucun conditioning."
+    ]
+  },
+  "echauffements": {
+    "lower": {
+      "id": "lower",
+      "durationLabel": "8-10 min",
+      "items": [
+        {
+          "id": "wl-velo",
+          "label": "Vélo",
+          "detail": "3 min"
+        },
+        {
+          "id": "wl-ankle",
+          "label": "Ankle rocks",
+          "detail": "10 / côté"
+        },
+        {
+          "id": "wl-9090",
+          "label": "90/90 hip switch",
+          "detail": "× 8"
+        },
+        {
+          "id": "wl-adductor",
+          "label": "Adductor rockback",
+          "detail": "× 8"
+        },
+        {
+          "id": "wl-glute",
+          "label": "Glute bridge",
+          "detail": "× 10"
+        },
+        {
+          "id": "wl-squat",
+          "label": "Squat poids du corps",
+          "detail": "× 10"
+        },
+        {
+          "id": "wl-ramp",
+          "label": "Montées de charge",
+          "detail": "jusqu’à la charge du jour"
+        }
+      ]
+    },
+    "upper": {
+      "id": "upper",
+      "durationLabel": "7-9 min",
+      "items": [
+        {
+          "id": "wu-rameur",
+          "label": "Rameur",
+          "detail": "3 min"
+        },
+        {
+          "id": "wu-pullapart",
+          "label": "Band pull-apart",
+          "detail": "× 15"
+        },
+        {
+          "id": "wu-scap",
+          "label": "Scap push-up",
+          "detail": "× 10"
+        },
+        {
+          "id": "wu-rotext",
+          "label": "Rotation externe câble",
+          "detail": "12 / côté"
+        },
+        {
+          "id": "wu-pompes",
+          "label": "Pompes",
+          "detail": "× 8"
+        },
+        {
+          "id": "wu-ramp",
+          "label": "Montées de charge",
+          "detail": "jusqu’à la charge du jour"
+        }
+      ]
+    }
+  },
+  "exercices": {
+    "pogo-jumps": {
+      "id": "pogo-jumps",
+      "name": "Pogo Jumps",
+      "fn": "jump",
+      "role": "power",
+      "explosive": true,
+      "intent": "Contacts très courts, chevilles rigides, peu de flexion du genou.",
+      "cues": [
+        "Arrêt dès que les rebonds deviennent lourds ou bruyants.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "box-jump": {
+      "id": "box-jump",
+      "name": "Box Jump",
+      "fn": "jump",
+      "role": "power",
+      "explosive": true,
+      "measure": "cm",
+      "intent": "Hauteur où tu atterris souple sans rentrer les genoux ({{box_jump_hauteur_cm}}).",
+      "altBasicFit": "Zone fonctionnelle {{salle}} ; sinon Vertical Jump sur cible murale.",
+      "cues": [
+        "Réception silencieuse. Si elle devient bruyante, l’exercice est terminé.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "back-squat": {
+      "id": "back-squat",
+      "name": "Back Squat",
+      "fn": "squat",
+      "role": "main",
+      "liftId": "back-squat",
+      "measure": "kg",
+      "intent": "Remontée avec intention d’accélération maximale.",
+      "cues": [
+        "Semaines 1-3 — tempo 3-0-X : descente 3 s.",
+        "Semaines 5-7 — fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale, repos 4 min entiers."
+      ]
+    },
+    "bulgarian-split-squat": {
+      "id": "bulgarian-split-squat",
+      "name": "Bulgarian Split Squat",
+      "fn": "squat",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "Tempo 3-1-X-0. Genou avant stable, buste légèrement penché.",
+      "progressionRule": "8 reps propres à RPE ≤ 7,5 → +2 kg par haltère."
+    },
+    "rdl": {
+      "id": "rdl",
+      "name": "Romanian Deadlift",
+      "fn": "hinge",
+      "role": "accessory",
+      "liftId": "rdl",
+      "measure": "kg",
+      "intent": "Tempo 3-1-X-1. Descends jusqu’à l’étirement maximal des ischios sans perdre la neutralité lombaire."
+    },
+    "ab-wheel": {
+      "id": "ab-wheel",
+      "name": "Ab Wheel",
+      "fn": "core",
+      "role": "core",
+      "measure": "reps",
+      "intent": "Bassin en rétroversion, jamais d’extension lombaire.",
+      "cues": [
+        "Augmente l’amplitude avant d’augmenter les reps."
+      ],
+      "altBasicFit": "Rollout avec une barre chargée de deux disques."
+    },
+    "plyo-push-up": {
+      "id": "plyo-push-up",
+      "name": "Plyo Push-Up",
+      "fn": "push",
+      "role": "power",
+      "explosive": true,
+      "intent": "Les mains décollent, réception souple.",
+      "cues": [
+        "Arrêt si les mains décollent moins haut.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ],
+      "altBasicFit": "Mains sur un step si trop dur."
+    },
+    "bench-press": {
+      "id": "bench-press",
+      "name": "Bench Press",
+      "fn": "push",
+      "role": "main",
+      "liftId": "bench-press",
+      "measure": "kg",
+      "intent": "Tempo 2-1-X-0 : pause réelle 1 s sur le torse, poussée explosive."
+    },
+    "weighted-pullup": {
+      "id": "weighted-pullup",
+      "name": "Tractions lestées",
+      "fn": "pull",
+      "role": "main",
+      "liftId": "weighted-pullup",
+      "measure": "kg",
+      "intent": "Dead hang complet, zéro kipping, poitrine vers la barre.",
+      "cues": [
+        "Descente contrôlée 2 s."
+      ]
+    },
+    "landmine-press-kneeling": {
+      "id": "landmine-press-kneeling",
+      "name": "Landmine Press half-kneeling",
+      "fn": "push",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "Transfert jambes → tronc → bras, tronc verrouillé.",
+      "altBasicFit": "Barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou, {{landmine_alt_haltere_kg}} kg."
+    },
+    "chest-supported-row": {
+      "id": "chest-supported-row",
+      "name": "Chest-supported Dumbbell Row",
+      "fn": "pull",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "Pause 1 s en contraction."
+    },
+    "face-pull": {
+      "id": "face-pull",
+      "name": "Face Pull",
+      "fn": "pull",
+      "role": "accessory",
+      "intent": "Léger. Non négociable — robustesse de la coiffe et des scapulas."
+    },
+    "cable-external-rotation": {
+      "id": "cable-external-rotation",
+      "name": "Rotation externe câble",
+      "fn": "pull",
+      "role": "accessory",
+      "intent": "Léger. Non négociable."
+    },
+    "pallof-press": {
+      "id": "pallof-press",
+      "name": "Pallof Press Step-Out",
+      "fn": "core",
+      "role": "core",
+      "intent": "Step-out → verrouillage 2 s → retour. Anti-rotation dynamique."
+    },
+    "broad-jump": {
+      "id": "broad-jump",
+      "name": "Broad Jump",
+      "fn": "jump",
+      "role": "power",
+      "explosive": true,
+      "measure": "cm",
+      "intent": "Maximal. Mesure chaque distance.",
+      "cues": [
+        "Orteils au départ, talon le plus arrière à l’arrivée.",
+        "Les 3 sauts du readiness test servent d’échauffement.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "lateral-bound": {
+      "id": "lateral-bound",
+      "name": "Lateral Bound",
+      "fn": "jump",
+      "role": "power",
+      "explosive": true,
+      "measure": "cm",
+      "intent": "Tiens la réception 2 s. Puissance dans le plan frontal.",
+      "cues": [
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "hang-high-pull": {
+      "id": "hang-high-pull",
+      "name": "Hang High Pull",
+      "fn": "hinge",
+      "role": "power",
+      "explosive": true,
+      "measure": "kg",
+      "intent": "Extension explosive hanches-genoux-chevilles, barre proche du corps, tirage jusqu’à hauteur de poitrine environ. Priorité à la vitesse, jamais à la charge.",
+      "progressionRule": "+2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.",
+      "altBasicFit": "Aucune nécessaire : une barre olympique et des disques suffisent.",
+      "cues": [
+        "Erreur à éviter : tirer avec les bras avant l’extension complète des hanches.",
+        "Erreur à éviter : la barre qui s’éloigne du corps.",
+        "Pas de réception : la barre monte, tu ne passes jamais dessous. Ce n’est pas un hang clean.",
+        "Reset complet entre chaque répétition (barre reposée ou position réinitialisée), 5 à 10 secondes de pause avant la rep suivante — jamais enchaîné en continu.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "push-press": {
+      "id": "push-press",
+      "name": "Push Press",
+      "fn": "push",
+      "role": "main",
+      "liftId": "push-press",
+      "measure": "kg",
+      "intent": "Dip court (10-15 cm), drive explosif. La barre doit voler.",
+      "progressionRule": "+2,5 kg quand les reps de toutes les séries sont rapides.",
+      "cues": [
+        "Si la dernière rep devient un strict press : trop lourd, tu arrêtes."
+      ]
+    },
+    "speed-squat": {
+      "id": "speed-squat",
+      "name": "Speed Squat",
+      "fn": "squat",
+      "role": "main",
+      "liftId": "speed-squat",
+      "measure": "kg",
+      "intent": "Descente contrôlée, remontée la plus rapide possible.",
+      "cues": [
+        "Arrêt dès que la vitesse baisse visiblement, même s’il reste des séries."
+      ]
+    },
+    "jump-squat-db": {
+      "id": "jump-squat-db",
+      "name": "Jump Squat haltères",
+      "fn": "jump",
+      "role": "power",
+      "explosive": true,
+      "intent": "Vitesse de projection, pas de charge lourde.",
+      "cues": [
+        "Ne mets pas {{jump_squat_charge_a_eviter_kg}} kg. L’objectif est la vitesse.",
+        "Chaque répétition est une tentative de performance. Reset complet 5-10 s entre les reps. Tu arrêtes l’exercice si la distance ou la hauteur baisse d’environ 5 %, si le contact au sol devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il reste des séries écrites."
+      ]
+    },
+    "explosive-cable-row": {
+      "id": "explosive-cable-row",
+      "name": "Explosive Cable Row",
+      "fn": "pull",
+      "role": "accessory",
+      "intent": "Tirer vite, retour contrôlé."
+    },
+    "farmer-carry": {
+      "id": "farmer-carry",
+      "name": "Farmer Carry",
+      "fn": "carry",
+      "role": "carry",
+      "measure": "m",
+      "intent": "Buste haut, marche agressive.",
+      "progressionRule": "+2 kg quand les 25 m sont tenus sans ralentir."
+    },
+    "dead-bug-cable": {
+      "id": "dead-bug-cable",
+      "name": "Dead Bug avec câble",
+      "fn": "core",
+      "role": "core",
+      "intent": "Anti-extension."
+    },
+    "deadlift": {
+      "id": "deadlift",
+      "name": "Deadlift conventionnel",
+      "fn": "hinge",
+      "role": "main",
+      "liftId": "deadlift",
+      "measure": "kg",
+      "intent": "Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant décollage, barre contre les tibias, montée avec intention de vitesse maximale.",
+      "cues": [
+        "Si le 1RM deadlift ({{deadlift_1rm}}) est jugé sous-estimé : si la semaine 1 sort à RPE ≤ 6, applique la règle « trop facile » dès la semaine 2."
+      ]
+    },
+    "front-squat": {
+      "id": "front-squat",
+      "name": "Front Squat",
+      "fn": "squat",
+      "role": "main",
+      "liftId": "front-squat",
+      "measure": "kg",
+      "intent": "Coudes hauts, buste vertical.",
+      "progressionRule": "+2,5 kg par semaine si le RPE est conforme."
+    },
+    "hip-thrust": {
+      "id": "hip-thrust",
+      "name": "Hip Thrust",
+      "fn": "hinge",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "2 s de contraction en haut, menton rentré.",
+      "progressionRule": "+10 kg quand le RPE est ≤ 7.",
+      "altBasicFit": "Machine hip thrust si présente, sinon banc + barre avec pad."
+    },
+    "nordic-curl": {
+      "id": "nordic-curl",
+      "name": "Nordic Curl",
+      "fn": "hinge",
+      "role": "accessory",
+      "intent": "Descente 4-5 s, assistance des mains au sol.",
+      "altBasicFit": "Pieds sous le rouleau d’une machine. Sinon Leg Curl 3 × 8, tempo 4-0-1-0."
+    },
+    "single-leg-rdl": {
+      "id": "single-leg-rdl",
+      "name": "Single-Leg RDL haltère",
+      "fn": "hinge",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "Lent, hanche carrée."
+    },
+    "copenhagen-plank": {
+      "id": "copenhagen-plank",
+      "name": "Copenhagen Plank dynamique",
+      "fn": "core",
+      "role": "core",
+      "intent": "Pied supérieur sur banc, monte et descends le bassin."
+    },
+    "suitcase-carry": {
+      "id": "suitcase-carry",
+      "name": "Suitcase Carry",
+      "fn": "carry",
+      "role": "carry",
+      "measure": "m",
+      "intent": "Zéro inclinaison. Regarde droit devant."
+    },
+    "incline-db-press": {
+      "id": "incline-db-press",
+      "name": "Incline Dumbbell Press",
+      "fn": "push",
+      "role": "accessory",
+      "measure": "kg"
+    },
+    "neutral-grip-pullup": {
+      "id": "neutral-grip-pullup",
+      "name": "Tractions prise neutre",
+      "fn": "pull",
+      "role": "accessory",
+      "measure": "kg",
+      "intent": "Ce n’est pas la séance lourde du mercredi."
+    },
+    "one-arm-cable-row": {
+      "id": "one-arm-cable-row",
+      "name": "One-Arm Cable Row",
+      "fn": "pull",
+      "role": "accessory"
+    },
+    "landmine-press-standing": {
+      "id": "landmine-press-standing",
+      "name": "Landmine Press debout",
+      "fn": "push",
+      "role": "accessory",
+      "intent": "Transfert jambes → tronc → bras."
+    },
+    "cable-chop": {
+      "id": "cable-chop",
+      "name": "Cable Chop haut → bas",
+      "fn": "core",
+      "role": "core",
+      "intent": "Rapide, pivote sur les hanches."
+    },
+    "hanging-leg-raise": {
+      "id": "hanging-leg-raise",
+      "name": "Hanging Leg Raise strict",
+      "fn": "core",
+      "role": "core",
+      "measure": "reps",
+      "intent": "Rétroversion du bassin.",
+      "altBasicFit": "Genoux fléchis si trop dur."
+    },
+    "bear-crawl": {
+      "id": "bear-crawl",
+      "name": "Bear Crawl",
+      "fn": "core",
+      "role": "core",
+      "measure": "m",
+      "intent": "Genoux à 5 cm du sol, bassin stable."
+    },
+    "conditioning": {
+      "id": "conditioning",
+      "name": "Conditioning vélo / rameur",
+      "fn": "conditioning",
+      "role": "conditioning",
+      "intent": "8/10 sur les portions rapides, pas de sprint maximal. Coût musculaire faible."
+    },
+    "zone2-bike": {
+      "id": "zone2-bike",
+      "name": "Zone 2 vélo",
+      "fn": "conditioning",
+      "role": "conditioning",
+      "intent": "Facultatif. 10-15 min, rien de plus."
+    },
+    "test-bodyweight": {
+      "id": "test-bodyweight",
+      "name": "Poids de corps",
+      "fn": "test",
+      "role": "test",
+      "measure": "kg",
+      "intent": "Moyenne de 3 matins, à jeun."
+    },
+    "test-broad-jump": {
+      "id": "test-broad-jump",
+      "name": "Broad Jump — test",
+      "fn": "test",
+      "role": "test",
+      "measure": "cm",
+      "intent": "Orteils au départ → talon le plus arrière à l’arrivée. Garde le meilleur essai.",
+      "cues": [
+        "Le meilleur essai du test initial devient ta référence de readiness, définitivement."
+      ]
+    },
+    "test-vertical-jump": {
+      "id": "test-vertical-jump",
+      "name": "Vertical Jump — test",
+      "fn": "test",
+      "role": "test",
+      "measure": "cm",
+      "intent": "Marque murale main tendue vs sommet du saut."
+    },
+    "test-sprint-10m": {
+      "id": "test-sprint-10m",
+      "name": "Sprint 10 m",
+      "fn": "test",
+      "role": "test",
+      "measure": "s",
+      "intent": "Chrono vidéo. Jamais sur tapis.",
+      "cues": [
+        "Si la surface ne s’y prête pas, saute ce test — mais saute-le à chaque combine."
+      ]
+    },
+    "test-sprint-20m": {
+      "id": "test-sprint-20m",
+      "name": "Sprint 20 m",
+      "fn": "test",
+      "role": "test",
+      "measure": "s",
+      "intent": "Chrono vidéo. Jamais sur tapis."
+    },
+    "test-squat-1rm": {
+      "id": "test-squat-1rm",
+      "name": "Back Squat 1RM",
+      "fn": "test",
+      "role": "test",
+      "measure": "kg",
+      "intent": "Repos 4-5 min entre les singles.",
+      "cues": [
+        "Un squat propre à {{back_squat_essai_propre_kg}} vaut plus qu’un grinder hideux à {{back_squat_essai_limite_kg}}."
+      ]
+    },
+    "test-bench-1rm": {
+      "id": "test-bench-1rm",
+      "name": "Bench 1RM",
+      "fn": "test",
+      "role": "test",
+      "measure": "kg",
+      "intent": "Repos 4-5 min entre les singles."
+    },
+    "test-deadlift-1rm": {
+      "id": "test-deadlift-1rm",
+      "name": "Deadlift 1RM",
+      "fn": "test",
+      "role": "test",
+      "measure": "kg",
+      "intent": "Progression selon la vitesse de barre. Si la barre ralentit franchement, c’est le max."
+    },
+    "test-weighted-pullup-1rm": {
+      "id": "test-weighted-pullup-1rm",
+      "name": "Tractions lestées 1RM",
+      "fn": "test",
+      "role": "test",
+      "measure": "kg",
+      "intent": "Dead hang, zéro kipping, menton franchement au-dessus. Repos 4 min."
+    },
+    "test-strict-pullup-max": {
+      "id": "test-strict-pullup-max",
+      "name": "Tractions strictes max",
+      "fn": "test",
+      "role": "test",
+      "measure": "reps",
+      "intent": "1 série, poitrine à la barre."
+    },
+    "test-ab-wheel-max": {
+      "id": "test-ab-wheel-max",
+      "name": "Ab Wheel max",
+      "fn": "test",
+      "role": "test",
+      "measure": "reps",
+      "intent": "1 série stricte. Arrêt à la perte de rétroversion."
+    },
+    "test-leg-raise-max": {
+      "id": "test-leg-raise-max",
+      "name": "Hanging Leg Raise max",
+      "fn": "test",
+      "role": "test",
+      "measure": "reps",
+      "intent": "1 série stricte."
+    },
+    "test-farmer-carry": {
+      "id": "test-farmer-carry",
+      "name": "Farmer Carry — test",
+      "fn": "test",
+      "role": "test",
+      "measure": "m",
+      "intent": "Distance max sans poser, haltères 2 × {{farmer_test_kg}} kg.",
+      "cues": [
+        "Arrêt : haltère posé, grip perdu ou posture dégradée."
+      ]
+    },
+    "ramp-up": {
+      "id": "ramp-up",
+      "name": "Montées de charge",
+      "fn": "test",
+      "role": "test",
+      "intent": "Suis les paliers, repos 2-3 min entre les derniers."
+    }
+  },
+  "trames_semaine_type": {
+    "0": {
+      "day": 0,
+      "title": "Lower Strength — squat",
+      "durationLabel": "65-70 min",
+      "intensity": "DUR",
+      "warmup": "lower",
+      "readinessTest": true,
+      "notes": [],
+      "slots": [
+        {
+          "exId": "pogo-jumps",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 10,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 45
+        },
+        {
+          "exId": "box-jump",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 90
+        },
+        {
+          "exId": "back-squat",
+          "liftId": "back-squat",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 210
+        },
+        {
+          "exId": "bulgarian-split-squat",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "jambe"
+          },
+          "load": {
+            "kind": "autoreg",
+            "seed": "{{bulgarian_split_squat_depart_kg}}",
+            "step": 2,
+            "as": "dbPair"
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 8,
+            "label": "RPE 7-8"
+          },
+          "restSec": 90
+        },
+        {
+          "exId": "rdl",
+          "liftId": "rdl",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 150
+        },
+        {
+          "exId": "ab-wheel",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "bodyweight"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        }
+      ]
+    },
+    "2": {
+      "day": 2,
+      "title": "Upper Strength — bench + tractions",
+      "durationLabel": "65 min",
+      "intensity": "DUR",
+      "warmup": "upper",
+      "readinessTest": false,
+      "notes": [],
+      "slots": [
+        {
+          "exId": "plyo-push-up",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "bodyweight"
+          },
+          "targetRPE": null,
+          "restSec": 90
+        },
+        {
+          "exId": "bench-press",
+          "liftId": "bench-press",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 180
+        },
+        {
+          "exId": "weighted-pullup",
+          "liftId": "weighted-pullup",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 150
+        },
+        {
+          "exId": "landmine-press-kneeling",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{landmine_press_kneeling_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "restSec": 75,
+          "note": "Barre + {{landmine_press_kneeling_kg}} kg."
+        },
+        {
+          "exId": "chest-supported-row",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "dbPair",
+            "kg": "{{chest_supported_row_kg}}",
+            "step": 2
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "restSec": 90
+        },
+        {
+          "exId": "face-pull",
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 15,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 45
+        },
+        {
+          "exId": "cable-external-rotation",
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 12,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 45
+        },
+        {
+          "exId": "pallof-press",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        }
+      ]
+    },
+    "4": {
+      "day": 4,
+      "title": "Total Body Power",
+      "durationLabel": "60 min",
+      "intensity": "RAPIDE",
+      "warmup": "lower",
+      "readinessTest": true,
+      "notes": [
+        "Tu dois sortir en te disant « j’aurais pu en faire plus »."
+      ],
+      "slots": [
+        {
+          "exId": "broad-jump",
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 120,
+          "note": "Les 3 sauts du readiness comptent comme échauffement."
+        },
+        {
+          "exId": "hang-high-pull",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "seed": "{{hang_high_pull_depart_kg}}",
+            "step": 2.5,
+            "as": "barbell"
+          },
+          "targetRPE": null,
+          "restSec": 90
+        },
+        {
+          "exId": "lateral-bound",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 75
+        },
+        {
+          "exId": "push-press",
+          "liftId": "push-press",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 120
+        },
+        {
+          "exId": "speed-squat",
+          "liftId": "speed-squat",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "jump-squat-db",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "text",
+            "label": "{{jump_squat_db_charge_texte}}"
+          },
+          "targetRPE": null,
+          "restSec": 90
+        },
+        {
+          "exId": "explosive-cable-row",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 6,
+            "label": "RPE 6"
+          },
+          "restSec": 75
+        },
+        {
+          "exId": "farmer-carry",
+          "sets": 4,
+          "work": {
+            "kind": "distance",
+            "meters": 25,
+            "perSide": false
+          },
+          "load": {
+            "kind": "dbPair",
+            "kg": "{{farmer_carry_kg}}",
+            "step": 2
+          },
+          "targetRPE": null,
+          "restSec": 90
+        },
+        {
+          "exId": "dead-bug-cable",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 45
+        }
+      ]
+    },
+    "5": {
+      "day": 5,
+      "title": "Posterior Chain — deadlift",
+      "durationLabel": "90 min",
+      "intensity": "DUR",
+      "warmup": "lower",
+      "readinessTest": true,
+      "notes": [],
+      "slots": [
+        {
+          "exId": "broad-jump",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 90,
+          "note": "Potentiation, après le readiness."
+        },
+        {
+          "exId": "deadlift",
+          "liftId": "deadlift",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 210
+        },
+        {
+          "exId": "front-squat",
+          "liftId": "front-squat",
+          "sets": 0,
+          "work": {
+            "kind": "reps",
+            "reps": 0,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 120
+        },
+        {
+          "exId": "hip-thrust",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "seed": "{{hip_thrust_depart_kg}}",
+            "step": 2.5,
+            "as": "barbell"
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "restSec": 90
+        },
+        {
+          "exId": "nordic-curl",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "bodyweight"
+          },
+          "targetRPE": null,
+          "restSec": 120
+        },
+        {
+          "exId": "single-leg-rdl",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "dbSingle",
+            "kg": "{{single_leg_rdl_kg}}",
+            "step": 2
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "copenhagen-plank",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "suitcase-carry",
+          "sets": 3,
+          "work": {
+            "kind": "distance",
+            "meters": 30,
+            "perSide": true
+          },
+          "load": {
+            "kind": "dbSingle",
+            "kg": "{{suitcase_carry_kg}}",
+            "step": 2
+          },
+          "targetRPE": null,
+          "restSec": 60
+        }
+      ]
+    },
+    "6": {
+      "day": 6,
+      "title": "Upper Athletic + tronc",
+      "durationLabel": "80-90 min",
+      "intensity": "MODÉRÉ",
+      "warmup": "upper",
+      "readinessTest": false,
+      "notes": [
+        "Pas de gros travail excentrique jambes."
+      ],
+      "slots": [
+        {
+          "exId": "incline-db-press",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "dbPair",
+            "kg": "{{incline_db_press_kg}}",
+            "step": 2
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 8,
+            "label": "RPE 7-8"
+          },
+          "restSec": 90
+        },
+        {
+          "exId": "neutral-grip-pullup",
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": {
+              "min": 6,
+              "max": 8
+            },
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "text",
+            "label": "{{neutral_grip_pullup_charge_texte}}"
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "restSec": 90
+        },
+        {
+          "exId": "one-arm-cable-row",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 10,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 75
+        },
+        {
+          "exId": "landmine-press-standing",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 2.5,
+            "as": "barbell"
+          },
+          "targetRPE": null,
+          "restSec": 75
+        },
+        {
+          "exId": "cable-chop",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": true,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "autoreg",
+            "step": 1,
+            "as": "cable"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "hanging-leg-raise",
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": {
+              "min": 8,
+              "max": 12
+            },
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "bodyweight"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "bear-crawl",
+          "sets": 3,
+          "work": {
+            "kind": "distance",
+            "meters": 20,
+            "perSide": false
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 60
+        },
+        {
+          "exId": "conditioning",
+          "sets": 1,
+          "work": {
+            "kind": "intervals",
+            "rounds": 8,
+            "workSec": 20,
+            "easySec": 70
+          },
+          "load": {
+            "kind": "none"
+          },
+          "targetRPE": null,
+          "restSec": 0,
+          "note": "12 min. 8/10 sur les 20 s, pas de sprint maximal."
+        }
+      ]
+    }
+  },
+  "regles_de_bloc": [
+    {
+      "block": "maxforce",
+      "day": 0,
+      "notes": [
+        "Fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale."
+      ],
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "box-jump",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 2,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "restSec": 120
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "back-squat",
+          "patch": {
+            "restSec": 240
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "bulgarian-split-squat",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "jambe"
+            },
+            "targetRPE": {
+              "min": 8,
+              "max": 8,
+              "label": "RPE 8"
+            },
+            "restSec": 120
+          }
+        }
+      ]
+    },
+    {
+      "block": "maxforce",
+      "day": 2,
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "bench-press",
+          "patch": {
+            "restSec": 210
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "weighted-pullup",
+          "patch": {
+            "restSec": 180
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "landmine-press-kneeling",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": true,
+              "sideLabel": "côté"
+            },
+            "loadFactor": 1.1,
+            "targetRPE": {
+              "min": 8,
+              "max": 8,
+              "label": "RPE 8"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "chest-supported-row",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "loadFactor": 1.1,
+            "targetRPE": {
+              "min": 8,
+              "max": 8,
+              "label": "RPE 8"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "block": "maxforce",
+      "day": 4,
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "hang-high-pull",
+          "patch": {
+            "sets": 4,
+            "restSec": 120
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "push-press",
+          "patch": {
+            "restSec": 150
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "speed-squat",
+          "patch": {
+            "restSec": 75
+          }
+        }
+      ]
+    },
+    {
+      "block": "maxforce",
+      "day": 5,
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "deadlift",
+          "patch": {
+            "restSec": 240
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "front-squat",
+          "patch": {
+            "restSec": 150
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "hip-thrust",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "targetRPE": {
+              "min": 8,
+              "max": 8,
+              "label": "RPE 8"
+            },
+            "restSec": 120
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "nordic-curl",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": {
+                "min": 4,
+                "max": 5
+              },
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "block": "maxforce",
+      "day": 6,
+      "notes": [
+        "Dimanche : tout à 3 séries."
+      ],
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "incline-db-press",
+          "patch": {
+            "sets": 3
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "neutral-grip-pullup",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "one-arm-cable-row",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "landmine-press-standing",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "cable-chop",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "hanging-leg-raise",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "bear-crawl",
+          "patch": {
+            "sets": 3
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "conditioning",
+          "patch": {
+            "work": {
+              "kind": "intervals",
+              "rounds": 6,
+              "workSec": 20,
+              "easySec": 100
+            },
+            "note": "Et pas davantage."
+          }
+        }
+      ]
+    },
+    {
+      "block": "power",
+      "day": 0,
+      "notes": [
+        "Pogos et box jumps de début de séance supprimés : ils passent dans le contraste."
+      ],
+      "rules": [
+        {
+          "op": "remove",
+          "exId": "pogo-jumps"
+        },
+        {
+          "op": "remove",
+          "exId": "box-jump"
+        },
+        {
+          "op": "patch",
+          "exId": "back-squat",
+          "patch": {
+            "contrastWith": "box-jump"
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "bulgarian-split-squat",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "jambe"
+            },
+            "targetRPE": {
+              "min": 7.5,
+              "max": 7.5,
+              "label": "RPE 7,5"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "ab-wheel",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "block": "power",
+      "day": 2,
+      "rules": [
+        {
+          "op": "remove",
+          "exId": "plyo-push-up"
+        },
+        {
+          "op": "patch",
+          "exId": "bench-press",
+          "patch": {
+            "contrastWith": "plyo-push-up"
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "weighted-pullup",
+          "patch": {
+            "restSec": 180,
+            "note": "Intention explosive."
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "landmine-press-kneeling",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "côté"
+            },
+            "targetRPE": {
+              "min": 6,
+              "max": 6,
+              "label": "RPE 6"
+            },
+            "note": "Explosif."
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "chest-supported-row",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "pallof-press",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "block": "power",
+      "day": 4,
+      "notes": [
+        "Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit."
+      ],
+      "rules": [
+        {
+          "op": "insert",
+          "after": "hang-high-pull",
+          "slot": {
+            "exId": "pogo-jumps",
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 10,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 45
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "lateral-bound",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 2,
+              "perSide": true,
+              "sideLabel": "côté"
+            },
+            "restSec": 90
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "hang-high-pull",
+          "patch": {
+            "sets": 4,
+            "restSec": 120,
+            "note": "Vitesse de barre : la charge ne monte que si les reps restent vives."
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "speed-squat",
+          "patch": {
+            "restSec": 90
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "jump-squat-db",
+          "patch": {
+            "sets": 5,
+            "work": {
+              "kind": "reps",
+              "reps": 3,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "restSec": 120
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "farmer-carry",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "distance",
+              "meters": 20,
+              "perSide": false
+            }
+          }
+        },
+        {
+          "op": "remove",
+          "exId": "explosive-cable-row"
+        },
+        {
+          "op": "remove",
+          "exId": "dead-bug-cable"
+        }
+      ]
+    },
+    {
+      "block": "power",
+      "day": 5,
+      "rules": [
+        {
+          "op": "remove",
+          "exId": "broad-jump"
+        },
+        {
+          "op": "patch",
+          "exId": "deadlift",
+          "patch": {
+            "contrastWith": "broad-jump"
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "hip-thrust",
+          "patch": {
+            "sets": 4,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "targetRPE": {
+              "min": 7,
+              "max": 8,
+              "label": "RPE 7-8"
+            },
+            "note": "Explosif."
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "nordic-curl",
+          "patch": {
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 4,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "copenhagen-plank",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "suitcase-carry",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "distance",
+              "meters": 20,
+              "perSide": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "block": "power",
+      "day": 6,
+      "rules": [
+        {
+          "op": "patch",
+          "exId": "incline-db-press",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": {
+                "min": 6,
+                "max": 8
+              },
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "neutral-grip-pullup",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": {
+                "min": 5,
+                "max": 6
+              },
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "one-arm-cable-row",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "landmine-press-standing",
+          "patch": {
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "cable-chop",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": true,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "hanging-leg-raise",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": false,
+              "sideLabel": "côté"
+            }
+          }
+        },
+        {
+          "op": "patch",
+          "exId": "bear-crawl",
+          "patch": {
+            "sets": 3,
+            "work": {
+              "kind": "distance",
+              "meters": 15,
+              "perSide": false
+            }
+          }
+        },
+        {
+          "op": "remove",
+          "exId": "conditioning"
+        },
+        {
+          "op": "insert",
+          "slot": {
+            "exId": "zone2-bike",
+            "sets": 1,
+            "work": {
+              "kind": "time",
+              "seconds": 900
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": {
+              "min": 0,
+              "max": 4,
+              "label": "RPE ≤ 4"
+            },
+            "restSec": 0,
+            "note": "Facultatif : 10-15 min, rien de plus."
+          }
+        }
+      ]
+    }
+  ],
+  "contraste_par_jour": {
+    "0": {
+      "heavy": "back-squat",
+      "explosive": "box-jump",
+      "explosiveReps": 2,
+      "restAfterHeavySec": 120,
+      "restAfterExplosiveSec": 120,
+      "cycleLabel": "Cycle ≈ 4 min"
+    },
+    "2": {
+      "heavy": "bench-press",
+      "explosive": "plyo-push-up",
+      "explosiveReps": 3,
+      "restAfterHeavySec": 90,
+      "restAfterExplosiveSec": 120,
+      "cycleLabel": "Cycle ≈ 3 min 30"
+    },
+    "5": {
+      "heavy": "deadlift",
+      "explosive": "broad-jump",
+      "explosiveReps": 2,
+      "restAfterHeavySec": 120,
+      "restAfterExplosiveSec": 120,
+      "cycleLabel": "Cycle ≈ 4 min"
+    }
+  },
+  "tableau_charges": {
+    "back-squat": {
+      "indexation": "{{back_squat_1rm}}",
+      "statut_indexation": "présent : « chaque case garde le pourcentage visé, appliqué au vrai maximum, arrondi au 2,5 kg » (§9)",
+      "semaines": [
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.705,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.705)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7.5,
+            "max": 7.5,
+            "label": "RPE 7,5"
+          },
+          "pct_derive": 0.75,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.75)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.795,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.795)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.636,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.636)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.818,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.818)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8.5,
+            "max": 8.5,
+            "label": "RPE 8,5"
+          },
+          "pct_derive": 0.864,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.864)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 9,
+            "max": 9,
+            "label": "RPE 9"
+          },
+          "pct_derive": 0.886,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.886)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.705,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.705)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.841,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.841)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.864,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.864)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": {
+              "min": 1,
+              "max": 2
+            },
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.886,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.886)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{back_squat_s12_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 6,
+            "label": "RPE 5-6"
+          },
+          "note": "Puis TEST 1RM le samedi.",
+          "pct_derive": 0.705,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.705)"
+        }
+      ]
+    },
+    "bench-press": {
+      "indexation": "{{bench_1rm}}",
+      "statut_indexation": "présent : idem §9",
+      "semaines": [
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.739,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.739)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7.5,
+            "max": 7.5,
+            "label": "RPE 7,5"
+          },
+          "pct_derive": 0.761,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.761)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.783,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.783)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.674,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.674)"
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.826,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.826)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8.5,
+            "max": 8.5,
+            "label": "RPE 8,5"
+          },
+          "pct_derive": 0.848,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.848)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 9,
+            "max": 9,
+            "label": "RPE 9"
+          },
+          "pct_derive": 0.891,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.891)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.717,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.717)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.826,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.826)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.848,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.848)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": {
+              "min": 1,
+              "max": 2
+            },
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.891,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.891)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{bench_press_s12_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "note": "Placé le lundi, après le squat (décision de l’utilisateur). TEST 1RM le dimanche.",
+          "pct_derive": 0.717,
+          "formule_proposee": "arrondi_2_5({{bench_1rm}} × 0.717)"
+        }
+      ]
+    },
+    "deadlift": {
+      "indexation": "{{deadlift_1rm}}",
+      "statut_indexation": "présent : idem §9",
+      "semaines": [
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.75,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.75)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7.5,
+            "max": 7.5,
+            "label": "RPE 7,5"
+          },
+          "pct_derive": 0.786,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.786)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.821,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.821)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.661,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.661)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.839,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.839)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8.5,
+            "max": 8.5,
+            "label": "RPE 8,5"
+          },
+          "pct_derive": 0.893,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.893)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 9,
+            "max": 9,
+            "label": "RPE 9"
+          },
+          "pct_derive": 0.929,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.929)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.696,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.696)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.857,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.857)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.911,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.911)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": {
+              "min": 1,
+              "max": 2
+            },
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{deadlift_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "contrast": true,
+          "note": "Contraste : série lourde → 2 min → explosif → 2 min → série suivante.",
+          "pct_derive": 0.929,
+          "formule_proposee": "arrondi_2_5({{deadlift_1rm}} × 0.929)"
+        },
+        {
+          "sets": 1,
+          "work": {
+            "kind": "attempts",
+            "attempts": 1
+          },
+          "load": null,
+          "targetRPE": null,
+          "isTest": true,
+          "note": "TEST 1RM le mercredi."
+        }
+      ]
+    },
+    "weighted-pullup": {
+      "indexation": "{{tractions_lestees_1rm_lest}}",
+      "statut_indexation": "présent : idem §9 (le % porte sur le LEST ajouté, pas sur la masse totale)",
+      "semaines": [
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.444,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.444)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7.5,
+            "max": 7.5,
+            "label": "RPE 7,5"
+          },
+          "pct_derive": 0.5,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.5)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.556,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.556)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.222,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.222)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8,
+            "max": 8,
+            "label": "RPE 8"
+          },
+          "pct_derive": 0.667,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.667)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 8.5,
+            "max": 8.5,
+            "label": "RPE 8,5"
+          },
+          "pct_derive": 0.722,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.722)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 9,
+            "max": 9,
+            "label": "RPE 9"
+          },
+          "pct_derive": 0.778,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.778)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 5,
+            "max": 5,
+            "label": "RPE 5"
+          },
+          "pct_derive": 0.333,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.333)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Intention explosive (§8).",
+          "pct_derive": 0.667,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.667)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Intention explosive (§8).",
+          "pct_derive": 0.722,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.722)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "added",
+            "kg": "{{weighted_pullup_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Intention explosive (§8).",
+          "pct_derive": 0.778,
+          "formule_proposee": "arrondi_2_5({{tractions_lestees_1rm_lest}} × 0.778)"
+        },
+        {
+          "sets": 1,
+          "work": {
+            "kind": "attempts",
+            "attempts": 1
+          },
+          "load": null,
+          "targetRPE": null,
+          "isTest": true,
+          "note": "TEST 1RM le dimanche."
+        }
+      ]
+    },
+    "push-press": {
+      "indexation": null,
+      "statut_indexation": "présent : kilos absolus, NON indexés sur un 1RM (§9). Aucun % dans le dépôt",
+      "semaines": [
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 7,
+            "label": "RPE ≤ 7"
+          }
+        },
+        {
+          "sets": 5,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 7,
+            "label": "RPE ≤ 7"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 7,
+            "label": "RPE ≤ 7"
+          }
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 6,
+            "max": 7,
+            "label": "RPE 6-7"
+          }
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{push_press_s12_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "note": "Placé le lundi, après le squat (décision de l’utilisateur)."
+        }
+      ]
+    },
+    "front-squat": {
+      "indexation": "{{back_squat_1rm}}",
+      "statut_indexation": "proposition : le dépôt n’écrit aucun % pour le front squat ; il a été recalé « × 1RM squat mesuré / 1RM squat estimé ». Le % est calculé ici par rapport au back squat 1RM",
+      "semaines": [
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.545,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.545)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.545,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.545)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.568,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.568)"
+        },
+        {
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "pct_derive": 0.455,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.455)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "pct_derive": 0.636,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.636)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "pct_derive": 0.636,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.636)"
+        },
+        {
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 4,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "pct_derive": 0.5,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.5)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.636,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.636)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.659,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.659)"
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 3,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{front_squat_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "pct_derive": 0.682,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.682)"
+        },
+        null
+      ]
+    },
+    "speed-squat": {
+      "indexation": "{{back_squat_1rm}}",
+      "statut_indexation": "présent : 55 % accumulation, 60 % force max et puissance, 50 % deload et taper (§9)",
+      "semaines": [
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "55 % de {{back_squat_1rm}} — vitesse maximale.",
+          "pct_derive": 0.545,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.545)"
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "55 % de {{back_squat_1rm}} — vitesse maximale.",
+          "pct_derive": 0.545,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.545)"
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "55 % de {{back_squat_1rm}} — vitesse maximale.",
+          "pct_derive": 0.545,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.545)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Deload : volume divisé, intention conservée.",
+          "pct_derive": 0.5,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.5)"
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}}.",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}}.",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 6,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}}.",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Deload.",
+          "pct_derive": 0.5,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.5)"
+        },
+        {
+          "sets": 8,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s9_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}} — 8 séries (§8).",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 8,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s10_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}} — 8 séries (§8).",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 8,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s11_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "60 % de {{back_squat_1rm}} — 8 séries (§8).",
+          "pct_derive": 0.591,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.591)"
+        },
+        {
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 2,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{speed_squat_s12_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null,
+          "note": "Après les tests athlétiques du vendredi, charge légère (décision de l’utilisateur).",
+          "pct_derive": 0.5,
+          "formule_proposee": "arrondi_2_5({{back_squat_1rm}} × 0.5)"
+        }
+      ]
+    },
+    "rdl": {
+      "indexation": null,
+      "statut_indexation": "présent : kilos absolus, NON indexés sur un 1RM (§9). Aucun % dans le dépôt",
+      "semaines": [
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s1_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          }
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s2_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          }
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s3_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          }
+        },
+        {
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 8,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s4_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "note": "Deload : 80 % de la semaine 3."
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 6,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s5_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s6_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null
+        },
+        {
+          "sets": 4,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s7_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": null
+        },
+        {
+          "sets": 2,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s8_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 0,
+            "max": 6,
+            "label": "RPE ≤ 6"
+          },
+          "note": "Deload : 80 % de la semaine 7."
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s9_kg}}",
+            "kgMax": "{{rdl_plafond_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "note": "Plafond assumé à {{rdl_plafond_kg}} kg."
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s10_kg}}",
+            "kgMax": "{{rdl_plafond_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "note": "Plafond assumé à {{rdl_plafond_kg}} kg."
+        },
+        {
+          "sets": 3,
+          "work": {
+            "kind": "reps",
+            "reps": 5,
+            "perSide": false,
+            "sideLabel": "côté"
+          },
+          "load": {
+            "kind": "barbell",
+            "kg": "{{rdl_s11_kg}}",
+            "kgMax": "{{rdl_plafond_kg}}",
+            "step": 2.5
+          },
+          "targetRPE": {
+            "min": 7,
+            "max": 7,
+            "label": "RPE 7"
+          },
+          "note": "Plafond assumé à {{rdl_plafond_kg}} kg."
+        },
+        null
+      ]
+    }
+  },
+  "seances_ecrites": [
+    {
+      "week": 0,
+      "day": 0,
+      "blueprint": {
+        "day": 0,
+        "title": "Combine initial — sauts, sprints, squat 1RM",
+        "durationLabel": "75 min",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": false,
+        "notes": [
+          "Même lieu, mêmes chaussures, même protocole, idéalement même heure — c’est ce qui rendra les trois combines comparables.",
+          "Ton meilleur broad jump d’aujourd’hui devient ta référence de readiness pour les 12 semaines.",
+          "Sauts et sprints avant le squat : peu fatigants, et ils préparent le système nerveux.",
+          "Le poids de corps ne se prend pas ici : c’est une moyenne de 3 matins à jeun, à saisir dans Réglages."
+        ],
+        "slots": [
+          {
+            "exId": "test-broad-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 180
+          },
+          {
+            "exId": "test-vertical-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 5
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 90
+          },
+          {
+            "exId": "test-sprint-10m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 4
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240,
+            "note": "Si la surface ne s’y prête pas, saute ce test."
+          },
+          {
+            "exId": "test-sprint-20m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 4
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240
+          },
+          {
+            "exId": "test-squat-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 2
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{back_squat_palier_initial_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.429,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.571,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_3_kg}}",
+                "reps": 2,
+                "pct_derive": 0.714,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.821,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_5_kg}}",
+                "reps": 1,
+                "pct_derive": 0.929,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.018,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{back_squat_palier_initial_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.054,
+                "pct_derive_base": "{{back_squat_1rm_estime}} (1RM estimé avant tests)"
+              }
+            ],
+            "note": "{{back_squat_palier_initial_7_kg}} seulement si {{back_squat_palier_initial_6_kg}} passe proprement."
+          }
+        ]
+      }
+    },
+    {
+      "week": 0,
+      "day": 1,
+      "blueprint": {
+        "day": 1,
+        "title": "Combine initial — tractions lestées 1RM",
+        "durationLabel": "40 min",
+        "intensity": "TEST",
+        "warmup": "upper",
+        "readinessTest": false,
+        "notes": [
+          "Séance volontairement courte : rien d’autre aujourd’hui.",
+          "Repos 4 min entre les tentatives. Dead hang, menton franchement au-dessus."
+        ],
+        "slots": [
+          {
+            "exId": "test-weighted-pullup-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 2
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{weighted_pullup_palier_initial_1_kg}}",
+                "reps": 3,
+                "added": true,
+                "pct_derive": 0.476,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_initial_2_kg}}",
+                "reps": 1,
+                "added": true,
+                "pct_derive": 0.714,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_initial_3_kg}}",
+                "reps": 1,
+                "added": true,
+                "pct_derive": 0.857,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_initial_4_kg}}",
+                "reps": 1,
+                "added": true,
+                "attempt": true,
+                "pct_derive": 0.952,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_initial_5_kg}}",
+                "reps": 1,
+                "added": true,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.012,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest_estime}} (1RM estimé avant tests)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "week": 0,
+      "day": 3,
+      "blueprint": {
+        "day": 3,
+        "title": "Combine initial — deadlift 1RM",
+        "durationLabel": "45 min",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": false,
+        "notes": [
+          "Jamais squat et deadlift 1RM le même jour — ici trois jours les séparent.",
+          "Le mercredi de repos est là pour ce test : c’est ton 1RM le plus important, il alimente tout le tableau de charges.",
+          "Rien d’autre aujourd’hui. Si la barre ralentit franchement, c’est le max."
+        ],
+        "slots": [
+          {
+            "exId": "test-deadlift-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{deadlift_palier_initial_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.462,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.615,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_3_kg}}",
+                "reps": 2,
+                "pct_derive": 0.769,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.885,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_5_kg}}",
+                "reps": 1,
+                "pct_derive": 1,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.058,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.096,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{deadlift_palier_initial_8_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.135,
+                "pct_derive_base": "{{deadlift_1rm_estime}} (1RM estimé avant tests)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "week": 0,
+      "day": 4,
+      "blueprint": {
+        "day": 4,
+        "title": "Combine initial — bench 1RM + ab wheel",
+        "durationLabel": "55 min",
+        "intensity": "TEST",
+        "warmup": "upper",
+        "readinessTest": false,
+        "notes": [
+          "Le bench ne fatigue ni la préhension ni le dos : il ne compromet pas le test de demain."
+        ],
+        "slots": [
+          {
+            "exId": "test-bench-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{bench_press_palier_initial_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.5,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.667,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_3_kg}}",
+                "reps": 1,
+                "pct_derive": 0.792,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.896,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_5_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 0.979,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.021,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              },
+              {
+                "kg": "{{bench_press_palier_initial_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.042,
+                "pct_derive_base": "{{bench_1rm_estime}} (1RM estimé avant tests)"
+              }
+            ]
+          },
+          {
+            "exId": "test-ab-wheel-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          }
+        ]
+      }
+    },
+    {
+      "week": 0,
+      "day": 5,
+      "blueprint": {
+        "day": 5,
+        "title": "Combine initial — tractions max, leg raise, farmer",
+        "durationLabel": "50 min",
+        "intensity": "TEST",
+        "warmup": "upper",
+        "readinessTest": false,
+        "notes": [
+          "48 h après le deadlift : ta préhension et ton dos sont récupérés.",
+          "Ordre imposé, et le même aux trois combines : tractions, puis leg raise, puis farmer.",
+          "Demain, repos complet. La semaine 1 démarre lundi, à froid."
+        ],
+        "slots": [
+          {
+            "exId": "test-strict-pullup-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0,
+            "note": "Poitrine à la barre."
+          },
+          {
+            "exId": "test-leg-raise-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "test-farmer-carry",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0,
+            "note": "Haltères 2 × {{farmer_test_kg}} kg, distance max sans poser."
+          }
+        ]
+      }
+    },
+    {
+      "week": 8,
+      "day": 5,
+      "blueprint": {
+        "day": 5,
+        "title": "Combine intermédiaire",
+        "durationLabel": "75 min",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": false,
+        "notes": [
+          "Pas de 1RM cette semaine : les tests athlétiques seulement.",
+          "Tests d’abord, à froid. Le travail de deload vient après."
+        ],
+        "slots": [
+          {
+            "exId": "test-broad-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 180
+          },
+          {
+            "exId": "test-vertical-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 5
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 90
+          },
+          {
+            "exId": "test-sprint-10m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240
+          },
+          {
+            "exId": "test-sprint-20m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240
+          },
+          {
+            "exId": "test-strict-pullup-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "test-farmer-carry",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0,
+            "note": "Haltères 2 × {{farmer_test_kg}} kg, distance max."
+          },
+          {
+            "exId": "deadlift",
+            "liftId": "deadlift",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 180,
+            "note": "Deload : RPE 5, vitesse de barre."
+          },
+          {
+            "exId": "front-squat",
+            "liftId": "front-squat",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 120,
+            "note": "Deload : RPE 5."
+          }
+        ]
+      }
+    },
+    {
+      "week": 8,
+      "day": 6,
+      "blueprint": {
+        "day": 6,
+        "title": "Combine intermédiaire (suite) + haut du corps",
+        "durationLabel": "55 min",
+        "intensity": "TEST",
+        "warmup": "upper",
+        "readinessTest": false,
+        "notes": [
+          "Tests d’abord, puis la séance du dimanche en version deload."
+        ],
+        "slots": [
+          {
+            "exId": "test-ab-wheel-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "test-leg-raise-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "incline-db-press",
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 8,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "dbPair",
+              "kg": "{{incline_db_press_s8_kg}}",
+              "step": 2
+            },
+            "targetRPE": {
+              "min": 6,
+              "max": 6,
+              "label": "RPE 6"
+            },
+            "restSec": 90
+          },
+          {
+            "exId": "one-arm-cable-row",
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 10,
+              "perSide": true,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": {
+              "min": 6,
+              "max": 6,
+              "label": "RPE 6"
+            },
+            "restSec": 75
+          },
+          {
+            "exId": "cable-chop",
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": true,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": {
+              "min": 6,
+              "max": 6,
+              "label": "RPE 6"
+            },
+            "restSec": 60
+          }
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "day": 0,
+      "blueprint": {
+        "day": 0,
+        "title": "Taper — séance complète légère",
+        "durationLabel": "50 min",
+        "intensity": "LÉGER",
+        "warmup": "lower",
+        "readinessTest": true,
+        "notes": [
+          "Semaine de taper. Tu sors frais, pas fatigué. Vitesse de barre, rien de plus.",
+          "Seule séance d’entraînement de la semaine : les quatre autres jours sont des tests."
+        ],
+        "slots": [
+          {
+            "exId": "box-jump",
+            "sets": 3,
+            "work": {
+              "kind": "reps",
+              "reps": 2,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 120
+          },
+          {
+            "exId": "back-squat",
+            "liftId": "back-squat",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 180
+          },
+          {
+            "exId": "bulgarian-split-squat",
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 5,
+              "perSide": true,
+              "sideLabel": "jambe"
+            },
+            "load": {
+              "kind": "autoreg",
+              "seed": "{{bulgarian_split_squat_s12_depart_kg}}",
+              "step": 2,
+              "as": "dbPair"
+            },
+            "targetRPE": {
+              "min": 5,
+              "max": 5,
+              "label": "RPE 5"
+            },
+            "restSec": 60,
+            "note": "Léger."
+          },
+          {
+            "exId": "ab-wheel",
+            "sets": 2,
+            "work": {
+              "kind": "reps",
+              "reps": 6,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "bodyweight"
+            },
+            "targetRPE": {
+              "min": 5,
+              "max": 5,
+              "label": "RPE 5"
+            },
+            "restSec": 60
+          },
+          {
+            "exId": "bench-press",
+            "liftId": "bench-press",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 120,
+            "note": "Léger, vitesse de barre. Aucune progression automatique en taper."
+          },
+          {
+            "exId": "push-press",
+            "liftId": "push-press",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 120,
+            "note": "Léger, vitesse de barre. Aucune progression automatique en taper."
+          }
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "day": 2,
+      "blueprint": {
+        "day": 2,
+        "title": "TEST Deadlift 1RM",
+        "durationLabel": "45 min",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": false,
+        "notes": [
+          "Rien d’autre aujourd’hui.",
+          "Les paliers affichés sont ceux du test initial : au-delà de {{deadlift_s12_dernier_palier_ecrit_kg}} kg, monte à la sensation et à la vitesse de barre."
+        ],
+        "slots": [
+          {
+            "exId": "test-deadlift-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{deadlift_palier_final_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.464,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.607,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_3_kg}}",
+                "reps": 2,
+                "pct_derive": 0.768,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.893,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_5_kg}}",
+                "reps": 1,
+                "pct_derive": 0.929,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.054,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.107,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{deadlift_palier_final_8_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.161,
+                "pct_derive_base": "{{deadlift_1rm}} (1RM mesuré)"
+              }
+            ],
+            "note": "Si la barre ralentit franchement, c’est le max."
+          }
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "day": 4,
+      "blueprint": {
+        "day": 4,
+        "title": "Tests athlétiques",
+        "durationLabel": "45 min max",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": false,
+        "notes": [
+          "Mêmes chaussures, même lieu, même protocole que le test initial.",
+          "Tests d’abord, puis le speed squat léger en fin de séance (décision de l’utilisateur)."
+        ],
+        "slots": [
+          {
+            "exId": "test-broad-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 180
+          },
+          {
+            "exId": "test-vertical-jump",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 5
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 90
+          },
+          {
+            "exId": "test-sprint-10m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 4
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240
+          },
+          {
+            "exId": "test-sprint-20m",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 4
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 240
+          },
+          {
+            "exId": "test-strict-pullup-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "test-leg-raise-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0
+          },
+          {
+            "exId": "speed-squat",
+            "liftId": "speed-squat",
+            "sets": 0,
+            "work": {
+              "kind": "reps",
+              "reps": 0,
+              "perSide": false,
+              "sideLabel": "côté"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 90,
+            "note": "Charge légère, juste pour garder la sensation de mouvement."
+          }
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "day": 5,
+      "blueprint": {
+        "day": 5,
+        "title": "TEST Back Squat 1RM + Farmer",
+        "durationLabel": "60 min",
+        "intensity": "TEST",
+        "warmup": "lower",
+        "readinessTest": true,
+        "notes": [
+          "Un squat propre à {{back_squat_essai_propre_kg}} vaut plus qu’un grinder hideux à {{back_squat_essai_limite_kg}}."
+        ],
+        "slots": [
+          {
+            "exId": "test-squat-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{back_squat_palier_final_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.432,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.568,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_3_kg}}",
+                "reps": 2,
+                "pct_derive": 0.705,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.818,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_5_kg}}",
+                "reps": 1,
+                "pct_derive": 0.932,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.023,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.068,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{back_squat_palier_final_8_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.114,
+                "pct_derive_base": "{{back_squat_1rm}} (1RM mesuré)"
+              }
+            ]
+          },
+          {
+            "exId": "test-farmer-carry",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0,
+            "note": "Haltères 2 × {{farmer_test_kg}} kg, distance max sans poser."
+          }
+        ]
+      }
+    },
+    {
+      "week": 12,
+      "day": 6,
+      "blueprint": {
+        "day": 6,
+        "title": "TEST Bench + tractions + tronc",
+        "durationLabel": "75 min",
+        "intensity": "TEST",
+        "warmup": "upper",
+        "readinessTest": false,
+        "notes": [
+          "Dernière séance du programme. Note tout."
+        ],
+        "slots": [
+          {
+            "exId": "test-bench-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{bench_press_palier_final_1_kg}}",
+                "reps": 5,
+                "pct_derive": 0.5,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_2_kg}}",
+                "reps": 3,
+                "pct_derive": 0.674,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_3_kg}}",
+                "reps": 1,
+                "pct_derive": 0.783,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_4_kg}}",
+                "reps": 1,
+                "pct_derive": 0.891,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_5_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": false,
+                "pct_derive": 1.022,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_6_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.043,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{bench_press_palier_final_7_kg}}",
+                "reps": 1,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.065,
+                "pct_derive_base": "{{bench_1rm}} (1RM mesuré)"
+              }
+            ]
+          },
+          {
+            "exId": "test-weighted-pullup-1rm",
+            "sets": 1,
+            "work": {
+              "kind": "attempts",
+              "attempts": 3
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 300,
+            "ramp": [
+              {
+                "kg": "{{weighted_pullup_palier_final_1_kg}}",
+                "reps": 3,
+                "added": true,
+                "pct_derive": 0.444,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_final_2_kg}}",
+                "reps": 1,
+                "added": true,
+                "pct_derive": 0.667,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_final_3_kg}}",
+                "reps": 1,
+                "added": true,
+                "pct_derive": 0.889,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_final_4_kg}}",
+                "reps": 1,
+                "added": true,
+                "attempt": true,
+                "pct_derive": 1.056,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_final_5_kg}}",
+                "reps": 1,
+                "added": true,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.111,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              },
+              {
+                "kg": "{{weighted_pullup_palier_final_6_kg}}",
+                "reps": 1,
+                "added": true,
+                "attempt": true,
+                "optional": true,
+                "pct_derive": 1.167,
+                "pct_derive_base": "{{tractions_lestees_1rm_lest}} (1RM mesuré)"
+              }
+            ],
+            "note": "Repos 4 min. Dead hang, menton franchement au-dessus."
+          },
+          {
+            "exId": "test-ab-wheel-max",
+            "sets": 1,
+            "work": {
+              "kind": "maxSet"
+            },
+            "load": {
+              "kind": "none"
+            },
+            "targetRPE": null,
+            "restSec": 0,
+            "note": "Arrêt à la perte de rétroversion."
+          }
+        ]
+      }
+    }
+  ],
+  "mesures_combine": [
+    "test-bodyweight",
+    "test-broad-jump",
+    "test-vertical-jump",
+    "test-sprint-10m",
+    "test-sprint-20m",
+    "test-squat-1rm",
+    "test-bench-1rm",
+    "test-deadlift-1rm",
+    "test-weighted-pullup-1rm",
+    "test-strict-pullup-max",
+    "test-farmer-carry",
+    "test-ab-wheel-max",
+    "test-leg-raise-max"
+  ],
+  "mesures_combine_s8": [
+    "test-bodyweight",
+    "test-broad-jump",
+    "test-vertical-jump",
+    "test-sprint-10m",
+    "test-sprint-20m",
+    "test-strict-pullup-max",
+    "test-farmer-carry",
+    "test-ab-wheel-max",
+    "test-leg-raise-max"
+  ],
+  "cibles_12_semaines": {
+    "test-deadlift-1rm": {
+      "start": "{{depart.test-deadlift-1rm}}",
+      "target": "{{cible.test-deadlift-1rm}}"
+    },
+    "test-squat-1rm": {
+      "start": "{{depart.test-squat-1rm}}",
+      "target": "{{cible.test-squat-1rm}}"
+    },
+    "test-bench-1rm": {
+      "start": "{{depart.test-bench-1rm}}",
+      "target": "{{cible.test-bench-1rm}}"
+    },
+    "test-weighted-pullup-1rm": {
+      "start": "{{depart.test-weighted-pullup-1rm}}",
+      "target": "{{cible.test-weighted-pullup-1rm}}"
+    },
+    "test-strict-pullup-max": {
+      "start": "{{depart.test-strict-pullup-max}}",
+      "target": "{{cible.test-strict-pullup-max}}"
+    },
+    "test-broad-jump": {
+      "start": "{{depart.test-broad-jump}}",
+      "target": "{{cible.test-broad-jump}}"
+    },
+    "test-vertical-jump": {
+      "start": "{{depart.test-vertical-jump}}",
+      "target": "{{cible.test-vertical-jump}}"
+    },
+    "test-sprint-10m": {
+      "start": "{{depart.test-sprint-10m}}",
+      "target": "{{cible.test-sprint-10m}}"
+    },
+    "test-farmer-carry": {
+      "start": "{{depart.test-farmer-carry}}",
+      "target": "{{cible.test-farmer-carry}}"
+    },
+    "test-ab-wheel-max": {
+      "start": "{{depart.test-ab-wheel-max}}",
+      "target": "{{cible.test-ab-wheel-max}}"
+    },
+    "test-bodyweight": {
+      "start": "{{depart.test-bodyweight}}",
+      "target": "{{cible.test-bodyweight}}"
+    }
+  },
+  "nutrition": {
+    "_statut": "présent dans le dépôt (structure) ; toutes les quantités et cibles sont personnelles et remplacées par des variables",
+    "nombre_de_prises": "{{nombre_repas}}",
+    "paliers": {
+      "train": {
+        "kind": "train",
+        "label": "Jour d’entraînement",
+        "kcal": "{{kcal_jour_entrainement}}",
+        "proteinG": "{{proteines_g_jour_entrainement}}",
+        "carbsG": "{{glucides_g_jour_entrainement}}",
+        "fatG": "{{lipides_g_jour_entrainement}}",
+        "note": "Les glucides se concentrent autour de la séance, pas le soir devant la télé.",
+        "meals": [
+          {
+            "name": "Repas 1 — réveil ({{heure_repas_1}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "t.reveil.oeuf",
+                "product": "oeuf",
+                "label": "Œuf entier",
+                "qty": "{{qte.t.reveil.oeuf}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 71.5,
+                "proteinG": 6.3,
+                "carbsG": 0.35,
+                "fatG": 4.95,
+                "hint": "Un œuf moyen, environ 50 g."
+              },
+              {
+                "id": "t.reveil.pain",
+                "product": "pain",
+                "label": "Pain complet",
+                "qty": "{{qte.t.reveil.pain}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 250,
+                "proteinG": 9,
+                "carbsG": 43,
+                "fatG": 3.3,
+                "hint": "Une tranche pèse environ 35 g."
+              },
+              {
+                "id": "t.reveil.miel",
+                "product": "miel",
+                "label": "Miel ou confiture",
+                "qty": "{{qte.t.reveil.miel}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 300,
+                "proteinG": 0.3,
+                "carbsG": 82,
+                "fatG": 0
+              },
+              {
+                "id": "t.reveil.banane",
+                "product": "banane",
+                "label": "Banane",
+                "qty": "{{qte.t.reveil.banane}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 107,
+                "proteinG": 1.3,
+                "carbsG": 27.6,
+                "fatG": 0.4,
+                "hint": "Une banane moyenne, environ 120 g épluchée."
+              }
+            ]
+          },
+          {
+            "name": "Repas 2 — collation ({{heure_repas_2}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "t.collation8.flocons",
+                "product": "flocons",
+                "label": "Flocons d’avoine",
+                "qty": "{{qte.t.collation8.flocons}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 380,
+                "proteinG": 13,
+                "carbsG": 60,
+                "fatG": 7
+              },
+              {
+                "id": "t.collation8.lait",
+                "product": "lait",
+                "label": "Lait demi-écrémé",
+                "qty": "{{qte.t.collation8.lait}}",
+                "unit": "ml",
+                "per": 100,
+                "kcal": 46,
+                "proteinG": 3.3,
+                "carbsG": 4.8,
+                "fatG": 1.6
+              }
+            ]
+          },
+          {
+            "name": "Repas 3 — collation ({{heure_repas_3}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "x.collation10.skyr",
+                "product": "skyr",
+                "label": "Skyr nature",
+                "qty": "{{qte.x.collation10.skyr}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 63,
+                "proteinG": 9.8,
+                "carbsG": 4,
+                "fatG": 0.2
+              },
+              {
+                "id": "x.collation10.amandes",
+                "product": "amandes",
+                "label": "Amandes",
+                "qty": "{{qte.x.collation10.amandes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 580,
+                "proteinG": 21,
+                "carbsG": 10,
+                "fatG": 50
+              },
+              {
+                "id": "x.collation10.pomme",
+                "product": "pomme",
+                "label": "Pomme",
+                "qty": "{{qte.x.collation10.pomme}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 80,
+                "proteinG": 0.5,
+                "carbsG": 21.5,
+                "fatG": 0.3,
+                "hint": "Une pomme moyenne, environ 155 g."
+              }
+            ]
+          },
+          {
+            "name": "Repas 4 — déjeuner ({{heure_repas_4}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "t.dejeuner.viande",
+                "product": "viande",
+                "label": "Viande ou poisson",
+                "qty": "{{qte.t.dejeuner.viande}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 170,
+                "proteinG": 27,
+                "carbsG": 0,
+                "fatG": 7,
+                "hint": "Poulet, dinde, bœuf 5 %, poisson — pesé cuit."
+              },
+              {
+                "id": "t.dejeuner.feculent",
+                "product": "feculent",
+                "label": "Féculent",
+                "qty": "{{qte.t.dejeuner.feculent}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 125,
+                "proteinG": 3.5,
+                "carbsG": 26,
+                "fatG": 0.5,
+                "hint": "Riz, pâtes, pommes de terre — pesé CUIT."
+              },
+              {
+                "id": "t.dejeuner.legumes",
+                "product": "legumes",
+                "label": "Légumes",
+                "qty": "{{qte.t.dejeuner.legumes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 30,
+                "proteinG": 2,
+                "carbsG": 5,
+                "fatG": 0.3
+              },
+              {
+                "id": "t.dejeuner.huile",
+                "product": "huile",
+                "label": "Huile d’olive ou de colza",
+                "qty": "{{qte.t.dejeuner.huile}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 900,
+                "proteinG": 0,
+                "carbsG": 0,
+                "fatG": 100
+              }
+            ]
+          },
+          {
+            "name": "Repas 5 — autour de la séance ({{heure_repas_5}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "t.autour.banane",
+                "product": "banane",
+                "label": "Banane",
+                "qty": "{{qte.t.autour.banane}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 107,
+                "proteinG": 1.3,
+                "carbsG": 27.6,
+                "fatG": 0.4,
+                "hint": "Une banane moyenne, environ 120 g épluchée."
+              },
+              {
+                "id": "t.autour.pain",
+                "product": "pain",
+                "label": "Pain complet",
+                "qty": "{{qte.t.autour.pain}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 250,
+                "proteinG": 9,
+                "carbsG": 43,
+                "fatG": 3.3,
+                "hint": "Une tranche pèse environ 35 g."
+              },
+              {
+                "id": "t.autour.miel",
+                "product": "miel",
+                "label": "Miel ou confiture",
+                "qty": "{{qte.t.autour.miel}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 300,
+                "proteinG": 0.3,
+                "carbsG": 82,
+                "fatG": 0
+              },
+              {
+                "id": "t.autour.whey",
+                "product": "whey",
+                "label": "Whey",
+                "qty": "{{qte.t.autour.whey}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 400,
+                "proteinG": 80,
+                "carbsG": 8,
+                "fatG": 5
+              },
+              {
+                "id": "t.autour.pomme",
+                "product": "pomme",
+                "label": "Pomme",
+                "qty": "{{qte.t.autour.pomme}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 80,
+                "proteinG": 0.5,
+                "carbsG": 21.5,
+                "fatG": 0.3,
+                "hint": "Une pomme moyenne, environ 155 g."
+              }
+            ]
+          },
+          {
+            "name": "Repas 6 — dîner ({{heure_repas_6}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "t.diner.viande",
+                "product": "viande",
+                "label": "Viande ou poisson",
+                "qty": "{{qte.t.diner.viande}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 170,
+                "proteinG": 27,
+                "carbsG": 0,
+                "fatG": 7,
+                "hint": "Poulet, dinde, bœuf 5 %, poisson — pesé cuit."
+              },
+              {
+                "id": "t.diner.feculent",
+                "product": "feculent",
+                "label": "Féculent",
+                "qty": "{{qte.t.diner.feculent}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 125,
+                "proteinG": 3.5,
+                "carbsG": 26,
+                "fatG": 0.5,
+                "hint": "Riz, pâtes, pommes de terre — pesé CUIT."
+              },
+              {
+                "id": "t.diner.legumes",
+                "product": "legumes",
+                "label": "Légumes",
+                "qty": "{{qte.t.diner.legumes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 30,
+                "proteinG": 2,
+                "carbsG": 5,
+                "fatG": 0.3
+              },
+              {
+                "id": "t.diner.huile",
+                "product": "huile",
+                "label": "Huile d’olive ou de colza",
+                "qty": "{{qte.t.diner.huile}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 900,
+                "proteinG": 0,
+                "carbsG": 0,
+                "fatG": 100
+              }
+            ]
+          }
+        ]
+      },
+      "rest": {
+        "kind": "rest",
+        "label": "Jour de repos",
+        "kcal": "{{kcal_jour_repos}}",
+        "proteinG": "{{proteines_g_jour_repos}}",
+        "carbsG": "{{glucides_g_jour_repos}}",
+        "fatG": "{{lipides_g_jour_repos}}",
+        "note": "Ce n’est pas un jour « low carb » : mêmes six prises, mêmes protéines, seuls les féculents baissent.",
+        "meals": [
+          {
+            "name": "Repas 1 — réveil ({{heure_repas_1}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "r.reveil.oeuf",
+                "product": "oeuf",
+                "label": "Œuf entier",
+                "qty": "{{qte.r.reveil.oeuf}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 71.5,
+                "proteinG": 6.3,
+                "carbsG": 0.35,
+                "fatG": 4.95,
+                "hint": "Un œuf moyen, environ 50 g."
+              },
+              {
+                "id": "r.reveil.pain",
+                "product": "pain",
+                "label": "Pain complet",
+                "qty": "{{qte.r.reveil.pain}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 250,
+                "proteinG": 9,
+                "carbsG": 43,
+                "fatG": 3.3,
+                "hint": "Une tranche pèse environ 35 g."
+              },
+              {
+                "id": "r.reveil.miel",
+                "product": "miel",
+                "label": "Miel ou confiture",
+                "qty": "{{qte.r.reveil.miel}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 300,
+                "proteinG": 0.3,
+                "carbsG": 82,
+                "fatG": 0
+              },
+              {
+                "id": "r.reveil.banane",
+                "product": "banane",
+                "label": "Banane",
+                "qty": "{{qte.r.reveil.banane}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 107,
+                "proteinG": 1.3,
+                "carbsG": 27.6,
+                "fatG": 0.4,
+                "hint": "Une banane moyenne, environ 120 g épluchée."
+              }
+            ]
+          },
+          {
+            "name": "Repas 2 — collation ({{heure_repas_2}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "r.collation8.flocons",
+                "product": "flocons",
+                "label": "Flocons d’avoine",
+                "qty": "{{qte.r.collation8.flocons}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 380,
+                "proteinG": 13,
+                "carbsG": 60,
+                "fatG": 7
+              },
+              {
+                "id": "r.collation8.lait",
+                "product": "lait",
+                "label": "Lait demi-écrémé",
+                "qty": "{{qte.r.collation8.lait}}",
+                "unit": "ml",
+                "per": 100,
+                "kcal": 46,
+                "proteinG": 3.3,
+                "carbsG": 4.8,
+                "fatG": 1.6
+              }
+            ]
+          },
+          {
+            "name": "Repas 3 — collation ({{heure_repas_3}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "x.collation10.skyr",
+                "product": "skyr",
+                "label": "Skyr nature",
+                "qty": "{{qte.x.collation10.skyr}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 63,
+                "proteinG": 9.8,
+                "carbsG": 4,
+                "fatG": 0.2
+              },
+              {
+                "id": "x.collation10.amandes",
+                "product": "amandes",
+                "label": "Amandes",
+                "qty": "{{qte.x.collation10.amandes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 580,
+                "proteinG": 21,
+                "carbsG": 10,
+                "fatG": 50
+              },
+              {
+                "id": "x.collation10.pomme",
+                "product": "pomme",
+                "label": "Pomme",
+                "qty": "{{qte.x.collation10.pomme}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 80,
+                "proteinG": 0.5,
+                "carbsG": 21.5,
+                "fatG": 0.3,
+                "hint": "Une pomme moyenne, environ 155 g."
+              }
+            ]
+          },
+          {
+            "name": "Repas 4 — déjeuner ({{heure_repas_4}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "r.dejeuner.viande",
+                "product": "viande",
+                "label": "Viande ou poisson",
+                "qty": "{{qte.r.dejeuner.viande}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 170,
+                "proteinG": 27,
+                "carbsG": 0,
+                "fatG": 7,
+                "hint": "Poulet, dinde, bœuf 5 %, poisson — pesé cuit."
+              },
+              {
+                "id": "r.dejeuner.feculent",
+                "product": "feculent",
+                "label": "Féculent",
+                "qty": "{{qte.r.dejeuner.feculent}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 125,
+                "proteinG": 3.5,
+                "carbsG": 26,
+                "fatG": 0.5,
+                "hint": "Riz, pâtes, pommes de terre — pesé CUIT."
+              },
+              {
+                "id": "r.dejeuner.legumes",
+                "product": "legumes",
+                "label": "Légumes",
+                "qty": "{{qte.r.dejeuner.legumes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 30,
+                "proteinG": 2,
+                "carbsG": 5,
+                "fatG": 0.3
+              },
+              {
+                "id": "r.dejeuner.huile",
+                "product": "huile",
+                "label": "Huile d’olive ou de colza",
+                "qty": "{{qte.r.dejeuner.huile}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 900,
+                "proteinG": 0,
+                "carbsG": 0,
+                "fatG": 100
+              }
+            ]
+          },
+          {
+            "name": "Repas 5 — collation ({{heure_repas_5}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "r.collation16.banane",
+                "product": "banane",
+                "label": "Banane",
+                "qty": "{{qte.r.collation16.banane}}",
+                "unit": "unité",
+                "per": 1,
+                "kcal": 107,
+                "proteinG": 1.3,
+                "carbsG": 27.6,
+                "fatG": 0.4,
+                "hint": "Une banane moyenne, environ 120 g épluchée."
+              },
+              {
+                "id": "r.collation16.pain",
+                "product": "pain",
+                "label": "Pain complet",
+                "qty": "{{qte.r.collation16.pain}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 250,
+                "proteinG": 9,
+                "carbsG": 43,
+                "fatG": 3.3,
+                "hint": "Une tranche pèse environ 35 g."
+              },
+              {
+                "id": "r.collation16.miel",
+                "product": "miel",
+                "label": "Miel ou confiture",
+                "qty": "{{qte.r.collation16.miel}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 300,
+                "proteinG": 0.3,
+                "carbsG": 82,
+                "fatG": 0
+              },
+              {
+                "id": "r.collation16.whey",
+                "product": "whey",
+                "label": "Whey",
+                "qty": "{{qte.r.collation16.whey}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 400,
+                "proteinG": 80,
+                "carbsG": 8,
+                "fatG": 5
+              }
+            ]
+          },
+          {
+            "name": "Repas 6 — dîner ({{heure_repas_6}})",
+            "kcal": "somme des aliments",
+            "items": [
+              {
+                "id": "r.diner.viande",
+                "product": "viande",
+                "label": "Viande ou poisson",
+                "qty": "{{qte.r.diner.viande}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 170,
+                "proteinG": 27,
+                "carbsG": 0,
+                "fatG": 7,
+                "hint": "Poulet, dinde, bœuf 5 %, poisson — pesé cuit."
+              },
+              {
+                "id": "r.diner.feculent",
+                "product": "feculent",
+                "label": "Féculent",
+                "qty": "{{qte.r.diner.feculent}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 125,
+                "proteinG": 3.5,
+                "carbsG": 26,
+                "fatG": 0.5,
+                "hint": "Riz, pâtes, pommes de terre — pesé CUIT."
+              },
+              {
+                "id": "r.diner.legumes",
+                "product": "legumes",
+                "label": "Légumes",
+                "qty": "{{qte.r.diner.legumes}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 30,
+                "proteinG": 2,
+                "carbsG": 5,
+                "fatG": 0.3
+              },
+              {
+                "id": "r.diner.huile",
+                "product": "huile",
+                "label": "Huile d’olive ou de colza",
+                "qty": "{{qte.r.diner.huile}}",
+                "unit": "g",
+                "per": 100,
+                "kcal": 900,
+                "proteinG": 0,
+                "carbsG": 0,
+                "fatG": 100
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "regles_simples": [
+      "Une protéine à chaque repas, sans exception.",
+      "Glucides concentrés avant et après l’entraînement.",
+      "Légumes à volonté, ça ne compte quasiment pas.",
+      "Moyenne 7 jours, jamais une pesée isolée.",
+      "Jour de repos : mêmes six prises, on allège seulement les féculents."
+    ],
+    "complement": "Créatine monohydrate, 5 g par jour, tous les jours, n’importe quand — le seul complément qui vaut le coup. La whey est un dépannage pratique, pas une obligation. Pas de brûleur de graisse, pas de BCAA.",
+    "hydratation": "Bois régulièrement, la couleur des urines suffit comme repère. Plus d’eau et de sel les jours de chaleur ou de grosse transpiration au travail ({{contexte_travail}}). Pas de règle rigide du type « 3 L obligatoires ».",
+    "vitesse_de_prise_kg_par_semaine": {
+      "min": "{{prise_min_kg_semaine}}",
+      "max": "{{prise_max_kg_semaine}}",
+      "_valeur_dans_le_depot": {
+        "min": 0.15,
+        "max": 0.3
+      }
+    },
+    "tolerance_ecart_repas_cible_pct": 5,
+    "regles_ajustement_poids": {
+      "_source": "src/engine/nutrition.ts ADJUST_RULES (seuils tranchés au bord prudent des fourchettes du .md)",
+      "stableKg": 0.15,
+      "stableWeeks": 3,
+      "fastGainKg": 0.4,
+      "fastGainWeeks": 2,
+      "waistRiseCm": 0.5,
+      "action_stable": "Ajoute 50 g de féculent au dîner.",
+      "action_prise_rapide": "Retire 50 g de féculent au dîner."
+    },
+    "carburant_par_seance": {
+      "_statut": "présent dans le dépôt, décision de l’utilisateur hors .md (bonus glucidique facultatif, jamais fondu dans les totaux)",
+      "niveaux": {
+        "high": {
+          "level": "high",
+          "emoji": "🔴",
+          "title": "CARBURANT ++",
+          "subtitle": "Séance très exigeante",
+          "foods": [
+            "+ 1 banane",
+            "+ 40 g pain",
+            "+ 20 g miel"
+          ],
+          "kcal": 240,
+          "kcalLabel": "≈ +240 kcal",
+          "carbsLabel": "≈ +55-60 g glucides",
+          "message": "À répartir dans la journée, avec priorité avant l’entraînement."
+        },
+        "medium": {
+          "level": "medium",
+          "emoji": "🟠",
+          "title": "CARBURANT +",
+          "subtitle": "Séance exigeante",
+          "foods": [
+            "+ 1 banane",
+            "+ 20 g miel"
+          ],
+          "kcal": 145,
+          "kcalLabel": "≈ +145 kcal",
+          "carbsLabel": "≈ +35-40 g glucides",
+          "message": "À consommer de préférence avant l’entraînement."
+        },
+        "standard": {
+          "level": "standard",
+          "emoji": "🟡",
+          "title": "STANDARD",
+          "subtitle": "Séance modérée",
+          "foods": [],
+          "kcal": 0,
+          "kcalLabel": "",
+          "carbsLabel": "",
+          "message": "Plan alimentaire de base — aucun ajout nécessaire."
+        },
+        "rest": {
+          "level": "rest",
+          "emoji": "🟢",
+          "title": "REPOS",
+          "subtitle": "Pas de séance aujourd’hui",
+          "foods": [],
+          "kcal": 0,
+          "kcalLabel": "",
+          "carbsLabel": "",
+          "message": "Jour de récupération — plan alimentaire de base."
+        }
+      },
+      "par_jour": {
+        "0": "high",
+        "2": "standard",
+        "4": "medium",
+        "5": "high",
+        "6": "medium"
+      }
+    },
+    "liste_de_courses": [
+      {
+        "title": "Protéines",
+        "items": "Œufs, poulet ou dinde, viande hachée 5 %, poisson, yaourts grecs ou skyr, fromage blanc, whey"
+      },
+      {
+        "title": "Glucides",
+        "items": "Riz, pâtes, pain complet, flocons d’avoine, pommes de terre, patates douces, fruits"
+      },
+      {
+        "title": "Lipides",
+        "items": "Huile d’olive, amandes ou noix, avocat"
+      },
+      {
+        "title": "Légumes",
+        "items": "En grande quantité, ce qui te plaît — haricots verts, brocolis, carottes, salade, courgettes"
+      }
+    ]
+  }
+}
