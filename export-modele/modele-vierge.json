@@ -3,9 +3,10 @@
     "titre": "Modèle de référence — programme de préparation athlétique (12 semaines + semaine de tests)",
     "source": "dépôt programme-12-semaines, src/data/*.ts (format interne de l’appli, sérialisé en JSON)",
     "convention": "{{variable}} = valeur à renseigner pour chaque personne. Tout le reste est la structure de référence, reprise telle quelle.",
-    "champs_derives": "pct_derive / formule_proposee / pct_derive_base = PROPOSITION (calculée par division charge ÷ 1RM mesuré), absente du dépôt sous cette forme. À valider.",
+    "champs_derives": "pct_derive / formule_proposee = charge du dépôt ÷ 1RM mesuré. VALIDÉ le 01/10/2026 pour les charges du tableau : charge = arrondi_2_5(1RM mesuré × pct). pct_derive_base des paliers de test : indicatif.",
     "jours": "0 = lundi … 6 = dimanche",
-    "semaines": "0 = semaine de tests (combine initial), 1 à 12 = programme"
+    "semaines": "0 = semaine de tests (combine initial), 1 à 12 = programme",
+    "decision_charges_sans_pct": "Push Press, RDL et accessoires : pas de calcul. Charge choisie à la 1re séance au RPE cible, puis règles §11 (décision du 01/10/2026)."
   },
   "profil": {
     "prenom": "{{prenom}}",
@@ -3293,7 +3294,7 @@
     },
     "push-press": {
       "indexation": null,
-      "statut_indexation": "présent : kilos absolus, NON indexés sur un 1RM (§9). Aucun % dans le dépôt",
+      "statut_indexation": "présent : kilos absolus, non indexés (§9). Décision 01/10/2026 : charge choisie à la 1re séance au RPE cible, puis règles §11",
       "semaines": [
         {
           "sets": 5,
@@ -3528,7 +3529,7 @@
     },
     "front-squat": {
       "indexation": "{{back_squat_1rm}}",
-      "statut_indexation": "proposition : le dépôt n’écrit aucun % pour le front squat ; il a été recalé « × 1RM squat mesuré / 1RM squat estimé ». Le % est calculé ici par rapport au back squat 1RM",
+      "statut_indexation": "validé le 01/10/2026 : % du back squat 1RM (le dépôt n'écrivait aucun %)",
       "semaines": [
         {
           "sets": 3,
@@ -3976,7 +3977,7 @@
     },
     "rdl": {
       "indexation": null,
-      "statut_indexation": "présent : kilos absolus, NON indexés sur un 1RM (§9). Aucun % dans le dépôt",
+      "statut_indexation": "présent : kilos absolus, non indexés (§9). Décision 01/10/2026 : charge choisie à la 1re séance au RPE cible, puis règles §11",
       "semaines": [
         {
           "sets": 3,

@@ -96,7 +96,7 @@ Les % dérivés de chaque palier (par rapport au 1RM *estimé*) sont dans `model
 | 4 × 1RM | Paliers du combine final (S12) | Recalcul manuel : « les mêmes rapports de montée que le test initial, appliqués au maximum mesuré, arrondis au 2,5 kg ». Dernier palier deadlift ramené à 93 %. | [DÉPÔT] (manuel) |
 | 4 × 1RM | Cibles à 12 semaines (§13) | « Chaque cible garde la progression relative que le programme visait, appliquée au vrai départ : squat +7 à +11 %, bench +4 à +6 %, tractions lestées +13 %, deadlift +15 à +19 %. » | [DÉPÔT] |
 | 1RM squat | Speed Squat | « 55 % en accumulation, 60 % en force max et en puissance, 50 % en deload et au taper », arrondi au 2,5 kg le plus proche | [DÉPÔT] |
-| 1RM | Toutes les charges du tableau | `charge = arrondi_2,5(1RM × pct)` avec les % dérivés du JSON | **[PROPOSITION]** — automatiser ce qui est fait à la main dans le dépôt |
+| 1RM | Charges du tableau (squat, bench, deadlift, tractions, front squat, speed squat) | `charge = arrondi_2,5(1RM × pct)` avec les % du JSON | **[VALIDÉ le 01/10/2026]** |
 
 ---
 
@@ -244,7 +244,7 @@ Une ligne par semaine, une colonne par lift : Back Squat (lun), Bench (mer), Dea
 
 RPE complétés par le code (décisions documentées) : tractions lestées alignées sur le bench de la même semaine ; Push Press « ≤ 7 » S1-3, « 6-7 » S5-7 et S9-11, « ≤ 6 » en deload ; S9-11 sans RPE (« la vitesse de barre pilote ») ; Speed Squat jamais de RPE.
 
-**% du 1RM mesuré correspondant à chaque case** (dérivés en divisant les kilos du dépôt par les 1RM mesurés) — **[PROPOSITION]** pour automatiser le calcul :
+**% du 1RM mesuré correspondant à chaque case** (dérivés en divisant les kilos du dépôt par les 1RM mesurés) — **[VALIDÉ le 01/10/2026]** :
 
 | Sem | Back Squat | Bench | Deadlift | Tractions (lest) | Front Squat (÷ squat) |
 |---|---|---|---|---|---|
@@ -261,7 +261,7 @@ RPE complétés par le code (décisions documentées) : tractions lestées align
 | 11 | 88,6 % | 89,1 % | 92,9 % | 77,8 % | 68,2 % |
 | 12 | 70,5 % | 71,7 % | TEST | TEST | — |
 
-Formule proposée : `charge = arrondi_au_pas(1RM_mesuré × pct)`, pas = 2,5 kg (barre). Push Press et RDL n'ont **aucun %** dans le dépôt → P7.
+Formule retenue : `charge = arrondi_au_pas(1RM_mesuré × pct)`, pas = 2,5 kg (barre). Push Press et RDL : **pas de %** — charge choisie à la 1re séance au RPE cible, puis règles §11 (décision P7).
 
 ---
 
@@ -466,8 +466,10 @@ Aucune notion de questionnaire, de fiche de synthèse, de profil multi-utilisate
 | P5 | Exception deadlift semaine 1 : **à décider pour chaque personne**, après le questionnaire. |
 | P12 / C3 | Protéines : **2 g/kg de poids de corps par défaut** (et non 3,1 g/kg), ajustées selon les réponses au questionnaire. |
 | P14 | Alternative aux tractions lestées : **tirage vertical**. |
+| P6 / P8 | **Charges calculées à partir des tests** : `charge = arrondi_2,5(1RM mesuré × %)`, avec les % de la section 5.8 (squat, bench, deadlift, tractions lestées ; front squat en % du back squat). |
+| P7 / P9 | **Push Press, RDL et accessoires : pas de calcul.** À la 1re séance, la personne choisit la charge qui donne le RPE cible ; ensuite, les règles de progression §11 prennent le relais. |
 
-Restent ouverts : P6 à P11, P13 (lié à P3), P15 à P17.
+Restent ouverts : P10, P11, P13 (lié à P3), P15 à P17.
 
 
 | # | Point | Ce que dit le dépôt | Ce qu'il faut décider |

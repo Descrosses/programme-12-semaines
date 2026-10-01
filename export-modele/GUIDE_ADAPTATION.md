@@ -37,12 +37,12 @@ Toutes les variables de `modele-vierge.json` sont entre `{{ }}`. Elles se rempli
 |---|---|---|
 | `{{broad_jump_reference_cm}}` | Meilleur broad jump du combine initial | Readiness (`broadJumpBaselineCm`) [DÉPÔT] |
 | `{{back_squat_1rm}}`, `{{bench_1rm}}`, `{{deadlift_1rm}}`, `{{tractions_lestees_1rm_lest}}` | 1RM mesurés | Readiness ROUGE (65 %) [DÉPÔT] ; tableau §9, paliers finaux, cibles [calcul DÉPÔT fait à la main, automatisation PROPOSITION] |
-| `{{<lift>_s1_kg}}` … `{{<lift>_s12_kg}}` pour `back_squat`, `bench_press`, `deadlift`, `weighted_pullup`, `front_squat`, `speed_squat` | Charges du tableau §9 = `arrondi_2,5(1RM × pct_derive)` (champ `formule_proposee` du JSON) | Séances |
-| `{{push_press_s1..12_kg}}`, `{{rdl_s1..11_kg}}`, `{{rdl_plafond_kg}}` | Charges absolues : **aucune règle dans le dépôt** (P7) | Séances |
+| `{{<lift>_s1_kg}}` … `{{<lift>_s12_kg}}` pour `back_squat`, `bench_press`, `deadlift`, `weighted_pullup`, `front_squat`, `speed_squat` | Charges du tableau §9 = `arrondi_2,5(1RM × pct_derive)` (champ `formule_proposee` du JSON) — **validé le 01/10/2026** | Séances |
+| `{{push_press_s1..12_kg}}`, `{{rdl_s1..11_kg}}`, `{{rdl_plafond_kg}}` | **Pas de calcul** (décision 01/10/2026) : charge choisie à la 1re séance au RPE cible, puis règles §11 | Séances |
 | `{{<lift>_palier_final_*_kg}}` | Paliers du combine final = mêmes rapports que l'initial, appliqués au 1RM mesuré | Semaine 12 |
 | `{{deadlift_s12_dernier_palier_ecrit_kg}}`, `{{back_squat_essai_propre_kg}}`, `{{back_squat_essai_limite_kg}}` | Textes de consigne de la semaine 12 | Semaine 12 |
 | `{{depart.<mesure>}}`, `{{cible.<mesure>}}` (11 mesures) | Départ = combine initial ; cible = départ × progression relative du §13 | Onglet Combine |
-| Charges de départ des accessoires : `{{bulgarian_split_squat_depart_kg}}`, `{{bulgarian_split_squat_s12_depart_kg}}`, `{{hip_thrust_depart_kg}}`, `{{hang_high_pull_depart_kg}}`, `{{landmine_press_kneeling_kg}}`, `{{landmine_alt_haltere_kg}}`, `{{chest_supported_row_kg}}`, `{{farmer_carry_kg}}`, `{{single_leg_rdl_kg}}`, `{{suitcase_carry_kg}}`, `{{incline_db_press_kg}}`, `{{incline_db_press_s8_kg}}`, `{{jump_squat_db_charge_texte}}`, `{{jump_squat_charge_a_eviter_kg}}`, `{{neutral_grip_pullup_charge_texte}}` | Pas de règle dans le dépôt (P9). PROPOSITION : charge permettant le schéma de la semaine 1 au RPE cible, choisie pendant la 1re séance ; seul le Hang High Pull a un repère (≈ 29 % du deadlift testé, [DÉPÔT, commentaire]) | Séances |
+| Charges de départ des accessoires : `{{bulgarian_split_squat_depart_kg}}`, `{{bulgarian_split_squat_s12_depart_kg}}`, `{{hip_thrust_depart_kg}}`, `{{hang_high_pull_depart_kg}}`, `{{landmine_press_kneeling_kg}}`, `{{landmine_alt_haltere_kg}}`, `{{chest_supported_row_kg}}`, `{{farmer_carry_kg}}`, `{{single_leg_rdl_kg}}`, `{{suitcase_carry_kg}}`, `{{incline_db_press_kg}}`, `{{incline_db_press_s8_kg}}`, `{{jump_squat_db_charge_texte}}`, `{{jump_squat_charge_a_eviter_kg}}`, `{{neutral_grip_pullup_charge_texte}}` | **Décision 01/10/2026** : charge permettant le schéma de la semaine 1 au RPE cible, choisie pendant la 1re séance, puis règles §11 (repère indicatif pour le Hang High Pull : ≈ 29 % du deadlift testé, [DÉPÔT, commentaire]) | Séances |
 
 Réglages de l'appli à saisir (écran Réglages) : date de début, poids de corps, référence broad jump, 4 × 1RM testés. [DÉPÔT]
 
@@ -208,6 +208,6 @@ Règle à appliquer : **aucune donnée de santé ni nom de famille dans le code 
 
 ## 6. Points à confirmer (spécifiques à ce fichier)
 - G1. L'attribution « temps A / temps B » de chaque variable est ma proposition.
-- G2. Aucune règle de calcul n'existe dans le dépôt pour Push Press, RDL et les charges de départ des accessoires (P7, P9).
+- G2. ~~Push Press, RDL, accessoires~~ → tranché le 01/10/2026 : charge choisie à la 1re séance au RPE cible, puis §11.
 - G3. Le mode de déploiement multi-personnes (un dépôt par personne) est une proposition ; une seule appli multi-profils demanderait une refonte du stockage.
 - G4. La règle de confidentialité suppose que tu veux protéger les données de santé de tes clients ; le dépôt actuel n'en contient pas, mais il contient tes propres mesures.
