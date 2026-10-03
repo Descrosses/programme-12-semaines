@@ -76,6 +76,9 @@
   left: 0;
   right: 0;
   bottom: 0;
+  /* Même correctif que la barre de chrono : iOS ancre le `fixed` au layout
+     viewport, pas au visible. Vaut 0 partout ailleurs. */
+  transform: translateY(var(--vv-offset, 0px));
   z-index: 30;
   max-width: 560px;
   margin: 0 auto;
