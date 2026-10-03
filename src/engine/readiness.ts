@@ -15,6 +15,7 @@
 
 import { READINESS_THRESHOLDS } from '../data/program';
 import type { ReadinessLevel, ReadinessResult } from './types';
+import { parseNombre } from './numberEntry';
 
 const LABELS: Record<ReadinessLevel, string> = {
   vert: 'VERT — séance complète.',
@@ -74,6 +75,31 @@ export function manualRed(signals: {
 }
 
 /** Meilleur des essais saisis, en ignorant les cases vides. */
+/**
+ * Bornes d'un broad jump saisi à la main.
+ *
+ * 100 cm écarte une faute de frappe sans écarter une mauvaise journée ; 400 cm
+ * est au-delà du record du monde. Ce sont des garde-fous de saisie, pas des
+ * seuils de performance.
+ */
+export const JUMP_MIN_CM = 100;
+export const JUMP_MAX_CM = 400;
+
+/**
+ * Lit une distance de saut tapée au clavier.
+ *
+ * Les trois champs n'avaient que leurs boutons +/−, au pas de 5 cm depuis
+ * 100 cm. Un saut mesuré à 268 cm n'était donc pas seulement long à saisir :
+ * il était **impossible**, la grille ne passant que par les multiples de 5.
+ * Or le readiness compare un écart de 2 % — sur 265 cm, 2 % valent 5,3 cm.
+ * Arrondir la mesure à la grille, c'est arrondir le verdict.
+ *
+ * En centimètres entiers : un décimètre de saut ne se mesure pas au millimètre.
+ */
+export function parseJumpCm(raw: string, previous: number | null): number | null {
+  return parseNombre(raw, previous, { min: JUMP_MIN_CM, max: JUMP_MAX_CM, decimales: 0 });
+}
+
 export function bestJump(attempts: Array<number | null>): number | null {
   const valid = attempts.filter((a): a is number => a !== null && Number.isFinite(a) && a > 0);
   return valid.length === 0 ? null : Math.max(...valid);
