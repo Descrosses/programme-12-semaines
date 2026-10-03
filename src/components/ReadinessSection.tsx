@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { bestJump, readiness as compute } from '../engine/readiness';
+import {
+  JUMP_MAX_CM,
+  JUMP_MIN_CM,
+  bestJump,
+  readiness as compute,
+  parseJumpCm,
+} from '../engine/readiness';
 import type { ReadinessResult } from '../engine/types';
 import { Stepper, stepValue } from './Stepper';
 import styles from '../screens/Session.module.css';
@@ -31,7 +37,16 @@ export function ReadinessSection({
   const stepAttempt = (i: number, delta: number) => {
     setDraft((prev) => {
       const next = [...prev];
-      next[i] = stepValue(prev[i] ?? null, delta, 100, 400);
+      next[i] = stepValue(prev[i] ?? null, delta, JUMP_MIN_CM, JUMP_MAX_CM);
+      return next;
+    });
+  };
+
+  /** Valeur tapée au clavier sur un des trois sauts. */
+  const commitAttempt = (i: number, brut: string) => {
+    setDraft((prev) => {
+      const next = [...prev];
+      next[i] = parseJumpCm(brut, prev[i] ?? null);
       return next;
     });
   };
@@ -63,11 +78,22 @@ export function ReadinessSection({
             label={`Saut ${i + 1}`}
             value={draft[i] ?? null}
             step={5}
-            min={100}
-            max={400}
+            min={JUMP_MIN_CM}
+            max={JUMP_MAX_CM}
             unit="cm"
             tone={best !== null && draft[i] === best ? 'accent' : 'normal'}
             onStep={(d) => stepAttempt(i, d)}
+            /*
+             * Saisie au clavier en plus des boutons : au pas de 5 cm, un saut
+             * mesuré à 268 cm était impossible à entrer. Le readiness se joue
+             * à 2 % — sur 265 cm, c'est 5,3 cm — donc arrondir la mesure à la
+             * grille revenait à arrondir le verdict.
+             *
+             * `parseJumpCm` garde la valeur précédente en cas de doute : un
+             * champ vidé par erreur ne doit pas écrire un 0, qui déclencherait
+             * un ROUGE sur une faute de frappe.
+             */
+            onCommitText={(brut) => commitAttempt(i, brut)}
           />
         ))}
       </div>
