@@ -16,6 +16,7 @@ import {
   type CombinePhase,
   type CombineRow,
   type ExerciseMediaRow,
+  type CustomFoodRow,
   type ExerciseNoteRow,
   type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
@@ -604,7 +605,14 @@ export async function loadHistoryIndex(): Promise<HistoryIndex> {
 export async function allFoodOverrides(): Promise<FoodOverrides> {
   const out: FoodOverrides = {};
   for (const r of await db.foodOverrides.toArray()) {
-    out[r.foodId] = { qty: r.qty, kcal: r.kcal, proteinG: r.proteinG, carbsG: r.carbsG, fatG: r.fatG };
+    out[r.foodId] = {
+      qty: r.qty,
+      kcal: r.kcal,
+      proteinG: r.proteinG,
+      carbsG: r.carbsG,
+      fatG: r.fatG,
+      productId: r.productId,
+    };
   }
   return out;
 }
@@ -617,9 +625,45 @@ export async function saveFoodOverride(foodId: string, patch: FoodOverride): Pro
     if (existing?.id !== undefined) await db.foodOverrides.delete(existing.id);
     return;
   }
-  const row: FoodOverrideRow = { foodId, ...patch };
+  /*
+   * On REMPLACE la ligne, champ par champ, en repartant de ce qui y était.
+   *
+   * Sans ça, enregistrer une quantité effacerait le remplacement enregistré
+   * juste avant : les deux vivent sous la même clé de ligne, et l'écran ne les
+   * saisit pas en même temps. Un champ absent du patch veut dire « n'y touche
+   * pas », pas « efface-le ».
+   */
+  const row: FoodOverrideRow = { ...existing, foodId, ...sansIndefinis(patch) };
   if (existing?.id !== undefined) await db.foodOverrides.update(existing.id, row);
   else await db.foodOverrides.add(row);
+}
+
+/** Les seules clés réellement renseignées — `undefined` ne doit rien écraser. */
+function sansIndefinis(patch: FoodOverride): Partial<FoodOverride> {
+  return Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined));
+}
+
+// ------------------------------------------------- aliments personnalisés --
+
+/**
+ * Enregistre un aliment saisi par Guillaume, réutilisable ensuite partout.
+ *
+ * `foodId` est unique : ressaisir le même aliment corrige le premier au lieu
+ * d'empiler des doublons dans la liste de choix.
+ */
+export async function saveCustomFood(row: Omit<CustomFoodRow, 'id'>): Promise<void> {
+  const existing = await db.customFoods.where('foodId').equals(row.foodId).first();
+  if (existing?.id !== undefined) await db.customFoods.update(existing.id, row);
+  else await db.customFoods.add(row);
+}
+
+export async function allCustomFoods(): Promise<CustomFoodRow[]> {
+  return db.customFoods.orderBy('addedAt').reverse().toArray();
+}
+
+export async function deleteCustomFood(foodId: string): Promise<void> {
+  const existing = await db.customFoods.where('foodId').equals(foodId).first();
+  if (existing?.id !== undefined) await db.customFoods.delete(existing.id);
 }
 
 /** Revient au .md pour un aliment, ou pour tous quand `foodId` est omis. */
