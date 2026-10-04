@@ -1,12 +1,16 @@
 # Plan alimentaire — 12 semaines
-Cible : 3 600 kcal · 240 g protéines · 425 g glucides · 105 g lipides (jour d'entraînement)
-Aucun aliment exotique, tout se trouve en supermarché standard, zéro allergène particulier.
+Cible : 3 233 kcal · 190 g protéines · 402 g glucides · 89 g lipides (jour d'entraînement)
+Ce plan part de ce que Guillaume mange RÉELLEMENT. Les aliments sont les siens ; seules les quantités ont été ajustées pour soutenir le programme.
 
 ## Principe général (style NFL, pas culturiste)
 
-Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se concentrent autour de l'entraînement (avant/après), pas le soir devant la télé. 6 prises alimentaires : cinq ne suffisaient pas à atteindre la cible sans des assiettes intenables, la sixième est une collation légère de 8 h qui se prépare la veille.
+Beaucoup de glucides, protéines suffisantes, lipides modérés. Les glucides se concentrent autour de l'entraînement, pas le soir devant la télé. **Cinq prises**, celles que Guillaume fait déjà : 05 h 45, 08 h, 12 h, 16 h, 20 h.
 
-**Deux paliers, pas plus** : jour d'entraînement (~3 600 kcal) et jour de repos (~3 050 kcal). Le jour de repos garde les six prises et les mêmes protéines : on allège uniquement les féculents. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique que tu ne peux pas tenir sans peser chaque aliment — ce n'est pas ce que tu as demandé.
+**Le plan part du réel, pas de la théorie.** La version précédente visait 3 600 kcal et 240 g de protéines, construits à partir d'aliments génériques — « viande ou poisson », « féculent ». Elle ne ressemblait pas à ce qui est réellement mangé, donc elle n'était pas suivie. Ici, chaque ligne est un aliment précis du quotidien de Guillaume ; ce sont les quantités qui ont bougé, pas les aliments.
+
+**Les protéines BAISSENT, et c'est voulu.** L'alimentation réelle apportait déjà ≈ 213 g, soit 2,7 g/kg — au-dessus de ce qu'un travail de force exige. Le surplus est reconverti en glucides, qui eux servent à la performance. Cible retenue : ≈ 190 g, soit 2,4 g/kg.
+
+**Deux paliers, pas plus** : jour d'entraînement (≈ 3 233 kcal) et jour de repos (≈ 2 801 kcal). Le jour de repos garde les cinq prises, les mêmes aliments et presque les mêmes protéines : seuls les féculents baissent. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique intenable sans peser chaque aliment.
 
 **Hydratation** : bois régulièrement dans la journée, utilise la couleur des urines comme repère. Augmente eau et sel les jours de forte chaleur ou de transpiration importante sur chantier. Pas de règle rigide du type « 3 L obligatoires ».
 
@@ -16,101 +20,117 @@ Beaucoup de glucides, protéines élevées, lipides modérés. Les glucides se c
 
 ## Journée type — jour d'entraînement
 
-**Réveil (6 h)**
+**Petit-déjeuner (05 h 45)**
 - 3 œufs entiers
-- 3 tranches de pain complet + 20 g de miel ou de confiture
+- 70 g de flocons croustillants (type Bjorg)
+- 100 g de fruits rouges
+- 200 ml de lait demi-écrémé
+≈ 674 kcal / 33 g protéines / 62 g glucides / 32 g lipides
+
+**Collation (08 h, sur la route ou au chantier)**
+- 1 pomme
+- 30 g d'amandes
+- 200 g de skyr nature
+- 20 g de confiture
+≈ 440 kcal / 26 g protéines / 49 g glucides / 16 g lipides
+
+**Déjeuner (12 h)**
+- 150 g de poulet cuit
+- 320 g de riz cuit
+- 150 g de petits pois cuits
+≈ 785 kcal / 63 g protéines / 111 g glucides / 7 g lipides
+
+**Pré-entraînement (16 h)**
 - 1 banane
-- Café ou thé si tu veux
-≈ 644 kcal / 30 g protéines
+- 80 g de pain complet
+- 25 g de miel ou de confiture
+- 120 g de skyr nature
+≈ 458 kcal / 20 g protéines / 87 g glucides / 3 g lipides
 
-**Collation (8 h, sur la route ou au chantier)**
-- 60 g de flocons d'avoine + 250 ml de lait demi-écrémé
-- Se prépare la veille dans une bouteille ou un bocal, se boit d'une main
-≈ 343 kcal / 16 g protéines
+C'est la prise la plus retravaillée du plan. Elle passe de 289 à 458 kcal et de 36 à 87 g de glucides, pour **3 g de lipides** : une collation pré-séance doit fournir du carburant disponible, pas ralentir la digestion. Le skyr apporte de quoi tenir jusqu'à 20 h sans alourdir.
 
-**Collation (10 h, chantier)**
-- 280 g de skyr nature (9,8 g protéines/100 g) + 30 g d'amandes + 1 pomme
-≈ 430 kcal / 34 g protéines
+**Dîner (20 h)**
+- 140 g de saumon
+- 280 g de pâtes cuites
+- 150 g de purée de brocolis
+- 10 g d'huile d'olive
+≈ 876 kcal / 48 g protéines / 93 g glucides / 31 g lipides
 
-**Déjeuner**
-- 180-200 g de viande blanche ou rouge maigre (poulet, dinde, bœuf 5 %) ou poisson
-- 300 g de riz, pâtes ou pommes de terre (poids cuit)
-- 250 g de légumes (haricots verts, brocolis, carottes, salade)
-- 10 g d'huile d'olive (1 cuillère à soupe)
-≈ 863 kcal / 67 g protéines
+**Total** : ≈ 3 233 kcal / 190 g protéines / 402 g glucides / 89 g lipides / ≈ 43 g fibres.
 
-**Autour de la séance (16 h)**
-- *Avant* (1h30 avant) : 1 banane + 2 tranches de pain complet avec 20 g de miel
-- *Après* (dans les 45 min) : shaker whey (30 g) + 1 pomme
-≈ 542 kcal / 32 g protéines
+Le total est la somme des aliments listés, jamais un nombre écrit à part. L'écart avec le calcul d'Atwater (≈ 3 175 kcal) vient des arrondis d'étiquette et des fibres : c'est normal, et c'est pour ça que les quantités sont des repères et non des lois.
 
-**Dîner**
-- 180-200 g de viande, poisson ou œufs (4-5 œufs si végé ce soir-là)
-- 200 g de féculent (riz, pâtes, patate douce, pommes de terre — poids cuit)
-- 250 g de légumes
-- 15 g d'huile d'olive ou de colza
-≈ 783 kcal / 63 g protéines
-
-**Total** : ≈ 3 600 kcal / 240 g protéines / 425 g glucides / 105 g lipides.
-
-Ce total est calculé sur les valeurs de composition réelles des aliments listés, pas estimé à la louche : les portions écrites ci-dessus atteignent vraiment la cible. Les versions précédentes de ce plan s'arrêtaient 700 à 800 kcal en dessous.
-
-Chaque ligne est désormais un aliment avec sa composition dans l'appli, et non plus une phrase. Les kcal d'un repas sont la somme de ses aliments, jamais un nombre écrit à part — et les valeurs se corrigent depuis l'écran Nutrition, étiquette en main.
-
-Ajuste les portions de féculents ±30 g selon la faim et ta moyenne de poids hebdomadaire.
+Ajuste les féculents de ±30 g selon la faim et ta moyenne de poids hebdomadaire.
 
 ---
 
 ## Journée type — jour de repos (mardi, jeudi)
 
-Mêmes six prises, mêmes protéines, mêmes lipides. On allège uniquement les féculents et les sucres rapides : c'est la dépense de la séance qui disparaît, pas le besoin de construire du muscle. Tu manges six fois comme les autres jours, tu te sers juste un peu moins.
+Mêmes aliments, mêmes horaires, mêmes cinq prises. **Seuls les féculents baissent** : c'est la dépense de la séance qui disparaît, pas le besoin de construire. Les protéines ne perdent que 12 g, les lipides restent identiques.
 
-**Réveil (6 h)**
+**Petit-déjeuner (05 h 45)**
 - 3 œufs entiers
-- 2 tranches de pain complet + 20 g de miel *(au lieu de 3 tranches)*
-- 1 banane
-≈ 557 kcal / 27 g protéines
+- 60 g de flocons croustillants
+- 100 g de fruits rouges
+- 200 ml de lait demi-écrémé
+≈ 628 kcal / 32 g protéines / 56 g glucides / 30 g lipides
 
-**Collation (8 h)**
-- 40 g de flocons d'avoine + 250 ml de lait demi-écrémé *(au lieu de 60 g)*
-≈ 267 kcal / 13 g protéines
+**Collation (08 h)** — identique au jour d'entraînement
+- 1 pomme + 30 g d'amandes + 200 g de skyr + 20 g de confiture
+≈ 440 kcal / 26 g protéines / 49 g glucides / 16 g lipides
 
-**Collation (10 h)**
-- 280 g de skyr nature + 30 g d'amandes + 1 pomme *(inchangée)*
-≈ 430 kcal / 34 g protéines
-
-**Déjeuner**
-- 180-200 g de viande blanche ou rouge maigre ou poisson *(inchangé)*
-- 200 g de riz, pâtes ou pommes de terre, poids cuit *(au lieu de 300 g)*
-- 250 g de légumes + 10 g d'huile d'olive
-≈ 738 kcal / 63 g protéines
+**Déjeuner (12 h)**
+- 150 g de poulet cuit
+- 220 g de riz cuit
+- 150 g de petits pois cuits
+≈ 655 kcal / 61 g protéines / 83 g glucides / 7 g lipides
 
 **Collation (16 h)**
-- 1 banane + 1 tranche de pain complet avec 10 g de miel *(au lieu de 2 tranches et d'une pomme)*
-- Shaker whey (30 g), ou 2 yaourts nature
-≈ 345 kcal / 28 g protéines
+- 1 banane
+- 40 g de pain complet
+- 15 g de miel ou de confiture
+- 120 g de skyr nature
+≈ 328 kcal / 17 g protéines / 62 g glucides / 2 g lipides
 
-**Dîner**
-- 180-200 g de viande, poisson ou œufs *(inchangé)*
-- 150 g de féculent, poids cuit *(au lieu de 200 g)*
-- 250 g de légumes + 15 g d'huile d'olive ou de colza
-≈ 721 kcal / 62 g protéines
+**Dîner (20 h)**
+- 140 g de saumon
+- 200 g de pâtes cuites
+- 150 g de purée de brocolis
+- 10 g d'huile d'olive
+≈ 750 kcal / 44 g protéines / 68 g glucides / 31 g lipides
 
-**Total** : ≈ 3 050 kcal / 227 g protéines / 315 g glucides / 100 g lipides.
+**Total** : ≈ 2 801 kcal / 180 g protéines / 318 g glucides / 86 g lipides / ≈ 40 g fibres.
 
-550 kcal de moins qu'un jour d'entraînement, pris entièrement sur les féculents. Ce n'est pas un jour « low carb » : il reste 315 g de glucides.
+**432 kcal de moins** qu'un jour d'entraînement, dont **84 g de glucides**. Ce n'est pas un jour « low carb » : il reste 318 g de glucides.
+
+---
+
+## Carburant + — un ajout, jamais une obligation
+
+Les totaux ci-dessus sont le plan de base, celui de tous les jours. Certaines séances coûtent davantage : squat lourd le lundi, deadlift le samedi, ou simplement une journée de chantier qui a mordu sur la récupération.
+
+Ces jours-là, et **seulement si la faim ou la fatigue le justifient** :
+
+- 1 banane + 20 g de miel → ≈ +145 kcal, +35 à 40 g de glucides
+- séance très exigeante : + 40 g de pain en plus → ≈ +240 kcal, +55 à 60 g de glucides
+
+À prendre de préférence avant la séance. Rien de tout cela n'est fondu dans les totaux du plan : un bonus invisible deviendrait une obligation silencieuse, c'est-à-dire l'inverse du but.
 
 ---
 
 ## Liste de courses hebdomadaire type
 
-**Protéines** : œufs (2 douzaines), poulet ou dinde (1 kg), viande hachée 5 % (500 g), poisson (2-3 pavés, saumon ou colin), yaourts grecs/skyr (10 unités), fromage blanc, lait demi-écrémé (2 L), whey protéine (1 boîte)
+La liste suit exactement les aliments du plan, rien de plus.
 
-**Glucides** : riz, pâtes, pain complet, flocons d'avoine, pommes de terre, patates douces, fruits (bananes, pommes, fruits de saison)
+**Protéines** : œufs (2 douzaines), blancs de poulet (1 kg), saumon (5-6 pavés), skyr nature (grands pots), lait demi-écrémé (2 L)
 
-**Lipides** : huile d'olive, amandes ou noix, avocat (optionnel)
+**Glucides** : riz, pâtes, pain complet, flocons croustillants, miel ou confiture, bananes, pommes
 
-**Légumes** : ce qui te plaît, en grande quantité — haricots verts, brocolis, carottes, salade, courgettes
+**Lipides** : huile d'olive, amandes
+
+**Légumes et fruits** : petits pois, brocolis (frais ou surgelés), fruits rouges (surgelés, c'est moins cher et toujours disponible)
+
+Pas de whey : les cinq prises couvrent les protéines sans complément. Elle reste un dépannage pratique si un repas doit sauter, pas une ligne du plan.
 
 ---
 

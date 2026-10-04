@@ -388,12 +388,18 @@ export function mealMacros(meal: Meal, overrides: FoodOverrides = {}): Macros {
  * Un seul chemin de calcul pour tout l'écran : la carte de carburant, le total
  * du jour et le total d'un repas passent tous par ici.
  */
-export function mealsTotal(
-  target: NutritionTarget,
-  overrides: FoodOverrides = {},
-): { kcal: number; proteinG: number } {
-  const t = target.meals.reduce((acc, m) => somme(acc, mealMacros(m, overrides)), ZERO);
-  return { kcal: Math.round(t.kcal), proteinG: Math.round(t.proteinG) };
+export function mealsTotal(target: NutritionTarget, overrides: FoodOverrides = {}): Macros {
+  /*
+   * On somme les repas DÉJÀ arrondis, et non les aliments bruts : c'est ce que
+   * Guillaume lit à l'écran, repas par repas. Sommer les valeurs brutes
+   * donnerait un total juste au centième mais différent de l'addition des
+   * lignes affichées — et c'est l'addition visible qui doit tomber juste.
+   *
+   * Les quatre macros sont cumulées, pas seulement les kcal et les protéines :
+   * les glucides et les lipides n'étaient calculés qu'au niveau du repas, donc
+   * la journée ne pouvait pas les afficher autrement qu'en les écrivant à part.
+   */
+  return arrondir(target.meals.reduce((acc, m) => somme(acc, mealMacros(m, overrides)), ZERO));
 }
 
 /**

@@ -136,9 +136,16 @@ export function NutritionScreen({
 
       {/* --- 1. Référence du jour ------------------------------------------ */}
       <section className={styles.card}>
+        {/*
+          Les quatre nombres de cette carte sont la SOMME DES REPAS, pas la
+          cible écrite à côté. Tant que rien n'est modifié, les deux coïncident
+          — c'est le cas aujourd'hui, au kcal près. Mais si Guillaume recopie
+          une étiquette, c'est son total réel qui doit s'afficher en grand, pas
+          une intention qui ne correspondrait plus à ce qu'il mange.
+        */}
         <div className={styles.keyStat}>
           <div className={styles.keyStatValue}>
-            {target.kcal.toLocaleString('fr-FR')}
+            {totalRepas.kcal.toLocaleString('fr-FR')}
             <span className={styles.keyStatUnit}> kcal / jour</span>
           </div>
           <div className={styles.keyStatLabel}>
@@ -147,15 +154,15 @@ export function NutritionScreen({
         </div>
         <div className={styles.macros}>
           <div className={styles.macro}>
-            <b>{target.proteinG} g</b>
+            <b>{totalRepas.proteinG} g</b>
             <span>Protéines</span>
           </div>
           <div className={styles.macro}>
-            <b>{target.carbsG} g</b>
+            <b>{totalRepas.carbsG} g</b>
             <span>Glucides</span>
           </div>
           <div className={styles.macro}>
-            <b>{target.fatG} g</b>
+            <b>{totalRepas.fatG} g</b>
             <span>Lipides</span>
           </div>
         </div>

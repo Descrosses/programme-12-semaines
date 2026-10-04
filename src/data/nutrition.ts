@@ -120,19 +120,32 @@ interface FoodProduct {
 
 const PRODUITS = {
   oeuf: { label: 'Œuf entier', unit: 'unité', per: 1, kcal: 71.5, proteinG: 6.3, carbsG: 0.35, fatG: 4.95, hint: 'Un œuf moyen, environ 50 g.' },
-  pain: { label: 'Pain complet', unit: 'g', per: 100, kcal: 250, proteinG: 9, carbsG: 43, fatG: 3.3, hint: 'Une tranche pèse environ 35 g.' },
-  miel: { label: 'Miel ou confiture', unit: 'g', per: 100, kcal: 300, proteinG: 0.3, carbsG: 82, fatG: 0 },
-  banane: { label: 'Banane', unit: 'unité', per: 1, kcal: 107, proteinG: 1.3, carbsG: 27.6, fatG: 0.4, hint: 'Une banane moyenne, environ 120 g épluchée.' },
-  pomme: { label: 'Pomme', unit: 'unité', per: 1, kcal: 80, proteinG: 0.5, carbsG: 21.5, fatG: 0.3, hint: 'Une pomme moyenne, environ 155 g.' },
-  flocons: { label: 'Flocons d’avoine', unit: 'g', per: 100, kcal: 380, proteinG: 13, carbsG: 60, fatG: 7 },
+  /*
+   * Flocons CROUSTILLANTS, pas des flocons d'avoine nature : ce sont deux
+   * produits différents, l'un à 380 kcal/100 g, l'autre autour de 460 à cause
+   * du sucre et de l'huile ajoutés. Les confondre faisait disparaître 55 kcal
+   * et 12 g de lipides par petit-déjeuner.
+   *
+   * Valeur DÉDUITE du total de 674 kcal annoncé pour ce petit-déjeuner, pas
+   * lue sur un paquet : c'est la ligne la moins fiable du plan, à recopier
+   * depuis l'étiquette réelle dans l'écran Nutrition.
+   */
+  floconsCroustillants: { label: 'Flocons croustillants', unit: 'g', per: 100, kcal: 460, proteinG: 9, carbsG: 62, fatG: 19, hint: 'Type Bjorg. Valeur approchée — recopie ton étiquette.' },
+  fruitsRouges: { label: 'Fruits rouges', unit: 'g', per: 100, kcal: 45, proteinG: 0.9, carbsG: 8, fatG: 0.4, hint: 'Surgelés ou frais, mélange standard.' },
   lait: { label: 'Lait demi-écrémé', unit: 'ml', per: 100, kcal: 46, proteinG: 3.3, carbsG: 4.8, fatG: 1.6 },
-  skyr: { label: 'Skyr nature', unit: 'g', per: 100, kcal: 63, proteinG: 9.8, carbsG: 4, fatG: 0.2 },
+  pomme: { label: 'Pomme', unit: 'unité', per: 1, kcal: 80, proteinG: 0.5, carbsG: 21.5, fatG: 0.3, hint: 'Une pomme moyenne, environ 155 g.' },
   amandes: { label: 'Amandes', unit: 'g', per: 100, kcal: 580, proteinG: 21, carbsG: 10, fatG: 50 },
-  viande: { label: 'Viande ou poisson', unit: 'g', per: 100, kcal: 170, proteinG: 27, carbsG: 0, fatG: 7, hint: 'Poulet, dinde, bœuf 5 %, poisson — pesé cuit.' },
-  feculent: { label: 'Féculent', unit: 'g', per: 100, kcal: 125, proteinG: 3.5, carbsG: 26, fatG: 0.5, hint: 'Riz, pâtes, pommes de terre — pesé CUIT.' },
-  legumes: { label: 'Légumes', unit: 'g', per: 100, kcal: 30, proteinG: 2, carbsG: 5, fatG: 0.3 },
-  huile: { label: 'Huile d’olive ou de colza', unit: 'g', per: 100, kcal: 900, proteinG: 0, carbsG: 0, fatG: 100 },
-  whey: { label: 'Whey', unit: 'g', per: 100, kcal: 400, proteinG: 80, carbsG: 8, fatG: 5 },
+  skyr: { label: 'Skyr nature', unit: 'g', per: 100, kcal: 63, proteinG: 9.8, carbsG: 4, fatG: 0.2 },
+  confiture: { label: 'Miel ou confiture', unit: 'g', per: 100, kcal: 300, proteinG: 0.3, carbsG: 82, fatG: 0 },
+  poulet: { label: 'Poulet cuit', unit: 'g', per: 100, kcal: 165, proteinG: 31, carbsG: 0, fatG: 3.6, hint: 'Blanc de poulet, pesé CUIT.' },
+  riz: { label: 'Riz cuit', unit: 'g', per: 100, kcal: 130, proteinG: 2.7, carbsG: 28, fatG: 0.3, hint: 'Pesé CUIT.' },
+  petitsPois: { label: 'Petits pois', unit: 'g', per: 100, kcal: 81, proteinG: 5.4, carbsG: 14.5, fatG: 0.4, hint: 'Pesés cuits. Riches en fibres.' },
+  pain: { label: 'Pain complet', unit: 'g', per: 100, kcal: 250, proteinG: 9, carbsG: 43, fatG: 3.3, hint: 'Une tranche pèse environ 35 g.' },
+  banane: { label: 'Banane', unit: 'unité', per: 1, kcal: 107, proteinG: 1.3, carbsG: 27.6, fatG: 0.4, hint: 'Une banane moyenne, environ 120 g épluchée.' },
+  saumon: { label: 'Saumon', unit: 'g', per: 100, kcal: 208, proteinG: 20, carbsG: 0, fatG: 13, hint: 'Pavé, pesé cuit.' },
+  pates: { label: 'Pâtes cuites', unit: 'g', per: 100, kcal: 158, proteinG: 5.8, carbsG: 31, fatG: 0.9, hint: 'Pesées CUITES.' },
+  brocolis: { label: 'Purée de brocolis', unit: 'g', per: 100, kcal: 35, proteinG: 2.8, carbsG: 4, fatG: 0.4 },
+  huile: { label: 'Huile d’olive', unit: 'g', per: 100, kcal: 900, proteinG: 0, carbsG: 0, fatG: 100, hint: '10 g ≈ une cuillère à soupe.' },
 } as const satisfies Record<string, FoodProduct>;
 
 export type ProductId = keyof typeof PRODUITS;
@@ -150,183 +163,186 @@ function ligne(id: string, product: ProductId, qty: number): FoodItem {
 
 // ---------------------------------------------------------------------------
 // §« Journée type — jour d'entraînement »
+//
+// Cinq prises, celles que Guillaume fait déjà — 05 h 45, 08 h, 12 h, 16 h, 20 h.
+// Ce sont SES aliments : le plan précédent parlait de « viande ou poisson » et
+// de « féculent », ce qui ne ressemblait à aucun de ses repas, donc à rien
+// qu'il puisse suivre. Seules les quantités ont bougé.
+//
+// Les protéines BAISSENT, et c'est le changement le moins intuitif : son
+// alimentation réelle en apportait déjà ≈ 213 g, soit 2,7 g/kg. Le surplus est
+// reconverti en glucides, qui eux servent à la séance.
 // ---------------------------------------------------------------------------
 
-const REVEIL: Meal = {
-  name: 'Réveil — 6 h',
-  detail: '3 œufs entiers + 3 tranches de pain complet + 20 g de miel + 1 banane',
-  kcal: 644,
-  proteinG: 30,
+const PETIT_DEJEUNER: Meal = {
+  name: 'Petit-déjeuner — 05 h 45',
+  detail: '3 œufs + 70 g de flocons croustillants + 100 g de fruits rouges + 200 ml de lait',
+  kcal: 674,
+  proteinG: 33,
   items: [
-    ligne('t.reveil.oeuf', 'oeuf', 3),
-    ligne('t.reveil.pain', 'pain', 105),
-    ligne('t.reveil.miel', 'miel', 20),
-    ligne('t.reveil.banane', 'banane', 1),
+    ligne('t.pdej.oeuf', 'oeuf', 3),
+    ligne('t.pdej.flocons', 'floconsCroustillants', 70),
+    ligne('t.pdej.fruitsRouges', 'fruitsRouges', 100),
+    ligne('t.pdej.lait', 'lait', 200),
   ],
-};
-
-const COLLATION_8H: Meal = {
-  name: 'Collation — 8 h',
-  detail: '60 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
-  kcal: 343,
-  proteinG: 16,
-  items: [ligne('t.collation8.flocons', 'flocons', 60), ligne('t.collation8.lait', 'lait', 250)],
 };
 
 /*
  * Seule prise identique aux deux paliers : le même objet sert aux deux, donc
  * ses lignes portent le préfixe « x » et non « t » ou « r ».
+ *
+ * Le skyr passe de 280 à 200 g. C'est là qu'on récupère le plus de protéines
+ * superflues sans toucher à un aliment ni à une habitude.
  */
-const COLLATION_10H: Meal = {
-  name: 'Collation — 10 h',
-  detail: '280 g de skyr nature + 30 g d’amandes + 1 pomme',
-  kcal: 430,
-  proteinG: 34,
+const COLLATION_8H: Meal = {
+  name: 'Collation — 08 h',
+  detail: '1 pomme + 30 g d’amandes + 200 g de skyr + 20 g de confiture',
+  kcal: 440,
+  proteinG: 26,
   items: [
-    ligne('x.collation10.skyr', 'skyr', 280),
-    ligne('x.collation10.amandes', 'amandes', 30),
-    ligne('x.collation10.pomme', 'pomme', 1),
+    ligne('x.collation8.pomme', 'pomme', 1),
+    ligne('x.collation8.amandes', 'amandes', 30),
+    ligne('x.collation8.skyr', 'skyr', 200),
+    ligne('x.collation8.confiture', 'confiture', 20),
   ],
 };
 
 const DEJEUNER: Meal = {
-  name: 'Déjeuner',
-  detail: '180-200 g de protéine + 300 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
-  kcal: 863,
-  proteinG: 67,
+  name: 'Déjeuner — 12 h',
+  detail: '150 g de poulet cuit + 320 g de riz cuit + 150 g de petits pois',
+  kcal: 785,
+  proteinG: 63,
   items: [
-    ligne('t.dejeuner.viande', 'viande', 190),
-    ligne('t.dejeuner.feculent', 'feculent', 300),
-    ligne('t.dejeuner.legumes', 'legumes', 250),
-    ligne('t.dejeuner.huile', 'huile', 10),
+    ligne('t.dejeuner.poulet', 'poulet', 150),
+    ligne('t.dejeuner.riz', 'riz', 320),
+    ligne('t.dejeuner.petitsPois', 'petitsPois', 150),
   ],
 };
 
-const AUTOUR_SEANCE: Meal = {
-  name: 'Autour de la séance — 16 h',
-  detail:
-    'Avant (1 h 30) : banane + 2 tranches de pain avec 20 g de miel. Après (45 min) : shaker whey 30 g + 1 pomme',
-  kcal: 542,
-  proteinG: 32,
+/*
+ * La prise la plus retravaillée du plan : de 289 à 458 kcal, de 36 à 87 g de
+ * glucides, pour 3 g de lipides.
+ *
+ * Une collation pré-séance doit fournir du carburant disponible, pas ralentir
+ * la digestion — d'où le pain et le miel plutôt qu'un gros volume de skyr, et
+ * d'où les lipides maintenus au plancher.
+ */
+const PRE_ENTRAINEMENT: Meal = {
+  name: 'Pré-entraînement — 16 h',
+  detail: '1 banane + 80 g de pain complet + 25 g de miel + 120 g de skyr',
+  kcal: 458,
+  proteinG: 20,
   items: [
-    ligne('t.autour.banane', 'banane', 1),
-    ligne('t.autour.pain', 'pain', 70),
-    ligne('t.autour.miel', 'miel', 20),
-    ligne('t.autour.whey', 'whey', 30),
-    ligne('t.autour.pomme', 'pomme', 1),
+    ligne('t.pre.banane', 'banane', 1),
+    ligne('t.pre.pain', 'pain', 80),
+    ligne('t.pre.confiture', 'confiture', 25),
+    ligne('t.pre.skyr', 'skyr', 120),
   ],
 };
 
 const DINER: Meal = {
-  name: 'Dîner',
-  detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
-  kcal: 783,
-  proteinG: 63,
+  name: 'Dîner — 20 h',
+  detail: '140 g de saumon + 280 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
+  kcal: 876,
+  proteinG: 48,
   items: [
-    ligne('t.diner.viande', 'viande', 190),
-    ligne('t.diner.feculent', 'feculent', 200),
-    ligne('t.diner.legumes', 'legumes', 250),
-    ligne('t.diner.huile', 'huile', 15),
+    ligne('t.diner.saumon', 'saumon', 140),
+    ligne('t.diner.pates', 'pates', 280),
+    ligne('t.diner.brocolis', 'brocolis', 150),
+    ligne('t.diner.huile', 'huile', 10),
   ],
 };
 
+/*
+ * Les cibles ne sont PAS des nombres ronds choisis d'avance : ce sont les
+ * totaux réels des aliments ci-dessus, recopiés ici pour que l'écran puisse
+ * afficher « visé » et « réellement listé » côte à côte. Un test vérifie qu'ils
+ * coïncident — c'est ce qui a révélé l'écart de 830 kcal de l'ancien plan.
+ */
 const TRAIN: NutritionTarget = {
   kind: 'train',
   label: 'Jour d’entraînement',
-  kcal: 3600,
-  proteinG: 240,
-  carbsG: 425,
-  fatG: 105,
-  note: 'Les glucides se concentrent autour de la séance, pas le soir devant la télé.',
-  meals: [REVEIL, COLLATION_8H, COLLATION_10H, DEJEUNER, AUTOUR_SEANCE, DINER],
+  kcal: 3233,
+  proteinG: 190,
+  carbsG: 402,
+  fatG: 89,
+  note: 'Les glucides se concentrent autour de la séance : déjeuner, 16 h, dîner.',
+  meals: [PETIT_DEJEUNER, COLLATION_8H, DEJEUNER, PRE_ENTRAINEMENT, DINER],
 };
 
 // ---------------------------------------------------------------------------
 // §« Journée type — jour de repos (mardi, jeudi) »
 //
-// Six prises aussi, et non cinq : Guillaume préfère manger au même rythme tous
-// les jours et se servir un peu moins, plutôt que sauter une prise. Sauter la
-// prise de 16 h aurait été plus simple à écrire, mais ça crée un jour qui ne
-// ressemble à aucun autre, donc un jour qu'on oublie de suivre.
+// Mêmes aliments, mêmes horaires, mêmes cinq prises. Seuls les féculents
+// baissent — flocons, riz, pain, pâtes. La viande, le poisson, les œufs, le
+// skyr, les amandes et l'huile ne bougent pas : c'est la dépense de la séance
+// qui disparaît, pas le besoin de construire.
 //
-// Ce qui baisse : le pain, les flocons, les féculents, le miel — les glucides,
-// parce que c'est la dépense de la séance qui disparaît. Ce qui ne bouge PAS :
-// la viande, le poisson, les œufs, le skyr, les amandes, l'huile. Le besoin de
-// construire du muscle, lui, ne prend pas de jour de repos.
+// 432 kcal de moins, dont 84 g de glucides. Les protéines ne perdent que 12 g.
 // ---------------------------------------------------------------------------
 
-const REVEIL_REPOS: Meal = {
-  name: 'Réveil — 6 h',
-  detail: '3 œufs entiers + 2 tranches de pain complet + 20 g de miel + 1 banane',
-  kcal: 557,
-  proteinG: 27,
+const PETIT_DEJEUNER_REPOS: Meal = {
+  name: 'Petit-déjeuner — 05 h 45',
+  detail: '3 œufs + 60 g de flocons croustillants + 100 g de fruits rouges + 200 ml de lait',
+  kcal: 628,
+  proteinG: 32,
   items: [
-    ligne('r.reveil.oeuf', 'oeuf', 3),
-    ligne('r.reveil.pain', 'pain', 70),
-    ligne('r.reveil.miel', 'miel', 20),
-    ligne('r.reveil.banane', 'banane', 1),
+    ligne('r.pdej.oeuf', 'oeuf', 3),
+    ligne('r.pdej.flocons', 'floconsCroustillants', 60),
+    ligne('r.pdej.fruitsRouges', 'fruitsRouges', 100),
+    ligne('r.pdej.lait', 'lait', 200),
   ],
 };
 
-const COLLATION_8H_REPOS: Meal = {
-  name: 'Collation — 8 h',
-  detail: '40 g de flocons d’avoine + 250 ml de lait demi-écrémé, préparés la veille',
-  kcal: 267,
-  proteinG: 13,
-  items: [ligne('r.collation8.flocons', 'flocons', 40), ligne('r.collation8.lait', 'lait', 250)],
-};
-
 const DEJEUNER_REPOS: Meal = {
-  name: 'Déjeuner',
-  detail: '180-200 g de protéine + 200 g de féculent (cuit) + 250 g de légumes + 10 g d’huile d’olive',
-  kcal: 738,
-  proteinG: 63,
+  name: 'Déjeuner — 12 h',
+  detail: '150 g de poulet cuit + 220 g de riz cuit + 150 g de petits pois',
+  kcal: 655,
+  proteinG: 61,
   items: [
-    ligne('r.dejeuner.viande', 'viande', 190),
-    ligne('r.dejeuner.feculent', 'feculent', 200),
-    ligne('r.dejeuner.legumes', 'legumes', 250),
-    ligne('r.dejeuner.huile', 'huile', 10),
+    ligne('r.dejeuner.poulet', 'poulet', 150),
+    ligne('r.dejeuner.riz', 'riz', 220),
+    ligne('r.dejeuner.petitsPois', 'petitsPois', 150),
   ],
 };
 
 const COLLATION_16H_REPOS: Meal = {
   name: 'Collation — 16 h',
-  detail: '1 banane + 1 tranche de pain avec 10 g de miel + shaker whey 30 g (ou 2 yaourts)',
-  kcal: 345,
-  proteinG: 28,
+  detail: '1 banane + 40 g de pain complet + 15 g de miel + 120 g de skyr',
+  kcal: 328,
+  proteinG: 17,
   items: [
     ligne('r.collation16.banane', 'banane', 1),
-    ligne('r.collation16.pain', 'pain', 35),
-    ligne('r.collation16.miel', 'miel', 10),
-    ligne('r.collation16.whey', 'whey', 30),
+    ligne('r.collation16.pain', 'pain', 40),
+    ligne('r.collation16.confiture', 'confiture', 15),
+    ligne('r.collation16.skyr', 'skyr', 120),
   ],
 };
 
 const DINER_REPOS: Meal = {
-  name: 'Dîner',
-  detail: '180-200 g de protéine + 150 g de féculent (cuit) + 250 g de légumes + 15 g d’huile',
-  kcal: 721,
-  proteinG: 62,
+  name: 'Dîner — 20 h',
+  detail: '140 g de saumon + 200 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
+  kcal: 750,
+  proteinG: 44,
   items: [
-    ligne('r.diner.viande', 'viande', 190),
-    ligne('r.diner.feculent', 'feculent', 150),
-    ligne('r.diner.legumes', 'legumes', 250),
-    ligne('r.diner.huile', 'huile', 15),
+    ligne('r.diner.saumon', 'saumon', 140),
+    ligne('r.diner.pates', 'pates', 200),
+    ligne('r.diner.brocolis', 'brocolis', 150),
+    ligne('r.diner.huile', 'huile', 10),
   ],
 };
 
 const REST: NutritionTarget = {
   kind: 'rest',
   label: 'Jour de repos',
-  kcal: 3050,
-  proteinG: 227,
-  carbsG: 315,
-  fatG: 100,
-  note: 'Ce n’est pas un jour « low carb » : mêmes six prises, mêmes protéines, seuls les féculents baissent.',
+  kcal: 2801,
+  proteinG: 180,
+  carbsG: 318,
+  fatG: 86,
+  note: 'Ce n’est pas un jour « low carb » : mêmes aliments, seuls les féculents baissent.',
   meals: [
-    REVEIL_REPOS,
-    COLLATION_8H_REPOS,
-    COLLATION_10H, // la seule prise identique aux deux paliers
+    PETIT_DEJEUNER_REPOS,
+    COLLATION_8H, // la seule prise identique aux deux paliers
     DEJEUNER_REPOS,
     COLLATION_16H_REPOS,
     DINER_REPOS,
@@ -450,23 +466,25 @@ export const FUEL_ADVICE: Record<FuelLevel, FuelAdvice> = {
     level: 'high',
     emoji: '🔴',
     title: 'CARBURANT ++',
-    subtitle: 'Séance très exigeante',
+    subtitle: 'Séance très exigeante — ajout suggéré',
     foods: ['+ 1 banane', '+ 40 g pain', '+ 20 g miel'],
     kcal: 240,
     kcalLabel: '≈ +240 kcal',
     carbsLabel: '≈ +55-60 g glucides',
-    message: 'À répartir dans la journée, avec priorité avant l’entraînement.',
+    message:
+      'Facultatif. À ajouter si la faim ou la fatigue le justifient, de préférence avant la séance.',
   },
   medium: {
     level: 'medium',
     emoji: '🟠',
     title: 'CARBURANT +',
-    subtitle: 'Séance exigeante',
+    subtitle: 'Séance exigeante — ajout suggéré',
     foods: ['+ 1 banane', '+ 20 g miel'],
     kcal: 145,
     kcalLabel: '≈ +145 kcal',
     carbsLabel: '≈ +35-40 g glucides',
-    message: 'À consommer de préférence avant l’entraînement.',
+    message:
+      'Facultatif. À ajouter si la faim ou la fatigue le justifient, de préférence avant la séance.',
   },
   standard: {
     level: 'standard',
