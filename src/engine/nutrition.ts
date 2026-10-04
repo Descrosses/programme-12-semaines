@@ -348,6 +348,17 @@ export function effectiveItem(
         proteinG: remplacant.proteinG,
         carbsG: remplacant.carbsG,
         fatG: remplacant.fatG,
+        /*
+         * L'état et la famille viennent du remplaçant, eux aussi.
+         *
+         * Ils étaient oubliés : remplacer « Riz cuit » par « Riz cru » laissait
+         * la ligne afficher « cuit » alors qu'on y avait mis du cru — c'est-à-
+         * dire la seule chose que cet état existe pour éviter. Et rouvrir la
+         * feuille de remplacement après un poulet devenu banane proposait des
+         * protéines, puisque la famille était restée celle du plan.
+         */
+        referenceState: remplacant.referenceState,
+        category: remplacant.category,
         ...(remplacant.hint !== undefined ? { hint: remplacant.hint } : {}),
         qty: quantiteApresRemplacement(item, remplacant),
       }
@@ -377,6 +388,10 @@ export interface FoodLike {
   proteinG: number;
   carbsG: number;
   fatG: number;
+  /** Pesé cru ou cuit — affiché sur la ligne, et au moment du choix. */
+  referenceState: FoodItem['referenceState'];
+  /** Famille, qui décide de la liste ouverte au remplacement suivant. */
+  category: FoodItem['category'];
   hint?: string;
 }
 
