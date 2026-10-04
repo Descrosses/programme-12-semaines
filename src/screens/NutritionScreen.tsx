@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { LineChart, type Series } from '../components/Chart';
 import { Stepper, stepValue } from '../components/Stepper';
 import {
@@ -13,6 +13,8 @@ import {
 import type { DayIndex } from '../data/types';
 import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
+import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
+import { MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
   fuelForToday,
   gapVerdict,
@@ -28,7 +30,9 @@ import {
   type Measurement,
 } from '../engine/nutrition';
 import {
+  allCustomFoods,
   allFoodOverrides,
+  saveCustomFood,
   allMeasurements,
   getMeasurement,
   resetFoodOverrides,
@@ -60,6 +64,8 @@ export function NutritionScreen({
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
+  /** Les aliments saisis par Guillaume, proposés au remplacement. */
+  const [customs, setCustoms] = useState<LibraryFood[]>([]);
   const [kind, setKind] = useState<DayKind>(todayKind);
   const [todayRow, setTodayRow] = useState<{ weightKg: number | null; waistCm: number | null }>({
     weightKg: null,
@@ -72,6 +78,7 @@ export function NutritionScreen({
     const all = await allMeasurements();
     setRows(all.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })));
     setOverrides(await allFoodOverrides());
+    setCustoms(await chargerCustoms());
     const t = await getMeasurement(todayIso);
     setTodayRow({ weightKg: t?.weightKg ?? null, waistCm: t?.waistCm ?? null });
   }
@@ -81,19 +88,33 @@ export function NutritionScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /*
+   * Le catalogue consulté par TOUS les calculs de l'écran : la bibliothèque
+   * livrée, plus les aliments de Guillaume. Sans ce passage, un repas où il a
+   * mis un aliment personnalisé retomberait sur celui du plan au moment du
+   * total, et l'écran afficherait deux chiffres contradictoires.
+   *
+   * Déclaré AVANT le retour de chargement : un hook placé après un `return`
+   * n'est pas appelé à tous les rendus, et React s'arrête net (erreur 310).
+   */
+  const catalogue = useMemo(
+    () => ({ ...FOOD_LIBRARY, ...Object.fromEntries(customs.map((f) => [f.id, f])) }),
+    [customs],
+  );
+
   if (!rows) return <div className={styles.loading}>Chargement…</div>;
 
   const target = NUTRITION_TARGETS[kind];
-  const totalRepas = mealsTotal(target, overrides);
-  const ecart = mealsGap(target, overrides);
-  const verdict = gapVerdict(target, overrides);
+  const totalRepas = mealsTotal(target, overrides, catalogue);
+  const ecart = mealsGap(target, overrides, catalogue);
+  const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
   /*
    * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
    * pour regarder l'autre journée type ne doit pas faire croire que la séance
    * a changé. La carte reste donc sur aujourd'hui.
    */
   const carburant = fuelForToday(todayDay);
-  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind], overrides);
+  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind], overrides, catalogue);
   const trend = weightTrend(rows, todayIso);
   const advice = nutritionAdvice(rows, todayIso);
   const waist = latestWaist(rows);
@@ -128,9 +149,9 @@ export function NutritionScreen({
       <header className={styles.header}>
         <h1 className={styles.h1}>Nutrition</h1>
         <p className={styles.lead}>
-          Beaucoup de glucides, protéines élevées, lipides modérés. Six prises un jour
-          d’entraînement, cinq au repos — la sixième est une collation de 8 h qui se prépare la
-          veille et se boit d’une main.
+          Beaucoup de glucides, protéines suffisantes, lipides modérés. Cinq prises, les mêmes
+          aliments tous les jours — seuls les féculents baissent les jours de repos. Touche un
+          aliment pour corriger son étiquette ou le remplacer.
         </p>
       </header>
 
@@ -264,6 +285,8 @@ export function NutritionScreen({
                 <MealItems
                   meal={m}
                   overrides={overrides}
+                  customs={customs}
+                  catalogue={catalogue}
                   onSave={async (foodId, patch) => {
                     await saveFoodOverride(foodId, patch);
                     setOverrides(await allFoodOverrides());
@@ -272,10 +295,26 @@ export function NutritionScreen({
                     await resetFoodOverrides(foodId);
                     setOverrides(await allFoodOverrides());
                   }}
+                  onCreateCustom={async (food) => {
+                    await saveCustomFood({
+                      foodId: food.id,
+                      label: food.label,
+                      unit: food.unit,
+                      per: food.per,
+                      kcal: food.kcal,
+                      proteinG: food.proteinG,
+                      carbsG: food.carbsG,
+                      fatG: food.fatG,
+                      referenceState: food.referenceState,
+                      category: food.category,
+                      addedAt: new Date().toISOString().slice(0, 10),
+                    });
+                    setCustoms(await chargerCustoms());
+                  }}
                 />
               </div>
               <div className={`${styles.mealKcal} tnum`}>
-                {mealMacros(m, overrides).kcal} kcal
+                {mealMacros(m, overrides, catalogue).kcal} kcal
               </div>
             </div>
           ))}
@@ -457,4 +496,26 @@ export function NutritionScreen({
       </details>
     </div>
   );
+}
+
+/**
+ * Les aliments personnalisés, sous la même forme que ceux de la bibliothèque.
+ *
+ * C'est ce qui permet au remplacement de les traiter indifféremment : une
+ * seule liste, un seul chemin de calcul.
+ */
+async function chargerCustoms(): Promise<LibraryFood[]> {
+  return (await allCustomFoods()).map((r) => ({
+    id: r.foodId,
+    label: r.label,
+    unit: r.unit,
+    per: r.per,
+    kcal: r.kcal,
+    proteinG: r.proteinG,
+    carbsG: r.carbsG,
+    fatG: r.fatG,
+    referenceState: r.referenceState,
+    category: r.category as LibraryFood['category'],
+    isCustom: true,
+  }));
 }
