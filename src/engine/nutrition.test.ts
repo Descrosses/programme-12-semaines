@@ -261,14 +261,16 @@ describe('féculent nécessaire pour combler l’écart', () => {
 });
 
 describe('aliments modifiables', () => {
-  const COLLATION = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
+  const COLLATION = NUTRITION_TARGETS.train.meals.find((m) =>
+    m.name.startsWith('Collation — 08 h'),
+  )!;
   const skyr = COLLATION.items!.find((i) => i.product === 'skyr')!;
   const pomme = COLLATION.items!.find((i) => i.product === 'pomme')!;
 
   it('un aliment pesé compte au prorata de sa quantité', () => {
-    // 280 g de skyr à 63 kcal/100 g.
-    expect(itemMacros(skyr).kcal).toBeCloseTo(176.4, 1);
-    expect(itemMacros(skyr).proteinG).toBeCloseTo(27.44, 2);
+    // 200 g de skyr à 63 kcal/100 g.
+    expect(itemMacros(skyr).kcal).toBeCloseTo(126, 1);
+    expect(itemMacros(skyr).proteinG).toBeCloseTo(19.6, 2);
   });
 
   it('un aliment compté à l’unité ne divise pas par 100', () => {
@@ -289,11 +291,21 @@ describe('aliments modifiables', () => {
     const apresRepas = mealMacros(COLLATION, ov).kcal;
     const apresJour = mealsTotal(NUTRITION_TARGETS.train, ov).kcal;
 
-    // 280 g × (86 − 63) / 100 = 64,4 kcal exactement. Le repas est arrondi une
-    // fois, à la fin : 430 → 495, soit 65. Arrondir chaque aliment d'abord
-    // aurait donné un autre chiffre — d'où l'arrondi unique, au repas.
-    expect(apresRepas - avantRepas).toBe(65);
-    expect(apresJour - avantJour).toBe(apresRepas - avantRepas);
+    // 200 g × (86 − 63) / 100 = 46 kcal exactement. Le repas est arrondi une
+    // fois, à la fin : 440 → 486. Arrondir chaque aliment d'abord aurait donné
+    // un autre chiffre — d'où l'arrondi unique, au repas.
+    expect(apresRepas - avantRepas).toBe(46);
+
+    /*
+     * La JOURNÉE bouge PLUS que le repas, et c'est tout l'intérêt du mécanisme :
+     * le skyr est aussi au pré-entraînement de 16 h. Une seule saisie
+     * d'étiquette corrige les deux prises — 320 g au total, soit 73 kcal.
+     *
+     * L'ancienne version de ce test exigeait l'égalité ; elle ne tenait que
+     * tant qu'aucun produit n'apparaissait deux fois dans la même journée.
+     */
+    expect(apresJour - avantJour).toBe(73);
+    expect(apresJour - avantJour).toBeGreaterThan(apresRepas - avantRepas);
   });
 
   it('changer la seule quantité ne fige pas la composition', () => {
@@ -306,7 +318,7 @@ describe('aliments modifiables', () => {
     expect(effectiveItem(skyr, {})).toBe(skyr);
     expect(effectiveItem(skyr, { amandes: { kcal: 1 } })).toBe(skyr);
     expect(isEdited(skyr, {})).toBe(false);
-    expect(isEdited(skyr, { [skyr.id]: { qty: 280 } })).toBe(false); // même valeur = pas modifié
+    expect(isEdited(skyr, { [skyr.id]: { qty: 200 } })).toBe(false); // même valeur = pas modifié
     expect(isEdited(skyr, { [skyr.id]: { qty: 300 } })).toBe(true);
   });
 
@@ -324,27 +336,36 @@ describe('aliments modifiables', () => {
   });
 
   it('une correction de composition vaut pour toutes les lignes du même produit', () => {
-    // Le pain apparaît au réveil ET à la collation de 16 h, sur les deux
-    // paliers : une seule saisie doit suffire.
-    const lignesPain = Object.values(NUTRITION_TARGETS)
-      .flatMap((t) => t.meals)
-      .flatMap((m) => m.items ?? [])
-      .filter((i) => i.product === 'pain');
-    expect(lignesPain.length).toBeGreaterThanOrEqual(4);
-    for (const l of lignesPain) {
-      expect(effectiveItem(l, { pain: { kcal: 300 } }).kcal, l.id).toBe(300);
+    /*
+     * Le skyr apparaît à la collation de 8 h, au pré-entraînement ET à la
+     * collation de 16 h du jour de repos : une seule saisie doit suffire.
+     * On dédoublonne par identifiant — la collation de 8 h est le même objet
+     * dans les deux paliers.
+     */
+    const lignesSkyr = new Map(
+      Object.values(NUTRITION_TARGETS)
+        .flatMap((t) => t.meals)
+        .flatMap((m) => m.items ?? [])
+        .filter((i) => i.product === 'skyr')
+        .map((i) => [i.id, i] as const),
+    );
+    expect(lignesSkyr.size).toBeGreaterThanOrEqual(3);
+    for (const l of lignesSkyr.values()) {
+      expect(effectiveItem(l, { skyr: { kcal: 90 } }).kcal, l.id).toBe(90);
     }
   });
 
   it('une correction de quantité ne touche QUE la ligne ouverte', () => {
-    const reveil = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Réveil — 6 h')!;
-    const painReveil = reveil.items!.find((i) => i.product === 'pain')!;
+    const collation = NUTRITION_TARGETS.train.meals.find((m) =>
+      m.name.startsWith('Collation — 08 h'),
+    )!;
+    const skyrCollation = collation.items!.find((i) => i.product === 'skyr')!;
     const autres = Object.values(NUTRITION_TARGETS)
       .flatMap((t) => t.meals)
       .flatMap((m) => m.items ?? [])
-      .filter((i) => i.product === 'pain' && i.id !== painReveil.id);
-    const ov: FoodOverrides = { [painReveil.id]: { qty: 140 } };
-    expect(effectiveItem(painReveil, ov).qty).toBe(140);
+      .filter((i) => i.product === 'skyr' && i.id !== skyrCollation.id);
+    const ov: FoodOverrides = { [skyrCollation.id]: { qty: 300 } };
+    expect(effectiveItem(skyrCollation, ov).qty).toBe(300);
     for (const a of autres) expect(effectiveItem(a, ov).qty, a.id).toBe(a.qty);
   });
 
@@ -368,8 +389,8 @@ describe('sens de l’écart entre les repas et la cible', () => {
    * manque de 1 556 kcal, avec le conseil d'ajouter du féculent.
    */
   const TRAIN = NUTRITION_TARGETS.train;
-  const painDuReveil = TRAIN.meals
-    .find((m) => m.name === 'Réveil — 6 h')!
+  const painDuPreEntrainement = TRAIN.meals
+    .find((m) => m.name.startsWith('Pré-entraînement'))!
     .items!.find((i) => i.product === 'pain')!;
 
   it('le plan tel qu’écrit tombe dans la tolérance', () => {
@@ -379,7 +400,7 @@ describe('sens de l’écart entre les repas et la cible', () => {
 
   it('une valeur d’aliment gonflée donne un EXCÉDENT, pas un manque', () => {
     // Une étiquette mal recopiée : 2 500 kcal/100 g de pain.
-    const ov: FoodOverrides = { [painDuReveil.product]: { kcal: 2500 } };
+    const ov: FoodOverrides = { [painDuPreEntrainement.product]: { kcal: 2500 } };
     expect(mealsGap(TRAIN, ov).kcal).toBeGreaterThan(0);
     expect(gapVerdict(TRAIN, ov)).toBe('surplus');
   });
@@ -398,7 +419,7 @@ describe('sens de l’écart entre les repas et la cible', () => {
     expect(gapVerdict(bord)).toBe('ok');
     const large = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.2) };
     expect(gapVerdict(large)).toBe('surplus');
-    expect(cible).toBe(3600); // garde-fou : le test parle bien de la vraie cible
+    expect(cible).toBe(3233); // garde-fou : le test parle bien de la vraie cible
   });
 });
 
@@ -421,19 +442,19 @@ describe('cohérence d’une étiquette recopiée', () => {
    */
   it('repère des kcal que les macros ne peuvent pas produire', () => {
     const legumes = NUTRITION_TARGETS.train.meals
-      .find((m) => m.name === 'Dîner')!
-      .items!.find((i) => i.product === 'legumes')!;
+      .find((m) => m.name.startsWith('Dîner'))!
+      .items!.find((i) => i.product === 'brocolis')!;
     expect(macrosLookWrong(legumes)).toBe(false);
-    expect(macrosLookWrong(legumes, { legumes: { kcal: 416 } })).toBe(true);
+    expect(macrosLookWrong(legumes, { brocolis: { kcal: 416 } })).toBe(true);
   });
 
   it('accepte une étiquette réellement dense quand ses macros suivent', () => {
     const legumes = NUTRITION_TARGETS.train.meals
-      .find((m) => m.name === 'Dîner')!
-      .items!.find((i) => i.product === 'legumes')!;
+      .find((m) => m.name.startsWith('Dîner'))!
+      .items!.find((i) => i.product === 'brocolis')!;
     // Un mélange sec de légumineuses et de graines : dense, mais cohérent.
     const ov: FoodOverrides = {
-      legumes: { kcal: 416, proteinG: 22, carbsG: 48, fatG: 14 },
+      brocolis: { kcal: 416, proteinG: 22, carbsG: 48, fatG: 14 },
     };
     expect(kcalFromMacros({ proteinG: 22, carbsG: 48, fatG: 14 })).toBe(406);
     expect(macrosLookWrong(legumes, ov)).toBe(false);

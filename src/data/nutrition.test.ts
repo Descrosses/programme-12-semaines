@@ -19,123 +19,129 @@ const MD = readFileSync(new URL('../../plan-alimentaire-12-semaines.md', import.
 
 describe('cibles transcrites du .md', () => {
   it('le jour d’entraînement reprend l’en-tête du plan', () => {
-    expect(MD).toContain('3 600 kcal · 240 g protéines · 425 g glucides · 105 g lipides');
+    expect(MD).toContain('3 233 kcal · 190 g protéines · 402 g glucides · 89 g lipides');
     const t = NUTRITION_TARGETS.train;
-    expect(t.kcal).toBe(3600);
-    expect(t.proteinG).toBe(240);
-    expect(t.carbsG).toBe(425);
-    expect(t.fatG).toBe(105);
+    expect(t.kcal).toBe(3233);
+    expect(t.proteinG).toBe(190);
+    expect(t.carbsG).toBe(402);
+    expect(t.fatG).toBe(89);
   });
 
-  it('le jour de repos garde les six prises et n’allège que les glucides', () => {
-    expect(MD).toContain('Mêmes six prises, mêmes protéines, mêmes lipides');
+  /*
+   * Le changement le moins intuitif du plan, et celui qu'il faut protéger :
+   * les protéines BAISSENT. L'alimentation réelle en apportait déjà ≈ 213 g,
+   * soit 2,7 g/kg — plus que ce qu'un travail de force exige. Le surplus est
+   * reconverti en glucides, qui eux servent à la séance.
+   */
+  it('les protéines restent dans la fourchette visée, sans la dépasser', () => {
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      expect(mealsTotal(t).proteinG, `${t.label} — trop de protéines`).toBeLessThanOrEqual(195);
+      expect(mealsTotal(t).proteinG, `${t.label} — pas assez`).toBeGreaterThanOrEqual(170);
+    }
+  });
+
+  it('le jour de repos garde les cinq prises et n’allège que les féculents', () => {
+    expect(MD).toContain('Seuls les féculents baissent');
     const train = NUTRITION_TARGETS.train;
     const rest = NUTRITION_TARGETS.rest;
     expect(rest.meals).toHaveLength(train.meals.length);
     // Les lipides ne bougent pas : ce sont les féculents qui baissent, pas
-    // l'huile ni les amandes.
+    // l'huile, les amandes ni le saumon.
     expect(rest.fatG).toBeGreaterThanOrEqual(train.fatG - 5);
+    // Les protéines ne perdent qu'une douzaine de grammes.
+    expect(train.proteinG - rest.proteinG).toBeLessThanOrEqual(15);
     expect(rest.carbsG).toBeLessThan(train.carbsG);
-    // Les repas porteurs de viande, de poisson ou d'œufs gardent leur portion.
-    for (const nom of ['Déjeuner', 'Dîner']) {
-      const t = train.meals.find((m) => m.name === nom)!;
-      const r = rest.meals.find((m) => m.name === nom)!;
-      expect(r.detail, nom).toContain('180-200 g de protéine');
-      expect(t.detail, nom).toContain('180-200 g de protéine');
-    }
+    expect(rest.kcal).toBeLessThan(train.kcal);
   });
 
-  it('le jour de repos n’allège que les féculents', () => {
-    expect(NUTRITION_TARGETS.rest.carbsG).toBeLessThan(NUTRITION_TARGETS.train.carbsG);
-    expect(NUTRITION_TARGETS.rest.kcal).toBeLessThan(NUTRITION_TARGETS.train.kcal);
+  it('les portions de protéine animale sont IDENTIQUES les deux jours', () => {
+    // C'est ce qui distingue un allègement d'une restriction : le poulet et le
+    // saumon ne bougent pas, seuls le riz, les pâtes, le pain et les flocons.
+    const qte = (kind: 'train' | 'rest', repas: string, produit: string) =>
+      NUTRITION_TARGETS[kind].meals
+        .find((m) => m.name.startsWith(repas))!
+        .items!.find((i) => i.product === produit)!.qty;
+    expect(qte('rest', 'Déjeuner', 'poulet')).toBe(qte('train', 'Déjeuner', 'poulet'));
+    expect(qte('rest', 'Dîner', 'saumon')).toBe(qte('train', 'Dîner', 'saumon'));
+    expect(qte('rest', 'Dîner', 'huile')).toBe(qte('train', 'Dîner', 'huile'));
+    // Et les féculents, eux, baissent bien.
+    expect(qte('rest', 'Déjeuner', 'riz')).toBeLessThan(qte('train', 'Déjeuner', 'riz'));
+    expect(qte('rest', 'Dîner', 'pates')).toBeLessThan(qte('train', 'Dîner', 'pates'));
   });
 
-  it('les deux paliers ont bien des repas DIFFÉRENTS, pas juste un bouton actif', () => {
-    const train = NUTRITION_TARGETS.train.meals;
-    const rest = NUTRITION_TARGETS.rest.meals;
-    expect(train).not.toEqual(rest);
-    // La prise de 16 h change de nature : elle entoure une séance un jour
-    // d'entraînement, ce n'est qu'une collation un jour de repos.
-    expect(train.map((m) => m.name)).toContain('Autour de la séance — 16 h');
-    expect(rest.map((m) => m.name)).toContain('Collation — 16 h');
-    // Et chaque prise du repos pèse moins, sauf celle de 10 h, inchangée.
-    const kcal = (meals: typeof train, name: string) => meals.find((m) => m.name === name)!.kcal;
-    for (const nom of ['Réveil — 6 h', 'Collation — 8 h', 'Déjeuner', 'Dîner']) {
-      expect(kcal(rest, nom), nom).toBeLessThan(kcal(train, nom));
-    }
-    expect(kcal(rest, 'Collation — 10 h')).toBe(kcal(train, 'Collation — 10 h'));
-  });
-
-  it('la collation du matin suit la dernière version du .md', () => {
-    expect(MD).toContain('280 g de skyr nature');
-    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
-    expect(c.kcal).toBe(430);
-    expect(c.proteinG).toBe(34);
-    // La même collation les deux jours : le .md ne la change pas au repos.
-    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name === 'Collation — 10 h')).toEqual(c);
+  it('la collation de 8 h est le même objet aux deux paliers', () => {
+    expect(MD).toContain('200 g de skyr');
+    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name.startsWith('Collation — 08 h'))!;
+    expect(c.kcal).toBe(440);
+    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name.startsWith('Collation — 08 h'))).toEqual(c);
   });
 
   /*
-   * Ce test était l'inverse : il constatait un écart de −830 kcal entre les
-   * repas listés et la cible annoncée. Le plan a été refait sur les valeurs de
-   * composition réelles, avec une sixième prise. L'écart est maintenant sous la
-   * tolérance, donc l'alerte de l'écran Nutrition est éteinte — et ce test est
-   * ce qui la rallumera si une portion repart à la baisse.
+   * Le garde-fou qui a déjà servi : les repas listés et la cible annoncée ont
+   * longtemps différé de 830 kcal. On vérifie maintenant l'égalité EXACTE, les
+   * cibles n'étant plus une intention mais le total réel des aliments.
    */
-  it('les repas listés totalisent bien la cible annoncée', () => {
-    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({ kcal: 3605, proteinG: 242 });
-    expect(mealsGap(NUTRITION_TARGETS.train)).toEqual({ kcal: 5, pct: 0.1 });
-
-    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({ kcal: 3058, proteinG: 227 });
-    expect(mealsGap(NUTRITION_TARGETS.rest)).toEqual({ kcal: 8, pct: 0.3 });
-
+  it('la cible annoncée EST le total des repas, sans écart', () => {
+    expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({
+      kcal: 3233,
+      proteinG: 190,
+      carbsG: 402,
+      fatG: 89,
+    });
+    expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({
+      kcal: 2801,
+      proteinG: 180,
+      carbsG: 318,
+      fatG: 86,
+    });
     for (const t of Object.values(NUTRITION_TARGETS)) {
+      expect(mealsGap(t), t.label).toEqual({ kcal: 0, pct: 0 });
       expect(Math.abs(mealsGap(t).pct), t.label).toBeLessThanOrEqual(MEALS_GAP_TOLERANCE_PCT);
     }
   });
 
+  it('les quatre macros de la cible valent celles des repas', () => {
+    for (const t of Object.values(NUTRITION_TARGETS)) {
+      const m = mealsTotal(t);
+      expect(m.carbsG, `${t.label} — glucides`).toBe(t.carbsG);
+      expect(m.fatG, `${t.label} — lipides`).toBe(t.fatG);
+    }
+  });
+
   /*
-   * Les protéines annoncées en tête ne sont plus une intention : elles sont la
-   * somme des repas, arrondie. Le plan monte ainsi à 240 g un jour
-   * d'entraînement, bien au-dessus des 170 g d'origine — conséquence assumée
-   * des 180-200 g de protéine au déjeuner ET au dîner demandés par Guillaume.
+   * La prise la plus retravaillée : de 289 à 458 kcal, de 36 à 87 g de
+   * glucides, pour 3 g de lipides. Une collation pré-séance doit fournir du
+   * carburant disponible, pas ralentir la digestion.
    */
-  it('les protéines annoncées correspondent aux repas, à l’arrondi près', () => {
-    for (const t of Object.values(NUTRITION_TARGETS)) {
-      const ecart = Math.abs(mealsTotal(t).proteinG - t.proteinG);
-      expect(ecart, `${t.label} — ${mealsTotal(t).proteinG} g listés`).toBeLessThanOrEqual(5);
-    }
+  it('le pré-entraînement de 16 h est glucidique et pauvre en lipides', () => {
+    const m = NUTRITION_TARGETS.train.meals.find((x) => x.name.startsWith('Pré-entraînement'))!;
+    const macros = mealMacros(m);
+    expect(macros.kcal).toBeGreaterThanOrEqual(450);
+    expect(macros.kcal).toBeLessThanOrEqual(550);
+    expect(macros.carbsG).toBeGreaterThanOrEqual(80);
+    expect(macros.fatG, 'lipides avant une séance').toBeLessThanOrEqual(5);
+    // Les glucides portent l'essentiel des calories de cette prise.
+    expect((macros.carbsG * 4) / macros.kcal).toBeGreaterThan(0.7);
   });
 
-  it('les portions relevées du déjeuner et du dîner suivent le .md', () => {
-    expect(MD).toContain('180-200 g de viande blanche ou rouge maigre');
-    expect(MD).toContain('300 g de riz, pâtes ou pommes de terre (poids cuit)');
-    expect(MD).toContain('180-200 g de viande, poisson ou œufs');
-
-    for (const t of Object.values(NUTRITION_TARGETS)) {
-      for (const nom of ['Déjeuner', 'Dîner']) {
-        const m = t.meals.find((x) => x.name === nom)!;
-        expect(m.detail, `${t.label} — ${nom}`).toContain('180-200 g de protéine');
-      }
-    }
-    // Guillaume peut monter au-dessus de 200 g de féculent au déjeuner, mais pas
-    // au dîner : c'est le déjeuner qui porte la portion la plus grosse.
-    const feculent = (nom: string) =>
-      Number(/(\d+) g de féculent/.exec(
-        NUTRITION_TARGETS.train.meals.find((m) => m.name === nom)!.detail,
-      )![1]);
-    expect(feculent('Déjeuner')).toBe(300);
-    expect(feculent('Dîner')).toBe(200);
-    expect(feculent('Déjeuner')).toBeGreaterThan(feculent('Dîner'));
+  it('les glucides se concentrent autour de la séance', () => {
+    const parRepas = (nom: string) =>
+      mealMacros(NUTRITION_TARGETS.train.meals.find((m) => m.name.startsWith(nom))!).carbsG;
+    // Déjeuner, 16 h et dîner portent plus de glucides que les deux prises
+    // du matin réunies.
+    const autour = parRepas('Déjeuner') + parRepas('Pré-entraînement') + parRepas('Dîner');
+    const matin = parRepas('Petit-déjeuner') + parRepas('Collation — 08 h');
+    expect(autour).toBeGreaterThan(matin);
   });
 
-  it('six prises les deux jours — la contrainte a bougé', () => {
-    expect(MD).toContain('6 prises alimentaires');
-    // Guillaume a tranché : même rythme tous les jours, portions réduites au
-    // repos. Un jour à cinq prises serait le seul de la semaine, donc celui
-    // qu'on oublie de suivre.
-    expect(NUTRITION_TARGETS.train.meals).toHaveLength(6);
-    expect(NUTRITION_TARGETS.rest.meals).toHaveLength(6);
+  it('cinq prises les deux jours, aux mêmes horaires', () => {
+    expect(MD).toContain('**Cinq prises**');
+    expect(NUTRITION_TARGETS.train.meals).toHaveLength(5);
+    expect(NUTRITION_TARGETS.rest.meals).toHaveLength(5);
+    const heures = (k: 'train' | 'rest') => NUTRITION_TARGETS[k].meals.map((m) => m.name);
+    expect(heures('rest')).toEqual(heures('train').map((n) =>
+      n === 'Pré-entraînement — 16 h' ? 'Collation — 16 h' : n,
+    ));
   });
 
   it('une protéine à chaque repas, sur les deux paliers', () => {
@@ -213,16 +219,17 @@ describe('aliments décomposés', () => {
     }
   });
 
-  it('la collation de 10 h est le même objet dans les deux paliers', () => {
-    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name === 'Collation — 10 h')!;
-    expect(c.items?.map((i) => i.product)).toEqual(['skyr', 'amandes', 'pomme']);
-    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name === 'Collation — 10 h')).toBe(c);
+  it('la collation de 8 h est le même objet dans les deux paliers', () => {
+    const c = NUTRITION_TARGETS.train.meals.find((m) => m.name.startsWith('Collation — 08 h'))!;
+    expect(c.items?.map((i) => i.product)).toEqual(['pomme', 'amandes', 'skyr', 'confiture']);
+    // `toBe` et non `toEqual` : c'est littéralement le même objet, pas une copie.
+    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name.startsWith('Collation — 08 h'))).toBe(c);
   });
 
   /*
-   * Le point du catalogue de produits : le pain du réveil et celui de la
-   * collation de 16 h doivent être LE MÊME pain, sinon changer de marque se
-   * saisit quatre fois.
+   * Le point du catalogue de produits : le skyr de 8 h, celui du
+   * pré-entraînement et celui de la collation de 16 h doivent être LE MÊME
+   * skyr, sinon changer de marque se saisit trois fois.
    */
   it('un même produit a partout la même composition', () => {
     const parProduit = new Map<string, string>();
@@ -236,12 +243,19 @@ describe('aliments décomposés', () => {
         }
       }
     }
-    // Et le pain apparaît bien plusieurs fois : sinon le test ne prouve rien.
-    const lignesPain = Object.values(NUTRITION_TARGETS)
-      .flatMap((t) => t.meals)
-      .flatMap((m) => m.items ?? [])
-      .filter((i) => i.product === 'pain');
-    expect(lignesPain.length).toBeGreaterThanOrEqual(4);
-    expect(new Set(lignesPain.map((i) => i.id)).size).toBe(lignesPain.length);
+    // Et un produit apparaît bien plusieurs fois : sinon le test ne prouve rien.
+    const lignes = (produit: string) =>
+      Object.values(NUTRITION_TARGETS)
+        .flatMap((t) => t.meals)
+        .flatMap((m) => m.items ?? [])
+        .filter((i) => i.product === produit);
+    for (const produit of ['skyr', 'confiture']) {
+      /*
+       * On dédoublonne par identifiant : la collation de 8 h est le MÊME objet
+       * dans les deux paliers, ses lignes ne doivent pas compter double.
+       */
+      const distinctes = new Set(lignes(produit).map((i) => i.id));
+      expect(distinctes.size, `${produit} — lignes distinctes`).toBeGreaterThanOrEqual(3);
+    }
   });
 });
