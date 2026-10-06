@@ -66,7 +66,27 @@ export interface FoodItem {
   category: FoodCategory;
   /** Précision pratique affichée à la saisie. */
   hint?: string;
+  /**
+   * Posé quand la quantité a été ajustée par la PHASE du programme, et non par
+   * Guillaume.
+   *
+   * Les deux ajustements ne doivent pas se confondre à l'écran : « MODIFIÉ »
+   * veut dire « tu as changé ça », et c'est lui que compte le bouton de remise
+   * à zéro. Un ajustement de deload n'est pas à lui, et le réinitialiser
+   * n'aurait aucun sens.
+   */
+  adjusted?: NutritionPhase;
 }
+
+/**
+ * Phase nutritionnelle d'une journée — ce qui s'ajoute au couple
+ * entraînement/repos.
+ *
+ * `deloadLight` : journée d'entraînement d'une semaine de deload, hors combine.
+ * Le volume tombe, donc la dépense aussi, mais c'est aussi une semaine de
+ * récupération : on ne coupe pas à proportion du volume.
+ */
+export type NutritionPhase = 'normal' | 'deloadLight';
 
 export interface Meal {
   /** « Réveil », « Déjeuner »… */
@@ -565,3 +585,61 @@ export const FUEL_BY_TRAINING_DAY: Partial<Record<0 | 1 | 2 | 3 | 4 | 5 | 6, Fue
   5: 'high',
   6: 'medium',
 };
+
+// ---------------------------------------------------------------------------
+// Semaines de deload — décision de Guillaume, hors .md
+// ---------------------------------------------------------------------------
+
+/**
+ * Ce qui baisse pendant une journée d'entraînement de semaine de deload.
+ *
+ * ── Le principe ─────────────────────────────────────────────────────────────
+ *
+ * Moins de volume, donc moins de dépense — mais une semaine de deload est AUSSI
+ * une semaine de récupération. Une coupe proportionnelle au volume (−40 % de
+ * séries ne veut pas dire −40 % de calories) saboterait exactement ce que la
+ * semaine est censée produire.
+ *
+ * La baisse visée est donc modeste, environ 200 kcal, et elle vient des
+ * glucides seuls :
+ *
+ *   riz du déjeuner       320 → 250 g   −91 kcal
+ *   pâtes du dîner        280 → 240 g   −63 kcal
+ *   pain du pré-séance     80 →  60 g   −50 kcal
+ *                                       ────────
+ *                                       −204 kcal, dont −41 g de glucides
+ *
+ * Les protéines perdent 5 g sur 190, les lipides 1 g sur 89 : rien qui compte.
+ *
+ * ── Ce qui NE baisse pas, et pourquoi ───────────────────────────────────────
+ *
+ * Le miel du pré-entraînement reste à 25 g. C'est le seul repas dont le travail
+ * est de fournir du carburant disponible, et la séance a lieu quand même —
+ * allégée, pas annulée.
+ *
+ * Les flocons croustillants restent à 70 g : ils portent 19 g de lipides pour
+ * 100 g, donc les réduire ferait baisser les lipides autant que les glucides.
+ * C'est l'inverse de la règle.
+ *
+ * Fruits, légumes, œufs, skyr, poulet, saumon, huile, amandes : intacts. La
+ * dépense de la séance diminue, pas le besoin de récupérer.
+ *
+ * ── La clé est un identifiant de LIGNE ──────────────────────────────────────
+ *
+ * Et non de produit : on allège le riz du déjeuner d'un jour d'entraînement,
+ * pas « le riz » partout. Le palier repos n'a pas ces identifiants, il n'est
+ * donc jamais touché — ce qui est voulu : un jour de repos de semaine de deload
+ * reste un jour de repos ordinaire, sans seconde réduction.
+ */
+export const DELOAD_QUANTITIES: Readonly<Record<string, number>> = {
+  't.dejeuner.riz': 250,
+  't.diner.pates': 240,
+  't.pre.pain': 60,
+};
+
+/** Le bandeau affiché dans l'écran Nutrition pendant une semaine de deload. */
+export const DELOAD_BANNER = {
+  title: 'SEMAINE DE DELOAD',
+  text:
+    'Volume d’entraînement réduit : apports légèrement ajustés pour correspondre à la dépense énergétique tout en favorisant la récupération. Protéines et lipides inchangés — seuls les féculents baissent.',
+} as const;

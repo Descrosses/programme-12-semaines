@@ -11,6 +11,7 @@
  */
 
 import {
+  DELOAD_QUANTITIES,
   FUEL_ADVICE,
   FUEL_BY_TRAINING_DAY,
   MEALS_GAP_TOLERANCE_PCT,
@@ -18,10 +19,13 @@ import {
   type FoodItem,
   type FuelAdvice,
   type Meal,
+  type NutritionPhase,
   type NutritionTarget,
 } from '../data/nutrition';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
-import type { DayIndex } from '../data/types';
+import { WEEK_BLOCKS } from '../data/program';
+import { isCombineDay } from '../data/testSessions';
+import type { DayIndex, WeekIndex } from '../data/types';
 
 /** Une pesée du matin, et éventuellement le tour de taille du jour. */
 export interface Measurement {
@@ -246,6 +250,131 @@ export function nutritionAdvice(entries: Measurement[], todayIso: string): Nutri
 export function fuelForToday(day: DayIndex | null): FuelAdvice {
   if (day === null) return FUEL_ADVICE.rest;
   return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? 'standard'];
+}
+
+// ---------------------------------------------------------------------------
+// Phase du programme — ce que la périodisation change dans l'assiette
+// ---------------------------------------------------------------------------
+
+/**
+ * La phase nutritionnelle d'une journée donnée.
+ *
+ * ── Trois entrées, et aucune liste de semaines écrite ici ───────────────────
+ *
+ * La phase se LIT de la périodisation existante (`WEEK_BLOCKS`) et du
+ * calendrier des combines, elle ne les recopie pas. Écrire « semaines 4 et 8 »
+ * en dur créerait une deuxième vérité sur le programme : le jour où la
+ * périodisation bouge, l'alimentation suivrait encore l'ancienne.
+ *
+ * C'est aussi ce qui règle la semaine 12 toute seule, sans cas particulier :
+ * son bloc est `taper`, pas `deload`. Le volume y baisse, mais les tests de
+ * performance demandent une disponibilité énergétique entière, et la règle le
+ * donne sans qu'on ait à l'écrire.
+ *
+ * ── Les trois cas ──────────────────────────────────────────────────────────
+ *
+ *   pas de séance          → `normal`. Le palier « repos » fait déjà le travail,
+ *                            et empiler une seconde baisse dessus serait
+ *                            exactement ce qu'une semaine de récupération ne
+ *                            doit pas faire.
+ *   semaine de deload,     → `normal`. Le samedi et le dimanche de la semaine 8
+ *   jour de combine          portent des tests : une journée où l'on cherche
+ *                            une performance se mange comme une journée
+ *                            d'entraînement normale.
+ *   semaine de deload,     → `deloadLight`.
+ *   séance allégée
+ */
+export function phaseForDay(week: WeekIndex | null, day: DayIndex | null): NutritionPhase {
+  if (week === null || day === null) return 'normal';
+  if (WEEK_BLOCKS[week] !== 'deload') return 'normal';
+  if (isCombineDay(week, day)) return 'normal';
+  return 'deloadLight';
+}
+
+/**
+ * La phase d'une journée d'entraînement ORDINAIRE de cette semaine.
+ *
+ * Sert à consulter le palier entraînement un jour où l'on ne s'entraîne pas :
+ * le mardi d'une semaine de deload, ce qu'on cherche à voir est bien « à quoi
+ * ressemble une journée d'entraînement cette semaine-ci », et non le plan d'une
+ * semaine normale.
+ *
+ * Les jours de combine sont ignorés par construction — ce sont des exceptions
+ * dans leur semaine, pas sa journée type.
+ */
+export function phaseForWeek(week: WeekIndex | null): NutritionPhase {
+  if (week === null) return 'normal';
+  return WEEK_BLOCKS[week] === 'deload' ? 'deloadLight' : 'normal';
+}
+
+/**
+ * Le palier tel que la phase le modifie — mêmes aliments, quelques quantités.
+ *
+ * ── Pourquoi un palier dérivé plutôt qu'un paramètre de plus ───────────────
+ *
+ * Tout le calcul existant part des lignes d'un repas : `itemMacros`,
+ * `mealMacros`, `mealsTotal`, l'écart à la cible, le remplacement d'un aliment,
+ * les corrections d'étiquette. Ajouter la phase à chacun aurait demandé de la
+ * faire traverser six fonctions sans rien y gagner.
+ *
+ * On produit donc un palier normal, dont seules des quantités diffèrent, et
+ * tout le reste continue de fonctionner sans le savoir. Les totaux se
+ * recalculent par le même chemin qu'avant.
+ *
+ * Hors deload, c'est l'objet d'origine qui est rendu, à l'identique : la
+ * fonction est alors strictement inerte.
+ *
+ * ── Les corrections de Guillaume passent par-dessus ────────────────────────
+ *
+ * Elles s'appliquent plus tard, dans `effectiveItem`, et par identifiant de
+ * ligne. Une quantité qu'il a saisie lui-même gagne donc toujours sur
+ * l'ajustement automatique — ce qui est le bon ordre : l'appli propose, il
+ * tranche.
+ */
+export function targetForPhase(
+  target: NutritionTarget,
+  phase: NutritionPhase,
+  quantites: Readonly<Record<string, number>> = DELOAD_QUANTITIES,
+): NutritionTarget {
+  if (phase === 'normal') return target;
+
+  const meals = target.meals.map((m) => repasAjuste(m, phase, quantites));
+  /*
+   * Les quatre macros de la cible sont RECALCULÉES, pas recopiées.
+   *
+   * Sans ça, l'écran comparerait des repas allégés à la cible d'une journée
+   * normale et annoncerait un déficit de 200 kcal à chaque jour de deload —
+   * une alerte sur un plan qui fait exactement ce qu'on lui demande.
+   */
+  const total = somme4(meals.map((m) => mealMacros(m)));
+  return {
+    ...target,
+    meals,
+    kcal: Math.round(total.kcal),
+    proteinG: Math.round(total.proteinG),
+    carbsG: Math.round(total.carbsG),
+    fatG: Math.round(total.fatG),
+  };
+}
+
+/** Un repas dont les lignes concernées portent leur quantité de deload. */
+function repasAjuste(
+  meal: Meal,
+  phase: NutritionPhase,
+  quantites: Readonly<Record<string, number>>,
+): Meal {
+  if (!meal.items?.some((i) => quantites[i.id] !== undefined)) return meal;
+
+  const items = meal.items.map((i) => {
+    const qty = quantites[i.id];
+    return qty === undefined || qty === i.qty ? i : { ...i, qty, adjusted: phase };
+  });
+  const m = mealMacros({ ...meal, items });
+  return { ...meal, items, kcal: m.kcal, proteinG: m.proteinG };
+}
+
+function somme4(macros: Macros[]): Macros {
+  return macros.reduce((a, b) => somme(a, b), ZERO);
 }
 
 /**
