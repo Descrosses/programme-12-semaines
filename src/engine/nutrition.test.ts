@@ -419,7 +419,7 @@ describe('sens de l’écart entre les repas et la cible', () => {
     expect(gapVerdict(bord)).toBe('ok');
     const large = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.2) };
     expect(gapVerdict(large)).toBe('surplus');
-    expect(cible).toBe(3233); // garde-fou : le test parle bien de la vraie cible
+    expect(cible).toBe(3226); // garde-fou : le test parle bien de la vraie cible
   });
 });
 

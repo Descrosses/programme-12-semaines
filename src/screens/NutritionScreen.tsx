@@ -10,17 +10,19 @@ import {
   TARGET_GAIN_KG_PER_WEEK,
   type DayKind,
 } from '../data/nutrition';
-import type { DayIndex } from '../data/types';
+import type { DayIndex, WeekIndex } from '../data/types';
 import { humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
-import { MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
+import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
   fuelForToday,
   gapVerdict,
   mealMacros,
   mealsGap,
   mealsTotal,
+  phaseForDay,
+  targetForPhase,
   type FoodOverrides,
   starchToCloseGap,
   latestWaist,
@@ -57,10 +59,13 @@ import styles from './Screens.module.css';
 export function NutritionScreen({
   todayKind,
   todayDay,
+  todayWeek,
 }: {
   todayKind: DayKind;
   /** Jour de programme de la séance du jour, `null` si repos. */
   todayDay: DayIndex | null;
+  /** Semaine de programme du jour, `null` hors programme. */
+  todayWeek: WeekIndex | null;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
@@ -104,7 +109,15 @@ export function NutritionScreen({
 
   if (!rows) return <div className={styles.loading}>Chargement…</div>;
 
-  const target = NUTRITION_TARGETS[kind];
+  /*
+   * La phase de la journée — ce que la périodisation change dans l'assiette.
+   *
+   * Elle s'applique aux DEUX paliers : en semaine de deload, le jour de repos
+   * baisse aussi, simplement deux fois moins. Chaque palier porte ses propres
+   * quantités allégées, donc le même appel suffit pour les deux.
+   */
+  const phase = phaseForDay(todayWeek, todayDay);
+  const target = targetForPhase(NUTRITION_TARGETS[kind], phase);
   const totalRepas = mealsTotal(target, overrides, catalogue);
   const ecart = mealsGap(target, overrides, catalogue);
   const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
@@ -114,7 +127,11 @@ export function NutritionScreen({
    * a changé. La carte reste donc sur aujourd'hui.
    */
   const carburant = fuelForToday(todayDay);
-  const baseAujourdhui = mealsTotal(NUTRITION_TARGETS[todayKind], overrides, catalogue);
+  const baseAujourdhui = mealsTotal(
+    targetForPhase(NUTRITION_TARGETS[todayKind], phase),
+    overrides,
+    catalogue,
+  );
   const trend = weightTrend(rows, todayIso);
   const advice = nutritionAdvice(rows, todayIso);
   const waist = latestWaist(rows);
@@ -154,6 +171,18 @@ export function NutritionScreen({
           aliment pour corriger son étiquette ou le remplacer.
         </p>
       </header>
+
+      {/*
+        Bandeau de deload — discret, et seulement quand il a quelque chose à
+        dire. Il explique un chiffre qui a bougé tout seul : sans lui, les
+        portions allégées ressembleraient à un bug.
+      */}
+      {phase === 'deloadLight' && (
+        <div className={styles.phaseNote}>
+          <b>{DELOAD_BANNER.title}</b>
+          <span>{DELOAD_BANNER.text}</span>
+        </div>
+      )}
 
       {/* --- 1. Référence du jour ------------------------------------------ */}
       <section className={styles.card}>

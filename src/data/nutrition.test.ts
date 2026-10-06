@@ -19,12 +19,12 @@ const MD = readFileSync(new URL('../../plan-alimentaire-12-semaines.md', import.
 
 describe('cibles transcrites du .md', () => {
   it('le jour d’entraînement reprend l’en-tête du plan', () => {
-    expect(MD).toContain('3 233 kcal · 190 g protéines · 402 g glucides · 89 g lipides');
+    expect(MD).toContain('3 226 kcal · 190 g protéines · 402 g glucides · 91 g lipides');
     const t = NUTRITION_TARGETS.train;
-    expect(t.kcal).toBe(3233);
+    expect(t.kcal).toBe(3226);
     expect(t.proteinG).toBe(190);
     expect(t.carbsG).toBe(402);
-    expect(t.fatG).toBe(89);
+    expect(t.fatG).toBe(91);
   });
 
   /*
@@ -72,7 +72,7 @@ describe('cibles transcrites du .md', () => {
   it('la collation de 8 h est le même objet aux deux paliers', () => {
     expect(MD).toContain('200 g de skyr');
     const c = NUTRITION_TARGETS.train.meals.find((m) => m.name.startsWith('Collation — 08 h'))!;
-    expect(c.kcal).toBe(440);
+    expect(c.kcal).toBe(485);
     expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name.startsWith('Collation — 08 h'))).toEqual(c);
   });
 
@@ -83,15 +83,15 @@ describe('cibles transcrites du .md', () => {
    */
   it('la cible annoncée EST le total des repas, sans écart', () => {
     expect(mealsTotal(NUTRITION_TARGETS.train)).toEqual({
-      kcal: 3233,
+      kcal: 3226,
       proteinG: 190,
       carbsG: 402,
-      fatG: 89,
+      fatG: 91,
     });
     expect(mealsTotal(NUTRITION_TARGETS.rest)).toEqual({
-      kcal: 2801,
-      proteinG: 180,
-      carbsG: 318,
+      kcal: 2802,
+      proteinG: 178,
+      carbsG: 321,
       fatG: 86,
     });
     for (const t of Object.values(NUTRITION_TARGETS)) {
@@ -109,16 +109,17 @@ describe('cibles transcrites du .md', () => {
   });
 
   /*
-   * La prise la plus retravaillée : de 289 à 458 kcal, de 36 à 87 g de
-   * glucides, pour 3 g de lipides. Une collation pré-séance doit fournir du
-   * carburant disponible, pas ralentir la digestion.
+   * La prise la plus chargée en glucides de la journée, et c'est voulu : elle
+   * tombe juste avant la séance, là où le carburant sert. Elle a encore grossi
+   * quand le riz du déjeuner et les pâtes du dîner ont été ramenés à des
+   * portions tenables — ces glucides-là sont partis ici, pas à la poubelle.
    */
   it('le pré-entraînement de 16 h est glucidique et pauvre en lipides', () => {
     const m = NUTRITION_TARGETS.train.meals.find((x) => x.name.startsWith('Pré-entraînement'))!;
     const macros = mealMacros(m);
     expect(macros.kcal).toBeGreaterThanOrEqual(450);
-    expect(macros.kcal).toBeLessThanOrEqual(550);
-    expect(macros.carbsG).toBeGreaterThanOrEqual(80);
+    expect(macros.kcal).toBeLessThanOrEqual(650);
+    expect(macros.carbsG).toBeGreaterThanOrEqual(100);
     expect(macros.fatG, 'lipides avant une séance').toBeLessThanOrEqual(5);
     // Les glucides portent l'essentiel des calories de cette prise.
     expect((macros.carbsG * 4) / macros.kcal).toBeGreaterThan(0.7);

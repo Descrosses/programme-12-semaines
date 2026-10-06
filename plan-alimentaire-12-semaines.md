@@ -1,5 +1,5 @@
 # Plan alimentaire — 12 semaines
-Cible : 3 233 kcal · 190 g protéines · 402 g glucides · 89 g lipides (jour d'entraînement)
+Cible : 3 226 kcal · 190 g protéines · 402 g glucides · 91 g lipides (jour d'entraînement)
 Ce plan part de ce que Guillaume mange RÉELLEMENT. Les aliments sont les siens ; seules les quantités ont été ajustées pour soutenir le programme.
 
 ## Principe général (style NFL, pas culturiste)
@@ -10,7 +10,7 @@ Beaucoup de glucides, protéines suffisantes, lipides modérés. Les glucides se
 
 **Les protéines BAISSENT, et c'est voulu.** L'alimentation réelle apportait déjà ≈ 213 g, soit 2,7 g/kg — au-dessus de ce qu'un travail de force exige. Le surplus est reconverti en glucides, qui eux servent à la performance. Cible retenue : ≈ 190 g, soit 2,4 g/kg.
 
-**Deux paliers, pas plus** : jour d'entraînement (≈ 3 233 kcal) et jour de repos (≈ 2 801 kcal). Le jour de repos garde les cinq prises, les mêmes aliments et presque les mêmes protéines : seuls les féculents baissent. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique intenable sans peser chaque aliment.
+**Deux paliers, pas plus** : jour d'entraînement (≈ 3 226 kcal) et jour de repos (≈ 2 801 kcal). Le jour de repos garde les cinq prises, les mêmes aliments et presque les mêmes protéines : seuls les féculents baissent. Une périodisation plus fine, séance par séance, ajouterait de la précision théorique intenable sans peser chaque aliment.
 
 **Hydratation** : bois régulièrement dans la journée, utilise la couleur des urines comme repère. Augmente eau et sel les jours de forte chaleur ou de transpiration importante sur chantier. Pas de règle rigide du type « 3 L obligatoires ».
 
@@ -23,40 +23,40 @@ Beaucoup de glucides, protéines suffisantes, lipides modérés. Les glucides se
 **Petit-déjeuner (05 h 45)**
 - 3 œufs entiers
 - 70 g de flocons croustillants (type Bjorg)
-- 100 g de fruits rouges
-- 200 ml de lait demi-écrémé
-≈ 674 kcal / 33 g protéines / 62 g glucides / 32 g lipides
+- 150 g de fruits rouges
+- 250 ml de lait demi-écrémé
+≈ 719 kcal / 35 g protéines / 68 g glucides / 33 g lipides
 
 **Collation (08 h, sur la route ou au chantier)**
 - 1 pomme
 - 30 g d'amandes
 - 200 g de skyr nature
-- 20 g de confiture
-≈ 440 kcal / 26 g protéines / 49 g glucides / 16 g lipides
+- 35 g de confiture
+≈ 485 kcal / 27 g protéines / 61 g glucides / 16 g lipides
 
 **Déjeuner (12 h)**
 - 150 g de poulet cuit
-- 320 g de riz cuit
+- 250 g de riz cuit
 - 150 g de petits pois cuits
-≈ 785 kcal / 63 g protéines / 111 g glucides / 7 g lipides
+≈ 694 kcal / 61 g protéines / 92 g glucides / 7 g lipides
 
 **Pré-entraînement (16 h)**
 - 1 banane
-- 80 g de pain complet
-- 25 g de miel ou de confiture
+- 110 g de pain complet
+- 40 g de miel ou de confiture
 - 120 g de skyr nature
-≈ 458 kcal / 20 g protéines / 87 g glucides / 3 g lipides
+≈ 578 kcal / 23 g protéines / 113 g glucides / 4 g lipides
 
-C'est la prise la plus retravaillée du plan. Elle passe de 289 à 458 kcal et de 36 à 87 g de glucides, pour **3 g de lipides** : une collation pré-séance doit fournir du carburant disponible, pas ralentir la digestion. Le skyr apporte de quoi tenir jusqu'à 20 h sans alourdir.
+C'est la prise la plus chargée en glucides de la journée, et c'est voulu : elle tombe juste avant la séance, là où le carburant sert. **4 g de lipides** seulement — une collation pré-séance doit fournir de l'énergie disponible, pas ralentir la digestion. Le skyr apporte de quoi tenir jusqu'à 20 h sans alourdir.
 
 **Dîner (20 h)**
 - 140 g de saumon
-- 280 g de pâtes cuites
+- 200 g de pâtes cuites
 - 150 g de purée de brocolis
 - 10 g d'huile d'olive
-≈ 876 kcal / 48 g protéines / 93 g glucides / 31 g lipides
+≈ 750 kcal / 44 g protéines / 68 g glucides / 31 g lipides
 
-**Total** : ≈ 3 233 kcal / 190 g protéines / 402 g glucides / 89 g lipides / ≈ 43 g fibres.
+**Total** : ≈ 3 226 kcal / 190 g protéines / 402 g glucides / 91 g lipides / ≈ 43 g fibres.
 
 Le total est la somme des aliments listés, jamais un nombre écrit à part. L'écart avec le calcul d'Atwater (≈ 3 175 kcal) vient des arrondis d'étiquette et des fibres : c'est normal, et c'est pour ça que les quantités sont des repères et non des lois.
 
@@ -71,37 +71,62 @@ Mêmes aliments, mêmes horaires, mêmes cinq prises. **Seuls les féculents bai
 **Petit-déjeuner (05 h 45)**
 - 3 œufs entiers
 - 60 g de flocons croustillants
-- 100 g de fruits rouges
+- 150 g de fruits rouges
 - 200 ml de lait demi-écrémé
-≈ 628 kcal / 32 g protéines / 56 g glucides / 30 g lipides
+≈ 650 kcal / 32 g protéines / 60 g glucides / 30 g lipides
 
 **Collation (08 h)** — identique au jour d'entraînement
-- 1 pomme + 30 g d'amandes + 200 g de skyr + 20 g de confiture
-≈ 440 kcal / 26 g protéines / 49 g glucides / 16 g lipides
+- 1 pomme + 30 g d'amandes + 200 g de skyr + 35 g de confiture
+≈ 485 kcal / 27 g protéines / 61 g glucides / 16 g lipides
 
 **Déjeuner (12 h)**
 - 150 g de poulet cuit
-- 220 g de riz cuit
+- 180 g de riz cuit
 - 150 g de petits pois cuits
-≈ 655 kcal / 61 g protéines / 83 g glucides / 7 g lipides
+≈ 603 kcal / 59 g protéines / 72 g glucides / 7 g lipides
 
 **Collation (16 h)**
 - 1 banane
-- 40 g de pain complet
-- 15 g de miel ou de confiture
+- 60 g de pain complet
+- 20 g de miel ou de confiture
 - 120 g de skyr nature
-≈ 328 kcal / 17 g protéines / 62 g glucides / 2 g lipides
+≈ 393 kcal / 19 g protéines / 75 g glucides / 3 g lipides
 
 **Dîner (20 h)**
 - 140 g de saumon
-- 200 g de pâtes cuites
+- 150 g de pâtes cuites
 - 150 g de purée de brocolis
 - 10 g d'huile d'olive
-≈ 750 kcal / 44 g protéines / 68 g glucides / 31 g lipides
+≈ 671 kcal / 41 g protéines / 53 g glucides / 30 g lipides
 
-**Total** : ≈ 2 801 kcal / 180 g protéines / 318 g glucides / 86 g lipides / ≈ 40 g fibres.
+**Total** : ≈ 2 802 kcal / 178 g protéines / 321 g glucides / 86 g lipides / ≈ 40 g fibres.
 
-**432 kcal de moins** qu'un jour d'entraînement, dont **84 g de glucides**. Ce n'est pas un jour « low carb » : il reste 318 g de glucides.
+**424 kcal de moins** qu'un jour d'entraînement, dont **81 g de glucides**. Ce n'est pas un jour « low carb » : il reste 321 g de glucides.
+
+---
+
+## Semaines de deload (4 et 8)
+
+Le volume d'entraînement tombe de 35 à 50 %, donc la dépense aussi. Mais une semaine de deload est **aussi** une semaine de récupération : couper les calories à proportion du volume saboterait exactement ce qu'elle est censée produire. La baisse est donc modeste, et elle vient des glucides seuls.
+
+**Jour d'entraînement de deload** — trois portions baissent :
+
+- riz du déjeuner : 250 → 200 g
+- pâtes du dîner : 200 → 160 g
+- pain du pré-séance : 110 → 85 g
+
+≈ 3 035 kcal / 184 g protéines / 365 g glucides / 89 g lipides — soit **191 kcal de moins**, dont 37 g de glucides. Les protéines perdent 6 g, les lipides 2.
+
+**Jour de repos de deload** — deux portions baissent, et moins :
+
+- riz du déjeuner : 180 → 150 g
+- pâtes du dîner : 150 → 120 g
+
+≈ 2 715 kcal / 176 g protéines / 303 g glucides / 85 g lipides — soit **87 kcal de moins**. Un jour de repos de deload reste un jour de repos : on l'effleure, on ne le creuse pas.
+
+**Ce qui ne baisse jamais** : les œufs, le poulet, le saumon, le skyr, les amandes, l'huile, les fruits et les légumes. Et le miel du pré-entraînement, parce que la séance a lieu quand même — allégée, pas annulée.
+
+**La semaine 12 n'est pas une semaine de deload nutritionnelle.** Le volume y baisse avec le taper, mais elle se termine par des tests de performance : l'alimentation y reste celle d'une journée d'entraînement normale. Même chose pour le samedi et le dimanche de la semaine 8, qui portent le combine intermédiaire.
 
 ---
 

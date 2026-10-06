@@ -37,6 +37,34 @@
   font-size: var(--fs-small);
 }
 
+/*
+ * Bandeau de phase — « semaine de deload ».
+ *
+ * Posé entre le titre et la première carte, avec un liseré d'accent : assez
+ * visible pour expliquer une portion qui a baissé toute seule, assez sobre pour
+ * ne pas passer pour une alerte. Il n'y a rien à corriger.
+ */
+.phaseNote {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 var(--pad) 14px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.phaseNote b {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 /* ------------------------------------------------------------- cartes -- */
 
 .card {
@@ -918,6 +946,19 @@
 .foodBadgeAlerte {
   background: var(--surface-2);
   color: var(--rouge);
+}
+
+/*
+ * Quantité ajustée par la PHASE du programme, et non par Guillaume.
+ *
+ * Volontairement distinct de « MODIFIÉ » : les deux ne veulent pas dire la même
+ * chose, et c'est « MODIFIÉ » que compte le bouton de remise à zéro. Lui
+ * proposer de réinitialiser un ajustement qui n'est pas de lui n'aurait aucun
+ * sens.
+ */
+.foodBadgePhase {
+  background: var(--surface-2);
+  color: var(--accent);
 }
 
 /* --- Remplacer un aliment -------------------------------------------------- */
