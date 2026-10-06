@@ -22,7 +22,6 @@ import {
   mealsGap,
   mealsTotal,
   phaseForDay,
-  phaseForWeek,
   targetForPhase,
   type FoodOverrides,
   starchToCloseGap,
@@ -113,16 +112,12 @@ export function NutritionScreen({
   /*
    * La phase de la journée — ce que la périodisation change dans l'assiette.
    *
-   * Elle ne s'applique qu'au palier entraînement : un jour de repos de semaine
-   * de deload reste un jour de repos ordinaire, sans seconde baisse.
-   *
-   * Elle est calculée sur la semaine du jour, même quand on consulte l'autre
-   * palier : ce qu'on regarde alors, c'est bien « à quoi ressemble une journée
-   * d'entraînement cette semaine-ci ».
+   * Elle s'applique aux DEUX paliers : en semaine de deload, le jour de repos
+   * baisse aussi, simplement deux fois moins. Chaque palier porte ses propres
+   * quantités allégées, donc le même appel suffit pour les deux.
    */
-  const phase =
-    todayDay !== null ? phaseForDay(todayWeek, todayDay) : phaseForWeek(todayWeek);
-  const target = targetForPhase(NUTRITION_TARGETS[kind], kind === 'train' ? phase : 'normal');
+  const phase = phaseForDay(todayWeek, todayDay);
+  const target = targetForPhase(NUTRITION_TARGETS[kind], phase);
   const totalRepas = mealsTotal(target, overrides, catalogue);
   const ecart = mealsGap(target, overrides, catalogue);
   const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
@@ -133,7 +128,7 @@ export function NutritionScreen({
    */
   const carburant = fuelForToday(todayDay);
   const baseAujourdhui = mealsTotal(
-    targetForPhase(NUTRITION_TARGETS[todayKind], todayKind === 'train' ? phase : 'normal'),
+    targetForPhase(NUTRITION_TARGETS[todayKind], phase),
     overrides,
     catalogue,
   );

@@ -98,12 +98,12 @@ describe('TEST 2 — saumon 150 g → 200 g', () => {
   });
 });
 
-describe('TEST 3 — riz 320 g → pâtes, et le cru/cuit', () => {
+describe('TEST 3 — riz 250 g → pâtes, et le cru/cuit', () => {
   it('le remplacement respecte l’état de référence', () => {
     const ov: FoodOverrides = { [riz.id]: { productId: 'pates' } };
     const e = effectiveItem(riz, ov);
     expect(e.label).toBe('Pâtes cuites');
-    expect(e.qty).toBe(320);
+    expect(e.qty).toBe(250);
     expect(FOOD_LIBRARY.pates!.referenceState).toBe('cuit');
   });
 

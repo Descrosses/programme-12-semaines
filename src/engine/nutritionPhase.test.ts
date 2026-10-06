@@ -20,7 +20,6 @@ import {
   mealsGap,
   mealsTotal,
   phaseForDay,
-  phaseForWeek,
   targetForPhase,
 } from './nutrition';
 import type { DayIndex, WeekIndex } from '../data/types';
@@ -69,10 +68,7 @@ describe('quelle phase, quel jour', () => {
     expect(WEEK_BLOCKS[12]).toBe('taper');
   });
 
-  it('sans séance, aucun ajustement de phase', () => {
-    // Le palier « repos » fait déjà le travail : une seconde baisse par-dessus
-    // serait exactement ce qu'une semaine de récupération ne doit pas faire.
-    expect(phaseForDay(4 as WeekIndex, null)).toBe('normal');
+  it('hors programme, rien ne s’applique', () => {
     expect(phaseForDay(null, LUNDI)).toBe('normal');
   });
 
@@ -84,25 +80,32 @@ describe('quelle phase, quel jour', () => {
   });
 });
 
-describe('consulter le palier entraînement un jour sans séance', () => {
+describe('les jours sans séance d’une semaine de deload', () => {
   /*
-   * Le mardi d'une semaine de deload est un jour de repos, mais on est bien
-   * encore dans cette semaine-là. Regarder le palier entraînement doit alors
-   * montrer la journée type de CETTE semaine, pas celle d'une semaine normale.
+   * Changement par rapport à la première version : le jour de repos d'une
+   * semaine de deload baisse LUI AUSSI, simplement deux fois moins. Il part
+   * déjà 424 kcal plus bas qu'un jour d'entraînement ; y empiler une grosse
+   * coupe ferait d'une semaine de récupération la plus restrictive de tout le
+   * programme.
    */
-  it('la semaine suffit à donner la phase', () => {
-    expect(phaseForWeek(4 as WeekIndex)).toBe('deloadLight');
-    expect(phaseForWeek(8 as WeekIndex)).toBe('deloadLight');
-    expect(phaseForWeek(12 as WeekIndex)).toBe('normal');
-    expect(phaseForWeek(1 as WeekIndex)).toBe('normal');
-    expect(phaseForWeek(null)).toBe('normal');
+  it('ils sont concernés, eux aussi', () => {
+    expect(phaseForDay(4 as WeekIndex, null)).toBe('deloadLight');
+    expect(phaseForDay(8 as WeekIndex, null)).toBe('deloadLight');
+    expect(phaseForDay(1 as WeekIndex, null)).toBe('normal');
+    expect(phaseForDay(12 as WeekIndex, null)).toBe('normal');
+    expect(phaseForDay(null, null)).toBe('normal');
   });
 
-  it('elle concorde avec le jour, hors combine', () => {
-    for (let w = 0; w <= 12; w++) {
-      const week = w as WeekIndex;
-      expect(phaseForWeek(week), `semaine ${w}`).toBe(phaseForDay(week, LUNDI));
-    }
+  it('le palier repos baisse, mais deux fois moins que l’entraînement', () => {
+    const reposAllege = targetForPhase(REST, 'deloadLight');
+    const baisseRepos = REST.kcal - reposAllege.kcal;
+    const baisseTrain = TRAIN.kcal - DELOAD.kcal;
+
+    expect(baisseRepos).toBeGreaterThan(0);
+    expect(baisseRepos).toBeLessThan(baisseTrain / 1.5);
+    // Et il reste un jour de repos : rien d'autre que des féculents n'a bougé.
+    expect(REST.fatG - reposAllege.fatG).toBeLessThanOrEqual(1);
+    expect(REST.proteinG - reposAllege.proteinG).toBeLessThanOrEqual(4);
   });
 });
 
@@ -149,30 +152,40 @@ describe('ce que la phase change dans l’assiette', () => {
     const proteines = part(TRAIN.proteinG, DELOAD.proteinG);
     const lipides = part(TRAIN.fatG, DELOAD.fatG);
 
-    expect(glucides).toBeGreaterThan(0.05);
-    // Chaque autre macro baisse au moins trois fois moins, en proportion.
-    expect(proteines * 3).toBeLessThan(glucides);
-    expect(lipides).toBe(0);
+    expect(glucides).toBeGreaterThan(0.08);
+    // Les glucides baissent au moins deux fois plus, en proportion.
+    expect(proteines * 2).toBeLessThan(glucides);
+    /* Le pain porte 3,3 g de lipides pour 100 g : en retirer 25 g en enlève
+       0,8 g. C'est tout ce que les lipides perdent — 2 g sur 91 — et les
+       glucides baissent quatre fois plus, en proportion. */
+    expect(lipides).toBeLessThan(0.03);
+    expect(lipides * 4).toBeLessThan(glucides);
   });
 
-  it('seuls des féculents sont allégés', () => {
-    for (const [id] of Object.entries(DELOAD_QUANTITIES)) {
-      const ligne = lignes(TRAIN).find((i) => i.id === id);
+  it('seuls des féculents sont allégés, sur les deux paliers', () => {
+    const toutes = [...lignes(TRAIN), ...lignes(REST)];
+    for (const id of Object.keys(DELOAD_QUANTITIES)) {
+      const ligne = toutes.find((i) => i.id === id);
       expect(ligne, id).toBeDefined();
       expect(ligne!.category, id).toBe('feculent');
     }
   });
 
   it('une quantité allégée est toujours plus petite', () => {
+    const toutes = [...lignes(TRAIN), ...lignes(REST)];
     for (const [id, qty] of Object.entries(DELOAD_QUANTITIES)) {
-      expect(qty, id).toBeLessThan(lignes(TRAIN).find((i) => i.id === id)!.qty);
+      expect(qty, id).toBeLessThan(toutes.find((i) => i.id === id)!.qty);
     }
   });
 
   it('les lignes allégées se signalent, les autres non', () => {
-    const marquees = lignes(DELOAD).filter((i) => i.adjusted === 'deloadLight');
+    const marquees = [
+      ...lignes(DELOAD).filter((i) => i.adjusted === 'deloadLight'),
+      ...lignes(targetForPhase(REST, 'deloadLight')).filter((i) => i.adjusted === 'deloadLight'),
+    ];
     expect(marquees.map((i) => i.id).sort()).toEqual(Object.keys(DELOAD_QUANTITIES).sort());
     expect(lignes(TRAIN).some((i) => i.adjusted)).toBe(false);
+    expect(lignes(REST).some((i) => i.adjusted)).toBe(false);
   });
 
   it('aucun aliment n’est ajouté ni retiré', () => {
@@ -181,15 +194,16 @@ describe('ce que la phase change dans l’assiette', () => {
   });
 
   /*
-   * Le palier repos n'a pas les identifiants de ligne du palier entraînement :
-   * il traverse l'ajustement sans rien changer. C'est ce qui garantit qu'un
-   * jour de repos de semaine de deload reste un jour de repos ordinaire.
+   * Chaque palier ne baisse QUE de ce qui le concerne : les identifiants de
+   * ligne sont distincts (`t.` et `r.`), donc alléger le riz du jour
+   * d'entraînement ne touche pas celui du jour de repos.
    */
-  it('le palier repos traverse l’ajustement sans bouger', () => {
-    const r = targetForPhase(REST, 'deloadLight');
-    expect(r.kcal).toBe(REST.kcal);
-    expect(r.proteinG).toBe(REST.proteinG);
-    expect(lignes(r).some((i) => i.adjusted)).toBe(false);
+  it('chaque palier ne bouge que sur ses propres lignes', () => {
+    expect(lignes(DELOAD).find((i) => i.id === 't.dejeuner.riz')!.qty).toBe(200);
+    const repos = targetForPhase(REST, 'deloadLight');
+    expect(lignes(repos).find((i) => i.id === 'r.dejeuner.riz')!.qty).toBe(150);
+    // La collation de 8 h est partagée : elle n'est allégée nulle part.
+    expect(lignes(DELOAD).find((i) => i.id === 'x.collation8.confiture')!.adjusted).toBeUndefined();
   });
 });
 
@@ -222,8 +236,8 @@ describe('les totaux se recalculent, et la cible avec eux', () => {
   /* Le plan d'origine n'est jamais réécrit : c'est ce qui rend le retour en
      arrière possible, et ce qui empêche le plan et sa source de diverger. */
   it('le palier d’origine est intact', () => {
-    expect(TRAIN.kcal).toBe(3233);
-    expect(lignes(TRAIN).find((i) => i.id === 't.dejeuner.riz')!.qty).toBe(320);
+    expect(TRAIN.kcal).toBe(3226);
+    expect(lignes(TRAIN).find((i) => i.id === 't.dejeuner.riz')!.qty).toBe(250);
   });
 
   it('une correction de Guillaume prime sur l’ajustement', () => {

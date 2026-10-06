@@ -5,9 +5,13 @@
  * des données recopiées du .md. Aucun calcul, aucune décision. Ce qui décide
  * vit dans `src/engine/nutrition.ts`.
  *
- * Deux paliers et pas plus, c'est le .md qui le pose : « Une périodisation plus
- * fine, séance par séance, ajouterait de la précision théorique que tu ne peux
- * pas tenir sans peser chaque aliment. »
+ * Deux paliers d'aliments et pas plus, c'est le .md qui le pose : « Une
+ * périodisation plus fine, séance par séance, ajouterait de la précision
+ * théorique que tu ne peux pas tenir sans peser chaque aliment. »
+ *
+ * Les semaines de deload ne font pas un troisième palier : ce sont les mêmes
+ * repas, dont trois portions de féculent baissent. Voir `DELOAD_QUANTITIES`,
+ * en bas de ce fichier.
  *
  * Deux écarts assumés avec les maquettes :
  *
@@ -223,14 +227,14 @@ function ligne(id: string, product: ProductId, qty: number): FoodItem {
 
 const PETIT_DEJEUNER: Meal = {
   name: 'Petit-déjeuner — 05 h 45',
-  detail: '3 œufs + 70 g de flocons croustillants + 100 g de fruits rouges + 200 ml de lait',
-  kcal: 674,
-  proteinG: 33,
+  detail: '3 œufs + 70 g de flocons croustillants + 150 g de fruits rouges + 250 ml de lait',
+  kcal: 719,
+  proteinG: 35,
   items: [
     ligne('t.pdej.oeuf', 'oeuf', 3),
     ligne('t.pdej.flocons', 'floconsCroustillants', 70),
-    ligne('t.pdej.fruitsRouges', 'fruitsRouges', 100),
-    ligne('t.pdej.lait', 'lait', 200),
+    ligne('t.pdej.fruitsRouges', 'fruitsRouges', 150),
+    ligne('t.pdej.lait', 'lait', 250),
   ],
 };
 
@@ -243,25 +247,25 @@ const PETIT_DEJEUNER: Meal = {
  */
 const COLLATION_8H: Meal = {
   name: 'Collation — 08 h',
-  detail: '1 pomme + 30 g d’amandes + 200 g de skyr + 20 g de confiture',
-  kcal: 440,
-  proteinG: 26,
+  detail: '1 pomme + 30 g d’amandes + 200 g de skyr + 35 g de confiture',
+  kcal: 485,
+  proteinG: 27,
   items: [
     ligne('x.collation8.pomme', 'pomme', 1),
     ligne('x.collation8.amandes', 'amandes', 30),
     ligne('x.collation8.skyr', 'skyr', 200),
-    ligne('x.collation8.confiture', 'confiture', 20),
+    ligne('x.collation8.confiture', 'confiture', 35),
   ],
 };
 
 const DEJEUNER: Meal = {
   name: 'Déjeuner — 12 h',
-  detail: '150 g de poulet cuit + 320 g de riz cuit + 150 g de petits pois',
-  kcal: 785,
-  proteinG: 63,
+  detail: '150 g de poulet cuit + 250 g de riz cuit + 150 g de petits pois',
+  kcal: 694,
+  proteinG: 61,
   items: [
     ligne('t.dejeuner.poulet', 'poulet', 150),
-    ligne('t.dejeuner.riz', 'riz', 320),
+    ligne('t.dejeuner.riz', 'riz', 250),
     ligne('t.dejeuner.petitsPois', 'petitsPois', 150),
   ],
 };
@@ -276,25 +280,25 @@ const DEJEUNER: Meal = {
  */
 const PRE_ENTRAINEMENT: Meal = {
   name: 'Pré-entraînement — 16 h',
-  detail: '1 banane + 80 g de pain complet + 25 g de miel + 120 g de skyr',
-  kcal: 458,
-  proteinG: 20,
+  detail: '1 banane + 110 g de pain complet + 40 g de miel + 120 g de skyr',
+  kcal: 578,
+  proteinG: 23,
   items: [
     ligne('t.pre.banane', 'banane', 1),
-    ligne('t.pre.pain', 'pain', 80),
-    ligne('t.pre.confiture', 'confiture', 25),
+    ligne('t.pre.pain', 'pain', 110),
+    ligne('t.pre.confiture', 'confiture', 40),
     ligne('t.pre.skyr', 'skyr', 120),
   ],
 };
 
 const DINER: Meal = {
   name: 'Dîner — 20 h',
-  detail: '140 g de saumon + 280 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
-  kcal: 876,
-  proteinG: 48,
+  detail: '140 g de saumon + 200 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
+  kcal: 750,
+  proteinG: 44,
   items: [
     ligne('t.diner.saumon', 'saumon', 140),
-    ligne('t.diner.pates', 'pates', 280),
+    ligne('t.diner.pates', 'pates', 200),
     ligne('t.diner.brocolis', 'brocolis', 150),
     ligne('t.diner.huile', 'huile', 10),
   ],
@@ -309,10 +313,10 @@ const DINER: Meal = {
 const TRAIN: NutritionTarget = {
   kind: 'train',
   label: 'Jour d’entraînement',
-  kcal: 3233,
+  kcal: 3226,
   proteinG: 190,
   carbsG: 402,
-  fatG: 89,
+  fatG: 91,
   note: 'Les glucides se concentrent autour de la séance : déjeuner, 16 h, dîner.',
   meals: [PETIT_DEJEUNER, COLLATION_8H, DEJEUNER, PRE_ENTRAINEMENT, DINER],
 };
@@ -330,50 +334,50 @@ const TRAIN: NutritionTarget = {
 
 const PETIT_DEJEUNER_REPOS: Meal = {
   name: 'Petit-déjeuner — 05 h 45',
-  detail: '3 œufs + 60 g de flocons croustillants + 100 g de fruits rouges + 200 ml de lait',
-  kcal: 628,
+  detail: '3 œufs + 60 g de flocons croustillants + 150 g de fruits rouges + 200 ml de lait',
+  kcal: 650,
   proteinG: 32,
   items: [
     ligne('r.pdej.oeuf', 'oeuf', 3),
     ligne('r.pdej.flocons', 'floconsCroustillants', 60),
-    ligne('r.pdej.fruitsRouges', 'fruitsRouges', 100),
+    ligne('r.pdej.fruitsRouges', 'fruitsRouges', 150),
     ligne('r.pdej.lait', 'lait', 200),
   ],
 };
 
 const DEJEUNER_REPOS: Meal = {
   name: 'Déjeuner — 12 h',
-  detail: '150 g de poulet cuit + 220 g de riz cuit + 150 g de petits pois',
-  kcal: 655,
-  proteinG: 61,
+  detail: '150 g de poulet cuit + 180 g de riz cuit + 150 g de petits pois',
+  kcal: 603,
+  proteinG: 59,
   items: [
     ligne('r.dejeuner.poulet', 'poulet', 150),
-    ligne('r.dejeuner.riz', 'riz', 220),
+    ligne('r.dejeuner.riz', 'riz', 180),
     ligne('r.dejeuner.petitsPois', 'petitsPois', 150),
   ],
 };
 
 const COLLATION_16H_REPOS: Meal = {
   name: 'Collation — 16 h',
-  detail: '1 banane + 40 g de pain complet + 15 g de miel + 120 g de skyr',
-  kcal: 328,
-  proteinG: 17,
+  detail: '1 banane + 60 g de pain complet + 20 g de miel + 120 g de skyr',
+  kcal: 393,
+  proteinG: 19,
   items: [
     ligne('r.collation16.banane', 'banane', 1),
-    ligne('r.collation16.pain', 'pain', 40),
-    ligne('r.collation16.confiture', 'confiture', 15),
+    ligne('r.collation16.pain', 'pain', 60),
+    ligne('r.collation16.confiture', 'confiture', 20),
     ligne('r.collation16.skyr', 'skyr', 120),
   ],
 };
 
 const DINER_REPOS: Meal = {
   name: 'Dîner — 20 h',
-  detail: '140 g de saumon + 200 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
-  kcal: 750,
-  proteinG: 44,
+  detail: '140 g de saumon + 150 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
+  kcal: 671,
+  proteinG: 41,
   items: [
     ligne('r.diner.saumon', 'saumon', 140),
-    ligne('r.diner.pates', 'pates', 200),
+    ligne('r.diner.pates', 'pates', 150),
     ligne('r.diner.brocolis', 'brocolis', 150),
     ligne('r.diner.huile', 'huile', 10),
   ],
@@ -382,9 +386,9 @@ const DINER_REPOS: Meal = {
 const REST: NutritionTarget = {
   kind: 'rest',
   label: 'Jour de repos',
-  kcal: 2801,
-  proteinG: 180,
-  carbsG: 318,
+  kcal: 2802,
+  proteinG: 178,
+  carbsG: 321,
   fatG: 86,
   note: 'Ce n’est pas un jour « low carb » : mêmes aliments, seuls les féculents baissent.',
   meals: [
@@ -461,7 +465,7 @@ export const SIMPLE_RULES: string[] = [
   'Glucides concentrés avant et après l’entraînement.',
   'Légumes à volonté, ça ne compte quasiment pas.',
   'Moyenne 7 jours, jamais une pesée isolée.',
-  'Jour de repos : mêmes six prises, on allège seulement les féculents.',
+  'Jour de repos : mêmes cinq prises, on allège seulement les féculents.',
 ];
 
 /** §« Le seul complément qui vaut le coup ». */
@@ -600,20 +604,31 @@ export const FUEL_BY_TRAINING_DAY: Partial<Record<0 | 1 | 2 | 3 | 4 | 5 | 6, Fue
  * séries ne veut pas dire −40 % de calories) saboterait exactement ce que la
  * semaine est censée produire.
  *
- * La baisse visée est donc modeste, environ 200 kcal, et elle vient des
- * glucides seuls :
+ * La baisse est donc modeste, et elle vient des glucides seuls.
  *
- *   riz du déjeuner       320 → 250 g   −91 kcal
- *   pâtes du dîner        280 → 240 g   −63 kcal
- *   pain du pré-séance     80 →  60 g   −50 kcal
- *                                       ────────
- *                                       −204 kcal, dont −41 g de glucides
+ *   JOUR D'ENTRAÎNEMENT
+ *   riz du déjeuner       250 → 200 g
+ *   pâtes du dîner        200 → 160 g
+ *   pain du pré-séance    110 →  85 g
+ *                         ─────────────
+ *                         −190 kcal, dont 37 g de glucides
  *
- * Les protéines perdent 5 g sur 190, les lipides 1 g sur 89 : rien qui compte.
+ *   JOUR DE REPOS
+ *   riz du déjeuner       180 → 150 g
+ *   pâtes du dîner        150 → 120 g
+ *                         ─────────────
+ *                         −86 kcal
+ *
+ * Le jour de repos baisse DEUX FOIS MOINS, et c'est voulu : il part déjà 424
+ * kcal plus bas qu'un jour d'entraînement. Y empiler une seconde grosse coupe
+ * ferait d'une semaine de récupération la semaine la plus restrictive du
+ * programme.
+ *
+ * Les protéines perdent 6 g sur 190, les lipides 1 : rien qui compte.
  *
  * ── Ce qui NE baisse pas, et pourquoi ───────────────────────────────────────
  *
- * Le miel du pré-entraînement reste à 25 g. C'est le seul repas dont le travail
+ * Le miel du pré-entraînement reste à 40 g. C'est le seul repas dont le travail
  * est de fournir du carburant disponible, et la séance a lieu quand même —
  * allégée, pas annulée.
  *
@@ -626,15 +641,19 @@ export const FUEL_BY_TRAINING_DAY: Partial<Record<0 | 1 | 2 | 3 | 4 | 5 | 6, Fue
  *
  * ── La clé est un identifiant de LIGNE ──────────────────────────────────────
  *
- * Et non de produit : on allège le riz du déjeuner d'un jour d'entraînement,
- * pas « le riz » partout. Le palier repos n'a pas ces identifiants, il n'est
- * donc jamais touché — ce qui est voulu : un jour de repos de semaine de deload
- * reste un jour de repos ordinaire, sans seconde réduction.
+ * Et non de produit : on allège le riz du déjeuner, pas « le riz » partout. Les
+ * deux paliers ont donc leurs propres entrées — préfixe `t.` pour le jour
+ * d'entraînement, `r.` pour le jour de repos — et chacun baisse de ce qui le
+ * concerne.
  */
 export const DELOAD_QUANTITIES: Readonly<Record<string, number>> = {
-  't.dejeuner.riz': 250,
-  't.diner.pates': 240,
-  't.pre.pain': 60,
+  // Jour d'entraînement : −190 kcal, dont 37 g de glucides.
+  't.dejeuner.riz': 200,
+  't.diner.pates': 160,
+  't.pre.pain': 85,
+  // Jour de repos : −86 kcal. On l'effleure, on ne le creuse pas.
+  'r.dejeuner.riz': 150,
+  'r.diner.pates': 120,
 };
 
 /** Le bandeau affiché dans l'écran Nutrition pendant une semaine de deload. */

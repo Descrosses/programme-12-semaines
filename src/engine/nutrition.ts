@@ -259,52 +259,38 @@ export function fuelForToday(day: DayIndex | null): FuelAdvice {
 /**
  * La phase nutritionnelle d'une journée donnée.
  *
- * ── Trois entrées, et aucune liste de semaines écrite ici ───────────────────
+ * ── Elle se lit de la périodisation, elle ne la recopie pas ────────────────
  *
- * La phase se LIT de la périodisation existante (`WEEK_BLOCKS`) et du
- * calendrier des combines, elle ne les recopie pas. Écrire « semaines 4 et 8 »
- * en dur créerait une deuxième vérité sur le programme : le jour où la
- * périodisation bouge, l'alimentation suivrait encore l'ancienne.
+ * La phase vient de `WEEK_BLOCKS` et du calendrier des combines. Écrire
+ * « semaines 4 et 8 » en dur créerait une deuxième vérité sur le programme :
+ * le jour où la périodisation bouge, l'alimentation suivrait encore l'ancienne.
  *
  * C'est aussi ce qui règle la semaine 12 toute seule, sans cas particulier :
  * son bloc est `taper`, pas `deload`. Le volume y baisse, mais les tests de
  * performance demandent une disponibilité énergétique entière, et la règle le
  * donne sans qu'on ait à l'écrire.
  *
- * ── Les trois cas ──────────────────────────────────────────────────────────
+ * ── Les deux cas ───────────────────────────────────────────────────────────
  *
- *   pas de séance          → `normal`. Le palier « repos » fait déjà le travail,
- *                            et empiler une seconde baisse dessus serait
- *                            exactement ce qu'une semaine de récupération ne
- *                            doit pas faire.
  *   semaine de deload,     → `normal`. Le samedi et le dimanche de la semaine 8
  *   jour de combine          portent des tests : une journée où l'on cherche
  *                            une performance se mange comme une journée
  *                            d'entraînement normale.
- *   semaine de deload,     → `deloadLight`.
- *   séance allégée
+ *   semaine de deload,     → `deloadLight`, sur les DEUX paliers. Le jour de
+ *   tout autre jour          repos baisse deux fois moins que le jour
+ *                            d'entraînement : il part déjà 424 kcal plus bas,
+ *                            et y empiler une grosse coupe ferait d'une semaine
+ *                            de récupération la plus restrictive du programme.
+ *
+ * `day` vaut `null` les jours sans séance. Ils restent concernés — on est bien
+ * dans la semaine de deload — et c'est le palier repos, avec ses propres
+ * quantités allégées, qui s'applique alors.
  */
 export function phaseForDay(week: WeekIndex | null, day: DayIndex | null): NutritionPhase {
-  if (week === null || day === null) return 'normal';
-  if (WEEK_BLOCKS[week] !== 'deload') return 'normal';
-  if (isCombineDay(week, day)) return 'normal';
-  return 'deloadLight';
-}
-
-/**
- * La phase d'une journée d'entraînement ORDINAIRE de cette semaine.
- *
- * Sert à consulter le palier entraînement un jour où l'on ne s'entraîne pas :
- * le mardi d'une semaine de deload, ce qu'on cherche à voir est bien « à quoi
- * ressemble une journée d'entraînement cette semaine-ci », et non le plan d'une
- * semaine normale.
- *
- * Les jours de combine sont ignorés par construction — ce sont des exceptions
- * dans leur semaine, pas sa journée type.
- */
-export function phaseForWeek(week: WeekIndex | null): NutritionPhase {
   if (week === null) return 'normal';
-  return WEEK_BLOCKS[week] === 'deload' ? 'deloadLight' : 'normal';
+  if (WEEK_BLOCKS[week] !== 'deload') return 'normal';
+  if (day !== null && isCombineDay(week, day)) return 'normal';
+  return 'deloadLight';
 }
 
 /**
