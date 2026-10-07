@@ -16,12 +16,14 @@ import { fr } from '../engine/format';
 import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
 import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
+  consumedTotal,
   fuelForToday,
   gapVerdict,
   mealMacros,
   mealsGap,
   mealsTotal,
   phaseForDay,
+  remainingTotal,
   targetForPhase,
   type FoodOverrides,
   starchToCloseGap,
@@ -34,7 +36,10 @@ import {
 import {
   allCustomFoods,
   allFoodOverrides,
+  clearMealsEatenOn,
+  mealsEatenOn,
   saveCustomFood,
+  setMealEaten,
   allMeasurements,
   getMeasurement,
   resetFoodOverrides,
@@ -43,6 +48,7 @@ import {
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
 import { MacroBar } from '../components/MacroBar';
+import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
 import styles from './Screens.module.css';
 
@@ -73,6 +79,8 @@ export function NutritionScreen({
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
   const [customs, setCustoms] = useState<LibraryFood[]>([]);
+  /** Les repas cochés comme pris aujourd'hui, par identifiant. */
+  const [pris, setPris] = useState<ReadonlySet<string>>(new Set());
   const [kind, setKind] = useState<DayKind>(todayKind);
   const [todayRow, setTodayRow] = useState<{ weightKg: number | null; waistCm: number | null }>({
     weightKg: null,
@@ -86,6 +94,7 @@ export function NutritionScreen({
     setRows(all.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })));
     setOverrides(await allFoodOverrides());
     setCustoms(await chargerCustoms());
+    setPris(await mealsEatenOn(todayIso));
     const t = await getMeasurement(todayIso);
     setTodayRow({ weightKg: t?.weightKg ?? null, waistCm: t?.waistCm ?? null });
   }
@@ -123,6 +132,24 @@ export function NutritionScreen({
   const totalRepas = mealsTotal(target, overrides, catalogue);
   const ecart = mealsGap(target, overrides, catalogue);
   const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
+  /*
+   * Ce qui a été pris, et ce qu'il reste. Calculés sur le palier CONSULTÉ, et
+   * la carte ne s'affiche que lorsqu'il est celui du jour : comparer ce qu'on a
+   * mangé à la journée type de l'autre palier ne voudrait rien dire.
+   */
+  const consomme = consumedTotal(target, pris, overrides, catalogue);
+  /*
+   * La référence est le plan PRESCRIT, sans les corrections de Guillaume.
+   *
+   * Avec elles, la cible monterait en même temps que l'assiette : peser 900 g
+   * de riz au lieu de 250 ferait monter le « prévu » d'autant, et la barre
+   * afficherait 100 % quoi qu'il arrive. Un dépassement ne se verrait jamais.
+   *
+   * La phase, elle, EST dans la référence : une semaine de deload prescrit
+   * moins, et c'est à ce moins-là qu'on se compare.
+   */
+  const prevu = mealsTotal(target);
+  const restant = remainingTotal(prevu, consomme);
   /*
    * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
    * pour regarder l'autre journée type ne doit pas faire croire que la séance
@@ -228,6 +255,53 @@ export function NutritionScreen({
         <MacroBar macros={totalRepas} labels="parts" />
         <p className={styles.fieldHint}>{target.note}</p>
       </section>
+
+      {/* --- 2. Où en est la journée ---------------------------------------- */}
+      {kind === todayKind && (
+        <section className={styles.card}>
+          <div className={styles.suiviHead}>
+            <h2 className={styles.cardTitle}>Aujourd’hui</h2>
+            {pris.size > 0 && (
+              <button
+                type="button"
+                className={styles.suiviReset}
+                onClick={() =>
+                  void (async () => {
+                    await clearMealsEatenOn(todayIso);
+                    setPris(await mealsEatenOn(todayIso));
+                  })()
+                }
+              >
+                Tout décocher
+              </button>
+            )}
+          </div>
+          {/*
+            Le grand chiffre est ce qui RESTE, pas ce qui a été pris : c'est la
+            question qu'on se pose en ouvrant l'appli à 16 h. Un dépassement
+            s'affiche comme tel plutôt qu'en négatif, qui se lit mal d'un
+            coup d'œil.
+          */}
+          <div className={styles.keyStat}>
+            <div className={styles.keyStatValue}>
+              {Math.abs(restant.kcal).toLocaleString('fr-FR')}
+              <span className={styles.keyStatUnit}>
+                {restant.kcal < 0 ? ' kcal de trop' : ' kcal restantes'}
+              </span>
+            </div>
+            <div className={styles.keyStatLabel}>
+              {consomme.kcal.toLocaleString('fr-FR')} kcal pris sur{' '}
+              {prevu.kcal.toLocaleString('fr-FR')} · {pris.size} repas sur{' '}
+              {target.meals.length}
+            </div>
+          </div>
+          <MacroProgress consumed={consomme} planned={prevu} />
+          <p className={styles.fieldHint}>
+            Coche un repas quand tu l’as pris. Ce qui est compté, ce sont tes
+            quantités et tes remplacements — rien à ressaisir.
+          </p>
+        </section>
+      )}
 
       {/* --- Carburant du jour : une recommandation, jamais un ajout auto --- */}
       <section className={`${styles.card} ${styles.fuelCard} ${styles[`fuel_${carburant.level}`]}`}>
@@ -368,6 +442,37 @@ export function NutritionScreen({
                   {shareOfDay(macros.kcal, totalRepas.kcal)} %
                 </div>
               </div>
+              {/*
+                La coche n'apparaît que sur le palier du jour : cocher un repas
+                de la journée type qu'on n'est pas en train de vivre ne veut
+                rien dire. Une cible de 48 px, comme tout ce qui se touche.
+              */}
+              {kind === todayKind && (
+                <button
+                  type="button"
+                  className={styles.mealTick}
+                  aria-pressed={pris.has(m.id)}
+                  aria-label={`${m.name} — ${pris.has(m.id) ? 'pris' : 'pas encore pris'}`}
+                  onClick={() =>
+                    void (async () => {
+                      await setMealEaten(todayIso, m.id, !pris.has(m.id));
+                      setPris(await mealsEatenOn(todayIso));
+                    })()
+                  }
+                >
+                  {/* Le bouton fait 48 px pour le pouce, le cercle 26 pour
+                      l'œil : une pastille de la taille de la cible tactile
+                      écraserait le nom du repas à côté. */}
+                  <span
+                    className={`${styles.mealTickDot} ${
+                      pris.has(m.id) ? styles.mealTickOn : ''
+                    }`}
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                </button>
+              )}
             </div>
             );
           })}

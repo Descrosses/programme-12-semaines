@@ -363,6 +363,62 @@ function somme4(macros: Macros[]): Macros {
   return macros.reduce((a, b) => somme(a, b), ZERO);
 }
 
+// ---------------------------------------------------------------------------
+// Ce qui a réellement été mangé
+// ---------------------------------------------------------------------------
+
+/**
+ * Le total des repas cochés comme pris.
+ *
+ * ── Pourquoi rien de plus n'est saisi ───────────────────────────────────────
+ *
+ * Les corrections de Guillaume SONT déjà ce qu'il a mangé : s'il a remplacé le
+ * poulet par du saumon et pesé 400 g de riz au lieu de 320, le plan effectif
+ * dit exactement son assiette. Lui redemander aliment par aliment ce qu'il
+ * vient de corriger serait lui faire saisir deux fois la même chose — et sur un
+ * chantier, la deuxième saisie n'arrive jamais.
+ *
+ * Cocher un repas dit donc « celui-là, je l'ai pris », et ses macros effectives
+ * entrent dans la journée. Rien n'est figé au moment de la coche : corriger une
+ * étiquette après coup corrige aussi ce qui a été compté, ce qui est le bon
+ * sens — l'étiquette n'a pas changé entre-temps, c'est la connaissance qu'on en
+ * avait.
+ */
+export function consumedTotal(
+  target: NutritionTarget,
+  eaten: ReadonlySet<string>,
+  overrides: FoodOverrides = {},
+  library: Catalogue = FOOD_LIBRARY,
+): Macros {
+  return arrondir(
+    target.meals
+      .filter((m) => eaten.has(m.id))
+      .reduce((acc, m) => somme(acc, mealMacros(m, overrides, library)), ZERO),
+  );
+}
+
+/** Ce qu'il reste à manger pour atteindre le plan. Négatif = dépassé. */
+export function remainingTotal(planned: Macros, consumed: Macros): Macros {
+  return {
+    kcal: planned.kcal - consumed.kcal,
+    proteinG: planned.proteinG - consumed.proteinG,
+    carbsG: planned.carbsG - consumed.carbsG,
+    fatG: planned.fatG - consumed.fatG,
+  };
+}
+
+/**
+ * Où en est la journée sur une macro : la part consommée du prévu.
+ *
+ * Bornée à 200 % et non à 100 : un dépassement doit se VOIR, pas se faire
+ * ravaler à « plein ». Au-delà du double, la barre ne dit plus rien d'utile et
+ * le chiffre écrit à côté prend le relais.
+ */
+export function progressPct(consumed: number, planned: number): number {
+  if (!Number.isFinite(consumed) || !Number.isFinite(planned) || planned <= 0) return 0;
+  return Math.min(200, Math.round((Math.max(0, consumed) / planned) * 100));
+}
+
 /**
  * Densité du féculent cuit retenue par le plan : 1 kcal par gramme.
  *
