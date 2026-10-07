@@ -93,6 +93,18 @@ export interface FoodItem {
 export type NutritionPhase = 'normal' | 'deloadLight';
 
 export interface Meal {
+  /**
+   * Identifiant stable de la prise, jamais son libellé.
+   *
+   * C'est lui qui relie « pris » ou « pas pris » à ce repas, un jour donné.
+   * Renommer « Collation — 08 h » en « Collation du matin » doit être sans
+   * conséquence ; renommer un identifiant effacerait silencieusement tout
+   * l'historique de ce repas.
+   *
+   * Le préfixe suit celui de ses lignes : `t.` jour d'entraînement, `r.` jour
+   * de repos, `x.` les deux.
+   */
+  id: string;
   /** « Réveil », « Déjeuner »… */
   name: string;
   /** Le détail tel qu'il est écrit dans le .md. */
@@ -226,6 +238,7 @@ function ligne(id: string, product: ProductId, qty: number): FoodItem {
 // ---------------------------------------------------------------------------
 
 const PETIT_DEJEUNER: Meal = {
+  id: 't.pdej',
   name: 'Petit-déjeuner — 05 h 45',
   detail: '3 œufs + 70 g de flocons croustillants + 150 g de fruits rouges + 250 ml de lait',
   kcal: 719,
@@ -246,6 +259,7 @@ const PETIT_DEJEUNER: Meal = {
  * superflues sans toucher à un aliment ni à une habitude.
  */
 const COLLATION_8H: Meal = {
+  id: 'x.collation8',
   name: 'Collation — 08 h',
   detail: '1 pomme + 30 g d’amandes + 200 g de skyr + 35 g de confiture',
   kcal: 485,
@@ -259,6 +273,7 @@ const COLLATION_8H: Meal = {
 };
 
 const DEJEUNER: Meal = {
+  id: 't.dejeuner',
   name: 'Déjeuner — 12 h',
   detail: '150 g de poulet cuit + 250 g de riz cuit + 150 g de petits pois',
   kcal: 694,
@@ -279,6 +294,7 @@ const DEJEUNER: Meal = {
  * d'où les lipides maintenus au plancher.
  */
 const PRE_ENTRAINEMENT: Meal = {
+  id: 't.pre',
   name: 'Pré-entraînement — 16 h',
   detail: '1 banane + 110 g de pain complet + 40 g de miel + 120 g de skyr',
   kcal: 578,
@@ -292,6 +308,7 @@ const PRE_ENTRAINEMENT: Meal = {
 };
 
 const DINER: Meal = {
+  id: 't.diner',
   name: 'Dîner — 20 h',
   detail: '140 g de saumon + 200 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
   kcal: 750,
@@ -333,6 +350,7 @@ const TRAIN: NutritionTarget = {
 // ---------------------------------------------------------------------------
 
 const PETIT_DEJEUNER_REPOS: Meal = {
+  id: 'r.pdej',
   name: 'Petit-déjeuner — 05 h 45',
   detail: '3 œufs + 60 g de flocons croustillants + 150 g de fruits rouges + 200 ml de lait',
   kcal: 650,
@@ -346,6 +364,7 @@ const PETIT_DEJEUNER_REPOS: Meal = {
 };
 
 const DEJEUNER_REPOS: Meal = {
+  id: 'r.dejeuner',
   name: 'Déjeuner — 12 h',
   detail: '150 g de poulet cuit + 180 g de riz cuit + 150 g de petits pois',
   kcal: 603,
@@ -358,6 +377,7 @@ const DEJEUNER_REPOS: Meal = {
 };
 
 const COLLATION_16H_REPOS: Meal = {
+  id: 'r.collation16',
   name: 'Collation — 16 h',
   detail: '1 banane + 60 g de pain complet + 20 g de miel + 120 g de skyr',
   kcal: 393,
@@ -371,6 +391,7 @@ const COLLATION_16H_REPOS: Meal = {
 };
 
 const DINER_REPOS: Meal = {
+  id: 'r.diner',
   name: 'Dîner — 20 h',
   detail: '140 g de saumon + 150 g de pâtes cuites + 150 g de purée de brocolis + 10 g d’huile',
   kcal: 671,
