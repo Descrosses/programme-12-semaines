@@ -731,7 +731,7 @@
 
 .meal {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   padding: 11px 0;
@@ -757,6 +757,7 @@
   flex: 0 0 auto;
   font-size: var(--fs-small);
   color: var(--ink-2);
+  text-align: right;
 }
 
 .mealTotal {
@@ -1059,4 +1060,86 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--ink-3);
+}
+
+/* --- Composition d'un repas en macros ------------------------------------- */
+
+.macroBlock {
+  margin-top: 8px;
+}
+
+/*
+ * La barre est TOUJOURS pleine : elle montre une composition, pas une
+ * progression. Pas de piste vide derrière, qui ferait croire qu'il manque
+ * quelque chose.
+ */
+.macroTrack {
+  display: flex;
+  gap: 2px; /* le fond passe entre les segments : ils ne se touchent jamais */
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.macroFill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.macro_carbs {
+  background: var(--macro-glucides);
+}
+
+.macro_protein {
+  background: var(--macro-proteines);
+}
+
+.macro_fat {
+  background: var(--macro-lipides);
+}
+
+/*
+ * Les grammages, dans l'ordre des segments. Ils portent l'identité : la couleur
+ * ne fait que l'accélérer, elle ne la remplace pas.
+ */
+.macroLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+
+.macroItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.macroDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.macroCle {
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+/* La part de la journée, sous les kcal du repas : les deux disent ce que ce
+   repas pèse, et se lisent ensemble. */
+.mealPart {
+  margin-top: 1px;
+  color: var(--ink-3);
+}
+
+/*
+ * La colonne de gauche d'un repas prend toute la place restante : sans ça, la
+ * barre de macros se calerait sur la largeur du nom du repas.
+ */
+.mealBody {
+  flex: 1 1 auto;
+  min-width: 0;
 }

@@ -42,6 +42,8 @@ import {
   saveMeasurement,
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
+import { MacroBar } from '../components/MacroBar';
+import { shareOfDay } from '../engine/macroBar';
 import styles from './Screens.module.css';
 
 /**
@@ -202,20 +204,28 @@ export function NutritionScreen({
             {kind === todayKind ? 'Ta cible aujourd’hui' : 'Autre palier'} · {target.label}
           </div>
         </div>
+        {/* Même ordre que la barre juste en dessous — glucides, protéines,
+            lipides. Deux ordres différents pour la même information se lisent
+            comme deux informations. */}
         <div className={styles.macros}>
-          <div className={styles.macro}>
-            <b>{totalRepas.proteinG} g</b>
-            <span>Protéines</span>
-          </div>
           <div className={styles.macro}>
             <b>{totalRepas.carbsG} g</b>
             <span>Glucides</span>
+          </div>
+          <div className={styles.macro}>
+            <b>{totalRepas.proteinG} g</b>
+            <span>Protéines</span>
           </div>
           <div className={styles.macro}>
             <b>{totalRepas.fatG} g</b>
             <span>Lipides</span>
           </div>
         </div>
+        {/* De quoi la journée est faite : les trois nombres ci-dessus disent
+            des grammes, la barre dit des proportions. Un gramme de lipide pèse
+            plus du double d'un gramme de glucide, donc les deux ne se déduisent
+            pas l'un de l'autre. */}
+        <MacroBar macros={totalRepas} labels="parts" />
         <p className={styles.fieldHint}>{target.note}</p>
       </section>
 
@@ -295,10 +305,18 @@ export function NutritionScreen({
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Repas types</h2>
         <div className={styles.mealList}>
-          {target.meals.map((m) => (
+          {target.meals.map((m) => {
+            /* Calculé une fois : la ligne de kcal et la barre doivent parler du
+               même repas, remplacements et étiquettes corrigées compris. */
+            const macros = mealMacros(m, overrides, catalogue);
+            return (
             <div key={m.name} className={styles.meal}>
-              <div>
+              <div className={styles.mealBody}>
                 <div className={styles.mealName}>{m.name}</div>
+                {/* De quoi ce repas est fait, et ce qu'il pèse dans la journée.
+                    Le résumé d'abord, le détail en dessous — et après un
+                    remplacement d'aliment, la barre bouge sous les yeux. */}
+                <MacroBar macros={macros} />
                 {/*
                   La phrase du .md disparaît dès que le repas est décomposé :
                   elle dit « 280 g de skyr » alors que la ligne en dessous peut
@@ -342,11 +360,17 @@ export function NutritionScreen({
                   }}
                 />
               </div>
+              {/* Les deux nombres qui disent ce que ce repas PÈSE, ensemble :
+                  ses calories, et sa part de la journée. */}
               <div className={`${styles.mealKcal} tnum`}>
-                {mealMacros(m, overrides, catalogue).kcal} kcal
+                <div>{macros.kcal} kcal</div>
+                <div className={styles.mealPart}>
+                  {shareOfDay(macros.kcal, totalRepas.kcal)} %
+                </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
         {/*
           On affiche la SOMME des repas listés, pas la cible. Les deux diffèrent
