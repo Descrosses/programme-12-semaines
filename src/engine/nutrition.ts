@@ -18,6 +18,7 @@ import {
   TARGET_GAIN_KG_PER_WEEK,
   type FoodItem,
   type FuelAdvice,
+  type DayKind,
   type Meal,
   type NutritionPhase,
   type NutritionTarget,
@@ -250,6 +251,20 @@ export function nutritionAdvice(entries: Measurement[], todayIso: string): Nutri
 export function fuelForToday(day: DayIndex | null): FuelAdvice {
   if (day === null) return FUEL_ADVICE.rest;
   return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? 'standard'];
+}
+
+/**
+ * Le carburant du jour, en tenant compte du palier RETENU.
+ *
+ * Une séance faite un jour que le programme donne en repos n'a pas de ligne
+ * dans la table : on ne sait pas si elle a coûté cher en glycogène. Annoncer
+ * « REPOS — pas de séance aujourd'hui » à quelqu'un qui sort de la salle serait
+ * faux ; proposer un bonus au jugé le serait tout autant. On rend donc le plan
+ * de base, sans ajout, qui est exactement ce que « standard » veut dire.
+ */
+export function fuelForDay(day: DayIndex | null, kind: DayKind): FuelAdvice {
+  if (day !== null) return fuelForToday(day);
+  return kind === 'train' ? FUEL_ADVICE.standard : FUEL_ADVICE.rest;
 }
 
 // ---------------------------------------------------------------------------

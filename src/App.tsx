@@ -14,8 +14,8 @@ import { useRoute, type Route } from './state/useRoute';
 import { weekForTab, writeLastWeek } from './state/lastWeek';
 import { useViewportOffset } from './state/useViewportOffset';
 import { currentWeek, locateToday } from './engine/calendar';
+import { dayKindOverride, getSettingsRow } from './db/repo';
 import type { DayKind } from './data/nutrition';
-import { getSettingsRow } from './db/repo';
 import styles from './App.module.css';
 
 type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
@@ -38,8 +38,19 @@ export function App() {
    * aussi pour sa carte de raccourci, et deux calculs séparés finiraient par
    * diverger. Une séance prévue aujourd'hui = jour d'entraînement, le reste
    * (mardi, jeudi, avant le début, après la fin) = jour de repos.
+   *
+   * Un choix enregistré pour la journée l'emporte sur le programme : une séance
+   * déplacée au jeudi doit se manger comme une séance, pas comme un repos.
    */
   const [todayKind, setTodayKind] = useState<DayKind>('rest');
+  /**
+   * Ce que le PROGRAMME prévoit aujourd'hui, avant tout détournement.
+   *
+   * Gardé à part de `todayKind` : l'écran Nutrition doit pouvoir dire « le
+   * programme prévoyait repos » et proposer d'y revenir, ce qu'il ne pourrait
+   * plus faire si les deux étaient fondus en une seule valeur.
+   */
+  const [kindProgramme, setKindProgramme] = useState<DayKind>('rest');
   /**
    * Jour de programme de la séance prévue aujourd'hui, `null` s'il n'y en a
    * pas. Lu ici, à la même source que `todayKind`, pour que la carte de
@@ -67,8 +78,11 @@ export function App() {
     void (async () => {
       const row = await getSettingsRow();
       setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
-      const today = locateToday(row.startDate, new Date().toISOString().slice(0, 10));
-      setTodayKind(today?.kind === 'session' ? 'train' : 'rest');
+      const iso = new Date().toISOString().slice(0, 10);
+      const today = locateToday(row.startDate, iso);
+      const duProgramme: DayKind = today?.kind === 'session' ? 'train' : 'rest';
+      setKindProgramme(duProgramme);
+      setTodayKind((await dayKindOverride(iso)) ?? duProgramme);
       setTodayDay(today?.kind === 'session' ? today.session.day : null);
       setTodayWeek(currentWeek(row.startDate, new Date().toISOString().slice(0, 10)));
     })();
@@ -127,6 +141,7 @@ export function App() {
           route,
           dataVersion,
           todayKind,
+          kindProgramme,
           todayDay,
           todayWeek,
           openSession,
@@ -169,6 +184,7 @@ function renderScreen(
   route: Route,
   dataVersion: number,
   todayKind: DayKind,
+  kindProgramme: DayKind,
   todayDay: DayIndex | null,
   todayWeek: WeekIndex | null,
   openSession: (week: WeekIndex, day: DayIndex) => void,
@@ -215,8 +231,10 @@ function renderScreen(
         <NutritionScreen
           key={`${dataVersion}-${todayKind}`}
           todayKind={todayKind}
+          kindProgramme={kindProgramme}
           todayDay={todayDay}
           todayWeek={todayWeek}
+          onDayKindChange={refresh}
         />
       );
 

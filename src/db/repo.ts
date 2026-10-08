@@ -17,6 +17,7 @@ import {
   type CombineRow,
   type ExerciseMediaRow,
   type CustomFoodRow,
+  type DayKindRow,
   type MealLogRow,
   type ExerciseNoteRow,
   type ExerciseReferenceRow,
@@ -712,4 +713,38 @@ export async function setMealEaten(date: string, mealId: string, eaten: boolean)
 export async function clearMealsEatenOn(date: string): Promise<void> {
   const rows = await db.mealLog.where('date').equals(date).toArray();
   await db.mealLog.bulkDelete(rows.map((r) => r.id!).filter((id) => id !== undefined));
+}
+
+// ------------------------------------------- palier choisi pour une journée --
+
+/**
+ * Le palier retenu pour cette journée, ou `null` si le programme fait foi.
+ *
+ * `null` et non une valeur par défaut : l'appelant seul sait ce que le
+ * programme prévoit ce jour-là, et lui rendre « rest » ici reviendrait à
+ * décider à sa place.
+ */
+export async function dayKindOverride(date: string): Promise<DayKindRow['kind'] | null> {
+  const row = await db.dayKind.where('date').equals(date).first();
+  return row?.kind ?? null;
+}
+
+/**
+ * Détourne une journée vers l'autre palier, ou la rend au programme.
+ *
+ * `null` SUPPRIME la ligne plutôt que d'y écrire le palier du programme : une
+ * ligne qui dirait la même chose que le programme deviendrait fausse le jour où
+ * le programme change, et on ne saurait plus si c'était un choix ou un reste.
+ */
+export async function setDayKindOverride(
+  date: string,
+  kind: DayKindRow['kind'] | null,
+): Promise<void> {
+  const existing = await db.dayKind.where('date').equals(date).first();
+  if (kind === null) {
+    if (existing?.id !== undefined) await db.dayKind.delete(existing.id);
+    return;
+  }
+  if (existing?.id !== undefined) await db.dayKind.update(existing.id, { kind });
+  else await db.dayKind.add({ date, kind } as DayKindRow);
 }
