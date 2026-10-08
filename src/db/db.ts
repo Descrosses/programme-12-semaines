@@ -243,6 +243,7 @@ export class ProgrammeDB extends Dexie {
   exerciseNotes!: Table<ExerciseNoteRow, number>;
   customFoods!: Table<CustomFoodRow, number>;
   mealLog!: Table<MealLogRow, number>;
+  dayKind!: Table<DayKindRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
@@ -438,6 +439,19 @@ export class ProgrammeDB extends Dexie {
      * la première étiquette recopiée.
      */
     this.version(11).stores({ mealLog: '++id, &[date+mealId], date' });
+
+    /*
+     * v12 — le palier choisi pour une journée, quand il diffère du programme.
+     *
+     * Le programme dit « mardi et jeudi, repos ». La vie dit parfois le
+     * contraire : une séance déplacée, un chantier annulé. Sans ce choix,
+     * s'entraîner un jeudi obligeait à manger le plan d'un jour de repos — ou à
+     * consulter l'autre palier sans pouvoir y cocher quoi que ce soit.
+     *
+     * Une ligne n'existe que pour une journée DÉTOURNÉE : l'absence veut dire
+     * « le programme fait foi ». Revenir au programme supprime la ligne.
+     */
+    this.version(12).stores({ dayKind: '++id, &date' });
   }
 }
 
@@ -504,6 +518,19 @@ export interface MealLogRow {
   mealId: string;
   /** Horodatage de la coche, pour départager deux appareils un jour. */
   at: string;
+}
+
+/**
+ * Le palier choisi pour une journée, contre l'avis du programme.
+ *
+ * `kind` est le palier RETENU, pas celui du programme : c'est lui qui pilote le
+ * plan affiché, les repas qu'on peut cocher et la référence du suivi.
+ */
+export interface DayKindRow {
+  id?: number;
+  /** `YYYY-MM-DD`. */
+  date: string;
+  kind: 'train' | 'rest';
 }
 
 /** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */

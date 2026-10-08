@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ADJUST_RULES,
   effectiveItem,
+  fuelForDay,
   fuelForToday,
   gapVerdict,
   isEdited,
@@ -420,6 +421,39 @@ describe('sens de l’écart entre les repas et la cible', () => {
     const large = { ...TRAIN, kcal: Math.round(mealsTotal(TRAIN).kcal / 1.2) };
     expect(gapVerdict(large)).toBe('surplus');
     expect(cible).toBe(3226); // garde-fou : le test parle bien de la vraie cible
+  });
+});
+
+describe('une séance faite un jour de repos', () => {
+  /*
+   * Le programme donne mardi et jeudi en repos. La vie dit parfois le
+   * contraire : séance déplacée, chantier annulé. Le palier retenu l'emporte
+   * alors sur le programme, et le carburant doit suivre.
+   */
+  it('n’annonce pas « pas de séance aujourd’hui » à quelqu’un qui sort de la salle', () => {
+    expect(fuelForDay(null, 'train').level).toBe('standard');
+    expect(fuelForDay(null, 'train').subtitle).not.toMatch(/pas de séance/i);
+  });
+
+  /*
+   * Mais pas de bonus au jugé non plus : sans ligne dans la table, on ne sait
+   * pas ce que la séance a coûté en glycogène. Le plan de base, sans ajout.
+   */
+  it('ne propose aucun bonus qu’on ne saurait pas justifier', () => {
+    expect(fuelForDay(null, 'train').kcal).toBe(0);
+    expect(fuelForDay(null, 'train').foods).toEqual([]);
+  });
+
+  it('un vrai jour de repos reste un jour de repos', () => {
+    expect(fuelForDay(null, 'rest').level).toBe('rest');
+  });
+
+  it('un jour avec séance garde le niveau de sa séance, quoi qu’on déclare', () => {
+    // Le palier ne change rien là où le programme sait déjà quoi répondre.
+    for (const day of [0, 2, 4, 5, 6] as DayIndex[]) {
+      expect(fuelForDay(day, 'train')).toEqual(fuelForToday(day));
+      expect(fuelForDay(day, 'rest')).toEqual(fuelForToday(day));
+    }
   });
 });
 

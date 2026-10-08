@@ -1255,3 +1255,12 @@
   background: var(--vert);
   color: var(--ink-on-accent);
 }
+
+/*
+ * La note du palier choisi réemploie le bandeau de phase, sans son titre en
+ * capitales : ce n'est pas une alerte du programme mais le rappel d'un choix.
+ */
+.choixNote {
+  align-items: flex-start;
+  border-left-color: var(--ink-3);
+}

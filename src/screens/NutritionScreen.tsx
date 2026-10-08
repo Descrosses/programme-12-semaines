@@ -17,7 +17,7 @@ import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
 import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
   consumedTotal,
-  fuelForToday,
+  fuelForDay,
   gapVerdict,
   mealMacros,
   mealsGap,
@@ -39,6 +39,7 @@ import {
   clearMealsEatenOn,
   mealsEatenOn,
   saveCustomFood,
+  setDayKindOverride,
   setMealEaten,
   allMeasurements,
   getMeasurement,
@@ -66,14 +67,21 @@ import styles from './Screens.module.css';
  */
 export function NutritionScreen({
   todayKind,
+  kindProgramme,
   todayDay,
   todayWeek,
+  onDayKindChange,
 }: {
+  /** Le palier RETENU pour aujourd'hui — un choix de Guillaume s'il en a fait un. */
   todayKind: DayKind;
+  /** Ce que le programme prévoyait, avant tout détournement. */
+  kindProgramme: DayKind;
   /** Jour de programme de la séance du jour, `null` si repos. */
   todayDay: DayIndex | null;
   /** Semaine de programme du jour, `null` hors programme. */
   todayWeek: WeekIndex | null;
+  /** Prévient l'appli que la journée a changé de palier. */
+  onDayKindChange: () => void;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
@@ -149,13 +157,22 @@ export function NutritionScreen({
    * moins, et c'est à ce moins-là qu'on se compare.
    */
   const prevu = mealsTotal(target);
+  /*
+   * On compte les repas DE CE PALIER, pas toutes les coches de la journée.
+   *
+   * Une coche posée sur le palier d'entraînement reste en base quand on revient
+   * au repos — elle dit ce qui a été pris, et c'est bien. Mais la compter dans
+   * « 2 repas sur 5 » d'un palier où ce repas n'existe pas affichait un total
+   * qui ne correspondait à aucune des cinq lignes affichées.
+   */
+  const prisIci = target.meals.filter((m) => pris.has(m.id)).length;
   const restant = remainingTotal(prevu, consomme);
   /*
    * Le carburant parle du JOUR, pas du palier consulté : basculer le sélecteur
    * pour regarder l'autre journée type ne doit pas faire croire que la séance
    * a changé. La carte reste donc sur aujourd'hui.
    */
-  const carburant = fuelForToday(todayDay);
+  const carburant = fuelForDay(todayDay, kind);
   const baseAujourdhui = mealsTotal(
     targetForPhase(NUTRITION_TARGETS[todayKind], phase),
     overrides,
@@ -228,7 +245,7 @@ export function NutritionScreen({
             <span className={styles.keyStatUnit}> kcal / jour</span>
           </div>
           <div className={styles.keyStatLabel}>
-            {kind === todayKind ? 'Ta cible aujourd’hui' : 'Autre palier'} · {target.label}
+            Ta cible aujourd’hui · {target.label}
           </div>
         </div>
         {/* Même ordre que la barre juste en dessous — glucides, protéines,
@@ -257,11 +274,10 @@ export function NutritionScreen({
       </section>
 
       {/* --- 2. Où en est la journée ---------------------------------------- */}
-      {kind === todayKind && (
-        <section className={styles.card}>
+      <section className={styles.card}>
           <div className={styles.suiviHead}>
             <h2 className={styles.cardTitle}>Aujourd’hui</h2>
-            {pris.size > 0 && (
+            {prisIci > 0 && (
               <button
                 type="button"
                 className={styles.suiviReset}
@@ -291,7 +307,7 @@ export function NutritionScreen({
             </div>
             <div className={styles.keyStatLabel}>
               {consomme.kcal.toLocaleString('fr-FR')} kcal pris sur{' '}
-              {prevu.kcal.toLocaleString('fr-FR')} · {pris.size} repas sur{' '}
+              {prevu.kcal.toLocaleString('fr-FR')} · {prisIci} repas sur{' '}
               {target.meals.length}
             </div>
           </div>
@@ -300,8 +316,7 @@ export function NutritionScreen({
             Coche un repas quand tu l’as pris. Ce qui est compté, ce sont tes
             quantités et tes remplacements — rien à ressaisir.
           </p>
-        </section>
-      )}
+      </section>
 
       {/* --- Carburant du jour : une recommandation, jamais un ajout auto --- */}
       <section className={`${styles.card} ${styles.fuelCard} ${styles[`fuel_${carburant.level}`]}`}>
@@ -362,19 +377,53 @@ export function NutritionScreen({
       )}
 
       {/* --- Sélecteur des deux paliers ------------------------------------ */}
+      {/*
+        Le sélecteur ne sert pas qu'à regarder : il DÉCLARE la journée. Une
+        séance faite un jeudi que le programme donne en repos doit se manger
+        comme une séance, et ses repas doivent pouvoir se cocher. Choisir le
+        palier du programme efface le choix plutôt que de l'enregistrer.
+      */}
       <div className={styles.segment} role="group" aria-label="Palier alimentaire">
         {(['train', 'rest'] as const).map((k) => (
           <button
             key={k}
             type="button"
             className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ''}`}
-            onClick={() => setKind(k)}
+            onClick={() =>
+              void (async () => {
+                setKind(k);
+                await setDayKindOverride(todayIso, k === kindProgramme ? null : k);
+                onDayKindChange();
+              })()
+            }
             aria-pressed={kind === k}
           >
             {NUTRITION_TARGETS[k].label}
           </button>
         ))}
       </div>
+      {kind !== kindProgramme && (
+        <div className={`${styles.phaseNote} ${styles.choixNote}`}>
+          <span>
+            Le programme prévoit {NUTRITION_TARGETS[kindProgramme].label.toLowerCase()}{' '}
+            aujourd’hui. Tu as choisi l’autre palier : c’est lui qui compte, et ses repas se
+            cochent.
+          </span>
+          <button
+            type="button"
+            className={styles.suiviReset}
+            onClick={() =>
+              void (async () => {
+                setKind(kindProgramme);
+                await setDayKindOverride(todayIso, null);
+                onDayKindChange();
+              })()
+            }
+          >
+            Revenir au programme
+          </button>
+        </div>
+      )}
 
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Repas types</h2>
@@ -443,11 +492,12 @@ export function NutritionScreen({
                 </div>
               </div>
               {/*
-                La coche n'apparaît que sur le palier du jour : cocher un repas
-                de la journée type qu'on n'est pas en train de vivre ne veut
-                rien dire. Une cible de 48 px, comme tout ce qui se touche.
+                La coche est toujours là. Elle ne l'était que sur le palier du
+                programme, ce qui rendait impossible de valider ses repas un
+                jour détourné — exactement le cas où l'on en a besoin. Une
+                cible de 48 px, comme tout ce qui se touche.
               */}
-              {kind === todayKind && (
+              {(
                 <button
                   type="button"
                   className={styles.mealTick}
