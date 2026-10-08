@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BLOCKS, WEEK_BLOCKS, WEEK_DAYS } from '../data/program';
 import { DAY_LABELS, DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
 import { dateFor, humanDate } from '../engine/calendar';
@@ -14,6 +14,7 @@ import {
 } from '../db/repo';
 import { explosiveTrend } from '../engine/trends';
 import type { SessionRow } from '../db/db';
+import { defilementPourCentrer } from '../state/weekStrip';
 import styles from './Screens.module.css';
 
 interface DayLine {
@@ -39,6 +40,28 @@ export function WeekScreen({
   onGoNutrition: () => void;
 }) {
   const [lines, setLines] = useState<DayLine[] | null>(null);
+  const bande = useRef<HTMLDivElement>(null);
+  const choisie = useRef<HTMLButtonElement>(null);
+
+  /*
+   * La bande se recale sur la semaine choisie, à l'ouverture comme à chaque
+   * changement.
+   *
+   * On pose `scrollLeft` plutôt que d'appeler `scrollIntoView` : celui-ci fait
+   * aussi défiler la PAGE pour amener l'élément dans le champ, et l'écran
+   * sauterait verticalement à chaque semaine touchée.
+   */
+  useEffect(() => {
+    const c = bande.current;
+    const b = choisie.current;
+    if (!c || !b) return;
+    c.scrollLeft = defilementPourCentrer({
+      visible: c.clientWidth,
+      totale: c.scrollWidth,
+      gauche: b.offsetLeft - c.offsetLeft,
+      largeur: b.offsetWidth,
+    });
+  }, [week]);
 
   useEffect(() => {
     void (async () => {
@@ -93,13 +116,14 @@ export function WeekScreen({
       </header>
 
       {/* Sélecteur de semaines, colorié par bloc — la périodisation se lit d'un coup d'œil. */}
-      <div className={styles.weeks}>
+      <div className={styles.weeks} ref={bande}>
         {Array.from({ length: 13 }, (_, w) => {
           const b = BLOCKS[WEEK_BLOCKS[w as WeekIndex]];
           return (
             <button
               key={w}
               type="button"
+              ref={w === week ? choisie : undefined}
               className={`${styles.week} ${w === week ? styles.weekOn : ''}`}
               style={{ borderBottomColor: b.color }}
               onClick={() => onChangeWeek(w as WeekIndex)}

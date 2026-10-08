@@ -205,9 +205,15 @@ function renderScreen(
       );
 
     case 'week':
+      /*
+       * La clé ne porte PAS la semaine : la changer remontait tout l'écran, et
+       * la bande des treize semaines repartait de son début — la pastille
+       * choisie sortait de l'écran dès la semaine 7. Le chargement des jours
+       * dépend déjà de `week` par son effet, aucun remontage n'est nécessaire.
+       */
       return (
         <WeekScreen
-          key={`${route.week}-${dataVersion}`}
+          key={dataVersion}
           week={route.week}
           onChangeWeek={(w) => navigate({ name: 'week', week: w })}
           onOpen={openSession}
