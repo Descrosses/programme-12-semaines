@@ -303,6 +303,9 @@ function patchSlot(slot: Slot, p: SlotPatch): Slot {
     ...(p.note !== undefined ? { note: p.note } : {}),
     // `loadFactor` et `contrastWith` sont consommés plus tard, on les mémorise.
     ...(p.loadFactor !== undefined ? { __loadFactor: p.loadFactor } : {}),
+    ...(p.loadFactorAtBlockEntry !== undefined
+      ? { __loadFactorAtBlockEntry: p.loadFactorAtBlockEntry }
+      : {}),
     ...(p.contrastWith !== undefined ? { __contrastWith: p.contrastWith } : {}),
   } as Slot;
 }
@@ -398,6 +401,32 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
       what: `${before} → ${load.kg} kg`,
       why: `Bloc force maximale : ${Math.round((factor - 1) * 100)} % sur les accessoires haut (§8).`,
     });
+  }
+
+  /*
+   * Hausse d'entrée de bloc sur une charge autorégulée (§8).
+   *
+   * Elle ne s'applique qu'une fois, au passage de bloc : la charge de
+   * référence est ce qui a été soulevé la fois d'avant, donc une valeur qui
+   * contient déjà la hausse dès la deuxième semaine du bloc. La réappliquer
+   * chaque semaine la composerait.
+   *
+   * Et seulement sur une charge VENUE de l'historique : la valeur d'amorce du
+   * programme est déjà celle qu'il a choisie, on ne la corrige pas.
+   */
+  const facteurEntree = (slot as Slot & { __loadFactorAtBlockEntry?: number })
+    .__loadFactorAtBlockEntry;
+  if (facteurEntree !== undefined && load.kg !== null && load.source === 'historique') {
+    const ref = lastCompleted(reference);
+    if (ref && WEEK_BLOCKS[ref.week as WeekIndex] !== o.block) {
+      const before = load.kg;
+      load = scaleLoad(load, facteurEntree);
+      adjustments.push({
+        source: 'bloc',
+        what: `${before} → ${load.kg} kg`,
+        why: `Entrée en bloc ${BLOCKS[o.block].name.toLowerCase()} : moins de reps, plus de repos, donc ${Math.round((facteurEntree - 1) * 100)} % de charge en plus (§8). Le RPE cible reste le juge.`,
+      });
+    }
   }
 
   // 3. Deload — uniquement sur ce que le tableau ne chiffre pas déjà.

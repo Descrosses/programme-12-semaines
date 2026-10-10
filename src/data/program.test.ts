@@ -636,3 +636,60 @@ describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
     expect(md14).not.toMatch(/reprise (en )?(S|semaine )\d/i);
   });
 });
+
+/**
+ * §8 — la hausse d'entrée de bloc.
+ *
+ * Elle est née d'un calcul de tonnage : 4 × 8 × 110 kg en 1 min 30 devenait
+ * 4 × 6 × 110 kg en 2 min, soit moins de travail à charge identique dans le
+ * bloc censé charger. Le .md et le code doivent dire la même chose.
+ */
+describe('§8 — les accessoires autorégulés montent en charge en force max', () => {
+  const MD = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  ).split('### Semaines 5-7')[1]!.split('###')[0]!;
+
+  const patchs = BLOCK_RULES.filter((r) => r.block === 'maxforce')
+    .flatMap((r) => r.rules)
+    .filter((r): r is Extract<typeof r, { op: 'patch' }> => r.op === 'patch')
+    .filter((r) => r.patch.loadFactorAtBlockEntry !== undefined);
+
+  it('les deux accessoires concernés sont le Hip Thrust et le Bulgarian', () => {
+    expect(patchs.map((r) => r.exId).sort()).toEqual(['bulgarian-split-squat', 'hip-thrust']);
+  });
+
+  it('le facteur est le +10 % que le .md applique déjà, pas un chiffre neuf', () => {
+    for (const r of patchs) expect(r.patch.loadFactorAtBlockEntry, r.exId).toBe(1.1);
+    // Le même 10 % que les accessoires du haut, pour la même bascule 8 → 6.
+    expect(MD).toContain('Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %');
+  });
+
+  it('le .md l’écrit sur les deux lignes', () => {
+    for (const ligne of ['Bulgarian 4 × 5/jambe', 'Hip Thrust 4 × 6 RPE 8']) {
+      const i = MD.indexOf(ligne);
+      expect(i, ligne).toBeGreaterThan(-1);
+      expect(MD.slice(i, i + 120), ligne).toContain('+10 % de charge à l’entrée du bloc');
+    }
+  });
+
+  it('et il dit pourquoi, chiffres à l’appui', () => {
+    expect(MD).toContain('3 520 kg');
+    expect(MD).toContain('2 880 kg');
+    expect(MD).toMatch(/une seule fois/i);
+  });
+
+  /*
+   * Le garde-fou : ce facteur ne doit JAMAIS viser une charge écrite dans le
+   * programme. Sur une base fixe, `loadFactor` suffit et se réapplique sans
+   * dériver ; sur une base autorégulée, il composerait.
+   */
+  it('il ne vise que des exercices à charge autorégulée', () => {
+    for (const r of patchs) {
+      const slot = BASE_SESSIONS[r.exId === 'hip-thrust' ? 5 : 0]!.slots.find(
+        (s) => s.exId === r.exId,
+      );
+      expect(slot?.load.kind, r.exId).toBe('autoreg');
+    }
+  });
+});
