@@ -49,6 +49,7 @@ export {
   RAMP_SQUAT_S12,
   SPECIAL_SESSIONS,
   TARGETS_12_WEEKS,
+  BANDE_CIBLE_POIDS,
   isCombineDay,
   specialSession,
 } from './testSessions';

@@ -14,6 +14,7 @@ import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_POLICY } from './blockRules';
 import { EXERCISES, EXERCISE_IDS } from './exercises';
 import { MAIN_LIFT_TABLE } from './mainLiftTable';
 import {
+  BANDE_CIBLE_POIDS,
   COMBINE_METRICS,
   SPECIAL_SESSIONS,
   MESURES_COMBINE,
@@ -462,6 +463,18 @@ describe('§13 — cibles à 12 semaines', () => {
    * de son départ, sans lui demander l'impossible. 30 % en douze semaines est
    * déjà énorme ; l'ancienne cible du squat en demandait 36 %.
    */
+  /*
+   * La bande cible existe en deux formes — le texte « 77-80 kg » du tableau et
+   * les deux nombres que le graphique de poids trace. Ce test les tient
+   * ensemble : modifier le .md sans modifier les deux fait tomber le test.
+   */
+  it('la bande du graphique de poids est celle du tableau et celle du .md', () => {
+    const texte = TARGETS_12_WEEKS['test-bodyweight']!.target;
+    expect(texte).toBe(`${BANDE_CIBLE_POIDS.min}-${BANDE_CIBLE_POIDS.max} kg`);
+    expect(MD_13).toContain(`| Poids | ${BANDE_CIBLE_POIDS.min} | ${texte} |`);
+    expect(BANDE_CIBLE_POIDS.min).toBeLessThan(BANDE_CIBLE_POIDS.max);
+  });
+
   it('aucune cible ne demande plus de 30 % de progression', () => {
     for (const [id, kg] of Object.entries(MESURE)) {
       const hautes = nombres(TARGETS_12_WEEKS[id]!.target);

@@ -541,3 +541,16 @@ export const TARGETS_12_WEEKS: Record<string, { start: string; target: string }>
   'test-ab-wheel-max': { start: 'référence', target: '+20-30 % de reps' },
   'test-bodyweight': { start: '77 kg', target: '77-80 kg' },
 };
+
+/**
+ * §13 — la bande de poids visée, en chiffres utilisables par un graphique.
+ *
+ * La même valeur existe déjà en texte dans `TARGETS_12_WEEKS['test-bodyweight']`
+ * (« 77-80 kg »), mais un SVG a besoin de deux nombres. Les deux formes sont
+ * tenues ensemble par un test de transcription : si le .md passe un jour à
+ * 78-81, le test tombe ici et là, pas seulement sur l'une des deux.
+ *
+ * C'est la SEULE borne de poids que le .md donne. Aucun autre seuil — « trop
+ * vite », « trop lent » — ne doit être inventé à partir d'elle.
+ */
+export const BANDE_CIBLE_POIDS = { min: 77, max: 80 } as const;

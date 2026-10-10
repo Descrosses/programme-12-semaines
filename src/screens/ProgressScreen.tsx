@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart, LineChart, type Series } from '../components/Chart';
 import { VisualTracking } from '../components/VisualTracking';
+import { WeightOverview } from '../components/WeightOverview';
 import { EXERCISES } from '../data/exercises';
 import { prescriptionFor } from '../data/mainLiftTable';
 import { DAY_LABELS_SHORT, type MainLiftId } from '../data/types';
@@ -26,12 +27,17 @@ const LIFTS: Array<{ id: MainLiftId; label: string }> = [
 ];
 
 /**
- * L'écran répond à une seule question — « est-ce que ça bouge ? » — par deux
- * moyens : les chiffres et l'œil. Un sélecteur en haut plutôt que six sections
- * empilées : les courbes se consultent le soir, les photos une fois par
- * semaine, on ne veut pas faire défiler les unes pour atteindre les autres.
+ * L'écran répond à une seule question — « est-ce que ça bouge ? » — par trois
+ * moyens : les charges, le poids de corps et l'œil. Un sélecteur en haut plutôt
+ * que huit sections empilées : les courbes se consultent le soir, les photos une
+ * fois par semaine, on ne veut pas faire défiler les unes pour atteindre les
+ * autres.
+ *
+ * Le poids a sa propre vue et pas une carte de plus sous les charges : il porte
+ * son propre sélecteur de période, deux graphiques et un tableau de treize
+ * lignes. Empilé sous le reste, on ne l'aurait jamais atteint au pouce.
  */
-type Vue = 'chiffres' | 'photos';
+type Vue = 'chiffres' | 'poids' | 'photos';
 
 export function ProgressScreen() {
   const [vue, setVue] = useState<Vue>('chiffres');
@@ -132,17 +138,18 @@ export function ProgressScreen() {
       <header className={styles.header}>
         <h1 className={styles.h1}>Progression</h1>
         <p className={styles.lead}>
-          {vue === 'chiffres'
-            ? 'Ce que tu as réellement soulevé, comparé au plan.'
-            : 'Une photo par semaine. Ce que les courbes ne montrent pas.'}
+          {vue === 'chiffres' && 'Ce que tu as réellement soulevé, comparé au plan.'}
+          {vue === 'poids' && 'Le poids de corps depuis le combine initial, pas sur sept jours.'}
+          {vue === 'photos' && 'Une photo par semaine. Ce que les courbes ne montrent pas.'}
         </p>
       </header>
 
       <div className={styles.segment} role="group" aria-label="Vue">
         {(
           [
-            ['chiffres', 'Chiffres'],
-            ['photos', 'Suivi visuel'],
+            ['chiffres', 'Charges'],
+            ['poids', 'Poids'],
+            ['photos', 'Photos'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -156,6 +163,8 @@ export function ProgressScreen() {
           </button>
         ))}
       </div>
+
+      {vue === 'poids' && <WeightOverview />}
 
       {vue === 'photos' && <VisualTracking />}
 

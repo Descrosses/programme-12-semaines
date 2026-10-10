@@ -1,0 +1,155 @@
+/*
+ * Vue d'ensemble du poids.
+ *
+ * Trois chiffres en haut, trois boutons de période à 48 px, un tableau qui
+ * tient dans 390 px de large sans défilement horizontal.
+ */
+
+.chiffres {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chiffre {
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  text-align: center;
+}
+
+.chiffreValeur {
+  font-family: var(--font-cond);
+  font-size: clamp(1.5rem, 8vw, 2rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.chiffreUnite {
+  min-height: 12px;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.chiffreLabel {
+  margin-top: 4px;
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  color: var(--ink-2);
+}
+
+/* --- Sélecteur de période ------------------------------------------------- */
+
+.periodes {
+  display: flex;
+  gap: 6px;
+  margin: var(--gap) var(--pad) 0;
+}
+
+.periode {
+  flex: 1;
+  min-width: 0;
+  /* Non négociable : une cible tactile fait 48 px. */
+  height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.periodeOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+/* --- Légende des blocs ---------------------------------------------------- */
+
+.blocs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+}
+
+.bloc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.blocPastille {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  opacity: 0.85;
+}
+
+/* --- Tableau hebdomadaire ------------------------------------------------- */
+
+.tableWrap {
+  margin-top: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table thead th {
+  color: var(--ink-2);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-weight: 700;
+  text-align: left !important;
+}
+
+/* Le liseré de bloc, comme dans l'onglet Semaine : la périodisation se relit
+   dans le tableau sans avoir à compter les semaines. */
+.semTrait {
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.ecart {
+  color: var(--ink-2);
+}
+
+.vide {
+  padding: 28px var(--pad);
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  text-align: center;
+}
