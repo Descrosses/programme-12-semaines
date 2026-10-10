@@ -35,6 +35,12 @@ const MEASURE = {
   cm: { label: 'Distance', unit: 'cm', step: 5, min: 50, max: 400 },
   s: { label: 'Temps', unit: 's', step: 0.1, min: 0.5, max: 60 },
   m: { label: 'Distance', unit: 'm', step: 5, min: 5, max: 200 },
+  /*
+   * Une tenue isométrique, et non un chrono de sprint : le pas est de 5 s et
+   * non d'un dixième. Personne n'a besoin de noter 24,7 s sur un gainage, et
+   * 250 appuis pour atteindre 25 s au pas de 0,1 rendrait le champ inutile.
+   */
+  tenue: { label: 'Tenue', unit: 's', step: 5, min: 0, max: 180 },
   kg: { label: 'Charge', unit: 'kg', step: 2.5, min: 0, max: 300 },
   reps: { label: 'Reps', unit: '', step: 1, min: 0, max: 60 },
 } as const;
@@ -572,7 +578,11 @@ function SetEntry({
  * sauter, c'est la mesure du jour. D'où le repli sur la dernière réalisée.
  */
 function plannedMeasureOf(ex: ResolvedExercise): number | null {
-  return ex.work.kind === 'distance' ? ex.work.meters : null;
+  if (ex.work.kind === 'distance') return ex.work.meters;
+  // Une tenue s'ouvre sur la durée prescrite : c'est elle qu'on valide le
+  // plus souvent, et la saisie ne doit demander aucun appui dans ce cas.
+  if (ex.work.kind === 'time') return ex.work.seconds;
+  return null;
 }
 
 function plannedRepsOf(ex: ResolvedExercise): number | null {
@@ -592,6 +602,12 @@ const MESURE_CHIFFREE = new Set(['cm', 'm', 's']);
 
 export function measureOf(ex: ResolvedExercise): (typeof MEASURE)[keyof typeof MEASURE] | null {
   if (ex.work.kind === 'distance') return MEASURE.m;
+  /*
+   * Une tenue se note en secondes, pas en reps. Le conditioning est exclu :
+   * ses douze minutes ne se saisissent pas série par série, et son unique
+   * « série » n'a rien à enregistrer.
+   */
+  if (ex.work.kind === 'time' && ex.def.role !== 'conditioning') return MEASURE.tenue;
   /*
    * Un saut se note par sa distance, et pas seulement en semaine de combine.
    * Un « 5 × 2 » de Broad Jump sans champ de distance ne garde rien de la

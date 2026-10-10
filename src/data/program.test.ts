@@ -693,3 +693,41 @@ describe('§8 — les accessoires autorégulés montent en charge en force max',
     }
   });
 });
+
+describe('§8 — Barbell Offset Hold, le seul exercice ajouté aux douze semaines', () => {
+  const MD = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  );
+  const BLOC = MD.split('### Barbell Offset Hold')[1]!.split('###')[0]!;
+
+  it('le .md dit ce que le code programme', () => {
+    expect(BLOC).toContain('| 5-7 | 3 × 25 s/côté | 60 s |');
+    expect(BLOC).toContain('| 9-11 | 2 × 20 s/côté | 45 s |');
+    // Les deux deloads et la semaine de tests sont explicitement vides.
+    expect(BLOC).toMatch(/\| 8 \| — \(deload/);
+    expect(BLOC).toMatch(/\| 12 \| — \(semaine de tests/);
+  });
+
+  it('il dit pourquoi le mercredi, et pas le lundi', () => {
+    expect(BLOC).toMatch(/seul jour sans lift principal du bas du corps/i);
+    expect(BLOC).toMatch(/pas le lundi/i);
+  });
+
+  it('il assume son coût au lieu de le passer sous silence', () => {
+    expect(BLOC).toMatch(/65 à 68-69 minutes/);
+  });
+
+  it('la charge annoncée est bien celle d’un seul côté', () => {
+    expect(BLOC).toMatch(/UN SEUL côté/);
+    expect(EXERCISES['barbell-offset-hold']!.cues!.join(' ')).toMatch(/UN SEUL côté/);
+  });
+
+  it('le §14 explique pourquoi il ne touche pas l’adducteur', () => {
+    const md14 = MD.split('## 14.')[1] ?? '';
+    expect(md14).toMatch(/Barbell Offset Hold/);
+    expect(md14).toMatch(/aucune adduction de hanche/i);
+    // La marche reste une possibilité, jamais une programmation.
+    expect(md14).toMatch(/non programmée/i);
+  });
+});

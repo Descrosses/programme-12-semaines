@@ -88,7 +88,8 @@ export type Work =
   /** `sideLabel` : le programme écrit « / jambe » pour le Bulgarian, « / côté » ailleurs. */
   | { kind: 'reps'; reps: Reps; perSide?: boolean; sideLabel?: 'côté' | 'jambe' }
   | { kind: 'distance'; meters: number; perSide?: boolean }
-  | { kind: 'time'; seconds: number }
+  /** `perSide` : une tenue se compte par côté, un conditioning non. */
+  | { kind: 'time'; seconds: number; perSide?: boolean }
   | { kind: 'intervals'; rounds: number; workSec: number; easySec: number }
   /** Tests : « 3 essais », « 5 essais ». */
   | { kind: 'attempts'; attempts: number }
@@ -104,6 +105,12 @@ export const reps = (r: Reps, perSide = false, sideLabel: 'côté' | 'jambe' = '
 export const meters = (m: number, perSide = false): Work => ({
   kind: 'distance',
   meters: m,
+  perSide,
+});
+/** Une tenue isométrique : « 3 × 25 s / côté ». */
+export const hold = (seconds: number, perSide = false): Work => ({
+  kind: 'time',
+  seconds,
   perSide,
 });
 export const attempts = (n: number): Work => ({ kind: 'attempts', attempts: n });

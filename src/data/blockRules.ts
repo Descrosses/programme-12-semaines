@@ -8,6 +8,7 @@
 
 import {
   autoreg,
+  hold,
   meters,
   noLoad,
   reps,
@@ -167,6 +168,36 @@ const MAXFORCE: BlockRuleSet[] = [
       // « Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 % »
       patch('landmine-press-kneeling', { sets: 3, work: reps(6, true), loadFactor: 1.1, targetRPE: rpe(8) }),
       patch('chest-supported-row', { sets: 3, work: reps(6), loadFactor: 1.1, targetRPE: rpe(8) }),
+      /*
+       * Barbell Offset Hold — le second point d'appui asymétrique de la
+       * semaine, et le seul ajout du bloc.
+       *
+       * Le mercredi parce que c'est le seul jour sans lift principal du bas
+       * du corps : rien en amont ne fatigue le tronc, rien en aval n'en
+       * souffre. Et parce que la fréquence est tout l'objet de l'ajout — le
+       * placer le samedi à côté du Suitcase Carry donnerait deux jours collés
+       * puis cinq jours vides.
+       *
+       * Pas le lundi : c'est la séance où l'adducteur travaille le plus
+       * (squat + Bulgarian), et on n'y ajoute rien tant que les symptômes
+       * durent.
+       *
+       * Juste après le Pallof Press : les deux forment un bloc tronc debout
+       * de six minutes, anti-rotation puis anti-flexion latérale.
+       */
+      {
+        op: 'insert',
+        after: 'pallof-press',
+        slot: {
+          exId: 'barbell-offset-hold',
+          sets: 3,
+          work: hold(25, true),
+          load: autoreg(5, 2.5, 'barbell'),
+          targetRPE: null,
+          restSec: 60,
+          note: 'Charge = le disque d’un seul côté. Zéro inclinaison : la série s’arrête quand l’épaule descend.',
+        },
+      },
     ],
   },
   {
@@ -326,6 +357,22 @@ const POWER: BlockRuleSet[] = [
       patch('landmine-press-kneeling', { sets: 4, work: reps(5, true), targetRPE: rpe(6), note: 'Explosif.' }),
       patch('chest-supported-row', { sets: 3, work: reps(6) }),
       patch('pallof-press', { sets: 3, work: reps(5, true) }),
+      // Volume réduit comme tout le reste du bloc : la tenue reste, elle ne
+      // coûte rien à la fraîcheur et c'est la seule anti-flexion latérale de
+      // la semaine en dehors du samedi.
+      {
+        op: 'insert',
+        after: 'pallof-press',
+        slot: {
+          exId: 'barbell-offset-hold',
+          sets: 2,
+          work: hold(20, true),
+          load: autoreg(5, 2.5, 'barbell'),
+          targetRPE: null,
+          restSec: 45,
+          note: 'Charge = le disque d’un seul côté.',
+        },
+      },
     ],
   },
   {
