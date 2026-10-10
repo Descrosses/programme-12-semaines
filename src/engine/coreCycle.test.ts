@@ -17,6 +17,7 @@ import { describe, expect, it } from 'vitest';
 import { getSession, type ResolvedExercise } from './getSession';
 import { EMPTY_CONTEXT, type SessionContext } from './types';
 import { readiness } from './readiness';
+import { setSummary } from './format';
 import { EXERCISES } from '../data/exercises';
 import { DELOAD_CORE } from '../data/blockRules';
 import type { DayIndex, WeekIndex } from '../data/types';
@@ -243,5 +244,42 @@ describe('suivi de douleur — seulement là où il a un sens', () => {
 
   it('le Bulgarian conditionne sa progression à la tolérance, pas au seul RPE', () => {
     expect(EXERCISES['bulgarian-split-squat']!.progressionRule).toMatch(/tolérance passe avant/i);
+  });
+});
+
+/*
+ * Les résultats déjà enregistrés sur un exercice suspendu restent lisibles.
+ *
+ * Une suspension retire la prescription, jamais le résultat : rouvrir une
+ * semaine passée doit montrer ce qui a été fait, pas une séance amputée.
+ */
+describe('résumé d’une série conservée', () => {
+  const vide = { actualReps: null, actualKg: null, actualRpe: null, measureValue: null };
+
+  it('n’affiche que les champs réellement saisis', () => {
+    expect(setSummary({ ...vide, actualReps: 8 })).toBe('8 reps');
+    expect(setSummary({ ...vide, actualReps: 8, actualRpe: 7 })).toBe('8 reps · 7 RPE');
+    expect(setSummary({ ...vide, actualReps: 8, actualKg: 20, actualRpe: 7.5 })).toBe(
+      '8 reps · 20 kg · 7,5 RPE',
+    );
+  });
+
+  it('un champ vide n’est jamais rendu par un zéro', () => {
+    // Le piège : « 0 reps » se relit six semaines plus tard comme une série
+    // ratée, alors que la case n'avait simplement pas été remplie.
+    expect(setSummary({ ...vide, actualKg: 20 })).toBe('20 kg');
+    expect(setSummary({ ...vide, actualKg: 20 })).not.toContain('0 reps');
+  });
+
+  it('un zéro réellement saisi, lui, s’affiche', () => {
+    expect(setSummary({ ...vide, actualReps: 0 })).toBe('0 reps');
+  });
+
+  it('une série validée sans aucun chiffre reste une série faite', () => {
+    expect(setSummary(vide)).toBe('série validée');
+  });
+
+  it('une mesure passe avant la charge — c’est elle qu’on relit sur un porté', () => {
+    expect(setSummary({ ...vide, measureValue: 30, actualKg: 32 })).toBe('30 · 32 kg');
   });
 });

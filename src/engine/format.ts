@@ -103,3 +103,26 @@ export function loadLine(sets: number, work: Work, load: ResolvedLoad): string {
   if (load.shape === 'dbPair') return `${left} — ${right}`;
   return `${left} × ${right}`;
 }
+
+/**
+ * Une série enregistrée, résumée en une ligne : « 8 reps · 20 kg · 7 RPE ».
+ *
+ * Seuls les champs réellement saisis apparaissent. Afficher un zéro à la
+ * place d'une case vide ferait passer une donnée absente pour une donnée
+ * mesurée, et c'est exactement le genre de chiffre qu'on relit six semaines
+ * plus tard en le croyant vrai.
+ */
+export function setSummary(set: {
+  actualReps: number | null;
+  actualKg: number | null;
+  actualRpe: number | null;
+  measureValue: number | null;
+}): string {
+  const bouts: string[] = [];
+  if (set.actualReps !== null) bouts.push(`${set.actualReps} reps`);
+  if (set.measureValue !== null) bouts.push(fr(set.measureValue));
+  if (set.actualKg !== null) bouts.push(`${fr(set.actualKg)} kg`);
+  if (set.actualRpe !== null) bouts.push(`${fr(set.actualRpe)} RPE`);
+  // Une série validée sans aucun chiffre reste une série faite.
+  return bouts.length > 0 ? bouts.join(' · ') : 'série validée';
+}
