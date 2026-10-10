@@ -231,11 +231,17 @@ Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
 - Repos : **4 min** squat/deadlift, **3 min 30** bench/tractions
 - Fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale
 - Box Jump 4 × 2, repos 2 min
-- Bulgarian 4 × 5/jambe RPE 8, repos 2 min
+- Bulgarian 4 × 5/jambe RPE 8, repos 2 min, **+10 % de charge à l’entrée du bloc**
 - RDL 3 × 6 × 90 kg → 4 × 5 × 92,5-95 kg
 - Front Squat 4 × 5 → 4 × 4
-- Hip Thrust 4 × 6 RPE 8, repos 2 min
+- Hip Thrust 4 × 6 RPE 8, repos 2 min, **+10 % de charge à l’entrée du bloc**
 - Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %
+
+**Pourquoi ce +10 % sur le Bulgarian et le Hip Thrust.** Il manquait, et son absence rendait le bloc incohérent. Le passage en force max baisse les reps et allonge le repos sur tout le programme, et partout la charge monte en compensation : le RDL passe de 90 à 92,5-95 kg, le front squat suit le tableau, les accessoires du haut prennent +10 % pour la même bascule 8 → 6 reps. Les deux seuls accessoires autorégulés du bas du corps n'avaient rien.
+
+Sans la hausse, le Hip Thrust donnait 4 × 8 × 110 kg en 1 min 30 de repos, soit 3 520 kg, puis 4 × 6 × 110 kg en 2 min, soit 2 640 kg. Moins de travail, à charge identique, avec plus de récupération : c'est un allègement, pas un bloc de force. Avec les +10 % : 4 × 6 × 120 kg, 2 880 kg — **−18 % de volume, +9 % de charge, +33 % de repos.** Le volume baisse, l'intensité monte, ce que le bloc est censé faire.
+
+Le +10 % est celui que le programme applique déjà aux accessoires du haut pour la même bascule : aucun chiffre nouveau. Il s'applique **une seule fois**, à l'entrée du bloc. Les semaines suivantes, l'autorégulation et le §11 reprennent la main — réappliquer le facteur chaque semaine donnerait 110 → 121 → 133 → 146 en trois semaines. Et comme partout, c'est le RPE cible qui juge : si 4 × 6 à RPE 8 sort à RPE 9, le cas 4 du §11 fait redescendre.
 - **Dimanche : la Landmine Rotation remplace le Cable Chop et ouvre la séance.** 3 × 5/côté, repos 75 s, charge légère autorégulée. S5 apprentissage technique, S6 accélération contrôlée, S7 progression technique. Le nombre d'exercices du dimanche ne change pas.
 - Hang High Pull 4 × 3, repos 2 min
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30

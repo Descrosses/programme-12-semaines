@@ -33,6 +33,21 @@ export interface SlotPatch {
   targetRPE?: RPETarget | null;
   /** Multiplie la charge résolue (ex. 1.1 pour « +10 % » des accessoires haut). */
   loadFactor?: number;
+  /**
+   * Comme `loadFactor`, mais appliqué UNE SEULE FOIS, à l'entrée du bloc.
+   *
+   * Pourquoi deux champs. `loadFactor` s'applique à une charge écrite dans le
+   * programme : la base ne bouge pas, le facteur peut donc être réappliqué
+   * chaque semaine sans dériver. Sur une charge AUTORÉGULÉE, la base est ce
+   * qui a réellement été soulevé la fois d'avant — donc une charge qui
+   * contient déjà le facteur. Le réappliquer chaque semaine le composerait :
+   * 110 → 121 → 133 → 146 en trois semaines.
+   *
+   * Celui-ci ne se déclenche donc que si la charge de référence vient d'un
+   * AUTRE bloc. Le passage en force max porte la hausse ; les semaines
+   * suivantes, l'autorégulation et le §11 reprennent la main.
+   */
+  loadFactorAtBlockEntry?: number;
   load?: LoadSpec;
   note?: string;
   /** Id de l'exercice explosif intercalé entre les séries (contraste S9-11). */
@@ -131,11 +146,15 @@ const MAXFORCE: BlockRuleSet[] = [
     rules: [
       patch('box-jump', { sets: 4, work: reps(2), restSec: 120 }),
       patch('back-squat', { restSec: 240 }),
+      // Même bascule que le Hip Thrust, en plus marquée : 3 × 8/jambe
+      // → 4 × 5/jambe. Garder les mêmes haltères reviendrait à alléger la
+      // série au moment où le bloc demande de la charger.
       patch('bulgarian-split-squat', {
         sets: 4,
         work: reps(5, true, 'jambe'),
         targetRPE: rpe(8),
         restSec: 120,
+        loadFactorAtBlockEntry: 1.1,
       }),
     ],
   },
@@ -166,7 +185,30 @@ const MAXFORCE: BlockRuleSet[] = [
     rules: [
       patch('deadlift', { restSec: 240 }),
       patch('front-squat', { restSec: 150 }),
-      patch('hip-thrust', { sets: 4, work: reps(6), targetRPE: rpe(8), restSec: 120 }),
+      /*
+       * Hip Thrust — le trou que Guillaume a trouvé en comptant son tonnage.
+       *
+       * §8 fait passer l'exercice de 4 × 8 à 4 × 6 avec deux minutes de repos
+       * au lieu d'une et demie, mais ne dit rien de la charge. Résultat : le
+       * même poids, moins de reps, plus de repos — c'est-à-dire moins de
+       * travail à intensité égale. Un bloc de force fait l'inverse.
+       *
+       * Le +10 % n'est pas inventé ici : c'est le chiffre que §8 applique
+       * déjà aux accessoires du HAUT pour exactement la même bascule, 3 × 8
+       * → 3 × 6. Les deux seuls accessoires autorégulés du bas du corps —
+       * Hip Thrust et Bulgarian — étaient les seuls à ne pas l'avoir.
+       *
+       * 4 × 8 × 110 = 3 520 kg en 1 min 30 de repos
+       *   → 4 × 6 × 120 = 2 880 kg en 2 min : −18 % de volume, +9 % de charge.
+       * C'est ça, un bloc de force.
+       */
+      patch('hip-thrust', {
+        sets: 4,
+        work: reps(6),
+        targetRPE: rpe(8),
+        restSec: 120,
+        loadFactorAtBlockEntry: 1.1,
+      }),
       patch('nordic-curl', { sets: 3, work: reps({ min: 4, max: 5 }) }),
     ],
   },
