@@ -15,6 +15,7 @@
 import {
   BIG_MOVEMENT_IDS,
   BLOCKS,
+  DELOAD_CORE,
   DELOAD_POLICY,
   READINESS_THRESHOLDS,
   WEEK_BLOCKS,
@@ -40,7 +41,7 @@ import type {
   WeekIndex,
   Work,
 } from '../data/types';
-import { loadLine as formatLoadLine } from './format';
+import { loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
@@ -97,6 +98,19 @@ export interface ResolvedExercise {
   adjustments: Adjustment[];
 }
 
+/**
+ * Un exercice que la séance prévoyait et qui n'est plus prescrit.
+ *
+ * Il n'est pas effacé de l'écran : l'y faire disparaître sans un mot laisserait
+ * croire à un oubli, et la raison de la mise à l'écart est précisément ce qu'il
+ * faut avoir sous les yeux pour décider de la reprise.
+ */
+export interface SuspendedExercise {
+  id: string;
+  name: string;
+  reason: string;
+}
+
 export interface ResolvedSession {
   week: WeekIndex;
   day: DayIndex;
@@ -110,6 +124,8 @@ export interface ResolvedSession {
   readinessTest: boolean;
   notes: string[];
   exercises: ResolvedExercise[];
+  /** Prévus par la trame, retirés de la prescription, affichés avec leur raison. */
+  suspended: SuspendedExercise[];
   adjustments: Adjustment[];
 }
 
@@ -173,6 +189,21 @@ export function getSession(
     });
   }
 
+  /*
+   * Exercices suspendus — retirés de la prescription, pas du catalogue.
+   *
+   * Le filtre vient APRÈS les règles de bloc et le deload : une suspension
+   * n'est pas un ajustement de programmation, c'est un retrait. Elle ne
+   * dépend ni de la semaine, ni du bloc, ni du deload.
+   */
+  const suspended: SuspendedExercise[] = [];
+  slots = slots.filter((s) => {
+    const def = EXERCISES[s.exId];
+    if (!def?.suspended) return true;
+    suspended.push({ id: def.id, name: def.name, reason: def.suspended.reason });
+    return false;
+  });
+
   // 4-5. Résolution exercice par exercice.
   const contrast = block === 'power' && !special ? CONTRAST_BY_DAY[day] : undefined;
   const exercises: ResolvedExercise[] = [];
@@ -230,6 +261,7 @@ export function getSession(
     readinessTest: blueprint.readinessTest,
     notes,
     exercises: finalExercises,
+    suspended,
     adjustments: sessionAdjustments,
   };
 }
@@ -346,6 +378,31 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
       });
     } else if (def.role === 'accessory') {
       sets = DELOAD_POLICY.accessorySets;
+    } else if (def.role === 'core' || def.role === 'carry') {
+      /*
+       * Le défaut corrigé : ces deux rôles ne tombaient dans aucune branche.
+       * Le tronc et les portés gardaient leur volume complet dans la semaine
+       * censée dissiper la fatigue — 3 × 8/côté de chop et 3 × 30 m/côté de
+       * suitcase en semaine 4, comme en semaine 3.
+       *
+       * Une seule réduction est appliquée ici, et aucune autre branche ne
+       * touche ces rôles : pas de double décompte.
+       */
+      const prevu = DELOAD_CORE[slot.exId];
+      const avant = { sets, work };
+      sets = prevu?.sets ?? DELOAD_POLICY.coreSets;
+      if (prevu) work = prevu.work;
+      if (def.role === 'carry' && load.kg !== null) {
+        load = scaleLoad(load, DELOAD_POLICY.carryLoadFactor);
+      }
+      adjustments.push({
+        source: 'deload',
+        what: `${workLabel(avant.sets, avant.work)} → ${workLabel(sets, work)}`,
+        why:
+          def.role === 'carry'
+            ? 'Deload : porté raccourci et allégé de 20 %, reps propres, aucune série à l’échec (§8).'
+            : 'Deload : moins de séries et moins de reps sur le tronc, aucune série à l’échec (§8).',
+      });
     } else if (def.role === 'power') {
       const before = sets;
       sets = Math.max(1, Math.ceil(sets / DELOAD_POLICY.jumpVolumeDivisor));

@@ -10,7 +10,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BASE_SESSIONS } from './baseSessions';
-import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_POLICY } from './blockRules';
+import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_CORE, DELOAD_POLICY } from './blockRules';
+import { workLabel } from '../engine/format';
 import { EXERCISES, EXERCISE_IDS } from './exercises';
 import { MAIN_LIFT_TABLE } from './mainLiftTable';
 import {
@@ -425,7 +426,11 @@ describe('§13 — cibles à 12 semaines', () => {
   const MD_13 = readFileSync(
     new URL('../../programme-final-12-semaines.md', import.meta.url),
     'utf8',
-  ).split('## 13.')[1]!;
+  )
+    .split('## 13.')[1]!
+    // Borné à la section 13 : depuis l'ajout du §14, prendre « tout ce qui
+    // suit » ferait passer un test qui cherche une valeur écrite ailleurs.
+    .split('\n## ')[0]!;
 
   /** Le départ mesuré au combine initial, tel que Guillaume l'a saisi. */
   const MESURE: Record<string, number> = {
@@ -506,5 +511,128 @@ describe('chaque test de 1RM trouve ses paliers', () => {
       expect(RAMPS[CLE[m]!], `${m} — paliers initiaux`).toBeDefined();
       expect(RAMPS_S12[CLE[m]!], `${m} — paliers finaux`).toBeDefined();
     }
+  });
+});
+
+/**
+ * §1, §8 et §14 — ce que le .md promet et ce que le code fait.
+ *
+ * Ces tests existent parce que le §1 a menti pendant tout un cycle : il
+ * affirmait « deadlift inférieur au squat » sur une estimation, alors que le
+ * combine avait mesuré l'inverse. Un texte ne se vérifie pas tout seul.
+ */
+describe('§1 — le diagnostic est écrit sur les valeurs mesurées', () => {
+  const MD = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  );
+  const MD_1 = MD.split('## 1.')[1]!.split('\n## ')[0]!;
+
+  it('les quatre maxima mesurés y figurent', () => {
+    for (const valeur of ['140', '115', '110', '+45']) {
+      expect(MD_1, valeur).toContain(valeur);
+    }
+  });
+
+  it('il ne dit plus que le deadlift est inférieur au squat', () => {
+    expect(MD_1).not.toMatch(/deadlift[^.]{0,80}inférieur au squat/i);
+    expect(MD_1).toMatch(/pas en retard sur le squat/i);
+  });
+
+  it('il ne conclut pas à un déficit de quadriceps', () => {
+    // Le squat est le chiffre le plus bas, mais il est limité par une douleur.
+    // En déduire un retard de quadriceps serait un diagnostic, et c'en est un
+    // que ni le programme ni l'application n'ont le droit de poser.
+    expect(MD_1).not.toMatch(/quadriceps[^.]{0,60}(retard|faible|point faible)/i);
+    expect(MD_1).toMatch(/adducteur gauche/i);
+  });
+
+  it('les valeurs du §1 sont celles du code', () => {
+    const mesures: Record<string, string> = {
+      'test-deadlift-1rm': '140',
+      'test-bench-1rm': '115',
+      'test-squat-1rm': '110',
+    };
+    for (const [id, kg] of Object.entries(mesures)) {
+      expect(TARGETS_12_WEEKS[id]!.start, id).toContain(kg);
+    }
+  });
+});
+
+describe('§8 — la table de deload du tronc est celle du code', () => {
+  const MD = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  );
+  /** Les lignes « | Exercice | habituel | deload | » du tableau du §8. */
+  const LIGNES = MD.split('Tronc et portés — ils déloadent eux aussi')[1]!
+    .split('\n\n')[1]!
+    .split('\n')
+    .filter((l) => l.startsWith('|') && !l.includes('---') && !l.includes('Habituel'))
+    .map((l) => l.split('|').map((c) => c.trim()).filter(Boolean));
+
+  /** « 2 × 5 / côté » et « 2 × 5/côté » décrivent la même chose. */
+  const norm = (t: string) => t.replace(/\s+/g, '').replace('–', '-');
+
+  it('le tableau a autant de lignes que la table du code', () => {
+    expect(LIGNES).toHaveLength(Object.keys(DELOAD_CORE).length);
+  });
+
+  it('chaque prescription de deload du code est écrite dans le .md', () => {
+    const ecrites = LIGNES.map((l) => norm(l[2]!));
+    for (const [id, { sets, work }] of Object.entries(DELOAD_CORE)) {
+      const attendu = norm(workLabel(sets, work));
+      expect(
+        ecrites.some((e) => e.startsWith(attendu)),
+        `${id} — ${workLabel(sets, work)} absent du tableau du §8`,
+      ).toBe(true);
+    }
+  });
+
+  it('les portés sont annoncés allégés, pas seulement raccourcis', () => {
+    for (const nom of ['Farmer Carry', 'Suitcase Carry']) {
+      const ligne = LIGNES.find((l) => l[0] === nom);
+      expect(ligne?.[2], nom).toContain('20 %');
+    }
+  });
+});
+
+describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
+  const MD = readFileSync(
+    new URL('../../programme-final-12-semaines.md', import.meta.url),
+    'utf8',
+  );
+
+  it('la progression du §8 annonce les mêmes semaines que les règles de bloc', () => {
+    const table = MD.split('### Landmine Rotation')[1]!.split('###')[0]!;
+    // S1-4 : le chop. S5-7 : 3 × 5. S8 : 2 × 4. S9-11 : 3 × 4. S12 : rien.
+    expect(table).toContain('Cable Chop 3 × 8/côté');
+    expect(table).toContain('Landmine Rotation 3 × 5/côté');
+    expect(table).toContain('Landmine Rotation 2 × 4/côté');
+    expect(table).toContain('Landmine Rotation 3 × 4/côté');
+  });
+
+  it('l’exercice existe au catalogue avec sa fiche complète', () => {
+    const ex = EXERCISES['landmine-rotation'];
+    expect(ex).toBeDefined();
+    expect(ex!.intent).toBeTruthy();
+    expect(ex!.progressionRule).toBeTruthy();
+    expect(ex!.altBasicFit).toBeTruthy();
+    // Objectif, muscles, exécution, intention, sécurité : cinq consignes au moins.
+    expect(ex!.cues!.length).toBeGreaterThanOrEqual(5);
+    expect(ex!.cues!.join(' ')).toMatch(/sécurité/i);
+  });
+
+  it('le §14 existe et distingue les trois statuts', () => {
+    const md14 = MD.split('## 14.')[1] ?? '';
+    expect(md14).toMatch(/Maintenu, adapté/);
+    expect(md14).toMatch(/Maintenu, surveillé/);
+    expect(md14).toMatch(/Suspendu/);
+    expect(md14).toMatch(/pas un diagnostic/i);
+  });
+
+  it('le §14 n’annonce aucune semaine de reprise', () => {
+    const md14 = MD.split('## 14.')[1] ?? '';
+    expect(md14).not.toMatch(/reprise (en )?(S|semaine )\d/i);
   });
 });

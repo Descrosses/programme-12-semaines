@@ -255,6 +255,24 @@ export interface ExerciseDef {
   measure?: 'cm' | 'kg' | 'reps' | 'm' | 's';
   /** Présent si l'exercice est piloté par le tableau §9 (ou la ligne RDL). */
   liftId?: MainLiftId;
+  /**
+   * Exercice retiré des séances SANS être retiré du catalogue.
+   *
+   * Supprimer la fiche effacerait l'historique — `id` est la clé de douze
+   * semaines de séries enregistrées. L'exercice reste donc là, visible, avec
+   * la raison de sa mise à l'écart ; il n'est simplement plus prescrit.
+   *
+   * Aucune date de reprise : une suspension pour douleur se lève sur des
+   * symptômes et un avis professionnel, pas sur un numéro de semaine.
+   */
+  suspended?: { reason: string };
+  /**
+   * Suivi de douleur attaché à cet exercice (§14).
+   *
+   * Le texte dit QUOI surveiller. Il ne dit jamais ce qu'est la douleur : ce
+   * n'est pas un diagnostic, et l'application n'en pose aucun.
+   */
+  painWatch?: string;
 }
 
 /** Un exercice tel qu'il apparaît réellement dans une séance donnée. */

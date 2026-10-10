@@ -18,6 +18,17 @@ const REGLE_EXPLOSIF =
   'devient lent, si la réception devient lourde, ou si tu ne te sens plus explosif — même s’il ' +
   'reste des séries écrites.';
 
+/**
+ * §14 — rappel de surveillance sur les mouvements qui chargent l'adducteur
+ * sans être douloureux à ce jour.
+ *
+ * Il ne modifie RIEN à la prescription : le programme ne supprime pas
+ * préventivement tout ce qui touche au bas du corps. Il dit seulement où
+ * regarder si la gêne se déplace.
+ */
+const SURVEILLANCE_ADDUCTEUR =
+  'Non douloureux à ce jour : programmation inchangée. Surveille l’adducteur gauche pendant la séance et le lendemain — si une gêne apparaît, réduis la charge ou l’amplitude avant de supprimer l’exercice.';
+
 function def(e: ExerciseDef): ExerciseDef {
   return e.explosive ? { ...e, cues: [...(e.cues ?? []), REGLE_EXPLOSIF] } : e;
 }
@@ -55,7 +66,11 @@ const LIST: ExerciseDef[] = [
     cues: [
       'Semaines 1-3 — tempo 3-0-X : descente 3 s.',
       'Semaines 5-7 — fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale, repos 4 min entiers.',
+      'Adducteur gauche : la charge du tableau est une référence, pas une obligation. Descends à l’amplitude tolérée, sans modifier ta technique pour contourner la gêne.',
+      'Une série peut être facile musculairement et mal tolérée par l’adducteur. Le RPE ne décide pas seul.',
+      'Si la gêne augmente pendant la séance : réduis la charge, ou arrête l’exercice. Ne force pas à travers.',
     ],
+    painWatch: 'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   def({
     id: 'bulgarian-split-squat',
@@ -64,7 +79,13 @@ const LIST: ExerciseDef[] = [
     role: 'accessory',
     measure: 'kg',
     intent: 'Tempo 3-1-X-0. Genou avant stable, buste légèrement penché.',
-    progressionRule: '8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.',
+    progressionRule:
+      '8 reps propres à RPE ≤ 7,5 ET adducteur bien toléré → +2 kg par haltère. La tolérance passe avant le RPE : pas de montée de charge sur une séance douloureuse, même facile.',
+    cues: [
+      'Adducteur gauche : reste dans l’amplitude confortable, surveille la stabilité du bassin.',
+      'Ne cherche pas la douleur. Si elle redevient importante, réduis la charge ou suspends l’exercice temporairement.',
+    ],
+    painWatch: 'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   def({
     id: 'rdl',
@@ -179,6 +200,9 @@ const LIST: ExerciseDef[] = [
     explosive: true,
     measure: 'cm',
     intent: 'Tiens la réception 2 s. Puissance dans le plan frontal.',
+    cues: [
+      'Aucune douleur signalée à l’adducteur sur ce mouvement, et la stabilité des réceptions s’est nettement améliorée : programmation inchangée. Surveille simplement l’apparition d’une gêne pendant ou après la séance.',
+    ],
   }),
   def({
     /*
@@ -263,6 +287,7 @@ const LIST: ExerciseDef[] = [
     progressionRule: '+2 kg quand les 25 m sont tenus sans ralentir.',
     cues: [
       'Ne pas confondre avec le Suitcase Carry du samedi : celui-là se porte d’un seul côté.',
+      SURVEILLANCE_ADDUCTEUR,
     ],
   }),
   def({
@@ -284,7 +309,8 @@ const LIST: ExerciseDef[] = [
     intent:
       'Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant décollage, barre contre les tibias, montée avec intention de vitesse maximale.',
     cues: [
-      'Ton 130 kg est très probablement sous-estimé : si la semaine 1 sort à RPE ≤ 6, applique la règle « trop facile » dès la semaine 2.',
+      'Le 130 estimé l’était : le combine initial a mesuré 140. Le tableau §9 est recalé dessus — c’est ton lift le plus fort, pas ton retard.',
+      SURVEILLANCE_ADDUCTEUR,
     ],
   }),
   def({
@@ -296,6 +322,7 @@ const LIST: ExerciseDef[] = [
     measure: 'kg',
     intent: 'Coudes hauts, buste vertical.',
     progressionRule: '+2,5 kg par semaine si le RPE est conforme.',
+    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'hip-thrust',
@@ -306,6 +333,7 @@ const LIST: ExerciseDef[] = [
     intent: '2 s de contraction en haut, menton rentré.',
     progressionRule: '+10 kg quand le RPE est ≤ 7.',
     altBasicFit: 'Machine hip thrust si présente, sinon banc + barre avec pad.',
+    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'nordic-curl',
@@ -322,6 +350,7 @@ const LIST: ExerciseDef[] = [
     role: 'accessory',
     measure: 'kg',
     intent: 'Lent, hanche carrée.',
+    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'copenhagen-plank',
@@ -329,6 +358,21 @@ const LIST: ExerciseDef[] = [
     fn: 'core',
     role: 'core',
     intent: 'Pied supérieur sur banc, monte et descends le bassin.',
+    /*
+     * Suspendu, pas supprimé. L'exercice met l'adducteur en tension maximale,
+     * c'est précisément ce qu'il entraîne — et c'est précisément ce qui fait
+     * mal aujourd'hui. Rien ne le remplace : le samedi garde le Suitcase
+     * Carry, et les six autres fonctions du tronc sont déjà couvertes cinq
+     * jours sur sept. Y substituer un exercice reviendrait à ajouter du
+     * volume pour combler un vide qui n'en est pas un.
+     *
+     * Pas de semaine de reprise écrite ici : elle dépend des symptômes et,
+     * idéalement, de l'avis d'un kiné du sport.
+     */
+    suspended: {
+      reason:
+        'Douleur adducteur gauche. Reprise non planifiée : elle dépendra de l’évolution des symptômes et de l’avis d’un kiné du sport.',
+    },
   }),
   def({
     id: 'suitcase-carry',
@@ -341,6 +385,7 @@ const LIST: ExerciseDef[] = [
     cues: [
       'C’est le déséquilibre qui fait travailler le tronc : le porter à deux mains supprime l’exercice.',
       'Ne pas confondre avec le Farmer Carry du vendredi : celui-là se porte à deux mains.',
+      SURVEILLANCE_ADDUCTEUR,
     ],
   }),
 
@@ -379,6 +424,50 @@ const LIST: ExerciseDef[] = [
     fn: 'core',
     role: 'core',
     intent: 'Rapide, pivote sur les hanches.',
+    cues: [
+      'Semaines 1-4 seulement. À partir de la semaine 5, la Landmine Rotation prend sa place en début de séance : même fonction, mais chargeable et expressible en vitesse.',
+    ],
+  }),
+  /*
+   * Landmine Rotation — le seul ajout du cycle, et il ne s'ajoute à rien.
+   *
+   * Il remplace le Cable Chop à partir de la semaine 5. Le nombre d'exercices
+   * du dimanche ne bouge pas, la durée non plus.
+   *
+   * Pourquoi lui : la rotation était la seule fonction du tronc sans
+   * expression en puissance. Le Cable Chop reste lent, n'est chiffré nulle
+   * part et ne change jamais entre l'accumulation et le bloc puissance, alors
+   * que tout le reste du programme y passe en contraste et en vitesse.
+   *
+   * Pourquoi en début de séance à partir de la S5 : une rotation rapide se
+   * juge sur sa vitesse, et une vitesse se mesure sur un tronc frais. En
+   * cinquième position derrière quatre exercices, on ne mesurait plus rien.
+   *
+   * Aucune charge écrite : elle démarre léger et se construit sur ce qui est
+   * réellement soulevé, comme le Hang High Pull. Imposer un kilo sur un geste
+   * que Guillaume découvre, c'est imposer une technique de compensation.
+   */
+  def({
+    id: 'landmine-rotation',
+    name: 'Landmine Rotation',
+    fn: 'core',
+    role: 'core',
+    measure: 'kg',
+    intent:
+      'Puissance rotatoire. La rotation part des appuis et des hanches, jamais du bas du dos : les pieds pivotent, le talon arrière décolle, le tronc suit le bassin.',
+    progressionRule:
+      'Augmente légèrement la charge seulement quand TOUTES les reps des deux côtés sortent propres et rapides. Pendant le bloc puissance (S9-11), la vitesse prime sur la charge : si elle baisse, la charge ne monte pas.',
+    altBasicFit:
+      'Barre olympique calée dans un coin avec une serviette, ou dans le manchon de landmine s’il y en a un. À défaut : câble en rotation horizontale, debout, même consigne d’appuis.',
+    cues: [
+      'Objectif : produire et contrôler la force dans le plan transversal, et la transmettre des appuis aux épaules.',
+      'Sollicite d’abord les obliques, le transverse et les fessiers ; les épaules et les bras ne font que tenir la barre.',
+      'Exécution : barre à deux mains devant le sternum, bras quasi tendus, pieds écartés largeur d’épaules. Arc horizontal d’un côté à l’autre en pivotant les deux pieds.',
+      'Retour contrôlé : la phase de retour n’est jamais lâchée, c’est elle qui protège le bas du dos.',
+      'Sécurité : charge légère au départ, zéro torsion lombaire. Si le bassin reste bloqué et que seul le buste tourne, la charge est trop lourde.',
+      'Arrête la série dès que la vitesse ou la technique se dégrade — même s’il reste des reps écrites.',
+      'Avant la première série : 6 pivots de hanche à vide par côté, puis une série d’approche barre nue.',
+    ],
   }),
   def({
     id: 'hanging-leg-raise',

@@ -8,10 +8,22 @@ Lundi, mercredi, vendredi : 60-70 min — Samedi, dimanche : 90 min — Mardi, j
 
 ## 1. Diagnostic et priorités
 
-- Bench 120 kg (1,54× PDC) et tractions +32 × 3 : haut du corps déjà fort → on l'entretient et on le fait progresser avec un volume raisonnable, pas 15 séries de dos par semaine.
-- Back Squat 140 kg (1,79× PDC) : bon, cible 150-155 kg.
-- Deadlift 130 kg (1,67× PDC) : **inférieur au squat, c'est l'anomalie principale.** La chaîne postérieure (ischios, fessiers, érecteurs, adducteurs) est en retard. Cible 150-155 kg. C'est la priorité n°1 parce que c'est le moteur du sprint et du saut.
+**Ce diagnostic est écrit sur les valeurs MESURÉES au combine initial.** La version d'avant le combine raisonnait sur des estimations, et deux d'entre elles étaient fausses dans des proportions qui renversaient la conclusion : le squat était estimé à 140 pour 110 réels, le deadlift à 130 pour 140 réels.
+
+| Lift | Estimation d'avant combine | Mesuré au combine | × PDC |
+|---|---|---|---|
+| Deadlift | 130 | **140** | 1,79 |
+| Bench | 120 | **115** | 1,47 |
+| Back Squat | 140 | **110** | 1,41 |
+| Tractions lestées | +42 | **+45** | — |
+
+- **Le deadlift n'est pas en retard sur le squat : c'est l'inverse.** 140 contre 110, soit 30 kg d'écart en faveur du deadlift. La chaîne postérieure n'est pas le maillon faible, et la phrase du programme initial qui l'affirmait était fondée sur une estimation erronée. Le samedi Posterior Chain reste au programme : c'est le moteur du sprint et du saut, et il progresse. Mais il n'est plus présenté comme un rattrapage.
+- **Le squat est le chiffre le plus bas du tableau, et on n'en tire aucune conclusion hâtive.** Il est actuellement limité par une douleur à l'adducteur gauche (§14), pas par un déficit de force des quadriceps : le squat au poids du corps est indolore, la gêne apparaît en bas et à la remontée sous charge. Tant que ce symptôme n'est pas levé, le 110 mesuré ne dit pas ce que vaut le squat — il dit ce que l'adducteur a laissé passer ce jour-là. Aucune réorientation du programme vers un « rattrapage quadriceps » n'est justifiée par cette valeur.
+- Bench 115 kg et tractions +45 : haut du corps déjà fort → on l'entretient et on le fait progresser avec un volume raisonnable, pas 15 séries de dos par semaine.
 - Puissance jamais entraînée de façon structurée → sauts et travail de vitesse présents dès la semaine 1, faible volume, priorité qualité.
+- Tronc : les six fonctions de stabilisation sont couvertes cinq jours sur sept. La seule qui manquait était la **puissance rotatoire**, corrigée à partir de la semaine 5 (§8).
+
+Cibles chiffrées : section 13. Elles sont toutes recalées sur les maxima mesurés.
 
 Ratio hebdomadaire retenu : **3 jours durs (lundi, mercredi, samedi) + 1 jour neuronal rapide (vendredi) + 1 jour modéré (dimanche).** Cinq séances RPE 8-9 avec ton métier et deux enfants = plafond garanti en semaine 5.
 
@@ -82,9 +94,11 @@ Tu arrêtes l'exercice quand : la distance ou la hauteur baisse d'environ 5 %, l
 
 **C. Back Squat — 5 × 5 × 77,5 kg** — RPE 7 — Repos 3 min 30
 Tempo 3-0-X : descente 3 s sur les semaines 1-3, remontée avec intention d'accélération maximale.
+**Adducteur gauche (§14)** : la charge du tableau est une référence, pas une obligation. Amplitude tolérée, aucune modification de technique pour contourner la gêne. Le RPE ne décide pas seul — une série peut être facile musculairement et mal tolérée.
 
 **D. Bulgarian Split Squat — 3 × 8/jambe, haltères 2 × 18 kg** — RPE 7-8 — Repos 90 s — Tempo 3-1-X-0.
-Progression : 8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.
+Progression : 8 reps propres à RPE ≤ 7,5 **et adducteur bien toléré** → +2 kg par haltère. La tolérance passe avant le RPE : pas de montée de charge sur une séance douloureuse, même facile.
+**Adducteur gauche (§14)** : amplitude confortable uniquement, bassin stable. Si la douleur redevient importante, réduire ou suspendre temporairement.
 
 **E. Romanian Deadlift — 3 × 8 × 80 kg** — RPE 7 — Repos 2 min 30 — Tempo 3-1-X-1
 Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lombaire. S2 : 85 kg, S3 : 90 kg si RPE conforme.
@@ -155,7 +169,9 @@ Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant déco
 
 **F. Single-Leg RDL haltère — 3 × 8/côté × 20 kg** — Repos 60 s — Lent, hanche carrée.
 
-**G. Copenhagen Plank dynamique — 3 × 8/côté** — Repos 60 s — Pied supérieur sur banc, monte et descends le bassin.
+**G. Copenhagen Plank dynamique — SUSPENDU TEMPORAIREMENT** — douleur adducteur gauche (§14).
+Prescription d'origine, conservée pour mémoire : 3 × 8/côté, repos 60 s, pied supérieur sur banc, monte et descends le bassin.
+**Rien ne le remplace.** Le samedi garde le Suitcase Carry, et l'anti-flexion latérale reste couverte. Reprise non planifiée : elle dépendra de l'évolution des symptômes et de l'avis d'un kiné du sport, pas d'un numéro de semaine.
 
 **H. Suitcase Carry — 3 × 30 m/côté, 32 kg** — Repos 60 s — **UNE SEULE haltère, comme une valise**, puis l'autre côté. Zéro inclinaison : c'est le déséquilibre qui fait travailler le tronc, le porter à deux mains supprime l'exercice. À ne pas confondre avec le Farmer Carry du vendredi, qui se porte à deux mains.
 
@@ -174,6 +190,7 @@ Pas de gros travail excentrique jambes.
 **D. Landmine Press debout — 3 × 8/côté** — Repos 75 s — Transfert jambes → tronc → bras.
 
 **E. Cable Chop haut → bas — 3 × 8/côté** — Repos 60 s — Rapide, pivote sur les hanches.
+**Semaines 1 à 4 seulement.** À partir de la semaine 5, la Landmine Rotation prend sa place et passe en tête de séance (§8). Le nombre d'exercices du dimanche ne change pas.
 
 **F. Hanging Leg Raise strict — 3 × 8-12** — Repos 60 s — Rétroversion du bassin.
 
@@ -193,6 +210,22 @@ Pas de gros travail excentrique jambes.
 - Zéro série au-dessus de RPE 6
 - Semaine 8 : combine intermédiaire samedi + dimanche (section 11), les lifts restent à 70 %
 
+**Tronc et portés — ils déloadent eux aussi.** Ils gardaient jusqu'ici leur volume complet en semaine 4 et 8, ce qui vidait le deload d'une partie de son sens : un dimanche de deload sortait avec 3 × 8/côté de chop, 3 × 8-12 de leg raise et 3 × 20 m de bear crawl, exactement comme une semaine pleine. Réduction appliquée une seule fois, jamais cumulée avec une autre :
+
+| Exercice | Habituel | Deload |
+|---|---|---|
+| Ab Wheel | 3 × 8 | 2 × 6 |
+| Pallof Press Step-Out | 3 × 6/côté | 2 × 5/côté |
+| Dead Bug câble | 3 × 6/côté | 2 × 5/côté |
+| Cable Chop | 3 × 8/côté | 2 × 6/côté |
+| Hanging Leg Raise | 3 × 8-12 | 2 × 6 |
+| Bear Crawl | 3 × 20 m | 2 × 15 m |
+| Farmer Carry | 4 × 25 m | 2 × 20 m, −20 % |
+| Suitcase Carry | 3 × 30 m/côté | 2 × 20 m/côté, −20 % |
+
+Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
+Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
+
 ### Semaines 5-7 — Force maximale
 - Squat, Bench, Deadlift, Tractions : 5 × 3 → 4 × 3 → 4 × 2 à 82-90 %
 - Repos : **4 min** squat/deadlift, **3 min 30** bench/tractions
@@ -203,10 +236,34 @@ Pas de gros travail excentrique jambes.
 - Front Squat 4 × 5 → 4 × 4
 - Hip Thrust 4 × 6 RPE 8, repos 2 min
 - Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %
+- **Dimanche : la Landmine Rotation remplace le Cable Chop et ouvre la séance.** 3 × 5/côté, repos 75 s, charge légère autorégulée. S5 apprentissage technique, S6 accélération contrôlée, S7 progression technique. Le nombre d'exercices du dimanche ne change pas.
 - Hang High Pull 4 × 3, repos 2 min
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30
 - Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
+
+### Landmine Rotation — la progression complète
+
+Seul ajout du cycle, et il ne s'ajoute à rien : il remplace le Cable Chop du dimanche. La rotation était la seule fonction du tronc sans expression en puissance — le chop reste lent, n'est chiffré nulle part et ne changeait jamais d'un bloc à l'autre.
+
+| Semaines | Prescription | Intention |
+|---|---|---|
+| 1-3 | Cable Chop 3 × 8/côté | Programme historique inchangé |
+| 4 | Cable Chop 2 × 6/côté | Deload, aucun exercice nouveau |
+| 5 | Landmine Rotation 3 × 5/côté | Apprentissage technique |
+| 6 | Landmine Rotation 3 × 5/côté | Accélération contrôlée |
+| 7 | Landmine Rotation 3 × 5/côté | Progression technique |
+| 8 | Landmine Rotation 2 × 4/côté | Deload (dimanche du combine intermédiaire) |
+| 9-11 | Landmine Rotation 3 × 4/côté | Rotation explosive |
+| 12 | — | Semaine de tests, pas de rotation |
+
+**Placement** : en tête de séance du dimanche à partir de la S5. Une rotation rapide se juge sur sa vitesse, et une vitesse se mesure sur un tronc frais ; en cinquième position derrière quatre exercices, on ne mesurait plus rien. Échauffement : 6 pivots de hanche à vide par côté, puis une série d'approche barre nue.
+
+**Repos** : 75 s en S5-8, 90 s en S9-11.
+
+**Charge** : aucune valeur imposée. Départ léger, puis on construit sur ce qui est réellement soulevé, comme le Hang High Pull. Monter la charge seulement quand toutes les reps des deux côtés sortent propres et rapides. En bloc puissance, la vitesse prime : si elle baisse, la charge ne monte pas.
+
+**Sécurité** : la rotation part des appuis et des hanches, jamais du bas du dos. Les pieds pivotent, le talon arrière décolle, le retour est contrôlé. Si le bassin reste bloqué et que seul le buste tourne, la charge est trop lourde. Arrêt de la série dès que la vitesse ou la technique se dégrade, même s'il reste des reps écrites.
 
 ### Semaines 9-11 — Conversion force → puissance (contraste)
 Principe : série lourde → repos → mouvement explosif → repos → série lourde suivante. C'est du contraste, pas un superset.
@@ -215,7 +272,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5.
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 **Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, Copenhagen 3 × 5, Suitcase 3 × 20 m.
-**Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine 2 × 8, chop 3 × 6, leg raise 3 × 8, bear crawl 3 × 15 m. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
+**Dimanche** : **Landmine Rotation 3 × 4/côté explosif en ouverture** (repos 90 s, reset 5-10 s entre les reps, la série s'arrête dès que la vitesse baisse — §5), puis Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, leg raise 3 × 8, bear crawl 3 × 15 m. Plus de Cable Chop : la rotation l'a remplacé depuis la semaine 5. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
 - **Lundi** : Box Jump 3 × 2, Squat 3 × 2 × 77,5 kg RPE 5-6, Bulgarian 2 × 5 léger, Ab Wheel 2 × 6. Terminé.
@@ -292,7 +349,9 @@ Chronomètre. Un repos raccourci sur un lift lourd transforme la force en fatigu
 
 **Cas 7 — performances explosives en baisse deux semaines de suite** (broad jump, box jump, vitesse de barre) → lifts principaux à 3 séries, suppression du conditioning. Si ça persiste 10 jours : deload anticipé.
 
-Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première.
+**Cas 8 — douleur localisée sur un mouvement** (aujourd'hui : adducteur gauche, §14) → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
+
+Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement surveillé, la tolérance passe avant le RPE.
 
 ---
 
@@ -348,3 +407,41 @@ Les départs sont ceux du **combine initial**, pas les estimations d'avant test.
 **Le vrai critère** : l'écart deadlift − squat. S'il devient nul ou positif, la chaîne postérieure a rattrapé son retard. Si les 1RM montent mais que les sauts stagnent, le programme n'a produit que de la force : demi-échec, le bloc suivant sera orienté vitesse.
 
 **Signaux d'alerte** : sauts en baisse deux semaines de suite → section 11 cas 7. Douleur articulaire (pas musculaire) qui dure plus de 48 h → retire l'exercice, ne pousse pas à travers. Sommeil dégradé + motivation basse + charges qui stagnent → deload anticipé.
+
+---
+
+## 14. Adducteur gauche — adaptation et suivi
+
+**Ceci n'est pas un diagnostic.** Aucune structure blessée n'a été identifiée médicalement. Le programme ne nomme rien, ne conclut rien, et un bilan auprès d'un kiné du sport reste recommandé. La diminution progressive des symptômes n'est pas une guérison confirmée.
+
+### Ce qui est observé
+
+Gêne à l'intérieur de la cuisse gauche, près de l'aine, présente depuis environ cinq semaines et probablement antérieure au début du programme. Elle apparaît en bas du squat chargé, pendant la remontée, lors d'un effort important, et quand les genoux sont serrés fortement l'un contre l'autre. Le squat au poids du corps est indolore. La force produite augmente par rapport au début.
+
+### Trois statuts, pas un seul
+
+| Statut | Exercices | Ce que ça change |
+|---|---|---|
+| **Maintenu, adapté** | Back Squat, Bulgarian Split Squat | Charge et amplitude tolérées. Les valeurs du tableau §9 restent des références théoriques, pas des obligations. La tolérance passe avant le RPE. |
+| **Maintenu, surveillé** | Front Squat, Deadlift, Single-Leg RDL, Hip Thrust, Farmer Carry, Suitcase Carry, Lateral Bound | Programmation inchangée — rien n'est supprimé préventivement. Surveiller l'apparition d'une gêne pendant la séance et le lendemain. |
+| **Suspendu** | Copenhagen Plank dynamique | Retiré des séances, conservé au catalogue avec sa raison. Aucun remplacement : l'anti-flexion latérale reste couverte par le Suitcase Carry. |
+
+Le Lateral Bound est explicitement maintenu sans modification : il ne provoque aucune douleur et la stabilité des réceptions s'est nettement améliorée.
+
+### Reprise du Copenhagen Plank
+
+Aucune semaine de reprise n'est écrite, et c'est volontaire. Une suspension pour douleur se lève sur des symptômes et un avis professionnel, pas sur un numéro de semaine. Fixer d'avance une semaine de retour reviendrait à promettre une évolution que personne ne peut prévoir.
+
+### Ce qui est noté, séance par séance
+
+Sur le Back Squat et le Bulgarian Split Squat, l'application ouvre un bloc de suivi :
+
+- douleur **pendant** l'exercice, de 0 à 10 ;
+- douleur **après** la séance, de 0 à 10 ;
+- douleur **le lendemain**, de 0 à 10 ;
+- **charge réellement tolérée** ;
+- **amplitude tolérée** : complète, partielle ou réduite.
+
+Les trois moments sont séparés parce qu'ils ne disent pas la même chose : une gêne qui disparaît en sortant de la salle n'est pas une gêne qu'on retrouve au réveil. Le champ du lendemain se remplit en rouvrant la séance de la veille depuis l'onglet Semaine.
+
+Ces notes sont de la matière à regarder, pas un pilote : aucune règle de l'application ne les lit pour modifier une charge automatiquement. La décision reste celle de Guillaume, et le cas 8 du §11 dit comment la prendre.

@@ -209,6 +209,30 @@ export function SessionScreen({
         />
       ))}
 
+      {/*
+        Exercices suspendus — affichés, jamais prescrits.
+        Les faire disparaître sans un mot laisserait croire à un oubli, et la
+        raison est précisément ce qu'il faut relire pour décider de la reprise.
+      */}
+      {session.suspended.map((sus) => {
+        // Les séries déjà faites sur cet exercice ce jour-là. Une suspension
+        // retire la prescription, jamais l'historique : le dire ici évite de
+        // croire que les semaines passées ont été réécrites.
+        const faites = data.savedSets[sus.id]?.length ?? 0;
+        return (
+          <section key={sus.id} className={styles.suspendu}>
+            <div className={styles.suspenduTitre}>{sus.name} — suspendu temporairement</div>
+            <p className={styles.suspenduRaison}>{sus.reason}</p>
+            {faites > 0 && (
+              <p className={styles.suspenduRaison}>
+                {faites} série{faites > 1 ? 's' : ''} enregistrée{faites > 1 ? 's' : ''} ce jour-là :
+                elles restent dans ton historique et dans l’export.
+              </p>
+            )}
+          </section>
+        );
+      })}
+
       <section className={styles.notes}>
         <label htmlFor="session-notes" className={styles.exName}>
           Notes — douleur, sommeil, remarque

@@ -91,7 +91,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       setRow(await getSettingsRow());
       onChanged();
       setMessage({
-        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
+        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées, ${report.painLog} notes de douleur. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
         kind: 'ok',
       });
     } catch (e) {

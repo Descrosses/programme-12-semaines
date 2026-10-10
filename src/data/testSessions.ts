@@ -342,7 +342,21 @@ const COMBINE_S8_DIMANCHE: SessionBlueprint = {
     t('test-leg-raise-max', maxSet(), 0),
     { exId: 'incline-db-press', sets: 2, work: reps(8), load: dbPair(24), targetRPE: rpe(6), restSec: 90 },
     { exId: 'one-arm-cable-row', sets: 2, work: reps(10, true), load: noLoad(), targetRPE: rpe(6), restSec: 75 },
-    { exId: 'cable-chop', sets: 2, work: reps(6, true), load: noLoad(), targetRPE: rpe(6), restSec: 60 },
+    /*
+     * Semaine 8 : la Landmine Rotation est déjà en place depuis la semaine 5,
+     * elle remplace donc le chop ici aussi — en version deload, 2 × 4/côté.
+     * C'est le seul dimanche de deload où elle apparaît : celui de la
+     * semaine 4 précède son introduction et garde le Cable Chop.
+     */
+    {
+      exId: 'landmine-rotation',
+      sets: 2,
+      work: reps(4, true),
+      load: noLoad(),
+      targetRPE: rpe(6),
+      restSec: 75,
+      note: 'Deload : charge allégée, vitesse conservée, aucune série à l’échec.',
+    },
   ],
 };
 

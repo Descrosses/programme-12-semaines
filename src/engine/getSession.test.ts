@@ -386,7 +386,14 @@ describe('readiness ROUGE', () => {
 
   it('il ne reste que le lift principal, le tronc et la mobilité', () => {
     expect(ids(session(5, 0, rouge).exercises)).toEqual(['back-squat', 'ab-wheel']);
-    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift', 'copenhagen-plank']);
+    /*
+     * Le samedi ne garde plus que le deadlift : son seul autre exercice de
+     * tronc était le Copenhagen Plank, suspendu pour douleur à l'adducteur.
+     * Une suspension passe avant le feu tricolore — un jour rouge ne remet
+     * pas en service un exercice qui fait mal.
+     */
+    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift']);
+    expect(session(5, 5, rouge).suspended.map((x) => x.id)).toEqual(['copenhagen-plank']);
   });
 
   it('aucun mouvement explosif ne survit', () => {

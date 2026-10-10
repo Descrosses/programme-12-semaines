@@ -24,6 +24,7 @@ import {
   type ExerciseVideoLogRow,
   type FoodOverrideRow,
   type MeasurementRow,
+  type PainLogRow,
   type ProgressPhotoRow,
   type ReadinessRow,
   type SessionRow,
@@ -747,4 +748,71 @@ export async function setDayKindOverride(
   }
   if (existing?.id !== undefined) await db.dayKind.update(existing.id, { kind });
   else await db.dayKind.add({ date, kind } as DayKindRow);
+}
+
+// --------------------------------------------------- suivi de douleur (§14) --
+
+/**
+ * Les lignes de suivi d'une journée, par exercice.
+ *
+ * Une `Map` et non une liste : l'écran pose toujours la question exercice par
+ * exercice — « celui-là, qu'est-ce que j'avais noté ? ».
+ */
+export async function painLogOn(date: string): Promise<Map<string, PainLogRow>> {
+  const rows = await db.painLog.where('date').equals(date).toArray();
+  return new Map(rows.map((r) => [r.exId, r]));
+}
+
+/** L'historique d'un exercice, de la note la plus ancienne à la plus récente. */
+export async function painLogFor(exId: string): Promise<PainLogRow[]> {
+  const rows = await db.painLog.where('exId').equals(exId).toArray();
+  return rows.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export async function allPainLogs(): Promise<PainLogRow[]> {
+  return db.painLog.orderBy('date').toArray();
+}
+
+/**
+ * Écrit ou corrige la note du jour pour un exercice.
+ *
+ * Une ligne entièrement vide est SUPPRIMÉE plutôt que gardée à zéro : « rien
+ * noté » et « zéro douleur » ne disent pas la même chose, et laisser traîner
+ * des lignes vides ferait mentir la courbe.
+ */
+export async function savePain(
+  date: string,
+  exId: string,
+  patch: Partial<Omit<PainLogRow, 'id' | 'date' | 'exId'>>,
+): Promise<PainLogRow | null> {
+  const existing = await db.painLog.where('[date+exId]').equals([date, exId]).first();
+  const next: PainLogRow = {
+    date,
+    exId,
+    during: null,
+    after: null,
+    nextDay: null,
+    toleratedKg: null,
+    rom: null,
+    ...existing,
+    ...patch,
+  };
+
+  const vide =
+    next.during === null &&
+    next.after === null &&
+    next.nextDay === null &&
+    next.toleratedKg === null &&
+    next.rom === null;
+
+  if (vide) {
+    if (existing?.id !== undefined) await db.painLog.delete(existing.id);
+    return null;
+  }
+  if (existing?.id !== undefined) {
+    await db.painLog.put({ ...next, id: existing.id });
+    return { ...next, id: existing.id };
+  }
+  const id = await db.painLog.add(next);
+  return { ...next, id };
 }

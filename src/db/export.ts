@@ -11,6 +11,7 @@ import {
   type CombineRow,
   type ExerciseVideoLogRow,
   type MeasurementRow,
+  type PainLogRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
@@ -33,6 +34,8 @@ export interface ExportFile {
   measurements?: MeasurementRow[];
   /** Traces de vidéo — quelques octets chacune, elles restent ici. */
   videoLog?: ExerciseVideoLogRow[];
+  /** Suivi de douleur (§14). Absent des exports antérieurs : toujours optionnel. */
+  painLog?: PainLogRow[];
   /**
    * Toujours `false`. Les photos ont leur propre fichier : voir
    * `exportPhotos()` et le commentaire qui l'accompagne.
@@ -81,7 +84,7 @@ export interface PhotoExportFile {
 }
 
 export async function exportAll(): Promise<ExportFile> {
-  const [settings, sessions, sets, readiness, combines, measurements, videoLog] =
+  const [settings, sessions, sets, readiness, combines, measurements, videoLog, painLog] =
     await Promise.all([
       db.settings.get(1),
       db.sessions.toArray(),
@@ -90,6 +93,7 @@ export async function exportAll(): Promise<ExportFile> {
       db.combines.toArray(),
       db.measurements.toArray(),
       db.exerciseVideoLog.toArray(),
+      db.painLog.toArray(),
     ]);
 
   return {
@@ -103,6 +107,7 @@ export async function exportAll(): Promise<ExportFile> {
     combines,
     measurements,
     videoLog,
+    painLog,
     photosIncluded: false,
   };
 }
@@ -197,6 +202,7 @@ export interface ImportReport {
   combines: number;
   measurements: number;
   videoLog: number;
+  painLog: number;
   settings: boolean;
 }
 
@@ -331,6 +337,7 @@ export function parseExport(text: string): ExportFile {
     // une erreur — il reste parfaitement réimportable.
     measurements: f.measurements ?? [],
     videoLog: f.videoLog ?? [],
+    painLog: f.painLog ?? [],
     photosIncluded: false,
   };
 }
@@ -353,10 +360,12 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.combines,
       db.measurements,
       db.exerciseVideoLog,
+      db.painLog,
     ],
     async () => {
       const measurements = file.measurements ?? [];
       const videoLog = file.videoLog ?? [];
+      const painLog = file.painLog ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
@@ -364,6 +373,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.combines.clear(),
         db.measurements.clear(),
         db.exerciseVideoLog.clear(),
+        db.painLog.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
@@ -372,6 +382,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       await db.combines.bulkAdd(file.combines);
       await db.measurements.bulkAdd(measurements);
       await db.exerciseVideoLog.bulkAdd(videoLog);
+      await db.painLog.bulkAdd(painLog);
 
       return {
         sessions: file.sessions.length,
@@ -380,6 +391,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         combines: file.combines.length,
         measurements: measurements.length,
         videoLog: videoLog.length,
+        painLog: painLog.length,
         settings: file.settings !== null,
       };
     },
@@ -390,7 +402,15 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
 export async function resetHistory(): Promise<void> {
   await db.transaction(
     'rw',
-    [db.sessions, db.sets, db.readiness, db.combines, db.measurements, db.exerciseVideoLog],
+    [
+      db.sessions,
+      db.sets,
+      db.readiness,
+      db.combines,
+      db.measurements,
+      db.exerciseVideoLog,
+      db.painLog,
+    ],
     async () => {
       await Promise.all([
         db.sessions.clear(),
@@ -399,6 +419,7 @@ export async function resetHistory(): Promise<void> {
         db.combines.clear(),
         db.measurements.clear(),
         db.exerciseVideoLog.clear(),
+        db.painLog.clear(),
       ]);
     },
   );
