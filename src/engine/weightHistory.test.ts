@@ -10,14 +10,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   fenetre,
-  filtrerPeriode,
   PERIODES,
   resumePoids,
   semainesDuProgramme,
   serieMoyenne,
   serieTaille,
   troncons,
-  type Periode,
 } from './weightHistory';
 import { weeklyAverages, weightTrend, windowAverage, type Measurement } from './nutrition';
 import { addDays } from './calendar';
@@ -182,21 +180,23 @@ describe('les trous ne sont pas comblés', () => {
 });
 
 describe('le sélecteur de période', () => {
-  const e = Array.from({ length: 100 }, (_, i) => p(addDays(DEBUT, i), 77 + i * 0.02));
-  const aujourdhui = addDays(DEBUT, 99);
-  const nb = (periode: Periode) => filtrerPeriode(e, aujourdhui, periode).length;
+  /** Le nombre de jours que le cadre couvre, bornes incluses. */
+  const jours = (f: { debut: string; fin: string }) => serieMoyenne([], f.debut, f.fin).length;
+
+  // Programme commencé il y a longtemps : les bornes ne mordent pas dessus.
+  const vieux = addDays(DEBUT, 99);
 
   it('4 semaines rend 28 jours', () => {
-    expect(nb('4s')).toBe(29); // bornes incluses
-    expect(filtrerPeriode(e, aujourdhui, '4s')[0]!.date).toBe(addDays(aujourdhui, -28));
+    expect(jours(fenetre('4s', vieux, [], DEBUT))).toBe(28);
   });
 
   it('12 semaines rend 84 jours', () => {
-    expect(nb('12s')).toBe(85);
+    expect(jours(fenetre('12s', vieux, [], DEBUT))).toBe(84);
   });
 
   it('« Tout » ne coupe rien', () => {
-    expect(nb('tout')).toBe(100);
+    const e = Array.from({ length: 100 }, (_, i) => p(addDays(DEBUT, i), 77 + i * 0.02));
+    expect(jours(fenetre('tout', vieux, e, DEBUT))).toBe(100);
   });
 
   /*
@@ -205,27 +205,58 @@ describe('le sélecteur de période', () => {
    * seul point de départ disponible.
    */
   it('« Tout » garde les pesées d’avant le programme', () => {
-    const avant = [p(addDays(DEBUT, -30), 76), ...e];
-    expect(filtrerPeriode(avant, aujourdhui, 'tout')[0]!.date).toBe(addDays(DEBUT, -30));
-    expect(filtrerPeriode(avant, aujourdhui, '12s')[0]!.date).not.toBe(addDays(DEBUT, -30));
-  });
-
-  it('les pesées sortent triées, quelle que soit l’entrée', () => {
-    const melange = [p(addDays(DEBUT, 5), 78), p(DEBUT, 77), p(addDays(DEBUT, 2), 77.5)];
-    expect(filtrerPeriode(melange, addDays(DEBUT, 5), 'tout').map((x) => x.date)).toEqual([
-      DEBUT,
-      addDays(DEBUT, 2),
-      addDays(DEBUT, 5),
-    ]);
-  });
-
-  it('une pesée future n’entre dans aucune fenêtre bornée', () => {
-    const avec = [...e, p(addDays(aujourdhui, 3), 99)];
-    expect(filtrerPeriode(avec, aujourdhui, '4s').some((x) => x.weightKg === 99)).toBe(false);
+    const avant = [p(addDays(DEBUT, -30), 76), p(DEBUT, 77)];
+    expect(fenetre('tout', vieux, avant, DEBUT).debut).toBe(addDays(DEBUT, -30));
+    expect(fenetre('12s', vieux, avant, DEBUT).debut).not.toBe(addDays(DEBUT, -30));
   });
 
   it('les trois périodes sont bien celles du sélecteur', () => {
     expect(PERIODES.map((x) => x.cle)).toEqual(['4s', '12s', 'tout']);
+  });
+});
+
+/*
+ * Le défaut que ces tests auraient attrapé : pendant le premier mois, « 12
+ * semaines » remontait deux mois avant le combine. La moitié gauche du
+ * graphique était vide et la courbe réelle se tassait à droite.
+ */
+describe('aucune période bornée ne remonte avant le combine', () => {
+  it('12 semaines s’arrête au combine quand le programme a un mois', () => {
+    const jour = addDays(DEBUT, 30);
+    expect(fenetre('12s', jour, [], DEBUT)).toEqual({ debut: DEBUT, fin: jour });
+  });
+
+  it('4 semaines aussi, quand le programme a dix jours', () => {
+    const jour = addDays(DEBUT, 10);
+    expect(fenetre('4s', jour, [], DEBUT)).toEqual({ debut: DEBUT, fin: jour });
+  });
+
+  it('au tout début, les deux boutons bornés montrent la même chose', () => {
+    const jour = addDays(DEBUT, 3);
+    expect(fenetre('4s', jour, [], DEBUT)).toEqual(fenetre('12s', jour, [], DEBUT));
+  });
+
+  it('passé douze semaines, la borne ne mord plus : 84 jours pleins', () => {
+    const jour = addDays(DEBUT, 120);
+    expect(fenetre('12s', jour, [], DEBUT).debut).toBe(addDays(jour, -83));
+  });
+
+  it('une pesée d’avant le combine ne tire PAS le cadre borné en arrière', () => {
+    const jour = addDays(DEBUT, 20);
+    const e = [p(addDays(DEBUT, -50), 75), p(DEBUT, 77)];
+    expect(fenetre('12s', jour, e, DEBUT).debut).toBe(DEBUT);
+  });
+
+  it('sans date de début, la borne reste celle de la période', () => {
+    const jour = addDays(DEBUT, 10);
+    expect(fenetre('12s', jour, [], null).debut).toBe(addDays(jour, -83));
+  });
+
+  it('une date de début dans le futur ne retourne pas le cadre', () => {
+    const jour = addDays(DEBUT, -5); // le programme n'a pas encore commencé
+    const f = fenetre('4s', jour, [], DEBUT);
+    expect(f.debut <= f.fin).toBe(true);
+    expect(f.debut).toBe(addDays(jour, -27));
   });
 });
 
