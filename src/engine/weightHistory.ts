@@ -33,24 +33,6 @@ export const PERIODES: { cle: Periode; label: string; semaines: number | null }[
   { cle: 'tout', label: 'Tout', semaines: null },
 ];
 
-/**
- * Les pesées de la période, triées par date.
- *
- * « Tout » ne coupe rien, pas même ce qui précède le début du programme : une
- * pesée faite avant la semaine 1 reste une mesure du même corps.
- */
-export function filtrerPeriode(
-  entries: Measurement[],
-  todayIso: string,
-  periode: Periode,
-): Measurement[] {
-  const triees = [...entries].sort((a, b) => a.date.localeCompare(b.date));
-  const semaines = PERIODES.find((p) => p.cle === periode)?.semaines ?? null;
-  if (semaines === null) return triees;
-  const debut = addDays(todayIso, -semaines * 7);
-  return triees.filter((e) => e.date >= debut && e.date <= todayIso);
-}
-
 /** Un point de la courbe : une date, et la moyenne qui s'y termine. */
 export interface PointMoyenne {
   date: string;
@@ -179,13 +161,22 @@ export interface Fenetre {
 /**
  * L'axe du temps du graphique.
  *
- * Il est calculé à part du filtrage des pesées parce que les deux ne répondent
- * pas à la même question : `filtrerPeriode` dit quels points tracer, `fenetre`
- * dit jusqu'où va le cadre. Un cadre qui s'arrêterait à la dernière pesée
- * laisserait croire que le programme s'arrête là.
+ * Un cadre qui s'arrêterait à la dernière pesée laisserait croire que le
+ * programme s'arrête là : il va toujours jusqu'à aujourd'hui.
  *
- * « Tout » part de la plus ancienne des deux dates — début du programme ou
- * première pesée — pour qu'une pesée d'avant la semaine 1 reste visible.
+ * ── Le cadre ne remonte jamais avant le combine ────────────────────────────
+ *
+ * « 4 semaines » et « 12 semaines » sont bornées par le début du programme.
+ * Pendant le premier mois, douze semaines en arrière tombent deux mois avant
+ * le combine : le graphique passait alors la moitié de sa largeur sur du vide,
+ * et la courbe réelle se tassait dans le tiers droit.
+ *
+ * Conséquence assumée : au tout début du programme, les deux boutons bornés
+ * montrent la même chose. C'est juste — il n'existe rien d'autre à montrer.
+ *
+ * « Tout » reste la seule vue sans borne gauche : elle part de la plus
+ * ancienne des deux dates, début du programme ou première pesée, pour qu'une
+ * pesée d'avant la semaine 1 reste visible.
  */
 export function fenetre(
   periode: Periode,
@@ -201,7 +192,11 @@ export function fenetre(
 
   if (semaines !== null) {
     // −27 et non −28 : quatre semaines font vingt-huit jours bornes incluses.
-    return { debut: addDays(todayIso, -(semaines * 7 - 1)), fin };
+    const recule = addDays(todayIso, -(semaines * 7 - 1));
+    // Une date de début dans le futur — programme pas encore commencé — ne
+    // doit pas renvoyer un cadre à l'envers : on la laisse de côté.
+    const borne = startDate && startDate <= todayIso && startDate > recule;
+    return { debut: borne ? startDate! : recule, fin };
   }
   const candidats = [dates[0], startDate || null].filter((d): d is string => !!d);
   const debut = candidats.length > 0 ? candidats.sort()[0]! : todayIso;
