@@ -1,0 +1,123 @@
+/*
+ * Suivi de douleur. Replié par défaut : il ne doit pas pousser les séries vers
+ * le bas de l'écran les jours où il n'y a rien à noter.
+ */
+
+.bloc {
+  margin: 10px var(--pad) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.entete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  text-align: left;
+}
+
+.titre {
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.resume {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  color: var(--ink-3);
+  font-size: 0.75rem;
+}
+
+.corps {
+  padding: 0 12px 12px;
+}
+
+.consigne {
+  margin: 0 0 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.curseurs {
+  display: grid;
+  gap: 8px;
+}
+
+.amplitude {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.amplitudeLabel {
+  width: 100%;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+}
+
+.chip {
+  flex: 1;
+  min-width: 0;
+  height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.chipOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.aide {
+  margin: 10px 0 0;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+}
+
+.historique {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+
+.historiqueTitre {
+  width: 100%;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+}
+
+.ligne {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.avertissement {
+  margin: 10px 0 0;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}

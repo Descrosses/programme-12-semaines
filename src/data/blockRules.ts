@@ -7,6 +7,7 @@
  */
 
 import {
+  autoreg,
   meters,
   noLoad,
   reps,
@@ -75,11 +76,48 @@ export const DELOAD_POLICY = {
   maxRPE: 6,
   /** « Aucun Nordic difficile, aucun conditioning ». */
   removeExIds: ['nordic-curl', 'conditioning', 'zone2-bike'],
+  /**
+   * Tronc et portés : séries de repli quand l'exercice n'est pas dans
+   * `DELOAD_CORE`. Deux séries, comme les accessoires.
+   */
+  coreSets: 2,
+  /** « Réduire les charges des carries si nécessaire » — même −20 % que les accessoires. */
+  carryLoadFactor: 0.8,
   notes: [
     'Deload : 2 séries sur les accessoires à −20 %, volume de sauts divisé par 2 (intention maximale conservée), zéro série au-dessus de RPE 6.',
+    'Tronc et portés allégés eux aussi : moins de séries, moins de reps, aucune série menée à l’échec.',
     'Aucun Nordic difficile, aucun conditioning.',
   ],
 } as const;
+
+/**
+ * Deload du tronc et des portés, exercice par exercice.
+ *
+ * ── Pourquoi une table et pas une formule ──────────────────────────────────
+ *
+ * Le défaut corrigé ici : `role: 'core'` et `role: 'carry'` ne tombaient dans
+ * aucune branche du deload. Un dimanche de semaine 4 gardait ses 3 × 8/côté de
+ * chop, ses 3 × 8-12 de leg raise et ses 3 × 20 m de bear crawl — volume
+ * complet, dans la semaine censée dissiper la fatigue.
+ *
+ * Une formule « −30 % de reps » aurait donné des chiffres impraticables
+ * (8-12 reps → 6-9) pour une table qui tient en dix lignes. Les valeurs
+ * ci-dessous sont celles décidées avec Guillaume, lisibles telles quelles.
+ *
+ * Réduction appliquée UNE SEULE FOIS : ces exercices ne passent par aucune
+ * autre branche du deload, et aucune règle de bloc ne les patche en semaine
+ * 4 ou 8.
+ */
+export const DELOAD_CORE: Readonly<Record<string, { sets: number; work: Work }>> = {
+  'ab-wheel': { sets: 2, work: reps(6) },
+  'pallof-press': { sets: 2, work: reps(5, true) },
+  'dead-bug-cable': { sets: 2, work: reps(5, true) },
+  'cable-chop': { sets: 2, work: reps(6, true) },
+  'hanging-leg-raise': { sets: 2, work: reps(6) },
+  'bear-crawl': { sets: 2, work: meters(15) },
+  'farmer-carry': { sets: 2, work: meters(20) },
+  'suitcase-carry': { sets: 2, work: meters(20, true) },
+};
 
 // ---------------------------------------------------------------------------
 // Semaines 5-7 — Force maximale (§8)
@@ -135,14 +173,38 @@ const MAXFORCE: BlockRuleSet[] = [
   {
     block: 'maxforce',
     day: 6,
-    notes: ['Dimanche : tout à 3 séries.'],
+    notes: [
+      'Dimanche : tout à 3 séries.',
+      'La Landmine Rotation ouvre la séance : une rotation rapide se juge sur un tronc frais. 6 pivots de hanche à vide par côté, une série d’approche barre nue, puis la première série.',
+    ],
     rules: [
+      /*
+       * Le remplacement du Cable Chop, semaines 5 à 7.
+       *
+       * Le chop sort, la rotation entre EN TÊTE de séance : le nombre
+       * d'exercices du dimanche ne change pas, sa durée non plus. Les
+       * semaines 1 à 4 gardent le chop, écrit dans la trame — l'historique
+       * déjà enregistré reste lisible tel qu'il a été fait.
+       */
+      remove('cable-chop'),
+      {
+        op: 'insert',
+        atStart: true,
+        slot: {
+          exId: 'landmine-rotation',
+          sets: 3,
+          work: reps(5, true),
+          load: autoreg(undefined, 2.5, 'barbell'),
+          targetRPE: null,
+          restSec: 75,
+          note: 'Apprentissage puis accélération contrôlée. Charge légère, retour maîtrisé.',
+        },
+      },
       // « Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s »
       patch('incline-db-press', { sets: 3 }),
       patch('neutral-grip-pullup', { sets: 3, work: reps(6) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 3, work: reps(6, true) }),
-      patch('cable-chop', { sets: 3, work: reps(6, true) }),
       patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
       patch('bear-crawl', { sets: 3 }),
       patch('conditioning', {
@@ -279,12 +341,28 @@ const POWER: BlockRuleSet[] = [
   {
     block: 'power',
     day: 6,
+    notes: [
+      'La Landmine Rotation ouvre la séance, en intention explosive : reset 5-10 s entre les reps, et la série s’arrête dès que la vitesse baisse (§5).',
+    ],
     rules: [
+      remove('cable-chop'),
+      {
+        op: 'insert',
+        atStart: true,
+        slot: {
+          exId: 'landmine-rotation',
+          sets: 3,
+          work: reps(4, true),
+          load: autoreg(undefined, 2.5, 'barbell'),
+          targetRPE: null,
+          restSec: 90,
+          note: 'Rotation explosive. La vitesse prime sur la charge : si elle baisse, la charge ne monte pas.',
+        },
+      },
       patch('incline-db-press', { sets: 3, work: reps({ min: 6, max: 8 }) }),
       patch('neutral-grip-pullup', { sets: 3, work: reps({ min: 5, max: 6 }) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 2, work: reps(8, true) }),
-      patch('cable-chop', { sets: 3, work: reps(6, true) }),
       patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
       patch('bear-crawl', { sets: 3, work: meters(15) }),
       remove('conditioning'),

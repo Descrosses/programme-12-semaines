@@ -81,6 +81,32 @@ export interface ReadinessRow {
  * unique, donc se repeser deux fois le même jour corrige la ligne au lieu d'en
  * créer une deuxième qui fausserait la moyenne.
  */
+/**
+ * Une ligne de suivi de douleur, pour un exercice et une date.
+ *
+ * Les trois moments sont séparés parce qu'ils ne disent pas la même chose :
+ * une gêne qui disparaît en sortant de la salle n'est pas une gêne qu'on
+ * retrouve au réveil. Chacun peut rester `null` — « pas encore noté » n'est
+ * pas « zéro ».
+ */
+export interface PainLogRow {
+  id?: number;
+  /** `YYYY-MM-DD`. */
+  date: string;
+  /** Id de l'exercice concerné. */
+  exId: string;
+  /** 0 à 10 pendant l'exercice. */
+  during: number | null;
+  /** 0 à 10 après la séance. */
+  after: number | null;
+  /** 0 à 10 le lendemain. */
+  nextDay: number | null;
+  /** Charge réellement tolérée, en kg. */
+  toleratedKg: number | null;
+  /** Amplitude tolérée, telle que Guillaume la qualifie. */
+  rom: 'complete' | 'partielle' | 'reduite' | null;
+}
+
 export interface MeasurementRow {
   id?: number;
   /** `YYYY-MM-DD`. */
@@ -243,6 +269,7 @@ export class ProgrammeDB extends Dexie {
   exerciseNotes!: Table<ExerciseNoteRow, number>;
   customFoods!: Table<CustomFoodRow, number>;
   mealLog!: Table<MealLogRow, number>;
+  painLog!: Table<PainLogRow, number>;
   dayKind!: Table<DayKindRow, number>;
   settings!: Table<SettingsRow, number>;
 
@@ -452,6 +479,23 @@ export class ProgrammeDB extends Dexie {
      * « le programme fait foi ». Revenir au programme supprime la ligne.
      */
     this.version(12).stores({ dayKind: '++id, &date' });
+
+    /*
+     * v13 — suivi de douleur, exercice par exercice et séance par séance.
+     *
+     * Ajout pur, une table de plus : aucune ligne existante n'est lue ni
+     * modifiée, tout l'historique traverse la migration sans y toucher.
+     *
+     * `&[date+exId]` est unique : on corrige la note du jour au lieu d'en
+     * empiler une par appui sur le curseur. `date` et `exId` sont indexés
+     * séparément parce qu'on relit soit une séance entière, soit la série
+     * d'un exercice dans le temps.
+     *
+     * Ce que cette table n'est pas : un dossier médical. Elle enregistre ce
+     * que Guillaume ressent et ce qu'il a réellement toléré. Elle ne nomme
+     * aucune structure et ne pose aucun diagnostic.
+     */
+    this.version(13).stores({ painLog: '++id, &[date+exId], date, exId' });
   }
 }
 

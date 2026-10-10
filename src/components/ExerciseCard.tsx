@@ -5,6 +5,7 @@ import type { ResolvedExercise } from '../engine/getSession';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
+import { PainWatch } from './PainWatch';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
@@ -228,6 +229,15 @@ export function ExerciseCard({
 
       {/* Remarque libre sur ce mouvement, sous les séries. Toujours là. */}
       <ExerciseNote exerciseId={ex.id} context={note} />
+
+      {/*
+        Suivi de douleur — seulement sur les mouvements dont la fiche en
+        demande un. Il n'apparaît pas ailleurs : un curseur de douleur sous
+        chaque exercice ferait du programme un questionnaire.
+      */}
+      {ex.def.painWatch && (
+        <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
+      )}
 
       {/*
         L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une

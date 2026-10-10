@@ -23,6 +23,7 @@ export { BASE_SESSIONS } from './baseSessions';
 export {
   BLOCK_RULES,
   CONTRAST_BY_DAY,
+  DELOAD_CORE,
   DELOAD_POLICY,
   blockNotesFor,
   rulesFor,

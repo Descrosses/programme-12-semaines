@@ -742,3 +742,79 @@
   font-weight: 600;
   color: var(--ink-2);
 }
+
+/* ------------------------------------------------- exercice suspendu -- */
+
+/*
+ * Un exercice retiré de la prescription reste à l'écran, sans séries ni
+ * champs : rien à cocher, rien à valider. Le liseré gauche et le gris
+ * disent « ce n'est pas pour aujourd'hui » sans avoir à le lire.
+ */
+.suspendu {
+  margin: var(--gap) var(--pad);
+  padding: 12px 14px;
+  border-left: 3px solid var(--ink-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.suspenduTitre {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.suspenduRaison {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
+/*
+ * Les séries déjà faites, en lecture seule. Elles restent lisibles — un
+ * entraînement réalisé ne disparaît pas parce que l'exercice sort du
+ * programme — mais rien n'y est cliquable : ce n'est plus une prescription.
+ */
+.suspenduFait {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.suspenduSeries {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suspenduSerie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.suspenduIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-3);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.suspenduRate {
+  color: var(--rouge);
+  font-size: 0.75rem;
+  font-weight: 700;
+}

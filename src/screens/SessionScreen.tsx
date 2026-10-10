@@ -5,7 +5,7 @@ import { WarmupSection } from '../components/WarmupSection';
 import { BLOCKS } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import { humanDate } from '../engine/calendar';
-import { fr } from '../engine/format';
+import { fr, setSummary } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import { bestJump, readiness as computeReadiness } from '../engine/readiness';
 import {
@@ -208,6 +208,50 @@ export function SessionScreen({
           onOverride={(id, kg) => void handleOverride(id, kg)}
         />
       ))}
+
+      {/*
+        Exercices suspendus — affichés, jamais prescrits.
+        Les faire disparaître sans un mot laisserait croire à un oubli, et la
+        raison est précisément ce qu'il faut relire pour décider de la reprise.
+      */}
+      {session.suspended.map((sus) => {
+        /*
+         * Une suspension retire la PRESCRIPTION, jamais le RÉSULTAT.
+         *
+         * Les séries déjà faites ce jour-là sont réaffichées telles qu'elles
+         * ont été enregistrées. Sans ça, rouvrir une semaine passée donnait
+         * l'impression que le travail avait été effacé — alors qu'il était
+         * seulement devenu invisible.
+         *
+         * En lecture seule : pas de champ de saisie, pas de bouton de
+         * validation. L'exercice n'est pas au programme, il a juste été fait.
+         */
+        const faites = [...(data.savedSets[sus.id] ?? [])].sort(
+          (a, b) => a.setIndex - b.setIndex,
+        );
+        return (
+          <section key={sus.id} className={styles.suspendu}>
+            <div className={styles.suspenduTitre}>{sus.name} — suspendu temporairement</div>
+            <p className={styles.suspenduRaison}>{sus.reason}</p>
+            {faites.length > 0 && (
+              <>
+                <p className={styles.suspenduFait}>
+                  Ce que tu avais fait ce jour-là — conservé, non modifiable
+                </p>
+                <ul className={styles.suspenduSeries}>
+                  {faites.map((set) => (
+                    <li key={set.setIndex} className={styles.suspenduSerie}>
+                      <span className={styles.suspenduIndex}>{set.setIndex + 1}</span>
+                      <span className="tnum">{setSummary(set)}</span>
+                      {set.failed && <span className={styles.suspenduRate}>Rep ratée</span>}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        );
+      })}
 
       <section className={styles.notes}>
         <label htmlFor="session-notes" className={styles.exName}>
