@@ -45,7 +45,7 @@ import { loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
-import type { OneRMKey, SessionContext } from './types';
+import type { Occurrence, OneRMKey, SessionContext } from './types';
 
 // ---------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ export function getSession(
   const exercises: ResolvedExercise[] = [];
 
   for (const slot of slots) {
-    const resolved = resolveSlot(slot, { week, block, isDeload, ctx, contrast });
+    const resolved = resolveSlot(slot, { week, day, block, isDeload, ctx, contrast });
     if (resolved) exercises.push(resolved);
   }
 
@@ -313,10 +313,47 @@ function patchSlot(slot: Slot, p: SlotPatch): Slot {
 
 interface ResolveOpts {
   week: WeekIndex;
+  day: DayIndex;
   block: Block;
   isDeload: boolean;
   ctx: SessionContext;
   contrast: ContrastSpec | undefined;
+}
+
+/**
+ * Les occurrences utilisables comme référence de charge pour CETTE séance.
+ *
+ * ── Deux défauts réels, une seule cause ────────────────────────────────────
+ *
+ * Les charges autorégulées (Hip Thrust, Bulgarian, Hang High Pull) partaient
+ * de « la dernière occurrence enregistrée », sans regarder ni la semaine
+ * affichée ni la nature de cette occurrence. D'où :
+ *
+ * 1. Après un deload, la charge allégée devenait la nouvelle base. Le Hip
+ *    Thrust proposait 90 kg en semaine 5 à quelqu'un qui venait d'en faire
+ *    110 × 8 à RPE 8 en semaine 3. Une semaine de deload est une réduction
+ *    décidée, pas une contre-performance : elle ne redéfinit pas le niveau.
+ *
+ * 2. Rouvrir une séance passée recalculait son plan sur l'historique
+ *    d'AUJOURD'HUI. La semaine 3 se relisait « 4 × 8 × 90 kg » alors qu'elle
+ *    avait affiché 100 kg le jour même, et que 110 avaient été soulevés. Un
+ *    plan qui change après coup n'est plus un plan, c'est une reconstitution.
+ *
+ * On ne retient donc que ce qui précède STRICTEMENT la séance affichée, et on
+ * écarte les semaines de deload — sauf s'il ne reste rien d'autre, auquel cas
+ * un repère imparfait vaut mieux qu'aucun.
+ *
+ * Ce tri ne touche pas l'encart « la dernière fois » : lui doit montrer ce qui
+ * a réellement été fait, deload compris.
+ */
+export function referenceOccurrences(
+  all: Occurrence[],
+  week: WeekIndex,
+  day: DayIndex,
+): Occurrence[] {
+  const avant = all.filter((o) => o.week < week || (o.week === week && o.day < day));
+  const horsDeload = avant.filter((o) => WEEK_BLOCKS[o.week as WeekIndex] !== 'deload');
+  return horsDeload.length > 0 ? horsDeload : avant;
 }
 
 function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
@@ -347,11 +384,9 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     if (presc.note) notes.push(presc.note);
   }
 
-  let load = resolveLoad(loadSpec, {
-    settings: o.ctx.settings,
-    history: o.ctx.history,
-    exerciseId: slot.exId,
-  });
+  const reference = referenceOccurrences(o.ctx.history[slot.exId] ?? [], o.week, o.day);
+
+  let load = resolveLoad(loadSpec, { settings: o.ctx.settings, occurrences: reference });
 
   // « +10 % » des accessoires haut en force max (§8).
   const factor = (slot as Slot & { __loadFactor?: number }).__loadFactor;
@@ -420,7 +455,9 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     load.kg === null
       ? null
       : applyProgression({
-          history: o.ctx.history[slot.exId] ?? [],
+          // Même matière que la charge affichée : une suggestion calculée sur
+          // la semaine de deload proposerait de « progresser » depuis 90 kg.
+          history: reference,
           plannedKg: load.kg,
           targetRPE,
           step: load.step,
@@ -450,7 +487,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     targetRPE,
     restSec: slot.restSec,
     loadLine: formatLoadLine(sets, work, load),
-    lastKg: lastCompleted(o.ctx.history[def.id] ?? [])?.kg ?? null,
+    lastKg: lastCompleted(reference)?.kg ?? null,
     lastMeasure:
       [...(o.ctx.history[def.id] ?? [])].reverse().find((h) => h.measure != null)?.measure ?? null,
     notes,

@@ -10,7 +10,7 @@
 
 import type { LoadSpec, LoadStep } from '../data/types';
 import { roundToStep } from './rounding';
-import type { HistoryIndex, Settings } from './types';
+import type { Occurrence, Settings } from './types';
 import { lastCompleted } from './progression';
 
 export type LoadShape =
@@ -38,8 +38,17 @@ export interface ResolvedLoad {
 
 export interface ResolveContext {
   settings: Settings;
-  history: HistoryIndex;
-  exerciseId: string;
+  /**
+   * Les occurrences utilisables comme RÉFÉRENCE pour cette séance — pas tout
+   * l'historique du mouvement.
+   *
+   * La différence a coûté 20 kg sur le Hip Thrust : en prenant la dernière
+   * occurrence tout court, la semaine 5 héritait de la charge de deload de la
+   * semaine 4 et proposait 90 kg à quelqu'un qui venait d'en faire 110. Le tri
+   * est décidé par l'appelant (`getSession`), qui seul sait quelle séance est
+   * affichée et quelles semaines sont des deloads.
+   */
+  occurrences: Occurrence[];
 }
 
 const NONE: ResolvedLoad = { kg: null, shape: 'none', step: 2.5, source: 'aucune' };
@@ -77,7 +86,7 @@ export function resolveLoad(load: LoadSpec, ctx: ResolveContext): ResolvedLoad {
 
     case 'autoreg': {
       const shape: LoadShape = load.as;
-      const last = lastCompleted(ctx.history[ctx.exerciseId] ?? []);
+      const last = lastCompleted(ctx.occurrences);
       if (last?.kg != null) {
         return { kg: last.kg, shape, step: load.step, source: 'historique' };
       }
