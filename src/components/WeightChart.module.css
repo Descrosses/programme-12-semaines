@@ -1,0 +1,169 @@
+/*
+ * Le graphique de poids.
+ *
+ * Fond sombre, contrastes élevés : la courbe se lit à bout de bras, écran
+ * incliné. Les épaisseurs sont volontairement tranchées — trait de 3,5 px pour
+ * la moyenne, points de 2,2 px pour les pesées — pour qu'on ne confonde jamais
+ * la tendance avec une mesure isolée.
+ */
+
+.figure {
+  margin: 10px 0 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  /* Le graphique n'a aucune animation : voir l'en-tête de WeightChart.tsx. */
+  touch-action: pan-y;
+}
+
+/* --- Cadre ---------------------------------------------------------------- */
+
+.grille {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.graduation {
+  fill: var(--ink-2);
+  font-size: 10px;
+  font-family: var(--font);
+}
+
+.repere {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.45;
+}
+
+.repereLabel {
+  fill: var(--ink-2);
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font);
+}
+
+/* --- La cible du §13 ------------------------------------------------------ */
+
+.bande {
+  fill: var(--vert);
+  opacity: 0.13;
+}
+
+.bandeBord {
+  stroke: var(--vert);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 3;
+  opacity: 0.85;
+}
+
+/* --- Les données --------------------------------------------------------- */
+
+.moyenne {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Un tronçon d'un seul jour n'a pas de segment à tracer : un point suffit. */
+.moyenneSeule {
+  fill: var(--accent);
+}
+
+.pesee {
+  fill: var(--ink-2);
+  opacity: 0.8;
+}
+
+.peseeChoisie {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.taille {
+  fill: none;
+  stroke: var(--macro-proteines);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.pointTaille {
+  fill: var(--macro-proteines);
+}
+
+.tailleChoisie {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+/* Invisible, mais large : 28 px de diamètre pour un pouce. */
+.cible {
+  fill: transparent;
+  cursor: pointer;
+}
+
+/* --- Sous le graphique --------------------------------------------------- */
+
+.touche {
+  min-height: 20px;
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pastille {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.pastilleMoyenne {
+  height: 4px;
+  background: var(--accent);
+}
+
+.pastillePesee {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+
+.pastilleBande {
+  height: 9px;
+  border: 1px dashed var(--vert);
+  border-radius: 2px;
+  background: rgb(61 220 132 / 0.18);
+}
+
+.vide {
+  padding: 22px 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  text-align: center;
+}
