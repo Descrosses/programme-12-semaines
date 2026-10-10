@@ -45,8 +45,14 @@ export function workLabel(sets: number, work: Work): string {
       const side = work.perSide ? ' / côté' : '';
       return `${sets} × ${fr(work.meters)} m${side}`;
     }
-    case 'time':
-      return work.seconds >= 60 ? `${Math.round(work.seconds / 60)} min` : `${work.seconds} s`;
+    case 'time': {
+      const duree =
+        work.seconds >= 60 ? `${Math.round(work.seconds / 60)} min` : `${work.seconds} s`;
+      const side = work.perSide ? ' / côté' : '';
+      // Une seule série ne s'annonce pas « 1 × 15 min » : le conditioning et
+      // la zone 2 gardent leur durée nue.
+      return sets > 1 ? `${sets} × ${duree}${side}` : `${duree}${side}`;
+    }
     case 'intervals':
       return `${work.rounds} × (${work.workSec} s / ${work.easySec} s)`;
     case 'attempts':

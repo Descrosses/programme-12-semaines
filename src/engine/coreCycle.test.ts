@@ -283,3 +283,94 @@ describe('résumé d’une série conservée', () => {
     expect(setSummary({ ...vide, measureValue: 30, actualKg: 32 })).toBe('30 · 32 kg');
   });
 });
+
+/**
+ * Barbell Offset Hold — le second point d'appui asymétrique de la semaine.
+ *
+ * Ajouté parce que la suspension du Copenhagen Plank a laissé l'anti-flexion
+ * latérale sur un seul exercice, un seul jour : le Suitcase Carry du samedi.
+ */
+describe('Barbell Offset Hold', () => {
+  const MERCREDI = 2;
+
+  it('absent des semaines 1 à 4 — il n’existe qu’à partir du bloc force', () => {
+    for (const w of [1, 2, 3, 4]) {
+      expect(ids(session(w, MERCREDI).exercises), `S${w}`).not.toContain('barbell-offset-hold');
+    }
+  });
+
+  it('force max : 3 × 25 s/côté, repos 60 s', () => {
+    for (const w of [5, 6, 7]) {
+      const ex = trouve(w, MERCREDI, 'barbell-offset-hold');
+      expect(ex.loadLine, `S${w}`).toBe('3 × 25 s / côté × 5 kg');
+      expect(ex.restSec, `S${w}`).toBe(60);
+    }
+  });
+
+  it('puissance : 2 × 20 s/côté, repos 45 s', () => {
+    for (const w of [9, 10, 11]) {
+      const ex = trouve(w, MERCREDI, 'barbell-offset-hold');
+      expect(ex.loadLine, `S${w}`).toBe('2 × 20 s / côté × 5 kg');
+      expect(ex.restSec, `S${w}`).toBe(45);
+    }
+  });
+
+  it('absent des deux deloads — aucun exercice nouveau en semaine allégée', () => {
+    for (const w of [4, 8]) {
+      expect(ids(session(w, MERCREDI).exercises), `S${w}`).not.toContain('barbell-offset-hold');
+    }
+  });
+
+  it('absent de la semaine 12 — ce sont les tests', () => {
+    for (const d of [0, 2, 4, 5, 6]) {
+      expect(ids(session(12, d).exercises), `j${d}`).not.toContain('barbell-offset-hold');
+    }
+  });
+
+  it('il suit immédiatement le Pallof Press, et ferme la séance', () => {
+    const noms = ids(session(5, MERCREDI).exercises);
+    expect(noms[noms.indexOf('pallof-press') + 1]).toBe('barbell-offset-hold');
+    expect(noms[noms.length - 1]).toBe('barbell-offset-hold');
+  });
+
+  it('il n’apparaît aucun autre jour — surtout pas le lundi', () => {
+    // Le lundi est la séance où l'adducteur travaille le plus : squat et
+    // Bulgarian. On n'y ajoute rien tant que les symptômes durent.
+    for (const w of [5, 9]) {
+      for (const d of [0, 4, 5, 6]) {
+        expect(ids(session(w, d).exercises), `S${w} j${d}`).not.toContain('barbell-offset-hold');
+      }
+    }
+  });
+
+  it('le mercredi ne gagne qu’UN exercice, et seulement dans ces deux blocs', () => {
+    const n = (w: number) => session(w, MERCREDI).exercises.length;
+    expect(n(5)).toBe(n(3) + 1);
+    // En puissance, le plyo push-up quitte le début de séance pour le
+    // contraste : la tenue prend exactement sa place, le compte ne bouge pas.
+    expect(n(9)).toBe(n(3));
+    expect(n(4)).toBe(n(3)); // deload : même liste, volumes réduits
+  });
+
+  it('la fiche est complète et dit ce qu’il ne faut pas faire', () => {
+    const ex = EXERCISES['barbell-offset-hold']!;
+    expect(ex.intent).toBeTruthy();
+    expect(ex.progressionRule).toMatch(/durée d’abord/i);
+    expect(ex.altBasicFit).toBeTruthy();
+    expect(ex.cues!.length).toBeGreaterThanOrEqual(5);
+    // La charge affichée prête à confusion : c'est un seul côté, pas le total.
+    expect(ex.cues!.join(' ')).toMatch(/UN SEUL côté/);
+    // Et il ne doit pas approcher le pattern douloureux.
+    expect(ex.cues!.join(' ')).toMatch(/aucune adduction de hanche/i);
+    expect(ex.suspended).toBeUndefined();
+  });
+
+  it('l’anti-flexion latérale passe de un à deux jours par semaine', () => {
+    const jours = [0, 2, 4, 5, 6].filter((d) =>
+      session(5, d).exercises.some((e) =>
+        ['suitcase-carry', 'barbell-offset-hold'].includes(e.id),
+      ),
+    );
+    expect(jours).toEqual([2, 5]); // mercredi et samedi, écartés de trois jours
+  });
+});

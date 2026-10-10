@@ -170,6 +170,52 @@ const LIST: ExerciseDef[] = [
     role: 'accessory',
     intent: 'Léger. Non négociable.',
   }),
+  /*
+   * Barbell Offset Hold — le second point d'appui asymétrique de la semaine.
+   *
+   * ── Pourquoi il existe ────────────────────────────────────────────────────
+   *
+   * Depuis la suspension du Copenhagen Plank, l'anti-flexion latérale ne
+   * repose plus que sur le Suitcase Carry du samedi. Une fonction, un jour,
+   * septième exercice d'une séance de 90 minutes.
+   *
+   * ── Pourquoi lui et pas un second porté ──────────────────────────────────
+   *
+   * Le Suitcase Carry à 32 kg sur 30 m est limité par la MAIN, pas par le
+   * tronc : la préhension lâche avant les obliques. Une barre de 2,20 m
+   * chargée d'un seul côté a un bras de levier sans commune mesure — la
+   * contrainte sur le tronc est bien supérieure pour une charge absolue bien
+   * moindre, et la préhension n'est plus le facteur limitant. C'est le même
+   * plan de travail par un autre facteur limitant, donc pas un doublon.
+   *
+   * ── Pourquoi il ne touche pas l'adducteur ────────────────────────────────
+   *
+   * Debout, pieds fixes, aucune adduction de hanche. C'est le seul candidat
+   * examiné qui ne s'approche pas du pattern douloureux. Il peut passer en
+   * marche courte plus tard, mais seulement si les symptômes le permettent —
+   * jamais d'office.
+   */
+  def({
+    id: 'barbell-offset-hold',
+    name: 'Barbell Offset Hold',
+    fn: 'core',
+    role: 'core',
+    measure: 'kg',
+    intent:
+      'Barre en rack avant, disques d’un seul côté. Tu ne bouges pas : tu refuses de pencher. Côtes basses, bassin neutre, regard droit devant.',
+    progressionRule:
+      '+2,5 kg du côté chargé quand les 30 s tiennent des deux côtés sans la moindre inclinaison. La durée d’abord, la charge ensuite.',
+    altBasicFit:
+      'Si le rack avant est inconfortable : même barre tenue à une extrémité, bras le long du corps, comme une valise — le bras de levier reste.',
+    cues: [
+      'Objectif : résister à la flexion latérale et à la rotation sous une charge excentrée, debout, sans que la préhension décide à la place du tronc.',
+      'Sollicite les obliques, le carré des lombes et les fessiers du côté opposé à la charge.',
+      'La charge affichée est le disque d’UN SEUL côté, pas le total de la barre.',
+      'Pieds largeur de hanches, immobiles. Respiration courte et haute, jamais d’apnée complète sur 25 s.',
+      'Critère d’arrêt : dès que l’épaule du côté chargé descend ou que le bassin part sur le côté, la série est finie — même s’il reste du temps.',
+      'Sécurité : aucune adduction de hanche, aucun appui unipodal. Si une gêne apparaît malgré tout à l’aine, arrête et signale-le.',
+    ],
+  }),
   def({
     id: 'pallof-press',
     name: 'Pallof Press Step-Out',

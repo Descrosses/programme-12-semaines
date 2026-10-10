@@ -123,6 +123,7 @@ Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon dével
 **F. Face Pull 2 × 15 + Rotation externe câble 2 × 12/côté** — Repos 45 s — Léger. Non négociable.
 
 **G. Pallof Press Step-Out — 3 × 6/côté** — Repos 45-60 s — Step-out → verrouillage 2 s → retour.
+À partir de la semaine 5, le **Barbell Offset Hold** vient juste après : les deux forment un bloc tronc debout de six minutes, anti-rotation puis anti-flexion latérale (§8).
 
 ---
 
@@ -242,11 +243,36 @@ Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
 Sans la hausse, le Hip Thrust donnait 4 × 8 × 110 kg en 1 min 30 de repos, soit 3 520 kg, puis 4 × 6 × 110 kg en 2 min, soit 2 640 kg. Moins de travail, à charge identique, avec plus de récupération : c'est un allègement, pas un bloc de force. Avec les +10 % : 4 × 6 × 120 kg, 2 880 kg — **−18 % de volume, +9 % de charge, +33 % de repos.** Le volume baisse, l'intensité monte, ce que le bloc est censé faire.
 
 Le +10 % est celui que le programme applique déjà aux accessoires du haut pour la même bascule : aucun chiffre nouveau. Il s'applique **une seule fois**, à l'entrée du bloc. Les semaines suivantes, l'autorégulation et le §11 reprennent la main — réappliquer le facteur chaque semaine donnerait 110 → 121 → 133 → 146 en trois semaines. Et comme partout, c'est le RPE cible qui juge : si 4 × 6 à RPE 8 sort à RPE 9, le cas 4 du §11 fait redescendre.
+- **Mercredi : Barbell Offset Hold 3 × 25 s/côté**, repos 60 s, juste après le Pallof Press. Charge légère autorégulée, départ à 5 kg d'un seul côté.
 - **Dimanche : la Landmine Rotation remplace le Cable Chop et ouvre la séance.** 3 × 5/côté, repos 75 s, charge légère autorégulée. S5 apprentissage technique, S6 accélération contrôlée, S7 progression technique. Le nombre d'exercices du dimanche ne change pas.
 - Hang High Pull 4 × 3, repos 2 min
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30
 - Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
+
+### Barbell Offset Hold — pourquoi il entre, et pourquoi là
+
+Second ajout du cycle, et le dernier. Il ne remplace rien : c'est le seul exercice ajouté aux douze semaines.
+
+**Le trou qu'il comble.** Depuis la suspension du Copenhagen Plank (§14), l'anti-flexion latérale ne repose plus que sur le Suitcase Carry du samedi. Une fonction, un jour, septième exercice d'une séance de 90 minutes.
+
+**Pourquoi lui plutôt qu'un second porté.** Le Suitcase Carry à 32 kg sur 30 m est limité par la MAIN, pas par le tronc : la préhension lâche avant les obliques. Une barre de 2,20 m chargée d'un seul côté a un bras de levier sans commune mesure — contrainte bien supérieure sur le tronc pour une charge absolue bien moindre, et la préhension ne décide plus. Même fonction, autre facteur limitant : ce n'est pas un doublon.
+
+**Pourquoi le mercredi.** C'est le seul jour sans lift principal du bas du corps : rien en amont ne fatigue le tronc, rien en aval n'en souffre. Et la fréquence est tout l'objet de l'ajout — le placer le samedi à côté du Suitcase donnerait deux jours collés puis cinq jours vides. Pas le lundi : c'est la séance où l'adducteur travaille le plus, on n'y ajoute rien tant que les symptômes durent.
+
+| Semaines | Prescription | Repos |
+|---|---|---|
+| 1-4 | — | — |
+| 5-7 | 3 × 25 s/côté | 60 s |
+| 8 | — (deload : aucun exercice nouveau) | — |
+| 9-11 | 2 × 20 s/côté | 45 s |
+| 12 | — (semaine de tests) | — |
+
+**Charge** : le disque d'UN SEUL côté, pas le total de la barre. Départ à 5 kg, +2,5 kg quand les 30 s tiennent des deux côtés sans la moindre inclinaison. La durée d'abord, la charge ensuite.
+
+**Critère d'arrêt** : dès que l'épaule du côté chargé descend ou que le bassin part sur le côté, la série est finie, même s'il reste du temps.
+
+**Ce qu'il coûte** : le mercredi passe de 65 à 68-69 minutes. C'est le prix, et il est assumé — c'est le seul créneau de la semaine où l'exercice sert à quelque chose.
 
 ### Landmine Rotation — la progression complète
 
@@ -275,7 +301,7 @@ Seul ajout du cycle, et il ne s'ajoute à rien : il remplace le Cable Chop du di
 Principe : série lourde → repos → mouvement explosif → repos → série lourde suivante. C'est du contraste, pas un superset.
 
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
-**Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5.
+**Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 **Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, Copenhagen 3 × 5, Suitcase 3 × 20 m.
 **Dimanche** : **Landmine Rotation 3 × 4/côté explosif en ouverture** (repos 90 s, reset 5-10 s entre les reps, la série s'arrête dès que la vitesse baisse — §5), puis Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, leg raise 3 × 8, bear crawl 3 × 15 m. Plus de Cable Chop : la rotation l'a remplacé depuis la semaine 5. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
@@ -433,6 +459,10 @@ Gêne à l'intérieur de la cuisse gauche, près de l'aine, présente depuis env
 | **Suspendu** | Copenhagen Plank dynamique | Retiré des séances, conservé au catalogue avec sa raison. Aucun remplacement : l'anti-flexion latérale reste couverte par le Suitcase Carry. |
 
 Le Lateral Bound est explicitement maintenu sans modification : il ne provoque aucune douleur et la stabilité des réceptions s'est nettement améliorée.
+
+**Le Barbell Offset Hold, ajouté en semaine 5, ne figure dans aucune de ces trois colonnes.** Debout, pieds fixes, aucune adduction de hanche, aucun appui unipodal : il ne s'approche pas du pattern douloureux. C'est d'ailleurs la raison pour laquelle il a été retenu plutôt que le Roman Side Bench, dont la jambe du bas s'ancre contre le pad. S'il devait malgré tout provoquer une gêne à l'aine, la consigne est la même que partout : réduire, puis arrêter, et le signaler.
+
+Une évolution possible, **non programmée** : à partir de la semaine 9, si l'adducteur est silencieux, la tenue peut devenir une marche de 15 à 20 m, ce qui couvrirait du même coup la stabilité dynamique sous charge antérieure. Elle n'est pas inscrite au programme et ne se déclenchera pas toute seule — elle dépend des symptômes, comme la reprise du Copenhagen.
 
 ### Reprise du Copenhagen Plank
 
