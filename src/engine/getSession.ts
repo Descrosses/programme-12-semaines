@@ -43,6 +43,7 @@ import type {
 } from '../data/types';
 import { loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
+import { dureeLabel } from './sessionDuration';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
 import type { Occurrence, OneRMKey, SessionContext } from './types';
@@ -118,6 +119,13 @@ export interface ResolvedSession {
   blockName: string;
   blockColor: string;
   title: string;
+  /**
+   * Durée CALCULÉE, pas l'étiquette écrite dans la trame.
+   *
+   * Celle du §3 avait été fixée une fois et jamais revue : le vendredi
+   * affichait « 60 min » pour quatre-vingts réelles. Un chiffre figé ne se
+   * contredit jamais tout seul — celui-ci suit les séries et les repos.
+   */
   durationLabel: string;
   intensity: Intensity;
   warmup: Warmup | null;
@@ -243,6 +251,8 @@ export function getSession(
     });
   }
 
+  const warmup = blueprint.warmup ? WARMUPS[blueprint.warmup] : null;
+
   // Recalcule la ligne de charge après tous les ajustements.
   for (const ex of finalExercises) {
     ex.loadLine = formatLoadLine(ex.sets, ex.work, ex.load);
@@ -255,9 +265,13 @@ export function getSession(
     blockName: BLOCKS[block].name,
     blockColor: BLOCKS[block].color,
     title: blueprint.title,
-    durationLabel: blueprint.durationLabel,
+    durationLabel: dureeLabel({
+      warmupDurationLabel: warmup?.durationLabel,
+      readinessTest: blueprint.readinessTest,
+      exercises: finalExercises,
+    }),
     intensity: blueprint.intensity,
-    warmup: blueprint.warmup ? WARMUPS[blueprint.warmup] : null,
+    warmup,
     readinessTest: blueprint.readinessTest,
     notes,
     exercises: finalExercises,

@@ -46,11 +46,25 @@ Ratio hebdomadaire retenu : **3 jours durs (lundi, mercredi, samedi) + 1 jour ne
 
 | Jour | Séance | Durée | Charge |
 |---|---|---|---|
-| Lundi | Lower Strength — squat | 65-70 min | DUR |
-| Mercredi | Upper Strength — bench + tractions | 65 min | DUR |
-| Vendredi | Total Body Power — sauts, vitesse | 60 min | RAPIDE, peu de fatigue |
-| Samedi | Posterior Chain — deadlift | 90 min | DUR |
-| Dimanche | Upper Athletic + tronc + conditioning | 80-90 min | MODÉRÉ |
+| Lundi | Lower Strength — squat | 45-75 min | DUR |
+| Mercredi | Upper Strength — bench + tractions | 50-80 min | DUR |
+| Vendredi | Total Body Power — sauts, vitesse | 50-95 min | RAPIDE, peu de fatigue |
+| Samedi | Posterior Chain — deadlift | 45-80 min | DUR |
+| Dimanche | Upper Athletic + tronc + conditioning | 30-70 min | MODÉRÉ |
+
+**Ces durées sont des fourchettes, et l'application affiche le chiffre réel.** Les anciennes étiquettes — « 60 min » le vendredi, « 65 min » le mercredi — avaient été écrites une fois au début du programme et jamais recalculées. Trois cycles de modifications plus tard, le vendredi durait quatre-vingts minutes sous une étiquette de soixante. L'appli calcule maintenant la durée à partir des séries, des répétitions et des repos réellement prescrits, et l'affiche en tête de séance (« ≈ 74 min »). Un test vérifie que chacune des soixante séances tombe dans la fourchette annoncée ici : l'écart ne peut plus se creuser en silence.
+
+La borne basse de chaque fourchette correspond aux semaines de deload, la borne haute au bloc où la séance est la plus longue.
+
+**Un avertissement, parce que les chiffres le disent maintenant.** Trois séances dépassent les disponibilités annoncées en haut de ce document :
+
+| Jour | Disponible | Pic réel | Bloc concerné |
+|---|---|---|---|
+| Lundi | 60-70 min | **75 min** | Force maximale (S5-7) |
+| Mercredi | 60-70 min | **78 min** | Force maximale (S5-7) |
+| Vendredi | ~60 min | **92 min** | Puissance (S9-11) |
+
+Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée.
 
 Pourquoi cet ordre : vendredi (neuronal, peu de dommages) potentialise samedi ; dimanche = haut du corps pour que les jambes récupèrent entre le deadlift du samedi et le squat du lundi.
 

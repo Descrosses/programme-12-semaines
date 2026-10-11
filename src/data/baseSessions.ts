@@ -62,7 +62,7 @@ const fromTable = (exId: string, liftId: MainLiftId, restSec: number, note?: str
 const LUNDI: SessionBlueprint = {
   day: 0,
   title: 'Lower Strength — squat',
-  durationLabel: '65-70 min',
+  durationLabel: '45-75 min',
   intensity: 'DUR',
   warmup: 'lower',
   readinessTest: true,
@@ -80,7 +80,7 @@ const LUNDI: SessionBlueprint = {
 const MERCREDI: SessionBlueprint = {
   day: 2,
   title: 'Upper Strength — bench + tractions',
-  durationLabel: '65 min',
+  durationLabel: '50-80 min',
   intensity: 'DUR',
   warmup: 'upper',
   readinessTest: false,
@@ -100,7 +100,7 @@ const MERCREDI: SessionBlueprint = {
 const VENDREDI: SessionBlueprint = {
   day: 4,
   title: 'Total Body Power',
-  durationLabel: '60 min',
+  durationLabel: '50-95 min',
   intensity: 'RAPIDE',
   warmup: 'lower',
   readinessTest: true,
@@ -139,7 +139,7 @@ const VENDREDI: SessionBlueprint = {
 const SAMEDI: SessionBlueprint = {
   day: 5,
   title: 'Posterior Chain — deadlift',
-  durationLabel: '90 min',
+  durationLabel: '45-80 min',
   intensity: 'DUR',
   warmup: 'lower',
   readinessTest: true,
@@ -159,7 +159,7 @@ const SAMEDI: SessionBlueprint = {
 const DIMANCHE: SessionBlueprint = {
   day: 6,
   title: 'Upper Athletic + tronc',
-  durationLabel: '80-90 min',
+  durationLabel: '30-70 min',
   intensity: 'MODÉRÉ',
   warmup: 'upper',
   readinessTest: false,
