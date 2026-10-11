@@ -208,7 +208,7 @@ const fromTable = (exId: string, liftId: Slot['liftId'], restSec: number, note?:
 const COMBINE_LUNDI: SessionBlueprint = {
   day: 0,
   title: 'Combine initial — sauts, sprints, squat 1RM',
-  durationLabel: '75 min',
+  durationLabel: '65-75 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -231,7 +231,7 @@ const COMBINE_LUNDI: SessionBlueprint = {
 const COMBINE_MARDI: SessionBlueprint = {
   day: 1,
   title: 'Combine initial — tractions lestées 1RM',
-  durationLabel: '40 min',
+  durationLabel: '35-45 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
@@ -246,7 +246,7 @@ const COMBINE_MARDI: SessionBlueprint = {
 const COMBINE_JEUDI: SessionBlueprint = {
   day: 3,
   title: 'Combine initial — deadlift 1RM',
-  durationLabel: '45 min',
+  durationLabel: '55-60 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -262,7 +262,7 @@ const COMBINE_JEUDI: SessionBlueprint = {
 const COMBINE_VENDREDI: SessionBlueprint = {
   day: 4,
   title: 'Combine initial — bench 1RM + ab wheel',
-  durationLabel: '55 min',
+  durationLabel: '50-60 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
@@ -281,7 +281,7 @@ const COMBINE_VENDREDI: SessionBlueprint = {
 const COMBINE_SAMEDI: SessionBlueprint = {
   day: 5,
   title: 'Combine initial — tractions max, leg raise, farmer',
-  durationLabel: '50 min',
+  durationLabel: '20-30 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
@@ -309,7 +309,7 @@ const COMBINE_SAMEDI: SessionBlueprint = {
 const COMBINE_S8_SAMEDI: SessionBlueprint = {
   day: 5,
   title: 'Combine intermédiaire',
-  durationLabel: '75 min',
+  durationLabel: '45-55 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -332,7 +332,7 @@ const COMBINE_S8_SAMEDI: SessionBlueprint = {
 const COMBINE_S8_DIMANCHE: SessionBlueprint = {
   day: 6,
   title: 'Combine intermédiaire (suite) + haut du corps',
-  durationLabel: '55 min',
+  durationLabel: '25-35 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
@@ -343,19 +343,19 @@ const COMBINE_S8_DIMANCHE: SessionBlueprint = {
     { exId: 'incline-db-press', sets: 2, work: reps(8), load: dbPair(24), targetRPE: rpe(6), restSec: 90 },
     { exId: 'one-arm-cable-row', sets: 2, work: reps(10, true), load: noLoad(), targetRPE: rpe(6), restSec: 75 },
     /*
-     * Semaine 8 : la Landmine Rotation est déjà en place depuis la semaine 5,
-     * elle remplace donc le chop ici aussi — en version deload, 2 × 4/côté.
-     * C'est le seul dimanche de deload où elle apparaît : celui de la
-     * semaine 4 précède son introduction et garde le Cable Chop.
+     * Le Woodchop, et non la Landmine Rotation : depuis que celle-ci vit au
+     * vendredi, la programmer ici la ferait apparaître deux fois dans la
+     * même semaine — ce que §11 lit mal, et qu'un test du programme
+     * interdit explicitement en dehors du Broad Jump.
      */
     {
-      exId: 'landmine-rotation',
+      exId: 'cable-chop',
       sets: 2,
-      work: reps(4, true),
+      work: reps(5, true),
       load: noLoad(),
       targetRPE: rpe(6),
-      restSec: 75,
-      note: 'Deload : charge allégée, vitesse conservée, aucune série à l’échec.',
+      restSec: 60,
+      note: 'Deload : rotation lente et contrôlée, aucune série à l’échec.',
     },
   ],
 };
@@ -376,7 +376,7 @@ const COMBINE_S8_DIMANCHE: SessionBlueprint = {
 const S12_LUNDI: SessionBlueprint = {
   day: 0,
   title: 'Taper — séance complète légère',
-  durationLabel: '50 min',
+  durationLabel: '45-55 min',
   intensity: 'LÉGER',
   warmup: 'lower',
   readinessTest: true,
@@ -405,7 +405,7 @@ const S12_LUNDI: SessionBlueprint = {
 const S12_MERCREDI: SessionBlueprint = {
   day: 2,
   title: 'TEST Deadlift 1RM',
-  durationLabel: '45 min',
+  durationLabel: '55-60 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -419,7 +419,7 @@ const S12_MERCREDI: SessionBlueprint = {
 const S12_VENDREDI: SessionBlueprint = {
   day: 4,
   title: 'Tests athlétiques',
-  durationLabel: '45 min max',
+  durationLabel: '35-45 min max',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -441,7 +441,7 @@ const S12_VENDREDI: SessionBlueprint = {
 const S12_SAMEDI: SessionBlueprint = {
   day: 5,
   title: 'TEST Back Squat 1RM + Farmer',
-  durationLabel: '60 min',
+  durationLabel: '60-70 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: true,
@@ -455,7 +455,7 @@ const S12_SAMEDI: SessionBlueprint = {
 const S12_DIMANCHE: SessionBlueprint = {
   day: 6,
   title: 'TEST Bench + tractions + tronc',
-  durationLabel: '75 min',
+  durationLabel: '90-95 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,

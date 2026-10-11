@@ -41,6 +41,11 @@ describe('le plan chiffre la distance des portés', () => {
   /*
    * La valeur existe donc dans la séance résolue : le champ n'a aucune raison
    * de s'ouvrir sur 5 m. C'est le minimum du curseur, pas une prescription.
+   *
+   * Le seuil était à 15 m, un chiffre rond hérité de l'époque où les seuls
+   * portés faisaient 20 à 30 m. Le Zercher March en prescrit 12 — soit
+   * environ dix-huit pas chargés, ce que demande le programme. Le test
+   * exprime maintenant son intention réelle : jamais le plancher du curseur.
    */
   it('aucun porté du programme ne prescrit 5 m', () => {
     for (let w = 0; w <= 12; w++) {
@@ -49,7 +54,7 @@ describe('le plan chiffre la distance des portés', () => {
         if (!hasSession(week, day)) continue;
         for (const ex of getSession(week, day, CTX)?.exercises ?? []) {
           if (ex.work.kind !== 'distance') continue;
-          expect(ex.work.meters, `${ex.id} S${week} j${day}`).toBeGreaterThanOrEqual(15);
+          expect(ex.work.meters, `${ex.id} S${week} j${day}`).toBeGreaterThan(5);
         }
       }
     }
