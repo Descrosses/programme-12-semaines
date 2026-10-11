@@ -107,6 +107,30 @@ const LIST: ExerciseDef[] = [
     cues: ['Augmente l’amplitude avant d’augmenter les reps.'],
     altBasicFit: 'Rollout avec une barre chargée de deux disques.',
   }),
+  def({
+    id: 'roman-side-bench',
+    name: 'Roman Side Bench',
+    fn: 'core',
+    role: 'core',
+    measure: 'reps',
+    intent:
+      'Force latérale du tronc à travers l’amplitude. Descente lente, remontée sans à-coup, jamais de rebond en bas.',
+    progressionRule:
+      'Amplitude d’abord, répétitions ensuite, charge en dernier. On n’ajoute un disque que lorsque 2 × 8/côté sortent propres, sans douleur et sans compensation.',
+    altBasicFit:
+      'Banc à lombaires 45° utilisé de côté, ou GHD. À défaut : side plank avec montée-descente du bassin, pieds décalés.',
+    cues: [
+      'Muscles : carré des lombes, obliques interne et externe, moyen fessier du côté haut.',
+      'Objectif athlétique : résister puis produire de la flexion latérale sous contrôle — ce qui tient l’alignement du tronc quand une force arrive de côté.',
+      'Position de départ : hanche calée sur le pad, pieds bloqués, corps aligné de la tête aux talons, bras croisés sur la poitrine.',
+      'Exécution : descends jusqu’à l’amplitude confortable, marque un temps d’arrêt, remonte jusqu’à l’alignement — pas au-delà.',
+      'Intention : tempo contrôlé des deux côtés, jamais d’élan. La série se juge sur la qualité du dernier côté, pas du premier.',
+      'Vigilance : poids du corps seulement au départ. Zéro rotation du bassin pendant le mouvement.',
+      'Vigilance adducteur : c’est la jambe du bas qui ancre contre le pad. Si l’installation tire à l’aine, réduis l’amplitude ou arrête — cet exercice n’est pas prioritaire au point de forcer dessus.',
+    ],
+    painWatch:
+      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec l’amplitude tolérée.',
+  }),
 
   // ------------------------------------------------------------- MERCREDI --
   def({
@@ -421,6 +445,30 @@ const LIST: ExerciseDef[] = [
     },
   }),
   def({
+    id: 'zercher-march',
+    name: 'Zercher March',
+    fn: 'carry',
+    role: 'carry',
+    measure: 'm',
+    intent:
+      'Marche sous charge antérieure, buste vertical. Tu ne portes pas la barre : tu refuses qu’elle te plie.',
+    progressionRule:
+      'La distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s’arrondisse et sans gêne à l’aine le lendemain. Montée volontairement lente : ce n’est pas un exercice de force maximale.',
+    altBasicFit:
+      'Barre dans la saignée des coudes, prise depuis un rack à mi-cuisse — ne jamais la ramasser au sol en Zercher. À défaut : marche avec deux haltères en rack avant.',
+    cues: [
+      'Muscles : érecteurs du rachis, transverse, obliques, grand dorsal, quadriceps et fessiers pour la marche.',
+      'Objectif athlétique : stabilité dynamique sous charge antérieure et résistance à la flexion du tronc pendant le déplacement — ce que ni le Front Squat (statique) ni un porté latéral ne travaillent.',
+      'Position de départ : barre dans la saignée des coudes, coudes serrés, poitrine haute, côtes basses.',
+      'Exécution : pas courts et contrôlés, pied posé à plat, aucun balancement latéral. Demi-tour large, jamais pivoté sur place.',
+      'Intention : gainage continu du premier au dernier pas. Respiration courte et haute, jamais d’apnée complète.',
+      'Vigilance : la série s’arrête dès que le buste s’arrondit ou que les coudes s’ouvrent — pas quand la distance est atteinte.',
+      'Vigilance adducteur : la marche chargée met les appuis unilatéraux en tension. Démarre très léger, et au moindre tiraillement à l’aine, réduis la charge ou arrête.',
+    ],
+    painWatch:
+      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et la distance tolérées.',
+  }),
+  def({
     id: 'suitcase-carry',
     name: 'Suitcase Carry',
     fn: 'carry',
@@ -465,29 +513,42 @@ const LIST: ExerciseDef[] = [
     intent: 'Transfert jambes → tronc → bras.',
   }),
   def({
+    /*
+     * L'identifiant reste `cable-chop` : il porte l'historique des semaines
+     * 1 à 4. Le Woodchop à la poulie EST le chop haut → bas — un seul et même
+     * mouvement sous deux noms. Créer une seconde fiche aurait fabriqué le
+     * doublon qu'il fallait justement éviter, et coupé l'historique en deux.
+     */
     id: 'cable-chop',
-    name: 'Cable Chop haut → bas',
+    name: 'Woodchop (poulie, haut → bas)',
     fn: 'core',
     role: 'core',
-    intent: 'Rapide, pivote sur les hanches.',
+    intent:
+      'Mouvement dynamique contrôlé, initié par les hanches. Le retour est maîtrisé, jamais lâché : c’est lui qui protège le bas du dos.',
+    progressionRule:
+      'Monte la charge seulement quand les deux côtés sortent à la même vitesse avec le même contrôle du retour. Jamais de charge qui oblige à tirer avec les bras.',
+    altBasicFit:
+      'Poulie haute avec corde ou poignée simple. À défaut : landmine en rotation descendante, même consigne d’appuis.',
     cues: [
-      'Semaines 1-4 seulement. À partir de la semaine 5, la Landmine Rotation prend sa place en début de séance : même fonction, mais chargeable et expressible en vitesse.',
+      'Muscles : obliques, transverse, grand dorsal, fessiers — les bras ne font que transmettre.',
+      'Objectif athlétique : transfert de force du bas vers le haut du corps et contrôle de la rotation sous charge.',
+      'Position de départ : poulie haute, pieds largeur d’épaules, bras quasi tendus, tronc gainé.',
+      'Exécution : pivote sur les appuis et les hanches, le talon arrière décolle, le tronc suit le bassin. Le mouvement descend en diagonale jusqu’à la hanche opposée.',
+      'Intention : rotation coordonnée hanches-tronc, jamais une torsion lombaire forcée. Si seul le buste tourne, la charge est trop lourde.',
+      'Vigilance : bassin et épaules dans le même plan. La série s’arrête dès que le retour devient subi.',
     ],
   }),
   /*
-   * Landmine Rotation — le seul ajout du cycle, et il ne s'ajoute à rien.
+   * Landmine Rotation — la puissance rotatoire du programme.
    *
-   * Il remplace le Cable Chop à partir de la semaine 5. Le nombre d'exercices
-   * du dimanche ne bouge pas, la durée non plus.
+   * Elle vit le VENDREDI à partir de la semaine 5, dans la séance Total Body
+   * Power : c'est la seule qualité du tronc qui s'exprime en vitesse, elle a
+   * donc sa place parmi les mouvements explosifs et pas en fin de dimanche.
    *
-   * Pourquoi lui : la rotation était la seule fonction du tronc sans
-   * expression en puissance. Le Cable Chop reste lent, n'est chiffré nulle
-   * part et ne change jamais entre l'accumulation et le bloc puissance, alors
-   * que tout le reste du programme y passe en contraste et en vitesse.
-   *
-   * Pourquoi en début de séance à partir de la S5 : une rotation rapide se
-   * juge sur sa vitesse, et une vitesse se mesure sur un tronc frais. En
-   * cinquième position derrière quatre exercices, on ne mesurait plus rien.
+   * Placée après le Lateral Bound et avant le Push Press : le tronc est
+   * encore frais, et tout ce qui le fatigue vraiment vient ensuite. Le Hang
+   * High Pull garde sa deuxième place, c'est lui qui demande le plus de
+   * fraîcheur nerveuse du bloc.
    *
    * Aucune charge écrite : elle démarre léger et se construit sur ce qui est
    * réellement soulevé, comme le Hang High Pull. Imposer un kilo sur un geste

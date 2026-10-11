@@ -51,26 +51,20 @@ const DIMANCHE = 6;
 
 // ---------------------------------------------------------------------------
 
-describe('Landmine Rotation — elle remplace le chop, elle ne s’y ajoute pas', () => {
-  it('les semaines 1 à 4 gardent le Cable Chop et ignorent la rotation', () => {
+describe('Landmine Rotation — au vendredi, avec les mouvements de vitesse', () => {
+  const VENDREDI = 4;
+
+  it('les semaines 1 à 4 ne la connaissent pas', () => {
     for (const w of [1, 2, 3, 4]) {
-      const noms = ids(session(w, DIMANCHE).exercises);
-      expect(noms, `S${w}`).toContain('cable-chop');
-      expect(noms, `S${w}`).not.toContain('landmine-rotation');
+      for (const d of [0, 2, 4, 5, 6]) {
+        expect(ids(session(w, d).exercises), `S${w} j${d}`).not.toContain('landmine-rotation');
+      }
     }
   });
 
-  it('à partir de la semaine 5, le chop disparaît et la rotation ouvre la séance', () => {
-    for (const w of [5, 6, 7, 9, 10, 11]) {
-      const noms = ids(session(w, DIMANCHE).exercises);
-      expect(noms, `S${w}`).not.toContain('cable-chop');
-      expect(noms[0], `S${w}`).toBe('landmine-rotation');
-    }
-  });
-
-  it('force max : 3 × 5/côté, repos 75 s', () => {
+  it('force max : 3 × 5/côté le vendredi, repos 75 s', () => {
     for (const w of [5, 6, 7]) {
-      const ex = trouve(w, DIMANCHE, 'landmine-rotation');
+      const ex = trouve(w, VENDREDI, 'landmine-rotation');
       expect(ex.loadLine, `S${w}`).toBe('3 × 5 / côté');
       expect(ex.restSec, `S${w}`).toBe(75);
     }
@@ -78,39 +72,41 @@ describe('Landmine Rotation — elle remplace le chop, elle ne s’y ajoute pas'
 
   it('puissance : 3 × 4/côté, repos 90 s, intention explosive', () => {
     for (const w of [9, 10, 11]) {
-      const ex = trouve(w, DIMANCHE, 'landmine-rotation');
+      const ex = trouve(w, VENDREDI, 'landmine-rotation');
       expect(ex.loadLine, `S${w}`).toBe('3 × 4 / côté');
       expect(ex.restSec, `S${w}`).toBe(90);
       expect(ex.notes.join(' '), `S${w}`).toMatch(/vitesse prime/i);
     }
   });
 
-  it('semaine 8 : 2 × 4/côté sur le dimanche du combine intermédiaire', () => {
-    const ex = trouve(8, DIMANCHE, 'landmine-rotation');
-    expect(ex.loadLine).toBe('2 × 4 / côté');
-    expect(ids(session(8, DIMANCHE).exercises)).not.toContain('cable-chop');
-  });
-
-  it('semaine 12 : ni chop ni rotation, ce sont les tests', () => {
-    const noms = ids(session(12, DIMANCHE).exercises);
-    expect(noms).not.toContain('landmine-rotation');
-    expect(noms).not.toContain('cable-chop');
+  it('semaine 8 : elle reste au vendredi, en volume de deload', () => {
+    expect(trouve(8, VENDREDI, 'landmine-rotation').loadLine).toBe('2 × 4 / côté');
   });
 
   /*
-   * Le garde-fou de la consigne « ne pas augmenter le nombre total
-   * d'exercices » : le dimanche de la semaine 5 doit compter autant
-   * d'exercices que celui de la semaine 3.
+   * Elle arrive après le Lateral Bound et avant le Push Press : le tronc est
+   * encore frais, et tout ce qui le fatigue vraiment vient ensuite. Le Hang
+   * High Pull garde sa deuxième place, c'est lui qui demande le plus de
+   * fraîcheur nerveuse du bloc.
    */
-  it('le dimanche ne gagne aucun exercice au passage', () => {
-    expect(session(5, DIMANCHE).exercises).toHaveLength(session(3, DIMANCHE).exercises.length);
+  it('elle se place avant tout ce qui fatigue le tronc', () => {
+    const noms = ids(session(5, VENDREDI).exercises);
+    expect(noms.indexOf('landmine-rotation')).toBeGreaterThan(noms.indexOf('hang-high-pull'));
+    expect(noms.indexOf('landmine-rotation')).toBeLessThan(noms.indexOf('push-press'));
+    expect(noms.indexOf('landmine-rotation')).toBeLessThan(noms.indexOf('speed-squat'));
   });
 
-  it('elle n’apparaît aucun autre jour de la semaine', () => {
-    for (const w of [5, 9]) {
-      for (const d of [0, 2, 4, 5]) {
+  it('elle n’apparaît aucun autre jour — le dimanche a rendu sa place', () => {
+    for (const w of [5, 8, 9]) {
+      for (const d of [0, 2, 5, 6]) {
         expect(ids(session(w, d).exercises), `S${w} j${d}`).not.toContain('landmine-rotation');
       }
+    }
+  });
+
+  it('semaine 12 : aucune rotation, ce sont les tests', () => {
+    for (const d of [0, 2, 4, 5, 6]) {
+      expect(ids(session(12, d).exercises), `j${d}`).not.toContain('landmine-rotation');
     }
   });
 });
@@ -219,12 +215,20 @@ describe('suivi de douleur — seulement là où il a un sens', () => {
     expect(EXERCISES['bulgarian-split-squat']!.painWatch).toMatch(/adducteur gauche/i);
   });
 
-  it('et personne d’autre — un curseur de douleur partout ferait un questionnaire', () => {
+  it('et les deux nouveaux à tester — pas un de plus', () => {
+    // Les deux mouvements symptomatiques, plus les deux exercices introduits
+    // en semaine 5 dont la tolérance à l'aine reste à vérifier. Un curseur
+    // de douleur sous chaque exercice ferait un questionnaire, pas un suivi.
     const avec = Object.values(EXERCISES)
       .filter((e) => e.painWatch)
       .map((e) => e.id)
       .sort();
-    expect(avec).toEqual(['back-squat', 'bulgarian-split-squat']);
+    expect(avec).toEqual([
+      'back-squat',
+      'bulgarian-split-squat',
+      'roman-side-bench',
+      'zercher-march',
+    ]);
   });
 
   it('les mouvements surveillés gardent leur programmation, avec un rappel', () => {
@@ -315,10 +319,14 @@ describe('Barbell Offset Hold', () => {
     }
   });
 
-  it('absent des deux deloads — aucun exercice nouveau en semaine allégée', () => {
-    for (const w of [4, 8]) {
-      expect(ids(session(w, MERCREDI).exercises), `S${w}`).not.toContain('barbell-offset-hold');
-    }
+  /*
+   * Semaine 4 : l'exercice n'existait pas encore, et cette semaine est faite.
+   * Semaine 8 : il est au programme depuis trois semaines, il déloade comme
+   * tout le reste du tronc au lieu de disparaître.
+   */
+  it('absent du deload de la semaine 4, présent en volume réduit en semaine 8', () => {
+    expect(ids(session(4, MERCREDI).exercises)).not.toContain('barbell-offset-hold');
+    expect(trouve(8, MERCREDI, 'barbell-offset-hold').loadLine).toBe('2 × 15 s / côté × 5 kg');
   });
 
   it('absent de la semaine 12 — ce sont les tests', () => {
@@ -365,12 +373,137 @@ describe('Barbell Offset Hold', () => {
     expect(ex.suspended).toBeUndefined();
   });
 
-  it('l’anti-flexion latérale passe de un à deux jours par semaine', () => {
+  it('l’anti-flexion latérale couvre trois jours écartés', () => {
+    // Lundi (Roman Side Bench), mercredi (Offset Hold), samedi (Roman Side
+    // Bench). Le Suitcase Carry a quitté le programme à partir de la S5.
     const jours = [0, 2, 4, 5, 6].filter((d) =>
       session(5, d).exercises.some((e) =>
-        ['suitcase-carry', 'barbell-offset-hold'].includes(e.id),
+        ['barbell-offset-hold', 'roman-side-bench'].includes(e.id),
       ),
     );
-    expect(jours).toEqual([2, 5]); // mercredi et samedi, écartés de trois jours
+    expect(jours).toEqual([0, 2, 5]);
+  });
+});
+
+/**
+ * La règle « deux exercices de tronc par séance », à partir de la semaine 5.
+ *
+ * Elle est tenue ici parce qu'elle est facile à casser sans s'en apercevoir :
+ * un `remove` de trop dans une règle de bloc, et une séance repasse à un seul
+ * exercice sans que rien ne se plaigne.
+ */
+describe('deux exercices de tronc par séance, à partir de la S5', () => {
+  const tronc = (w: number, d: number) =>
+    session(w, d)
+      .exercises.filter((e) => e.def.role === 'core' || e.def.role === 'carry')
+      .map((e) => e.id);
+
+  it('la répartition voulue, semaine par semaine', () => {
+    const attendu: Record<number, string[]> = {
+      0: ['ab-wheel', 'roman-side-bench'],
+      2: ['pallof-press', 'barbell-offset-hold'],
+      4: ['landmine-rotation', 'dead-bug-cable'],
+      5: ['zercher-march', 'roman-side-bench'],
+      6: ['hanging-leg-raise', 'cable-chop'],
+    };
+    for (const w of [5, 6, 7, 9, 10, 11]) {
+      for (const [d, ids] of Object.entries(attendu)) {
+        expect([...tronc(w, Number(d))].sort(), `S${w} j${d}`).toEqual([...ids].sort());
+      }
+    }
+  });
+
+  it('les trois jours d’entraînement de la semaine 8 en gardent deux aussi', () => {
+    // Samedi et dimanche de la S8 sont des séances de combine : la règle ne
+    // s'y applique pas, et c'est voulu — ce sont des tests, pas des séances.
+    for (const d of [0, 2, 4]) expect(tronc(8, d), `j${d}`).toHaveLength(2);
+  });
+
+  it('les semaines 1 à 4 gardent leur répartition d’origine', () => {
+    expect(tronc(3, 0)).toEqual(['ab-wheel']);
+    expect(tronc(3, 4)).toEqual(['farmer-carry', 'dead-bug-cable']);
+    expect(tronc(3, 5)).toEqual(['suitcase-carry']);
+    expect(tronc(3, 6)).toEqual(['cable-chop', 'hanging-leg-raise', 'bear-crawl']);
+  });
+});
+
+describe('ce qui sort du programme à partir de la semaine 5', () => {
+  const PARTIS = ['farmer-carry', 'suitcase-carry', 'bear-crawl'];
+
+  it('ils ne réapparaissent dans aucun bloc après la semaine 4', () => {
+    for (let w = 5; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        const s = getSession(w as WeekIndex, d as DayIndex, ctx());
+        for (const id of PARTIS) {
+          expect(ids(s?.exercises ?? []), `${id} S${w} j${d}`).not.toContain(id);
+        }
+      }
+    }
+  });
+
+  it('mais les semaines 1 à 4 les gardent — leur historique ne se réécrit pas', () => {
+    expect(ids(session(3, 4).exercises)).toContain('farmer-carry');
+    expect(ids(session(3, 5).exercises)).toContain('suitcase-carry');
+    expect(ids(session(3, 6).exercises)).toContain('bear-crawl');
+    expect(ids(session(4, 4).exercises)).toContain('farmer-carry');
+  });
+
+  /*
+   * Le Farmer Carry reste une métrique du combine : §12 le mesure en distance
+   * max à 2 × 40 kg, en semaine 0, 8 et 12. Le retirer de l'entraînement ne
+   * le retire pas des tests — ce sont deux exercices distincts au catalogue.
+   */
+  it('le Farmer Carry reste testé au combine, même s’il n’est plus entraîné', () => {
+    expect(ids(session(8, 5).exercises)).toContain('test-farmer-carry');
+    expect(ids(session(12, 5).exercises)).toContain('test-farmer-carry');
+  });
+
+  it('aucun doublon : le Woodchop est l’ancien chop, pas une seconde fiche', () => {
+    expect(EXERCISES['cable-chop']!.name).toContain('Woodchop');
+    expect(EXERCISES['woodchop']).toBeUndefined();
+  });
+});
+
+describe('Roman Side Bench et Zercher March', () => {
+  it('le Roman Side Bench tient le lundi et le samedi', () => {
+    for (const w of [5, 7]) {
+      expect(trouve(w, 0, 'roman-side-bench').loadLine).toBe('2 × 8 / côté — poids du corps');
+      expect(trouve(w, 5, 'roman-side-bench').loadLine).toBe('2 × 8 / côté — poids du corps');
+    }
+    // Volume réduit en bloc puissance, comme tout le reste.
+    expect(trouve(9, 0, 'roman-side-bench').loadLine).toBe('2 × 6 / côté — poids du corps');
+  });
+
+  it('il s’enchaîne en alternance avec l’Ab Wheel le lundi', () => {
+    const s = session(5, 0);
+    expect(trouve(5, 0, 'ab-wheel').restSec).toBe(45);
+    expect(trouve(5, 0, 'roman-side-bench').restSec).toBe(45);
+    const noms = ids(s.exercises);
+    expect(noms[noms.indexOf('ab-wheel') + 1]).toBe('roman-side-bench');
+    expect(trouve(5, 0, 'ab-wheel').notes.join(' ')).toMatch(/alternance/i);
+  });
+
+  it('le Zercher March démarre barre nue et se mesure en mètres', () => {
+    const ex = trouve(5, 5, 'zercher-march');
+    expect(ex.loadLine).toBe('2 × 12 m × 20 kg');
+    expect(ex.restSec).toBe(90);
+    expect(ex.notes.join(' ')).toMatch(/pas chargés/);
+  });
+
+  it('les deux portent un suivi de douleur — leur tolérance n’est pas établie', () => {
+    expect(EXERCISES['roman-side-bench']!.painWatch).toMatch(/adducteur gauche/i);
+    expect(EXERCISES['zercher-march']!.painWatch).toMatch(/adducteur gauche/i);
+  });
+
+  it('leurs fiches sont complètes', () => {
+    for (const id of ['roman-side-bench', 'zercher-march', 'cable-chop']) {
+      const ex = EXERCISES[id]!;
+      expect(ex.intent, id).toBeTruthy();
+      expect(ex.progressionRule, id).toBeTruthy();
+      expect(ex.altBasicFit, id).toBeTruthy();
+      expect(ex.cues!.length, id).toBeGreaterThanOrEqual(5);
+      expect(ex.cues!.join(' '), id).toMatch(/Muscles :/);
+      expect(ex.cues!.join(' '), id).toMatch(/Objectif athlétique :|Objectif athlétique|Objectif :/);
+    }
   });
 });

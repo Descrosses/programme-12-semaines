@@ -184,11 +184,18 @@ describe('bloc puissance (S9-11) — contraste', () => {
     expect(find(s, 'nordic-curl').sets).toBe(2);
   });
 
-  it('vendredi : pogos ajoutés, ni dead bug ni conditioning', () => {
+  it('vendredi : pogos ajoutés, plus de cable row ni de Farmer Carry', () => {
     const s = session(9, 4);
     expect(ids(s.exercises)).toContain('pogo-jumps');
-    expect(ids(s.exercises)).not.toContain('dead-bug-cable');
     expect(ids(s.exercises)).not.toContain('explosive-cable-row');
+    expect(ids(s.exercises)).not.toContain('farmer-carry');
+    /*
+     * Le Dead Bug ne disparaît plus du bloc puissance. §8 le supprimait quand
+     * le vendredi n'avait qu'un exercice de tronc ; depuis que la Landmine
+     * Rotation y vit, le retirer laisserait la séance à un seul. Il reste, en
+     * volume réduit.
+     */
+    expect(find(s, 'dead-bug-cable').loadLine).toBe('2 × 5 / côté');
     expect(find(s, 'speed-squat').loadLine).toBe('8 × 2 × 65 kg');
   });
 
@@ -385,14 +392,19 @@ describe('readiness ROUGE', () => {
   });
 
   it('il ne reste que le lift principal, le tronc et la mobilité', () => {
-    expect(ids(session(5, 0, rouge).exercises)).toEqual(['back-squat', 'ab-wheel']);
+    expect(ids(session(5, 0, rouge).exercises)).toEqual([
+      'back-squat',
+      'ab-wheel',
+      'roman-side-bench',
+    ]);
     /*
-     * Le samedi ne garde plus que le deadlift : son seul autre exercice de
-     * tronc était le Copenhagen Plank, suspendu pour douleur à l'adducteur.
-     * Une suspension passe avant le feu tricolore — un jour rouge ne remet
-     * pas en service un exercice qui fait mal.
+     * Le samedi garde le deadlift et le Roman Side Bench. Le Zercher March
+     * est un porté, pas du tronc au sens du feu tricolore : il tombe avec le
+     * reste. Et le Copenhagen Plank reste suspendu — une suspension passe
+     * avant le feu tricolore, un jour rouge ne remet pas en service un
+     * exercice qui fait mal.
      */
-    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift']);
+    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift', 'roman-side-bench']);
     expect(session(5, 5, rouge).suspended.map((x) => x.id)).toEqual(['copenhagen-plank']);
   });
 

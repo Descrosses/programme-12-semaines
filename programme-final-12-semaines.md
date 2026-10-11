@@ -104,6 +104,7 @@ Progression : 8 reps propres à RPE ≤ 7,5 **et adducteur bien toléré** → +
 Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lombaire. S2 : 85 kg, S3 : 90 kg si RPE conforme.
 
 **F. Ab Wheel — 3 × 8** — Repos 60 s — Bassin en rétroversion, jamais d'extension lombaire. Augmente l'amplitude avant les reps.
+À partir de la semaine 5, il s'enchaîne **en alternance avec le Roman Side Bench** (§8) : une série de chaque, 45 s entre les stations.
 
 ---
 
@@ -149,6 +150,7 @@ Progression : +2,5 kg quand les 3 reps de toutes les séries sont rapides.
 
 **H. Farmer Carry — 4 × 25 m, haltères 2 × 34 kg** — Repos 90 s — **DEUX haltères, une dans chaque main.** Charge symétrique, buste haut, marche agressive. À ne pas confondre avec le Suitcase Carry du samedi, qui se porte d'un seul côté.
 Progression : +2 kg quand les 25 m sont tenus sans ralentir.
+**Semaines 1 à 4 seulement.** À partir de la semaine 5, il sort du programme et son créneau revient à la Landmine Rotation (§8). Il reste testé au combine : distance max à 2 × 40 kg (§12).
 
 **I. Dead Bug avec câble — 3 × 6/côté** — Repos 45 s — Anti-extension.
 
@@ -175,6 +177,7 @@ Prescription d'origine, conservée pour mémoire : 3 × 8/côté, repos 60 s, pi
 **Rien ne le remplace.** Le samedi garde le Suitcase Carry, et l'anti-flexion latérale reste couverte. Reprise non planifiée : elle dépendra de l'évolution des symptômes et de l'avis d'un kiné du sport, pas d'un numéro de semaine.
 
 **H. Suitcase Carry — 3 × 30 m/côté, 32 kg** — Repos 60 s — **UNE SEULE haltère, comme une valise**, puis l'autre côté. Zéro inclinaison : c'est le déséquilibre qui fait travailler le tronc, le porter à deux mains supprime l'exercice. À ne pas confondre avec le Farmer Carry du vendredi, qui se porte à deux mains.
+**Semaines 1 à 4 seulement.** À partir de la semaine 5, le Zercher March prend sa place et le Roman Side Bench ferme la séance (§8).
 
 ---
 
@@ -190,12 +193,13 @@ Pas de gros travail excentrique jambes.
 
 **D. Landmine Press debout — 3 × 8/côté** — Repos 75 s — Transfert jambes → tronc → bras.
 
-**E. Cable Chop haut → bas — 3 × 8/côté** — Repos 60 s — Rapide, pivote sur les hanches.
-**Semaines 1 à 4 seulement.** À partir de la semaine 5, la Landmine Rotation prend sa place et passe en tête de séance (§8). Le nombre d'exercices du dimanche ne change pas.
+**E. Woodchop à la poulie, haut → bas — 3 × 8/côté** — Repos 60 s — Rotation coordonnée hanches-tronc, retour maîtrisé. Jamais une torsion lombaire forcée.
+*C'est l'exercice anciennement nommé « Cable Chop » : même mouvement, même identifiant, donc même historique.* À partir de la semaine 5 il passe à 2 × 6/côté et devient le second exercice de tronc du dimanche (§8).
 
 **F. Hanging Leg Raise strict — 3 × 8-12** — Repos 60 s — Rétroversion du bassin.
 
 **G. Bear Crawl — 3 × 20 m** — Repos 60 s — Genoux à 5 cm du sol, bassin stable.
+**Semaines 1 à 4 seulement.** Il sort du programme à partir de la semaine 5 : son anti-rotation est déjà couverte par le Pallof Press, le Landmine Press et le Single-Leg RDL, et son créneau finance le Woodchop (§8).
 
 **H. Conditioning — 8 × (20 s soutenu / 70 s facile) vélo ou rameur** — 12 min — 8/10 sur les 20 s, pas de sprint maximal. Coût musculaire faible.
 
@@ -223,6 +227,12 @@ Pas de gros travail excentrique jambes.
 | Bear Crawl | 3 × 20 m | 2 × 15 m |
 | Farmer Carry | 4 × 25 m | 2 × 20 m, −20 % |
 | Suitcase Carry | 3 × 30 m/côté | 2 × 20 m/côté, −20 % |
+| Roman Side Bench | 2 × 8/côté | 2 × 6/côté |
+| Landmine Rotation | 3 × 5/côté | 2 × 4/côté |
+| Barbell Offset Hold | 3 × 25 s/côté | 2 × 15 s/côté |
+| Zercher March | 2 × 12 m | 2 × 10 m, −20 % |
+
+Les quatre dernières lignes n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry et le Suitcase Carry, eux, ne figurent plus au programme à partir de la semaine 5 — leurs lignes ne valent plus que pour la semaine 4.
 
 Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
 Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
@@ -243,16 +253,47 @@ Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
 Sans la hausse, le Hip Thrust donnait 4 × 8 × 110 kg en 1 min 30 de repos, soit 3 520 kg, puis 4 × 6 × 110 kg en 2 min, soit 2 640 kg. Moins de travail, à charge identique, avec plus de récupération : c'est un allègement, pas un bloc de force. Avec les +10 % : 4 × 6 × 120 kg, 2 880 kg — **−18 % de volume, +9 % de charge, +33 % de repos.** Le volume baisse, l'intensité monte, ce que le bloc est censé faire.
 
 Le +10 % est celui que le programme applique déjà aux accessoires du haut pour la même bascule : aucun chiffre nouveau. Il s'applique **une seule fois**, à l'entrée du bloc. Les semaines suivantes, l'autorégulation et le §11 reprennent la main — réappliquer le facteur chaque semaine donnerait 110 → 121 → 133 → 146 en trois semaines. Et comme partout, c'est le RPE cible qui juge : si 4 × 6 à RPE 8 sort à RPE 9, le cas 4 du §11 fait redescendre.
-- **Mercredi : Barbell Offset Hold 3 × 25 s/côté**, repos 60 s, juste après le Pallof Press. Charge légère autorégulée, départ à 5 kg d'un seul côté.
-- **Dimanche : la Landmine Rotation remplace le Cable Chop et ouvre la séance.** 3 × 5/côté, repos 75 s, charge légère autorégulée. S5 apprentissage technique, S6 accélération contrôlée, S7 progression technique. Le nombre d'exercices du dimanche ne change pas.
+
+**Tronc — la nouvelle répartition, à partir de la semaine 5.** Deux exercices par séance, un pour la stabilité, un pour la rotation ou la flexion latérale :
+
+| Jour | Tronc n° 1 | Tronc n° 2 |
+|---|---|---|
+| Lundi | Ab Wheel 3 × 8 | **Roman Side Bench 2 × 8/côté** (en alternance, 45 s) |
+| Mercredi | Pallof Press 3 × 6/côté | Barbell Offset Hold 3 × 25 s/côté |
+| Vendredi | Dead Bug câble 3 × 6/côté | **Landmine Rotation 3 × 5/côté**, repos 75 s |
+| Samedi | **Zercher March 2 × 12 m**, repos 90 s | **Roman Side Bench 2 × 8/côté** |
+| Dimanche | Hanging Leg Raise 3 × 8 | **Woodchop 2 × 6/côté** |
+
+Ce qui sort à partir de la semaine 5 : **Farmer Carry**, **Suitcase Carry**, **Bear Crawl**. Leurs fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
+
+La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
+
 - Hang High Pull 4 × 3, repos 2 min
 - Push Press 6 × 2, RPE 6-7, repos 2 min 30
 - Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
 
+### Roman Side Bench et Zercher March — ce qu'ils remplacent
+
+**Roman Side Bench — lundi et samedi, 2 × 8/côté, repos 45-60 s, poids du corps.**
+
+Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les plus lourds du bas du corps, en toute fin de séance, au poids du corps : c'est un exercice de qualité, pas de volume. Le lundi il s'enchaîne en alternance avec l'Ab Wheel — anti-extension et flexion latérale ne se concurrencent pas, et l'alternance rend l'ajout presque gratuit sur la séance la plus serrée de la semaine.
+
+*Progression* : amplitude d'abord, répétitions ensuite, charge en dernier. Aucun disque tant que 2 × 8/côté ne sortent pas propres et sans douleur.
+
+*Vigilance* : la jambe du bas s'ancre contre le pad. Si l'installation tire à l'aine, on réduit l'amplitude ou on arrête — cet exercice n'est pas prioritaire au point de forcer dessus (§14).
+
+**Zercher March — samedi, 2 × 12 m (≈ 18 pas), repos 90 s, barre nue au départ.**
+
+Il remplace le Suitcase Carry et apporte ce que le programme n'avait pas : la stabilité dynamique sous charge **antérieure**. Le Front Squat charge l'avant mais ne se déplace pas ; les portés se déplaçaient mais chargeaient sur le côté.
+
+*Progression* : la distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s'arrondisse et sans gêne le lendemain. La montée est volontairement lente — ce n'est pas un exercice de force maximale, et il vit dans la séance du deadlift.
+
+*Vigilance* : la marche chargée met les appuis unilatéraux en tension. Démarrage barre nue, suivi de douleur actif (§14).
+
 ### Barbell Offset Hold — pourquoi il entre, et pourquoi là
 
-Second ajout du cycle, et le dernier. Il ne remplace rien : c'est le seul exercice ajouté aux douze semaines.
+Premier des trois exercices de tronc introduits en semaine 5, et le seul du mercredi.
 
 **Le trou qu'il comble.** Depuis la suspension du Copenhagen Plank (§14), l'anti-flexion latérale ne repose plus que sur le Suitcase Carry du samedi. Une fonction, un jour, septième exercice d'une séance de 90 minutes.
 
@@ -264,7 +305,7 @@ Second ajout du cycle, et le dernier. Il ne remplace rien : c'est le seul exerci
 |---|---|---|
 | 1-4 | — | — |
 | 5-7 | 3 × 25 s/côté | 60 s |
-| 8 | — (deload : aucun exercice nouveau) | — |
+| 8 | 2 × 15 s/côté (deload) | 60 s |
 | 9-11 | 2 × 20 s/côté | 45 s |
 | 12 | — (semaine de tests) | — |
 
@@ -280,16 +321,15 @@ Seul ajout du cycle, et il ne s'ajoute à rien : il remplace le Cable Chop du di
 
 | Semaines | Prescription | Intention |
 |---|---|---|
-| 1-3 | Cable Chop 3 × 8/côté | Programme historique inchangé |
-| 4 | Cable Chop 2 × 6/côté | Deload, aucun exercice nouveau |
-| 5 | Landmine Rotation 3 × 5/côté | Apprentissage technique |
-| 6 | Landmine Rotation 3 × 5/côté | Accélération contrôlée |
-| 7 | Landmine Rotation 3 × 5/côté | Progression technique |
-| 8 | Landmine Rotation 2 × 4/côté | Deload (dimanche du combine intermédiaire) |
-| 9-11 | Landmine Rotation 3 × 4/côté | Rotation explosive |
-| 12 | — | Semaine de tests, pas de rotation |
+| 1-4 | — | Elle n'existe pas encore |
+| 5 | 3 × 5/côté | Apprentissage technique |
+| 6 | 3 × 5/côté | Accélération contrôlée |
+| 7 | 3 × 5/côté | Progression technique |
+| 8 | 2 × 4/côté | Deload, vitesse conservée |
+| 9-11 | 3 × 4/côté | Rotation explosive |
+| 12 | — | Semaine de tests |
 
-**Placement** : en tête de séance du dimanche à partir de la S5. Une rotation rapide se juge sur sa vitesse, et une vitesse se mesure sur un tronc frais ; en cinquième position derrière quatre exercices, on ne mesurait plus rien. Échauffement : 6 pivots de hanche à vide par côté, puis une série d'approche barre nue.
+**Placement** : le **vendredi**, séance Total Body Power, après le Lateral Bound et avant le Push Press. C'est la seule qualité de tronc qui s'exprime en vitesse : sa place est parmi les mouvements explosifs, sur un tronc encore frais, et pas en fin de séance modérée. Le Hang High Pull garde sa deuxième place — c'est lui qui demande le plus de fraîcheur nerveuse du bloc. Échauffement : 6 pivots de hanche à vide par côté, puis une série d'approche barre nue.
 
 **Repos** : 75 s en S5-8, 90 s en S9-11.
 
@@ -302,9 +342,12 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
-**Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), Farmer 3 × 20 m. Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
-**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, Copenhagen 3 × 5, Suitcase 3 × 20 m.
-**Dimanche** : **Landmine Rotation 3 × 4/côté explosif en ouverture** (repos 90 s, reset 5-10 s entre les reps, la série s'arrête dès que la vitesse baisse — §5), puis Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, leg raise 3 × 8, bear crawl 3 × 15 m. Plus de Cable Chop : la rotation l'a remplacé depuis la semaine 5. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
+
+**Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 2 × 6/côté**, 45 s entre les stations.
+**Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+*Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
+**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Zercher March 2 × 12 m**, **Roman Side Bench 2 × 6/côté**. Copenhagen suspendu (§14), plus de Suitcase Carry.
+**Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. Plus de Bear Crawl, et la Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
 - **Lundi** : Box Jump 3 × 2, Squat 3 × 2 × 77,5 kg RPE 5-6, Bulgarian 2 × 5 léger, Ab Wheel 2 × 6. Terminé.
@@ -455,10 +498,15 @@ Gêne à l'intérieur de la cuisse gauche, près de l'aine, présente depuis env
 | Statut | Exercices | Ce que ça change |
 |---|---|---|
 | **Maintenu, adapté** | Back Squat, Bulgarian Split Squat | Charge et amplitude tolérées. Les valeurs du tableau §9 restent des références théoriques, pas des obligations. La tolérance passe avant le RPE. |
-| **Maintenu, surveillé** | Front Squat, Deadlift, Single-Leg RDL, Hip Thrust, Farmer Carry, Suitcase Carry, Lateral Bound | Programmation inchangée — rien n'est supprimé préventivement. Surveiller l'apparition d'une gêne pendant la séance et le lendemain. |
+| **Maintenu, surveillé** | Front Squat, Deadlift, Single-Leg RDL, Hip Thrust, Lateral Bound | Programmation inchangée — rien n'est supprimé préventivement. Surveiller l'apparition d'une gêne pendant la séance et le lendemain. |
+| **Nouveau, à tester** | Roman Side Bench, Zercher March | Introduits en semaine 5, tolérance non établie. Suivi de douleur actif sur les deux, comme sur le squat et le Bulgarian. Progression conditionnée à la tolérance, jamais automatique. |
 | **Suspendu** | Copenhagen Plank dynamique | Retiré des séances, conservé au catalogue avec sa raison. Aucun remplacement : l'anti-flexion latérale reste couverte par le Suitcase Carry. |
 
 Le Lateral Bound est explicitement maintenu sans modification : il ne provoque aucune douleur et la stabilité des réceptions s'est nettement améliorée.
+
+**Les deux nouveaux ne sont pas traités comme les anciens.** Le Roman Side Bench ancre la jambe du bas contre un pad, et le Zercher March met les appuis unilatéraux en tension sous charge : ni l'un ni l'autre n'a de tolérance établie sur cet adducteur. Les deux portent donc un suivi de douleur dans l'application, au même titre que le Back Squat et le Bulgarian Split Squat. Les deux démarrent au minimum : poids du corps pour le Roman Side Bench, barre nue pour le Zercher March. Et pour les deux, la règle du cas 8 s'applique sans discussion — une gêne qui augmente fait réduire, puis arrêter.
+
+La Landmine Rotation, elle, se teste progressivement sans suivi dédié : debout, pieds qui pivotent, aucune mise en tension de l'adducteur. Charge légère au départ, et on signale si quelque chose apparaît.
 
 **Le Barbell Offset Hold, ajouté en semaine 5, ne figure dans aucune de ces trois colonnes.** Debout, pieds fixes, aucune adduction de hanche, aucun appui unipodal : il ne s'approche pas du pattern douloureux. C'est d'ailleurs la raison pour laquelle il a été retenu plutôt que le Roman Side Bench, dont la jambe du bas s'ancre contre le pad. S'il devait malgré tout provoquer une gêne à l'aine, la consigne est la même que partout : réduire, puis arrêter, et le signaler.
 

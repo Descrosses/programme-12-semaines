@@ -605,11 +605,12 @@ describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
 
   it('la progression du §8 annonce les mêmes semaines que les règles de bloc', () => {
     const table = MD.split('### Landmine Rotation')[1]!.split('###')[0]!;
-    // S1-4 : le chop. S5-7 : 3 × 5. S8 : 2 × 4. S9-11 : 3 × 4. S12 : rien.
-    expect(table).toContain('Cable Chop 3 × 8/côté');
-    expect(table).toContain('Landmine Rotation 3 × 5/côté');
-    expect(table).toContain('Landmine Rotation 2 × 4/côté');
-    expect(table).toContain('Landmine Rotation 3 × 4/côté');
+    // S1-4 : rien. S5-7 : 3 × 5. S8 : 2 × 4. S9-11 : 3 × 4. S12 : rien.
+    expect(table).toContain('| 5 | 3 × 5/côté');
+    expect(table).toContain('| 8 | 2 × 4/côté');
+    expect(table).toContain('| 9-11 | 3 × 4/côté');
+    // Et elle vit au vendredi, plus au dimanche.
+    expect(table).toMatch(/le \*\*vendredi\*\*/);
   });
 
   it('l’exercice existe au catalogue avec sa fiche complète', () => {
@@ -694,7 +695,7 @@ describe('§8 — les accessoires autorégulés montent en charge en force max',
   });
 });
 
-describe('§8 — Barbell Offset Hold, le seul exercice ajouté aux douze semaines', () => {
+describe('§8 — Barbell Offset Hold', () => {
   const MD = readFileSync(
     new URL('../../programme-final-12-semaines.md', import.meta.url),
     'utf8',
@@ -704,8 +705,9 @@ describe('§8 — Barbell Offset Hold, le seul exercice ajouté aux douze semain
   it('le .md dit ce que le code programme', () => {
     expect(BLOC).toContain('| 5-7 | 3 × 25 s/côté | 60 s |');
     expect(BLOC).toContain('| 9-11 | 2 × 20 s/côté | 45 s |');
-    // Les deux deloads et la semaine de tests sont explicitement vides.
-    expect(BLOC).toMatch(/\| 8 \| — \(deload/);
+    // La semaine 8 le déloade au lieu de le supprimer : il n'est plus
+    // nouveau à ce moment-là, il a trois semaines de pratique derrière lui.
+    expect(BLOC).toContain('| 8 | 2 × 15 s/côté (deload) | 60 s |');
     expect(BLOC).toMatch(/\| 12 \| — \(semaine de tests/);
   });
 

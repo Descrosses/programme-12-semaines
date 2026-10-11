@@ -8,6 +8,7 @@
 
 import {
   autoreg,
+  bodyweight,
   hold,
   meters,
   noLoad,
@@ -18,6 +19,7 @@ import {
   type Block,
   type DayIndex,
   type LoadSpec,
+  type WeekIndex,
   type RPETarget,
   type Slot,
   type Work,
@@ -64,6 +66,15 @@ export interface BlockRuleSet {
   block: Block;
   /** Absent = s'applique à tous les jours du bloc. */
   day?: DayIndex;
+  /**
+   * Première semaine où ces règles s'appliquent. Absent = tout le bloc.
+   *
+   * Nécessaire parce qu'un bloc n'est pas une semaine : « deload » couvre la
+   * semaine 4 ET la semaine 8. Les exercices de tronc introduits en semaine 5
+   * doivent apparaître dans le deload de la 8 et surtout PAS dans celui de la
+   * 4, qui est déjà faite et dont l'historique ne se réécrit pas.
+   */
+  fromWeek?: WeekIndex;
   rules: SlotRule[];
   notes?: string[];
 }
@@ -133,11 +144,58 @@ export const DELOAD_CORE: Readonly<Record<string, { sets: number; work: Work }>>
   'bear-crawl': { sets: 2, work: meters(15) },
   'farmer-carry': { sets: 2, work: meters(20) },
   'suitcase-carry': { sets: 2, work: meters(20, true) },
+  // Introduits en semaine 5, donc concernés par le seul deload de la 8.
+  'roman-side-bench': { sets: 2, work: reps(6, true) },
+  'landmine-rotation': { sets: 2, work: reps(4, true) },
+  'barbell-offset-hold': { sets: 2, work: hold(15, true) },
+  'zercher-march': { sets: 2, work: meters(10) },
 };
 
 // ---------------------------------------------------------------------------
 // Semaines 5-7 — Force maximale (§8)
 // ---------------------------------------------------------------------------
+
+/*
+ * Les créneaux de tronc introduits en semaine 5.
+ *
+ * Écrits une fois et réutilisés par les trois blocs concernés (force max,
+ * deload de la semaine 8, puissance) : trois copies finiraient par diverger,
+ * et c'est exactement le genre d'écart qui ne se voit pas dans une revue.
+ */
+const slot = (
+  exId: string,
+  sets: number,
+  work: Work,
+  load: LoadSpec,
+  restSec: number,
+  note?: string,
+): Slot => ({ exId, sets, work, load, targetRPE: null, restSec, ...(note ? { note } : {}) });
+
+const romanSideBench = (sets: number, r: number) =>
+  slot(
+    'roman-side-bench',
+    sets,
+    reps(r, true),
+    bodyweight(),
+    45,
+    'En alternance avec l’Ab Wheel : une série de chaque, 45 s entre les stations. Amplitude confortable uniquement.',
+  );
+
+const zercherMarch = (sets: number, m: number) =>
+  slot(
+    'zercher-march',
+    sets,
+    meters(m),
+    autoreg(20, 2.5, 'barbell'),
+    90,
+    `≈ ${Math.round(m / 0.65)} pas chargés. Buste vertical, pas courts. La série s’arrête si le dos s’arrondit, pas quand la distance est faite.`,
+  );
+
+const landmineRotation = (sets: number, r: number, restSec: number, note: string) =>
+  slot('landmine-rotation', sets, reps(r, true), autoreg(undefined, 2.5, 'barbell'), restSec, note);
+
+const offsetHold = (sets: number, sec: number, restSec: number, note: string) =>
+  slot('barbell-offset-hold', sets, hold(sec, true), autoreg(5, 2.5, 'barbell'), restSec, note);
 
 const MAXFORCE: BlockRuleSet[] = [
   {
@@ -157,6 +215,20 @@ const MAXFORCE: BlockRuleSet[] = [
         restSec: 120,
         loadFactorAtBlockEntry: 1.1,
       }),
+      /*
+       * Second exercice de tronc du lundi, en superset avec l'Ab Wheel.
+       *
+       * Le lundi est la séance la plus serrée du programme : elle dépasse
+       * déjà son étiquette de 60-70 min. Enchaîner les deux exercices de
+       * tronc en alternance, 45 s entre les stations, rend l'ajout presque
+       * gratuit — ils ne se concurrencent pas (anti-extension d'un côté,
+       * flexion latérale de l'autre) et n'utilisent pas le même matériel.
+       */
+      patch('ab-wheel', {
+        restSec: 45,
+        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+      }),
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8) },
     ],
   },
   {
@@ -188,15 +260,12 @@ const MAXFORCE: BlockRuleSet[] = [
       {
         op: 'insert',
         after: 'pallof-press',
-        slot: {
-          exId: 'barbell-offset-hold',
-          sets: 3,
-          work: hold(25, true),
-          load: autoreg(5, 2.5, 'barbell'),
-          targetRPE: null,
-          restSec: 60,
-          note: 'Charge = le disque d’un seul côté. Zéro inclinaison : la série s’arrête quand l’épaule descend.',
-        },
+        slot: offsetHold(
+          3,
+          25,
+          60,
+          'Charge = le disque d’un seul côté. Zéro inclinaison : la série s’arrête quand l’épaule descend.',
+        ),
       },
     ],
   },
@@ -208,6 +277,31 @@ const MAXFORCE: BlockRuleSet[] = [
       patch('hang-high-pull', { sets: 4, restSec: 120 }),
       patch('push-press', { restSec: 150 }),
       patch('speed-squat', { restSec: 75 }),
+      /*
+       * La Landmine Rotation quitte le dimanche pour le vendredi.
+       *
+       * C'est la seule qualité de tronc qui s'exprime en vitesse : sa place
+       * est dans la séance de puissance, pas en fin de séance modérée.
+       *
+       * Après le Lateral Bound et avant le Push Press : le tronc est encore
+       * frais, et tout ce qui le fatigue vraiment vient ensuite. Le Hang High
+       * Pull garde sa deuxième place — c'est lui qui demande le plus de
+       * fraîcheur nerveuse du bloc.
+       *
+       * Le Farmer Carry sort : son créneau finance presque exactement celui
+       * de la rotation, la séance ne s'allonge pas.
+       */
+      remove('farmer-carry'),
+      {
+        op: 'insert',
+        after: 'lateral-bound',
+        slot: landmineRotation(
+          3,
+          5,
+          75,
+          'Apprentissage puis accélération contrôlée. Pieds qui pivotent, rotation initiée par les hanches, retour maîtrisé.',
+        ),
+      },
     ],
   },
   {
@@ -241,6 +335,18 @@ const MAXFORCE: BlockRuleSet[] = [
         loadFactorAtBlockEntry: 1.1,
       }),
       patch('nordic-curl', { sets: 3, work: reps({ min: 4, max: 5 }) }),
+      /*
+       * Le Suitcase Carry sort, le Zercher March prend sa place, et le Roman
+       * Side Bench ferme la séance.
+       *
+       * Le samedi porte déjà le deadlift, le front squat et le hip thrust :
+       * les deux ajouts sont volontairement courts et légers. Le Zercher
+       * March démarre barre nue — sa progression se fait en distance avant de
+       * se faire en charge.
+       */
+      remove('suitcase-carry'),
+      { op: 'insert', slot: zercherMarch(2, 12) },
+      { op: 'insert', slot: romanSideBench(2, 8) },
     ],
   },
   {
@@ -248,38 +354,30 @@ const MAXFORCE: BlockRuleSet[] = [
     day: 6,
     notes: [
       'Dimanche : tout à 3 séries.',
-      'La Landmine Rotation ouvre la séance : une rotation rapide se juge sur un tronc frais. 6 pivots de hanche à vide par côté, une série d’approche barre nue, puis la première série.',
+      'Le tronc du dimanche tient en deux exercices : Hanging Leg Raise puis Woodchop. Le Bear Crawl sort, la Landmine Rotation est passée au vendredi.',
     ],
     rules: [
       /*
-       * Le remplacement du Cable Chop, semaines 5 à 7.
+       * Le Bear Crawl sort, le Woodchop reste et devient le second exercice
+       * de tronc du dimanche.
        *
-       * Le chop sort, la rotation entre EN TÊTE de séance : le nombre
-       * d'exercices du dimanche ne change pas, sa durée non plus. Les
-       * semaines 1 à 4 gardent le chop, écrit dans la trame — l'historique
-       * déjà enregistré reste lisible tel qu'il a été fait.
+       * Le Woodchop EST l'ancien Cable Chop : même identifiant, donc même
+       * historique. Lui créer une fiche séparée aurait fabriqué le doublon
+       * qu'il fallait éviter.
        */
-      remove('cable-chop'),
-      {
-        op: 'insert',
-        atStart: true,
-        slot: {
-          exId: 'landmine-rotation',
-          sets: 3,
-          work: reps(5, true),
-          load: autoreg(undefined, 2.5, 'barbell'),
-          targetRPE: null,
-          restSec: 75,
-          note: 'Apprentissage puis accélération contrôlée. Charge légère, retour maîtrisé.',
-        },
-      },
+      remove('bear-crawl'),
+      patch('cable-chop', {
+        sets: 2,
+        work: reps(6, true),
+        restSec: 60,
+        note: 'Rotation coordonnée hanches-tronc, retour maîtrisé. Jamais une torsion lombaire forcée.',
+      }),
       // « Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s »
       patch('incline-db-press', { sets: 3 }),
       patch('neutral-grip-pullup', { sets: 3, work: reps(6) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 3, work: reps(6, true) }),
       patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
-      patch('bear-crawl', { sets: 3 }),
       patch('conditioning', {
         work: { kind: 'intervals', rounds: 6, workSec: 20, easySec: 100 },
         note: 'Et pas davantage.',
@@ -344,7 +442,13 @@ const POWER: BlockRuleSet[] = [
       remove('box-jump'),
       patch('back-squat', { contrastWith: 'box-jump' }),
       patch('bulgarian-split-squat', { sets: 3, work: reps(5, true, 'jambe'), targetRPE: rpe(7.5) }),
-      patch('ab-wheel', { sets: 3, work: reps(8) }),
+      patch('ab-wheel', {
+        sets: 3,
+        work: reps(8),
+        restSec: 45,
+        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+      }),
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 6) },
     ],
   },
   {
@@ -360,25 +464,16 @@ const POWER: BlockRuleSet[] = [
       // Volume réduit comme tout le reste du bloc : la tenue reste, elle ne
       // coûte rien à la fraîcheur et c'est la seule anti-flexion latérale de
       // la semaine en dehors du samedi.
-      {
-        op: 'insert',
-        after: 'pallof-press',
-        slot: {
-          exId: 'barbell-offset-hold',
-          sets: 2,
-          work: hold(20, true),
-          load: autoreg(5, 2.5, 'barbell'),
-          targetRPE: null,
-          restSec: 45,
-          note: 'Charge = le disque d’un seul côté.',
-        },
-      },
+      { op: 'insert', after: 'pallof-press', slot: offsetHold(2, 20, 45, 'Charge = le disque d’un seul côté.') },
     ],
   },
   {
     block: 'power',
     day: 4,
-    notes: ['Pas de dead bug, pas de conditioning. Tu quittes la salle stimulé, pas détruit.'],
+    notes: [
+      'Pas de conditioning. Tu quittes la salle stimulé, pas détruit.',
+      'Le Dead Bug reste, en volume réduit : c’est le second exercice de tronc du vendredi depuis que la Landmine Rotation y est passée.',
+    ],
     rules: [
       {
         /*
@@ -410,9 +505,28 @@ const POWER: BlockRuleSet[] = [
       }),
       patch('speed-squat', { restSec: 90 }),
       patch('jump-squat-db', { sets: 5, work: reps(3), restSec: 120 }),
-      patch('farmer-carry', { sets: 3, work: meters(20) }),
+      remove('farmer-carry'),
       remove('explosive-cable-row'),
-      remove('dead-bug-cable'),
+      /*
+       * Le Dead Bug ne disparaît plus du bloc puissance.
+       *
+       * §8 le supprimait quand le vendredi n'avait qu'un exercice de tronc
+       * et que la priorité était de raccourcir la séance. Depuis que la
+       * Landmine Rotation y vit, le supprimer laisserait le vendredi à un
+       * seul exercice de tronc. Il reste, en 2 × 5/côté — le Farmer Carry
+       * sorti libère largement de quoi le financer.
+       */
+      patch('dead-bug-cable', { sets: 2, work: reps(5, true) }),
+      {
+        op: 'insert',
+        after: 'lateral-bound',
+        slot: landmineRotation(
+          3,
+          4,
+          90,
+          'Rotation explosive. Reset 5-10 s entre les reps. La vitesse prime sur la charge : si elle baisse, la charge ne monte pas.',
+        ),
+      },
     ],
   },
   {
@@ -424,36 +538,30 @@ const POWER: BlockRuleSet[] = [
       patch('hip-thrust', { sets: 4, work: reps(5), targetRPE: rpeRange(7, 8), note: 'Explosif.' }),
       patch('nordic-curl', { sets: 2, work: reps(4) }),
       patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
-      patch('suitcase-carry', { sets: 3, work: meters(20, true) }),
+      remove('suitcase-carry'),
+      { op: 'insert', slot: zercherMarch(2, 12) },
+      { op: 'insert', slot: romanSideBench(2, 6) },
     ],
   },
   {
     block: 'power',
     day: 6,
     notes: [
-      'La Landmine Rotation ouvre la séance, en intention explosive : reset 5-10 s entre les reps, et la série s’arrête dès que la vitesse baisse (§5).',
+      'Tronc du dimanche : Hanging Leg Raise puis Woodchop. La Landmine Rotation est au vendredi, avec les autres mouvements de vitesse.',
     ],
     rules: [
-      remove('cable-chop'),
-      {
-        op: 'insert',
-        atStart: true,
-        slot: {
-          exId: 'landmine-rotation',
-          sets: 3,
-          work: reps(4, true),
-          load: autoreg(undefined, 2.5, 'barbell'),
-          targetRPE: null,
-          restSec: 90,
-          note: 'Rotation explosive. La vitesse prime sur la charge : si elle baisse, la charge ne monte pas.',
-        },
-      },
+      remove('bear-crawl'),
+      patch('cable-chop', {
+        sets: 2,
+        work: reps(6, true),
+        restSec: 60,
+        note: 'Rotation coordonnée hanches-tronc, retour maîtrisé.',
+      }),
       patch('incline-db-press', { sets: 3, work: reps({ min: 6, max: 8 }) }),
       patch('neutral-grip-pullup', { sets: 3, work: reps({ min: 5, max: 6 }) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 2, work: reps(8, true) }),
       patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
-      patch('bear-crawl', { sets: 3, work: meters(15) }),
       remove('conditioning'),
       {
         op: 'insert',
@@ -471,18 +579,71 @@ const POWER: BlockRuleSet[] = [
   },
 ];
 
-export const BLOCK_RULES: BlockRuleSet[] = [...MAXFORCE, ...POWER];
+// ---------------------------------------------------------------------------
+// Semaine 8 — le deload qui vient APRÈS l'introduction du nouveau tronc
+// ---------------------------------------------------------------------------
+
+/*
+ * `fromWeek: 5` fait tout le travail ici.
+ *
+ * Les semaines 4 et 8 sont le même bloc. Sans discriminant, ces règles
+ * toucheraient aussi la semaine 4 — déjà faite, et dont l'historique ne se
+ * réécrit pas. Avec, elles ne concernent que la semaine 8.
+ *
+ * Les volumes ne sont pas écrits ici : `DELOAD_CORE` les réduit comme pour
+ * tous les autres exercices de tronc. Ces règles disent seulement QUELS
+ * exercices sont au programme cette semaine-là.
+ *
+ * Samedi et dimanche de la semaine 8 sont des séances de combine écrites en
+ * toutes lettres : aucune règle de bloc ne s'y applique, d'où leur absence.
+ */
+const DELOAD_S8: BlockRuleSet[] = [
+  {
+    block: 'deload',
+    day: 0,
+    fromWeek: 5,
+    rules: [{ op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8) }],
+  },
+  {
+    block: 'deload',
+    day: 2,
+    fromWeek: 5,
+    rules: [
+      {
+        op: 'insert',
+        after: 'pallof-press',
+        slot: offsetHold(3, 25, 60, 'Charge = le disque d’un seul côté.'),
+      },
+    ],
+  },
+  {
+    block: 'deload',
+    day: 4,
+    fromWeek: 5,
+    rules: [
+      remove('farmer-carry'),
+      {
+        op: 'insert',
+        after: 'lateral-bound',
+        slot: landmineRotation(3, 5, 75, 'Deload : charge allégée, vitesse conservée.'),
+      },
+    ],
+  },
+];
+
+export const BLOCK_RULES: BlockRuleSet[] = [...MAXFORCE, ...POWER, ...DELOAD_S8];
+
+const sApplique = (r: BlockRuleSet, block: Block, day: DayIndex, week: WeekIndex): boolean =>
+  r.block === block &&
+  (r.day === undefined || r.day === day) &&
+  (r.fromWeek === undefined || week >= r.fromWeek);
 
 /** Règles applicables à une séance donnée. */
-export function rulesFor(block: Block, day: DayIndex): SlotRule[] {
-  return BLOCK_RULES.filter((r) => r.block === block && (r.day === undefined || r.day === day)).flatMap(
-    (r) => r.rules,
-  );
+export function rulesFor(block: Block, day: DayIndex, week: WeekIndex): SlotRule[] {
+  return BLOCK_RULES.filter((r) => sApplique(r, block, day, week)).flatMap((r) => r.rules);
 }
 
 /** Notes de bloc à afficher en tête de séance. */
-export function blockNotesFor(block: Block, day: DayIndex): string[] {
-  return BLOCK_RULES.filter((r) => r.block === block && (r.day === undefined || r.day === day)).flatMap(
-    (r) => r.notes ?? [],
-  );
+export function blockNotesFor(block: Block, day: DayIndex, week: WeekIndex): string[] {
+  return BLOCK_RULES.filter((r) => sApplique(r, block, day, week)).flatMap((r) => r.notes ?? []);
 }

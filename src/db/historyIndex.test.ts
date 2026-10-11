@@ -119,7 +119,16 @@ describe('rien ne change pour les autres mouvements', () => {
       .filter(([, semaines]) => [...semaines.values()].some((jours) => jours.size > 1))
       .map(([id]) => id)
       .sort();
-    expect(deuxFois).toEqual(['broad-jump']);
+    /*
+     * Le Roman Side Bench a rejoint le Broad Jump dans ce cas de figure :
+     * il est programmé le lundi ET le samedi depuis la semaine 5.
+     *
+     * Ce que §11 en fait a été vérifié : `referenceOccurrences` ne retient
+     * que ce qui précède STRICTEMENT la séance affichée, donc le samedi lit
+     * le lundi et le lundi suivant lit le samedi. Les deux prescriptions
+     * sont identiques et au poids du corps : aucune charge ne dérive.
+     */
+    expect(deuxFois).toEqual(['broad-jump', 'roman-side-bench']);
   });
 
   it('les autres multi-jours ne se croisent jamais dans la même semaine', () => {

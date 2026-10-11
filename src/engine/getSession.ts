@@ -166,8 +166,8 @@ export function getSession(
 
   if (!special) {
     const before = slots.length;
-    slots = applyBlockRules(slots, block, day);
-    notes.push(...blockNotesFor(block, day));
+    slots = applyBlockRules(slots, block, day, week);
+    notes.push(...blockNotesFor(block, day, week));
     if (slots.length !== before) {
       sessionAdjustments.push({
         source: 'bloc',
@@ -270,9 +270,14 @@ export function getSession(
 // Règles de bloc
 // ---------------------------------------------------------------------------
 
-function applyBlockRules(slots: Slot[], block: Block, day: DayIndex): Slot[] {
+function applyBlockRules(
+  slots: Slot[],
+  block: Block,
+  day: DayIndex,
+  week: WeekIndex,
+): Slot[] {
   let out = slots;
-  for (const rule of rulesFor(block, day)) {
+  for (const rule of rulesFor(block, day, week)) {
     if (rule.op === 'remove') {
       out = out.filter((s) => s.exId !== rule.exId);
     } else if (rule.op === 'patch') {

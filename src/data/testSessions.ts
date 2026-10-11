@@ -343,19 +343,19 @@ const COMBINE_S8_DIMANCHE: SessionBlueprint = {
     { exId: 'incline-db-press', sets: 2, work: reps(8), load: dbPair(24), targetRPE: rpe(6), restSec: 90 },
     { exId: 'one-arm-cable-row', sets: 2, work: reps(10, true), load: noLoad(), targetRPE: rpe(6), restSec: 75 },
     /*
-     * Semaine 8 : la Landmine Rotation est déjà en place depuis la semaine 5,
-     * elle remplace donc le chop ici aussi — en version deload, 2 × 4/côté.
-     * C'est le seul dimanche de deload où elle apparaît : celui de la
-     * semaine 4 précède son introduction et garde le Cable Chop.
+     * Le Woodchop, et non la Landmine Rotation : depuis que celle-ci vit au
+     * vendredi, la programmer ici la ferait apparaître deux fois dans la
+     * même semaine — ce que §11 lit mal, et qu'un test du programme
+     * interdit explicitement en dehors du Broad Jump.
      */
     {
-      exId: 'landmine-rotation',
+      exId: 'cable-chop',
       sets: 2,
-      work: reps(4, true),
+      work: reps(5, true),
       load: noLoad(),
       targetRPE: rpe(6),
-      restSec: 75,
-      note: 'Deload : charge allégée, vitesse conservée, aucune série à l’échec.',
+      restSec: 60,
+      note: 'Deload : rotation lente et contrôlée, aucune série à l’échec.',
     },
   ],
 };
