@@ -729,13 +729,24 @@
   margin-top: 10px;
 }
 
+/*
+ * Un repas tient sur deux niveaux : la ligne du repas lui-même, puis ses
+ * ajouts sur toute la largeur.
+ *
+ * `flex-wrap` sur la ligne avait l'air plus simple, mais il faisait passer
+ * les calories et la coche SOUS les aliments dès que la colonne de gauche
+ * devenait large — c'est-à-dire tout le temps.
+ */
 .meal {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mealRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--line);
 }
 
 .meal:last-child {
@@ -1263,4 +1274,86 @@
 .choixNote {
   align-items: flex-start;
   border-left-color: var(--ink-3);
+}
+
+/* --------------------------------------------- aliments ajoutés hors plan -- */
+
+/*
+ * Un ajout n'est pas une ligne du plan, et ça doit se voir sans avoir à lire.
+ * Liseré gauche, fond légèrement décalé, badge : ce bloc dit « constat »,
+ * pas « consigne ».
+ */
+.mealExtras {
+  min-width: 0;
+}
+
+.addFood {
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 8px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.addFood:active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.extraList {
+  margin: 8px 0 0;
+  padding: 0;
+  border-left: 2px solid var(--accent-dim);
+  list-style: none;
+}
+
+.extraRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0 7px 10px;
+  font-size: var(--fs-small);
+}
+
+.extraTitre {
+  padding: 2px 0 2px 10px;
+  color: var(--accent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.extraName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.extraQty {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.extraKcal {
+  flex: none;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* 44 px de côté : assez pour le pouce sans écraser la ligne. */
+.extraRemove {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -10px 0;
+  color: var(--ink-3);
+  font-size: 1.25rem;
+  line-height: 1;
 }
