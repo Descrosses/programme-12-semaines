@@ -22,11 +22,11 @@ import {
   type Meal,
   type NutritionPhase,
   type NutritionTarget,
-} from '../data/nutrition';
-import { FOOD_LIBRARY } from '../data/foodLibrary';
-import { WEEK_BLOCKS } from '../data/program';
-import { isCombineDay } from '../data/testSessions';
-import type { DayIndex, WeekIndex } from '../data/types';
+} from "../data/nutrition";
+import { FOOD_LIBRARY } from "../data/foodLibrary";
+import { WEEK_BLOCKS } from "../data/program";
+import { isCombineDay } from "../data/testSessions";
+import type { DayIndex, WeekIndex } from "../data/types";
 
 /** Une pesée du matin, et éventuellement le tour de taille du jour. */
 export interface Measurement {
@@ -87,7 +87,9 @@ export function windowAverage(
   const end = time(endIso);
   const start = end - days * MS_PER_DAY;
   const values = entries
-    .filter((e) => e.weightKg !== null && time(e.date) > start && time(e.date) <= end)
+    .filter(
+      (e) => e.weightKg !== null && time(e.date) > start && time(e.date) <= end,
+    )
     .map((e) => e.weightKg!);
   if (values.length === 0) return null;
   return round(values.reduce((a, b) => a + b, 0) / values.length);
@@ -109,8 +111,14 @@ export function weeklyAverages(
 ): WeeklyPoint[] {
   const out: WeeklyPoint[] = [];
   for (let w = 0; w < count; w++) {
-    const endDate = new Date(time(todayIso) - w * 7 * MS_PER_DAY).toISOString().slice(0, 10);
-    out.push({ weeksAgo: w, endDate, average: windowAverage(entries, endDate) });
+    const endDate = new Date(time(todayIso) - w * 7 * MS_PER_DAY)
+      .toISOString()
+      .slice(0, 10);
+    out.push({
+      weeksAgo: w,
+      endDate,
+      average: windowAverage(entries, endDate),
+    });
   }
   return out;
 }
@@ -128,14 +136,20 @@ export interface WeightTrend {
   onTarget: boolean;
 }
 
-export function weightTrend(entries: Measurement[], todayIso: string): WeightTrend {
+export function weightTrend(
+  entries: Measurement[],
+  todayIso: string,
+): WeightTrend {
   const average7 = windowAverage(entries, todayIso, 7);
   const previous7 = windowAverage(
     entries,
     new Date(time(todayIso) - 7 * MS_PER_DAY).toISOString().slice(0, 10),
     7,
   );
-  const deltaKg = average7 !== null && previous7 !== null ? round(average7 - previous7) : null;
+  const deltaKg =
+    average7 !== null && previous7 !== null
+      ? round(average7 - previous7)
+      : null;
   const countThisWeek = entries.filter(
     (e) =>
       e.weightKg !== null &&
@@ -156,7 +170,10 @@ export function weightTrend(entries: Measurement[], todayIso: string): WeightTre
 }
 
 /** Tour de taille le plus récent d'une fenêtre, `null` si aucun. */
-export function latestWaist(entries: Measurement[], onOrBeforeIso?: string): number | null {
+export function latestWaist(
+  entries: Measurement[],
+  onOrBeforeIso?: string,
+): number | null {
   const limit = onOrBeforeIso ? time(onOrBeforeIso) : Infinity;
   const candidates = entries
     .filter((e) => e.waistCm !== null && time(e.date) <= limit)
@@ -164,7 +181,7 @@ export function latestWaist(entries: Measurement[], onOrBeforeIso?: string): num
   return candidates[0]?.waistCm ?? null;
 }
 
-export type AdviceKind = 'add' | 'remove' | 'none';
+export type AdviceKind = "add" | "remove" | "none";
 
 export interface NutritionAdvice {
   kind: AdviceKind;
@@ -176,7 +193,12 @@ export interface NutritionAdvice {
   weeks: number;
 }
 
-const NO_ADVICE: NutritionAdvice = { kind: 'none', title: '', action: '', weeks: 0 };
+const NO_ADVICE: NutritionAdvice = {
+  kind: "none",
+  title: "",
+  action: "",
+  weeks: 0,
+};
 
 /**
  * §« Règle d'ajustement » du .md, appliquée à la moyenne glissante.
@@ -186,8 +208,12 @@ const NO_ADVICE: NutritionAdvice = { kind: 'none', title: '', action: '', weeks:
  * vont toutes dans le même sens. Si les données manquent sur une seule de ces
  * semaines, on ne dit rien plutôt que de conseiller à l'aveugle.
  */
-export function nutritionAdvice(entries: Measurement[], todayIso: string): NutritionAdvice {
-  const needed = Math.max(ADJUST_RULES.stableWeeks, ADJUST_RULES.fastGainWeeks) + 1;
+export function nutritionAdvice(
+  entries: Measurement[],
+  todayIso: string,
+): NutritionAdvice {
+  const needed =
+    Math.max(ADJUST_RULES.stableWeeks, ADJUST_RULES.fastGainWeeks) + 1;
   const points = weeklyAverages(entries, todayIso, needed);
 
   /** Variation de la semaine `i` par rapport à la précédente. `null` si trou. */
@@ -199,32 +225,39 @@ export function nutritionAdvice(entries: Measurement[], todayIso: string): Nutri
 
   // Prise trop rapide d'abord : c'est le signal qu'on veut voir en premier, et
   // une prise rapide n'est jamais « stable » — les deux cas s'excluent.
-  const fast = Array.from({ length: ADJUST_RULES.fastGainWeeks }, (_, i) => delta(i));
+  const fast = Array.from({ length: ADJUST_RULES.fastGainWeeks }, (_, i) =>
+    delta(i),
+  );
   if (fast.every((d) => d !== null && d > ADJUST_RULES.fastGainKg)) {
     const waistNow = latestWaist(entries, points[0]!.endDate);
-    const waistThen = latestWaist(entries, points[ADJUST_RULES.fastGainWeeks]!.endDate);
+    const waistThen = latestWaist(
+      entries,
+      points[ADJUST_RULES.fastGainWeeks]!.endDate,
+    );
     const waistRising =
       waistNow !== null &&
       waistThen !== null &&
       waistNow - waistThen > ADJUST_RULES.waistRiseCm;
 
     return {
-      kind: 'remove',
+      kind: "remove",
       weeks: ADJUST_RULES.fastGainWeeks,
       title: `Prise rapide depuis ${ADJUST_RULES.fastGainWeeks} semaines`,
       action: waistRising
-        ? 'Retire 50 g de féculent au dîner. Ton tour de taille suit la même hausse : la prise n’est pas uniquement musculaire.'
-        : 'Retire 50 g de féculent au dîner.',
+        ? "Retire 50 g de féculent au dîner. Ton tour de taille suit la même hausse : la prise n’est pas uniquement musculaire."
+        : "Retire 50 g de féculent au dîner.",
     };
   }
 
-  const stable = Array.from({ length: ADJUST_RULES.stableWeeks }, (_, i) => delta(i));
+  const stable = Array.from({ length: ADJUST_RULES.stableWeeks }, (_, i) =>
+    delta(i),
+  );
   if (stable.every((d) => d !== null && Math.abs(d) <= ADJUST_RULES.stableKg)) {
     return {
-      kind: 'add',
+      kind: "add",
       weeks: ADJUST_RULES.stableWeeks,
       title: `Poids stable depuis ${ADJUST_RULES.stableWeeks} semaines`,
-      action: 'Ajoute 50 g de féculent au dîner.',
+      action: "Ajoute 50 g de féculent au dîner.",
     };
   }
 
@@ -250,7 +283,7 @@ export function nutritionAdvice(entries: Measurement[], todayIso: string): Nutri
  */
 export function fuelForToday(day: DayIndex | null): FuelAdvice {
   if (day === null) return FUEL_ADVICE.rest;
-  return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? 'standard'];
+  return FUEL_ADVICE[FUEL_BY_TRAINING_DAY[day] ?? "standard"];
 }
 
 /**
@@ -264,7 +297,7 @@ export function fuelForToday(day: DayIndex | null): FuelAdvice {
  */
 export function fuelForDay(day: DayIndex | null, kind: DayKind): FuelAdvice {
   if (day !== null) return fuelForToday(day);
-  return kind === 'train' ? FUEL_ADVICE.standard : FUEL_ADVICE.rest;
+  return kind === "train" ? FUEL_ADVICE.standard : FUEL_ADVICE.rest;
 }
 
 // ---------------------------------------------------------------------------
@@ -301,11 +334,14 @@ export function fuelForDay(day: DayIndex | null, kind: DayKind): FuelAdvice {
  * dans la semaine de deload — et c'est le palier repos, avec ses propres
  * quantités allégées, qui s'applique alors.
  */
-export function phaseForDay(week: WeekIndex | null, day: DayIndex | null): NutritionPhase {
-  if (week === null) return 'normal';
-  if (WEEK_BLOCKS[week] !== 'deload') return 'normal';
-  if (day !== null && isCombineDay(week, day)) return 'normal';
-  return 'deloadLight';
+export function phaseForDay(
+  week: WeekIndex | null,
+  day: DayIndex | null,
+): NutritionPhase {
+  if (week === null) return "normal";
+  if (WEEK_BLOCKS[week] !== "deload") return "normal";
+  if (day !== null && isCombineDay(week, day)) return "normal";
+  return "deloadLight";
 }
 
 /**
@@ -337,7 +373,7 @@ export function targetForPhase(
   phase: NutritionPhase,
   quantites: Readonly<Record<string, number>> = DELOAD_QUANTITIES,
 ): NutritionTarget {
-  if (phase === 'normal') return target;
+  if (phase === "normal") return target;
 
   const meals = target.meals.map((m) => repasAjuste(m, phase, quantites));
   /*
@@ -368,7 +404,9 @@ function repasAjuste(
 
   const items = meal.items.map((i) => {
     const qty = quantites[i.id];
-    return qty === undefined || qty === i.qty ? i : { ...i, qty, adjusted: phase };
+    return qty === undefined || qty === i.qty
+      ? i
+      : { ...i, qty, adjusted: phase };
   });
   const m = mealMacros({ ...meal, items });
   return { ...meal, items, kcal: m.kcal, proteinG: m.proteinG };
@@ -404,12 +442,68 @@ export function consumedTotal(
   eaten: ReadonlySet<string>,
   overrides: FoodOverrides = {},
   library: Catalogue = FOOD_LIBRARY,
+  extras: readonly ExtraFood[] = [],
 ): Macros {
-  return arrondir(
-    target.meals
-      .filter((m) => eaten.has(m.id))
-      .reduce((acc, m) => somme(acc, mealMacros(m, overrides, library)), ZERO),
-  );
+  const repas = target.meals
+    .filter((m) => eaten.has(m.id))
+    .reduce((acc, m) => somme(acc, mealMacros(m, overrides, library)), ZERO);
+  /*
+   * Les ajouts comptent SANS attendre la coche du repas.
+   *
+   * La coche répond à « ai-je pris ce repas ? » ; un ajout répond à « qu'ai-je
+   * mangé en plus ? ». On ne note le second qu'après l'avoir avalé, donc il
+   * est déjà vrai au moment où il est saisi. Le conditionner à la coche
+   * donnerait une journée qui ne compte pas un kiwi déjà mangé, et le premier
+   * réflexe serait de cocher le repas pour le faire apparaître — ce qui
+   * fausserait les deux informations d'un coup.
+   */
+  return arrondir(somme(repas, extrasTotal(extras)));
+}
+
+/**
+ * Un aliment mangé en plus du plan.
+ *
+ * ── Il porte SA composition, et c'est volontaire ───────────────────────────
+ *
+ * Une ligne du plan est une consigne : corriger l'étiquette du skyr doit
+ * corriger ce qu'elle prescrit. Un ajout est un fait daté : le 12 octobre,
+ * 200 g de ce skyr-là valaient ces calories-là.
+ *
+ * Toutes les marques de skyr n'ont pas les mêmes macros. Si l'ajout ne
+ * portait qu'un identifiant, changer de marque en novembre réécrirait les
+ * journées d'octobre avec des valeurs jamais mangées — un historique qui
+ * bouge quand on corrige une étiquette ne vaut rien.
+ *
+ * Aucun `overrides`, aucun catalogue n'entre donc dans ce calcul : tout est
+ * déjà là.
+ */
+export interface ExtraFood {
+  qty: number;
+  /** Base de la composition : 100 pour ce qui se pèse, 1 pour ce qui se compte. */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+/** Ce que pèse un aliment ajouté, à la composition figée le jour où il l'a été. */
+export function extraMacros(extra: ExtraFood): Macros {
+  /* `per` à zéro ne peut venir que d'une ligne corrompue : mieux vaut zéro
+     qu'un infini qui ferait exploser le total de la journée. */
+  if (!Number.isFinite(extra.per) || extra.per <= 0) return ZERO;
+  const f = extra.qty / extra.per;
+  return {
+    kcal: extra.kcal * f,
+    proteinG: extra.proteinG * f,
+    carbsG: extra.carbsG * f,
+    fatG: extra.fatG * f,
+  };
+}
+
+/** Tout ce qui a été ajouté dans la journée, toutes prises confondues. */
+export function extrasTotal(extras: readonly ExtraFood[]): Macros {
+  return arrondir(extras.reduce((acc, e) => somme(acc, extraMacros(e)), ZERO));
 }
 
 /** Ce qu'il reste à manger pour atteindre le plan. Négatif = dépassé. */
@@ -430,7 +524,8 @@ export function remainingTotal(planned: Macros, consumed: Macros): Macros {
  * le chiffre écrit à côté prend le relais.
  */
 export function progressPct(consumed: number, planned: number): number {
-  if (!Number.isFinite(consumed) || !Number.isFinite(planned) || planned <= 0) return 0;
+  if (!Number.isFinite(consumed) || !Number.isFinite(planned) || planned <= 0)
+    return 0;
   return Math.min(200, Math.round((Math.max(0, consumed) / planned) * 100));
 }
 
@@ -522,7 +617,9 @@ export function effectiveItem(
    * SA clé à lui — recopier l'étiquette du saumon ne doit pas atterrir sous
    * « poulet ».
    */
-  const remplacant = surLigne?.productId ? library[surLigne.productId] : undefined;
+  const remplacant = surLigne?.productId
+    ? library[surLigne.productId]
+    : undefined;
   const base: FoodItem = remplacant
     ? {
         ...item,
@@ -568,16 +665,16 @@ export type Catalogue = Record<string, FoodLike>;
 /** Ce dont le remplacement a besoin : une composition et une unité. */
 export interface FoodLike {
   label: string;
-  unit: FoodItem['unit'];
+  unit: FoodItem["unit"];
   per: number;
   kcal: number;
   proteinG: number;
   carbsG: number;
   fatG: number;
   /** Pesé cru ou cuit — affiché sur la ligne, et au moment du choix. */
-  referenceState: FoodItem['referenceState'];
+  referenceState: FoodItem["referenceState"];
   /** Famille, qui décide de la liste ouverte au remplacement suivant. */
-  category: FoodItem['category'];
+  category: FoodItem["category"];
   hint?: string;
 }
 
@@ -592,9 +689,12 @@ export interface FoodLike {
  * Dans ce cas on repart d'une valeur plausible — 1 pour ce qui se compte,
  * 100 pour ce qui se pèse — que Guillaume ajuste ensuite.
  */
-export function quantiteApresRemplacement(ancien: FoodItem, nouveau: FoodLike): number {
+export function quantiteApresRemplacement(
+  ancien: FoodItem,
+  nouveau: FoodLike,
+): number {
   if (ancien.unit === nouveau.unit) return ancien.qty;
-  return nouveau.unit === 'unité' ? 1 : 100;
+  return nouveau.unit === "unité" ? 1 : 100;
 }
 
 /** Les deux clés sous lesquelles se range une correction de cette ligne. */
@@ -629,7 +729,12 @@ export function itemMacros(
 ): Macros {
   const e = effectiveItem(item, overrides, library);
   const f = e.qty / e.per;
-  return { kcal: e.kcal * f, proteinG: e.proteinG * f, carbsG: e.carbsG * f, fatG: e.fatG * f };
+  return {
+    kcal: e.kcal * f,
+    proteinG: e.proteinG * f,
+    carbsG: e.carbsG * f,
+    fatG: e.fatG * f,
+  };
 }
 
 const ZERO: Macros = { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 };
@@ -663,7 +768,10 @@ export function mealMacros(
     return { kcal: meal.kcal, proteinG: meal.proteinG, carbsG: 0, fatG: 0 };
   }
   return arrondir(
-    meal.items.reduce((acc, i) => somme(acc, itemMacros(i, overrides, library)), ZERO),
+    meal.items.reduce(
+      (acc, i) => somme(acc, itemMacros(i, overrides, library)),
+      ZERO,
+    ),
   );
 }
 
@@ -694,7 +802,10 @@ export function mealsTotal(
    * la journée ne pouvait pas les afficher autrement qu'en les écrivant à part.
    */
   return arrondir(
-    target.meals.reduce((acc, m) => somme(acc, mealMacros(m, overrides, library)), ZERO),
+    target.meals.reduce(
+      (acc, m) => somme(acc, mealMacros(m, overrides, library)),
+      ZERO,
+    ),
   );
 }
 
@@ -710,7 +821,7 @@ export function mealsTotal(
  *
  * Le signe fait donc partie du verdict, et non de la seule mise en forme.
  */
-export type GapVerdict = 'deficit' | 'surplus' | 'ok';
+export type GapVerdict = "deficit" | "surplus" | "ok";
 
 export function gapVerdict(
   target: NutritionTarget,
@@ -719,9 +830,9 @@ export function gapVerdict(
   library: Catalogue = FOOD_LIBRARY,
 ): GapVerdict {
   const { pct } = mealsGap(target, overrides, library);
-  if (pct < -tolerancePct) return 'deficit';
-  if (pct > tolerancePct) return 'surplus';
-  return 'ok';
+  if (pct < -tolerancePct) return "deficit";
+  if (pct > tolerancePct) return "surplus";
+  return "ok";
 }
 
 /** Écart entre les repas listés et la cible, en kcal et en pourcentage. */
@@ -748,7 +859,11 @@ export function mealsGap(
  * tolérance large : on ne cherche pas à corriger une étiquette, seulement à
  * repérer une saisie qui ne peut pas être vraie.
  */
-export function kcalFromMacros(m: { proteinG: number; carbsG: number; fatG: number }): number {
+export function kcalFromMacros(m: {
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}): number {
   return m.proteinG * 4 + m.carbsG * 4 + m.fatG * 9;
 }
 
@@ -772,7 +887,10 @@ export function macroCoherence(m: {
 }): { attendues: number; ecartPct: number } | null {
   const attendues = kcalFromMacros(m);
   if (attendues <= 0) return null;
-  return { attendues, ecartPct: Math.round(((m.kcal - attendues) / attendues) * 1000) / 10 };
+  return {
+    attendues,
+    ecartPct: Math.round(((m.kcal - attendues) / attendues) * 1000) / 10,
+  };
 }
 
 /**
@@ -783,7 +901,10 @@ export function macroCoherence(m: {
  * l'huile pure, à 900 kcal, est cohérente avec ses 100 g de lipides. L'appli ne
  * juge pas l'aliment, elle signale que les deux saisies se contredisent.
  */
-export function macrosLookWrong(item: FoodItem, overrides: FoodOverrides = {}): boolean {
+export function macrosLookWrong(
+  item: FoodItem,
+  overrides: FoodOverrides = {},
+): boolean {
   const c = macroCoherence(effectiveItem(item, overrides));
   return c !== null && Math.abs(c.ecartPct) > MACRO_COHERENCE_TOLERANCE_PCT;
 }

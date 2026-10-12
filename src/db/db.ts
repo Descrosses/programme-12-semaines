@@ -5,10 +5,10 @@
  * validée est écrite immédiatement — l'appli ne doit jamais perdre une saisie.
  */
 
-import Dexie, { type Table } from 'dexie';
-import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
+import Dexie, { type Table } from "dexie";
+import { LEGACY_DAY_MAP, type DayIndex } from "../data/types";
 
-export type SessionStatus = 'planned' | 'done' | 'skipped';
+export type SessionStatus = "planned" | "done" | "skipped";
 
 export interface SessionRow {
   id?: number;
@@ -69,7 +69,7 @@ export interface ReadinessRow {
   attempts: Array<number | null>;
   /** Meilleur des 3, celui qui sert au verdict. */
   jumpCm: number;
-  level: 'vert' | 'orange' | 'rouge';
+  level: "vert" | "orange" | "rouge";
   pctDelta: number;
 }
 
@@ -104,7 +104,55 @@ export interface PainLogRow {
   /** Charge réellement tolérée, en kg. */
   toleratedKg: number | null;
   /** Amplitude tolérée, telle que Guillaume la qualifie. */
-  rom: 'complete' | 'partielle' | 'reduite' | null;
+  rom: "complete" | "partielle" | "reduite" | null;
+}
+
+/**
+ * Un aliment mangé en plus de ce que le plan prévoyait.
+ *
+ * Il ne modifie pas le plan : le plan dit ce qui était prévu, cette ligne dit
+ * ce qui a réellement été avalé en plus. Les deux doivent rester lisibles
+ * séparément, sinon « j'ai mangé un kiwi » devient « le programme prévoyait un
+ * kiwi », et au bout de trois semaines plus personne ne sait ce qui était la
+ * consigne.
+ *
+ * ── La composition est RECOPIÉE, pas référencée ────────────────────────────
+ *
+ * C'est la différence de fond avec une ligne du plan. Le plan est une
+ * consigne : corriger l'étiquette du skyr doit corriger ce qu'il prescrit,
+ * aujourd'hui et demain. Un ajout est un FAIT DATÉ : le 12 octobre, 200 g de
+ * ce skyr-là valaient ces calories-là.
+ *
+ * Toutes les marques de skyr n'ont pas les mêmes macros. Si la ligne pointait
+ * seulement la bibliothèque, changer de marque en novembre réécrirait toutes
+ * les journées d'octobre avec des valeurs que Guillaume n'a jamais mangées.
+ * Un historique qui bouge quand on corrige une étiquette ne vaut rien.
+ *
+ * Conséquence assumée : une faute de frappe sur un ajout ne se rattrape pas
+ * en corrigeant l'étiquette. On retire la ligne et on la refait — deux appuis,
+ * et aucune ambiguïté sur ce qui a été compté.
+ */
+export interface ExtraFoodRow {
+  id?: number;
+  /** `YYYY-MM-DD`. */
+  date: string;
+  /** Le repas auquel il se rattache, pour l'afficher au bon endroit. */
+  mealId: string;
+  /** D'où venait l'aliment. Mémoire seulement : aucun calcul ne le relit. */
+  foodId: string;
+  /** Quantité, dans l'unité ci-dessous. */
+  qty: number;
+
+  // --- La composition au moment où l'aliment a été mangé -------------------
+  /** Nom affiché, figé lui aussi : un aliment personnalisé supprimé reste lisible. */
+  label: string;
+  unit: "g" | "ml" | "unité";
+  /** Base de la composition : 100 pour ce qui se pèse, 1 pour ce qui se compte. */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
 }
 
 export interface MeasurementRow {
@@ -218,7 +266,7 @@ export interface ExerciseNoteRow {
   updatedAt: number;
 }
 
-export type CombinePhase = 'initial' | 's8' | 'final';
+export type CombinePhase = "initial" | "s8" | "final";
 
 export interface CombineRow {
   id?: number;
@@ -270,17 +318,18 @@ export class ProgrammeDB extends Dexie {
   customFoods!: Table<CustomFoodRow, number>;
   mealLog!: Table<MealLogRow, number>;
   painLog!: Table<PainLogRow, number>;
+  extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
   settings!: Table<SettingsRow, number>;
 
   constructor() {
-    super('programme-12-semaines');
+    super("programme-12-semaines");
     this.version(1).stores({
-      sessions: '++id, &[week+day], date, status',
-      sets: '++id, sessionId, [sessionId+exerciseId], exerciseId, [exerciseId+week], date',
-      readiness: '++id, date, [week+day], week',
-      combines: '++id, &phase, date',
-      settings: 'id',
+      sessions: "++id, &[week+day], date, status",
+      sets: "++id, sessionId, [sessionId+exerciseId], exerciseId, [exerciseId+week], date",
+      readiness: "++id, date, [week+day], week",
+      combines: "++id, &phase, date",
+      settings: "id",
     });
 
     /*
@@ -293,11 +342,19 @@ export class ProgrammeDB extends Dexie {
     this.version(2)
       .stores({})
       .upgrade(async (tx) => {
-        await tx.table('sessions').where('[week+day]').equals([1, 0]).modify({ week: 0 });
-        await tx.table('readiness').where('[week+day]').equals([1, 0]).modify({ week: 0 });
+        await tx
+          .table("sessions")
+          .where("[week+day]")
+          .equals([1, 0])
+          .modify({ week: 0 });
+        await tx
+          .table("readiness")
+          .where("[week+day]")
+          .equals([1, 0])
+          .modify({ week: 0 });
         // `sets` n'a pas d'index sur `week` seul : un parcours complet, une fois.
         await tx
-          .table('sets')
+          .table("sets")
           .toCollection()
           .modify((r: { week: number; day: number }) => {
             if (r.week === 1 && r.day === 0) r.week = 0;
@@ -309,7 +366,7 @@ export class ProgrammeDB extends Dexie {
      * Ajout pur : aucune table existante n'est touchée, donc tout l'historique
      * d'entraînement traverse la migration sans y toucher.
      */
-    this.version(3).stores({ measurements: '++id, &date' });
+    this.version(3).stores({ measurements: "++id, &date" });
 
     /*
      * v4 — suivi visuel. Trois tables, toujours en ajout pur.
@@ -320,9 +377,9 @@ export class ProgrammeDB extends Dexie {
      * effacer sans toucher à une seule série d'entraînement.
      */
     this.version(4).stores({
-      progressPhotos: '++id, &week, date',
-      exerciseMedia: '++id, exerciseId, [exerciseId+date], week, date',
-      exerciseVideoLog: '++id, exerciseId, [exerciseId+date], week, date',
+      progressPhotos: "++id, &week, date",
+      exerciseMedia: "++id, exerciseId, [exerciseId+date], week, date",
+      exerciseVideoLog: "++id, exerciseId, [exerciseId+date], week, date",
     });
 
     /*
@@ -341,7 +398,13 @@ export class ProgrammeDB extends Dexie {
      * date enregistrée jusqu'au lundi suivant.
      */
     this.version(5).upgrade(async (tx) => {
-      for (const table of ['sessions', 'sets', 'readiness', 'exerciseMedia', 'exerciseVideoLog']) {
+      for (const table of [
+        "sessions",
+        "sets",
+        "readiness",
+        "exerciseMedia",
+        "exerciseVideoLog",
+      ]) {
         for (const oldDay of [4, 3, 2, 1]) {
           const nouveau = LEGACY_DAY_MAP[oldDay]!;
           await tx
@@ -353,11 +416,11 @@ export class ProgrammeDB extends Dexie {
         }
       }
 
-      const settings = await tx.table('settings').get(1);
+      const settings = await tx.table("settings").get(1);
       if (settings?.startDate) {
-        await tx
-          .table('settings')
-          .update(1, { startDate: mondayOnOrAfter(settings.startDate as string) });
+        await tx.table("settings").update(1, {
+          startDate: mondayOnOrAfter(settings.startDate as string),
+        });
       }
     });
 
@@ -377,22 +440,22 @@ export class ProgrammeDB extends Dexie {
      * ne part.
      */
     this.version(6).upgrade(async (tx) => {
-      const sessions = (await tx.table('sessions').toArray()) as SessionRow[];
+      const sessions = (await tx.table("sessions").toArray()) as SessionRow[];
       const week0 = sessions.filter((s) => s.week === 0);
       const ids = new Set(week0.map((s) => s.id));
 
       await tx
-        .table('sets')
+        .table("sets")
         .toCollection()
         .filter((r: SetRow) => r.week === 0 || ids.has(r.sessionId))
         .delete();
       await tx
-        .table('readiness')
+        .table("readiness")
         .toCollection()
         .filter((r: ReadinessRow) => r.week === 0)
         .delete();
       await tx
-        .table('sessions')
+        .table("sessions")
         .toCollection()
         .filter((r: SessionRow) => r.week === 0)
         .delete();
@@ -405,7 +468,7 @@ export class ProgrammeDB extends Dexie {
      * une remplace la précédente au lieu d'empiler, ce qui est exactement le
      * comportement attendu d'une fiche de référence.
      */
-    this.version(7).stores({ exerciseReference: '++id, &exerciseId' });
+    this.version(7).stores({ exerciseReference: "++id, &exerciseId" });
 
     /*
      * v8 — valeurs d'aliment modifiées par Guillaume.
@@ -418,7 +481,7 @@ export class ProgrammeDB extends Dexie {
      * Chaque champ est optionnel : changer la seule quantité ne fige pas la
      * composition, qui continue de suivre le .md.
      */
-    this.version(8).stores({ foodOverrides: '++id, &foodId' });
+    this.version(8).stores({ foodOverrides: "++id, &foodId" });
 
     /*
      * v9 — remarque par exercice et par séance. Ajout pur, une table de plus :
@@ -431,7 +494,8 @@ export class ProgrammeDB extends Dexie {
      * qui avait été noté sur ce mouvement en semaine 1.
      */
     this.version(9).stores({
-      exerciseNotes: '++id, &[exerciseId+week+day], exerciseId, [exerciseId+week], date',
+      exerciseNotes:
+        "++id, &[exerciseId+week+day], exerciseId, [exerciseId+week], date",
     });
 
     /*
@@ -450,7 +514,9 @@ export class ProgrammeDB extends Dexie {
      * `SchemaError` sur un `orderBy` d'un champ qui n'est pas un index, et
      * l'erreur ne dit pas lequel.
      */
-    this.version(10).stores({ customFoods: '++id, &foodId, category, addedAt' });
+    this.version(10).stores({
+      customFoods: "++id, &foodId, category, addedAt",
+    });
 
     /*
      * v11 — repas réellement pris. Ajout pur, une table de plus : aucune ligne
@@ -465,7 +531,7 @@ export class ProgrammeDB extends Dexie {
      * a mangé. Les figer ici en ferait une troisième copie, qui divergerait à
      * la première étiquette recopiée.
      */
-    this.version(11).stores({ mealLog: '++id, &[date+mealId], date' });
+    this.version(11).stores({ mealLog: "++id, &[date+mealId], date" });
 
     /*
      * v12 — le palier choisi pour une journée, quand il diffère du programme.
@@ -478,7 +544,7 @@ export class ProgrammeDB extends Dexie {
      * Une ligne n'existe que pour une journée DÉTOURNÉE : l'absence veut dire
      * « le programme fait foi ». Revenir au programme supprime la ligne.
      */
-    this.version(12).stores({ dayKind: '++id, &date' });
+    this.version(12).stores({ dayKind: "++id, &date" });
 
     /*
      * v13 — suivi de douleur, exercice par exercice et séance par séance.
@@ -495,7 +561,22 @@ export class ProgrammeDB extends Dexie {
      * que Guillaume ressent et ce qu'il a réellement toléré. Elle ne nomme
      * aucune structure et ne pose aucun diagnostic.
      */
-    this.version(13).stores({ painLog: '++id, &[date+exId], date, exId' });
+    this.version(13).stores({ painLog: "++id, &[date+exId], date, exId" });
+
+    /*
+     * v14 — les aliments mangés EN PLUS du plan.
+     *
+     * Ajout pur, une table de plus : aucune ligne existante n'est lue ni
+     * modifiée.
+     *
+     * Index non unique, contrairement aux autres : un kiwi et 30 g de
+     * confiture au même petit-déjeuner sont deux lignes distinctes, et rien
+     * n'interdit d'ajouter deux fois le même aliment dans la journée.
+     *
+     * La composition voyage DANS la ligne (voir `ExtraFoodRow`), elle n'est
+     * donc pas indexée : on relit toujours une journée entière d'un coup.
+     */
+    this.version(14).stores({ extraFoods: "++id, [date+mealId], date" });
   }
 }
 
@@ -535,13 +616,13 @@ export interface CustomFoodRow {
   /** Identifiant stable, préfixé « custom. » pour ne jamais heurter la bibliothèque. */
   foodId: string;
   label: string;
-  unit: 'g' | 'ml' | 'unité';
+  unit: "g" | "ml" | "unité";
   per: number;
   kcal: number;
   proteinG: number;
   carbsG: number;
   fatG: number;
-  referenceState: 'cru' | 'cuit' | 'na';
+  referenceState: "cru" | "cuit" | "na";
   category: string;
   /** `YYYY-MM-DD` de création, pour trier les plus récents en tête. */
   addedAt: string;
@@ -574,7 +655,7 @@ export interface DayKindRow {
   id?: number;
   /** `YYYY-MM-DD`. */
   date: string;
-  kind: 'train' | 'rest';
+  kind: "train" | "rest";
 }
 
 /** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */
@@ -588,12 +669,12 @@ export const db = new ProgrammeDB();
 
 export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   id: 1,
-  startDate: '',
+  startDate: "",
   broadJumpBaselineCm: null,
   oneRM: {},
   bodyweightKg: null,
-  bodyweightDate: '',
-  oneRMCalibratedAt: '',
+  bodyweightDate: "",
+  oneRMCalibratedAt: "",
   soundEnabled: true,
   vibrationEnabled: true,
 };

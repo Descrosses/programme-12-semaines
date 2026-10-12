@@ -5,24 +5,25 @@
  * fichier JSON contient l'intégralité de l'historique, lisible et réimportable.
  */
 
-import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
+import { blobToDataUrl, dataUrlToBlob } from "../media/photo";
 import {
   db,
   type CombineRow,
   type ExerciseVideoLogRow,
   type MeasurementRow,
+  type ExtraFoodRow,
   type PainLogRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
   type SettingsRow,
-} from './db';
+} from "./db";
 
 /** Version du format, pour qu'un export d'aujourd'hui reste lisible plus tard. */
 export const EXPORT_VERSION = 1;
 
 export interface ExportFile {
-  format: 'programme-12-semaines';
+  format: "programme-12-semaines";
   version: number;
   exportedAt: string;
   settings: SettingsRow | null;
@@ -36,6 +37,8 @@ export interface ExportFile {
   videoLog?: ExerciseVideoLogRow[];
   /** Suivi de douleur (§14). Absent des exports antérieurs : toujours optionnel. */
   painLog?: PainLogRow[];
+  /** Aliments mangés en plus du plan. Absent des exports antérieurs. */
+  extraFoods?: ExtraFoodRow[];
   /**
    * Toujours `false`. Les photos ont leur propre fichier : voir
    * `exportPhotos()` et le commentaire qui l'accompagne.
@@ -60,10 +63,16 @@ export interface ExportFile {
  * reconnaît tout seul lequel des deux on lui donne.
  */
 export interface PhotoExportFile {
-  format: 'programme-12-semaines-photos';
+  format: "programme-12-semaines-photos";
   version: number;
   exportedAt: string;
-  progressPhotos: Array<{ week: number; date: string; dataUrl: string; width: number; height: number }>;
+  progressPhotos: Array<{
+    week: number;
+    date: string;
+    dataUrl: string;
+    width: number;
+    height: number;
+  }>;
   exerciseMedia: Array<{
     exerciseId: string;
     week: number;
@@ -84,20 +93,30 @@ export interface PhotoExportFile {
 }
 
 export async function exportAll(): Promise<ExportFile> {
-  const [settings, sessions, sets, readiness, combines, measurements, videoLog, painLog] =
-    await Promise.all([
-      db.settings.get(1),
-      db.sessions.toArray(),
-      db.sets.toArray(),
-      db.readiness.toArray(),
-      db.combines.toArray(),
-      db.measurements.toArray(),
-      db.exerciseVideoLog.toArray(),
-      db.painLog.toArray(),
-    ]);
+  const [
+    settings,
+    sessions,
+    sets,
+    readiness,
+    combines,
+    measurements,
+    videoLog,
+    painLog,
+    extraFoods,
+  ] = await Promise.all([
+    db.settings.get(1),
+    db.sessions.toArray(),
+    db.sets.toArray(),
+    db.readiness.toArray(),
+    db.combines.toArray(),
+    db.measurements.toArray(),
+    db.exerciseVideoLog.toArray(),
+    db.painLog.toArray(),
+    db.extraFoods.toArray(),
+  ]);
 
   return {
-    format: 'programme-12-semaines',
+    format: "programme-12-semaines",
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
     settings: settings ?? null,
@@ -108,6 +127,7 @@ export async function exportAll(): Promise<ExportFile> {
     measurements,
     videoLog,
     painLog,
+    extraFoods,
     photosIncluded: false,
   };
 }
@@ -120,7 +140,7 @@ export async function exportPhotos(): Promise<PhotoExportFile> {
     db.exerciseReference.toArray(),
   ]);
   return {
-    format: 'programme-12-semaines-photos',
+    format: "programme-12-semaines-photos",
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
     progressPhotos: await Promise.all(
@@ -161,9 +181,9 @@ export function exportFileName(now = new Date()): string {
 }
 
 function download(content: string, filename: string): void {
-  const blob = new Blob([content], { type: 'application/json' });
+  const blob = new Blob([content], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = filename;
   document.body.appendChild(a);
@@ -185,10 +205,16 @@ export async function downloadExport(): Promise<void> {
  * chaînes base64, les espaces ajoutent des mégaoctets pour une lisibilité dont
  * personne n'a l'usage. Rend la taille produite, pour l'annoncer.
  */
-export async function downloadPhotoExport(): Promise<{ bytes: number; count: number }> {
+export async function downloadPhotoExport(): Promise<{
+  bytes: number;
+  count: number;
+}> {
   const file = await exportPhotos();
   const json = JSON.stringify(file);
-  download(json, `programme-12-semaines-photos-${new Date().toISOString().slice(0, 10)}.json`);
+  download(
+    json,
+    `programme-12-semaines-photos-${new Date().toISOString().slice(0, 10)}.json`,
+  );
   return {
     bytes: new Blob([json]).size,
     count: file.progressPhotos.length + file.exerciseMedia.length,
@@ -203,6 +229,7 @@ export interface ImportReport {
   measurements: number;
   videoLog: number;
   painLog: number;
+  extraFoods: number;
   settings: boolean;
 }
 
@@ -214,8 +241,8 @@ export interface PhotoImportReport {
 
 /** Ce que contient un fichier déposé — l'import s'adapte au lieu d'exiger. */
 export type AnyExportFile =
-  | { kind: 'données'; file: ExportFile }
-  | { kind: 'photos'; file: PhotoExportFile };
+  | { kind: "données"; file: ExportFile }
+  | { kind: "photos"; file: PhotoExportFile };
 
 /**
  * Reconnaît lequel des deux fichiers on vient de recevoir.
@@ -228,31 +255,42 @@ export function parseAnyExport(text: string): AnyExportFile {
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error('Ce fichier n’est pas du JSON valide.');
+    throw new Error("Ce fichier n’est pas du JSON valide.");
   }
-  if ((parsed as { format?: string })?.format === 'programme-12-semaines-photos') {
+  if (
+    (parsed as { format?: string })?.format === "programme-12-semaines-photos"
+  ) {
     const f = parsed as PhotoExportFile;
     return {
-      kind: 'photos',
+      kind: "photos",
       file: {
-        format: 'programme-12-semaines-photos',
+        format: "programme-12-semaines-photos",
         version: f.version ?? EXPORT_VERSION,
-        exportedAt: f.exportedAt ?? '',
+        exportedAt: f.exportedAt ?? "",
         progressPhotos: f.progressPhotos ?? [],
         exerciseMedia: f.exerciseMedia ?? [],
         exerciseReference: f.exerciseReference ?? [],
       },
     };
   }
-  return { kind: 'données', file: parseExport(text) };
+  return { kind: "données", file: parseExport(text) };
 }
 
 /** Remplace les photos par celles du fichier. Ne touche à aucune autre table. */
-export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportReport> {
+export async function importPhotos(
+  file: PhotoExportFile,
+): Promise<PhotoImportReport> {
   const progress = await Promise.all(
     file.progressPhotos.map(async (p) => {
       const blob = await dataUrlToBlob(p.dataUrl);
-      return { week: p.week, date: p.date, width: p.width, height: p.height, blob, bytes: blob.size };
+      return {
+        week: p.week,
+        date: p.date,
+        width: p.width,
+        height: p.height,
+        blob,
+        bytes: blob.size,
+      };
     }),
   );
   const media = await Promise.all(
@@ -286,7 +324,7 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
   );
 
   await db.transaction(
-    'rw',
+    "rw",
     [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
     async () => {
       await Promise.all([
@@ -313,21 +351,21 @@ export function parseExport(text: string): ExportFile {
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error('Ce fichier n’est pas du JSON valide.');
+    throw new Error("Ce fichier n’est pas du JSON valide.");
   }
   const f = parsed as Partial<ExportFile>;
-  if (f?.format !== 'programme-12-semaines') {
-    throw new Error('Ce fichier ne vient pas de cette application.');
+  if (f?.format !== "programme-12-semaines") {
+    throw new Error("Ce fichier ne vient pas de cette application.");
   }
-  if (typeof f.version !== 'number' || f.version > EXPORT_VERSION) {
+  if (typeof f.version !== "number" || f.version > EXPORT_VERSION) {
     throw new Error(
       `Ce fichier vient d’une version plus récente (${String(f.version)}). Mets l’application à jour.`,
     );
   }
   return {
-    format: 'programme-12-semaines',
+    format: "programme-12-semaines",
     version: f.version,
-    exportedAt: f.exportedAt ?? '',
+    exportedAt: f.exportedAt ?? "",
     settings: f.settings ?? null,
     sessions: f.sessions ?? [],
     sets: f.sets ?? [],
@@ -338,6 +376,7 @@ export function parseExport(text: string): ExportFile {
     measurements: f.measurements ?? [],
     videoLog: f.videoLog ?? [],
     painLog: f.painLog ?? [],
+    extraFoods: f.extraFoods ?? [],
     photosIncluded: false,
   };
 }
@@ -351,7 +390,7 @@ export function parseExport(text: string): ExportFile {
  */
 export async function importAll(file: ExportFile): Promise<ImportReport> {
   return db.transaction(
-    'rw',
+    "rw",
     [
       db.settings,
       db.sessions,
@@ -361,11 +400,13 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.measurements,
       db.exerciseVideoLog,
       db.painLog,
+      db.extraFoods,
     ],
     async () => {
       const measurements = file.measurements ?? [];
       const videoLog = file.videoLog ?? [];
       const painLog = file.painLog ?? [];
+      const extraFoods = file.extraFoods ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
@@ -374,6 +415,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.measurements.clear(),
         db.exerciseVideoLog.clear(),
         db.painLog.clear(),
+        db.extraFoods.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
@@ -383,6 +425,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       await db.measurements.bulkAdd(measurements);
       await db.exerciseVideoLog.bulkAdd(videoLog);
       await db.painLog.bulkAdd(painLog);
+      await db.extraFoods.bulkAdd(extraFoods);
 
       return {
         sessions: file.sessions.length,
@@ -392,6 +435,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         measurements: measurements.length,
         videoLog: videoLog.length,
         painLog: painLog.length,
+        extraFoods: extraFoods.length,
         settings: file.settings !== null,
       };
     },
@@ -401,7 +445,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
 /** Efface tout l'historique. Les réglages sont conservés. */
 export async function resetHistory(): Promise<void> {
   await db.transaction(
-    'rw',
+    "rw",
     [
       db.sessions,
       db.sets,
@@ -410,6 +454,7 @@ export async function resetHistory(): Promise<void> {
       db.measurements,
       db.exerciseVideoLog,
       db.painLog,
+      db.extraFoods,
     ],
     async () => {
       await Promise.all([
@@ -420,6 +465,7 @@ export async function resetHistory(): Promise<void> {
         db.measurements.clear(),
         db.exerciseVideoLog.clear(),
         db.painLog.clear(),
+        db.extraFoods.clear(),
       ]);
     },
   );
@@ -434,7 +480,7 @@ export async function resetHistory(): Promise<void> {
  */
 export async function resetPhotos(): Promise<void> {
   await db.transaction(
-    'rw',
+    "rw",
     [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
     async () => {
       await Promise.all([

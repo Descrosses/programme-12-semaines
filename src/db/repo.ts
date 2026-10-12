@@ -3,13 +3,18 @@
  * et transformer les lignes en structures que l'engine sait consommer.
  */
 
-import type { DayIndex, RPETarget } from '../data/types';
-import type { HistoryIndex, Occurrence, ReadinessRecord, Settings } from '../engine/types';
-import type { FoodOverride, FoodOverrides } from '../engine/nutrition';
-import { normalizeNote } from '../engine/exerciseNotes';
-import type { WeekIndex } from '../data/types';
-import { dateFor } from '../engine/calendar';
-import { lowerIsBetter } from '../engine/lastPerformance';
+import type { DayIndex, RPETarget } from "../data/types";
+import type {
+  HistoryIndex,
+  Occurrence,
+  ReadinessRecord,
+  Settings,
+} from "../engine/types";
+import type { FoodOverride, FoodOverrides } from "../engine/nutrition";
+import { normalizeNote } from "../engine/exerciseNotes";
+import type { WeekIndex } from "../data/types";
+import { dateFor } from "../engine/calendar";
+import { lowerIsBetter } from "../engine/lastPerformance";
 import {
   DEFAULT_SETTINGS_ROW,
   db,
@@ -22,6 +27,7 @@ import {
   type ExerciseNoteRow,
   type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
+  type ExtraFoodRow,
   type FoodOverrideRow,
   type MeasurementRow,
   type PainLogRow,
@@ -30,7 +36,7 @@ import {
   type SessionRow,
   type SetRow,
   type SettingsRow,
-} from './db';
+} from "./db";
 
 // --------------------------------------------------------------- réglages --
 
@@ -40,11 +46,13 @@ export async function getSettingsRow(): Promise<SettingsRow> {
   return { ...DEFAULT_SETTINGS_ROW, ...(await db.settings.get(1)) };
 }
 
-export async function saveSettings(patch: Partial<SettingsRow>): Promise<SettingsRow> {
+export async function saveSettings(
+  patch: Partial<SettingsRow>,
+): Promise<SettingsRow> {
   const current = await getSettingsRow();
   const next = { ...current, ...patch, id: 1 as const };
   await db.settings.put(next);
-  if (next.startDate !== current.startDate && next.startDate !== '') {
+  if (next.startDate !== current.startDate && next.startDate !== "") {
     await realignScheduleDates(next.startDate);
   }
   return next;
@@ -74,7 +82,7 @@ export async function realignScheduleDates(startDate: string): Promise<number> {
     const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
     if (row.date === attendue || row.id === undefined) continue;
     await db.sessions.update(row.id, { date: attendue });
-    await db.sets.where('sessionId').equals(row.id).modify({ date: attendue });
+    await db.sets.where("sessionId").equals(row.id).modify({ date: attendue });
     recalees += 1;
   }
 
@@ -92,7 +100,7 @@ export function toEngineSettings(row: SettingsRow): Settings {
   return {
     startDate: row.startDate,
     broadJumpBaselineCm: row.broadJumpBaselineCm,
-    oneRM: row.oneRM as Settings['oneRM'],
+    oneRM: row.oneRM as Settings["oneRM"],
   };
 }
 
@@ -106,12 +114,19 @@ export function toEngineSettings(row: SettingsRow): Settings {
  * on les réaligne ici, sinon l'écran Semaine et l'historique resteraient sur un
  * calendrier périmé jusqu'à une remise à zéro.
  */
-export async function ensureSession(week: number, day: DayIndex, date: string): Promise<SessionRow> {
-  const existing = await db.sessions.where('[week+day]').equals([week, day]).first();
+export async function ensureSession(
+  week: number,
+  day: DayIndex,
+  date: string,
+): Promise<SessionRow> {
+  const existing = await db.sessions
+    .where("[week+day]")
+    .equals([week, day])
+    .first();
   if (existing) {
     if (existing.date !== date && existing.id !== undefined) {
       await db.sessions.update(existing.id, { date });
-      await db.sets.where('sessionId').equals(existing.id).modify({ date });
+      await db.sets.where("sessionId").equals(existing.id).modify({ date });
       return { ...existing, date };
     }
     return existing;
@@ -120,28 +135,37 @@ export async function ensureSession(week: number, day: DayIndex, date: string): 
     week,
     day,
     date,
-    status: 'planned',
+    status: "planned",
     warmupChecked: [],
-    notes: '',
+    notes: "",
     startedAt: Date.now(),
   };
   const id = await db.sessions.add(row);
   return { ...row, id };
 }
 
-export async function getSession(week: number, day: DayIndex): Promise<SessionRow | undefined> {
-  return db.sessions.where('[week+day]').equals([week, day]).first();
+export async function getSession(
+  week: number,
+  day: DayIndex,
+): Promise<SessionRow | undefined> {
+  return db.sessions.where("[week+day]").equals([week, day]).first();
 }
 
 export async function allSessions(): Promise<SessionRow[]> {
   return db.sessions.toArray();
 }
 
-export async function updateSession(id: number, patch: Partial<SessionRow>): Promise<void> {
+export async function updateSession(
+  id: number,
+  patch: Partial<SessionRow>,
+): Promise<void> {
   await db.sessions.update(id, patch);
 }
 
-export async function toggleWarmupItem(sessionId: number, itemId: string): Promise<string[]> {
+export async function toggleWarmupItem(
+  sessionId: number,
+  itemId: string,
+): Promise<string[]> {
   const row = await db.sessions.get(sessionId);
   if (!row) return [];
   const checked = row.warmupChecked.includes(itemId)
@@ -196,7 +220,7 @@ export async function saveSet(input: SetInput): Promise<number> {
   };
 
   const existing = await db.sets
-    .where('[sessionId+exerciseId]')
+    .where("[sessionId+exerciseId]")
     .equals([input.sessionId, input.exerciseId])
     .and((s) => s.setIndex === input.setIndex)
     .first();
@@ -213,7 +237,7 @@ export async function deleteSet(id: number): Promise<void> {
 }
 
 export async function setsForSession(sessionId: number): Promise<SetRow[]> {
-  return db.sets.where('sessionId').equals(sessionId).sortBy('setIndex');
+  return db.sets.where("sessionId").equals(sessionId).sortBy("setIndex");
 }
 
 export async function allSets(): Promise<SetRow[]> {
@@ -223,36 +247,49 @@ export async function allSets(): Promise<SetRow[]> {
 // -------------------------------------------------------------- readiness --
 
 export async function saveReadiness(row: ReadinessRow): Promise<void> {
-  const existing = await db.readiness.where('[week+day]').equals([row.week, row.day]).first();
+  const existing = await db.readiness
+    .where("[week+day]")
+    .equals([row.week, row.day])
+    .first();
   // `put` plutôt que `update` : on remplace la ligne entière, y compris le
   // tableau des 3 essais.
-  await db.readiness.put(existing?.id === undefined ? row : { ...row, id: existing.id });
+  await db.readiness.put(
+    existing?.id === undefined ? row : { ...row, id: existing.id },
+  );
 }
 
-export async function getReadiness(week: number, day: DayIndex): Promise<ReadinessRow | undefined> {
-  return db.readiness.where('[week+day]').equals([week, day]).first();
+export async function getReadiness(
+  week: number,
+  day: DayIndex,
+): Promise<ReadinessRow | undefined> {
+  return db.readiness.where("[week+day]").equals([week, day]).first();
 }
 
 export async function allReadiness(): Promise<ReadinessRow[]> {
-  return db.readiness.orderBy('date').toArray();
+  return db.readiness.orderBy("date").toArray();
 }
 
 export function toReadinessRecords(rows: ReadinessRow[]): ReadinessRecord[] {
-  return rows.map((r) => ({ date: r.date, week: r.week, day: r.day, jumpCm: r.jumpCm }));
+  return rows.map((r) => ({
+    date: r.date,
+    week: r.week,
+    day: r.day,
+    jumpCm: r.jumpCm,
+  }));
 }
 
 // --------------------------------------------------------------- combines --
 
 export async function saveCombine(
   phase: CombinePhase,
-  patch: Partial<Omit<CombineRow, 'id' | 'phase'>>,
+  patch: Partial<Omit<CombineRow, "id" | "phase">>,
 ): Promise<CombineRow> {
-  const existing = await db.combines.where('phase').equals(phase).first();
+  const existing = await db.combines.where("phase").equals(phase).first();
   const next: CombineRow = {
     phase,
     date: patch.date ?? existing?.date ?? new Date().toISOString().slice(0, 10),
     metrics: { ...(existing?.metrics ?? {}), ...(patch.metrics ?? {}) },
-    notes: patch.notes ?? existing?.notes ?? '',
+    notes: patch.notes ?? existing?.notes ?? "",
   };
   if (existing?.id !== undefined) {
     await db.combines.put({ ...next, id: existing.id });
@@ -280,11 +317,15 @@ export async function saveMeasurement(
   date: string,
   patch: { weightKg?: number | null; waistCm?: number | null },
 ): Promise<MeasurementRow> {
-  const existing = await db.measurements.where('date').equals(date).first();
+  const existing = await db.measurements.where("date").equals(date).first();
   const next: MeasurementRow = {
     date,
-    weightKg: patch.weightKg !== undefined ? patch.weightKg : (existing?.weightKg ?? null),
-    waistCm: patch.waistCm !== undefined ? patch.waistCm : (existing?.waistCm ?? null),
+    weightKg:
+      patch.weightKg !== undefined
+        ? patch.weightKg
+        : (existing?.weightKg ?? null),
+    waistCm:
+      patch.waistCm !== undefined ? patch.waistCm : (existing?.waistCm ?? null),
   };
 
   // Une ligne entièrement vide n'a rien à faire en base : elle diluerait les
@@ -302,21 +343,26 @@ export async function saveMeasurement(
   return { ...next, id };
 }
 
-export async function getMeasurement(date: string): Promise<MeasurementRow | undefined> {
-  return db.measurements.where('date').equals(date).first();
+export async function getMeasurement(
+  date: string,
+): Promise<MeasurementRow | undefined> {
+  return db.measurements.where("date").equals(date).first();
 }
 
 export async function allMeasurements(): Promise<MeasurementRow[]> {
-  return db.measurements.orderBy('date').toArray();
+  return db.measurements.orderBy("date").toArray();
 }
 
 // ----------------------------------------------------------- suivi visuel --
 
 /** Enregistre la photo de la semaine. Une seule par semaine : la reprise remplace. */
 export async function savePhoto(
-  row: Omit<ProgressPhotoRow, 'id'>,
+  row: Omit<ProgressPhotoRow, "id">,
 ): Promise<ProgressPhotoRow> {
-  const existing = await db.progressPhotos.where('week').equals(row.week).first();
+  const existing = await db.progressPhotos
+    .where("week")
+    .equals(row.week)
+    .first();
   if (existing?.id !== undefined) {
     await db.progressPhotos.put({ ...row, id: existing.id });
     return { ...row, id: existing.id };
@@ -326,7 +372,7 @@ export async function savePhoto(
 }
 
 export async function allPhotos(): Promise<ProgressPhotoRow[]> {
-  return db.progressPhotos.orderBy('week').toArray();
+  return db.progressPhotos.orderBy("week").toArray();
 }
 
 export async function deletePhoto(id: number): Promise<void> {
@@ -338,10 +384,10 @@ export async function deletePhoto(id: number): Promise<void> {
  * but : comparer le squat de la semaine 1 à celui de la semaine 9.
  */
 export async function saveExerciseMedia(
-  row: Omit<ExerciseMediaRow, 'id'>,
+  row: Omit<ExerciseMediaRow, "id">,
 ): Promise<ExerciseMediaRow> {
   const existing = await db.exerciseMedia
-    .where('[exerciseId+date]')
+    .where("[exerciseId+date]")
     .equals([row.exerciseId, row.date])
     .first();
   if (existing?.id !== undefined) {
@@ -352,12 +398,14 @@ export async function saveExerciseMedia(
   return { ...row, id };
 }
 
-export async function mediaForExercise(exerciseId: string): Promise<ExerciseMediaRow[]> {
-  return db.exerciseMedia.where('exerciseId').equals(exerciseId).sortBy('date');
+export async function mediaForExercise(
+  exerciseId: string,
+): Promise<ExerciseMediaRow[]> {
+  return db.exerciseMedia.where("exerciseId").equals(exerciseId).sortBy("date");
 }
 
 export async function allExerciseMedia(): Promise<ExerciseMediaRow[]> {
-  return db.exerciseMedia.orderBy('date').toArray();
+  return db.exerciseMedia.orderBy("date").toArray();
 }
 
 export async function deleteExerciseMedia(id: number): Promise<void> {
@@ -369,9 +417,12 @@ export async function deleteExerciseMedia(id: number): Promise<void> {
  * nouvelle remplace l'ancienne, sans laisser de doublon en base.
  */
 export async function saveExerciseReference(
-  row: Omit<ExerciseReferenceRow, 'id'>,
+  row: Omit<ExerciseReferenceRow, "id">,
 ): Promise<ExerciseReferenceRow> {
-  const existing = await db.exerciseReference.where('exerciseId').equals(row.exerciseId).first();
+  const existing = await db.exerciseReference
+    .where("exerciseId")
+    .equals(row.exerciseId)
+    .first();
   if (existing?.id !== undefined) {
     await db.exerciseReference.put({ ...row, id: existing.id });
     return { ...row, id: existing.id };
@@ -383,11 +434,11 @@ export async function saveExerciseReference(
 export async function referenceForExercise(
   exerciseId: string,
 ): Promise<ExerciseReferenceRow | undefined> {
-  return db.exerciseReference.where('exerciseId').equals(exerciseId).first();
+  return db.exerciseReference.where("exerciseId").equals(exerciseId).first();
 }
 
 export async function allExerciseReferences(): Promise<ExerciseReferenceRow[]> {
-  return db.exerciseReference.orderBy('exerciseId').toArray();
+  return db.exerciseReference.orderBy("exerciseId").toArray();
 }
 
 export async function deleteExerciseReference(id: number): Promise<void> {
@@ -395,21 +446,29 @@ export async function deleteExerciseReference(id: number): Promise<void> {
 }
 
 /** Trace de vidéo : la date, pas le fichier. */
-export async function logVideo(row: Omit<ExerciseVideoLogRow, 'id'>): Promise<void> {
+export async function logVideo(
+  row: Omit<ExerciseVideoLogRow, "id">,
+): Promise<void> {
   const existing = await db.exerciseVideoLog
-    .where('[exerciseId+date]')
+    .where("[exerciseId+date]")
     .equals([row.exerciseId, row.date])
     .first();
-  if (existing?.id !== undefined) await db.exerciseVideoLog.put({ ...row, id: existing.id });
+  if (existing?.id !== undefined)
+    await db.exerciseVideoLog.put({ ...row, id: existing.id });
   else await db.exerciseVideoLog.add(row);
 }
 
-export async function videoLogForExercise(exerciseId: string): Promise<ExerciseVideoLogRow[]> {
-  return db.exerciseVideoLog.where('exerciseId').equals(exerciseId).sortBy('date');
+export async function videoLogForExercise(
+  exerciseId: string,
+): Promise<ExerciseVideoLogRow[]> {
+  return db.exerciseVideoLog
+    .where("exerciseId")
+    .equals(exerciseId)
+    .sortBy("date");
 }
 
 export async function allVideoLog(): Promise<ExerciseVideoLogRow[]> {
-  return db.exerciseVideoLog.orderBy('date').toArray();
+  return db.exerciseVideoLog.orderBy("date").toArray();
 }
 
 export async function deleteVideoLog(id: number): Promise<void> {
@@ -438,7 +497,7 @@ export async function saveExerciseNote(input: {
   text: string;
 }): Promise<void> {
   const existing = await db.exerciseNotes
-    .where('[exerciseId+week+day]')
+    .where("[exerciseId+week+day]")
     .equals([input.exerciseId, input.week, input.day])
     .first();
 
@@ -461,8 +520,10 @@ export async function saveExerciseNote(input: {
 }
 
 /** Toutes les remarques laissées sur un mouvement, sur les 12 semaines. */
-export async function notesForExercise(exerciseId: string): Promise<ExerciseNoteRow[]> {
-  return db.exerciseNotes.where('exerciseId').equals(exerciseId).toArray();
+export async function notesForExercise(
+  exerciseId: string,
+): Promise<ExerciseNoteRow[]> {
+  return db.exerciseNotes.where("exerciseId").equals(exerciseId).toArray();
 }
 
 export async function allExerciseNotes(): Promise<ExerciseNoteRow[]> {
@@ -492,7 +553,7 @@ export async function photoUsage(): Promise<PhotoUsage> {
   const rows = [...photos, ...media, ...references];
   let quotaBytes: number | null = null;
   let usedBytes: number | null = null;
-  if (typeof navigator !== 'undefined' && navigator.storage?.estimate) {
+  if (typeof navigator !== "undefined" && navigator.storage?.estimate) {
     try {
       const est = await navigator.storage.estimate();
       quotaBytes = est.quota ?? null;
@@ -533,7 +594,12 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
   const parSeance = new Map<string, Map<string, SetRow[]>>();
 
   for (const s of sets) {
-    if (s.actualReps === null && s.actualKg === null && s.actualRpe === null && s.measureValue == null)
+    if (
+      s.actualReps === null &&
+      s.actualKg === null &&
+      s.actualRpe === null &&
+      s.measureValue == null
+    )
       continue;
     let seances = parSeance.get(s.exerciseId);
     if (!seances) parSeance.set(s.exerciseId, (seances = new Map()));
@@ -547,12 +613,18 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
   for (const [exerciseId, seances] of parSeance) {
     const occurrences: Occurrence[] = [];
     const triees = [...seances.values()].sort((a, b) =>
-      a[0]!.week !== b[0]!.week ? a[0]!.week - b[0]!.week : a[0]!.day - b[0]!.day,
+      a[0]!.week !== b[0]!.week
+        ? a[0]!.week - b[0]!.week
+        : a[0]!.day - b[0]!.day,
     );
     for (const rows of triees) {
       const week = rows[0]!.week;
-      const kgs = rows.map((r) => r.actualKg).filter((k): k is number => k !== null);
-      const rpes = rows.map((r) => r.actualRpe).filter((r): r is number => r !== null);
+      const kgs = rows
+        .map((r) => r.actualKg)
+        .filter((k): k is number => k !== null);
+      const rpes = rows
+        .map((r) => r.actualRpe)
+        .filter((r): r is number => r !== null);
       /*
        * Les mesures viennent des MÊMES lignes que les kilos : un seul passage,
        * une seule source. Le meilleur essai de la semaine, comme pour la
@@ -566,7 +638,11 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
       const first = rows[0]!;
       const target: RPETarget | null =
         first.targetRpeMin !== null && first.targetRpeMax !== null
-          ? { min: first.targetRpeMin, max: first.targetRpeMax, label: first.targetRpeLabel ?? '' }
+          ? {
+              min: first.targetRpeMin,
+              max: first.targetRpeMax,
+              label: first.targetRpeLabel ?? "",
+            }
           : null;
 
       occurrences.push({
@@ -621,9 +697,15 @@ export async function allFoodOverrides(): Promise<FoodOverrides> {
 }
 
 /** Écrit les valeurs corrigées d'un aliment, ou efface la ligne si elle redevient vide. */
-export async function saveFoodOverride(foodId: string, patch: FoodOverride): Promise<void> {
+export async function saveFoodOverride(
+  foodId: string,
+  patch: FoodOverride,
+): Promise<void> {
   const vide = Object.values(patch).every((v) => v === undefined);
-  const existing = await db.foodOverrides.where('foodId').equals(foodId).first();
+  const existing = await db.foodOverrides
+    .where("foodId")
+    .equals(foodId)
+    .first();
   if (vide) {
     if (existing?.id !== undefined) await db.foodOverrides.delete(existing.id);
     return;
@@ -637,13 +719,16 @@ export async function saveFoodOverride(foodId: string, patch: FoodOverride): Pro
    * pas », pas « efface-le ».
    */
   const row: FoodOverrideRow = { ...existing, foodId, ...sansIndefinis(patch) };
-  if (existing?.id !== undefined) await db.foodOverrides.update(existing.id, row);
+  if (existing?.id !== undefined)
+    await db.foodOverrides.update(existing.id, row);
   else await db.foodOverrides.add(row);
 }
 
 /** Les seules clés réellement renseignées — `undefined` ne doit rien écraser. */
 function sansIndefinis(patch: FoodOverride): Partial<FoodOverride> {
-  return Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined));
+  return Object.fromEntries(
+    Object.entries(patch).filter(([, v]) => v !== undefined),
+  );
 }
 
 // ------------------------------------------------- aliments personnalisés --
@@ -654,18 +739,23 @@ function sansIndefinis(patch: FoodOverride): Partial<FoodOverride> {
  * `foodId` est unique : ressaisir le même aliment corrige le premier au lieu
  * d'empiler des doublons dans la liste de choix.
  */
-export async function saveCustomFood(row: Omit<CustomFoodRow, 'id'>): Promise<void> {
-  const existing = await db.customFoods.where('foodId').equals(row.foodId).first();
+export async function saveCustomFood(
+  row: Omit<CustomFoodRow, "id">,
+): Promise<void> {
+  const existing = await db.customFoods
+    .where("foodId")
+    .equals(row.foodId)
+    .first();
   if (existing?.id !== undefined) await db.customFoods.update(existing.id, row);
   else await db.customFoods.add(row);
 }
 
 export async function allCustomFoods(): Promise<CustomFoodRow[]> {
-  return db.customFoods.orderBy('addedAt').reverse().toArray();
+  return db.customFoods.orderBy("addedAt").reverse().toArray();
 }
 
 export async function deleteCustomFood(foodId: string): Promise<void> {
-  const existing = await db.customFoods.where('foodId').equals(foodId).first();
+  const existing = await db.customFoods.where("foodId").equals(foodId).first();
   if (existing?.id !== undefined) await db.customFoods.delete(existing.id);
 }
 
@@ -675,7 +765,10 @@ export async function resetFoodOverrides(foodId?: string): Promise<void> {
     await db.foodOverrides.clear();
     return;
   }
-  const existing = await db.foodOverrides.where('foodId').equals(foodId).first();
+  const existing = await db.foodOverrides
+    .where("foodId")
+    .equals(foodId)
+    .first();
   if (existing?.id !== undefined) await db.foodOverrides.delete(existing.id);
 }
 
@@ -688,7 +781,7 @@ export async function resetFoodOverrides(foodId?: string): Promise<void> {
  * « celui-ci, l'ai-je pris ? », et c'est la seule question qu'il pose par repas.
  */
 export async function mealsEatenOn(date: string): Promise<Set<string>> {
-  const rows = await db.mealLog.where('date').equals(date).toArray();
+  const rows = await db.mealLog.where("date").equals(date).toArray();
   return new Set(rows.map((r) => r.mealId));
 }
 
@@ -699,21 +792,34 @@ export async function mealsEatenOn(date: string): Promise<Set<string>> {
  * veut déjà dire « pas pris », et deux façons d'exprimer la même chose finissent
  * toujours par se contredire.
  */
-export async function setMealEaten(date: string, mealId: string, eaten: boolean): Promise<void> {
-  const existing = await db.mealLog.where('[date+mealId]').equals([date, mealId]).first();
+export async function setMealEaten(
+  date: string,
+  mealId: string,
+  eaten: boolean,
+): Promise<void> {
+  const existing = await db.mealLog
+    .where("[date+mealId]")
+    .equals([date, mealId])
+    .first();
   if (!eaten) {
     if (existing?.id !== undefined) await db.mealLog.delete(existing.id);
     return;
   }
   if (existing) return;
-  const row: Omit<MealLogRow, 'id'> = { date, mealId, at: new Date().toISOString() };
+  const row: Omit<MealLogRow, "id"> = {
+    date,
+    mealId,
+    at: new Date().toISOString(),
+  };
   await db.mealLog.add(row as MealLogRow);
 }
 
 /** Efface les coches d'une journée — le bouton « j'ai mal coché, je recommence ». */
 export async function clearMealsEatenOn(date: string): Promise<void> {
-  const rows = await db.mealLog.where('date').equals(date).toArray();
-  await db.mealLog.bulkDelete(rows.map((r) => r.id!).filter((id) => id !== undefined));
+  const rows = await db.mealLog.where("date").equals(date).toArray();
+  await db.mealLog.bulkDelete(
+    rows.map((r) => r.id!).filter((id) => id !== undefined),
+  );
 }
 
 // ------------------------------------------- palier choisi pour une journée --
@@ -725,8 +831,10 @@ export async function clearMealsEatenOn(date: string): Promise<void> {
  * programme prévoit ce jour-là, et lui rendre « rest » ici reviendrait à
  * décider à sa place.
  */
-export async function dayKindOverride(date: string): Promise<DayKindRow['kind'] | null> {
-  const row = await db.dayKind.where('date').equals(date).first();
+export async function dayKindOverride(
+  date: string,
+): Promise<DayKindRow["kind"] | null> {
+  const row = await db.dayKind.where("date").equals(date).first();
   return row?.kind ?? null;
 }
 
@@ -739,14 +847,15 @@ export async function dayKindOverride(date: string): Promise<DayKindRow['kind'] 
  */
 export async function setDayKindOverride(
   date: string,
-  kind: DayKindRow['kind'] | null,
+  kind: DayKindRow["kind"] | null,
 ): Promise<void> {
-  const existing = await db.dayKind.where('date').equals(date).first();
+  const existing = await db.dayKind.where("date").equals(date).first();
   if (kind === null) {
     if (existing?.id !== undefined) await db.dayKind.delete(existing.id);
     return;
   }
-  if (existing?.id !== undefined) await db.dayKind.update(existing.id, { kind });
+  if (existing?.id !== undefined)
+    await db.dayKind.update(existing.id, { kind });
   else await db.dayKind.add({ date, kind } as DayKindRow);
 }
 
@@ -758,19 +867,21 @@ export async function setDayKindOverride(
  * Une `Map` et non une liste : l'écran pose toujours la question exercice par
  * exercice — « celui-là, qu'est-ce que j'avais noté ? ».
  */
-export async function painLogOn(date: string): Promise<Map<string, PainLogRow>> {
-  const rows = await db.painLog.where('date').equals(date).toArray();
+export async function painLogOn(
+  date: string,
+): Promise<Map<string, PainLogRow>> {
+  const rows = await db.painLog.where("date").equals(date).toArray();
   return new Map(rows.map((r) => [r.exId, r]));
 }
 
 /** L'historique d'un exercice, de la note la plus ancienne à la plus récente. */
 export async function painLogFor(exId: string): Promise<PainLogRow[]> {
-  const rows = await db.painLog.where('exId').equals(exId).toArray();
+  const rows = await db.painLog.where("exId").equals(exId).toArray();
   return rows.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function allPainLogs(): Promise<PainLogRow[]> {
-  return db.painLog.orderBy('date').toArray();
+  return db.painLog.orderBy("date").toArray();
 }
 
 /**
@@ -783,9 +894,12 @@ export async function allPainLogs(): Promise<PainLogRow[]> {
 export async function savePain(
   date: string,
   exId: string,
-  patch: Partial<Omit<PainLogRow, 'id' | 'date' | 'exId'>>,
+  patch: Partial<Omit<PainLogRow, "id" | "date" | "exId">>,
 ): Promise<PainLogRow | null> {
-  const existing = await db.painLog.where('[date+exId]').equals([date, exId]).first();
+  const existing = await db.painLog
+    .where("[date+exId]")
+    .equals([date, exId])
+    .first();
   const next: PainLogRow = {
     date,
     exId,
@@ -815,4 +929,61 @@ export async function savePain(
   }
   const id = await db.painLog.add(next);
   return { ...next, id };
+}
+
+// ------------------------------------------- aliments mangés en plus du plan --
+
+/** Les aliments ajoutés ce jour-là, dans l'ordre où ils ont été saisis. */
+export async function extrasOn(date: string): Promise<ExtraFoodRow[]> {
+  const rows = await db.extraFoods.where("date").equals(date).toArray();
+  return rows.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+}
+
+/**
+ * Ajoute un aliment à un repas de la journée.
+ *
+ * La composition est RECOPIÉE dans la ligne, pas référencée : un ajout est un
+ * fait daté, et changer de marque de skyr en novembre ne doit pas réécrire les
+ * journées d'octobre. Voir `ExtraFoodRow`.
+ *
+ * Rien n'est fusionné non plus : deux ajouts du même aliment font deux lignes.
+ * Les additionner d'office empêcherait d'en retirer une seule, et sur un écran
+ * où tout se corrige, ne pas pouvoir défaire est pire que répéter.
+ */
+export async function addExtra(
+  date: string,
+  mealId: string,
+  qty: number,
+  food: {
+    id: string;
+    label: string;
+    unit: ExtraFoodRow["unit"];
+    per: number;
+    kcal: number;
+    proteinG: number;
+    carbsG: number;
+    fatG: number;
+  },
+): Promise<void> {
+  await db.extraFoods.add({
+    date,
+    mealId,
+    qty,
+    foodId: food.id,
+    label: food.label,
+    unit: food.unit,
+    per: food.per,
+    kcal: food.kcal,
+    proteinG: food.proteinG,
+    carbsG: food.carbsG,
+    fatG: food.fatG,
+  } as ExtraFoodRow);
+}
+
+export async function removeExtra(id: number): Promise<void> {
+  await db.extraFoods.delete(id);
+}
+
+export async function allExtras(): Promise<ExtraFoodRow[]> {
+  return db.extraFoods.orderBy("date").toArray();
 }
