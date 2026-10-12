@@ -457,58 +457,53 @@ export function consumedTotal(
    * réflexe serait de cocher le repas pour le faire apparaître — ce qui
    * fausserait les deux informations d'un coup.
    */
-  return arrondir(somme(repas, extrasTotal(extras, overrides, library)));
+  return arrondir(somme(repas, extrasTotal(extras)));
 }
 
 /**
  * Un aliment mangé en plus du plan.
  *
- * Il ne porte pas sa composition : seulement de quoi la retrouver. Corriger
- * une étiquette corrige donc aussi ce qui a déjà été compté, exactement comme
- * pour les aliments du plan.
+ * ── Il porte SA composition, et c'est volontaire ───────────────────────────
+ *
+ * Une ligne du plan est une consigne : corriger l'étiquette du skyr doit
+ * corriger ce qu'elle prescrit. Un ajout est un fait daté : le 12 octobre,
+ * 200 g de ce skyr-là valaient ces calories-là.
+ *
+ * Toutes les marques de skyr n'ont pas les mêmes macros. Si l'ajout ne
+ * portait qu'un identifiant, changer de marque en novembre réécrirait les
+ * journées d'octobre avec des valeurs jamais mangées — un historique qui
+ * bouge quand on corrige une étiquette ne vaut rien.
+ *
+ * Aucun `overrides`, aucun catalogue n'entre donc dans ce calcul : tout est
+ * déjà là.
  */
 export interface ExtraFood {
-  mealId: string;
-  foodId: string;
   qty: number;
+  /** Base de la composition : 100 pour ce qui se pèse, 1 pour ce qui se compte. */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
 }
 
-/**
- * Ce que pèse un aliment ajouté.
- *
- * Renvoie zéro si l'identifiant ne désigne rien : un aliment personnalisé
- * supprimé laisse derrière lui des ajouts orphelins, et les compter à partir
- * d'une composition inventée serait pire que de ne pas les compter.
- */
-export function extraMacros(
-  extra: ExtraFood,
-  overrides: FoodOverrides = {},
-  library: Catalogue = FOOD_LIBRARY,
-): Macros {
-  const food = library[extra.foodId];
-  if (!food) return ZERO;
-  const corrige = overrides[extra.foodId];
-  const f = extra.qty / food.per;
+/** Ce que pèse un aliment ajouté, à la composition figée le jour où il l'a été. */
+export function extraMacros(extra: ExtraFood): Macros {
+  /* `per` à zéro ne peut venir que d'une ligne corrompue : mieux vaut zéro
+     qu'un infini qui ferait exploser le total de la journée. */
+  if (!Number.isFinite(extra.per) || extra.per <= 0) return ZERO;
+  const f = extra.qty / extra.per;
   return {
-    kcal: (corrige?.kcal ?? food.kcal) * f,
-    proteinG: (corrige?.proteinG ?? food.proteinG) * f,
-    carbsG: (corrige?.carbsG ?? food.carbsG) * f,
-    fatG: (corrige?.fatG ?? food.fatG) * f,
+    kcal: extra.kcal * f,
+    proteinG: extra.proteinG * f,
+    carbsG: extra.carbsG * f,
+    fatG: extra.fatG * f,
   };
 }
 
 /** Tout ce qui a été ajouté dans la journée, toutes prises confondues. */
-export function extrasTotal(
-  extras: readonly ExtraFood[],
-  overrides: FoodOverrides = {},
-  library: Catalogue = FOOD_LIBRARY,
-): Macros {
-  return arrondir(
-    extras.reduce(
-      (acc, e) => somme(acc, extraMacros(e, overrides, library)),
-      ZERO,
-    ),
-  );
+export function extrasTotal(extras: readonly ExtraFood[]): Macros {
+  return arrondir(extras.reduce((acc, e) => somme(acc, extraMacros(e)), ZERO));
 }
 
 /** Ce qu'il reste à manger pour atteindre le plan. Négatif = dépassé. */

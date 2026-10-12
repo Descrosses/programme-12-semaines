@@ -479,10 +479,9 @@ export function NutritionScreen({
         <AddFoodSheet
           mealName={ajoutPour.name}
           customs={customs}
-          overrides={overrides}
-          onAdd={(foodId, qty) =>
+          onAdd={(food, qty) =>
             void (async () => {
-              await addExtra(todayIso, ajoutPour.id, foodId, qty);
+              await addExtra(todayIso, ajoutPour.id, qty, food);
               setExtras(await extrasOn(todayIso));
             })()
           }
@@ -627,8 +626,6 @@ export function NutritionScreen({
                 <div className={styles.mealExtras}>
                   <ExtrasDuRepas
                     extras={extras.filter((x) => x.mealId === m.id)}
-                    overrides={overrides}
-                    catalogue={catalogue}
                     onRemove={async (id) => {
                       await removeExtra(id);
                       setExtras(await extrasOn(todayIso));
@@ -877,13 +874,14 @@ async function chargerCustoms(): Promise<LibraryFood[]> {
  */
 function ExtrasDuRepas({
   extras,
-  overrides,
-  catalogue,
   onRemove,
 }: {
+  /*
+   * Chaque ligne porte déjà son nom et sa composition : ni catalogue ni
+   * corrections d'étiquette n'entrent ici. C'est exactement ce qui fait qu'un
+   * changement de marque ne réécrit pas les journées passées.
+   */
   extras: ExtraFoodRow[];
-  overrides: FoodOverrides;
-  catalogue: Record<string, LibraryFood>;
   onRemove: (id: number) => Promise<void>;
 }) {
   if (extras.length === 0) return null;
@@ -896,13 +894,12 @@ function ExtrasDuRepas({
       */}
       <li className={styles.extraTitre}>En plus du plan</li>
       {extras.map((x) => {
-        const food = catalogue[x.foodId];
-        const macros = extraMacros(x, overrides, catalogue);
+        const macros = extraMacros(x);
         return (
           <li key={x.id} className={styles.extraRow}>
-            <span className={styles.extraName}>{food?.label ?? x.foodId}</span>
+            <span className={styles.extraName}>{x.label}</span>
             <span className={`${styles.extraQty} tnum`}>
-              {fr(x.qty)} {food?.unit === "unité" ? "" : "g"}
+              {fr(x.qty)} {x.unit === "unité" ? "" : x.unit}
             </span>
             <span className={`${styles.extraKcal} tnum`}>
               {Math.round(macros.kcal)} kcal
@@ -910,7 +907,7 @@ function ExtrasDuRepas({
             <button
               type="button"
               className={styles.extraRemove}
-              aria-label={`Retirer ${food?.label ?? "cet aliment"}`}
+              aria-label={`Retirer ${x.label}`}
               onClick={() => void onRemove(x.id!)}
             >
               ×

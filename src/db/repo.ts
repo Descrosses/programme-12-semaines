@@ -942,17 +942,42 @@ export async function extrasOn(date: string): Promise<ExtraFoodRow[]> {
 /**
  * Ajoute un aliment à un repas de la journée.
  *
- * Rien n'est fusionné : deux ajouts du même aliment font deux lignes. Les
- * additionner d'office empêcherait d'en retirer une seule, et sur un écran où
- * tout se corrige, ne pas pouvoir défaire est pire que répéter.
+ * La composition est RECOPIÉE dans la ligne, pas référencée : un ajout est un
+ * fait daté, et changer de marque de skyr en novembre ne doit pas réécrire les
+ * journées d'octobre. Voir `ExtraFoodRow`.
+ *
+ * Rien n'est fusionné non plus : deux ajouts du même aliment font deux lignes.
+ * Les additionner d'office empêcherait d'en retirer une seule, et sur un écran
+ * où tout se corrige, ne pas pouvoir défaire est pire que répéter.
  */
 export async function addExtra(
   date: string,
   mealId: string,
-  foodId: string,
   qty: number,
+  food: {
+    id: string;
+    label: string;
+    unit: ExtraFoodRow["unit"];
+    per: number;
+    kcal: number;
+    proteinG: number;
+    carbsG: number;
+    fatG: number;
+  },
 ): Promise<void> {
-  await db.extraFoods.add({ date, mealId, foodId, qty } as ExtraFoodRow);
+  await db.extraFoods.add({
+    date,
+    mealId,
+    qty,
+    foodId: food.id,
+    label: food.label,
+    unit: food.unit,
+    per: food.per,
+    kcal: food.kcal,
+    proteinG: food.proteinG,
+    carbsG: food.carbsG,
+    fatG: food.fatG,
+  } as ExtraFoodRow);
 }
 
 export async function removeExtra(id: number): Promise<void> {

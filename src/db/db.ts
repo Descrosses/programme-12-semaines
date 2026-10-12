@@ -116,10 +116,21 @@ export interface PainLogRow {
  * kiwi », et au bout de trois semaines plus personne ne sait ce qui était la
  * consigne.
  *
- * `foodId` pointe la bibliothèque — produits du plan, alternatives et aliments
- * personnalisés confondus. La composition n'est donc PAS recopiée ici :
- * corriger une étiquette corrige aussi ce qui a été compté, comme partout
- * ailleurs dans l'écran Nutrition.
+ * ── La composition est RECOPIÉE, pas référencée ────────────────────────────
+ *
+ * C'est la différence de fond avec une ligne du plan. Le plan est une
+ * consigne : corriger l'étiquette du skyr doit corriger ce qu'il prescrit,
+ * aujourd'hui et demain. Un ajout est un FAIT DATÉ : le 12 octobre, 200 g de
+ * ce skyr-là valaient ces calories-là.
+ *
+ * Toutes les marques de skyr n'ont pas les mêmes macros. Si la ligne pointait
+ * seulement la bibliothèque, changer de marque en novembre réécrirait toutes
+ * les journées d'octobre avec des valeurs que Guillaume n'a jamais mangées.
+ * Un historique qui bouge quand on corrige une étiquette ne vaut rien.
+ *
+ * Conséquence assumée : une faute de frappe sur un ajout ne se rattrape pas
+ * en corrigeant l'étiquette. On retire la ligne et on la refait — deux appuis,
+ * et aucune ambiguïté sur ce qui a été compté.
  */
 export interface ExtraFoodRow {
   id?: number;
@@ -127,10 +138,21 @@ export interface ExtraFoodRow {
   date: string;
   /** Le repas auquel il se rattache, pour l'afficher au bon endroit. */
   mealId: string;
-  /** Identifiant dans la bibliothèque d'aliments. */
+  /** D'où venait l'aliment. Mémoire seulement : aucun calcul ne le relit. */
   foodId: string;
-  /** Quantité, dans l'unité de l'aliment. */
+  /** Quantité, dans l'unité ci-dessous. */
   qty: number;
+
+  // --- La composition au moment où l'aliment a été mangé -------------------
+  /** Nom affiché, figé lui aussi : un aliment personnalisé supprimé reste lisible. */
+  label: string;
+  unit: "g" | "ml" | "unité";
+  /** Base de la composition : 100 pour ce qui se pèse, 1 pour ce qui se compte. */
+  per: number;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
 }
 
 export interface MeasurementRow {
@@ -396,11 +418,9 @@ export class ProgrammeDB extends Dexie {
 
       const settings = await tx.table("settings").get(1);
       if (settings?.startDate) {
-        await tx
-          .table("settings")
-          .update(1, {
-            startDate: mondayOnOrAfter(settings.startDate as string),
-          });
+        await tx.table("settings").update(1, {
+          startDate: mondayOnOrAfter(settings.startDate as string),
+        });
       }
     });
 
@@ -552,6 +572,9 @@ export class ProgrammeDB extends Dexie {
      * Index non unique, contrairement aux autres : un kiwi et 30 g de
      * confiture au même petit-déjeuner sont deux lignes distinctes, et rien
      * n'interdit d'ajouter deux fois le même aliment dans la journée.
+     *
+     * La composition voyage DANS la ligne (voir `ExtraFoodRow`), elle n'est
+     * donc pas indexée : on relit toujours une journée entière d'un coup.
      */
     this.version(14).stores({ extraFoods: "++id, [date+mealId], date" });
   }

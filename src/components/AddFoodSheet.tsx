@@ -26,7 +26,6 @@ import {
   stateLabel,
   type LibraryFood,
 } from "../data/foodLibrary";
-import type { FoodOverrides } from "../engine/nutrition";
 import { extraMacros } from "../engine/nutrition";
 import { fr } from "../engine/format";
 import { FoodPicker } from "./FoodSwapSheet";
@@ -43,15 +42,17 @@ function reglage(food: LibraryFood) {
 export function AddFoodSheet({
   mealName,
   customs,
-  overrides,
   onAdd,
   onCreateCustom,
   onClose,
 }: {
   mealName: string;
   customs: LibraryFood[];
-  overrides: FoodOverrides;
-  onAdd: (foodId: string, qty: number) => void;
+  /*
+   * L'aliment ENTIER remonte, pas son seul identifiant : c'est sa composition
+   * du jour qui sera recopiée dans la ligne, et c'est ici qu'on la tient.
+   */
+  onAdd: (food: LibraryFood, qty: number) => void;
   onCreateCustom: (food: LibraryFood) => void;
   onClose: () => void;
 }) {
@@ -72,14 +73,7 @@ export function AddFoodSheet({
   }
 
   const r = choisi ? reglage(choisi) : null;
-  const apercu =
-    choisi && r
-      ? extraMacros(
-          { mealId: "", foodId: choisi.id, qty },
-          overrides,
-          catalogue,
-        )
-      : null;
+  const apercu = choisi ? extraMacros({ ...choisi, qty }) : null;
 
   return (
     <div
@@ -152,7 +146,7 @@ export function AddFoodSheet({
               type="button"
               className={styles.primary}
               onClick={() => {
-                onAdd(choisi.id, qty);
+                onAdd(choisi, qty);
                 onClose();
               }}
             >
