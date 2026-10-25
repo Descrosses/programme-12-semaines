@@ -46,7 +46,7 @@ Ratio hebdomadaire retenu : **3 jours durs (lundi, mercredi, samedi) + 1 jour ne
 
 | Jour | Séance | Durée | Charge |
 |---|---|---|---|
-| Lundi | Lower Strength — squat | 45-75 min | DUR |
+| Lundi | Lower Strength — squat | 45-80 min | DUR |
 | Mercredi | Upper Strength — bench + tractions | 50-80 min | DUR |
 | Vendredi | Total Body Power — sauts, vitesse | 50-95 min | RAPIDE, peu de fatigue |
 | Samedi | Posterior Chain — deadlift | 45-80 min | DUR |
@@ -241,7 +241,7 @@ Pas de gros travail excentrique jambes.
 | Bear Crawl | 3 × 20 m | 2 × 15 m |
 | Farmer Carry | 4 × 25 m | 2 × 20 m, −20 % |
 | Suitcase Carry | 3 × 30 m/côté | 2 × 20 m/côté, −20 % |
-| Roman Side Bench | 2 × 8/côté | 2 × 6/côté |
+| Roman Side Bench | 3 × 8/côté | 2 × 6/côté |
 | Landmine Rotation | 3 × 5/côté | 2 × 4/côté |
 | Barbell Offset Hold | 3 × 25 s/côté | 2 × 15 s/côté |
 | Zercher March | 2 × 12 m | 2 × 10 m, −20 % |
@@ -272,10 +272,10 @@ Le +10 % est celui que le programme applique déjà aux accessoires du haut pour
 
 | Jour | Tronc n° 1 | Tronc n° 2 |
 |---|---|---|
-| Lundi | Ab Wheel 3 × 8 | **Roman Side Bench 2 × 8/côté** (en alternance, 45 s) |
+| Lundi | Ab Wheel 3 × 8 | **Roman Side Bench 3 × 8/côté** (en alternance, 45 s) |
 | Mercredi | Pallof Press 3 × 6/côté | Barbell Offset Hold 3 × 25 s/côté |
 | Vendredi | Dead Bug câble 3 × 6/côté | **Landmine Rotation 3 × 5/côté**, repos 75 s |
-| Samedi | **Zercher March 2 × 12 m**, repos 90 s | **Roman Side Bench 2 × 8/côté** |
+| Samedi | **Zercher March 2 × 12 m**, repos 90 s | **Roman Side Bench 3 × 8/côté** |
 | Dimanche | Hanging Leg Raise 3 × 8 | **Woodchop 2 × 6/côté** |
 
 Ce qui sort à partir de la semaine 5 : **Farmer Carry**, **Suitcase Carry**, **Bear Crawl**. Leurs fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
@@ -289,11 +289,11 @@ La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qu
 
 ### Roman Side Bench et Zercher March — ce qu'ils remplacent
 
-**Roman Side Bench — lundi et samedi, 2 × 8/côté, repos 45-60 s, poids du corps.**
+**Roman Side Bench — lundi et samedi, 3 × 8/côté, repos 45-60 s, poids du corps.**
 
-Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les plus lourds du bas du corps, en toute fin de séance, au poids du corps : c'est un exercice de qualité, pas de volume. Le lundi il s'enchaîne en alternance avec l'Ab Wheel — anti-extension et flexion latérale ne se concurrencent pas, et l'alternance rend l'ajout presque gratuit sur la séance la plus serrée de la semaine.
+Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les plus lourds du bas du corps, en toute fin de séance, au poids du corps : c'est un exercice de qualité, pas de volume. Le lundi il s'enchaîne en alternance avec l'Ab Wheel — anti-extension et flexion latérale ne se concurrencent pas, et l'alternance rend l'ajout presque gratuit sur la séance la plus serrée de la semaine. **Les deux à volume égal, 3 × 8 des deux côtés** : « une série de chaque » n'a de sens que si les deux en comptent autant, sinon il reste une série d'Ab Wheel toute seule au troisième tour.
 
-*Progression* : amplitude d'abord, répétitions ensuite, charge en dernier. Aucun disque tant que 2 × 8/côté ne sortent pas propres et sans douleur.
+*Progression* : amplitude d'abord, répétitions ensuite, charge en dernier. Aucun disque tant que 3 × 8/côté ne sortent pas propres et sans douleur.
 
 *Vigilance* : la jambe du bas s'ancre contre le pad. Si l'installation tire à l'aine, on réduit l'amplitude ou on arrête — cet exercice n'est pas prioritaire au point de forcer dessus (§14).
 
@@ -357,10 +357,10 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
 
-**Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 2 × 6/côté**, 45 s entre les stations.
+**Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
-**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Zercher March 2 × 12 m**, **Roman Side Bench 2 × 6/côté**. Copenhagen suspendu (§14), plus de Suitcase Carry.
+**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Zercher March 2 × 12 m**, **Roman Side Bench 3 × 8/côté**. Copenhagen suspendu (§14), plus de Suitcase Carry.
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. Plus de Bear Crawl, et la Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests

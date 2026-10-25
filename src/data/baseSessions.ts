@@ -62,7 +62,7 @@ const fromTable = (exId: string, liftId: MainLiftId, restSec: number, note?: str
 const LUNDI: SessionBlueprint = {
   day: 0,
   title: 'Lower Strength — squat',
-  durationLabel: '45-75 min',
+  durationLabel: '45-80 min',
   intensity: 'DUR',
   warmup: 'lower',
   readinessTest: true,
