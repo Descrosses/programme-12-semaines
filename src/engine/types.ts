@@ -88,6 +88,18 @@ export interface Occurrence {
    */
   measure?: number | null;
   /**
+   * L'unité de `measure` pour cette séance-là : « m » ou « pas ».
+   *
+   * Portée par l'occurrence et non déduite de l'exercice, parce qu'un porté
+   * peut se faire en mètres une semaine et en pas sur place la suivante selon
+   * la place disponible. Absente des données d'avant ce champ, ce qui veut
+   * dire « mètres » — c'était la seule possibilité.
+   *
+   * Rien ne convertit l'une en l'autre, et deux unités ne se comparent
+   * jamais : voir `measureUnit.ts`.
+   */
+  measureUnit?: string | null;
+  /**
    * Le détail série par série de cette séance-là.
    *
    * Pourquoi en plus des agrégats : « 115 kg · RPE 8 » ne dit pas combien de

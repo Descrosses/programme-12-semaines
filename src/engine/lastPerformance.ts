@@ -27,6 +27,7 @@
  */
 
 import { fr } from './format';
+import { isUnitId } from './measureUnit';
 import { performedFormat } from './setFormat';
 import type { Occurrence } from './types';
 import type { DayIndex } from '../data/types';
@@ -98,6 +99,16 @@ interface Champ {
   unit: string;
   /** Le RPE n'a de sens qu'en face d'une charge. */
   avecRPE: boolean;
+  /**
+   * Cette occurrence porte-t-elle la MÊME unité que celle qu'on affiche ?
+   *
+   * Vrai partout sauf sur les portés, où une séance peut être chiffrée en
+   * mètres et la suivante en pas sur place. Comparer 18 pas à 12 m donnerait
+   * « +6 m », un écart que personne n'a parcouru. Une mesure d'une autre unité
+   * est donc ignorée pour l'écart : on affiche la valeur du jour sans delta,
+   * plutôt qu'un delta faux.
+   */
+  comparable: (o: Occurrence) => boolean;
 }
 
 /**
@@ -154,7 +165,7 @@ export function lastPerformance(
     const precedente = faites
       .slice(0, -1)
       .reverse()
-      .find((o) => champ.lire(o) !== null);
+      .find((o) => champ.lire(o) !== null && champ.comparable(o));
     const avant = precedente ? champ.lire(precedente) : null;
     const ecart = avant === null ? null : arrondi(valeur - avant);
     return { champ, ecart, trend: tendance(ecart, opts.exerciseId) };
@@ -200,13 +211,22 @@ export function lastPerformance(
 function champsDe(o: Occurrence, measureUnit: string | null): Champ[] {
   const champs: Champ[] = [];
   if (o.measure !== null && o.measure !== undefined && measureUnit) {
+    /*
+     * L'unité affichée est celle de la SÉANCE, pas celle de l'exercice. Sur un
+     * porté fait en pas sur place, la puce doit dire « 18 pas » : afficher
+     * « 18 m » serait un chiffre qui n'a pas eu lieu.
+     */
+    const unite = isUnitId(o.measureUnit) ? o.measureUnit : measureUnit;
     champs.push({
       lire: (x) => x.measure ?? null,
-      unit: measureUnit,
+      unit: unite,
       avecRPE: false,
+      comparable: (x) => (isUnitId(x.measureUnit) ? x.measureUnit : measureUnit) === unite,
     });
   }
-  if (o.kg !== null) champs.push({ lire: (x) => x.kg, unit: 'kg', avecRPE: true });
+  if (o.kg !== null) {
+    champs.push({ lire: (x) => x.kg, unit: 'kg', avecRPE: true, comparable: () => true });
+  }
   return champs;
 }
 

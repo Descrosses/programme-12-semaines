@@ -98,6 +98,7 @@ export function SessionScreen({
       actualReps: payload.actualReps,
       actualRpe: payload.actualRpe,
       measureValue: payload.measureValue,
+      measureUnit: payload.measureUnit,
       failed: payload.failed,
     });
     await data.reload();

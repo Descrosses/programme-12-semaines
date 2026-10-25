@@ -820,6 +820,48 @@
   color: var(--ink-2);
 }
 
+/* --- Mètres ou pas sur place ---------------------------------------------- */
+
+/*
+ * Deux boutons, pas un menu déroulant : le choix se fait au pouce, debout,
+ * barre dans les coudes. 48 px de haut, et l'unité active lisible d'un coup
+ * d'œil pour qu'on ne valide pas trois séries dans la mauvaise.
+ */
+.uniteRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px var(--pad) 0;
+}
+
+.uniteLabel {
+  color: var(--ink-3);
+  font-size: 0.8rem;
+}
+
+.uniteChoice {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.uniteButton {
+  min-width: 64px;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.uniteOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+}
+
 /* --- « La dernière fois » -------------------------------------------------- */
 
 /*

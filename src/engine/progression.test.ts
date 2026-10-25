@@ -383,3 +383,46 @@ describe('garde-fous', () => {
     }
   });
 });
+
+describe('§11 ne regarde que des kilos', () => {
+  it('l’unité de distance ne change rien à la suggestion', () => {
+    /*
+     * La règle de Guillaume : le moteur de progression ne compare jamais des
+     * mètres avec des pas. La façon la plus sûre de la tenir est qu'il ne
+     * regarde ni les uns ni les autres. On le vérifie plutôt que de le
+     * promettre : même historique, même charge, même RPE, seules la mesure et
+     * son unité diffèrent.
+     */
+    const enMetres = run({
+      plannedKg: 110,
+      history: [occ(5, 110, 6, rpe(8), { measure: 12, measureUnit: 'm' })],
+    });
+    const enPas = run({
+      plannedKg: 110,
+      history: [occ(5, 110, 6, rpe(8), { measure: 40, measureUnit: 'pas' })],
+    });
+    const sansMesure = run({ plannedKg: 110, history: [occ(5, 110, 6, rpe(8))] });
+
+    expect(enMetres.suggestedKg).toBe(sansMesure.suggestedKg);
+    expect(enPas.suggestedKg).toBe(sansMesure.suggestedKg);
+    expect(enMetres.reason).toBe(sansMesure.reason);
+    expect(enPas.reason).toBe(sansMesure.reason);
+  });
+
+  it('le détail série par série ne change rien non plus', () => {
+    const avecDetail = run({
+      plannedKg: 110,
+      history: [
+        occ(5, 110, 9, rpe(8), {
+          sets: [
+            { reps: 3, kg: 110 },
+            { reps: 2, kg: 110 },
+          ],
+        }),
+      ],
+    });
+    const sansDetail = run({ plannedKg: 110, history: [occ(5, 110, 9, rpe(8))] });
+    expect(avecDetail.suggestedKg).toBe(sansDetail.suggestedKg);
+    expect(avecDetail.reason).toBe(sansDetail.reason);
+  });
+});

@@ -264,3 +264,75 @@ describe('détail série par série', () => {
     expect(occ.sets).toHaveLength(2);
   });
 });
+
+describe('mètres et pas ne se mélangent pas', () => {
+  it('l’occurrence porte l’unité de sa première série mesurée', () => {
+    const sets: SetRow[] = [
+      serie('zercher-march', 5, 5, { setIndex: 0, measureValue: 12, measureUnit: 'm' }),
+      serie('zercher-march', 5, 5, { setIndex: 1, measureValue: 14, measureUnit: 'm' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('m');
+    expect(occ.measure).toBe(14);
+  });
+
+  it('une série d’une autre unité ne gonfle pas le meilleur essai', () => {
+    /*
+     * 40 pas sur place ne valent pas 40 mètres. Sans ce filtre, le « meilleur
+     * essai » de la séance aurait été 40, affiché « 40 m », et la semaine
+     * suivante Guillaume aurait cherché à battre une distance qu'il n'a
+     * jamais parcourue.
+     */
+    const sets: SetRow[] = [
+      serie('zercher-march', 5, 5, { setIndex: 0, measureValue: 12, measureUnit: 'm' }),
+      serie('zercher-march', 5, 5, { setIndex: 1, measureValue: 40, measureUnit: 'pas' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('m');
+    expect(occ.measure).toBe(12);
+    // Le chiffre écarté de l'agrégat reste intact dans le détail des séries.
+    expect(occ.sets?.map((s) => [s.measure, s.measureUnit])).toEqual([
+      [12, 'm'],
+      [40, 'pas'],
+    ]);
+  });
+
+  it('une séance entièrement en pas garde ses pas', () => {
+    const sets: SetRow[] = [
+      serie('zercher-march', 6, 5, { setIndex: 0, measureValue: 18, measureUnit: 'pas' }),
+      serie('zercher-march', 6, 5, { setIndex: 1, measureValue: 22, measureUnit: 'pas' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('pas');
+    expect(occ.measure).toBe(22);
+  });
+
+  it('une ligne d’avant le champ ne reçoit aucune unité inventée', () => {
+    const sets: SetRow[] = [serie('farmer-carry', 2, 4, { setIndex: 0, measureValue: 25 })];
+    const occ = buildHistoryIndex(sets)['farmer-carry']![0]!;
+    /*
+     * `null` et non « m ». Le repli sert à COMPARER, pas à étiqueter : un
+     * Broad Jump, mesuré en centimètres, recevrait sinon un « m » et la puce
+     * annoncerait « 232 m » au lieu de « 232 cm ».
+     */
+    expect(occ.measureUnit).toBeNull();
+    expect(occ.measure).toBe(25);
+  });
+});
+
+describe('un saut reste en centimètres', () => {
+  it('aucune unité m/pas n’est posée sur une mesure qui n’en a pas', () => {
+    /*
+     * Le défaut qu'on ferme ici : le repli « mètres » servait à comparer deux
+     * portés, et il s'est retrouvé étiqueté sur l'occurrence. Un Broad Jump de
+     * 232 cm s'affichait alors « 232 m ».
+     */
+    const sets: SetRow[] = [
+      serie('broad-jump', 1, 4, { setIndex: 0, measureValue: 232 }),
+      serie('broad-jump', 1, 4, { setIndex: 1, measureValue: 236 }),
+    ];
+    const occ = buildHistoryIndex(sets)['broad-jump']![0]!;
+    expect(occ.measureUnit).toBeNull();
+    expect(occ.measure).toBe(236);
+  });
+});

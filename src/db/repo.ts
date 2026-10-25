@@ -15,6 +15,7 @@ import { normalizeNote } from "../engine/exerciseNotes";
 import type { WeekIndex } from "../data/types";
 import { dateFor } from "../engine/calendar";
 import { lowerIsBetter } from "../engine/lastPerformance";
+import { isUnitId, unitOf } from "../engine/measureUnit";
 import {
   DEFAULT_SETTINGS_ROW,
   db,
@@ -228,6 +229,8 @@ export interface SetInput {
   actualReps: number | null;
   actualRpe: number | null;
   measureValue?: number | null;
+  /** « m » ou « pas ». Voyage avec la série, jamais converti. */
+  measureUnit?: string | null;
   failed: boolean;
 }
 
@@ -252,6 +255,7 @@ export async function saveSet(input: SetInput): Promise<number> {
     actualReps: input.actualReps,
     actualRpe: input.actualRpe,
     measureValue: input.measureValue ?? null,
+    measureUnit: input.measureUnit ?? null,
     failed: input.failed,
     doneAt: Date.now(),
   };
@@ -841,7 +845,35 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
        * Un sprint aussi se juge à son meilleur essai, donc au plus COURT : le
        * sens est décidé par `LOWER_IS_BETTER`, pas ici.
        */
-      const mesures = rows
+      /*
+       * L'unité de la séance : celle de la PREMIÈRE série mesurée, dans
+       * l'ordre des séries.
+       *
+       * Il faut bien en choisir une, parce qu'un « meilleur essai » n'a pas de
+       * sens si on mélange des mètres et des pas. La première est celle sur
+       * laquelle Guillaume a ouvert la séance, donc celle qui décrit ce qu'il
+       * a fait ; les séries d'une autre unité ne sont pas converties, elles
+       * sortent simplement de l'agrégat — leur chiffre reste intact dans
+       * `sets`, et le format de la séance les affiche telles quelles.
+       */
+      const ordonnees = [...rows].sort((a, b) => a.setIndex - b.setIndex);
+      const premiereMesuree = ordonnees.find(
+        (r) => r.measureValue !== null && r.measureValue !== undefined,
+      );
+      /*
+       * L'unité n'est RETENUE que si la série en portait vraiment une. Sans
+       * cette nuance, un Broad Jump — mesuré en centimètres, donc sans unité
+       * m/pas — aurait reçu le repli « m » de `unitOf`, et la puce aurait
+       * annoncé « 232 m » au lieu de « 232 cm ». Le repli sert à COMPARER, pas
+       * à étiqueter.
+       */
+      const unite =
+        premiereMesuree && isUnitId(premiereMesuree.measureUnit)
+          ? premiereMesuree.measureUnit
+          : null;
+      const reference = premiereMesuree ? unitOf(premiereMesuree) : null;
+      const mesures = ordonnees
+        .filter((r) => reference === null || unitOf(r) === reference)
         .map((r) => r.measureValue)
         .filter((m): m is number => m !== null && m !== undefined);
       const first = rows[0]!;
@@ -869,6 +901,7 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
             ? Math.min(...mesures)
             : Math.max(...mesures)
           : null,
+        measureUnit: unite,
         /*
          * Le détail série par série, dans l'ordre où elles ont été faites.
          *
@@ -876,8 +909,7 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
          * deuxième série après avoir validé la quatrième réécrit la ligne, et
          * la relire dans l'ordre de la base donnerait « 2e, 3e, 4e, 2e ».
          */
-        sets: [...rows]
-          .sort((a, b) => a.setIndex - b.setIndex)
+        sets: ordonnees
           .map((r) => ({
             reps: r.actualReps,
             kg: r.actualKg,

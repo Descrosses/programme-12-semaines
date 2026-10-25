@@ -428,3 +428,62 @@ describe('lastPerformance — le format réellement fait', () => {
     expect(perf?.format).toBeNull();
   });
 });
+
+describe('la puce ne compare jamais des mètres à des pas', () => {
+  const porte = (week: number, measure: number, measureUnit: string, kg = 20): Occurrence => ({
+    exerciseId: 'zercher-march',
+    week,
+    day: 5,
+    kg,
+    plannedKg: kg,
+    rpe: null,
+    failed: false,
+    targetRPE: null,
+    completed: false,
+    measure,
+    measureUnit,
+  });
+
+  const lire = (occ: Occurrence[], before = { week: 12, day: 5 as DayIndex }) =>
+    lastPerformance(occ, { exerciseId: 'zercher-march', measureUnit: 'm', before });
+
+  it('affiche l’unité de la séance, pas celle du programme', () => {
+    const perf = lire([porte(6, 18, 'pas')]);
+    expect(perf?.value).toContain('18 pas');
+    expect(perf?.value).not.toContain('18 m');
+  });
+
+  it('calcule l’écart entre deux séances de la même unité', () => {
+    const perf = lire([porte(5, 12, 'm'), porte(6, 14, 'm')]);
+    expect(perf?.value).toContain('14 m');
+    expect(perf?.delta).toContain('+2 m');
+  });
+
+  it('n’annonce AUCUN écart quand l’unité a changé', () => {
+    // 18 pas après 12 m : il n'y a pas de « +6 ». On montre la valeur du
+    // jour, et rien d'autre.
+    const perf = lire([porte(5, 12, 'm'), porte(6, 18, 'pas')]);
+    expect(perf?.value).toContain('18 pas');
+    expect(perf?.delta).toBeNull();
+    expect(perf?.trend).toBe('flat');
+  });
+
+  it('remonte jusqu’à la dernière séance de la MÊME unité pour l’écart', () => {
+    const perf = lire([porte(5, 12, 'm'), porte(6, 18, 'pas'), porte(7, 15, 'm')]);
+    expect(perf?.value).toContain('15 m');
+    // Comparé aux 12 m de la semaine 5, pas aux 18 pas de la semaine 6.
+    expect(perf?.delta).toContain('+3 m');
+  });
+
+  it('la charge garde son écart même quand l’unité de distance change', () => {
+    const perf = lire([porte(5, 12, 'm', 20), porte(6, 18, 'pas', 22.5)]);
+    expect(perf?.delta).toContain('+2,5 kg');
+    expect(perf?.delta).not.toContain('pas');
+  });
+
+  it('une occurrence sans unité est traitée comme des mètres', () => {
+    const sans: Occurrence = { ...porte(5, 12, 'm'), measureUnit: null };
+    const perf = lire([sans, porte(6, 14, 'm')]);
+    expect(perf?.delta).toContain('+2 m');
+  });
+});

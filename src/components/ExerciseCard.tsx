@@ -9,6 +9,15 @@ import { PainWatch } from './PainWatch';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
+import {
+  hasUnitChoice,
+  lastMeasureIn,
+  lastUnitUsed,
+  unitConfig,
+  UNIT_CHOICE,
+  valueForUnit,
+  type MeasureUnitId,
+} from '../engine/measureUnit';
 import type { Occurrence } from '../engine/types';
 import type { DayIndex } from '../data/types';
 import styles from '../screens/Session.module.css';
@@ -19,6 +28,12 @@ export interface SetPayload {
   actualReps: number | null;
   actualRpe: number | null;
   measureValue: number | null;
+  /**
+   * L'unité de `measureValue`, telle qu'elle était choisie au moment de
+   * valider. Stockée avec la série et jamais convertie : douze pas sur place
+   * ne valent pas douze mètres.
+   */
+  measureUnit: string | null;
   failed: boolean;
 }
 
@@ -82,6 +97,15 @@ export function ExerciseCard({
   const [openCues, setOpenCues] = useState(false);
   const [refusing, setRefusing] = useState(false);
   const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
+  /*
+   * L'unité est choisie une fois pour l'exercice, pas série par série : on ne
+   * change pas de façon de compter entre la deuxième et la troisième série.
+   * Elle s'ouvre sur la dernière réellement utilisée sur ce mouvement — le
+   * jour où la salle est pleine, Guillaume passe en pas une fois et l'appli
+   * s'en souvient la semaine suivante.
+   */
+  const choixUnite = hasUnitChoice(measureOf(ex)?.unit);
+  const [unite, setUnite] = useState<MeasureUnitId>(() => lastUnitUsed(history));
 
   const plannedKg = overrideKg ?? ex.load.kg;
   const shownLoadLine = buildLoadLine(ex, plannedKg);
@@ -220,6 +244,31 @@ export function ExerciseCard({
         </div>
       )}
 
+      {/*
+        Mètres ou pas sur place. Le plan prescrit toujours des mètres : ce
+        sélecteur dit comment la séance a été FAITE, il ne modifie pas le plan.
+        Rien n'est converti — changer d'unité remet le champ sur une valeur qui
+        a du sens dans la nouvelle, jamais sur le même chiffre.
+      */}
+      {choixUnite && ex.sets > 0 && (
+        <div className={styles.uniteRow}>
+          <span className={styles.uniteLabel}>Je compte en</span>
+          <div className={styles.uniteChoice} role="group" aria-label="Unité de mesure">
+            {UNIT_CHOICE.map((u) => (
+              <button
+                key={u.id}
+                type="button"
+                className={`${styles.uniteButton} ${unite === u.id ? styles.uniteOn : ''}`}
+                onClick={() => setUnite(u.id)}
+                aria-pressed={unite === u.id}
+              >
+                {u.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {ex.sets > 0 && (
         <div className={styles.sets}>
           {Array.from({ length: ex.sets }, (_, i) => (
@@ -229,6 +278,8 @@ export function ExerciseCard({
               index={i}
               plannedKg={plannedKg}
               saved={savedSets.find((s) => s.setIndex === i) ?? null}
+              unite={choixUnite ? unite : null}
+              lastInUnit={choixUnite ? lastMeasureIn(history, unite) : null}
               timer={timer}
               onSave={onSaveSet}
             />
@@ -383,6 +434,8 @@ function SetEntry({
   index,
   plannedKg,
   saved,
+  unite,
+  lastInUnit,
   timer,
   onSave,
 }: {
@@ -390,11 +443,24 @@ function SetEntry({
   index: number;
   plannedKg: number | null;
   saved: SetRow | null;
+  /** L'unité choisie pour l'exercice, ou `null` quand il n'y a pas de choix. */
+  unite: MeasureUnitId | null;
+  /** Dernière mesure enregistrée DANS cette unité, pour pré-remplir le champ. */
+  lastInUnit: number | null;
   timer: RestTimer;
   onSave: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
 }) {
   const plannedReps = plannedRepsOf(ex);
-  const measure = measureOf(ex);
+  const measureBase = measureOf(ex);
+  /*
+   * Le curseur suit l'unité : les pas montent plus haut et avancent plus fin
+   * que les mètres. Garder la grille des mètres pour compter des pas aurait
+   * demandé quarante appuis pour une série ordinaire.
+   */
+  const measure =
+    measureBase && unite
+      ? { ...measureBase, ...unitConfig(unite), label: measureBase.label }
+      : measureBase;
   const showLoad = showsLoadField(ex);
 
   const [editing, setEditing] = useState(false);
@@ -426,6 +492,19 @@ function SetEntry({
   );
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
 
+  /*
+   * Changer d'unité remet le champ sur une valeur qui a du sens dans la
+   * NOUVELLE unité. Surtout pas sur la même : passer de 12 m à « 12 pas » en
+   * changeant seulement l'étiquette écrirait un chiffre que personne n'a fait.
+   *
+   * Une série déjà validée n'est pas touchée : elle porte son unité, et la
+   * relire ne la réécrit pas.
+   */
+  useEffect(() => {
+    if (saved !== null || unite === null) return;
+    setValue(valueForUnit(unite, { lastInUnit, plannedMeters: plannedMeasureOf(ex) }));
+  }, [unite, lastInUnit, saved, ex]);
+
   // Quand la charge du plan change — suggestion acceptée, feu tricolore, charge
   // saisie à la main — les séries pas encore validées se réalignent dessus.
   useEffect(() => {
@@ -446,6 +525,7 @@ function SetEntry({
       actualReps: measure ? null : reps,
       actualRpe: ex.targetRPE ? rpeValue : null,
       measureValue: measure ? value : null,
+      measureUnit: measure ? (unite ?? measureBase?.unit ?? null) : null,
       failed,
     });
     setEditing(false);
@@ -469,7 +549,13 @@ function SetEntry({
           )}
           {saved.measureValue !== null && measure && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.measureValue)} <span className={styles.setSummaryUnit}>{measure.unit}</span>
+              {fr(saved.measureValue)}{' '}
+              {/*
+                L'unité de la SÉRIE, pas celle du sélecteur. Changer le
+                sélecteur après avoir validé en mètres ne doit pas relabelliser
+                une série en pas — le chiffre, lui, n'a pas bougé.
+              */}
+              <span className={styles.setSummaryUnit}>{saved.measureUnit ?? measure.unit}</span>
             </span>
           )}
           {saved.actualKg !== null && (
