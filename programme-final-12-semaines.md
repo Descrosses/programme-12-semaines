@@ -185,6 +185,7 @@ Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant déco
 **E. Nordic Curl — 3 × 5** — Repos 2 min — Pieds sous le rouleau d'une machine, descente 4-5 s, assistance des mains. Alternative : Leg Curl 3 × 8, tempo 4-0-1-0.
 
 **F. Single-Leg RDL haltère — 3 × 8/côté × 20 kg** — Repos 60 s — Lent, hanche carrée.
+**Il sort du samedi pendant le bloc force maximale (semaines 5 à 7)** et revient ensuite. Raison : ce samedi-là porte le deadlift à 4 min de repos, le front squat, un Hip Thrust à +10 %, puis le Zercher March et le Roman Side Bench. Le hinge unilatéral lent y est la septième station et la moins décisive — son intention est déjà payée six fois dans la séance. C'est une règle de bloc, pas une exception sur trois numéros de semaine : il réapparaît de lui-même en semaines 9 à 12 (§8).
 
 **G. Copenhagen Plank dynamique — SUSPENDU TEMPORAIREMENT** — douleur adducteur gauche (§14).
 Prescription d'origine, conservée pour mémoire : 3 × 8/côté, repos 60 s, pied supérieur sur banc, monte et descends le bassin.
@@ -213,7 +214,7 @@ Pas de gros travail excentrique jambes.
 **F. Hanging Leg Raise strict — 3 × 8-12** — Repos 60 s — Rétroversion du bassin.
 
 **G. Bear Crawl — 3 × 20 m** — Repos 60 s — Genoux à 5 cm du sol, bassin stable.
-**Semaines 1 à 4 seulement.** Il sort du programme à partir de la semaine 5 : son anti-rotation est déjà couverte par le Pallof Press, le Landmine Press et le Single-Leg RDL, et son créneau finance le Woodchop (§8).
+**Semaines 1 à 4 seulement.** Il sort du programme à partir de la semaine 5 : son anti-rotation est déjà couverte par le Pallof Press et le Landmine Press, tous deux au mercredi, et son créneau finance le Woodchop (§8).
 
 **H. Conditioning — 8 × (20 s soutenu / 70 s facile) vélo ou rameur** — 12 min — 8/10 sur les 20 s, pas de sprint maximal. Coût musculaire faible.
 
@@ -261,6 +262,7 @@ Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
 - Front Squat 4 × 5 → 4 × 4
 - Hip Thrust 4 × 6 RPE 8, repos 2 min, **+10 % de charge à l’entrée du bloc**
 - Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 %
+- **Samedi : pas de Single-Leg RDL.** La séance porte déjà le deadlift à 4 min de repos, le front squat et le Hip Thrust à +10 %, plus le Zercher March et le Roman Side Bench. Il revient en semaines 9 à 12.
 
 **Pourquoi ce +10 % sur le Bulgarian et le Hip Thrust.** Il manquait, et son absence rendait le bloc incohérent. Le passage en force max baisse les reps et allonge le repos sur tout le programme, et partout la charge monte en compensation : le RDL passe de 90 à 92,5-95 kg, le front squat suit le tableau, les accessoires du haut prennent +10 % pour la même bascule 8 → 6 reps. Les deux seuls accessoires autorégulés du bas du corps n'avaient rien.
 

@@ -361,6 +361,24 @@ const MAXFORCE: BlockRuleSet[] = [
        * se faire en charge.
        */
       remove('suitcase-carry'),
+      /*
+       * Le Single-Leg RDL sort du samedi — pour le bloc force max, et pour
+       * lui seul.
+       *
+       * Une RÈGLE DE BLOC, pas une exception sur trois numéros de semaine :
+       * ce qui motive le retrait est ce que le bloc fait au samedi, pas le
+       * fait qu'on soit en semaine 5, 6 ou 7. Le samedi de force max porte le
+       * deadlift à 4 min de repos, le front squat, et un Hip Thrust à +10 % —
+       * trois mouvements de chaîne postérieure lourds, suivis du Zercher
+       * March et du Roman Side Bench. Le Single-Leg RDL à 3 × 8/côté y est
+       * la septième station et la moins décisive : son intention, le hinge
+       * unilatéral lent, est déjà payée six fois dans la séance.
+       *
+       * Écrit en règle, il revient tout seul partout ailleurs : semaines 1 à
+       * 4, et semaines 9 à 12. Aucune liste de semaines à maintenir, et
+       * aucun risque qu'il disparaisse d'un bloc où personne ne l'a retiré.
+       */
+      remove('single-leg-rdl'),
       { op: 'insert', slot: zercherMarch(2, 12) },
       { op: 'insert', slot: romanSideBench(3, 8) },
     ],
