@@ -503,6 +503,81 @@
   font-weight: 600;
 }
 
+/* --------------------------------------------------- chrono de séance -- */
+
+/*
+ * Le chrono vit dans la ligne de méta de l'en-tête, avec le jour, la date et
+ * la durée prévue. Petit mais lisible : il se lit d'un coup d'œil entre deux
+ * séries, il n'a pas à attirer l'œil en permanence.
+ */
+.chrono {
+  color: var(--accent);
+}
+
+.summaryRef {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.summaryWarn {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.resetClock {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin: 14px 0 0;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.resetConfirm {
+  margin: 14px 0 0;
+}
+
+.resetAsk {
+  margin: 0 0 10px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.resetActions {
+  display: grid;
+  gap: 8px;
+}
+
+.resetYes,
+.resetNo {
+  min-height: 48px;
+  border-radius: var(--radius);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.resetYes {
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.resetNo {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+}
+
 .loading {
   padding: 40px var(--pad);
   color: var(--ink-2);

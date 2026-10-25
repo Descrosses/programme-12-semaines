@@ -1,22 +1,31 @@
-import { useEffect, useState } from 'react';
-import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
-import { ReadinessSection } from '../components/ReadinessSection';
-import { WarmupSection } from '../components/WarmupSection';
-import { BLOCKS } from '../data/program';
-import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
-import { humanDate } from '../engine/calendar';
-import { fr, setSummary } from '../engine/format';
-import type { ResolvedExercise } from '../engine/getSession';
-import { bestJump, readiness as computeReadiness } from '../engine/readiness';
+import { useEffect, useState } from "react";
+import { ExerciseCard, type SetPayload } from "../components/ExerciseCard";
+import { ReadinessSection } from "../components/ReadinessSection";
+import { WarmupSection } from "../components/WarmupSection";
+import { BLOCKS } from "../data/program";
+import { DAY_LABELS, type DayIndex, type WeekIndex } from "../data/types";
+import { humanDate } from "../engine/calendar";
+import { fr, setSummary } from "../engine/format";
 import {
+  clockLabel,
+  durationVerdict,
+  elapsedMin,
+  gapLabel,
+  isRunning,
+} from "../engine/sessionClock";
+import type { ResolvedExercise } from "../engine/getSession";
+import { bestJump, readiness as computeReadiness } from "../engine/readiness";
+import {
+  resetSessionClock,
   saveReadiness,
   saveSet,
   toggleWarmupItem,
   updateSession,
-} from '../db/repo';
-import type { RestTimer } from '../state/useRestTimer';
-import { useSessionData } from '../state/useSessionData';
-import styles from './Session.module.css';
+} from "../db/repo";
+import { useNow } from "../state/useNow";
+import type { RestTimer } from "../state/useRestTimer";
+import { useSessionData } from "../state/useSessionData";
+import styles from "./Session.module.css";
 
 /**
  * Écran séance.
@@ -37,8 +46,14 @@ export function SessionScreen({
   onBack: () => void;
 }) {
   const data = useSessionData(week, day);
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
   const [notesLoaded, setNotesLoaded] = useState(false);
+  const [resetDemande, setResetDemande] = useState(false);
+  /*
+   * Le chrono ne tourne que pendant la séance. Terminée, sa durée est figée en
+   * base : plus rien à recalculer, donc plus d'intervalle qui tourne.
+   */
+  const now = useNow(isRunning(data.row ?? {}));
 
   useEffect(() => {
     if (data.row && !notesLoaded) {
@@ -69,6 +84,10 @@ export function SessionScreen({
   const overrides = row?.loadOverrides ?? {};
   const doneSets = Object.values(data.savedSets).flat().length;
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
+  const chrono = row ? clockLabel(row, now) : null;
+  const reel = row ? elapsedMin(row, now) : null;
+  const verdict =
+    reel === null ? null : durationVerdict(reel, session.plannedMin);
 
   async function handleSaveSet(ex: ResolvedExercise, payload: SetPayload) {
     if (!row?.id) return;
@@ -80,7 +99,10 @@ export function SessionScreen({
       date: data.date,
       setIndex: payload.setIndex,
       plannedKg: overrides[ex.id] ?? ex.load.kg,
-      plannedReps: ex.work.kind === 'reps' && typeof ex.work.reps === 'number' ? ex.work.reps : null,
+      plannedReps:
+        ex.work.kind === "reps" && typeof ex.work.reps === "number"
+          ? ex.work.reps
+          : null,
       targetRPE: ex.targetRPE,
       actualKg: payload.actualKg,
       actualReps: payload.actualReps,
@@ -122,6 +144,13 @@ export function SessionScreen({
     await data.reload();
   }
 
+  async function handleResetClock() {
+    if (!row?.id) return;
+    await resetSessionClock(row.id);
+    setResetDemande(false);
+    await data.reload();
+  }
+
   async function handleNotes(value: string) {
     setNotes(value);
     if (row?.id) await updateSession(row.id, { notes: value });
@@ -135,10 +164,16 @@ export function SessionScreen({
    */
   async function handleFinish() {
     if (!row?.id) return;
-    const finishing = row.status !== 'done';
+    const finishing = row.status !== "done";
+    /*
+     * `finishedAt` n'est posé qu'en TERMINANT. Avant, il était réécrit aussi
+     * en décochant — donc une correction de saisie faite le lendemain
+     * rallongeait la séance d'une journée entière. En décochant, on l'efface :
+     * la séance reprend, et son chrono repart de son vrai début.
+     */
     await updateSession(row.id, {
-      status: finishing ? 'done' : 'planned',
-      finishedAt: Date.now(),
+      status: finishing ? "done" : "planned",
+      finishedAt: finishing ? Date.now() : undefined,
     });
     if (finishing) {
       timer.skip();
@@ -156,20 +191,31 @@ export function SessionScreen({
         </button>
         <h1 className={styles.title}>{session.title}</h1>
         <div className={styles.meta}>
-          <span className={styles.tag} style={{ background: session.blockColor }}>
+          <span
+            className={styles.tag}
+            style={{ background: session.blockColor }}
+          >
             {session.intensity}
           </span>
           <span>{DAY_LABELS[day]}</span>
           {data.date && <span>{humanDate(data.date)}</span>}
           <span>
-            Durée <b>{session.durationLabel}</b>
+            Prévu <b>{session.durationLabel}</b>
           </span>
+          {chrono !== null && (
+            <span className={styles.chrono}>
+              ⏱ <b className="tnum">{chrono}</b>
+              {row?.status === "done" ? "" : " en cours"}
+            </span>
+          )}
           <span>
             Bloc <b>{BLOCKS[session.block].name}</b>
           </span>
         </div>
 
-        {data.trend.declining && <p className={styles.note}>{data.trend.message}</p>}
+        {data.trend.declining && (
+          <p className={styles.note}>{data.trend.message}</p>
+        )}
         {session.notes.map((n, i) => (
           <p key={i} className={styles.note}>
             {n}
@@ -203,7 +249,7 @@ export function SessionScreen({
           history={data.history[ex.id]}
           timer={timer}
           media={data.date ? { week, day, date: data.date } : null}
-          note={{ week, day, date: data.date ?? '' }}
+          note={{ week, day, date: data.date ?? "" }}
           onSaveSet={handleSaveSet}
           onOverride={(id, kg) => void handleOverride(id, kg)}
         />
@@ -231,7 +277,9 @@ export function SessionScreen({
         );
         return (
           <section key={sus.id} className={styles.suspendu}>
-            <div className={styles.suspenduTitre}>{sus.name} — suspendu temporairement</div>
+            <div className={styles.suspenduTitre}>
+              {sus.name} — suspendu temporairement
+            </div>
             <p className={styles.suspenduRaison}>{sus.reason}</p>
             {faites.length > 0 && (
               <>
@@ -241,9 +289,13 @@ export function SessionScreen({
                 <ul className={styles.suspenduSeries}>
                   {faites.map((set) => (
                     <li key={set.setIndex} className={styles.suspenduSerie}>
-                      <span className={styles.suspenduIndex}>{set.setIndex + 1}</span>
+                      <span className={styles.suspenduIndex}>
+                        {set.setIndex + 1}
+                      </span>
                       <span className="tnum">{setSummary(set)}</span>
-                      {set.failed && <span className={styles.suspenduRate}>Rep ratée</span>}
+                      {set.failed && (
+                        <span className={styles.suspenduRate}>Rep ratée</span>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -268,10 +320,12 @@ export function SessionScreen({
 
       <button
         type="button"
-        className={`${styles.finish} ${row?.status === 'done' ? styles.finishDone : ''}`}
+        className={`${styles.finish} ${row?.status === "done" ? styles.finishDone : ""}`}
         onClick={() => void handleFinish()}
       >
-        {row?.status === 'done' ? 'Séance terminée — annuler' : 'Séance terminée'}
+        {row?.status === "done"
+          ? "Séance terminée — annuler"
+          : "Séance terminée"}
       </button>
 
       <div className={styles.summary}>
@@ -283,27 +337,100 @@ export function SessionScreen({
           </dd>
           <dt>Échauffement</dt>
           <dd>
-            {row?.warmupChecked.length ?? 0} / {session.warmup?.items.length ?? 0}
+            {row?.warmupChecked.length ?? 0} /{" "}
+            {session.warmup?.items.length ?? 0}
           </dd>
           {data.readiness && (
             <>
               <dt>Readiness</dt>
               <dd>
-                {data.readiness.level.toUpperCase()} · {data.readiness.jumpCm} cm (
-                {data.readiness.pctDelta > 0 ? '+' : ''}
+                {data.readiness.level.toUpperCase()} · {data.readiness.jumpCm}{" "}
+                cm ({data.readiness.pctDelta > 0 ? "+" : ""}
                 {fr(data.readiness.pctDelta)} %)
               </dd>
             </>
           )}
           <dt>Tonnage</dt>
           <dd>{fr(tonnage(data.savedSets))} kg</dd>
+          <dt>Durée</dt>
+          <dd className="tnum">
+            {chrono ?? "—"}
+            {verdict && (
+              <span className={styles.summaryRef}>
+                {" "}
+                / {verdict.plannedMin} min prévu
+              </span>
+            )}
+          </dd>
+          {verdict && (
+            <>
+              <dt>Écart</dt>
+              <dd className="tnum">{gapLabel(verdict)}</dd>
+            </>
+          )}
         </dl>
+
+        {/*
+          Un constat, pas un reproche. L'appli ne sait pas si la séance a
+          débordé parce que la salle était pleine, parce qu'un repos a traîné
+          ou parce que l'échauffement a été fait sérieusement — donc elle ne
+          tranche pas et ne conseille rien.
+        */}
+        {verdict?.warn && (
+          <p className={styles.summaryWarn}>
+            Séance plus longue que prévu de {gapLabel(verdict)}. À vérifier :
+            les repos tenus, et le temps passé entre deux stations.
+          </p>
+        )}
+
+        {/*
+          Remise à zéro du chrono — avec confirmation, parce qu'elle efface la
+          seule chose que le chrono sait : son heure de début.
+        */}
+        {row &&
+          (resetDemande ? (
+            <div className={styles.resetConfirm}>
+              <p className={styles.resetAsk}>
+                Repartir de maintenant ? L’heure de début enregistrée sera
+                perdue.
+              </p>
+              <div className={styles.resetActions}>
+                <button
+                  type="button"
+                  className={styles.resetYes}
+                  onClick={() => void handleResetClock()}
+                >
+                  Oui, repartir de maintenant
+                </button>
+                <button
+                  type="button"
+                  className={styles.resetNo}
+                  onClick={() => setResetDemande(false)}
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={styles.resetClock}
+              onClick={() => setResetDemande(true)}
+            >
+              ⏱ Remettre le chrono à zéro
+            </button>
+          ))}
       </div>
     </div>
   );
 }
 
-function tonnage(saved: Record<string, { actualKg: number | null; actualReps: number | null }[]>) {
+function tonnage(
+  saved: Record<
+    string,
+    { actualKg: number | null; actualReps: number | null }[]
+  >,
+) {
   let total = 0;
   for (const list of Object.values(saved)) {
     for (const s of list) {

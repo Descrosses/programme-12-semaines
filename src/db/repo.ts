@@ -124,10 +124,26 @@ export async function ensureSession(
     .equals([week, day])
     .first();
   if (existing) {
-    if (existing.date !== date && existing.id !== undefined) {
-      await db.sessions.update(existing.id, { date });
-      await db.sets.where("sessionId").equals(existing.id).modify({ date });
-      return { ...existing, date };
+    const patch: Partial<SessionRow> = {};
+    if (existing.date !== date) patch.date = date;
+    /*
+     * Démarrage du chrono — à la PREMIÈRE ouverture, et jamais ensuite.
+     *
+     * Les lignes créées avant le chrono n'ont pas d'heure de début. On la pose
+     * ici, mais seulement sur une séance encore à faire : poser « commencée
+     * maintenant » sur une séance déjà terminée en semaine 3 inventerait une
+     * durée de plusieurs semaines. Une séance passée reste donc sans chrono,
+     * ce qui est la vérité — on ne l'a pas mesurée.
+     */
+    if (existing.startedAt === undefined && existing.status !== "done") {
+      patch.startedAt = Date.now();
+    }
+    if (Object.keys(patch).length > 0 && existing.id !== undefined) {
+      await db.sessions.update(existing.id, patch);
+      if (patch.date !== undefined) {
+        await db.sets.where("sessionId").equals(existing.id).modify({ date });
+      }
+      return { ...existing, ...patch };
     }
     return existing;
   }
@@ -160,6 +176,24 @@ export async function updateSession(
   patch: Partial<SessionRow>,
 ): Promise<void> {
   await db.sessions.update(id, patch);
+}
+
+/**
+ * Remet le chrono à zéro : la séance recommence maintenant.
+ *
+ * Le seul moyen de réécrire `startedAt`, et il passe par une confirmation à
+ * l'écran. Sans ce bouton, une séance ouverte la veille par curiosité affichait
+ * « 14 h » le lendemain, et le chiffre était indéboulonnable.
+ *
+ * La fin repart elle aussi : une séance dont on relance le chrono n'est plus
+ * terminée, sinon la durée affichée serait l'écart entre un début d'aujourd'hui
+ * et une fin d'hier — négatif.
+ */
+export async function resetSessionClock(id: number): Promise<void> {
+  await db.sessions.update(id, {
+    startedAt: Date.now(),
+    finishedAt: undefined,
+  });
 }
 
 export async function toggleWarmupItem(
