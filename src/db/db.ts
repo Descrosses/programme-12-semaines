@@ -54,6 +54,21 @@ export interface SetRow {
    * saut en cm, temps de sprint en s, distance de carry en m.
    */
   measureValue: number | null;
+  /**
+   * L'unité de `measureValue`, telle qu'elle a été CHOISIE au moment de la
+   * saisie : « m », « pas », « cm », « s ».
+   *
+   * Pourquoi la stocker plutôt que la déduire de l'exercice : un Zercher March
+   * se fait en mètres quand il y a de la place, en pas sur place quand il n'y
+   * en a pas. Déduire l'unité de l'exercice rendrait les deux séances
+   * comparables alors qu'elles ne le sont pas, et douze pas ne valent pas
+   * douze mètres.
+   *
+   * Absente des lignes écrites avant ce champ : `undefined` veut dire
+   * « l'unité par défaut du mouvement », jamais « pas d'unité ». Et rien, ici
+   * ni ailleurs, ne convertit une unité en une autre.
+   */
+  measureUnit?: string | null;
   /** §11 cas 5. */
   failed: boolean;
 

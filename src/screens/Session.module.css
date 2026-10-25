@@ -766,15 +766,41 @@
  * champs de saisie, il ne doit pas peser autant que l'une ou les autres.
  */
 .lastTime {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px;
   margin: 8px var(--pad) 0;
   padding: 7px 10px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
   font-size: 0.8rem;
+}
+
+/*
+ * La première ligne garde la forme d'avant — semaine, valeur, RPE, écart. Les
+ * deux lignes de format viennent dessous : elles se lisent, elles ne se
+ * survolent pas, et les coller sur la même ligne les faisait passer à la ligne
+ * n'importe où sur un écran de 390 px.
+ */
+.lastTimeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.lastTimeFormat,
+.lastTimePlan {
+  margin-top: 5px;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+
+.lastTimeFormat b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.lastTimePlan b {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .lastTimeWhen {

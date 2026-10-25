@@ -694,6 +694,21 @@ export function buildHistoryIndex(sets: SetRow[]): HistoryIndex {
             ? Math.min(...mesures)
             : Math.max(...mesures)
           : null,
+        /*
+         * Le détail série par série, dans l'ordre où elles ont été faites.
+         *
+         * Trié sur `setIndex` et non sur l'ordre d'écriture : corriger la
+         * deuxième série après avoir validé la quatrième réécrit la ligne, et
+         * la relire dans l'ordre de la base donnerait « 2e, 3e, 4e, 2e ».
+         */
+        sets: [...rows]
+          .sort((a, b) => a.setIndex - b.setIndex)
+          .map((r) => ({
+            reps: r.actualReps,
+            kg: r.actualKg,
+            measure: r.measureValue,
+            measureUnit: r.measureUnit ?? null,
+          })),
       });
     }
     index[exerciseId] = occurrences;

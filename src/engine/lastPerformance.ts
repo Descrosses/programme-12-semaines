@@ -26,9 +26,10 @@
  * C'est de l'affichage en lecture seule. Rien ici ne touche à §11.
  */
 
-import { fr } from './format';
-import type { Occurrence } from './types';
-import type { DayIndex } from '../data/types';
+import { fr } from "./format";
+import { performedFormat } from "./setFormat";
+import type { Occurrence } from "./types";
+import type { DayIndex } from "../data/types";
 
 /**
  * Mesures où un chiffre plus BAS est meilleur.
@@ -37,13 +38,13 @@ import type { DayIndex } from '../data/types';
  * Sans ça la flèche pointerait à l'envers sur les deux seuls mouvements du
  * programme qui se mesurent au chrono.
  */
-export const LOWER_IS_BETTER = new Set(['test-sprint-10m', 'test-sprint-20m']);
+export const LOWER_IS_BETTER = new Set(["test-sprint-10m", "test-sprint-20m"]);
 
 export function lowerIsBetter(exerciseId: string): boolean {
   return LOWER_IS_BETTER.has(exerciseId);
 }
 
-export type Trend = 'up' | 'flat' | 'down';
+export type Trend = "up" | "flat" | "down";
 
 /** Une séance : c'est le couple qui identifie une occurrence, pas la semaine. */
 export interface Seance {
@@ -66,6 +67,16 @@ export interface LastPerformance {
   value: string;
   /** « RPE 7 », ou `null` quand aucun RPE n'a été saisi ce jour-là. */
   rpe: string | null;
+  /**
+   * Le format réellement fait : « 5 × 3 × 115 kg », ou la version regroupée
+   * « 3 × 3 × 115 kg + 1 × 2 × 115 kg » quand les séries n'ont pas été
+   * homogènes.
+   *
+   * `null` sur les occurrences construites avant que le détail série par série
+   * ne soit conservé : l'encart affiche alors ce qu'il affichait déjà, sans
+   * inventer un format à partir d'un agrégat.
+   */
+  format: string | null;
   /**
    * « +2,5 kg », « +10 m · +2 kg » sur un porté dont les deux métriques ont
    * bougé, ou `null` s'il n'y a rien à quoi comparer.
@@ -155,20 +166,27 @@ export function lastPerformance(
    * descend — plus loin mais moins lourd — on reste neutre et on affiche les
    * deux écarts : c'est à Guillaume de juger, pas à une flèche.
    */
-  const monte = ecarts.some((e) => e.trend === 'up');
-  const descend = ecarts.some((e) => e.trend === 'down');
-  const trend: Trend = monte && !descend ? 'up' : !monte && descend ? 'down' : 'flat';
+  const monte = ecarts.some((e) => e.trend === "up");
+  const descend = ecarts.some((e) => e.trend === "down");
+  const trend: Trend =
+    monte && !descend ? "up" : !monte && descend ? "down" : "flat";
 
   const rpeChamp = lues.find((x) => x.champ.avecRPE);
   const deltas = ecarts
     .filter((e) => e.ecart !== null && e.ecart !== 0)
-    .map((e) => `${e.ecart! > 0 ? '+' : '−'}${fr(Math.abs(e.ecart!))} ${e.champ.unit}`);
+    .map(
+      (e) =>
+        `${e.ecart! > 0 ? "+" : "−"}${fr(Math.abs(e.ecart!))} ${e.champ.unit}`,
+    );
 
   return {
     week: derniere.week,
-    value: lues.map(({ champ, valeur }) => `${fr(valeur)} ${champ.unit}`).join(' · '),
+    value: lues
+      .map(({ champ, valeur }) => `${fr(valeur)} ${champ.unit}`)
+      .join(" · "),
     rpe: rpeChamp && derniere.rpe !== null ? `RPE ${fr(derniere.rpe)}` : null,
-    delta: deltas.length === 0 ? null : deltas.join(' · '),
+    format: derniere.sets ? performedFormat(derniere.sets) : null,
+    delta: deltas.length === 0 ? null : deltas.join(" · "),
     trend,
   };
 }
@@ -188,9 +206,14 @@ export function lastPerformance(
 function champsDe(o: Occurrence, measureUnit: string | null): Champ[] {
   const champs: Champ[] = [];
   if (o.measure !== null && o.measure !== undefined && measureUnit) {
-    champs.push({ lire: (x) => x.measure ?? null, unit: measureUnit, avecRPE: false });
+    champs.push({
+      lire: (x) => x.measure ?? null,
+      unit: measureUnit,
+      avecRPE: false,
+    });
   }
-  if (o.kg !== null) champs.push({ lire: (x) => x.kg, unit: 'kg', avecRPE: true });
+  if (o.kg !== null)
+    champs.push({ lire: (x) => x.kg, unit: "kg", avecRPE: true });
   return champs;
 }
 
@@ -201,9 +224,9 @@ function champsDe(o: Occurrence, measureUnit: string | null): Champ[] {
  * est une progression.
  */
 function tendance(ecart: number | null, exerciseId: string): Trend {
-  if (ecart === null || ecart === 0) return 'flat';
+  if (ecart === null || ecart === 0) return "flat";
   const mieux = lowerIsBetter(exerciseId) ? ecart < 0 : ecart > 0;
-  return mieux ? 'up' : 'down';
+  return mieux ? "up" : "down";
 }
 
 /** Deux décimales suffisent, et évitent les 2,4999999999 de la soustraction. */
