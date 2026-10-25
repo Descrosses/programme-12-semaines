@@ -22,17 +22,13 @@ import {
   WEEK_DAYS,
   blockNotesFor,
   rulesFor,
-} from "../data/program";
-import { BASE_SESSIONS } from "../data/baseSessions";
-import {
-  CONTRAST_BY_DAY,
-  type ContrastSpec,
-  type SlotPatch,
-} from "../data/blockRules";
-import { EXERCISES } from "../data/exercises";
-import { prescriptionFor } from "../data/mainLiftTable";
-import { specialSession } from "../data/testSessions";
-import { WARMUPS } from "../data/warmups";
+} from '../data/program';
+import { BASE_SESSIONS } from '../data/baseSessions';
+import { CONTRAST_BY_DAY, type ContrastSpec, type SlotPatch } from '../data/blockRules';
+import { EXERCISES } from '../data/exercises';
+import { prescriptionFor } from '../data/mainLiftTable';
+import { specialSession } from '../data/testSessions';
+import { WARMUPS } from '../data/warmups';
 import type {
   Block,
   DayIndex,
@@ -44,27 +40,18 @@ import type {
   Warmup,
   WeekIndex,
   Work,
-} from "../data/types";
-import { loadLine as formatLoadLine, workLabel } from "./format";
-import {
-  resolveLoad,
-  scaleLoad,
-  withKg,
-  type ResolvedLoad,
-} from "./loadResolver";
-import { dureeEstimeeMin, dureeLabel } from "./sessionDuration";
-import {
-  applyProgression,
-  lastCompleted,
-  type ProgressionResult,
-} from "./progression";
-import { roundToStep } from "./rounding";
-import type { Occurrence, OneRMKey, SessionContext } from "./types";
+} from '../data/types';
+import { loadLine as formatLoadLine, workLabel } from './format';
+import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
+import { dureeEstimeeMin, dureeLabel } from './sessionDuration';
+import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
+import { roundToStep } from './rounding';
+import type { Occurrence, OneRMKey, SessionContext } from './types';
 
 // ---------------------------------------------------------------------------
 
 export interface Adjustment {
-  source: "bloc" | "deload" | "orange" | "rouge" | "cas7" | "plafond";
+  source: 'bloc' | 'deload' | 'orange' | 'rouge' | 'cas7' | 'plafond';
   what: string;
   why: string;
 }
@@ -164,12 +151,12 @@ export function hasSession(week: WeekIndex, day: DayIndex): boolean {
   return (WEEK_DAYS[week] as readonly DayIndex[]).includes(day);
 }
 
-const LOWER_BODY_FN = new Set(["squat", "hinge", "jump", "carry"]);
+const LOWER_BODY_FN = new Set(['squat', 'hinge', 'jump', 'carry']);
 const ONE_RM_FOR: Partial<Record<string, OneRMKey>> = {
-  "back-squat": "back-squat",
-  "bench-press": "bench-press",
-  deadlift: "deadlift",
-  "weighted-pullup": "weighted-pullup",
+  'back-squat': 'back-squat',
+  'bench-press': 'bench-press',
+  deadlift: 'deadlift',
+  'weighted-pullup': 'weighted-pullup',
 };
 
 // ---------------------------------------------------------------------------
@@ -200,7 +187,7 @@ export function getSession(
     notes.push(...blockNotesFor(block, day, week));
     if (slots.length !== before) {
       sessionAdjustments.push({
-        source: "bloc",
+        source: 'bloc',
         what: BLOCKS[block].name,
         why: `Séance adaptée au bloc « ${BLOCKS[block].name} » (§8).`,
       });
@@ -208,15 +195,13 @@ export function getSession(
   }
 
   // 3. Deload.
-  const isDeload = block === "deload" && !special;
+  const isDeload = block === 'deload' && !special;
   if (isDeload) {
-    slots = slots.filter(
-      (s) => !DELOAD_POLICY.removeExIds.includes(s.exId as never),
-    );
+    slots = slots.filter((s) => !DELOAD_POLICY.removeExIds.includes(s.exId as never));
     notes.push(...DELOAD_POLICY.notes);
     sessionAdjustments.push({
-      source: "deload",
-      what: "Semaine de deload",
+      source: 'deload',
+      what: 'Semaine de deload',
       why: DELOAD_POLICY.notes[0]!,
     });
   }
@@ -241,8 +226,7 @@ export function getSession(
   });
 
   // 4-5. Résolution exercice par exercice.
-  const contrast =
-    block === "power" && !special ? CONTRAST_BY_DAY[day] : undefined;
+  const contrast = block === 'power' && !special ? CONTRAST_BY_DAY[day] : undefined;
   const exercises: ResolvedExercise[] = [];
 
   for (const slot of slots) {
@@ -258,34 +242,32 @@ export function getSession(
   }
 
   // 6. Feu tricolore.
-  const level = ctx.readiness?.level ?? "vert";
+  const level = ctx.readiness?.level ?? 'vert';
   let finalExercises = exercises;
-  if (level === "orange") {
+  if (level === 'orange') {
     finalExercises = applyOrange(exercises);
     sessionAdjustments.push({
-      source: "orange",
-      what: "Readiness ORANGE",
-      why: "−5 % sur les gros mouvements, une série de moins sur les accessoires (§4).",
+      source: 'orange',
+      what: 'Readiness ORANGE',
+      why: '−5 % sur les gros mouvements, une série de moins sur les accessoires (§4).',
     });
-  } else if (level === "rouge") {
+  } else if (level === 'rouge') {
     finalExercises = applyRed(exercises, ctx);
     sessionAdjustments.push({
-      source: "rouge",
-      what: "Readiness ROUGE",
-      why: "Lift principal à 3 × 3 à 65 % du 1RM, tronc et mobilité, et tu rentres (§4).",
+      source: 'rouge',
+      what: 'Readiness ROUGE',
+      why: 'Lift principal à 3 × 3 à 65 % du 1RM, tronc et mobilité, et tu rentres (§4).',
     });
-    notes.push(
-      "Readiness rouge : aucune série au-dessus de RPE 8 aujourd’hui.",
-    );
+    notes.push('Readiness rouge : aucune série au-dessus de RPE 8 aujourd’hui.');
   }
 
   // 7. Cas 7 — sauts en baisse deux semaines de suite.
-  if (ctx.explosiveDecline && level !== "rouge") {
+  if (ctx.explosiveDecline && level !== 'rouge') {
     finalExercises = applyCase7(finalExercises);
     sessionAdjustments.push({
-      source: "cas7",
-      what: "Sauts en baisse",
-      why: "Lifts principaux ramenés à 3 séries, conditioning supprimé (§11 cas 7).",
+      source: 'cas7',
+      what: 'Sauts en baisse',
+      why: 'Lifts principaux ramenés à 3 séries, conditioning supprimé (§11 cas 7).',
     });
   }
 
@@ -325,30 +307,20 @@ export function getSession(
 // Règles de bloc
 // ---------------------------------------------------------------------------
 
-function applyBlockRules(
-  slots: Slot[],
-  block: Block,
-  day: DayIndex,
-  week: WeekIndex,
-): Slot[] {
+function applyBlockRules(slots: Slot[], block: Block, day: DayIndex, week: WeekIndex): Slot[] {
   let out = slots;
   for (const rule of rulesFor(block, day, week)) {
-    if (rule.op === "remove") {
+    if (rule.op === 'remove') {
       out = out.filter((s) => s.exId !== rule.exId);
-    } else if (rule.op === "patch") {
-      out = out.map((s) =>
-        s.exId === rule.exId ? patchSlot(s, rule.patch) : s,
-      );
+    } else if (rule.op === 'patch') {
+      out = out.map((s) => (s.exId === rule.exId ? patchSlot(s, rule.patch) : s));
     } else {
       const slot = { ...rule.slot };
       if (rule.atStart) {
         out = [slot, ...out];
       } else if (rule.after) {
         const i = out.findIndex((s) => s.exId === rule.after);
-        out =
-          i === -1
-            ? [...out, slot]
-            : [...out.slice(0, i + 1), slot, ...out.slice(i + 1)];
+        out = i === -1 ? [...out, slot] : [...out.slice(0, i + 1), slot, ...out.slice(i + 1)];
       } else {
         out = [...out, slot];
       }
@@ -419,12 +391,8 @@ export function referenceOccurrences(
   week: WeekIndex,
   day: DayIndex,
 ): Occurrence[] {
-  const avant = all.filter(
-    (o) => o.week < week || (o.week === week && o.day < day),
-  );
-  const horsDeload = avant.filter(
-    (o) => WEEK_BLOCKS[o.week as WeekIndex] !== "deload",
-  );
+  const avant = all.filter((o) => o.week < week || (o.week === week && o.day < day));
+  const horsDeload = avant.filter((o) => WEEK_BLOCKS[o.week as WeekIndex] !== 'deload');
   return horsDeload.length > 0 ? horsDeload : avant;
 }
 
@@ -456,11 +424,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     if (presc.note) notes.push(presc.note);
   }
 
-  const reference = referenceOccurrences(
-    o.ctx.history[slot.exId] ?? [],
-    o.week,
-    o.day,
-  );
+  const reference = referenceOccurrences(o.ctx.history[slot.exId] ?? [], o.week, o.day);
 
   let load = resolveLoad(loadSpec, {
     settings: o.ctx.settings,
@@ -473,7 +437,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     const before = load.kg;
     load = scaleLoad(load, factor);
     adjustments.push({
-      source: "bloc",
+      source: 'bloc',
       what: `${before} → ${load.kg} kg`,
       why: `Bloc force maximale : ${Math.round((factor - 1) * 100)} % sur les accessoires haut (§8).`,
     });
@@ -492,17 +456,13 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
    */
   const facteurEntree = (slot as Slot & { __loadFactorAtBlockEntry?: number })
     .__loadFactorAtBlockEntry;
-  if (
-    facteurEntree !== undefined &&
-    load.kg !== null &&
-    load.source === "historique"
-  ) {
+  if (facteurEntree !== undefined && load.kg !== null && load.source === 'historique') {
     const ref = lastCompleted(reference);
     if (ref && WEEK_BLOCKS[ref.week as WeekIndex] !== o.block) {
       const before = load.kg;
       load = scaleLoad(load, facteurEntree);
       adjustments.push({
-        source: "bloc",
+        source: 'bloc',
         what: `${before} → ${load.kg} kg`,
         why: `Entrée en bloc ${BLOCKS[o.block].name.toLowerCase()} : moins de reps, plus de repos, donc ${Math.round((facteurEntree - 1) * 100)} % de charge en plus (§8). Le RPE cible reste le juge.`,
       });
@@ -511,18 +471,18 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
 
   // 3. Deload — uniquement sur ce que le tableau ne chiffre pas déjà.
   if (o.isDeload && !slot.liftId) {
-    if (def.role === "accessory" && load.kg !== null) {
+    if (def.role === 'accessory' && load.kg !== null) {
       const before = load.kg;
       load = scaleLoad(load, DELOAD_POLICY.accessoryLoadFactor);
       sets = DELOAD_POLICY.accessorySets;
       adjustments.push({
-        source: "deload",
+        source: 'deload',
         what: `${before} → ${load.kg} kg, ${sets} séries`,
-        why: "Deload : 80 % de ta dernière charge réelle, 2 séries (§8).",
+        why: 'Deload : 80 % de ta dernière charge réelle, 2 séries (§8).',
       });
-    } else if (def.role === "accessory") {
+    } else if (def.role === 'accessory') {
       sets = DELOAD_POLICY.accessorySets;
-    } else if (def.role === "core" || def.role === "carry") {
+    } else if (def.role === 'core' || def.role === 'carry') {
       /*
        * Le défaut corrigé : ces deux rôles ne tombaient dans aucune branche.
        * Le tronc et les portés gardaient leur volume complet dans la semaine
@@ -536,24 +496,24 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
       const avant = { sets, work };
       sets = prevu?.sets ?? DELOAD_POLICY.coreSets;
       if (prevu) work = prevu.work;
-      if (def.role === "carry" && load.kg !== null) {
+      if (def.role === 'carry' && load.kg !== null) {
         load = scaleLoad(load, DELOAD_POLICY.carryLoadFactor);
       }
       adjustments.push({
-        source: "deload",
+        source: 'deload',
         what: `${workLabel(avant.sets, avant.work)} → ${workLabel(sets, work)}`,
         why:
-          def.role === "carry"
-            ? "Deload : porté raccourci et allégé de 20 %, reps propres, aucune série à l’échec (§8)."
-            : "Deload : moins de séries et moins de reps sur le tronc, aucune série à l’échec (§8).",
+          def.role === 'carry'
+            ? 'Deload : porté raccourci et allégé de 20 %, reps propres, aucune série à l’échec (§8).'
+            : 'Deload : moins de séries et moins de reps sur le tronc, aucune série à l’échec (§8).',
       });
-    } else if (def.role === "power") {
+    } else if (def.role === 'power') {
       const before = sets;
       sets = Math.max(1, Math.ceil(sets / DELOAD_POLICY.jumpVolumeDivisor));
       adjustments.push({
-        source: "deload",
+        source: 'deload',
         what: `${before} → ${sets} séries`,
-        why: "Deload : volume de sauts divisé par 2, intention maximale conservée (§8).",
+        why: 'Deload : volume de sauts divisé par 2, intention maximale conservée (§8).',
       });
     }
     targetRPE = capRPE(targetRPE, DELOAD_POLICY.maxRPE);
@@ -576,9 +536,9 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
 
   if (suggestion?.capped) {
     adjustments.push({
-      source: "plafond",
+      source: 'plafond',
       what: `${load.kgMax} kg`,
-      why: "Plafond assumé pour cet exercice sur ce bloc : le programme ne demande pas plus.",
+      why: 'Plafond assumé pour cet exercice sur ce bloc : le programme ne demande pas plus.',
     });
   }
 
@@ -598,9 +558,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     loadLine: formatLoadLine(sets, work, load),
     lastKg: lastCompleted(reference)?.kg ?? null,
     lastMeasure:
-      [...(o.ctx.history[def.id] ?? [])]
-        .reverse()
-        .find((h) => h.measure != null)?.measure ?? null,
+      [...(o.ctx.history[def.id] ?? [])].reverse().find((h) => h.measure != null)?.measure ?? null,
     notes,
     ...(contrastWith && o.contrast ? { contrast: o.contrast } : {}),
     ...(slot.ramp ? { ramp: slot.ramp } : {}),
@@ -615,7 +573,7 @@ function capRPE(target: RPETarget | null, max: number): RPETarget | null {
   return {
     min: Math.min(target.min, max),
     max,
-    label: `RPE ≤ ${String(max).replace(".", ",")}`,
+    label: `RPE ≤ ${String(max).replace('.', ',')}`,
   };
 }
 
@@ -626,7 +584,7 @@ function capRPE(target: RPETarget | null, max: number): RPETarget | null {
 const BIG = new Set<string>(BIG_MOVEMENT_IDS);
 
 function isBigMovement(ex: ResolvedExercise): boolean {
-  return BIG.has(ex.id) || ex.def.role === "main";
+  return BIG.has(ex.id) || ex.def.role === 'main';
 }
 
 /** ORANGE — −5 % sur les gros mouvements, une série de moins sur les accessoires. */
@@ -638,32 +596,28 @@ function applyOrange(exercises: ResolvedExercise[]): ResolvedExercise[] {
       const before = ex.load.kg;
       out.load = scaleLoad(ex.load, READINESS_THRESHOLDS.orange.mainLoadFactor);
       out.adjustments.push({
-        source: "orange",
+        source: 'orange',
         what: `${before} → ${out.load.kg} kg`,
-        why: "Readiness orange : −5 % sur les gros mouvements (§4).",
+        why: 'Readiness orange : −5 % sur les gros mouvements (§4).',
       });
       if (ex.suggestion?.suggestedKg != null) {
         out.suggestion = {
           ...ex.suggestion,
           suggestedKg: roundToStep(
-            ex.suggestion.suggestedKg *
-              READINESS_THRESHOLDS.orange.mainLoadFactor,
+            ex.suggestion.suggestedKg * READINESS_THRESHOLDS.orange.mainLoadFactor,
             ex.load.step,
           ),
         };
       }
     }
 
-    if (ex.def.role === "accessory" && out.sets > 1) {
+    if (ex.def.role === 'accessory' && out.sets > 1) {
       const before = out.sets;
-      out.sets = Math.max(
-        1,
-        out.sets + READINESS_THRESHOLDS.orange.accessorySetsDelta,
-      );
+      out.sets = Math.max(1, out.sets + READINESS_THRESHOLDS.orange.accessorySetsDelta);
       out.adjustments.push({
-        source: "orange",
+        source: 'orange',
         what: `${before} → ${out.sets} séries`,
-        why: "Readiness orange : une série de moins sur les accessoires (§4).",
+        why: 'Readiness orange : une série de moins sur les accessoires (§4).',
       });
     }
 
@@ -679,29 +633,23 @@ function applyOrange(exercises: ResolvedExercise[]): ResolvedExercise[] {
  * puissance quand la performance est basse, et le readiness rouge dit
  * précisément ça.
  */
-function applyRed(
-  exercises: ResolvedExercise[],
-  ctx: SessionContext,
-): ResolvedExercise[] {
+function applyRed(exercises: ResolvedExercise[], ctx: SessionContext): ResolvedExercise[] {
   const out: ResolvedExercise[] = [];
 
   for (const ex of exercises) {
     const rmKey = ONE_RM_FOR[ex.id];
 
-    if (ex.def.role === "main" && rmKey) {
+    if (ex.def.role === 'main' && rmKey) {
       const oneRM = ctx.settings.oneRM[rmKey];
       const kg =
         oneRM === undefined
           ? null
-          : roundToStep(
-              oneRM * READINESS_THRESHOLDS.red.pctOf1RM,
-              ex.load.step,
-            );
+          : roundToStep(oneRM * READINESS_THRESHOLDS.red.pctOf1RM, ex.load.step);
       out.push({
         ...ex,
         sets: READINESS_THRESHOLDS.red.sets,
         work: {
-          kind: "reps",
+          kind: 'reps',
           reps: READINESS_THRESHOLDS.red.reps,
           perSide: false,
         },
@@ -711,15 +659,15 @@ function applyRed(
         notes: [
           ...ex.notes,
           oneRM === undefined
-            ? "Renseigne ton 1RM dans les réglages pour que l’appli calcule les 65 %."
+            ? 'Renseigne ton 1RM dans les réglages pour que l’appli calcule les 65 %.'
             : `65 % de ton 1RM testé (${oneRM} kg). Technique et vitesse, rien d’autre.`,
         ],
         adjustments: [
           ...ex.adjustments,
           {
-            source: "rouge",
-            what: `3 × 3 × ${kg ?? "—"} kg`,
-            why: "Readiness rouge : technique à 65 % du 1RM (§4).",
+            source: 'rouge',
+            what: `3 × 3 × ${kg ?? '—'} kg`,
+            why: 'Readiness rouge : technique à 65 % du 1RM (§4).',
           },
         ],
       });
@@ -727,7 +675,7 @@ function applyRed(
     }
 
     // On garde le tronc et la mobilité, on retire tout le reste.
-    if (ex.def.role === "core" || ex.def.fn === "mobility") {
+    if (ex.def.role === 'core' || ex.def.fn === 'mobility') {
       out.push(ex);
     }
   }
@@ -738,18 +686,18 @@ function applyRed(
 /** §11 cas 7 — lifts principaux à 3 séries, suppression du conditioning. */
 function applyCase7(exercises: ResolvedExercise[]): ResolvedExercise[] {
   return exercises
-    .filter((ex) => ex.def.role !== "conditioning")
+    .filter((ex) => ex.def.role !== 'conditioning')
     .map((ex) => {
-      if (ex.def.role !== "main" || ex.sets <= 3) return ex;
+      if (ex.def.role !== 'main' || ex.sets <= 3) return ex;
       return {
         ...ex,
         sets: 3,
         adjustments: [
           ...ex.adjustments,
           {
-            source: "cas7" as const,
+            source: 'cas7' as const,
             what: `${ex.sets} → 3 séries`,
-            why: "Tes sauts baissent depuis 2 semaines : §11 cas 7.",
+            why: 'Tes sauts baissent depuis 2 semaines : §11 cas 7.',
           },
         ],
       };

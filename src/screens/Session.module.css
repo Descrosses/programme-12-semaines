@@ -759,6 +759,67 @@
   color: var(--ink-3);
 }
 
+/*
+ * Le bouton qui fait passer le brouillon dans l'historique. Pleine largeur et
+ * 48 px : c'est un geste qu'on fait avec le pouce, souvent debout, parfois les
+ * mains moites.
+ */
+.exNoteAdd {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Le ✕ de retrait : discret, mais pas minuscule — 32 px de cible utile. */
+.exNoteDel {
+  min-width: 32px;
+  min-height: 32px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 0.8rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.exNoteConfirm {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.exNoteDelYes,
+.exNoteDelNo {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.exNoteDelYes {
+  border: 0;
+  background: var(--rouge);
+  color: #fff;
+}
+
+.exNoteDelNo {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+}
+
 /* --- « La dernière fois » -------------------------------------------------- */
 
 /*

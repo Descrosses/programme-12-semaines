@@ -26,7 +26,7 @@
  * Pur, sans React et sans base : les quinze cas se vérifient en une seconde.
  */
 
-import { fr } from "./format";
+import { fr } from './format';
 
 /** Une série telle qu'elle a été enregistrée. */
 export interface PerformedSet {
@@ -64,7 +64,7 @@ export function performedFormat(sets: PerformedSet[]): string | null {
   const groupes = grouper(chiffrees);
 
   if (groupes.length <= MAX_GROUPES) {
-    return groupes.map(labelGroupe).join(" + ");
+    return groupes.map(labelGroupe).join(' + ');
   }
 
   /*
@@ -74,14 +74,10 @@ export function performedFormat(sets: PerformedSet[]): string | null {
    */
   const kgs = new Set(chiffrees.map((s) => s.kg));
   const charge =
-    kgs.size === 1 && chiffrees[0]!.kg !== null
-      ? ` × ${fr(chiffrees[0]!.kg!)} kg`
-      : "";
-  const valeurs = groupes.map((g) =>
-    g.measure !== null ? fr(g.measure) : String(g.reps ?? 0),
-  );
-  const unite = groupes[0]!.unit ? ` ${groupes[0]!.unit}` : "";
-  return `${chiffrees.length} séries : ${valeurs.join(", ")}${unite}${charge}`;
+    kgs.size === 1 && chiffrees[0]!.kg !== null ? ` × ${fr(chiffrees[0]!.kg!)} kg` : '';
+  const valeurs = groupes.map((g) => (g.measure !== null ? fr(g.measure) : String(g.reps ?? 0)));
+  const unite = groupes[0]!.unit ? ` ${groupes[0]!.unit}` : '';
+  return `${chiffrees.length} séries : ${valeurs.join(', ')}${unite}${charge}`;
 }
 
 /** Séries identiques consécutives, regroupées. */
@@ -108,9 +104,7 @@ function grouper(sets: PerformedSet[]): Groupe[] {
 
 function labelGroupe(g: Groupe): string {
   const travail =
-    g.measure !== null
-      ? `${fr(g.measure)}${g.unit ? ` ${g.unit}` : ""}`
-      : String(g.reps ?? 0);
-  const charge = g.kg !== null ? ` × ${fr(g.kg)} kg` : "";
+    g.measure !== null ? `${fr(g.measure)}${g.unit ? ` ${g.unit}` : ''}` : String(g.reps ?? 0);
+  const charge = g.kg !== null ? ` × ${fr(g.kg)} kg` : '';
   return `${g.count} × ${travail}${charge}`;
 }

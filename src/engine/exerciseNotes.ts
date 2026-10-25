@@ -74,3 +74,108 @@ export function pastNotes<T extends NoteLike>(rows: T[], current: Occurrence): T
 export function noteBadgeLabel(count: number): string {
   return `${count} remarque${count > 1 ? 's' : ''}`;
 }
+
+// ---------------------------------------------------------------------------
+// Historique APPENDÉ — une remarque n'écrase plus la précédente
+// ---------------------------------------------------------------------------
+
+/**
+ * Une remarque telle qu'elle est stockée depuis la v15.
+ *
+ * Deux différences avec `NoteLike`, et elles changent tout :
+ *   — `exerciseId` peut valoir `null`, pour la remarque de séance ;
+ *   — plusieurs remarques peuvent porter le même (exercice, semaine, jour),
+ *     puisque rien n'est unique. `at` les départage.
+ */
+export interface NoteEntry {
+  id?: number;
+  exerciseId: string | null;
+  week: number;
+  day: DayIndex;
+  date: string;
+  text: string;
+  at: number;
+}
+
+/**
+ * Les remarques laissées sur ce mouvement, de la plus récente à la plus
+ * ancienne.
+ *
+ * ── Pourquoi tout l'historique, et pas seulement « avant aujourd'hui » ─────
+ *
+ * L'ancien encart excluait l'occurrence en cours : la remarque du jour était
+ * dans le champ de saisie, la réafficher au-dessus donnait l'impression d'en
+ * avoir écrit deux. Ce n'est plus vrai. Le champ ne contient qu'un brouillon
+ * pas encore ajouté ; dès qu'une remarque est ajoutée, elle sort du champ et
+ * entre dans l'historique. Les deux ne peuvent donc plus faire doublon, et
+ * cacher la remarque qu'on vient d'ajouter serait cette fois le défaut.
+ *
+ * Tri par semaine puis jour puis horodatage : c'est l'ordre du PROGRAMME, pas
+ * celui du calendrier. Décaler la date de début ne doit pas réordonner douze
+ * semaines de remarques.
+ */
+export function noteHistory(rows: NoteEntry[], exerciseId: string | null): NoteEntry[] {
+  return rows
+    .filter((r) => r.exerciseId === exerciseId && normalizeNote(r.text) !== null)
+    .sort(plusRecentDAbord);
+}
+
+/** Toutes les remarques, du plus récent au plus ancien, exercices confondus. */
+export function allNotesNewestFirst(rows: NoteEntry[]): NoteEntry[] {
+  return rows.filter((r) => normalizeNote(r.text) !== null).sort(plusRecentDAbord);
+}
+
+function plusRecentDAbord(a: NoteEntry, b: NoteEntry): number {
+  if (a.week !== b.week) return b.week - a.week;
+  if (a.day !== b.day) return b.day - a.day;
+  return b.at - a.at;
+}
+
+/** « S5 » — le repère que Guillaume lit en premier. */
+export function noteWeekLabel(row: Pick<NoteEntry, 'week'>): string {
+  return `S${row.week}`;
+}
+
+/** « S5 — épaule gauche tire un peu », la forme demandée. */
+export function noteLine(row: NoteEntry): string {
+  return `${noteWeekLabel(row)} — ${row.text.trim()}`;
+}
+
+/**
+ * Les remarques regroupées par mouvement, chaque groupe trié du plus récent au
+ * plus ancien, et les groupes rangés par nombre de remarques décroissant.
+ *
+ * Pour l'écran Progression : ce qui intéresse là-bas n'est pas la chronologie
+ * mais le mouvement qui a fait parler de lui. Un exercice avec six remarques
+ * en douze semaines dit quelque chose ; un exercice avec une dit beaucoup
+ * moins.
+ */
+export function notesByExercise(rows: NoteEntry[]): Array<{
+  exerciseId: string | null;
+  notes: NoteEntry[];
+}> {
+  const parEx = new Map<string, NoteEntry[]>();
+  for (const r of rows) {
+    if (normalizeNote(r.text) === null) continue;
+    const cle = r.exerciseId ?? '';
+    const list = parEx.get(cle);
+    if (list) list.push(r);
+    else parEx.set(cle, [r]);
+  }
+  return [...parEx.entries()]
+    .map(([cle, notes]) => ({
+      exerciseId: cle === '' ? null : cle,
+      notes: [...notes].sort(plusRecentDAbord),
+    }))
+    .sort(
+      (a, b) =>
+        b.notes.length - a.notes.length ||
+        /*
+         * À égalité, la plus récente d'abord — et les remarques de séance en
+         * dernier : elles parlent de tout, donc de rien en particulier, et
+         * les mettre en tête repousserait les mouvements hors de l'écran.
+         */
+        Number(a.exerciseId === null) - Number(b.exerciseId === null) ||
+        plusRecentDAbord(a.notes[0]!, b.notes[0]!),
+    );
+}

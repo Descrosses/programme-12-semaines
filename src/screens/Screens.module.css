@@ -1441,3 +1441,64 @@
 .durationOverText {
   color: var(--jaune, #f2b33d);
 }
+
+/* ---------------------------------------------------- relecture des remarques -- */
+
+.noteGroupHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.noteGroupName {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.noteGroupCount {
+  flex: none;
+  color: var(--accent);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.noteList {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * La semaine sur sa propre ligne, au-dessus du texte : une remarque peut faire
+ * trois lignes, et la coller à droite d'un repère tabulaire la rendrait
+ * illisible sur un écran de 390 px.
+ */
+.noteItem {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+  font-size: var(--fs-small);
+}
+
+.noteWhen {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.noteText {
+  color: var(--ink);
+  line-height: 1.45;
+}

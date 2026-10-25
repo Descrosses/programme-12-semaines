@@ -3,15 +3,11 @@
  * par opposition à ce qui vient du programme (`src/data`).
  */
 
-import type { DayIndex, MainLiftId, RPETarget, WeekIndex } from "../data/types";
-import type { PerformedSet } from "./setFormat";
+import type { DayIndex, MainLiftId, RPETarget, WeekIndex } from '../data/types';
+import type { PerformedSet } from './setFormat';
 
 /** Les 1RM réellement testés. Mis à jour par le combine initial et le final. */
-export type OneRMKey =
-  | "back-squat"
-  | "bench-press"
-  | "deadlift"
-  | "weighted-pullup";
+export type OneRMKey = 'back-squat' | 'bench-press' | 'deadlift' | 'weighted-pullup';
 
 export interface Settings {
   /**
@@ -26,7 +22,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  startDate: "",
+  startDate: '',
   broadJumpBaselineCm: null,
   oneRM: {},
 };
@@ -117,7 +113,7 @@ export interface ReadinessRecord {
   jumpCm: number;
 }
 
-export type ReadinessLevel = "vert" | "orange" | "rouge";
+export type ReadinessLevel = 'vert' | 'orange' | 'rouge';
 
 export interface ReadinessResult {
   level: ReadinessLevel;

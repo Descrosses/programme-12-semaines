@@ -1,31 +1,33 @@
-import { useEffect, useState } from "react";
-import { ExerciseCard, type SetPayload } from "../components/ExerciseCard";
-import { ReadinessSection } from "../components/ReadinessSection";
-import { WarmupSection } from "../components/WarmupSection";
-import { BLOCKS } from "../data/program";
-import { DAY_LABELS, type DayIndex, type WeekIndex } from "../data/types";
-import { humanDate } from "../engine/calendar";
-import { fr, setSummary } from "../engine/format";
+import { useState } from 'react';
+import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
+import { ExerciseNote } from '../components/ExerciseNote';
+import { ReadinessSection } from '../components/ReadinessSection';
+import { WarmupSection } from '../components/WarmupSection';
+import { BLOCKS } from '../data/program';
+import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
+import { humanDate } from '../engine/calendar';
+import { fr, setSummary } from '../engine/format';
 import {
   clockLabel,
   durationVerdict,
   elapsedMin,
   gapLabel,
   isRunning,
-} from "../engine/sessionClock";
-import type { ResolvedExercise } from "../engine/getSession";
-import { bestJump, readiness as computeReadiness } from "../engine/readiness";
+} from '../engine/sessionClock';
+import type { ResolvedExercise } from '../engine/getSession';
+import { bestJump, readiness as computeReadiness } from '../engine/readiness';
 import {
+  commitAllDrafts,
   resetSessionClock,
   saveReadiness,
   saveSet,
   toggleWarmupItem,
   updateSession,
-} from "../db/repo";
-import { useNow } from "../state/useNow";
-import type { RestTimer } from "../state/useRestTimer";
-import { useSessionData } from "../state/useSessionData";
-import styles from "./Session.module.css";
+} from '../db/repo';
+import { useNow } from '../state/useNow';
+import type { RestTimer } from '../state/useRestTimer';
+import { useSessionData } from '../state/useSessionData';
+import styles from './Session.module.css';
 
 /**
  * Écran séance.
@@ -46,21 +48,12 @@ export function SessionScreen({
   onBack: () => void;
 }) {
   const data = useSessionData(week, day);
-  const [notes, setNotes] = useState("");
-  const [notesLoaded, setNotesLoaded] = useState(false);
   const [resetDemande, setResetDemande] = useState(false);
   /*
    * Le chrono ne tourne que pendant la séance. Terminée, sa durée est figée en
    * base : plus rien à recalculer, donc plus d'intervalle qui tourne.
    */
   const now = useNow(isRunning(data.row ?? {}));
-
-  useEffect(() => {
-    if (data.row && !notesLoaded) {
-      setNotes(data.row.notes);
-      setNotesLoaded(true);
-    }
-  }, [data.row, notesLoaded]);
 
   if (data.loading) {
     return <div className={styles.loading}>Chargement…</div>;
@@ -86,8 +79,7 @@ export function SessionScreen({
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
   const chrono = row ? clockLabel(row, now) : null;
   const reel = row ? elapsedMin(row, now) : null;
-  const verdict =
-    reel === null ? null : durationVerdict(reel, session.plannedMin);
+  const verdict = reel === null ? null : durationVerdict(reel, session.plannedMin);
 
   async function handleSaveSet(ex: ResolvedExercise, payload: SetPayload) {
     if (!row?.id) return;
@@ -100,9 +92,7 @@ export function SessionScreen({
       setIndex: payload.setIndex,
       plannedKg: overrides[ex.id] ?? ex.load.kg,
       plannedReps:
-        ex.work.kind === "reps" && typeof ex.work.reps === "number"
-          ? ex.work.reps
-          : null,
+        ex.work.kind === 'reps' && typeof ex.work.reps === 'number' ? ex.work.reps : null,
       targetRPE: ex.targetRPE,
       actualKg: payload.actualKg,
       actualReps: payload.actualReps,
@@ -151,11 +141,6 @@ export function SessionScreen({
     await data.reload();
   }
 
-  async function handleNotes(value: string) {
-    setNotes(value);
-    if (row?.id) await updateSession(row.id, { notes: value });
-  }
-
   /**
    * « Séance terminée » ramène à la vue Semaine : ce qu'on veut voir juste
    * après avoir rangé les disques, c'est l'état des 5 jours et le prochain à
@@ -164,15 +149,21 @@ export function SessionScreen({
    */
   async function handleFinish() {
     if (!row?.id) return;
-    const finishing = row.status !== "done";
+    const finishing = row.status !== 'done';
     /*
      * `finishedAt` n'est posé qu'en TERMINANT. Avant, il était réécrit aussi
      * en décochant — donc une correction de saisie faite le lendemain
      * rallongeait la séance d'une journée entière. En décochant, on l'efface :
      * la séance reprend, et son chrono repart de son vrai début.
      */
+    /*
+     * Filet du bouton « Ajouter cette remarque » : une phrase laissée dans un
+     * champ est la seule chose que le découpage brouillon / historique pourrait
+     * faire perdre. En terminant la séance, on ajoute ce qui restait.
+     */
+    if (finishing) await commitAllDrafts(week, day);
     await updateSession(row.id, {
-      status: finishing ? "done" : "planned",
+      status: finishing ? 'done' : 'planned',
       finishedAt: finishing ? Date.now() : undefined,
     });
     if (finishing) {
@@ -191,10 +182,7 @@ export function SessionScreen({
         </button>
         <h1 className={styles.title}>{session.title}</h1>
         <div className={styles.meta}>
-          <span
-            className={styles.tag}
-            style={{ background: session.blockColor }}
-          >
+          <span className={styles.tag} style={{ background: session.blockColor }}>
             {session.intensity}
           </span>
           <span>{DAY_LABELS[day]}</span>
@@ -205,7 +193,7 @@ export function SessionScreen({
           {chrono !== null && (
             <span className={styles.chrono}>
               ⏱ <b className="tnum">{chrono}</b>
-              {row?.status === "done" ? "" : " en cours"}
+              {row?.status === 'done' ? '' : ' en cours'}
             </span>
           )}
           <span>
@@ -213,9 +201,7 @@ export function SessionScreen({
           </span>
         </div>
 
-        {data.trend.declining && (
-          <p className={styles.note}>{data.trend.message}</p>
-        )}
+        {data.trend.declining && <p className={styles.note}>{data.trend.message}</p>}
         {session.notes.map((n, i) => (
           <p key={i} className={styles.note}>
             {n}
@@ -249,7 +235,7 @@ export function SessionScreen({
           history={data.history[ex.id]}
           timer={timer}
           media={data.date ? { week, day, date: data.date } : null}
-          note={{ week, day, date: data.date ?? "" }}
+          note={{ week, day, date: data.date ?? '' }}
           onSaveSet={handleSaveSet}
           onOverride={(id, kg) => void handleOverride(id, kg)}
         />
@@ -272,14 +258,10 @@ export function SessionScreen({
          * En lecture seule : pas de champ de saisie, pas de bouton de
          * validation. L'exercice n'est pas au programme, il a juste été fait.
          */
-        const faites = [...(data.savedSets[sus.id] ?? [])].sort(
-          (a, b) => a.setIndex - b.setIndex,
-        );
+        const faites = [...(data.savedSets[sus.id] ?? [])].sort((a, b) => a.setIndex - b.setIndex);
         return (
           <section key={sus.id} className={styles.suspendu}>
-            <div className={styles.suspenduTitre}>
-              {sus.name} — suspendu temporairement
-            </div>
+            <div className={styles.suspenduTitre}>{sus.name} — suspendu temporairement</div>
             <p className={styles.suspenduRaison}>{sus.reason}</p>
             {faites.length > 0 && (
               <>
@@ -289,13 +271,9 @@ export function SessionScreen({
                 <ul className={styles.suspenduSeries}>
                   {faites.map((set) => (
                     <li key={set.setIndex} className={styles.suspenduSerie}>
-                      <span className={styles.suspenduIndex}>
-                        {set.setIndex + 1}
-                      </span>
+                      <span className={styles.suspenduIndex}>{set.setIndex + 1}</span>
                       <span className="tnum">{setSummary(set)}</span>
-                      {set.failed && (
-                        <span className={styles.suspenduRate}>Rep ratée</span>
-                      )}
+                      {set.failed && <span className={styles.suspenduRate}>Rep ratée</span>}
                     </li>
                   ))}
                 </ul>
@@ -305,27 +283,27 @@ export function SessionScreen({
         );
       })}
 
+      {/*
+        La remarque de séance, en bas, comme avant — mais appendue elle aussi.
+        Même composant que les remarques de mouvement : une remarque de séance
+        n'est qu'une remarque sans mouvement, et en faire un second mécanisme
+        les aurait fait divergir au premier correctif.
+      */}
       <section className={styles.notes}>
-        <label htmlFor="session-notes" className={styles.exName}>
-          Notes — douleur, sommeil, remarque
-        </label>
-        <textarea
-          id="session-notes"
-          className={styles.notesField}
-          value={notes}
-          onChange={(e) => void handleNotes(e.target.value)}
+        <ExerciseNote
+          exerciseId={null}
+          context={{ week, day, date: data.date ?? '' }}
+          label="Remarque de séance — douleur, sommeil, sensation"
           placeholder="Genou droit sensible en fin de série. 5 h de sommeil."
         />
       </section>
 
       <button
         type="button"
-        className={`${styles.finish} ${row?.status === "done" ? styles.finishDone : ""}`}
+        className={`${styles.finish} ${row?.status === 'done' ? styles.finishDone : ''}`}
         onClick={() => void handleFinish()}
       >
-        {row?.status === "done"
-          ? "Séance terminée — annuler"
-          : "Séance terminée"}
+        {row?.status === 'done' ? 'Séance terminée — annuler' : 'Séance terminée'}
       </button>
 
       <div className={styles.summary}>
@@ -337,15 +315,14 @@ export function SessionScreen({
           </dd>
           <dt>Échauffement</dt>
           <dd>
-            {row?.warmupChecked.length ?? 0} /{" "}
-            {session.warmup?.items.length ?? 0}
+            {row?.warmupChecked.length ?? 0} / {session.warmup?.items.length ?? 0}
           </dd>
           {data.readiness && (
             <>
               <dt>Readiness</dt>
               <dd>
-                {data.readiness.level.toUpperCase()} · {data.readiness.jumpCm}{" "}
-                cm ({data.readiness.pctDelta > 0 ? "+" : ""}
+                {data.readiness.level.toUpperCase()} · {data.readiness.jumpCm} cm (
+                {data.readiness.pctDelta > 0 ? '+' : ''}
                 {fr(data.readiness.pctDelta)} %)
               </dd>
             </>
@@ -354,12 +331,9 @@ export function SessionScreen({
           <dd>{fr(tonnage(data.savedSets))} kg</dd>
           <dt>Durée</dt>
           <dd className="tnum">
-            {chrono ?? "—"}
+            {chrono ?? '—'}
             {verdict && (
-              <span className={styles.summaryRef}>
-                {" "}
-                / {verdict.plannedMin} min prévu
-              </span>
+              <span className={styles.summaryRef}> / {verdict.plannedMin} min prévu</span>
             )}
           </dd>
           {verdict && (
@@ -378,8 +352,8 @@ export function SessionScreen({
         */}
         {verdict?.warn && (
           <p className={styles.summaryWarn}>
-            Séance plus longue que prévu de {gapLabel(verdict)}. À vérifier :
-            les repos tenus, et le temps passé entre deux stations.
+            Séance plus longue que prévu de {gapLabel(verdict)}. À vérifier : les repos tenus, et le
+            temps passé entre deux stations.
           </p>
         )}
 
@@ -391,8 +365,7 @@ export function SessionScreen({
           (resetDemande ? (
             <div className={styles.resetConfirm}>
               <p className={styles.resetAsk}>
-                Repartir de maintenant ? L’heure de début enregistrée sera
-                perdue.
+                Repartir de maintenant ? L’heure de début enregistrée sera perdue.
               </p>
               <div className={styles.resetActions}>
                 <button
@@ -425,12 +398,7 @@ export function SessionScreen({
   );
 }
 
-function tonnage(
-  saved: Record<
-    string,
-    { actualKg: number | null; actualReps: number | null }[]
-  >,
-) {
+function tonnage(saved: Record<string, { actualKg: number | null; actualReps: number | null }[]>) {
   let total = 0;
   for (const list of Object.values(saved)) {
     for (const s of list) {

@@ -62,7 +62,7 @@ export function formatDuration(ms: number): string {
   if (minutes < 60) return `${minutes} min`;
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, "0")}`;
+  return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, '0')}`;
 }
 
 /** Le chrono tel qu'il s'affiche en tête de séance, ou `null`. */
@@ -101,10 +101,7 @@ export interface DurationVerdict {
  * `null` si la durée prévue est nulle ou absente : un pourcentage de
  * dépassement sur une base de zéro n'existe pas.
  */
-export function durationVerdict(
-  realMin: number,
-  plannedMin: number,
-): DurationVerdict | null {
+export function durationVerdict(realMin: number, plannedMin: number): DurationVerdict | null {
   if (!Number.isFinite(plannedMin) || plannedMin <= 0) return null;
   const gapMin = Math.round(realMin - plannedMin);
   const overPct = Math.round(((realMin - plannedMin) / plannedMin) * 100);
@@ -119,8 +116,8 @@ export function durationVerdict(
 
 /** « +18 min (+24 %) », « −6 min (−8 %) », « pile sur le prévu ». */
 export function gapLabel(v: DurationVerdict): string {
-  if (v.gapMin === 0) return "pile sur le prévu";
-  const signe = v.gapMin > 0 ? "+" : "−";
+  if (v.gapMin === 0) return 'pile sur le prévu';
+  const signe = v.gapMin > 0 ? '+' : '−';
   return `${signe}${Math.abs(v.gapMin)} min (${signe}${Math.abs(v.overPct)} %)`;
 }
 
@@ -169,8 +166,7 @@ export function sessionDurations(
         date: r.date,
         realMin,
         plannedMin,
-        verdict:
-          plannedMin === null ? null : durationVerdict(realMin, plannedMin),
+        verdict: plannedMin === null ? null : durationVerdict(realMin, plannedMin),
       };
     })
     .filter((e): e is SessionDurationEntry => e !== null)
@@ -182,7 +178,5 @@ export function medianRealMin(entries: SessionDurationEntry[]): number | null {
   if (entries.length === 0) return null;
   const triees = entries.map((e) => e.realMin).sort((a, b) => a - b);
   const mid = Math.floor(triees.length / 2);
-  return triees.length % 2 === 1
-    ? triees[mid]!
-    : Math.round((triees[mid - 1]! + triees[mid]!) / 2);
+  return triees.length % 2 === 1 ? triees[mid]! : Math.round((triees[mid - 1]! + triees[mid]!) / 2);
 }

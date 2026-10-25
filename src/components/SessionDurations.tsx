@@ -1,16 +1,16 @@
-import { DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from "../data/types";
-import { getSession as buildSession } from "../engine/getSession";
-import { humanDate } from "../engine/calendar";
+import { DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
+import { getSession as buildSession } from '../engine/getSession';
+import { humanDate } from '../engine/calendar';
 import {
   gapLabel,
   medianRealMin,
   sessionDurations,
   type SessionDurationEntry,
-} from "../engine/sessionClock";
-import { readiness as computeReadiness } from "../engine/readiness";
-import type { SessionContext } from "../engine/types";
-import type { ReadinessRow, SessionRow } from "../db/db";
-import styles from "../screens/Screens.module.css";
+} from '../engine/sessionClock';
+import { readiness as computeReadiness } from '../engine/readiness';
+import type { SessionContext } from '../engine/types';
+import type { ReadinessRow, SessionRow } from '../db/db';
+import styles from '../screens/Screens.module.css';
 
 /**
  * Combien de temps les séances ont RÉELLEMENT pris.
@@ -46,9 +46,7 @@ export function SessionDurations({
   baselineCm: number | null;
   ctx: SessionContext;
 }) {
-  const parSeance = new Map(
-    readinessRows.map((r) => [`${r.week}/${r.day}`, r]),
-  );
+  const parSeance = new Map(readinessRows.map((r) => [`${r.week}/${r.day}`, r]));
 
   const entries = sessionDurations(rows, (week, day) => {
     const releve = parSeance.get(`${week}/${day}`);
@@ -62,23 +60,21 @@ export function SessionDurations({
   if (entries.length === 0) {
     return (
       <p className={styles.cardSub}>
-        Aucune séance terminée pour l’instant. La durée se mesure entre la
-        première ouverture de la séance et l’appui sur « Séance terminée ».
+        Aucune séance terminée pour l’instant. La durée se mesure entre la première ouverture de la
+        séance et l’appui sur « Séance terminée ».
       </p>
     );
   }
 
-  const max = Math.max(
-    ...entries.map((e) => Math.max(e.realMin, e.plannedMin ?? 0)),
-  );
+  const max = Math.max(...entries.map((e) => Math.max(e.realMin, e.plannedMin ?? 0)));
   const mediane = medianRealMin(entries);
   const depassements = entries.filter((e) => e.verdict?.warn).length;
 
   return (
     <>
       <p className={styles.cardSub}>
-        {entries.length} séance{entries.length > 1 ? "s" : ""} mesurée
-        {entries.length > 1 ? "s" : ""}
+        {entries.length} séance{entries.length > 1 ? 's' : ''} mesurée
+        {entries.length > 1 ? 's' : ''}
         {mediane !== null && ` · médiane ${mediane} min`}
         {depassements > 0 && ` · ${depassements} au-delà de +15 % du prévu`}.
       </p>
@@ -93,44 +89,35 @@ export function SessionDurations({
 
 function Ligne({ e, max }: { e: SessionDurationEntry; max: number }) {
   const pctReel = Math.max(2, Math.round((e.realMin / max) * 100));
-  const pctPrevu =
-    e.plannedMin === null ? null : Math.round((e.plannedMin / max) * 100);
+  const pctPrevu = e.plannedMin === null ? null : Math.round((e.plannedMin / max) * 100);
 
   return (
     <li className={styles.durationRow}>
       <span className={styles.durationWhen}>
         S{e.week} {DAY_LABELS_SHORT[e.day as DayIndex]}
-        {e.date && (
-          <span className={styles.durationDate}> · {humanDate(e.date)}</span>
-        )}
+        {e.date && <span className={styles.durationDate}> · {humanDate(e.date)}</span>}
       </span>
 
       <span className={styles.durationBar} aria-hidden="true">
         <span
-          className={`${styles.durationFill} ${e.verdict?.warn ? styles.durationOver : ""}`}
+          className={`${styles.durationFill} ${e.verdict?.warn ? styles.durationOver : ''}`}
           style={{ width: `${pctReel}%` }}
         />
         {pctPrevu !== null && (
-          <span
-            className={styles.durationMark}
-            style={{ left: `${pctPrevu}%` }}
-          />
+          <span className={styles.durationMark} style={{ left: `${pctPrevu}%` }} />
         )}
       </span>
 
       <span className={`${styles.durationValue} tnum`}>
         {e.realMin} min
         {e.plannedMin !== null && (
-          <span className={styles.durationPlanned}>
-            {" "}
-            / {e.plannedMin} prévu
-          </span>
+          <span className={styles.durationPlanned}> / {e.plannedMin} prévu</span>
         )}
       </span>
 
       {e.verdict && e.verdict.gapMin !== 0 && (
         <span
-          className={`${styles.durationGap} ${e.verdict.warn ? styles.durationOverText : ""} tnum`}
+          className={`${styles.durationGap} ${e.verdict.warn ? styles.durationOverText : ''} tnum`}
         >
           {gapLabel(e.verdict)}
         </span>

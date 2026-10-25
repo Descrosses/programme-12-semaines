@@ -28,6 +28,9 @@ import {
   type ExerciseReferenceRow,
   type ExerciseVideoLogRow,
   type ExtraFoodRow,
+  type NoteDraftRow,
+  type NoteRow,
+  SESSION_NOTE_SLOT,
   type FoodOverrideRow,
   type MeasurementRow,
   type PainLogRow,
@@ -562,6 +565,178 @@ export async function notesForExercise(
 
 export async function allExerciseNotes(): Promise<ExerciseNoteRow[]> {
   return db.exerciseNotes.toArray();
+}
+
+// ------------------------------------------- remarques appendues (v15) --
+
+/**
+ * Ajoute une remarque. Rien n'est jamais corrigé, rien n'est jamais écrasé.
+ *
+ * C'est la différence de fond avec `saveExerciseNote`, qui existe encore
+ * au-dessus mais que plus personne n'appelle : celle-ci ne cherche pas de
+ * ligne existante, elle en crée une. Deux remarques sur le même mouvement la
+ * même séance font donc deux lignes — et c'est exactement ce qu'on veut, parce
+ * que « épaule gauche tire » puis « c'est passé en 3e série » ne disent pas la
+ * même chose que la seconde seule.
+ *
+ * Une remarque vide n'est pas ajoutée : `null` rendu, rien écrit.
+ */
+export async function addNote(input: {
+  exerciseId: string | null;
+  week: number;
+  day: DayIndex;
+  date: string;
+  text: string;
+}): Promise<NoteRow | null> {
+  const texte = normalizeNote(input.text);
+  if (texte === null) return null;
+  const row: NoteRow = {
+    exerciseId: input.exerciseId,
+    week: input.week,
+    day: input.day,
+    date: input.date,
+    text: texte,
+    at: Date.now(),
+  };
+  const id = await db.notes.add(row);
+  return { ...row, id };
+}
+
+/** Toutes les remarques laissées sur un mouvement, sur les 12 semaines. */
+export async function notesFor(exerciseId: string): Promise<NoteRow[]> {
+  return db.notes.where("exerciseId").equals(exerciseId).toArray();
+}
+
+/**
+ * Les remarques de SÉANCE — celles dont `exerciseId` vaut `null`.
+ *
+ * Elles ne passent pas par l'index `exerciseId` : IndexedDB n'indexe pas
+ * `null`, donc ces lignes en sont absentes. Un parcours complet, et c'est
+ * sans conséquence — on parle de quelques dizaines de lignes sur douze
+ * semaines.
+ */
+export async function sessionNotes(): Promise<NoteRow[]> {
+  const toutes = await db.notes.toArray();
+  return toutes.filter((n) => n.exerciseId === null);
+}
+
+export async function allNotes(): Promise<NoteRow[]> {
+  return db.notes.toArray();
+}
+
+/**
+ * Retire UNE remarque, celle-là et pas une autre.
+ *
+ * Append-only ne veut pas dire indélébile : une remarque tapée sur le mauvais
+ * exercice doit pouvoir partir. C'est la même règle que pour un aliment
+ * ajouté — on retire la ligne et on la refait, deux appuis, et aucune
+ * ambiguïté sur ce qui reste écrit. Ce qui est interdit, c'est qu'une
+ * remarque disparaisse SANS qu'on l'ait demandé.
+ */
+export async function deleteNote(id: number): Promise<void> {
+  await db.notes.delete(id);
+}
+
+// --------------------------------------------------- brouillons (v15) --
+
+/**
+ * Le brouillon en cours de frappe pour ce créneau, ou `undefined`.
+ *
+ * `slot` est l'id du mouvement, ou `SESSION_NOTE_SLOT` pour la remarque de
+ * séance.
+ */
+export async function noteDraft(
+  slot: string,
+  week: number,
+  day: DayIndex,
+): Promise<NoteDraftRow | undefined> {
+  return db.noteDrafts.where("[slot+week+day]").equals([slot, week, day]).first();
+}
+
+/**
+ * Écrit le brouillon à chaque frappe — ou le supprime s'il ne reste rien.
+ *
+ * La règle de l'appli vaut toujours : une saisie n'attend jamais. Ce qui
+ * attend, c'est seulement son passage dans l'historique, et c'est le bouton
+ * « Ajouter » qui le déclenche. Un téléphone verrouillé au milieu d'une phrase
+ * ne perd donc rien.
+ */
+export async function saveNoteDraft(input: {
+  slot: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  text: string;
+}): Promise<void> {
+  const existing = await noteDraft(input.slot, input.week, input.day);
+  if (input.text.trim() === "") {
+    if (existing?.id !== undefined) await db.noteDrafts.delete(existing.id);
+    return;
+  }
+  const row: NoteDraftRow = {
+    slot: input.slot,
+    week: input.week,
+    day: input.day,
+    date: input.date,
+    text: input.text,
+    updatedAt: Date.now(),
+    ...(existing?.id !== undefined ? { id: existing.id } : {}),
+  };
+  await db.noteDrafts.put(row);
+}
+
+/**
+ * Transforme le brouillon en remarque, et vide le champ.
+ *
+ * Rend la remarque créée, ou `null` si le brouillon était vide — ce qui
+ * permet d'appeler cette fonction sans savoir s'il y avait quelque chose à
+ * ajouter. C'est ce qui rend possible la reprise automatique à la fin de la
+ * séance : on la demande pour chaque créneau, et seuls ceux qui portaient une
+ * phrase produisent une ligne.
+ */
+export async function commitNoteDraft(
+  slot: string,
+  week: number,
+  day: DayIndex,
+  exerciseId: string | null,
+): Promise<NoteRow | null> {
+  const brouillon = await noteDraft(slot, week, day);
+  if (!brouillon) return null;
+  const ajoutee = await addNote({
+    exerciseId,
+    week,
+    day,
+    date: brouillon.date,
+    text: brouillon.text,
+  });
+  if (brouillon.id !== undefined) await db.noteDrafts.delete(brouillon.id);
+  return ajoutee;
+}
+
+/**
+ * Ajoute tous les brouillons restants d'une séance.
+ *
+ * Appelée au moment où Guillaume marque la séance terminée. C'est le filet du
+ * bouton « Ajouter » : une phrase oubliée dans un champ serait sinon la seule
+ * chose que ce découpage brouillon / historique pourrait faire perdre.
+ *
+ * Rend le nombre de remarques ajoutées, pour que l'écran puisse le dire.
+ */
+export async function commitAllDrafts(
+  week: number,
+  day: DayIndex,
+): Promise<number> {
+  const brouillons = await db.noteDrafts
+    .where("[week+day]")
+    .equals([week, day])
+    .toArray();
+  let n = 0;
+  for (const b of brouillons) {
+    const exerciseId = b.slot === SESSION_NOTE_SLOT ? null : b.slot;
+    const ajoutee = await commitNoteDraft(b.slot, week, day, exerciseId);
+    if (ajoutee) n += 1;
+  }
+  return n;
 }
 
 export interface PhotoUsage {

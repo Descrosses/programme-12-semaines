@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import type { SetRow } from "../db/db";
-import { fr, gripHint, loadLine, restLabel } from "../engine/format";
-import type { ResolvedExercise } from "../engine/getSession";
-import type { RestTimer } from "../state/useRestTimer";
-import { ExerciseMediaButton, type MediaContext } from "./ExerciseMedia";
-import { ExerciseNote, type NoteContext } from "./ExerciseNote";
-import { PainWatch } from "./PainWatch";
-import { Stepper, stepValue } from "./Stepper";
-import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from "../engine/loadEntry";
-import { lastPerformance } from "../engine/lastPerformance";
-import type { Occurrence } from "../engine/types";
-import type { DayIndex } from "../data/types";
-import styles from "../screens/Session.module.css";
+import { useEffect, useState } from 'react';
+import type { SetRow } from '../db/db';
+import { fr, gripHint, loadLine, restLabel } from '../engine/format';
+import type { ResolvedExercise } from '../engine/getSession';
+import type { RestTimer } from '../state/useRestTimer';
+import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
+import { ExerciseNote, type NoteContext } from './ExerciseNote';
+import { PainWatch } from './PainWatch';
+import { Stepper, stepValue } from './Stepper';
+import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
+import { lastPerformance } from '../engine/lastPerformance';
+import type { Occurrence } from '../engine/types';
+import type { DayIndex } from '../data/types';
+import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
   setIndex: number;
@@ -32,17 +32,17 @@ export interface SetPayload {
  * charge et au RPE, où la grille du stepper est le bon outil.
  */
 const MEASURE = {
-  cm: { label: "Distance", unit: "cm", step: 5, min: 50, max: 400 },
-  s: { label: "Temps", unit: "s", step: 0.1, min: 0.5, max: 60 },
-  m: { label: "Distance", unit: "m", step: 5, min: 5, max: 200 },
+  cm: { label: 'Distance', unit: 'cm', step: 5, min: 50, max: 400 },
+  s: { label: 'Temps', unit: 's', step: 0.1, min: 0.5, max: 60 },
+  m: { label: 'Distance', unit: 'm', step: 5, min: 5, max: 200 },
   /*
    * Une tenue isométrique, et non un chrono de sprint : le pas est de 5 s et
    * non d'un dixième. Personne n'a besoin de noter 24,7 s sur un gainage, et
    * 250 appuis pour atteindre 25 s au pas de 0,1 rendrait le champ inutile.
    */
-  tenue: { label: "Tenue", unit: "s", step: 5, min: 0, max: 180 },
-  kg: { label: "Charge", unit: "kg", step: 2.5, min: 0, max: 300 },
-  reps: { label: "Reps", unit: "", step: 1, min: 0, max: 60 },
+  tenue: { label: 'Tenue', unit: 's', step: 5, min: 0, max: 180 },
+  kg: { label: 'Charge', unit: 'kg', step: 2.5, min: 0, max: 300 },
+  reps: { label: 'Reps', unit: '', step: 1, min: 0, max: 60 },
 } as const;
 
 export function ExerciseCard({
@@ -94,9 +94,7 @@ export function ExerciseCard({
     savedSets.length === 0;
 
   return (
-    <article
-      className={`${styles.exercise} ${allDone ? styles.exerciseDone : ""}`}
-    >
+    <article className={`${styles.exercise} ${allDone ? styles.exerciseDone : ''}`}>
       <div className={styles.exHead}>
         <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
@@ -108,9 +106,7 @@ export function ExerciseCard({
               Repos <b>{restLabel(ex.restSec)}</b>
             </span>
           )}
-          {overrideKg !== null && (
-            <span style={{ color: "var(--accent)" }}>charge ajustée</span>
-          )}
+          {overrideKg !== null && <span style={{ color: 'var(--accent)' }}>charge ajustée</span>}
         </div>
 
         {/*
@@ -119,35 +115,28 @@ export function ExerciseCard({
           du programme se ressemblent — Farmer à deux mains le vendredi,
           Suitcase à une main le samedi — et se confondent sans ça.
         */}
-        {gripHint(ex.load) && (
-          <div className={styles.gripHint}>{gripHint(ex.load)}</div>
-        )}
+        {gripHint(ex.load) && <div className={styles.gripHint}>{gripHint(ex.load)}</div>}
 
         {ex.contrast && (
           <div className={styles.adjust}>
-            <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{" "}
-            {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive}{" "}
-            × {ex.contrast.explosiveReps} →{" "}
-            {restLabel(ex.contrast.restAfterExplosiveSec)} → série suivante. Ce
-            n’est pas un superset.
+            <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{' '}
+            {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
+            {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
+            suivante. Ce n’est pas un superset.
           </div>
         )}
 
         {ex.adjustments.map((a, i) => (
           <div
             key={i}
-            className={`${styles.adjust} ${a.source === "rouge" ? styles.adjustRouge : ""}`}
+            className={`${styles.adjust} ${a.source === 'rouge' ? styles.adjustRouge : ''}`}
           >
             <b>{a.what}</b> — {a.why}
           </div>
         ))}
 
         {ex.notes.map((n, i) => (
-          <div
-            key={i}
-            className={styles.exSub}
-            style={{ color: "var(--ink-2)" }}
-          >
+          <div key={i} className={styles.exSub} style={{ color: 'var(--ink-2)' }}>
             {n}
           </div>
         ))}
@@ -160,13 +149,7 @@ export function ExerciseCard({
         plannedKg={plannedKg}
       />
 
-      {media && (
-        <ExerciseMediaButton
-          exerciseId={ex.id}
-          exerciseName={ex.name}
-          context={media}
-        />
-      )}
+      {media && <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />}
 
       {showSuggestion && (
         <div className={styles.suggestion}>
@@ -193,10 +176,7 @@ export function ExerciseCard({
             </div>
           ) : (
             <>
-              <div
-                className={styles.suggestionActions}
-                style={{ marginTop: 12 }}
-              >
+              <div className={styles.suggestionActions} style={{ marginTop: 12 }}>
                 <Stepper
                   label="Ma charge"
                   value={manualKg}
@@ -219,11 +199,7 @@ export function ExerciseCard({
                 >
                   Utiliser {fr(manualKg)} kg
                 </button>
-                <button
-                  type="button"
-                  className={styles.refuse}
-                  onClick={() => setRefusing(false)}
-                >
+                <button type="button" className={styles.refuse} onClick={() => setRefusing(false)}>
                   Annuler
                 </button>
               </div>
@@ -233,14 +209,14 @@ export function ExerciseCard({
       )}
 
       {ex.ramp && (
-        <div className={styles.adjust} style={{ margin: "0 var(--pad) 12px" }}>
-          <b>Paliers</b> —{" "}
+        <div className={styles.adjust} style={{ margin: '0 var(--pad) 12px' }}>
+          <b>Paliers</b> —{' '}
           {ex.ramp
             .map(
               (r) =>
-                `${r.added ? "+" : ""}${fr(r.kg)}${r.reps > 1 ? `×${r.reps}` : ""}${r.optional ? " ?" : ""}`,
+                `${r.added ? '+' : ''}${fr(r.kg)}${r.reps > 1 ? `×${r.reps}` : ''}${r.optional ? ' ?' : ''}`,
             )
-            .join(" / ")}
+            .join(' / ')}
         </div>
       )}
 
@@ -269,11 +245,7 @@ export function ExerciseCard({
         chaque exercice ferait du programme un questionnaire.
       */}
       {ex.def.painWatch && (
-        <PainWatch
-          exerciseId={ex.id}
-          consigne={ex.def.painWatch}
-          date={note.date}
-        />
+        <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
       )}
 
       {/*
@@ -282,10 +254,7 @@ export function ExerciseCard({
         son intention — Explosive Cable Row, One-Arm Cable Row, Cable Chop… —
         ne montrait donc RIEN, alors que le .md écrit bien quelque chose sur lui.
       */}
-      {(ex.def.intent ||
-        ex.def.cues?.length ||
-        ex.def.altBasicFit ||
-        ex.def.progressionRule) && (
+      {(ex.def.intent || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule) && (
         <>
           <button
             type="button"
@@ -294,10 +263,10 @@ export function ExerciseCard({
             aria-expanded={openCues}
           >
             {openCues
-              ? "▲ Masquer les consignes"
+              ? '▲ Masquer les consignes'
               : ex.def.altBasicFit
-                ? "▼ Consignes et alternative Basic-Fit"
-                : "▼ Consignes"}
+                ? '▼ Consignes et alternative Basic-Fit'
+                : '▼ Consignes'}
           </button>
           {openCues && (
             <div className={styles.cues}>
@@ -366,7 +335,7 @@ function LastTime({
    * charge, un ajustement orange aussi. Les peindre en rouge apprendrait à
    * Guillaume à ignorer la couleur le jour où elle compte vraiment.
    */
-  const fleche = perf.trend === "up" ? "↑" : perf.delta === null ? "—" : "";
+  const fleche = perf.trend === 'up' ? '↑' : perf.delta === null ? '—' : '';
 
   /*
    * Le format du jour, à côté de celui de la dernière fois.
@@ -386,10 +355,10 @@ function LastTime({
         {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
         {(perf.delta || fleche) && (
           <span
-            className={`${styles.lastTimeDelta} ${perf.trend === "up" ? styles.lastTimeUp : ""} tnum`}
+            className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
           >
             {fleche}
-            {fleche && perf.delta ? " " : ""}
+            {fleche && perf.delta ? ' ' : ''}
             {perf.delta}
           </span>
         )}
@@ -429,9 +398,7 @@ function SetEntry({
   const showLoad = showsLoadField(ex);
 
   const [editing, setEditing] = useState(false);
-  const [reps, setReps] = useState<number>(
-    saved?.actualReps ?? plannedReps ?? 1,
-  );
+  const [reps, setReps] = useState<number>(saved?.actualReps ?? plannedReps ?? 1);
   /*
    * Le champ de charge existe sur TOUS les exercices, y compris au poids du
    * corps — il sert alors à noter un lest. Sa valeur de départ et son pas sont
@@ -443,9 +410,7 @@ function SetEntry({
    */
   const entry = loadEntryFor(ex, saved?.actualKg ?? plannedKg ?? undefined);
   const [kg, setKg] = useState<number | null>(entry.initialKg);
-  const [rpeValue, setRpe] = useState<number>(
-    saved?.actualRpe ?? ex.targetRPE?.max ?? 7,
-  );
+  const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
   /*
    * Le champ de mesure s'ouvre sur ce qui a le plus de chances d'être juste,
    * dans cet ordre : ce qui a déjà été saisi pour cette série, la valeur que
@@ -457,11 +422,7 @@ function SetEntry({
    * comparaison répétait ensuite ce 5 m semaine après semaine.
    */
   const [value, setValue] = useState<number>(
-    saved?.measureValue ??
-      plannedMeasureOf(ex) ??
-      ex.lastMeasure ??
-      measure?.min ??
-      0,
+    saved?.measureValue ?? plannedMeasureOf(ex) ?? ex.lastMeasure ?? measure?.min ?? 0,
   );
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
 
@@ -500,33 +461,25 @@ function SetEntry({
     return (
       <div className={`${styles.setRow} ${styles.setDone}`}>
         <div className={styles.setIndex}>{index + 1}</div>
-        <button
-          type="button"
-          className={styles.setSummary}
-          onClick={() => setEditing(true)}
-        >
+        <button type="button" className={styles.setSummary} onClick={() => setEditing(true)}>
           {saved.actualReps !== null && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {saved.actualReps}{" "}
-              <span className={styles.setSummaryUnit}>reps</span>
+              {saved.actualReps} <span className={styles.setSummaryUnit}>reps</span>
             </span>
           )}
           {saved.measureValue !== null && measure && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.measureValue)}{" "}
-              <span className={styles.setSummaryUnit}>{measure.unit}</span>
+              {fr(saved.measureValue)} <span className={styles.setSummaryUnit}>{measure.unit}</span>
             </span>
           )}
           {saved.actualKg !== null && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.actualKg)}{" "}
-              <span className={styles.setSummaryUnit}>kg</span>
+              {fr(saved.actualKg)} <span className={styles.setSummaryUnit}>kg</span>
             </span>
           )}
           {saved.actualRpe !== null && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.actualRpe)}{" "}
-              <span className={styles.setSummaryUnit}>RPE</span>
+              {fr(saved.actualRpe)} <span className={styles.setSummaryUnit}>RPE</span>
             </span>
           )}
           {saved.failed && <span className={styles.failFlag}>Rep ratée</span>}
@@ -541,7 +494,7 @@ function SetEntry({
   const hasRpe = ex.targetRPE !== null;
   const count = (showLoad ? 2 : 1) + (hasRpe ? 1 : 0);
   const wide = (position: number) =>
-    count % 2 === 1 && position === count ? styles.stepperWide : "";
+    count % 2 === 1 && position === count ? styles.stepperWide : '';
 
   return (
     <div className={styles.setRow}>
@@ -558,9 +511,7 @@ function SetEntry({
                 max={measure.max}
                 unit={measure.unit}
                 tone="accent"
-                onStep={(d) =>
-                  setValue((v) => stepValue(v, d, measure.min, measure.max))
-                }
+                onStep={(d) => setValue((v) => stepValue(v, d, measure.min, measure.max))}
                 onCommit={(v) => setValue(v ?? measure.min)}
               />
             ) : (
@@ -578,16 +529,14 @@ function SetEntry({
           {showLoad && (
             <div className={wide(2)}>
               <Stepper
-                label={ex.load.shape === "added" ? "Lest" : "Charge"}
+                label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
                 value={kg}
                 emptyLabel={entry.emptyLabel}
                 step={entry.step}
                 min={KG_MIN}
                 max={KG_MAX}
                 unit="kg"
-                onStep={(d) =>
-                  setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))
-                }
+                onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
                 /*
                  * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper
                  * rend la chaîne brute : c'est `parseKg` qui décide, et sa règle
@@ -614,22 +563,18 @@ function SetEntry({
           )}
         </div>
 
-        {ex.def.role === "main" && (
+        {ex.def.role === 'main' && (
           <button
             type="button"
-            className={`${styles.failToggle} ${failed ? styles.failToggleOn : ""}`}
+            className={`${styles.failToggle} ${failed ? styles.failToggleOn : ''}`}
             onClick={() => setFailed((f) => !f)}
             aria-pressed={failed}
           >
-            {failed ? "✓ Rep ratée" : "Rep ratée ?"}
+            {failed ? '✓ Rep ratée' : 'Rep ratée ?'}
           </button>
         )}
 
-        <button
-          type="button"
-          className={styles.validate}
-          onClick={() => void validate()}
-        >
+        <button type="button" className={styles.validate} onClick={() => void validate()}>
           Valider la série {index + 1}
         </button>
 
@@ -662,18 +607,18 @@ function SetEntry({
  * sauter, c'est la mesure du jour. D'où le repli sur la dernière réalisée.
  */
 function plannedMeasureOf(ex: ResolvedExercise): number | null {
-  if (ex.work.kind === "distance") return ex.work.meters;
+  if (ex.work.kind === 'distance') return ex.work.meters;
   // Une tenue s'ouvre sur la durée prescrite : c'est elle qu'on valide le
   // plus souvent, et la saisie ne doit demander aucun appui dans ce cas.
-  if (ex.work.kind === "time") return ex.work.seconds;
+  if (ex.work.kind === 'time') return ex.work.seconds;
   return null;
 }
 
 function plannedRepsOf(ex: ResolvedExercise): number | null {
-  if (ex.work.kind !== "reps") return null;
+  if (ex.work.kind !== 'reps') return null;
   const r = ex.work.reps;
-  if (r === "max") return null;
-  return typeof r === "number" ? r : r.max;
+  if (r === 'max') return null;
+  return typeof r === 'number' ? r : r.max;
 }
 
 /**
@@ -682,19 +627,16 @@ function plannedRepsOf(ex: ResolvedExercise): number | null {
  * `kg` n'en fait pas partie — une charge se note dans le champ de charge, pas
  * une deuxième fois à côté.
  */
-const MESURE_CHIFFREE = new Set(["cm", "m", "s"]);
+const MESURE_CHIFFREE = new Set(['cm', 'm', 's']);
 
-export function measureOf(
-  ex: ResolvedExercise,
-): (typeof MEASURE)[keyof typeof MEASURE] | null {
-  if (ex.work.kind === "distance") return MEASURE.m;
+export function measureOf(ex: ResolvedExercise): (typeof MEASURE)[keyof typeof MEASURE] | null {
+  if (ex.work.kind === 'distance') return MEASURE.m;
   /*
    * Une tenue se note en secondes, pas en reps. Le conditioning est exclu :
    * ses douze minutes ne se saisissent pas série par série, et son unique
    * « série » n'a rien à enregistrer.
    */
-  if (ex.work.kind === "time" && ex.def.role !== "conditioning")
-    return MEASURE.tenue;
+  if (ex.work.kind === 'time' && ex.def.role !== 'conditioning') return MEASURE.tenue;
   /*
    * Un saut se note par sa distance, et pas seulement en semaine de combine.
    * Un « 5 × 2 » de Broad Jump sans champ de distance ne garde rien de la
@@ -702,7 +644,7 @@ export function measureOf(
    */
   const m = ex.def.measure;
   if (m && MESURE_CHIFFREE.has(m)) return MEASURE[m];
-  if (ex.def.role !== "test") return null;
+  if (ex.def.role !== 'test') return null;
   return m ? MEASURE[m] : MEASURE.reps;
 }
 
@@ -718,7 +660,7 @@ export function measureOf(
  * sa distance aussi.
  */
 export function showsLoadField(ex: ResolvedExercise): boolean {
-  if (ex.load.shape !== "none") return true;
+  if (ex.load.shape !== 'none') return true;
   const m = ex.def.measure;
   return !(m !== undefined && MESURE_CHIFFREE.has(m));
 }

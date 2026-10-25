@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 /**
  * L'heure courante, rafraîchie à intervalle régulier — et seulement si on en a
@@ -26,12 +26,12 @@ export function useNow(actif: boolean, periodeMs = 20_000): number {
     tic();
     const id = window.setInterval(tic, periodeMs);
     const reveil = () => {
-      if (document.visibilityState === "visible") tic();
+      if (document.visibilityState === 'visible') tic();
     };
-    document.addEventListener("visibilitychange", reveil);
+    document.addEventListener('visibilitychange', reveil);
     return () => {
       window.clearInterval(id);
-      document.removeEventListener("visibilitychange", reveil);
+      document.removeEventListener('visibilitychange', reveil);
     };
   }, [actif, periodeMs]);
 
