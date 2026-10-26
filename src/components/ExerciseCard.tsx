@@ -9,6 +9,7 @@ import { PainWatch } from './PainWatch';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
+import { replacementChip, type CustomRow } from '../engine/customExercise';
 import {
   hasUnitChoice,
   lastMeasureIn,
@@ -68,6 +69,10 @@ export function ExerciseCard({
   timer,
   media,
   note,
+  custom = null,
+  prevReplacement = null,
+  onReplace,
+  onCancelCustom,
   onSaveSet,
   onOverride,
 }: {
@@ -91,6 +96,20 @@ export function ExerciseCard({
    * champ de remarque disparaissait de toutes les séances.
    */
   note: NoteContext;
+  /**
+   * La ligne qui a mis cet exercice là, quand il n'est pas au programme :
+   * un remplacement ou un ajout. `null` pour un exercice prescrit.
+   */
+  custom?: { row: CustomRow; originalName: string | null } | null;
+  /**
+   * Le dernier remplacement fait sur ce créneau les semaines passées, pour la
+   * puce « Remplacé par … ». Jamais appliqué : seulement affiché.
+   */
+  prevReplacement?: CustomRow | null;
+  /** Ouvre le panneau de remplacement. Absent = pas remplaçable. */
+  onReplace?: () => void;
+  /** Annule le remplacement ou l'ajout qui a mis cet exercice là. */
+  onCancelCustom?: () => void;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   onOverride: (exId: string, kg: number | null) => void;
 }) {
@@ -165,6 +184,38 @@ export function ExerciseCard({
           </div>
         ))}
       </div>
+
+      {/*
+        Cet exercice n'est pas au programme : il faut le dire, et dire ce
+        qu'il remplace. Sans ça, relire la séance trois semaines plus tard
+        donnerait l'impression que le programme prescrivait un Hack Squat.
+      */}
+      {custom && (
+        <div className={styles.customBanner}>
+          <span className={styles.customBannerText}>
+            {custom.row.kind === 'replace'
+              ? `À la place de ${custom.originalName ?? custom.row.originalExerciseId}`
+              : 'Ajouté à cette séance'}
+            {' — hors programme, rien n’est modifié pour la semaine prochaine.'}
+          </span>
+          {onCancelCustom && (
+            <button type="button" className={styles.customCancel} onClick={onCancelCustom}>
+              Annuler
+            </button>
+          )}
+        </div>
+      )}
+
+      {/*
+        Ce qui avait été fait à la place, la dernière fois. Affiché, jamais
+        appliqué : le programme prescrit toujours l'exercice d'origine.
+      */}
+      {prevReplacement && (
+        <div className={styles.prevCustom}>
+          🔁 {replacementChip(prevReplacement)}{' '}
+          <span className={styles.prevCustomWhen}>(S{prevReplacement.week})</span>
+        </div>
+      )}
 
       <LastTime
         ex={ex}
@@ -285,6 +336,12 @@ export function ExerciseCard({
             />
           ))}
         </div>
+      )}
+
+      {onReplace && (
+        <button type="button" className={styles.replaceButton} onClick={onReplace}>
+          ⇄ Remplacer cet exercice
+        </button>
       )}
 
       {/* Remarque libre sur ce mouvement, sous les séries. Toujours là. */}
@@ -457,9 +514,20 @@ function SetEntry({
    * que les mètres. Garder la grille des mètres pour compter des pas aurait
    * demandé quarante appuis pour une série ordinaire.
    */
+  /*
+   * `UnitOption` nomme son libellé `label`, `MEASURE` le nomme `unit` : les
+   * recopier en bloc laissait le curseur affiché « DISTANCE · M » alors que
+   * le sélecteur était sur « pas ». On reprend donc champ par champ.
+   */
   const measure =
     measureBase && unite
-      ? { ...measureBase, ...unitConfig(unite), label: measureBase.label }
+      ? {
+          label: unitConfig(unite).fieldLabel,
+          unit: unitConfig(unite).label,
+          step: unitConfig(unite).step,
+          min: unitConfig(unite).min,
+          max: unitConfig(unite).max,
+        }
       : measureBase;
   const showLoad = showsLoadField(ex);
 

@@ -124,9 +124,18 @@ describe('configuration des curseurs', () => {
     expect(UNIT_CHOICE.map((u) => u.id)).toEqual(['m', 'pas']);
   });
 
-  it('les pas montent plus haut et avancent plus fin', () => {
+  it('les pas montent plus haut que les mètres', () => {
     expect(unitConfig('pas').max).toBeGreaterThan(unitConfig('m').max);
-    expect(unitConfig('pas').step).toBeLessThan(unitConfig('m').step);
+  });
+
+  it('chaque unité nomme son champ, et jamais deux fois la même chose', () => {
+    // Le curseur affiche « <intitulé> · <unité> » : « Distance · pas » se
+    // lisait de travers, et « Pas · pas » encore plus mal.
+    expect(unitConfig('m').fieldLabel).toBe('Distance');
+    expect(unitConfig('pas').fieldLabel).toBe('Nombre');
+    for (const u of UNIT_CHOICE) {
+      expect(u.fieldLabel.toLowerCase()).not.toBe(u.label.toLowerCase());
+    }
   });
 
   it('aucun curseur ne démarre à zéro — une série de zéro n’existe pas', () => {

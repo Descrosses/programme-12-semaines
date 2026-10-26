@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
 import { ExerciseNote } from '../components/ExerciseNote';
+import { ExercisePanel } from '../components/ExercisePanel';
 import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
 import { BLOCKS } from '../data/program';
@@ -17,13 +18,24 @@ import {
 import type { ResolvedExercise } from '../engine/getSession';
 import { bestJump, readiness as computeReadiness } from '../engine/readiness';
 import {
+  addSessionExercise,
+  cancelSessionExercise,
   commitAllDrafts,
   resetSessionClock,
+  setsOnSessionExercise,
   saveReadiness,
   saveSet,
   toggleWarmupItem,
   updateSession,
 } from '../db/repo';
+import {
+  additionChip,
+  prefillFrom,
+  previousAdditions,
+  previousReplacement,
+  type CustomSpec,
+} from '../engine/customExercise';
+import { EXERCISES } from '../data/exercises';
 import { useNow } from '../state/useNow';
 import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
@@ -49,6 +61,13 @@ export function SessionScreen({
 }) {
   const data = useSessionData(week, day);
   const [resetDemande, setResetDemande] = useState(false);
+  /*
+   * Quel panneau est ouvert : `{ remplace: id }` pour un remplacement,
+   * `{ ajout: true }` pour un ajout, `null` pour aucun. Un seul à la fois —
+   * deux panneaux superposés sur un écran de 390 px ne se ferment plus.
+   */
+  const [panneau, setPanneau] = useState<{ remplace?: string; ajout?: true } | null>(null);
+  const [annuleCustom, setAnnuleCustom] = useState<{ id: number; series: number } | null>(null);
   /*
    * Le chrono ne tourne que pendant la séance. Terminée, sa durée est figée en
    * base : plus rien à recalculer, donc plus d'intervalle qui tourne.
@@ -77,6 +96,26 @@ export function SessionScreen({
   const overrides = row?.loadOverrides ?? {};
   const doneSets = Object.values(data.savedSets).flat().length;
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
+  /*
+   * `SessionExerciseRow` satisfait `CustomRow` — elle porte en plus le
+   * `sessionId`, dont le moteur n'a pas besoin et qu'il ne regarde pas. Pas de
+   * conversion : le moteur reste pur, l'écran garde ce qu'il lui faut.
+   */
+  const tousRows = data.customRows;
+  const duJour = tousRows.filter((r) => r.sessionId === row?.id);
+  /** Une séance terminée est un fait enregistré : on ne la réécrit plus. */
+  const enCours = row?.status !== 'done';
+  /*
+   * Les exercices déjà choisis une fois, pour les proposer en tête du
+   * panneau — le plus récent d'abord. S'il a remplacé le squat par un Hack
+   * Squat la semaine dernière, c'est très probablement ce qu'il rechoisira.
+   */
+  const dejaUtilises = tousRows.map((r) => ({
+    exerciseId: r.exerciseId,
+    name: r.name,
+    at: r.at,
+  }));
+  const ajoutsPasses = previousAdditions(tousRows, { week, day });
   const chrono = row ? clockLabel(row, now) : null;
   const reel = row ? elapsedMin(row, now) : null;
   const verdict = reel === null ? null : durationVerdict(reel, session.plannedMin);
@@ -132,6 +171,57 @@ export function SessionScreen({
       level: result.level,
       pctDelta: result.pctDelta,
     });
+    await data.reload();
+  }
+
+  /**
+   * Enregistre un remplacement ou un ajout — immédiatement.
+   *
+   * Pas de « brouillon » ici : contrairement à une remarque, un exercice de
+   * séance n'est pas une phrase en cours de frappe. Il est choisi en un geste
+   * et sert tout de suite à saisir des séries.
+   */
+  async function handleSaveCustom(spec: CustomSpec) {
+    if (!row?.id) return;
+    const remplace = panneau?.remplace ?? null;
+    await addSessionExercise({
+      sessionId: row.id,
+      week,
+      day,
+      date: data.date ?? '',
+      kind: remplace ? 'replace' : 'add',
+      originalExerciseId: remplace,
+      ...spec,
+    });
+    setPanneau(null);
+    await data.reload();
+  }
+
+  /**
+   * Annule un remplacement ou un ajout — et les séries qui s'y rattachaient.
+   *
+   * Les deux ensemble. Retirer la ligne seule laisserait en base des séries
+   * attachées à un exercice absent de la séance : invisibles à l'écran, mais
+   * bien présentes dans l'historique du mouvement et dans sa progression.
+   * D'où la confirmation, qui dit combien de séries partent.
+   */
+  async function handleCancelCustom(id: number) {
+    const series = await setsOnSessionExercise(
+      row?.id ?? -1,
+      data.customRows.find((r) => r.id === id)?.exerciseId ?? '',
+    );
+    if (series === 0) {
+      await cancelSessionExercise(id);
+      await data.reload();
+      return;
+    }
+    setAnnuleCustom({ id, series });
+  }
+
+  async function confirmCancelCustom() {
+    if (!annuleCustom) return;
+    await cancelSessionExercise(annuleCustom.id);
+    setAnnuleCustom(null);
     await data.reload();
   }
 
@@ -227,20 +317,60 @@ export function SessionScreen({
         />
       )}
 
-      {session.exercises.map((ex) => (
-        <ExerciseCard
-          key={ex.id}
-          ex={ex}
-          savedSets={data.savedSets[ex.id] ?? []}
-          overrideKg={overrides[ex.id] ?? null}
-          history={data.history[ex.id]}
-          timer={timer}
-          media={data.date ? { week, day, date: data.date } : null}
-          note={{ week, day, date: data.date ?? '' }}
-          onSaveSet={handleSaveSet}
-          onOverride={(id, kg) => void handleOverride(id, kg)}
-        />
-      ))}
+      {session.exercises.map((ex) => {
+        const custom = duJour.find((r) => r.exerciseId === ex.id) ?? null;
+        const original = custom?.originalExerciseId ?? null;
+        return (
+          <div key={ex.id}>
+            <ExerciseCard
+              ex={ex}
+              savedSets={data.savedSets[ex.id] ?? []}
+              overrideKg={overrides[ex.id] ?? null}
+              history={data.history[ex.id]}
+              timer={timer}
+              media={data.date ? { week, day, date: data.date } : null}
+              note={{ week, day, date: data.date ?? '' }}
+              custom={
+                custom
+                  ? {
+                      row: custom,
+                      originalName: original ? (EXERCISES[original]?.name ?? original) : null,
+                    }
+                  : null
+              }
+              prevReplacement={previousReplacement(tousRows, {
+                exerciseId: custom?.originalExerciseId ?? ex.id,
+                week,
+                day,
+              })}
+              /*
+               * Remplaçable tant que la séance n'est pas terminée. Après, la
+               * séance est un fait enregistré : on ne réécrit pas ce qu'on a
+               * fait, on corrige éventuellement les séries.
+               */
+              onReplace={enCours && !custom ? () => setPanneau({ remplace: ex.id }) : undefined}
+              onCancelCustom={
+                enCours && custom?.id !== undefined
+                  ? () => void handleCancelCustom(custom.id!)
+                  : undefined
+              }
+              onSaveSet={handleSaveSet}
+              onOverride={(id, kg) => void handleOverride(id, kg)}
+            />
+
+            {panneau?.remplace === ex.id && (
+              <ExercisePanel
+                titre={`Remplacer ${ex.name}`}
+                sousTitre="L’exercice prévu reste au programme. La semaine prochaine, il revient."
+                initial={prefillFrom(ex)}
+                used={dejaUtilises}
+                onCancel={() => setPanneau(null)}
+                onSave={(spec) => void handleSaveCustom(spec)}
+              />
+            )}
+          </div>
+        );
+      })}
 
       {/*
         Exercices suspendus — affichés, jamais prescrits.
@@ -283,6 +413,90 @@ export function SessionScreen({
           </section>
         );
       })}
+
+      {/*
+        Ajouter un exercice — en bas de la liste, après tout ce qui était
+        prévu. Jamais au milieu : glisser un ajout entre deux exercices
+        prescrits déplacerait le travail du programme.
+      */}
+      {enCours && (
+        <section className={styles.addZone}>
+          {ajoutsPasses.length > 0 && (
+            <div className={styles.addPrev}>
+              {ajoutsPasses.map((r) => (
+                <div key={r.id ?? `${r.exerciseId}-${r.at}`} className={styles.addPrevRow}>
+                  <span className={styles.addPrevText}>➕ {additionChip(r)}</span>
+                  {/*
+                    « Reprendre » refait le même choix en un geste. Il ne
+                    l'applique pas tout seul : un exercice ajouté une fois
+                    n'est pas une modification du programme.
+                  */}
+                  <button
+                    type="button"
+                    className={styles.addPrevButton}
+                    onClick={() =>
+                      void handleSaveCustom({
+                        exerciseId: r.exerciseId,
+                        name: r.name,
+                        sets: r.sets,
+                        reps: r.reps,
+                        kg: r.kg,
+                        restSec: r.restSec,
+                      })
+                    }
+                  >
+                    Reprendre
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {panneau?.ajout ? (
+            <ExercisePanel
+              titre="Ajouter un exercice"
+              sousTitre="Il n’entre pas au programme : il compte pour cette séance."
+              used={dejaUtilises}
+              onCancel={() => setPanneau(null)}
+              onSave={(spec) => void handleSaveCustom(spec)}
+            />
+          ) : (
+            <button
+              type="button"
+              className={styles.addButton}
+              onClick={() => setPanneau({ ajout: true })}
+            >
+              ＋ Ajouter un exercice
+            </button>
+          )}
+        </section>
+      )}
+
+      {/*
+        Confirmation d'annulation — elle dit ce qui part, parce que des séries
+        déjà saisies partent avec.
+      */}
+      {annuleCustom && (
+        <div className={styles.resetConfirm} style={{ margin: '0 var(--pad) 16px' }}>
+          <p className={styles.resetAsk}>
+            Annuler cet exercice ? Les {annuleCustom.series} série
+            {annuleCustom.series > 1 ? 's' : ''} déjà saisie
+            {annuleCustom.series > 1 ? 's' : ''} dessus seront supprimées.
+          </p>
+          <div className={styles.resetActions}>
+            <button
+              type="button"
+              className={styles.resetYes}
+              onClick={() => void confirmCancelCustom()}
+            >
+              Oui, annuler et supprimer les séries
+            </button>
+            <button type="button" className={styles.resetNo} onClick={() => setAnnuleCustom(null)}>
+              Garder
+            </button>
+          </div>
+        </div>
+      )}
 
       {/*
         La remarque de séance, en bas, comme avant — mais appendue elle aussi.

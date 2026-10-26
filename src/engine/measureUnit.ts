@@ -32,6 +32,15 @@ export interface UnitOption {
   id: MeasureUnitId;
   /** Ce qui s'affiche sur le bouton et à côté du chiffre. */
   label: string;
+  /**
+   * L'intitulé du champ de saisie.
+   *
+   * Le curseur affiche « <intitulé> · <unité> ». « Distance · m » va de soi ;
+   * « Distance · pas » se lisait de travers, puisque compter ses pas sur place
+   * n'est pas mesurer une distance — et « Pas · pas » encore plus mal. D'où
+   * « Nombre · pas ».
+   */
+  fieldLabel: string;
   /** Pas du stepper +/−. */
   step: number;
   min: number;
@@ -39,13 +48,17 @@ export interface UnitOption {
 }
 
 /**
- * Les pas vont plus haut et plus fin que les mètres, parce qu'ils comptent
- * autrement : dix-huit pas valent une douzaine de mètres, et quarante pas sur
- * place restent une série raisonnable là où quarante mètres sont déjà longs.
+ * Les pas montent plus haut que les mètres, parce qu'ils comptent autrement :
+ * dix-huit pas valent une douzaine de mètres, et quarante pas sur place
+ * restent une série raisonnable là où quarante mètres sont déjà longs.
+ *
+ * Même pas de curseur pour les deux : cinq. La saisie au clavier reste
+ * ouverte sur le chiffre pour les valeurs qui tombent entre deux crans — on
+ * ne compte pas ses pas de cinq en cinq.
  */
 export const DISTANCE_UNITS: Record<MeasureUnitId, UnitOption> = {
-  m: { id: 'm', label: 'm', step: 5, min: 5, max: 200 },
-  pas: { id: 'pas', label: 'pas', step: 2, min: 4, max: 300 },
+  m: { id: 'm', label: 'm', fieldLabel: 'Distance', step: 5, min: 5, max: 200 },
+  pas: { id: 'pas', label: 'pas', fieldLabel: 'Nombre', step: 5, min: 5, max: 300 },
 };
 
 export const UNIT_CHOICE: UnitOption[] = [DISTANCE_UNITS.m, DISTANCE_UNITS.pas];

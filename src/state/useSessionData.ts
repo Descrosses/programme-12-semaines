@@ -13,6 +13,7 @@ import type { HistoryIndex, ReadinessResult } from '../engine/types';
 import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
 import {
   allReadiness,
+  allSessionExercises,
   buildHistoryIndex,
   allSets,
   ensureSession,
@@ -21,6 +22,9 @@ import {
   toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
+import { EXERCISES } from '../data/exercises';
+import { applyCustom, type CustomRow, type Replaced } from '../engine/customExercise';
+import type { SessionExerciseRow } from '../db/db';
 
 export interface SessionData {
   loading: boolean;
@@ -40,6 +44,16 @@ export interface SessionData {
   baselineCm: number | null;
   trend: ExplosiveTrend;
   date: string;
+  /**
+   * TOUTES les lignes d'exercices de séance, les douze semaines.
+   *
+   * Les puces « remplacé par » et « ajouté la semaine dernière » regardent les
+   * séances passées du même jour : l'écran a donc besoin de l'ensemble, pas
+   * seulement de la séance du jour.
+   */
+  customRows: SessionExerciseRow[];
+  /** Ce que le programme prévoyait et qu'un remplacement a mis de côté. */
+  replaced: Replaced[];
   reload: () => Promise<void>;
 }
 
@@ -51,10 +65,11 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const settings = toEngineSettings(settingsRow);
     const date = settings.startDate ? dateFor(settings.startDate, week, day) : '';
 
-    const [sets, readinessRows, readinessRow] = await Promise.all([
+    const [sets, readinessRows, readinessRow, customRows] = await Promise.all([
       allSets(),
       allReadiness(),
       getReadiness(week, day),
+      allSessionExercises(),
     ]);
 
     const history = buildHistoryIndex(sets);
@@ -64,7 +79,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       ? computeReadiness(settings.broadJumpBaselineCm, readinessRow.jumpCm)
       : null;
 
-    const session = buildSession(week, day, {
+    const prescrite = buildSession(week, day, {
       settings,
       history,
       readiness: readinessResult,
@@ -72,7 +87,21 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     });
 
     // La ligne de séance n'est créée que si la case porte une séance.
-    const row = session && date ? await ensureSession(week, day, date) : null;
+    const row = prescrite && date ? await ensureSession(week, day, date) : null;
+
+    /*
+     * Les remplacements et ajouts s'appliquent APRÈS la séance prescrite, et
+     * seulement ceux de cette séance-là. L'ordre compte : on part toujours de
+     * ce que le programme dit, puis on y pose ce qui a été décidé sur place.
+     * L'inverse — garder une séance modifiée en base — aurait fait du
+     * remplacement une correction du programme, qu'il n'est pas.
+     */
+    const duJour = customRows.filter((r) => r.sessionId === row?.id);
+    const applique =
+      prescrite === null
+        ? { exercises: [], replaced: [] }
+        : applyCustom(prescrite.exercises, duJour as CustomRow[], (id) => EXERCISES[id]);
+    const session = prescrite === null ? null : { ...prescrite, exercises: applique.exercises };
 
     const savedSets: Record<string, SetRow[]> = {};
     if (row?.id !== undefined) {
@@ -93,6 +122,8 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       trend,
       date,
       history,
+      customRows,
+      replaced: applique.replaced,
     });
   }, [week, day]);
 
@@ -113,8 +144,16 @@ function empty(): Omit<SessionData, 'reload'> {
     readinessRow: null,
     readiness: null,
     baselineCm: null,
-    trend: { declining: false, consecutiveDrops: 0, suggestEarlyDeload: false, weekly: [], message: '' },
+    trend: {
+      declining: false,
+      consecutiveDrops: 0,
+      suggestEarlyDeload: false,
+      weekly: [],
+      message: '',
+    },
     date: '',
     history: {},
+    customRows: [],
+    replaced: [],
   };
 }

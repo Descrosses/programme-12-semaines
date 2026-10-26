@@ -1022,3 +1022,288 @@
   font-size: 0.75rem;
   font-weight: 700;
 }
+
+/* ============ Remplacer / ajouter un exercice ============================= */
+
+/*
+ * Le bandeau « à la place de … ». Pas décoratif : sans lui, relire la séance
+ * trois semaines plus tard donnerait l'impression que le programme prescrivait
+ * un Hack Squat.
+ */
+.customBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 var(--pad) 8px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-2);
+}
+
+.customBannerText {
+  flex: 1;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.customCancel {
+  flex: none;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* Ce qui avait été fait à la place la dernière fois. Affiché, jamais appliqué. */
+.prevCustom {
+  margin: 0 var(--pad) 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.prevCustomWhen {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.replaceButton {
+  display: block;
+  width: calc(100% - 2 * var(--pad));
+  min-height: 48px;
+  margin: 8px var(--pad) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* --- La zone d'ajout, tout en bas de la liste ----------------------------- */
+
+.addZone {
+  margin: 16px var(--pad) 8px;
+}
+
+.addButton {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.addPrev {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/*
+ * La ligne « ajouté la semaine dernière » : le texte peut faire deux lignes,
+ * le bouton garde ses 48 px. Grille plutôt que flex, pour que « Reprendre » ne
+ * se fasse jamais écraser par un nom long.
+ */
+.addPrevRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.addPrevText {
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.addPrevButton {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+/* --- Le panneau de saisie ------------------------------------------------- */
+
+.panel {
+  margin: 8px var(--pad) 16px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.panelTitle {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panelSub {
+  margin-top: 3px;
+  color: var(--ink-3);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.panelClose {
+  flex: none;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.panelSearch {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.panelSearch::placeholder {
+  color: var(--ink-3);
+}
+
+.panelList {
+  max-height: 320px;
+  margin: 10px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.panelChoice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+}
+
+.panelChoiceFree {
+  border-bottom-color: var(--accent);
+}
+
+.panelChoiceName {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.panelChoiceTag {
+  flex: none;
+  color: var(--ink-3);
+  font-size: 0.72rem;
+}
+
+.panelEmpty {
+  padding: 12px 10px;
+  color: var(--ink-3);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+/* L'exercice retenu, en haut : on peut toujours en changer d'un appui. */
+.panelPicked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  text-align: left;
+}
+
+.panelPickedName {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panelPickedChange {
+  flex: none;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.panelSteppers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.panelRecap {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.panelRecap b {
+  color: var(--ink);
+}
+
+.panelSave {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 1rem;
+  font-weight: 700;
+}
