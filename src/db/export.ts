@@ -11,8 +11,12 @@ import {
   type CombineRow,
   type ExerciseVideoLogRow,
   type MeasurementRow,
+  type ExerciseNoteRow,
   type ExtraFoodRow,
+  type NoteDraftRow,
+  type NoteRow,
   type PainLogRow,
+  type SessionExerciseRow,
   type ReadinessRow,
   type SessionRow,
   type SetRow,
@@ -39,6 +43,30 @@ export interface ExportFile {
   painLog?: PainLogRow[];
   /** Aliments mangés en plus du plan. Absent des exports antérieurs. */
   extraFoods?: ExtraFoodRow[];
+  /**
+   * Remarques appendues (v15). Absent des exports antérieurs : toujours
+   * optionnel, un fichier d'avant la v15 reste réimportable tel quel.
+   */
+  notes?: NoteRow[];
+  /**
+   * Brouillons de remarque en cours de frappe. Exportés aussi : une phrase
+   * laissée dans le champ au moment de la sauvegarde est une saisie comme une
+   * autre, et la perdre à la restauration serait exactement le défaut qu'on
+   * cherche à fermer.
+   */
+  noteDrafts?: NoteDraftRow[];
+  /** Exercices remplacés ou ajoutés en séance (v15). */
+  sessionExercises?: SessionExerciseRow[];
+  /**
+   * Les remarques d'AVANT la v15, telles quelles.
+   *
+   * Elles ont été recopiées dans `notes` par la migration et ne sont plus
+   * écrites par personne. Elles restent exportées pour une seule raison : un
+   * export est la seule copie de secours de cette base, et une table qui n'y
+   * figure pas disparaît au premier changement de téléphone. Celle-ci n'y
+   * figurait pas — c'était un trou.
+   */
+  exerciseNotes?: ExerciseNoteRow[];
   /**
    * Toujours `false`. Les photos ont leur propre fichier : voir
    * `exportPhotos()` et le commentaire qui l'accompagne.
@@ -103,6 +131,10 @@ export async function exportAll(): Promise<ExportFile> {
     videoLog,
     painLog,
     extraFoods,
+    notes,
+    noteDrafts,
+    sessionExercises,
+    exerciseNotes,
   ] = await Promise.all([
     db.settings.get(1),
     db.sessions.toArray(),
@@ -113,6 +145,10 @@ export async function exportAll(): Promise<ExportFile> {
     db.exerciseVideoLog.toArray(),
     db.painLog.toArray(),
     db.extraFoods.toArray(),
+    db.notes.toArray(),
+    db.noteDrafts.toArray(),
+    db.sessionExercises.toArray(),
+    db.exerciseNotes.toArray(),
   ]);
 
   return {
@@ -128,6 +164,10 @@ export async function exportAll(): Promise<ExportFile> {
     videoLog,
     painLog,
     extraFoods,
+    notes,
+    noteDrafts,
+    sessionExercises,
+    exerciseNotes,
     photosIncluded: false,
   };
 }
@@ -230,6 +270,10 @@ export interface ImportReport {
   videoLog: number;
   painLog: number;
   extraFoods: number;
+  notes: number;
+  noteDrafts: number;
+  sessionExercises: number;
+  exerciseNotes: number;
   settings: boolean;
 }
 
@@ -377,6 +421,10 @@ export function parseExport(text: string): ExportFile {
     videoLog: f.videoLog ?? [],
     painLog: f.painLog ?? [],
     extraFoods: f.extraFoods ?? [],
+    notes: f.notes ?? [],
+    noteDrafts: f.noteDrafts ?? [],
+    sessionExercises: f.sessionExercises ?? [],
+    exerciseNotes: f.exerciseNotes ?? [],
     photosIncluded: false,
   };
 }
@@ -401,12 +449,20 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.exerciseVideoLog,
       db.painLog,
       db.extraFoods,
+      db.notes,
+      db.noteDrafts,
+      db.sessionExercises,
+      db.exerciseNotes,
     ],
     async () => {
       const measurements = file.measurements ?? [];
       const videoLog = file.videoLog ?? [];
       const painLog = file.painLog ?? [];
       const extraFoods = file.extraFoods ?? [];
+      const notes = file.notes ?? [];
+      const noteDrafts = file.noteDrafts ?? [];
+      const sessionExercises = file.sessionExercises ?? [];
+      const exerciseNotes = file.exerciseNotes ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
@@ -416,6 +472,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.exerciseVideoLog.clear(),
         db.painLog.clear(),
         db.extraFoods.clear(),
+        db.notes.clear(),
+        db.noteDrafts.clear(),
+        db.sessionExercises.clear(),
+        db.exerciseNotes.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
@@ -426,6 +486,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       await db.exerciseVideoLog.bulkAdd(videoLog);
       await db.painLog.bulkAdd(painLog);
       await db.extraFoods.bulkAdd(extraFoods);
+      await db.notes.bulkAdd(notes);
+      await db.noteDrafts.bulkAdd(noteDrafts);
+      await db.sessionExercises.bulkAdd(sessionExercises);
+      await db.exerciseNotes.bulkAdd(exerciseNotes);
 
       return {
         sessions: file.sessions.length,
@@ -436,6 +500,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         videoLog: videoLog.length,
         painLog: painLog.length,
         extraFoods: extraFoods.length,
+        notes: notes.length,
+        noteDrafts: noteDrafts.length,
+        sessionExercises: sessionExercises.length,
+        exerciseNotes: exerciseNotes.length,
         settings: file.settings !== null,
       };
     },
@@ -455,6 +523,10 @@ export async function resetHistory(): Promise<void> {
       db.exerciseVideoLog,
       db.painLog,
       db.extraFoods,
+      db.notes,
+      db.noteDrafts,
+      db.sessionExercises,
+      db.exerciseNotes,
     ],
     async () => {
       await Promise.all([
@@ -466,6 +538,10 @@ export async function resetHistory(): Promise<void> {
         db.exerciseVideoLog.clear(),
         db.painLog.clear(),
         db.extraFoods.clear(),
+        db.notes.clear(),
+        db.noteDrafts.clear(),
+        db.sessionExercises.clear(),
+        db.exerciseNotes.clear(),
       ]);
     },
   );

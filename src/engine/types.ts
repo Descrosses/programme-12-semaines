@@ -4,6 +4,7 @@
  */
 
 import type { DayIndex, MainLiftId, RPETarget, WeekIndex } from '../data/types';
+import type { PerformedSet } from './setFormat';
 
 /** Les 1RM réellement testés. Mis à jour par le combine initial et le final. */
 export type OneRMKey = 'back-squat' | 'bench-press' | 'deadlift' | 'weighted-pullup';
@@ -86,6 +87,31 @@ export interface Occurrence {
    * `applyProgression` l'ignore — §11 ne parle que de kilos.
    */
   measure?: number | null;
+  /**
+   * L'unité de `measure` pour cette séance-là : « m » ou « pas ».
+   *
+   * Portée par l'occurrence et non déduite de l'exercice, parce qu'un porté
+   * peut se faire en mètres une semaine et en pas sur place la suivante selon
+   * la place disponible. Absente des données d'avant ce champ, ce qui veut
+   * dire « mètres » — c'était la seule possibilité.
+   *
+   * Rien ne convertit l'une en l'autre, et deux unités ne se comparent
+   * jamais : voir `measureUnit.ts`.
+   */
+  measureUnit?: string | null;
+  /**
+   * Le détail série par série de cette séance-là.
+   *
+   * Pourquoi en plus des agrégats : « 115 kg · RPE 8 » ne dit pas combien de
+   * séries ni de combien de reps, et c'est précisément ce qu'il faut savoir
+   * avant de charger la barre. 5 × 3 à 115 kg et 2 × 3 à 115 kg sont deux
+   * séances différentes.
+   *
+   * Absent des données construites avant ce champ, donc toujours optionnel.
+   * `applyProgression` ne le lit pas : §11 raisonne sur la charge la plus
+   * lourde et le RPE le plus élevé, pas sur la forme de la séance.
+   */
+  sets?: PerformedSet[];
 }
 
 /** Historique indexé par exercice, occurrences triées par semaine croissante. */

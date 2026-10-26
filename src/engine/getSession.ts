@@ -43,7 +43,7 @@ import type {
 } from '../data/types';
 import { loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
-import { dureeLabel } from './sessionDuration';
+import { dureeEstimeeMin, dureeLabel } from './sessionDuration';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
 import type { Occurrence, OneRMKey, SessionContext } from './types';
@@ -127,6 +127,15 @@ export interface ResolvedSession {
    * contredit jamais tout seul — celui-ci suit les séries et les repos.
    */
   durationLabel: string;
+  /**
+   * La même durée, en minutes entières — le chiffre, pas l'étiquette.
+   *
+   * C'est lui qui sert de référence au chrono de fin de séance. Reparser
+   * « ≈ 74 min » pour retrouver 74 aurait marché, et se serait cassé le jour
+   * où l'étiquette change de forme : le résumé aurait alors comparé la durée
+   * réelle à rien du tout, sans erreur visible.
+   */
+  plannedMin: number;
   intensity: Intensity;
   warmup: Warmup | null;
   readinessTest: boolean;
@@ -208,7 +217,11 @@ export function getSession(
   slots = slots.filter((s) => {
     const def = EXERCISES[s.exId];
     if (!def?.suspended) return true;
-    suspended.push({ id: def.id, name: def.name, reason: def.suspended.reason });
+    suspended.push({
+      id: def.id,
+      name: def.name,
+      reason: def.suspended.reason,
+    });
     return false;
   });
 
@@ -217,7 +230,14 @@ export function getSession(
   const exercises: ResolvedExercise[] = [];
 
   for (const slot of slots) {
-    const resolved = resolveSlot(slot, { week, day, block, isDeload, ctx, contrast });
+    const resolved = resolveSlot(slot, {
+      week,
+      day,
+      block,
+      isDeload,
+      ctx,
+      contrast,
+    });
     if (resolved) exercises.push(resolved);
   }
 
@@ -258,6 +278,12 @@ export function getSession(
     ex.loadLine = formatLoadLine(ex.sets, ex.work, ex.load);
   }
 
+  const mesurable = {
+    warmupDurationLabel: warmup?.durationLabel,
+    readinessTest: blueprint.readinessTest,
+    exercises: finalExercises,
+  };
+
   return {
     week,
     day,
@@ -265,11 +291,8 @@ export function getSession(
     blockName: BLOCKS[block].name,
     blockColor: BLOCKS[block].color,
     title: blueprint.title,
-    durationLabel: dureeLabel({
-      warmupDurationLabel: warmup?.durationLabel,
-      readinessTest: blueprint.readinessTest,
-      exercises: finalExercises,
-    }),
+    durationLabel: dureeLabel(mesurable),
+    plannedMin: dureeEstimeeMin(mesurable),
     intensity: blueprint.intensity,
     warmup,
     readinessTest: blueprint.readinessTest,
@@ -284,12 +307,7 @@ export function getSession(
 // Règles de bloc
 // ---------------------------------------------------------------------------
 
-function applyBlockRules(
-  slots: Slot[],
-  block: Block,
-  day: DayIndex,
-  week: WeekIndex,
-): Slot[] {
+function applyBlockRules(slots: Slot[], block: Block, day: DayIndex, week: WeekIndex): Slot[] {
   let out = slots;
   for (const rule of rulesFor(block, day, week)) {
     if (rule.op === 'remove') {
@@ -408,7 +426,10 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
 
   const reference = referenceOccurrences(o.ctx.history[slot.exId] ?? [], o.week, o.day);
 
-  let load = resolveLoad(loadSpec, { settings: o.ctx.settings, occurrences: reference });
+  let load = resolveLoad(loadSpec, {
+    settings: o.ctx.settings,
+    occurrences: reference,
+  });
 
   // « +10 % » des accessoires haut en force max (§8).
   const factor = (slot as Slot & { __loadFactor?: number }).__loadFactor;
@@ -549,7 +570,11 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
 function capRPE(target: RPETarget | null, max: number): RPETarget | null {
   if (!target) return null;
   if (target.max <= max) return target;
-  return { min: Math.min(target.min, max), max, label: `RPE ≤ ${String(max).replace('.', ',')}` };
+  return {
+    min: Math.min(target.min, max),
+    max,
+    label: `RPE ≤ ${String(max).replace('.', ',')}`,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -623,7 +648,11 @@ function applyRed(exercises: ResolvedExercise[], ctx: SessionContext): ResolvedE
       out.push({
         ...ex,
         sets: READINESS_THRESHOLDS.red.sets,
-        work: { kind: 'reps', reps: READINESS_THRESHOLDS.red.reps, perSide: false },
+        work: {
+          kind: 'reps',
+          reps: READINESS_THRESHOLDS.red.reps,
+          perSide: false,
+        },
         load: withKg(ex.load, kg),
         targetRPE: null,
         suggestion: null,

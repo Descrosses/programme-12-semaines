@@ -54,6 +54,21 @@ export interface SetRow {
    * saut en cm, temps de sprint en s, distance de carry en m.
    */
   measureValue: number | null;
+  /**
+   * L'unité de `measureValue`, telle qu'elle a été CHOISIE au moment de la
+   * saisie : « m », « pas », « cm », « s ».
+   *
+   * Pourquoi la stocker plutôt que la déduire de l'exercice : un Zercher March
+   * se fait en mètres quand il y a de la place, en pas sur place quand il n'y
+   * en a pas. Déduire l'unité de l'exercice rendrait les deux séances
+   * comparables alors qu'elles ne le sont pas, et douze pas ne valent pas
+   * douze mètres.
+   *
+   * Absente des lignes écrites avant ce champ : `undefined` veut dire
+   * « l'unité par défaut du mouvement », jamais « pas d'unité ». Et rien, ici
+   * ni ailleurs, ne convertit une unité en une autre.
+   */
+  measureUnit?: string | null;
   /** §11 cas 5. */
   failed: boolean;
 
@@ -320,10 +335,19 @@ export class ProgrammeDB extends Dexie {
   painLog!: Table<PainLogRow, number>;
   extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
+  notes!: Table<NoteRow, number>;
+  noteDrafts!: Table<NoteDraftRow, number>;
+  sessionExercises!: Table<SessionExerciseRow, number>;
   settings!: Table<SettingsRow, number>;
 
-  constructor() {
-    super("programme-12-semaines");
+  /**
+   * `name` n'existe que pour les tests de migration : ils doivent pouvoir
+   * monter une base jetable au schéma d'avant, la remplir, puis l'ouvrir avec
+   * ce schéma-ci pour voir la migration se jouer en vrai. L'appli, elle,
+   * n'appelle jamais ce constructeur avec un argument.
+   */
+  constructor(name = "programme-12-semaines") {
+    super(name);
     this.version(1).stores({
       sessions: "++id, &[week+day], date, status",
       sets: "++id, sessionId, [sessionId+exerciseId], exerciseId, [exerciseId+week], date",
@@ -577,6 +601,73 @@ export class ProgrammeDB extends Dexie {
      * donc pas indexée : on relit toujours une journée entière d'un coup.
      */
     this.version(14).stores({ extraFoods: "++id, [date+mealId], date" });
+
+    /*
+     * v15 — remarques APPENDUES, brouillons, et exercices de séance.
+     *
+     * ── Ce qui est recopié, et pourquoi rien n'est supprimé ────────────────
+     *
+     * La migration RECOPIE dans `notes` ce qui existait déjà : chaque ligne de
+     * `exerciseNotes` et chaque remarque de séance non vide de `sessions`.
+     * Les sources restent en place, intactes. C'est volontairement redondant :
+     * une migration qui déplace n'a pas de seconde chance si elle se trompe,
+     * une migration qui recopie se relit.
+     *
+     * Les brouillons partent donc VIDES : l'historique porte déjà tout ce qui
+     * avait été écrit, et pré-remplir le champ avec la dernière remarque la
+     * ferait apparaître deux fois — une fois dans l'historique, une fois dans
+     * le champ de saisie.
+     *
+     * `at` est reconstruit depuis `updatedAt` quand il existe, sinon depuis la
+     * date de la séance à midi. Il ne sert qu'à départager deux remarques de
+     * la même séance : un à-peu-près d'horodatage sur des lignes d'avant la
+     * migration ne change aucun ordre d'affichage, qui se fait par semaine.
+     *
+     * Les deux autres tables sont de l'ajout pur : aucune ligne existante
+     * n'est lue ni modifiée.
+     */
+    this.version(15)
+      .stores({
+        notes: "++id, exerciseId, [exerciseId+week], [week+day], week, date",
+        noteDrafts: "++id, &[slot+week+day], [week+day]",
+        sessionExercises:
+          "++id, sessionId, [sessionId+originalExerciseId], [week+day], exerciseId, originalExerciseId",
+      })
+      .upgrade(async (tx) => {
+        const reprises: NoteRow[] = [];
+
+        const anciennes = (await tx
+          .table("exerciseNotes")
+          .toArray()) as ExerciseNoteRow[];
+        for (const n of anciennes) {
+          const texte = (n.text ?? "").trim();
+          if (texte === "") continue;
+          reprises.push({
+            exerciseId: n.exerciseId,
+            week: n.week,
+            day: n.day,
+            date: n.date ?? "",
+            text: texte,
+            at: n.updatedAt ?? midi(n.date),
+          });
+        }
+
+        const seances = (await tx.table("sessions").toArray()) as SessionRow[];
+        for (const s of seances) {
+          const texte = (s.notes ?? "").trim();
+          if (texte === "") continue;
+          reprises.push({
+            exerciseId: null,
+            week: s.week,
+            day: s.day,
+            date: s.date ?? "",
+            text: texte,
+            at: midi(s.date),
+          });
+        }
+
+        if (reprises.length > 0) await tx.table("notes").bulkAdd(reprises);
+      });
   }
 }
 
@@ -658,6 +749,19 @@ export interface DayKindRow {
   kind: "train" | "rest";
 }
 
+/**
+ * Minuit + 12 h d'une date `YYYY-MM-DD`, en ms epoch — ou maintenant si la
+ * date manque.
+ *
+ * Midi et non minuit : une remarque reconstruite doit tomber le bon jour quel
+ * que soit le décalage horaire de l'appareil qui la relit.
+ */
+function midi(iso: string | undefined): number {
+  if (!iso) return Date.now();
+  const t = Date.parse(`${iso}T12:00:00Z`);
+  return Number.isNaN(t) ? Date.now() : t;
+}
+
 /** Premier lundi à partir d'une date incluse — conversion d'ancre de la v5. */
 function mondayOnOrAfter(iso: string): string {
   const d = new Date(`${iso}T12:00:00Z`);
@@ -678,3 +782,115 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   soundEnabled: true,
   vibrationEnabled: true,
 };
+
+/**
+ * Une remarque, APPENDUE — jamais corrigée, jamais écrasée.
+ *
+ * ── Pourquoi une table de plus alors que `exerciseNotes` existait ──────────
+ *
+ * `exerciseNotes` portait un index UNIQUE sur `[exerciseId+week+day]`. C'était
+ * voulu au départ : un seul champ par mouvement et par séance, corrigé au fil
+ * de la frappe. Mais ça décidait aussi qu'un mouvement ne reçoit qu'UNE
+ * remarque par séance. Noter « épaule gauche tire » à la deuxième série puis
+ * « c'est passé en 3e » à la quatrième écrasait la première — et c'est
+ * précisément la succession des deux qui dit quelque chose.
+ *
+ * Ici, rien n'est unique et rien ne se met à jour : on ajoute. Une remarque
+ * entrée en semaine 3 reste lisible telle quelle en semaine 11.
+ *
+ * `exerciseId` à `null` veut dire « remarque de séance » — celle du bas de
+ * l'écran, qui parle de la séance entière et pas d'un mouvement. IndexedDB
+ * n'indexe pas `null` : ces lignes sortent naturellement de l'index
+ * `exerciseId`, ce qui est exactement le tri voulu. On les relit par
+ * `[week+day]`.
+ */
+export interface NoteRow {
+  id?: number;
+  /** Id du mouvement, ou `null` pour une remarque de séance. */
+  exerciseId: string | null;
+  week: number;
+  day: DayIndex;
+  /** `YYYY-MM-DD` de la séance. */
+  date: string;
+  text: string;
+  /** ms epoch de l'ajout. Départage deux remarques de la même séance. */
+  at: number;
+}
+
+/**
+ * Le texte en cours de frappe, pas encore ajouté à l'historique.
+ *
+ * Une table à part, et c'est le cœur du compromis. La règle de l'appli est
+ * qu'une saisie n'attend jamais : chaque frappe est écrite. Mais une table
+ * append-only ne peut pas recevoir chaque frappe, sinon elle empile une ligne
+ * par caractère. Le brouillon reçoit donc les frappes, et le bouton
+ * « Ajouter » en fait une ligne d'historique.
+ *
+ * Conséquence : un téléphone qui se verrouille au milieu d'une phrase ne perd
+ * rien — le brouillon est en base. Et une phrase oubliée dans le champ est
+ * ajoutée automatiquement au moment où la séance est marquée terminée, ce qui
+ * ferme le seul trou que le bouton ouvrait.
+ *
+ * `slot` est l'id du mouvement, ou `SESSION_NOTE_SLOT` pour la remarque de
+ * séance : un champ texte, parce qu'IndexedDB n'indexe pas `null` et qu'ici
+ * l'unicité est justement ce qu'on veut.
+ */
+export interface NoteDraftRow {
+  id?: number;
+  slot: string;
+  week: number;
+  day: DayIndex;
+  date: string;
+  text: string;
+  updatedAt: number;
+}
+
+/** `slot` du brouillon de la remarque de séance. */
+export const SESSION_NOTE_SLOT = "__seance__";
+
+/**
+ * Un exercice que Guillaume a mis dans SA séance — en remplacement d'un
+ * exercice prévu, ou en plus.
+ *
+ * ── Ce que cette table ne fait pas ─────────────────────────────────────────
+ *
+ * Elle ne modifie pas le programme. Le plan continue de prescrire ce qu'il
+ * prescrivait : la semaine suivante, le même créneau affiche de nouveau
+ * l'exercice d'origine. Un remplacement est un FAIT de séance, pas une
+ * correction du programme — c'est la même distinction qu'entre un aliment
+ * ajouté et une ligne du plan alimentaire.
+ *
+ * ── Pourquoi les séries ne sont pas ici ────────────────────────────────────
+ *
+ * Elles vont dans `sets`, avec `exerciseId` = celui du remplacement. C'est ce
+ * qui fait que §11 ne les voit jamais sous le lift d'origine : la progression
+ * lit l'historique par identifiant d'exercice, donc un Hack Squat fait à la
+ * place du Back Squat n'influence pas la charge de squat de la semaine
+ * suivante. Et si le même Hack Squat revient trois semaines plus tard, il
+ * retrouve son propre historique.
+ */
+export interface SessionExerciseRow {
+  id?: number;
+  sessionId: number;
+  week: number;
+  day: DayIndex;
+  date: string;
+  /** `replace` = à la place d'un exercice prévu. `add` = en plus. */
+  kind: "replace" | "add";
+  /** L'exercice prévu qu'il remplace, ou `null` pour un ajout. */
+  originalExerciseId: string | null;
+  /**
+   * Identifiant de l'exercice retenu : un id du catalogue, ou `libre:<slug>`
+   * pour un nom tapé à la main. Préfixé pour qu'un nom libre ne puisse jamais
+   * heurter un id du programme.
+   */
+  exerciseId: string;
+  /** Nom affiché, figé : un nom libre reste lisible sans dictionnaire. */
+  name: string;
+  sets: number;
+  reps: number;
+  kg: number | null;
+  restSec: number;
+  /** ms epoch de l'enregistrement. */
+  at: number;
+}

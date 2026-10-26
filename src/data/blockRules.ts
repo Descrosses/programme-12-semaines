@@ -224,11 +224,27 @@ const MAXFORCE: BlockRuleSet[] = [
        * gratuit — ils ne se concurrencent pas (anti-extension d'un côté,
        * flexion latérale de l'autre) et n'utilisent pas le même matériel.
        */
+      /*
+       * L'alternance se fait à volume ÉGAL : 3 × 8 des deux côtés.
+       *
+       * Elle ne l'était pas. L'Ab Wheel héritait des 3 × 8 de la trame et le
+       * Roman Side Bench entrait à 2 × 8 — deux exercices annoncés « une série
+       * de chaque » dont l'un comptait une série de plus. Au bout de deux
+       * tours, il n'y avait plus d'alternance : il restait une série d'Ab
+       * Wheel toute seule.
+       *
+       * Les séries sont écrites ici en toutes lettres, même quand elles
+       * répètent la trame : c'est le seul endroit où la règle d'alternance se
+       * lit, et la faire dépendre d'une valeur située dans un autre fichier
+       * est exactement ce qui l'a laissée se désaccorder.
+       */
       patch('ab-wheel', {
+        sets: 3,
+        work: reps(8),
         restSec: 45,
         note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
       }),
-      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8) },
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8) },
     ],
   },
   {
@@ -345,8 +361,26 @@ const MAXFORCE: BlockRuleSet[] = [
        * se faire en charge.
        */
       remove('suitcase-carry'),
+      /*
+       * Le Single-Leg RDL sort du samedi — pour le bloc force max, et pour
+       * lui seul.
+       *
+       * Une RÈGLE DE BLOC, pas une exception sur trois numéros de semaine :
+       * ce qui motive le retrait est ce que le bloc fait au samedi, pas le
+       * fait qu'on soit en semaine 5, 6 ou 7. Le samedi de force max porte le
+       * deadlift à 4 min de repos, le front squat, et un Hip Thrust à +10 % —
+       * trois mouvements de chaîne postérieure lourds, suivis du Zercher
+       * March et du Roman Side Bench. Le Single-Leg RDL à 3 × 8/côté y est
+       * la septième station et la moins décisive : son intention, le hinge
+       * unilatéral lent, est déjà payée six fois dans la séance.
+       *
+       * Écrit en règle, il revient tout seul partout ailleurs : semaines 1 à
+       * 4, et semaines 9 à 12. Aucune liste de semaines à maintenir, et
+       * aucun risque qu'il disparaisse d'un bloc où personne ne l'a retiré.
+       */
+      remove('single-leg-rdl'),
       { op: 'insert', slot: zercherMarch(2, 12) },
-      { op: 'insert', slot: romanSideBench(2, 8) },
+      { op: 'insert', slot: romanSideBench(3, 8) },
     ],
   },
   {
@@ -442,13 +476,14 @@ const POWER: BlockRuleSet[] = [
       remove('box-jump'),
       patch('back-squat', { contrastWith: 'box-jump' }),
       patch('bulgarian-split-squat', { sets: 3, work: reps(5, true, 'jambe'), targetRPE: rpe(7.5) }),
+      // Même alternance qu'en force max, et même volume des deux côtés.
       patch('ab-wheel', {
         sets: 3,
         work: reps(8),
         restSec: 45,
         note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
       }),
-      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 6) },
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8) },
     ],
   },
   {
@@ -540,7 +575,7 @@ const POWER: BlockRuleSet[] = [
       patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
       remove('suitcase-carry'),
       { op: 'insert', slot: zercherMarch(2, 12) },
-      { op: 'insert', slot: romanSideBench(2, 6) },
+      { op: 'insert', slot: romanSideBench(3, 8) },
     ],
   },
   {
@@ -602,6 +637,13 @@ const DELOAD_S8: BlockRuleSet[] = [
     block: 'deload',
     day: 0,
     fromWeek: 5,
+    /*
+     * Les séries écrites ici ne décident de rien : la semaine 8 est un deload,
+     * donc `DELOAD_CORE` ramène l'Ab Wheel à 2 × 6 et le Roman Side Bench à
+     * 2 × 6/côté, après cette règle. C'est voulu — la règle du deload du
+     * programme passe avant le volume de bloc, et les 3 × 8 des semaines
+     * normales ne doivent pas s'y glisser.
+     */
     rules: [{ op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8) }],
   },
   {

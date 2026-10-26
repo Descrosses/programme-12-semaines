@@ -92,7 +92,13 @@ describe('trames §7', () => {
   });
 
   it('le readiness test est prévu les jours jambes uniquement (§4 : lundi, vendredi, samedi)', () => {
-    expect(DAYS.map((d) => BASE_SESSIONS[d]!.readinessTest)).toEqual([true, false, true, true, false]);
+    expect(DAYS.map((d) => BASE_SESSIONS[d]!.readinessTest)).toEqual([
+      true,
+      false,
+      true,
+      true,
+      false,
+    ]);
   });
 
   it('un slot piloté par le tableau déclare bien son liftId', () => {
@@ -141,7 +147,9 @@ describe('règles de bloc §8', () => {
       const present = new Set(BASE_SESSIONS[set.day]!.slots.map((s) => s.exId));
       for (const rule of set.rules) {
         if (rule.op === 'insert') continue;
-        expect(present.has(rule.exId), `${set.block} ${DAY_LABELS[set.day]} → ${rule.exId}`).toBe(true);
+        expect(present.has(rule.exId), `${set.block} ${DAY_LABELS[set.day]} → ${rule.exId}`).toBe(
+          true,
+        );
       }
     }
   });
@@ -157,9 +165,14 @@ describe('règles de bloc §8', () => {
   it('l’explosif du contraste est retiré du début de séance', () => {
     for (const [dayStr, spec] of Object.entries(CONTRAST_BY_DAY)) {
       const day = Number(dayStr) as DayIndex;
-      const rules = BLOCK_RULES.filter((r) => r.block === 'power' && r.day === day).flatMap((r) => r.rules);
+      const rules = BLOCK_RULES.filter((r) => r.block === 'power' && r.day === day).flatMap(
+        (r) => r.rules,
+      );
       const removed = rules.some((r) => r.op === 'remove' && r.exId === spec!.explosive);
-      expect(removed, `${DAY_LABELS[day]} : ${spec!.explosive} doit sortir du début de séance`).toBe(true);
+      expect(
+        removed,
+        `${DAY_LABELS[day]} : ${spec!.explosive} doit sortir du début de séance`,
+      ).toBe(true);
     }
   });
 
@@ -216,7 +229,10 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
 
     expect(jours.length).toBeGreaterThanOrEqual(3);
     for (let i = 1; i < jours.length; i++) {
-      expect(jours[i]! - jours[i - 1]!, `jours ${jours[i - 1]} et ${jours[i]}`).toBeGreaterThanOrEqual(2);
+      expect(
+        jours[i]! - jours[i - 1]!,
+        `jours ${jours[i - 1]} et ${jours[i]}`,
+      ).toBeGreaterThanOrEqual(2);
     }
   });
 
@@ -235,9 +251,10 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
 
   it('§12 — le poids de corps ne figure dans aucune séance de combine', () => {
     for (const s of SPECIAL_SESSIONS) {
-      expect(s.blueprint.slots.map((x) => x.exId), s.blueprint.title).not.toContain(
-        'test-bodyweight',
-      );
+      expect(
+        s.blueprint.slots.map((x) => x.exId),
+        s.blueprint.title,
+      ).not.toContain('test-bodyweight');
     }
   });
 
@@ -261,7 +278,10 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
     for (const day of [2, 4, 5, 6] as DayIndex[]) {
       const s = SPECIAL_SESSIONS.find((x) => x.week === 12 && x.day === day)!.blueprint;
       const lourds = s.slots.filter((slot) => slot.liftId && slot.liftId !== 'speed-squat');
-      expect(lourds.map((l) => l.exId), `S12 ${DAY_LABELS[day]}`).toEqual([]);
+      expect(
+        lourds.map((l) => l.exId),
+        `S12 ${DAY_LABELS[day]}`,
+      ).toEqual([]);
     }
   });
 
@@ -336,8 +356,10 @@ describe('§12 — paliers du test final', () => {
     };
     for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
       const essais = ramp.filter((r) => r.attempt).map((r) => r.kg);
-      expect(Math.max(...essais), `${lift} — le protocole n’atteint pas la cible §13`)
-        .toBeGreaterThanOrEqual(CIBLE_BASSE[lift]!);
+      expect(
+        Math.max(...essais),
+        `${lift} — le protocole n’atteint pas la cible §13`,
+      ).toBeGreaterThanOrEqual(CIBLE_BASSE[lift]!);
     }
   });
 
@@ -522,10 +544,7 @@ describe('chaque test de 1RM trouve ses paliers', () => {
  * combine avait mesuré l'inverse. Un texte ne se vérifie pas tout seul.
  */
 describe('§1 — le diagnostic est écrit sur les valeurs mesurées', () => {
-  const MD = readFileSync(
-    new URL('../../programme-final-12-semaines.md', import.meta.url),
-    'utf8',
-  );
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
   const MD_1 = MD.split('## 1.')[1]!.split('\n## ')[0]!;
 
   it('les quatre maxima mesurés y figurent', () => {
@@ -560,16 +579,18 @@ describe('§1 — le diagnostic est écrit sur les valeurs mesurées', () => {
 });
 
 describe('§8 — la table de deload du tronc est celle du code', () => {
-  const MD = readFileSync(
-    new URL('../../programme-final-12-semaines.md', import.meta.url),
-    'utf8',
-  );
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
   /** Les lignes « | Exercice | habituel | deload | » du tableau du §8. */
   const LIGNES = MD.split('Tronc et portés — ils déloadent eux aussi')[1]!
     .split('\n\n')[1]!
     .split('\n')
     .filter((l) => l.startsWith('|') && !l.includes('---') && !l.includes('Habituel'))
-    .map((l) => l.split('|').map((c) => c.trim()).filter(Boolean));
+    .map((l) =>
+      l
+        .split('|')
+        .map((c) => c.trim())
+        .filter(Boolean),
+    );
 
   /** « 2 × 5 / côté » et « 2 × 5/côté » décrivent la même chose. */
   const norm = (t: string) => t.replace(/\s+/g, '').replace('–', '-');
@@ -598,10 +619,7 @@ describe('§8 — la table de deload du tronc est celle du code', () => {
 });
 
 describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
-  const MD = readFileSync(
-    new URL('../../programme-final-12-semaines.md', import.meta.url),
-    'utf8',
-  );
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
 
   it('la progression du §8 annonce les mêmes semaines que les règles de bloc', () => {
     const table = MD.split('### Landmine Rotation')[1]!.split('###')[0]!;
@@ -646,10 +664,9 @@ describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
  * bloc censé charger. Le .md et le code doivent dire la même chose.
  */
 describe('§8 — les accessoires autorégulés montent en charge en force max', () => {
-  const MD = readFileSync(
-    new URL('../../programme-final-12-semaines.md', import.meta.url),
-    'utf8',
-  ).split('### Semaines 5-7')[1]!.split('###')[0]!;
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8')
+    .split('### Semaines 5-7')[1]!
+    .split('###')[0]!;
 
   const patchs = BLOCK_RULES.filter((r) => r.block === 'maxforce')
     .flatMap((r) => r.rules)
@@ -696,10 +713,7 @@ describe('§8 — les accessoires autorégulés montent en charge en force max',
 });
 
 describe('§8 — Barbell Offset Hold', () => {
-  const MD = readFileSync(
-    new URL('../../programme-final-12-semaines.md', import.meta.url),
-    'utf8',
-  );
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
   const BLOC = MD.split('### Barbell Offset Hold')[1]!.split('###')[0]!;
 
   it('le .md dit ce que le code programme', () => {
@@ -731,5 +745,18 @@ describe('§8 — Barbell Offset Hold', () => {
     expect(md14).toMatch(/aucune adduction de hanche/i);
     // La marche reste une possibilité, jamais une programmation.
     expect(md14).toMatch(/non programmée/i);
+  });
+});
+
+describe('le mouvement « libre » n’appartient pas au programme', () => {
+  it('aucun exercice du catalogue ne le porte', () => {
+    /*
+     * `fn: 'libre'` existe pour les exercices choisis en séance — remplacement
+     * ou ajout, éventuellement tapés à la main. Le voir apparaître dans le
+     * catalogue voudrait dire qu'un exercice du .md a été transcrit sans qu'on
+     * sache à quel pattern il appartient, et il hériterait alors des règles
+     * d'incrément du bas du corps ou pas selon le hasard.
+     */
+    for (const id of EXERCISE_IDS) expect(EXERCISES[id]!.fn, id).not.toBe('libre');
   });
 });

@@ -465,22 +465,40 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
 });
 
 describe('Roman Side Bench et Zercher March', () => {
-  it('le Roman Side Bench tient le lundi et le samedi', () => {
-    for (const w of [5, 7]) {
-      expect(trouve(w, 0, 'roman-side-bench').loadLine).toBe('2 × 8 / côté — poids du corps');
-      expect(trouve(w, 5, 'roman-side-bench').loadLine).toBe('2 × 8 / côté — poids du corps');
+  it('le Roman Side Bench tient le lundi et le samedi, à 3 × 8/côté', () => {
+    for (const w of [5, 6, 7, 9, 10, 11]) {
+      expect(trouve(w, 0, 'roman-side-bench').loadLine).toBe('3 × 8 / côté — poids du corps');
+      expect(trouve(w, 5, 'roman-side-bench').loadLine).toBe('3 × 8 / côté — poids du corps');
     }
-    // Volume réduit en bloc puissance, comme tout le reste.
-    expect(trouve(9, 0, 'roman-side-bench').loadLine).toBe('2 × 6 / côté — poids du corps');
   });
 
-  it('il s’enchaîne en alternance avec l’Ab Wheel le lundi', () => {
-    const s = session(5, 0);
-    expect(trouve(5, 0, 'ab-wheel').restSec).toBe(45);
-    expect(trouve(5, 0, 'roman-side-bench').restSec).toBe(45);
-    const noms = ids(s.exercises);
-    expect(noms[noms.indexOf('ab-wheel') + 1]).toBe('roman-side-bench');
-    expect(trouve(5, 0, 'ab-wheel').notes.join(' ')).toMatch(/alternance/i);
+  it('la règle du deload reste la règle du deload : 2 séries en semaine 8', () => {
+    /*
+     * Le volume de bloc ne doit pas se glisser dans le deload. La semaine 8
+     * garde ses 2 séries, parce que c'est ce que le programme écrit — et la
+     * semaine 4 n'a pas cet exercice, qui n'existe qu'à partir de la 5.
+     */
+    expect(trouve(8, 0, 'roman-side-bench').loadLine).toBe('2 × 6 / côté — poids du corps');
+    expect(trouve(8, 0, 'ab-wheel').loadLine).toBe('2 × 6 — poids du corps');
+  });
+
+  it('alternance à volume ÉGAL avec l’Ab Wheel le lundi', () => {
+    /*
+     * C'était l'incohérence : « une série de chaque » annoncé, et l'un des
+     * deux à 3 séries quand l'autre en avait 2. Au bout de deux tours il
+     * restait une série d'Ab Wheel toute seule.
+     */
+    for (const w of [5, 6, 7, 9, 10, 11]) {
+      const abWheel = trouve(w, 0, 'ab-wheel');
+      const roman = trouve(w, 0, 'roman-side-bench');
+      expect(abWheel.sets).toBe(roman.sets);
+      expect(abWheel.sets).toBe(3);
+      expect(abWheel.restSec).toBe(45);
+      expect(roman.restSec).toBe(45);
+      const noms = ids(session(w, 0).exercises);
+      expect(noms[noms.indexOf('ab-wheel') + 1]).toBe('roman-side-bench');
+      expect(abWheel.notes.join(' ')).toMatch(/alternance/i);
+    }
   });
 
   it('le Zercher March démarre barre nue et se mesure en mètres', () => {

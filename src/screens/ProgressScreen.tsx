@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart, LineChart, type Series } from '../components/Chart';
+import { NotesBrowser } from '../components/NotesBrowser';
+import { SessionDurations } from '../components/SessionDurations';
 import { VisualTracking } from '../components/VisualTracking';
 import { WeightOverview } from '../components/WeightOverview';
 import { EXERCISES } from '../data/exercises';
@@ -7,15 +9,17 @@ import { prescriptionFor } from '../data/mainLiftTable';
 import { DAY_LABELS_SHORT, type MainLiftId } from '../data/types';
 import { fr } from '../engine/format';
 import { explosiveTrend, weeklyBests } from '../engine/trends';
-import type { HistoryIndex } from '../engine/types';
+import type { HistoryIndex, SessionContext } from '../engine/types';
 import {
   allReadiness,
+  allSessions,
   allSets,
   buildHistoryIndex,
   getSettingsRow,
+  toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
-import type { ReadinessRow, SetRow } from '../db/db';
+import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
 import styles from './Screens.module.css';
 
 /** Les quatre lifts que le programme suit vraiment (§13). */
@@ -37,7 +41,7 @@ const LIFTS: Array<{ id: MainLiftId; label: string }> = [
  * son propre sélecteur de période, deux graphiques et un tableau de treize
  * lignes. Empilé sous le reste, on ne l'aurait jamais atteint au pouce.
  */
-type Vue = 'chiffres' | 'poids' | 'photos';
+type Vue = 'chiffres' | 'poids' | 'remarques' | 'photos';
 
 export function ProgressScreen() {
   const [vue, setVue] = useState<Vue>('chiffres');
@@ -45,24 +49,41 @@ export function ProgressScreen() {
     history: HistoryIndex;
     readiness: ReadinessRow[];
     sets: SetRow[];
+    sessions: SessionRow[];
     baseline: number | null;
     oneRM: Record<string, number>;
+    ctx: SessionContext;
   } | null>(null);
   const [lift, setLift] = useState<MainLiftId>('deadlift');
 
   useEffect(() => {
     void (async () => {
-      const [sets, readiness, settingsRow] = await Promise.all([
+      const [sets, readiness, settingsRow, sessions] = await Promise.all([
         allSets(),
         allReadiness(),
         getSettingsRow(),
+        allSessions(),
       ]);
+      const history = buildHistoryIndex(sets);
       setData({
-        history: buildHistoryIndex(sets),
+        history,
         readiness,
         sets,
+        sessions,
         baseline: settingsRow.broadJumpBaselineCm,
         oneRM: settingsRow.oneRM,
+        /*
+         * La durée prévue d'une séance se calcule depuis la séance RÉSOLUE :
+         * elle dépend des règles de bloc, du deload, des séries réellement
+         * prescrites. On reconstruit donc le même contexte que l'écran Séance ;
+         * la readiness, elle, est posée séance par séance par le composant.
+         */
+        ctx: {
+          settings: toEngineSettings(settingsRow),
+          history,
+          readiness: null,
+          explosiveDecline: explosiveTrend(toReadinessRecords(readiness)).declining,
+        },
       });
     })();
   }, []);
@@ -96,7 +117,11 @@ export function ProgressScreen() {
   // --- broad jump dans le temps --------------------------------------------
   const jumps = weeklyBests(toReadinessRecords(data.readiness));
   const jumpSeries: Series[] = [
-    { label: 'Meilleur saut', color: 'var(--vert)', points: jumps.map((j) => ({ x: j.week, y: j.cm })) },
+    {
+      label: 'Meilleur saut',
+      color: 'var(--vert)',
+      points: jumps.map((j) => ({ x: j.week, y: j.cm })),
+    },
   ];
   if (data.baseline !== null && jumps.length > 0) {
     jumpSeries.unshift({
@@ -115,7 +140,12 @@ export function ProgressScreen() {
   for (const s of data.sets) {
     if (s.actualRpe === null) continue;
     const key = `${s.week}-${s.day}`;
-    const cur = bySession.get(key) ?? { sum: 0, n: 0, week: s.week, day: s.day };
+    const cur = bySession.get(key) ?? {
+      sum: 0,
+      n: 0,
+      week: s.week,
+      day: s.day,
+    };
     cur.sum += s.actualRpe;
     cur.n += 1;
     bySession.set(key, cur);
@@ -140,6 +170,8 @@ export function ProgressScreen() {
         <p className={styles.lead}>
           {vue === 'chiffres' && 'Ce que tu as réellement soulevé, comparé au plan.'}
           {vue === 'poids' && 'Le poids de corps depuis le combine initial, pas sur sept jours.'}
+          {vue === 'remarques' &&
+            'Tout ce que tu as noté sur chaque mouvement, du plus récent au plus ancien.'}
           {vue === 'photos' && 'Une photo par semaine. Ce que les courbes ne montrent pas.'}
         </p>
       </header>
@@ -149,6 +181,7 @@ export function ProgressScreen() {
           [
             ['chiffres', 'Charges'],
             ['poids', 'Poids'],
+            ['remarques', 'Remarques'],
             ['photos', 'Photos'],
           ] as const
         ).map(([id, label]) => (
@@ -166,68 +199,89 @@ export function ProgressScreen() {
 
       {vue === 'poids' && <WeightOverview />}
 
+      {vue === 'remarques' && <NotesBrowser />}
+
       {vue === 'photos' && <VisualTracking />}
 
       {vue === 'chiffres' && (
         <>
-      {trend?.declining && (
-        <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
-          {trend.message}
-        </p>
-      )}
+          {trend?.declining && (
+            <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
+              {trend.message}
+            </p>
+          )}
 
-      <div className={styles.weeks}>
-        {LIFTS.map((l) => (
-          <button
-            key={l.id}
-            type="button"
-            className={`${styles.week} ${lift === l.id ? styles.weekOn : ''}`}
-            style={{ width: 'auto', padding: '0 14px', borderBottomColor: 'var(--accent)' }}
-            onClick={() => setLift(l.id)}
-            aria-pressed={lift === l.id}
-          >
-            <span className={styles.weekNum} style={{ fontSize: '1rem' }}>
-              {l.label}
-            </span>
-          </button>
-        ))}
-      </div>
+          <div className={styles.weeks}>
+            {LIFTS.map((l) => (
+              <button
+                key={l.id}
+                type="button"
+                className={`${styles.week} ${lift === l.id ? styles.weekOn : ''}`}
+                style={{
+                  width: 'auto',
+                  padding: '0 14px',
+                  borderBottomColor: 'var(--accent)',
+                }}
+                onClick={() => setLift(l.id)}
+                aria-pressed={lift === l.id}
+              >
+                <span className={styles.weekNum} style={{ fontSize: '1rem' }}>
+                  {l.label}
+                </span>
+              </button>
+            ))}
+          </div>
 
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>{EXERCISES[lift]?.name} — charge par semaine</h2>
-        <p className={styles.cardSub}>
-          {realPoints.length === 0
-            ? 'Rien d’enregistré pour l’instant.'
-            : `Dernière charge travaillée : ${fr(realPoints[realPoints.length - 1]!.y)} kg.`}
-        </p>
-        <LineChart
-          series={liftSeries}
-          xLabels={weeksX}
-          unit="kg"
-          emptyMessage="Valide des séries pour voir la courbe apparaître."
-        />
-      </section>
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>{EXERCISES[lift]?.name} — charge par semaine</h2>
+            <p className={styles.cardSub}>
+              {realPoints.length === 0
+                ? 'Rien d’enregistré pour l’instant.'
+                : `Dernière charge travaillée : ${fr(realPoints[realPoints.length - 1]!.y)} kg.`}
+            </p>
+            <LineChart
+              series={liftSeries}
+              xLabels={weeksX}
+              unit="kg"
+              emptyMessage="Valide des séries pour voir la courbe apparaître."
+            />
+          </section>
 
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Broad jump — readiness</h2>
-        <p className={styles.cardSub}>
-          Meilleur saut de chaque semaine. Deux baisses de suite déclenchent le cas 7 du programme.
-        </p>
-        <LineChart
-          series={jumpSeries}
-          xLabels={weeksX}
-          unit="cm"
-          emptyMessage="Aucun readiness test enregistré."
-        />
-      </section>
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Broad jump — readiness</h2>
+            <p className={styles.cardSub}>
+              Meilleur saut de chaque semaine. Deux baisses de suite déclenchent le cas 7 du
+              programme.
+            </p>
+            <LineChart
+              series={jumpSeries}
+              xLabels={weeksX}
+              unit="cm"
+              emptyMessage="Aucun readiness test enregistré."
+            />
+          </section>
 
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>RPE moyen par séance</h2>
-        <p className={styles.cardSub}>
-          Les 12 dernières séances. Une barre rouge signale une séance encaissée à 9 ou plus.
-        </p>
-        <BarChart bars={rpeBars} emptyMessage="Aucun RPE saisi pour l’instant." />
-      </section>
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Durée des séances</h2>
+            <p className={styles.cardSub}>
+              Mesurée entre la première ouverture de la séance et « Séance terminée ». Le trait
+              clair sur la barre marque la durée prévue.
+            </p>
+            <SessionDurations
+              rows={data.sessions}
+              readinessRows={data.readiness}
+              baselineCm={data.baseline}
+              ctx={data.ctx}
+            />
+          </section>
+
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>RPE moyen par séance</h2>
+            <p className={styles.cardSub}>
+              Les 12 dernières séances. Une barre rouge signale une séance encaissée à 9 ou plus.
+            </p>
+            <BarChart bars={rpeBars} emptyMessage="Aucun RPE saisi pour l’instant." />
+          </section>
         </>
       )}
     </div>

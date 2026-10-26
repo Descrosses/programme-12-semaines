@@ -8,7 +8,18 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { hasNote, noteBadgeLabel, normalizeNote, pastNotes, type NoteLike } from './exerciseNotes';
+import {
+  hasNote,
+  noteBadgeLabel,
+  noteHistory,
+  noteLine,
+  notesByExercise,
+  noteWeekLabel,
+  normalizeNote,
+  pastNotes,
+  type NoteEntry,
+  type NoteLike,
+} from './exerciseNotes';
 import type { DayIndex } from '../data/types';
 
 const note = (week: number, day: DayIndex, text: string, date = '2026-09-14'): NoteLike => ({
@@ -90,10 +101,7 @@ describe('lesquelles relire quand le mouvement revient', () => {
    * recalage.
    */
   it('un recalage du calendrier ne change pas l’ordre', () => {
-    const rows = [
-      note(1, 0, 'semaine 1', '2027-01-04'),
-      note(3, 0, 'semaine 3', '2026-09-28'),
-    ];
+    const rows = [note(1, 0, 'semaine 1', '2027-01-04'), note(3, 0, 'semaine 3', '2026-09-28')];
     expect(pastNotes(rows, ici).map((r) => r.text)).toEqual(['semaine 3', 'semaine 1']);
   });
 
@@ -108,5 +116,107 @@ describe('le libellé du badge', () => {
     expect(noteBadgeLabel(1)).toBe('1 remarque');
     expect(noteBadgeLabel(2)).toBe('2 remarques');
     expect(noteBadgeLabel(11)).toBe('11 remarques');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('historique appendé', () => {
+  const n = (
+    exerciseId: string | null,
+    week: number,
+    text: string,
+    at = week * 1000,
+    day: DayIndex = 0,
+  ): NoteEntry => ({ exerciseId, week, day, date: '', text, at });
+
+  it('garde DEUX remarques sur le même mouvement la même séance', () => {
+    // C'était impossible avant : la clé unique faisait que la seconde
+    // écrasait la première, alors que c'est leur succession qui dit quelque
+    // chose.
+    const rows = [
+      n('bench-press', 5, 'épaule gauche tire un peu', 100),
+      n('bench-press', 5, 'c’est passé en 3e série', 200),
+    ];
+    const h = noteHistory(rows, 'bench-press');
+    expect(h).toHaveLength(2);
+    expect(h[0]!.text).toBe('c’est passé en 3e série');
+  });
+
+  it('range du plus récent au plus ancien, semaine puis jour', () => {
+    const rows = [
+      n('rdl', 1, 'une'),
+      n('rdl', 5, 'cinq'),
+      n('rdl', 3, 'trois'),
+      { ...n('rdl', 5, 'cinq samedi'), day: 5 as DayIndex },
+    ];
+    expect(noteHistory(rows, 'rdl').map((r) => r.text)).toEqual([
+      'cinq samedi',
+      'cinq',
+      'trois',
+      'une',
+    ]);
+  });
+
+  it('ne mélange pas les mouvements', () => {
+    const rows = [n('rdl', 2, 'dos plat'), n('deadlift', 2, 'barre loin')];
+    expect(noteHistory(rows, 'rdl').map((r) => r.text)).toEqual(['dos plat']);
+  });
+
+  it('sépare la remarque de séance des remarques de mouvement', () => {
+    const rows = [n(null, 3, 'mal dormi'), n('back-squat', 3, 'lourd')];
+    expect(noteHistory(rows, null).map((r) => r.text)).toEqual(['mal dormi']);
+    expect(noteHistory(rows, 'back-squat').map((r) => r.text)).toEqual(['lourd']);
+  });
+
+  it('écarte les remarques vides sans les compter', () => {
+    const rows = [n('rdl', 1, '   '), n('rdl', 2, 'vrai texte')];
+    expect(noteHistory(rows, 'rdl')).toHaveLength(1);
+  });
+
+  it('écrit la ligne sous la forme demandée', () => {
+    expect(noteLine(n('bench-press', 5, 'épaule gauche tire un peu'))).toBe(
+      'S5 — épaule gauche tire un peu',
+    );
+    expect(noteWeekLabel(n('rdl', 11, 'x'))).toBe('S11');
+  });
+});
+
+describe('notesByExercise', () => {
+  const n = (
+    exerciseId: string | null,
+    week: number,
+    text: string,
+    at = week * 1000,
+  ): NoteEntry => ({ exerciseId, week, day: 0, date: '', text, at });
+
+  it('range les mouvements les plus commentés en tête', () => {
+    const rows = [
+      n('rdl', 1, 'a'),
+      n('back-squat', 1, 'b'),
+      n('back-squat', 3, 'c'),
+      n('back-squat', 5, 'd'),
+      n('deadlift', 2, 'e'),
+      n('deadlift', 4, 'f'),
+    ];
+    expect(notesByExercise(rows).map((g) => [g.exerciseId, g.notes.length])).toEqual([
+      ['back-squat', 3],
+      ['deadlift', 2],
+      ['rdl', 1],
+    ]);
+  });
+
+  it('met les remarques de séance en dernier à nombre égal', () => {
+    const rows = [n(null, 5, 'mal dormi'), n('rdl', 1, 'dos plat')];
+    expect(notesByExercise(rows).map((g) => g.exerciseId)).toEqual(['rdl', null]);
+  });
+
+  it('trie chaque groupe du plus récent au plus ancien', () => {
+    const rows = [n('rdl', 1, 'vieille'), n('rdl', 7, 'récente')];
+    expect(notesByExercise(rows)[0]!.notes.map((x) => x.text)).toEqual(['récente', 'vieille']);
+  });
+
+  it('rend une liste vide sans remarque', () => {
+    expect(notesByExercise([])).toEqual([]);
   });
 });

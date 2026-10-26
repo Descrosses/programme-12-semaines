@@ -55,13 +55,12 @@ const mes = (
 /** Le squat se fait le lundi ; « before » est la séance, pas la semaine. */
 const squat = (occ: Occurrence[] | undefined, week: number, day: DayIndex = 0) =>
   lastPerformance(occ, { exerciseId: 'back-squat', before: { week, day } });
-const saut = (
-  occ: Occurrence[],
-  week: number,
-  unit = 'cm',
-  id = 'broad-jump',
-  day: DayIndex = 4,
-) => lastPerformance(occ, { exerciseId: id, measureUnit: unit, before: { week, day } });
+const saut = (occ: Occurrence[], week: number, unit = 'cm', id = 'broad-jump', day: DayIndex = 4) =>
+  lastPerformance(occ, {
+    exerciseId: id,
+    measureUnit: unit,
+    before: { week, day },
+  });
 
 describe('les mouvements chargés', () => {
   it('affiche la charge et le RPE réellement saisis', () => {
@@ -134,21 +133,34 @@ describe('les sauts, sprints et portés', () => {
   });
 
   it('un sprint plus COURT est une progression', () => {
-    const p = saut([mes(0, 1.84, 'test-sprint-10m'), mes(8, 1.78, 'test-sprint-10m')], 12, 's', 'test-sprint-10m')!;
+    const p = saut(
+      [mes(0, 1.84, 'test-sprint-10m'), mes(8, 1.78, 'test-sprint-10m')],
+      12,
+      's',
+      'test-sprint-10m',
+    )!;
     expect(p.value).toBe('1,78 s');
     expect(p.trend).toBe('up');
     expect(p.delta).toBe('−0,06 s');
   });
 
   it('un sprint plus long, lui, reste neutre', () => {
-    const p = saut([mes(0, 1.78, 'test-sprint-10m'), mes(8, 1.84, 'test-sprint-10m')], 12, 's', 'test-sprint-10m')!;
+    const p = saut(
+      [mes(0, 1.78, 'test-sprint-10m'), mes(8, 1.84, 'test-sprint-10m')],
+      12,
+      's',
+      'test-sprint-10m',
+    )!;
     expect(p.trend).toBe('down');
   });
 
   it('sans unité de mesure connue, on ne montre rien', () => {
     // Un chiffre sans unité ne veut rien dire : mieux vaut se taire.
     expect(
-      lastPerformance([mes(1, 230)], { exerciseId: 'broad-jump', before: { week: 3, day: 4 } }),
+      lastPerformance([mes(1, 230)], {
+        exerciseId: 'broad-jump',
+        before: { week: 3, day: 4 },
+      }),
     ).toBeNull();
   });
 });
@@ -346,5 +358,132 @@ describe('les portés — distance ET charge', () => {
     // qu'une variable.
     expect(squat([kg(1, 77.5, 7), kg(2, 82.5, 7.5)], 3)!.value).toBe('82,5 kg');
     expect(saut([mes(1, 230), mes(2, 238)], 3)!.value).toBe('238 cm');
+  });
+});
+
+describe('lastPerformance — le format réellement fait', () => {
+  const occ = (
+    week: number,
+    kg: number | null,
+    sets: Array<{ reps: number | null; kg: number | null }>,
+  ): Occurrence => ({
+    exerciseId: 'back-squat',
+    week,
+    day: 0,
+    kg,
+    plannedKg: kg,
+    rpe: 8,
+    failed: false,
+    targetRPE: null,
+    completed: true,
+    sets,
+  });
+
+  it('rend le format de la dernière séance, pas un agrégat', () => {
+    const perf = lastPerformance(
+      [
+        occ(
+          3,
+          115,
+          Array.from({ length: 5 }, () => ({ reps: 3, kg: 115 })),
+        ),
+      ],
+      { exerciseId: 'back-squat', before: { week: 4, day: 0 } },
+    );
+    expect(perf?.format).toBe('5 × 3 × 115 kg');
+  });
+
+  it('montre la version compacte quand les séries n’ont pas tenu', () => {
+    const perf = lastPerformance(
+      [
+        occ(3, 115, [
+          { reps: 3, kg: 115 },
+          { reps: 3, kg: 115 },
+          { reps: 3, kg: 115 },
+          { reps: 2, kg: 115 },
+        ]),
+      ],
+      { exerciseId: 'back-squat', before: { week: 4, day: 0 } },
+    );
+    expect(perf?.format).toBe('3 × 3 × 115 kg + 1 × 2 × 115 kg');
+  });
+
+  it('n’invente aucun format sur une occurrence sans détail de séries', () => {
+    const sansDetail: Occurrence = {
+      exerciseId: 'back-squat',
+      week: 2,
+      day: 0,
+      kg: 110,
+      plannedKg: 110,
+      rpe: 7,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    };
+    const perf = lastPerformance([sansDetail], {
+      exerciseId: 'back-squat',
+      before: { week: 3, day: 0 },
+    });
+    expect(perf?.value).toBe('110 kg');
+    expect(perf?.format).toBeNull();
+  });
+});
+
+describe('la puce ne compare jamais des mètres à des pas', () => {
+  const porte = (week: number, measure: number, measureUnit: string, kg = 20): Occurrence => ({
+    exerciseId: 'zercher-march',
+    week,
+    day: 5,
+    kg,
+    plannedKg: kg,
+    rpe: null,
+    failed: false,
+    targetRPE: null,
+    completed: false,
+    measure,
+    measureUnit,
+  });
+
+  const lire = (occ: Occurrence[], before = { week: 12, day: 5 as DayIndex }) =>
+    lastPerformance(occ, { exerciseId: 'zercher-march', measureUnit: 'm', before });
+
+  it('affiche l’unité de la séance, pas celle du programme', () => {
+    const perf = lire([porte(6, 18, 'pas')]);
+    expect(perf?.value).toContain('18 pas');
+    expect(perf?.value).not.toContain('18 m');
+  });
+
+  it('calcule l’écart entre deux séances de la même unité', () => {
+    const perf = lire([porte(5, 12, 'm'), porte(6, 14, 'm')]);
+    expect(perf?.value).toContain('14 m');
+    expect(perf?.delta).toContain('+2 m');
+  });
+
+  it('n’annonce AUCUN écart quand l’unité a changé', () => {
+    // 18 pas après 12 m : il n'y a pas de « +6 ». On montre la valeur du
+    // jour, et rien d'autre.
+    const perf = lire([porte(5, 12, 'm'), porte(6, 18, 'pas')]);
+    expect(perf?.value).toContain('18 pas');
+    expect(perf?.delta).toBeNull();
+    expect(perf?.trend).toBe('flat');
+  });
+
+  it('remonte jusqu’à la dernière séance de la MÊME unité pour l’écart', () => {
+    const perf = lire([porte(5, 12, 'm'), porte(6, 18, 'pas'), porte(7, 15, 'm')]);
+    expect(perf?.value).toContain('15 m');
+    // Comparé aux 12 m de la semaine 5, pas aux 18 pas de la semaine 6.
+    expect(perf?.delta).toContain('+3 m');
+  });
+
+  it('la charge garde son écart même quand l’unité de distance change', () => {
+    const perf = lire([porte(5, 12, 'm', 20), porte(6, 18, 'pas', 22.5)]);
+    expect(perf?.delta).toContain('+2,5 kg');
+    expect(perf?.delta).not.toContain('pas');
+  });
+
+  it('une occurrence sans unité est traitée comme des mètres', () => {
+    const sans: Occurrence = { ...porte(5, 12, 'm'), measureUnit: null };
+    const perf = lire([sans, porte(6, 14, 'm')]);
+    expect(perf?.delta).toContain('+2 m');
   });
 });

@@ -803,13 +803,13 @@
 }
 
 .summary::after {
-  content: '+';
+  content: "+";
   font-size: 1.375rem;
   color: var(--ink-3);
 }
 
 .details[open] .summary::after {
-  content: '−';
+  content: "−";
 }
 
 .detailsBody {
@@ -1356,4 +1356,149 @@
   color: var(--ink-3);
   font-size: 1.25rem;
   line-height: 1;
+}
+
+/* ------------------------------------------------- durées de séance -- */
+
+.durations {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Grille en deux colonnes : le repère à gauche, la mesure à droite. La barre
+ * et l'écart occupent toute la largeur sur la ligne du dessous, ce qui garde
+ * les chiffres lisibles sur un écran de 390 px sans jamais tronquer une date.
+ */
+.durationRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+  font-size: var(--fs-small);
+}
+
+.durationWhen {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.durationDate {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.durationValue {
+  color: var(--ink);
+  font-weight: 700;
+  text-align: right;
+}
+
+.durationPlanned {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.durationBar {
+  position: relative;
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.durationFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+.durationOver {
+  background: var(--jaune, #f2b33d);
+}
+
+/* Le prévu : un trait, pas une seconde barre. On compare une longueur à un repère. */
+.durationMark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--ink);
+}
+
+.durationGap {
+  grid-column: 1 / -1;
+  color: var(--ink-3);
+}
+
+.durationOverText {
+  color: var(--jaune, #f2b33d);
+}
+
+/* ---------------------------------------------------- relecture des remarques -- */
+
+.noteGroupHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.noteGroupName {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.noteGroupCount {
+  flex: none;
+  color: var(--accent);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.noteList {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * La semaine sur sa propre ligne, au-dessus du texte : une remarque peut faire
+ * trois lignes, et la coller à droite d'un repère tabulaire la rendrait
+ * illisible sur un écran de 390 px.
+ */
+.noteItem {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-left: 2px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+  font-size: var(--fs-small);
+}
+
+.noteWhen {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.noteText {
+  color: var(--ink);
+  line-height: 1.45;
 }

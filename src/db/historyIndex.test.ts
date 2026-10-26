@@ -149,9 +149,21 @@ describe('rien ne change pour les autres mouvements', () => {
 
   it('un mouvement d’un seul jour donne une occurrence par semaine, comme avant', () => {
     const index = buildHistoryIndex([
-      serie('back-squat', 1, 0, { actualKg: 77.5, actualRpe: 7, actualReps: 5 }),
-      serie('back-squat', 1, 0, { actualKg: 77.5, actualRpe: 7.5, actualReps: 5 }),
-      serie('back-squat', 2, 0, { actualKg: 82.5, actualRpe: 7.5, actualReps: 5 }),
+      serie('back-squat', 1, 0, {
+        actualKg: 77.5,
+        actualRpe: 7,
+        actualReps: 5,
+      }),
+      serie('back-squat', 1, 0, {
+        actualKg: 77.5,
+        actualRpe: 7.5,
+        actualReps: 5,
+      }),
+      serie('back-squat', 2, 0, {
+        actualKg: 82.5,
+        actualRpe: 7.5,
+        actualReps: 5,
+      }),
     ]);
     expect(index['back-squat']).toHaveLength(2);
     expect(index['back-squat']!.map((o) => o.week)).toEqual([1, 2]);
@@ -159,8 +171,17 @@ describe('rien ne change pour les autres mouvements', () => {
 
   it('et il garde exactement ce que §11 lit : charge max, RPE max, échec', () => {
     const index = buildHistoryIndex([
-      serie('back-squat', 1, 0, { actualKg: 77.5, actualRpe: 7, actualReps: 5 }),
-      serie('back-squat', 1, 0, { actualKg: 80, actualRpe: 8.5, actualReps: 4, failed: true }),
+      serie('back-squat', 1, 0, {
+        actualKg: 77.5,
+        actualRpe: 7,
+        actualReps: 5,
+      }),
+      serie('back-squat', 1, 0, {
+        actualKg: 80,
+        actualRpe: 8.5,
+        actualReps: 4,
+        failed: true,
+      }),
     ]);
     const o = index['back-squat']![0]!;
     expect(o.kg).toBe(80);
@@ -183,5 +204,135 @@ describe('ce qui n’entre pas dans l’index', () => {
     ]![0]!;
     expect(o.measure).toBe(250);
     expect(o.completed).toBe(false);
+  });
+});
+
+describe('détail série par série', () => {
+  it('conserve les séries dans l’ordre du setIndex, pas de l’écriture', () => {
+    /*
+     * L'ordre d'écriture n'est pas l'ordre des séries : corriger la deuxième
+     * après avoir validé la quatrième la réécrit en fin de table.
+     */
+    const sets: SetRow[] = [
+      serie('back-squat', 3, 0, { setIndex: 0, actualReps: 3, actualKg: 115 }),
+      serie('back-squat', 3, 0, { setIndex: 2, actualReps: 3, actualKg: 115 }),
+      serie('back-squat', 3, 0, { setIndex: 3, actualReps: 2, actualKg: 115 }),
+      serie('back-squat', 3, 0, { setIndex: 1, actualReps: 3, actualKg: 115 }),
+    ];
+    const occ = buildHistoryIndex(sets)['back-squat']![0]!;
+    expect(occ.sets?.map((s) => s.reps)).toEqual([3, 3, 3, 2]);
+    expect(occ.sets?.every((s) => s.kg === 115)).toBe(true);
+  });
+
+  it('porte l’unité de mesure de chaque série, sans la deviner', () => {
+    const sets: SetRow[] = [
+      serie('zercher-march', 5, 5, {
+        setIndex: 0,
+        measureValue: 12,
+        measureUnit: 'm',
+      }),
+      serie('zercher-march', 5, 5, {
+        setIndex: 1,
+        measureValue: 18,
+        measureUnit: 'pas',
+      }),
+      // Une ligne d'avant le champ : l'unité reste `null`, jamais inventée.
+      serie('zercher-march', 5, 5, { setIndex: 2, measureValue: 12 }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.sets?.map((s) => s.measureUnit)).toEqual(['m', 'pas', null]);
+  });
+
+  it('n’altère ni les agrégats ni la charge la plus lourde', () => {
+    const sets: SetRow[] = [
+      serie('deadlift', 2, 5, {
+        setIndex: 0,
+        actualReps: 5,
+        actualKg: 120,
+        actualRpe: 7,
+      }),
+      serie('deadlift', 2, 5, {
+        setIndex: 1,
+        actualReps: 5,
+        actualKg: 130,
+        actualRpe: 9,
+      }),
+    ];
+    const occ = buildHistoryIndex(sets)['deadlift']![0]!;
+    expect(occ.kg).toBe(130);
+    expect(occ.rpe).toBe(9);
+    expect(occ.sets).toHaveLength(2);
+  });
+});
+
+describe('mètres et pas ne se mélangent pas', () => {
+  it('l’occurrence porte l’unité de sa première série mesurée', () => {
+    const sets: SetRow[] = [
+      serie('zercher-march', 5, 5, { setIndex: 0, measureValue: 12, measureUnit: 'm' }),
+      serie('zercher-march', 5, 5, { setIndex: 1, measureValue: 14, measureUnit: 'm' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('m');
+    expect(occ.measure).toBe(14);
+  });
+
+  it('une série d’une autre unité ne gonfle pas le meilleur essai', () => {
+    /*
+     * 40 pas sur place ne valent pas 40 mètres. Sans ce filtre, le « meilleur
+     * essai » de la séance aurait été 40, affiché « 40 m », et la semaine
+     * suivante Guillaume aurait cherché à battre une distance qu'il n'a
+     * jamais parcourue.
+     */
+    const sets: SetRow[] = [
+      serie('zercher-march', 5, 5, { setIndex: 0, measureValue: 12, measureUnit: 'm' }),
+      serie('zercher-march', 5, 5, { setIndex: 1, measureValue: 40, measureUnit: 'pas' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('m');
+    expect(occ.measure).toBe(12);
+    // Le chiffre écarté de l'agrégat reste intact dans le détail des séries.
+    expect(occ.sets?.map((s) => [s.measure, s.measureUnit])).toEqual([
+      [12, 'm'],
+      [40, 'pas'],
+    ]);
+  });
+
+  it('une séance entièrement en pas garde ses pas', () => {
+    const sets: SetRow[] = [
+      serie('zercher-march', 6, 5, { setIndex: 0, measureValue: 18, measureUnit: 'pas' }),
+      serie('zercher-march', 6, 5, { setIndex: 1, measureValue: 22, measureUnit: 'pas' }),
+    ];
+    const occ = buildHistoryIndex(sets)['zercher-march']![0]!;
+    expect(occ.measureUnit).toBe('pas');
+    expect(occ.measure).toBe(22);
+  });
+
+  it('une ligne d’avant le champ ne reçoit aucune unité inventée', () => {
+    const sets: SetRow[] = [serie('farmer-carry', 2, 4, { setIndex: 0, measureValue: 25 })];
+    const occ = buildHistoryIndex(sets)['farmer-carry']![0]!;
+    /*
+     * `null` et non « m ». Le repli sert à COMPARER, pas à étiqueter : un
+     * Broad Jump, mesuré en centimètres, recevrait sinon un « m » et la puce
+     * annoncerait « 232 m » au lieu de « 232 cm ».
+     */
+    expect(occ.measureUnit).toBeNull();
+    expect(occ.measure).toBe(25);
+  });
+});
+
+describe('un saut reste en centimètres', () => {
+  it('aucune unité m/pas n’est posée sur une mesure qui n’en a pas', () => {
+    /*
+     * Le défaut qu'on ferme ici : le repli « mètres » servait à comparer deux
+     * portés, et il s'est retrouvé étiqueté sur l'occurrence. Un Broad Jump de
+     * 232 cm s'affichait alors « 232 m ».
+     */
+    const sets: SetRow[] = [
+      serie('broad-jump', 1, 4, { setIndex: 0, measureValue: 232 }),
+      serie('broad-jump', 1, 4, { setIndex: 1, measureValue: 236 }),
+    ];
+    const occ = buildHistoryIndex(sets)['broad-jump']![0]!;
+    expect(occ.measureUnit).toBeNull();
+    expect(occ.measure).toBe(236);
   });
 });

@@ -21,7 +21,19 @@ export type MovementFn =
   | 'carry'
   | 'conditioning'
   | 'mobility'
-  | 'test';
+  | 'test'
+  /**
+   * Un mouvement que le PROGRAMME ne connaît pas : un exercice choisi en
+   * séance, remplacement ou ajout, éventuellement tapé à la main.
+   *
+   * Aucun exercice du .md ne porte cette valeur, et un test le vérifie. Elle
+   * existe pour ne pas avoir à ranger un mouvement inconnu dans une catégorie
+   * qui déciderait des choses à sa place : `squat`, `hinge`, `jump` et `carry`
+   * valent « bas du corps » pour les incréments de §11, et classer de travers
+   * un exercice qu'on vient de taper reviendrait à lui appliquer une règle
+   * qu'on n'a pas les moyens de justifier.
+   */
+  | 'libre';
 
 /** Blocs de périodisation (§2). */
 export type Block = 'test' | 'accumulation' | 'deload' | 'maxforce' | 'power' | 'taper';
@@ -148,14 +160,21 @@ export type LoadSpec =
    * l'historique réel (Bulgarian, Hip Thrust). `seed` = point de départ
    * s'il n'y a encore aucun historique.
    */
-  | { kind: 'autoreg'; seed?: number; step: LoadStep; as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable' }
+  | {
+      kind: 'autoreg';
+      seed?: number;
+      step: LoadStep;
+      as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable';
+    }
   | { kind: 'bodyweight' }
   /** Charge non chiffrable, on affiche le texte du programme tel quel. */
   | { kind: 'text'; label: string }
   | { kind: 'none' };
 
 export const bb = (kg: number, kgMax?: number): LoadSpec =>
-  kgMax === undefined ? { kind: 'barbell', kg, step: 2.5 } : { kind: 'barbell', kg, kgMax, step: 2.5 };
+  kgMax === undefined
+    ? { kind: 'barbell', kg, step: 2.5 }
+    : { kind: 'barbell', kg, kgMax, step: 2.5 };
 export const dbPair = (kg: number): LoadSpec => ({ kind: 'dbPair', kg, step: 2 });
 export const dbSingle = (kg: number): LoadSpec => ({ kind: 'dbSingle', kg, step: 2 });
 export const added = (kg: number): LoadSpec => ({ kind: 'added', kg, step: 2.5 });

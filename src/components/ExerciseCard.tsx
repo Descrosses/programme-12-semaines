@@ -9,6 +9,16 @@ import { PainWatch } from './PainWatch';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
+import { replacementChip, type CustomRow } from '../engine/customExercise';
+import {
+  hasUnitChoice,
+  lastMeasureIn,
+  lastUnitUsed,
+  unitConfig,
+  UNIT_CHOICE,
+  valueForUnit,
+  type MeasureUnitId,
+} from '../engine/measureUnit';
 import type { Occurrence } from '../engine/types';
 import type { DayIndex } from '../data/types';
 import styles from '../screens/Session.module.css';
@@ -19,6 +29,12 @@ export interface SetPayload {
   actualReps: number | null;
   actualRpe: number | null;
   measureValue: number | null;
+  /**
+   * L'unité de `measureValue`, telle qu'elle était choisie au moment de
+   * valider. Stockée avec la série et jamais convertie : douze pas sur place
+   * ne valent pas douze mètres.
+   */
+  measureUnit: string | null;
   failed: boolean;
 }
 
@@ -53,6 +69,10 @@ export function ExerciseCard({
   timer,
   media,
   note,
+  custom = null,
+  prevReplacement = null,
+  onReplace,
+  onCancelCustom,
   onSaveSet,
   onOverride,
 }: {
@@ -76,12 +96,35 @@ export function ExerciseCard({
    * champ de remarque disparaissait de toutes les séances.
    */
   note: NoteContext;
+  /**
+   * La ligne qui a mis cet exercice là, quand il n'est pas au programme :
+   * un remplacement ou un ajout. `null` pour un exercice prescrit.
+   */
+  custom?: { row: CustomRow; originalName: string | null } | null;
+  /**
+   * Le dernier remplacement fait sur ce créneau les semaines passées, pour la
+   * puce « Remplacé par … ». Jamais appliqué : seulement affiché.
+   */
+  prevReplacement?: CustomRow | null;
+  /** Ouvre le panneau de remplacement. Absent = pas remplaçable. */
+  onReplace?: () => void;
+  /** Annule le remplacement ou l'ajout qui a mis cet exercice là. */
+  onCancelCustom?: () => void;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   onOverride: (exId: string, kg: number | null) => void;
 }) {
   const [openCues, setOpenCues] = useState(false);
   const [refusing, setRefusing] = useState(false);
   const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
+  /*
+   * L'unité est choisie une fois pour l'exercice, pas série par série : on ne
+   * change pas de façon de compter entre la deuxième et la troisième série.
+   * Elle s'ouvre sur la dernière réellement utilisée sur ce mouvement — le
+   * jour où la salle est pleine, Guillaume passe en pas une fois et l'appli
+   * s'en souvient la semaine suivante.
+   */
+  const choixUnite = hasUnitChoice(measureOf(ex)?.unit);
+  const [unite, setUnite] = useState<MeasureUnitId>(() => lastUnitUsed(history));
 
   const plannedKg = overrideKg ?? ex.load.kg;
   const shownLoadLine = buildLoadLine(ex, plannedKg);
@@ -142,11 +185,46 @@ export function ExerciseCard({
         ))}
       </div>
 
-      <LastTime ex={ex} history={history} seance={{ week: note.week, day: note.day }} />
-
-      {media && (
-        <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />
+      {/*
+        Cet exercice n'est pas au programme : il faut le dire, et dire ce
+        qu'il remplace. Sans ça, relire la séance trois semaines plus tard
+        donnerait l'impression que le programme prescrivait un Hack Squat.
+      */}
+      {custom && (
+        <div className={styles.customBanner}>
+          <span className={styles.customBannerText}>
+            {custom.row.kind === 'replace'
+              ? `À la place de ${custom.originalName ?? custom.row.originalExerciseId}`
+              : 'Ajouté à cette séance'}
+            {' — hors programme, rien n’est modifié pour la semaine prochaine.'}
+          </span>
+          {onCancelCustom && (
+            <button type="button" className={styles.customCancel} onClick={onCancelCustom}>
+              Annuler
+            </button>
+          )}
+        </div>
       )}
+
+      {/*
+        Ce qui avait été fait à la place, la dernière fois. Affiché, jamais
+        appliqué : le programme prescrit toujours l'exercice d'origine.
+      */}
+      {prevReplacement && (
+        <div className={styles.prevCustom}>
+          🔁 {replacementChip(prevReplacement)}{' '}
+          <span className={styles.prevCustomWhen}>(S{prevReplacement.week})</span>
+        </div>
+      )}
+
+      <LastTime
+        ex={ex}
+        history={history}
+        seance={{ week: note.week, day: note.day }}
+        plannedKg={plannedKg}
+      />
+
+      {media && <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />}
 
       {showSuggestion && (
         <div className={styles.suggestion}>
@@ -217,6 +295,31 @@ export function ExerciseCard({
         </div>
       )}
 
+      {/*
+        Mètres ou pas sur place. Le plan prescrit toujours des mètres : ce
+        sélecteur dit comment la séance a été FAITE, il ne modifie pas le plan.
+        Rien n'est converti — changer d'unité remet le champ sur une valeur qui
+        a du sens dans la nouvelle, jamais sur le même chiffre.
+      */}
+      {choixUnite && ex.sets > 0 && (
+        <div className={styles.uniteRow}>
+          <span className={styles.uniteLabel}>Je compte en</span>
+          <div className={styles.uniteChoice} role="group" aria-label="Unité de mesure">
+            {UNIT_CHOICE.map((u) => (
+              <button
+                key={u.id}
+                type="button"
+                className={`${styles.uniteButton} ${unite === u.id ? styles.uniteOn : ''}`}
+                onClick={() => setUnite(u.id)}
+                aria-pressed={unite === u.id}
+              >
+                {u.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {ex.sets > 0 && (
         <div className={styles.sets}>
           {Array.from({ length: ex.sets }, (_, i) => (
@@ -226,11 +329,19 @@ export function ExerciseCard({
               index={i}
               plannedKg={plannedKg}
               saved={savedSets.find((s) => s.setIndex === i) ?? null}
+              unite={choixUnite ? unite : null}
+              lastInUnit={choixUnite ? lastMeasureIn(history, unite) : null}
               timer={timer}
               onSave={onSaveSet}
             />
           ))}
         </div>
+      )}
+
+      {onReplace && (
+        <button type="button" className={styles.replaceButton} onClick={onReplace}>
+          ⇄ Remplacer cet exercice
+        </button>
       )}
 
       {/* Remarque libre sur ce mouvement, sous les séries. Toujours là. */}
@@ -272,7 +383,9 @@ export function ExerciseCard({
                   <b>Intention :</b> {ex.def.intent}
                 </p>
               )}
-              {ex.def.cues?.map((c, i) => <p key={i}>{c}</p>)}
+              {ex.def.cues?.map((c, i) => (
+                <p key={i}>{c}</p>
+              ))}
               {ex.def.progressionRule && (
                 <p>
                   <b>Progression :</b> {ex.def.progressionRule}
@@ -310,10 +423,13 @@ function LastTime({
   ex,
   history,
   seance,
+  plannedKg,
 }: {
   ex: ResolvedExercise;
   history: Occurrence[] | undefined;
   seance: { week: number; day: DayIndex };
+  /** La charge réellement affichée aujourd'hui — ajustement et override compris. */
+  plannedKg: number | null;
 }) {
   const perf = lastPerformance(history, {
     exerciseId: ex.id,
@@ -329,20 +445,41 @@ function LastTime({
    */
   const fleche = perf.trend === 'up' ? '↑' : perf.delta === null ? '—' : '';
 
+  /*
+   * Le format du jour, à côté de celui de la dernière fois.
+   *
+   * C'est la comparaison qui manquait : « 115 kg · RPE 8 » ne dit pas si la
+   * séance d'alors tenait cinq séries de trois ou deux séries de trois, et
+   * sans ça on ne sait pas si monter la charge a du sens. Les deux lignes
+   * côte à côte répondent à la question sans quitter l'écran.
+   */
+  const prevu = buildLoadLine(ex, plannedKg);
+
   return (
     <div className={styles.lastTime}>
-      <span className={styles.lastTimeWhen}>📊 Semaine {perf.week}</span>
-      <span className={`${styles.lastTimeValue} tnum`}>{perf.value}</span>
-      {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
-      {(perf.delta || fleche) && (
-        <span
-          className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
-        >
-          {fleche}
-          {fleche && perf.delta ? ' ' : ''}
-          {perf.delta}
-        </span>
+      <div className={styles.lastTimeRow}>
+        <span className={styles.lastTimeWhen}>📊 Semaine {perf.week}</span>
+        <span className={`${styles.lastTimeValue} tnum`}>{perf.value}</span>
+        {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
+        {(perf.delta || fleche) && (
+          <span
+            className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
+          >
+            {fleche}
+            {fleche && perf.delta ? ' ' : ''}
+            {perf.delta}
+          </span>
+        )}
+      </div>
+
+      {perf.format && (
+        <div className={`${styles.lastTimeFormat} tnum`}>
+          Fait : <b>{perf.format}</b>
+        </div>
       )}
+      <div className={`${styles.lastTimePlan} tnum`}>
+        Prévu : <b>{prevu}</b>
+      </div>
     </div>
   );
 }
@@ -354,6 +491,8 @@ function SetEntry({
   index,
   plannedKg,
   saved,
+  unite,
+  lastInUnit,
   timer,
   onSave,
 }: {
@@ -361,11 +500,35 @@ function SetEntry({
   index: number;
   plannedKg: number | null;
   saved: SetRow | null;
+  /** L'unité choisie pour l'exercice, ou `null` quand il n'y a pas de choix. */
+  unite: MeasureUnitId | null;
+  /** Dernière mesure enregistrée DANS cette unité, pour pré-remplir le champ. */
+  lastInUnit: number | null;
   timer: RestTimer;
   onSave: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
 }) {
   const plannedReps = plannedRepsOf(ex);
-  const measure = measureOf(ex);
+  const measureBase = measureOf(ex);
+  /*
+   * Le curseur suit l'unité : les pas montent plus haut et avancent plus fin
+   * que les mètres. Garder la grille des mètres pour compter des pas aurait
+   * demandé quarante appuis pour une série ordinaire.
+   */
+  /*
+   * `UnitOption` nomme son libellé `label`, `MEASURE` le nomme `unit` : les
+   * recopier en bloc laissait le curseur affiché « DISTANCE · M » alors que
+   * le sélecteur était sur « pas ». On reprend donc champ par champ.
+   */
+  const measure =
+    measureBase && unite
+      ? {
+          label: unitConfig(unite).fieldLabel,
+          unit: unitConfig(unite).label,
+          step: unitConfig(unite).step,
+          min: unitConfig(unite).min,
+          max: unitConfig(unite).max,
+        }
+      : measureBase;
   const showLoad = showsLoadField(ex);
 
   const [editing, setEditing] = useState(false);
@@ -379,7 +542,7 @@ function SetEntry({
    * `null` et non 0 : un « 0 kg » affiché ressemble à une charge prescrite,
    * alors que le programme n'en donne aucune sur ces mouvements-là.
    */
-  const entry = loadEntryFor(ex, saved?.actualKg ?? (plannedKg ?? undefined));
+  const entry = loadEntryFor(ex, saved?.actualKg ?? plannedKg ?? undefined);
   const [kg, setKg] = useState<number | null>(entry.initialKg);
   const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
   /*
@@ -397,12 +560,24 @@ function SetEntry({
   );
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
 
+  /*
+   * Changer d'unité remet le champ sur une valeur qui a du sens dans la
+   * NOUVELLE unité. Surtout pas sur la même : passer de 12 m à « 12 pas » en
+   * changeant seulement l'étiquette écrirait un chiffre que personne n'a fait.
+   *
+   * Une série déjà validée n'est pas touchée : elle porte son unité, et la
+   * relire ne la réécrit pas.
+   */
+  useEffect(() => {
+    if (saved !== null || unite === null) return;
+    setValue(valueForUnit(unite, { lastInUnit, plannedMeters: plannedMeasureOf(ex) }));
+  }, [unite, lastInUnit, saved, ex]);
+
   // Quand la charge du plan change — suggestion acceptée, feu tricolore, charge
   // saisie à la main — les séries pas encore validées se réalignent dessus.
   useEffect(() => {
     if (saved === null && plannedKg !== null) setKg(plannedKg);
   }, [plannedKg, saved]);
-
 
   const done = saved !== null && !editing;
 
@@ -418,6 +593,7 @@ function SetEntry({
       actualReps: measure ? null : reps,
       actualRpe: ex.targetRPE ? rpeValue : null,
       measureValue: measure ? value : null,
+      measureUnit: measure ? (unite ?? measureBase?.unit ?? null) : null,
       failed,
     });
     setEditing(false);
@@ -441,7 +617,13 @@ function SetEntry({
           )}
           {saved.measureValue !== null && measure && (
             <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.measureValue)} <span className={styles.setSummaryUnit}>{measure.unit}</span>
+              {fr(saved.measureValue)}{' '}
+              {/*
+                L'unité de la SÉRIE, pas celle du sélecteur. Changer le
+                sélecteur après avoir validé en mètres ne doit pas relabelliser
+                une série en pas — le chiffre, lui, n'a pas bougé.
+              */}
+              <span className={styles.setSummaryUnit}>{saved.measureUnit ?? measure.unit}</span>
             </span>
           )}
           {saved.actualKg !== null && (
@@ -465,7 +647,8 @@ function SetEntry({
   // gardent leurs 48 px.
   const hasRpe = ex.targetRPE !== null;
   const count = (showLoad ? 2 : 1) + (hasRpe ? 1 : 0);
-  const wide = (position: number) => (count % 2 === 1 && position === count ? styles.stepperWide : '');
+  const wide = (position: number) =>
+    count % 2 === 1 && position === count ? styles.stepperWide : '';
 
   return (
     <div className={styles.setRow}>
