@@ -234,3 +234,55 @@ describe('un lest n’est pas une charge', () => {
     expect(ex.load.kg).toBe(ex.planKg! + 10);
   });
 });
+
+describe('le deload sur le réel ne vaut QUE là où le programme l’écrit', () => {
+  /** Le même scénario que le RDL, appliqué à un autre mouvement. */
+  const histoireDe = (exId: string, week: number, reel: number, prevu: number): Occurrence[] => [
+    {
+      exerciseId: exId,
+      week,
+      day: 0,
+      kg: reel,
+      plannedKg: prevu,
+      rpe: 8,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ];
+
+  const chargeDe = (exId: string, week: number, day: number, hist: Occurrence[]) =>
+    getSession(week as WeekIndex, day as never, {
+      ...EMPTY_CONTEXT,
+      settings: SETTINGS,
+      history: { [exId]: hist },
+    })!.exercises.find((e) => e.id === exId)!;
+
+  it('le RDL l’écrit : « 80 % de la semaine 7 » — il est recalculé', () => {
+    expect(chargeDe('rdl', 8, 0, histoireDe('rdl', 7, 130, 95)).load.kg).toBe(105);
+  });
+
+  it('le Speed Squat ne l’écrit PAS : « volume divisé, intention conservée »', () => {
+    /*
+     * Sa consigne de deload porte sur le VOLUME, pas sur la charge. Lui
+     * appliquer 80 % contredirait le programme en toutes lettres — c'est le
+     * défaut qu'avait ma première version, trouvé en comparant les 444 charges
+     * des douze semaines avant et après.
+     */
+    const ex = chargeDe('speed-squat', 8, 4, histoireDe('speed-squat', 7, 65, 65));
+    expect(ex.load.kg).toBe(55);
+    expect(ex.adjustments.filter((a) => a.source === 'deload')).toHaveLength(0);
+  });
+
+  it('le Bench ne l’écrit pas non plus : il descend à 65-70 % du 1RM testé', () => {
+    // 80 % de sa charge de travail le ferait passer sous la fourchette de §8.
+    const ex = chargeDe('bench-press', 8, 2, histoireDe('bench-press', 7, 102.5, 102.5));
+    expect(ex.load.kg).toBe(82.5);
+    expect(ex.adjustments.filter((a) => a.source === 'deload')).toHaveLength(0);
+  });
+
+  it('le Push Press non plus — un deload ne doit pas alourdir la barre', () => {
+    const ex = chargeDe('push-press', 8, 4, histoireDe('push-press', 7, 60, 60));
+    expect(ex.load.kg).toBe(45);
+  });
+});

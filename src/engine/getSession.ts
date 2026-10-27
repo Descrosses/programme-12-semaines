@@ -430,6 +430,12 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
   let work = slot.work;
   let targetRPE = slot.targetRPE;
   let loadSpec = slot.load;
+  /**
+   * Proportion de deload écrite par le programme pour CE mouvement, quand il
+   * en écrit une. Absente partout ailleurs, et c'est voulu : voir
+   * `WeekPrescription.deloadFromRealFactor`.
+   */
+  let deloadReel: number | undefined;
 
   // 4. Tableau §9 pour les lifts principaux.
   if (slot.liftId) {
@@ -444,6 +450,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     targetRPE = presc.targetRPE;
     if (presc.load) loadSpec = presc.load;
     if (presc.note) notes.push(presc.note);
+    deloadReel = presc.deloadFromRealFactor;
   }
 
   const reference = referenceOccurrences(o.ctx.history[slot.exId] ?? [], o.week, o.day);
@@ -516,7 +523,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
    */
   const lest = load.shape === 'added';
 
-  if (o.isDeload && recalage && !lest && load.source === 'programme' && load.kg !== null) {
+  if (o.isDeload && deloadReel !== undefined && recalage && !lest && load.kg !== null) {
     /*
      * Le deload se calcule sur le réel, pas sur le prévisionnel.
      *
@@ -528,16 +535,16 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
      * la dernière charge réelle hors deload.
      */
     const avant = load.kg;
-    const cible = deloadFromReal(recalage.refKg, DELOAD_POLICY.accessoryLoadFactor, load.step);
+    const cible = deloadFromReal(recalage.refKg, deloadReel, load.step);
     load = withKg({ ...load, source: 'historique' }, cible);
     if (cible !== avant) {
       adjustments.push({
         source: 'deload',
         what: `${avant} → ${cible} kg`,
         why:
-          `Deload calculé sur le réel : ${Math.round(DELOAD_POLICY.accessoryLoadFactor * 100)} % de tes ` +
+          `Deload calculé sur le réel : ${Math.round(deloadReel * 100)} % de tes ` +
           `${fr(recalage.refKg)} kg de la semaine ${recalage.refWeek}. Le tableau annonçait ${fr(avant)} kg, ` +
-          `qui étaient 80 % d’un prévisionnel que tu as dépassé.`,
+          `qui étaient ${Math.round(deloadReel * 100)} % d’un prévisionnel que tu as dépassé.`,
       });
     }
   } else if (recalage && recalage.offsetKg !== 0 && load.source === 'programme') {

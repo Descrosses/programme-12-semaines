@@ -343,6 +343,25 @@ export interface WeekPrescription {
    * Signalé à Guillaume, en attente de sa décision.
    */
   unscheduled?: boolean;
+  /**
+   * Cette semaine de deload est une PROPORTION de ce qui a été réellement
+   * soulevé la dernière semaine non-deload, et non le kilo écrit ici.
+   *
+   * À ne poser que là où le programme le dit lui-même. Le RDL l'écrit :
+   * « S4 / S8 : 80 % de la dernière semaine non-deload ». Les kilos du tableau
+   * sont alors 80 % d'un PRÉVISIONNEL, et ils ne descendent de rien dès que le
+   * réel s'en écarte.
+   *
+   * Les autres deloads du programme ne suivent PAS cette règle, et c'est
+   * pourquoi ce champ est explicite plutôt que global :
+   *   — les lifts principaux descendent à 65-70 % du 1RM TESTÉ (§8), qui est
+   *     déjà une valeur réelle ;
+   *   — le Speed Squat garde sa charge et divise son volume (« intention
+   *     conservée ») : lui appliquer 80 % contredirait sa consigne ;
+   *   — les accessoires passent par `DELOAD_POLICY`, qui applique déjà 80 %
+   *     à leur dernière charge réelle.
+   */
+  deloadFromRealFactor?: number;
   note?: string;
 }
 

@@ -256,16 +256,27 @@ const speedSquat: LiftSchedule = [
  * S9-11 : §8 « 3 × 5 × 90-95 kg RPE 7 » → plancher 90, plafond assumé 95.
  * S4 / S8 : règle générale de deload — 80 % de la dernière semaine non-deload,
  *           2 séries, reps conservées. 90 × 0,8 → 72,5 ; 95 × 0,8 → 75.
+ *           Ces deux kilos sont 80 % du PRÉVISIONNEL : `deloadFromRealFactor`
+ *           les fait recalculer sur ce qui a vraiment été soulevé, sans quoi
+ *           ils ne descendent de rien dès que le réel s'en écarte. C'est la
+ *           seule ligne du tableau dont le deload est écrit comme une
+ *           proportion — les autres ont leur propre règle (§8).
  */
 const romanianDeadlift: LiftSchedule = [
   p(3, 8, bb(80), rpe(7)),
   p(3, 8, bb(85), rpe(7)),
   p(3, 8, bb(90), rpe(7)),
-  p(2, 8, bb(72.5), rpeAtMost(6), { note: 'Deload : 80 % de la semaine 3.' }),
+  p(2, 8, bb(72.5), rpeAtMost(6), {
+    deloadFromRealFactor: 0.8,
+    note: 'Deload : 80 % de la semaine 3.',
+  }),
   p(3, 6, bb(90), null),
   p(4, 5, bb(92.5), null),
   p(4, 5, bb(95), null),
-  p(2, 5, bb(75), rpeAtMost(6), { note: 'Deload : 80 % de la semaine 7.' }),
+  p(2, 5, bb(75), rpeAtMost(6), {
+    deloadFromRealFactor: 0.8,
+    note: 'Deload : 80 % de la semaine 7.',
+  }),
   p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
   p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
   p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
