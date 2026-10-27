@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
 import { ExerciseNote } from '../components/ExerciseNote';
 import { ExercisePanel } from '../components/ExercisePanel';
+import { SupersetCard } from '../components/SupersetCard';
 import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
 import { BLOCKS } from '../data/program';
@@ -36,6 +37,7 @@ import {
   type CustomSpec,
 } from '../engine/customExercise';
 import { EXERCISES } from '../data/exercises';
+import { groupSupersets } from '../engine/superset';
 import { useNow } from '../state/useNow';
 import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
@@ -116,6 +118,15 @@ export function SessionScreen({
     at: r.at,
   }));
   const ajoutsPasses = previousAdditions(tousRows, { week, day });
+  /*
+   * Les exercices, regroupés : les paires marquées par le programme tombent
+   * dans un seul encadré, le reste s'affiche carte par carte. Le regroupement
+   * se fait ICI, sur la liste déjà résolue — donc après les règles de bloc, le
+   * deload, les suspensions et les remplacements. Une paire dont une moitié a
+   * disparu en chemin ne forme plus de paire, et l'autre moitié s'affiche
+   * seule, normalement.
+   */
+  const blocs = groupSupersets(session.exercises);
   const chrono = row ? clockLabel(row, now) : null;
   const reel = row ? elapsedMin(row, now) : null;
   const verdict = reel === null ? null : durationVerdict(reel, session.plannedMin);
@@ -265,6 +276,70 @@ export function SessionScreen({
     await data.reload();
   }
 
+  /**
+   * Une carte d'exercice, avec tout ce qui s'y rattache.
+   *
+   * Extraite en fonction parce qu'elle sert à deux endroits : seule, et à
+   * l'intérieur d'un bloc d'alternance (où `sansSeries` range la saisie dans
+   * le bloc). Une seule définition, donc aucun risque qu'un exercice perde sa
+   * remarque ou son suivi de douleur selon l'endroit où il s'affiche.
+   */
+  function carte(ex: ResolvedExercise, sansSeries: boolean) {
+    const custom = duJour.find((r) => r.exerciseId === ex.id) ?? null;
+    const original = custom?.originalExerciseId ?? null;
+    return (
+      <div key={ex.id}>
+        <ExerciseCard
+          ex={ex}
+          savedSets={data.savedSets[ex.id] ?? []}
+          overrideKg={overrides[ex.id] ?? null}
+          history={data.history[ex.id]}
+          timer={timer}
+          media={data.date ? { week, day, date: data.date } : null}
+          note={{ week, day, date: data.date ?? '' }}
+          hideSets={sansSeries}
+          custom={
+            custom
+              ? {
+                  row: custom,
+                  originalName: original ? (EXERCISES[original]?.name ?? original) : null,
+                }
+              : null
+          }
+          prevReplacement={previousReplacement(tousRows, {
+            exerciseId: custom?.originalExerciseId ?? ex.id,
+            week,
+            day,
+          })}
+          /*
+           * Remplaçable tant que la séance n'est pas terminée. Après, la
+           * séance est un fait enregistré : on ne réécrit pas ce qu'on a fait,
+           * on corrige éventuellement les séries.
+           */
+          onReplace={enCours && !custom ? () => setPanneau({ remplace: ex.id }) : undefined}
+          onCancelCustom={
+            enCours && custom?.id !== undefined
+              ? () => void handleCancelCustom(custom.id!)
+              : undefined
+          }
+          onSaveSet={handleSaveSet}
+          onOverride={(id, kg) => void handleOverride(id, kg)}
+        />
+
+        {panneau?.remplace === ex.id && (
+          <ExercisePanel
+            titre={`Remplacer ${ex.name}`}
+            sousTitre="L’exercice prévu reste au programme. La semaine prochaine, il revient."
+            initial={prefillFrom(ex)}
+            used={dejaUtilises}
+            onCancel={() => setPanneau(null)}
+            onSave={(spec) => void handleSaveCustom(spec)}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={styles.screen}>
       <header className={styles.header}>
@@ -317,60 +392,32 @@ export function SessionScreen({
         />
       )}
 
-      {session.exercises.map((ex) => {
-        const custom = duJour.find((r) => r.exerciseId === ex.id) ?? null;
-        const original = custom?.originalExerciseId ?? null;
-        return (
-          <div key={ex.id}>
-            <ExerciseCard
-              ex={ex}
-              savedSets={data.savedSets[ex.id] ?? []}
-              overrideKg={overrides[ex.id] ?? null}
-              history={data.history[ex.id]}
-              timer={timer}
-              media={data.date ? { week, day, date: data.date } : null}
-              note={{ week, day, date: data.date ?? '' }}
-              custom={
-                custom
-                  ? {
-                      row: custom,
-                      originalName: original ? (EXERCISES[original]?.name ?? original) : null,
-                    }
-                  : null
-              }
-              prevReplacement={previousReplacement(tousRows, {
-                exerciseId: custom?.originalExerciseId ?? ex.id,
-                week,
-                day,
-              })}
-              /*
-               * Remplaçable tant que la séance n'est pas terminée. Après, la
-               * séance est un fait enregistré : on ne réécrit pas ce qu'on a
-               * fait, on corrige éventuellement les séries.
-               */
-              onReplace={enCours && !custom ? () => setPanneau({ remplace: ex.id }) : undefined}
-              onCancelCustom={
-                enCours && custom?.id !== undefined
-                  ? () => void handleCancelCustom(custom.id!)
-                  : undefined
-              }
-              onSaveSet={handleSaveSet}
-              onOverride={(id, kg) => void handleOverride(id, kg)}
-            />
-
-            {panneau?.remplace === ex.id && (
-              <ExercisePanel
-                titre={`Remplacer ${ex.name}`}
-                sousTitre="L’exercice prévu reste au programme. La semaine prochaine, il revient."
-                initial={prefillFrom(ex)}
-                used={dejaUtilises}
-                onCancel={() => setPanneau(null)}
-                onSave={(spec) => void handleSaveCustom(spec)}
-              />
-            )}
-          </div>
-        );
-      })}
+      {blocs.map((bloc) =>
+        bloc.kind === 'paire' ? (
+          /*
+           * Deux mouvements menés ensemble : un seul encadré, les séries dans
+           * l'ordre où elles se font. Les fiches des deux exercices — remarque,
+           * douleur, consignes, remplacement — sont rendues DANS le bloc, par
+           * les mêmes cartes que partout ailleurs, privées de leurs séries.
+           */
+          <SupersetCard
+            key={`superset-${bloc.id}`}
+            paire={bloc}
+            savedSets={data.savedSets}
+            overrides={overrides}
+            timer={timer}
+            onSaveSet={handleSaveSet}
+            fiches={
+              <>
+                {carte(bloc.a, true)}
+                {carte(bloc.b, true)}
+              </>
+            }
+          />
+        ) : (
+          carte(bloc.ex, false)
+        ),
+      )}
 
       {/*
         Exercices suspendus — affichés, jamais prescrits.

@@ -69,6 +69,7 @@ export function ExerciseCard({
   timer,
   media,
   note,
+  hideSets = false,
   custom = null,
   prevReplacement = null,
   onReplace,
@@ -96,6 +97,16 @@ export function ExerciseCard({
    * champ de remarque disparaissait de toutes les séances.
    */
   note: NoteContext;
+  /**
+   * Masque les lignes de série et le sélecteur d'unité : ils sont saisis
+   * ailleurs.
+   *
+   * Sert au bloc d'alternance, qui regroupe les séries des DEUX mouvements
+   * dans l'ordre où ils se font. La fiche de l'exercice — ce qu'il a fait la
+   * dernière fois, sa remarque, son suivi de douleur, ses consignes — reste
+   * entière : c'est seulement la saisie qui a déménagé.
+   */
+  hideSets?: boolean;
   /**
    * La ligne qui a mis cet exercice là, quand il n'est pas au programme :
    * un remplacement ou un ajout. `null` pour un exercice prescrit.
@@ -301,7 +312,7 @@ export function ExerciseCard({
         Rien n'est converti — changer d'unité remet le champ sur une valeur qui
         a du sens dans la nouvelle, jamais sur le même chiffre.
       */}
-      {choixUnite && ex.sets > 0 && (
+      {!hideSets && choixUnite && ex.sets > 0 && (
         <div className={styles.uniteRow}>
           <span className={styles.uniteLabel}>Je compte en</span>
           <div className={styles.uniteChoice} role="group" aria-label="Unité de mesure">
@@ -320,7 +331,7 @@ export function ExerciseCard({
         </div>
       )}
 
-      {ex.sets > 0 && (
+      {!hideSets && ex.sets > 0 && (
         <div className={styles.sets}>
           {Array.from({ length: ex.sets }, (_, i) => (
             <SetEntry
@@ -336,6 +347,10 @@ export function ExerciseCard({
             />
           ))}
         </div>
+      )}
+
+      {hideSets && ex.sets > 0 && (
+        <div className={styles.setsAilleurs}>Séries saisies dans l’alternance, au-dessus.</div>
       )}
 
       {onReplace && (
@@ -486,7 +501,16 @@ function LastTime({
 
 // ---------------------------------------------------------------------------
 
-function SetEntry({
+/**
+ * Une ligne de série — exportée parce que le bloc d'alternance la réutilise
+ * telle quelle.
+ *
+ * La réécrire là-bas aurait voulu dire reperdre, une par une, la charge au
+ * poids du corps, le RPE, la mesure et son unité, le drapeau « rep ratée », la
+ * correction d'une série déjà validée, et le démarrage du chrono. Elle reste
+ * donc le seul endroit où une série se saisit.
+ */
+export function SetEntry({
   ex,
   index,
   plannedKg,

@@ -73,6 +73,11 @@ export interface ResolvedExercise {
   /** Paliers d'un test 1RM (§12). */
   ramp?: RampStep[];
   /**
+   * Identifiant partagé avec le mouvement voisin : les deux s'affichent dans
+   * un seul encadré. Voir `Slot.superset` et `src/engine/superset.ts`.
+   */
+  superset?: string;
+  /**
    * Dernière charge réellement enregistrée sur cet exercice, ou `null`.
    *
    * Sert UNIQUEMENT à pré-remplir le champ de saisie, jamais la ligne de plan :
@@ -338,6 +343,7 @@ function patchSlot(slot: Slot, p: SlotPatch): Slot {
     ...(p.targetRPE !== undefined ? { targetRPE: p.targetRPE } : {}),
     ...(p.load !== undefined ? { load: p.load } : {}),
     ...(p.note !== undefined ? { note: p.note } : {}),
+    ...(p.superset !== undefined ? { superset: p.superset } : {}),
     // `loadFactor` et `contrastWith` sont consommés plus tard, on les mémorise.
     ...(p.loadFactor !== undefined ? { __loadFactor: p.loadFactor } : {}),
     ...(p.loadFactorAtBlockEntry !== undefined
@@ -562,6 +568,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     notes,
     ...(contrastWith && o.contrast ? { contrast: o.contrast } : {}),
     ...(slot.ramp ? { ramp: slot.ramp } : {}),
+    ...(slot.superset ? { superset: slot.superset } : {}),
     suggestion,
     adjustments,
   };
