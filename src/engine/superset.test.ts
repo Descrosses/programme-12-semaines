@@ -28,6 +28,7 @@ const ex = (
   restSec: 45,
   loadLine: '',
   notes: [],
+  planKg: null,
   lastKg: null,
   lastMeasure: null,
   suggestion: null,
