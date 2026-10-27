@@ -150,6 +150,12 @@ export function resolveCustom(spec: CustomSpec, def?: ExerciseDef): ResolvedExer
     restSec: spec.restSec,
     loadLine: formatLoadLine(spec.sets, work, load),
     notes: [],
+    /*
+     * Le « plan » d'un exercice de séance est ce que Guillaume vient de saisir :
+     * aucun tableau ne l'annonce, donc aucun décalage à mesurer contre quoi que
+     * ce soit.
+     */
+    planKg: spec.kg,
     lastKg: spec.kg,
     lastMeasure: null,
     suggestion: null,

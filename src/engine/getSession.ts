@@ -41,8 +41,9 @@ import type {
   WeekIndex,
   Work,
 } from '../data/types';
-import { loadLine as formatLoadLine, workLabel } from './format';
+import { fr, loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
+import { deloadFromReal, recalageFor, shiftLoad } from './realLoad';
 import { dureeEstimeeMin, dureeLabel } from './sessionDuration';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
@@ -51,7 +52,12 @@ import type { Occurrence, OneRMKey, SessionContext } from './types';
 // ---------------------------------------------------------------------------
 
 export interface Adjustment {
-  source: 'bloc' | 'deload' | 'orange' | 'rouge' | 'cas7' | 'plafond';
+  /**
+   * D'où vient l'ajustement. `reel` est le recalage du plan sur ce qui a
+   * vraiment été soulevé — un FAIT, pas un jugement : il s'applique seul,
+   * là où un ajustement §11 se propose et s'accepte.
+   */
+  source: 'bloc' | 'deload' | 'orange' | 'rouge' | 'cas7' | 'plafond' | 'reel';
   what: string;
   why: string;
 }
@@ -99,6 +105,16 @@ export interface ResolvedExercise {
    * occurrence qui porte une mesure.
    */
   lastMeasure: number | null;
+  /**
+   * La charge que le PROGRAMME annonce, avant recalage sur le réel.
+   *
+   * `load.kg` porte le chiffre affiché, décalage compris. Celui-ci garde le
+   * chiffre du tableau, et c'est lui qu'on enregistre dans `plannedKg` à
+   * chaque série. Sans cette distinction, le décalage se mangerait lui-même :
+   * on écrirait « prévu 130, fait 130 », l'écart retomberait à zéro, et la
+   * semaine suivante le plan repartirait du tableau.
+   */
+  planKg: number | null;
   /** §11 — proposition de charge, à accepter ou refuser. Jamais appliquée seule. */
   suggestion: ProgressionResult | null;
   adjustments: Adjustment[];
@@ -414,6 +430,12 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
   let work = slot.work;
   let targetRPE = slot.targetRPE;
   let loadSpec = slot.load;
+  /**
+   * Proportion de deload écrite par le programme pour CE mouvement, quand il
+   * en écrit une. Absente partout ailleurs, et c'est voulu : voir
+   * `WeekPrescription.deloadFromRealFactor`.
+   */
+  let deloadReel: number | undefined;
 
   // 4. Tableau §9 pour les lifts principaux.
   if (slot.liftId) {
@@ -428,6 +450,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     targetRPE = presc.targetRPE;
     if (presc.load) loadSpec = presc.load;
     if (presc.note) notes.push(presc.note);
+    deloadReel = presc.deloadFromRealFactor;
   }
 
   const reference = referenceOccurrences(o.ctx.history[slot.exId] ?? [], o.week, o.day);
@@ -471,6 +494,71 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
         source: 'bloc',
         what: `${before} → ${load.kg} kg`,
         why: `Entrée en bloc ${BLOCKS[o.block].name.toLowerCase()} : moins de reps, plus de repos, donc ${Math.round((facteurEntree - 1) * 100)} % de charge en plus (§8). Le RPE cible reste le juge.`,
+      });
+    }
+  }
+
+  /*
+   * Recalage sur le réel — le cœur de « calculer en temps réel ».
+   *
+   * `planKg` est figé AVANT, et c'est ce qu'on enregistrera dans `plannedKg`
+   * à chaque série : le décalage se mesure toujours contre le tableau, jamais
+   * contre un chiffre qui le contient déjà.
+   *
+   * On ne recale que ce qui vient du PROGRAMME. Une charge autorégulée est
+   * déjà la dernière charge réelle ; lui ajouter le décalage le compterait
+   * deux fois.
+   */
+  const planKg = load.kg;
+  const recalage = recalageFor(reference);
+
+  /*
+   * Un LEST n'est pas une charge : 80 % de lui ne veut rien dire.
+   *
+   * Les tractions lestées se chiffrent en kilos AJOUTÉS au poids du corps.
+   * Passer de 35 kg de lest à 28 (80 % de 35) ne retire que 6 % de l'effort
+   * réel — 78,5 + 35 = 113,5 contre 78,5 + 28 = 106,5 — alors que le tableau
+   * descend à 15 kg, soit le vrai allègement d'un deload. La proportion ne
+   * s'applique qu'à ce qui porte toute la charge.
+   */
+  const lest = load.shape === 'added';
+
+  if (o.isDeload && deloadReel !== undefined && recalage && !lest && load.kg !== null) {
+    /*
+     * Le deload se calcule sur le réel, pas sur le prévisionnel.
+     *
+     * Le tableau chiffre la semaine de deload en kilos absolus — 75 kg pour
+     * le RDL, soit 80 % des 95 kg qu'il ANNONÇAIT pour la semaine 7. Quand la
+     * semaine 7 s'est jouée à 130, ces 75 kg ne descendent de rien.
+     *
+     * C'est la règle déjà écrite pour les accessoires, étendue ici : 80 % de
+     * la dernière charge réelle hors deload.
+     */
+    const avant = load.kg;
+    const cible = deloadFromReal(recalage.refKg, deloadReel, load.step);
+    load = withKg({ ...load, source: 'historique' }, cible);
+    if (cible !== avant) {
+      adjustments.push({
+        source: 'deload',
+        what: `${avant} → ${cible} kg`,
+        why:
+          `Deload calculé sur le réel : ${Math.round(deloadReel * 100)} % de tes ` +
+          `${fr(recalage.refKg)} kg de la semaine ${recalage.refWeek}. Le tableau annonçait ${fr(avant)} kg, ` +
+          `qui étaient ${Math.round(deloadReel * 100)} % d’un prévisionnel que tu as dépassé.`,
+      });
+    }
+  } else if (recalage && recalage.offsetKg !== 0 && load.source === 'programme') {
+    const avant = load.kg;
+    load = shiftLoad(load, recalage.offsetKg);
+    if (load.kg !== avant) {
+      adjustments.push({
+        source: 'reel',
+        what: `${fr(avant!)} → ${fr(load.kg!)} kg`,
+        why:
+          `Recalé sur ce que tu soulèves vraiment : en semaine ${recalage.refWeek} tu as fait ` +
+          `${fr(recalage.refKg)} kg là où le plan annonçait ${fr(recalage.refPlannedKg!)} kg. ` +
+          `Ton décalage de ${recalage.offsetKg > 0 ? '+' : '−'}${fr(Math.abs(recalage.offsetKg))} kg ` +
+          `suit le programme semaine après semaine.`,
       });
     }
   }
@@ -533,7 +621,19 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
           // Même matière que la charge affichée : une suggestion calculée sur
           // la semaine de deload proposerait de « progresser » depuis 90 kg.
           history: reference,
-          plannedKg: load.kg,
+          /*
+           * Le plan BRUT, pas la charge recalée.
+           *
+           * `applyProgression` ajoute lui-même le décalage (`plannedKg +
+           * offset`). Lui passer une charge qui le contient déjà l'ajouterait
+           * une seconde fois : +35 deviendrait +70, et la suggestion
+           * s'éloignerait de la réalité à chaque semaine.
+           *
+           * Deux chemins, une seule vérité : le décalage est appliqué à
+           * l'affichage par `shiftLoad`, et §11 le recalcule à l'identique
+           * pour poser son ajustement par-dessus.
+           */
+          plannedKg: planKg ?? load.kg,
           targetRPE,
           step: load.step,
           isLowerBody: LOWER_BODY_FN.has(def.fn),
@@ -562,6 +662,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     targetRPE,
     restSec: slot.restSec,
     loadLine: formatLoadLine(sets, work, load),
+    planKg,
     lastKg: lastCompleted(reference)?.kg ?? null,
     lastMeasure:
       [...(o.ctx.history[def.id] ?? [])].reverse().find((h) => h.measure != null)?.measure ?? null,

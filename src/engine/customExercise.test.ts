@@ -52,6 +52,7 @@ const prevu = (over: Partial<ResolvedExercise> = {}): ResolvedExercise => ({
   restSec: 240,
   loadLine: '4 × 6 × 120 kg',
   notes: [],
+  planKg: 120,
   lastKg: 115,
   lastMeasure: null,
   suggestion: null,

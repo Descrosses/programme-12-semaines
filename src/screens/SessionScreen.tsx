@@ -140,7 +140,17 @@ export function SessionScreen({
       day,
       date: data.date,
       setIndex: payload.setIndex,
-      plannedKg: overrides[ex.id] ?? ex.load.kg,
+      /*
+       * Le plan du TABLEAU, pas le chiffre affiché.
+       *
+       * Le décalage cumulé se mesure « ce que j'ai fait moins ce que le plan
+       * annonçait ». Si on enregistrait ici la charge déjà recalée, on
+       * écrirait « prévu 130, fait 130 » : l'écart retomberait à zéro et la
+       * semaine suivante le plan repartirait du prévisionnel. Une charge
+       * saisie à la main, elle, remplace bien le plan — c'est un choix
+       * explicite de Guillaume, pas un recalage automatique.
+       */
+      plannedKg: overrides[ex.id] ?? ex.planKg ?? ex.load.kg,
       plannedReps:
         ex.work.kind === 'reps' && typeof ex.work.reps === 'number' ? ex.work.reps : null,
       targetRPE: ex.targetRPE,
