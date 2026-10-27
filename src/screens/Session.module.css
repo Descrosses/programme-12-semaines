@@ -1307,3 +1307,178 @@
   font-size: 1rem;
   font-weight: 700;
 }
+
+/* ============ Alternance / superset ====================================== */
+
+/*
+ * Un encadré pour deux mouvements. Bordure marquée à gauche : à mi-défilement,
+ * c'est elle qui dit qu'on est encore dans le même bloc — sans elle, le second
+ * mouvement passe pour un exercice de plus.
+ */
+.superset {
+  margin: 0 0 16px;
+  padding: 0 0 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+}
+
+.supersetDone {
+  border-left-color: var(--vert);
+}
+
+.supersetHead {
+  padding: 14px var(--pad) 10px;
+}
+
+.supersetBadge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.supersetTitle {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.supersetPlus {
+  color: var(--accent);
+}
+
+.supersetFormat {
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.supersetConsigne {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.supersetCount {
+  margin-top: 8px;
+  color: var(--ink-3);
+  font-size: 0.8rem;
+}
+
+/* --- Un tour -------------------------------------------------------------- */
+
+.tour {
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+/*
+ * Tous les tours restent saisissables, et aucun n'est grisé.
+ *
+ * Les replier ou les estomper aurait coûté un appui de plus par tour, au
+ * milieu d'une série de 45 s — exactement le genre de geste qu'on ne fait pas
+ * les mains pleines. Le tour EN COURS est simplement marqué, pour qu'on
+ * retrouve sa place d'un coup d'œil après avoir reposé le téléphone.
+ */
+.tourOuvert .tourTitre {
+  color: var(--accent);
+}
+
+.tourOuvert .setIndex {
+  color: var(--accent);
+}
+
+.tourHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--pad) 6px;
+}
+
+.tourTitre {
+  color: var(--ink-2);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tourFlag {
+  margin-left: auto;
+  color: var(--vert);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.station {
+  padding: 2px 0;
+}
+
+.stationNom {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px var(--pad) 2px;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.stationLettre {
+  flex: none;
+  min-width: 20px;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.stationVide {
+  padding: 8px var(--pad);
+  color: var(--ink-3);
+  font-size: 0.8rem;
+}
+
+/*
+ * Ce qui sépare les deux stations. C'est une CONSIGNE — « enchaîne sans
+ * repos » ou « 45 s » — pas un ornement : elle dit ce qu'on fait entre les
+ * deux, et c'est précisément ce qui se perdait avec deux cartes séparées.
+ */
+.tourChain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px var(--pad);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.tourChain span {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Les deux fiches d'exercice, sous les tours. */
+.supersetFiches {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+/* Dit où sont passées les séries d'une carte qui n'en montre plus. */
+.setsAilleurs {
+  margin: 8px var(--pad) 0;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-3);
+  font-size: 0.78rem;
+}

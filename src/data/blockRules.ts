@@ -53,6 +53,8 @@ export interface SlotPatch {
   loadFactorAtBlockEntry?: number;
   load?: LoadSpec;
   note?: string;
+  /** Réunit ce créneau avec le créneau voisin qui porte le même identifiant. */
+  superset?: string;
   /** Id de l'exercice explosif intercalé entre les séries (contraste S9-11). */
   contrastWith?: string;
 }
@@ -171,15 +173,31 @@ const slot = (
   note?: string,
 ): Slot => ({ exId, sets, work, load, targetRPE: null, restSec, ...(note ? { note } : {}) });
 
-const romanSideBench = (sets: number, r: number) =>
-  slot(
+/**
+ * `superset` n'est posé QUE sur l'occurrence du lundi, celle qui suit l'Ab
+ * Wheel — c'est la seule que le programme décrit « en alternance ». Celle du
+ * samedi ferme la séance toute seule, après le Zercher March : la réunir à
+ * quoi que ce soit serait inventer une consigne.
+ */
+/**
+ * L'identifiant de la paire du lundi. Une constante et non deux chaînes
+ * recopiées : deux littéraux qui doivent être égaux finissent toujours par ne
+ * plus l'être, et le bloc se déferait en silence — chaque mouvement
+ * réapparaîtrait seul, sans que rien ne signale l'erreur.
+ */
+const TRONC_LUNDI = 'tronc-lundi';
+
+const romanSideBench = (sets: number, r: number, superset?: string) => ({
+  ...slot(
     'roman-side-bench',
     sets,
     reps(r, true),
     bodyweight(),
     45,
     'En alternance avec l’Ab Wheel : une série de chaque, 45 s entre les stations. Amplitude confortable uniquement.',
-  );
+  ),
+  ...(superset ? { superset } : {}),
+});
 
 const zercherMarch = (sets: number, m: number) =>
   slot(
@@ -243,8 +261,9 @@ const MAXFORCE: BlockRuleSet[] = [
         work: reps(8),
         restSec: 45,
         note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+        superset: TRONC_LUNDI,
       }),
-      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8) },
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8, TRONC_LUNDI) },
     ],
   },
   {
@@ -254,7 +273,12 @@ const MAXFORCE: BlockRuleSet[] = [
       patch('bench-press', { restSec: 210 }),
       patch('weighted-pullup', { restSec: 180 }),
       // « Accessoires haut : 3 × 6 au lieu de 3 × 8, +10 % »
-      patch('landmine-press-kneeling', { sets: 3, work: reps(6, true), loadFactor: 1.1, targetRPE: rpe(8) }),
+      patch('landmine-press-kneeling', {
+        sets: 3,
+        work: reps(6, true),
+        loadFactor: 1.1,
+        targetRPE: rpe(8),
+      }),
       patch('chest-supported-row', { sets: 3, work: reps(6), loadFactor: 1.1, targetRPE: rpe(8) }),
       /*
        * Barbell Offset Hold — le second point d'appui asymétrique de la
@@ -475,15 +499,20 @@ const POWER: BlockRuleSet[] = [
       remove('pogo-jumps'),
       remove('box-jump'),
       patch('back-squat', { contrastWith: 'box-jump' }),
-      patch('bulgarian-split-squat', { sets: 3, work: reps(5, true, 'jambe'), targetRPE: rpe(7.5) }),
+      patch('bulgarian-split-squat', {
+        sets: 3,
+        work: reps(5, true, 'jambe'),
+        targetRPE: rpe(7.5),
+      }),
       // Même alternance qu'en force max, et même volume des deux côtés.
       patch('ab-wheel', {
         sets: 3,
         work: reps(8),
         restSec: 45,
         note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+        superset: TRONC_LUNDI,
       }),
-      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8) },
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8, TRONC_LUNDI) },
     ],
   },
   {
@@ -493,13 +522,22 @@ const POWER: BlockRuleSet[] = [
       remove('plyo-push-up'),
       patch('bench-press', { contrastWith: 'plyo-push-up' }),
       patch('weighted-pullup', { restSec: 180, note: 'Intention explosive.' }),
-      patch('landmine-press-kneeling', { sets: 4, work: reps(5, true), targetRPE: rpe(6), note: 'Explosif.' }),
+      patch('landmine-press-kneeling', {
+        sets: 4,
+        work: reps(5, true),
+        targetRPE: rpe(6),
+        note: 'Explosif.',
+      }),
       patch('chest-supported-row', { sets: 3, work: reps(6) }),
       patch('pallof-press', { sets: 3, work: reps(5, true) }),
       // Volume réduit comme tout le reste du bloc : la tenue reste, elle ne
       // coûte rien à la fraîcheur et c'est la seule anti-flexion latérale de
       // la semaine en dehors du samedi.
-      { op: 'insert', after: 'pallof-press', slot: offsetHold(2, 20, 45, 'Charge = le disque d’un seul côté.') },
+      {
+        op: 'insert',
+        after: 'pallof-press',
+        slot: offsetHold(2, 20, 45, 'Charge = le disque d’un seul côté.'),
+      },
     ],
   },
   {

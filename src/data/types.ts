@@ -416,6 +416,20 @@ export interface Slot {
   note?: string;
   /** Paliers affichés pour un test 1RM (§12). */
   ramp?: RampStep[];
+  /**
+   * Deux mouvements menés ENSEMBLE, dans un seul encadré.
+   *
+   * Même identifiant sur deux créneaux CONSÉCUTIFS de la séance. L'écran les
+   * réunit alors : un tour = une série de chaque, dans l'ordre où ils se font.
+   *
+   * Ce champ ne dit pas le RYTHME, et c'est voulu : les repos écrits sur les
+   * deux créneaux le disent déjà. `restSec: 0` sur le premier veut dire
+   * « enchaîné sans repos » ; un repos non nul des deux côtés veut dire
+   * « en alternance, ce repos entre chaque station ». Un champ de plus pour
+   * redire ce que les repos disent déjà aurait fait deux vérités, et un jour
+   * elles se seraient contredites.
+   */
+  superset?: string;
 }
 
 /** Une séance entièrement résolue pour une semaine donnée (sortie de l'engine). */
