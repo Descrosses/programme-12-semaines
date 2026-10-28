@@ -664,18 +664,37 @@ export type Cible =
   /** Aucune cible chiffrable : le programme n'en donne pas. */
   | { kind: 'aucune' };
 
+/*
+ * Les gains visés en douze semaines, décidés par Guillaume.
+ *
+ * ── Pourquoi ils ne sont plus dérivés du §13 ───────────────────────────────
+ *
+ * Les cibles du §13 n'avaient jamais été pensées en pourcentage. La version
+ * d'origine du programme, écrite AVANT le combine, visait le même nombre pour
+ * le deadlift et le squat — 150-155 kg pour les deux — parce que l'auteur
+ * croyait squatter 140 et tirer 130, et voulait que le second rejoigne le
+ * premier. Le « +15 à +19 % » du deadlift n'était que l'arithmétique de cette
+ * convergence : 130 → 150.
+ *
+ * Le combine a inversé la prémisse — deadlift 140, squat 110 — mais le recalage
+ * a conservé les pourcentages au lieu de l'intention. Le deadlift traînait
+ * donc un objectif de rattrapage d'un squat qui n'existe pas, deux fois plus
+ * exigeant que les autres lifts.
+ *
+ * Ces quatre fourchettes remplacent cette dérive. Elles ne se déduisent plus
+ * d'aucun calcul : ce sont les valeurs que Guillaume a fixées pour tous les
+ * utilisateurs de l'application.
+ */
 export const TARGETS_12_WEEKS: Record<string, Cible> = {
+  'test-squat-1rm': { kind: 'gain', minPct: 7, maxPct: 11, unite: 'kg' },
+  'test-bench-1rm': { kind: 'gain', minPct: 3, maxPct: 6, unite: 'kg' },
+  'test-deadlift-1rm': { kind: 'gain', minPct: 4, maxPct: 7, unite: 'kg' },
+  /* Le gain porte sur le LEST, pas sur poids de corps + lest. */
+  'test-weighted-pullup-1rm': { kind: 'gain', minPct: 3, maxPct: 5, unite: 'kg', lest: true },
   /*
-   * Le gain le plus élevé du tableau, et le seul qui mérite une réserve : ces
-   * +16 à +20 % avaient été écrits sur un deadlift estimé à 130 que le
-   * programme annonçait lui-même comme sous-estimé, puis mesuré à 140. La
-   * cible n'a pas été recalculée, seul le dénominateur a changé.
+   * Seul gain encore hérité du §13 : Guillaume n'a pas eu à le revoir, il
+   * porte sur un nombre de répétitions et non sur une barre chargée.
    */
-  'test-deadlift-1rm': { kind: 'gain', minPct: 16.1, maxPct: 19.6, unite: 'kg' },
-  'test-squat-1rm': { kind: 'gain', minPct: 6.8, maxPct: 11.4, unite: 'kg' },
-  'test-bench-1rm': { kind: 'gain', minPct: 4.3, maxPct: 6.5, unite: 'kg' },
-  /* Le gain porte sur le LEST, pas sur poids de corps + lest : +45 → +50. */
-  'test-weighted-pullup-1rm': { kind: 'gain', minPct: 11.1, maxPct: 11.1, unite: 'kg', lest: true },
   'test-strict-pullup-max': { kind: 'gain', minPct: 11.1, maxPct: 27.8, unite: 'reps' },
   'test-broad-jump': { kind: 'relatif', label: '+5 à 8 %' },
   'test-vertical-jump': { kind: 'relatif', label: '+4 à 6 cm' },
@@ -712,16 +731,3 @@ export function cibleFor(id: string, initial: number | null): string | null {
 
   return bas === haut ? `${signe}${nb(bas)}${unite}` : `${signe}${nb(bas)}-${nb(haut)}${unite}`;
 }
-
-/**
- * §13 — la bande de poids visée, en chiffres utilisables par un graphique.
- *
- * La même valeur existe déjà en texte dans `TARGETS_12_WEEKS['test-bodyweight']`
- * (« 77-80 kg »), mais un SVG a besoin de deux nombres. Les deux formes sont
- * tenues ensemble par un test de transcription : si le .md passe un jour à
- * 78-81, le test tombe ici et là, pas seulement sur l'une des deux.
- *
- * C'est la SEULE borne de poids que le .md donne. Aucun autre seuil — « trop
- * vite », « trop lent » — ne doit être inventé à partir d'elle.
- */
-export const BANDE_CIBLE_POIDS = { min: 77, max: 80 } as const;

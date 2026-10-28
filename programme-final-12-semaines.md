@@ -477,23 +477,26 @@ Le 162,5 du deadlift est la borne basse de la cible de la section 13, et déjà 
 
 ## 13. Le programme fonctionne si...
 
-| Paramètre | Départ mesuré | Cible à 12 semaines |
-|---|---|---|
-| Deadlift 1RM | 140 | 162,5-167,5 kg |
-| Back Squat 1RM | 110 | 117,5-122,5 kg |
-| Bench 1RM | 115 | 120-122,5 kg |
-| Tractions lestées 1RM | +45 | +50 kg |
-| Tractions strictes | 18 | 20-23 |
-| Broad Jump | baseline | +5 à 8 % |
-| Vertical Jump | baseline | +4 à 6 cm |
-| Sprint 10 m | baseline | −2 à 4 % |
-| Farmer Carry 2 × 40 | baseline | +20 % distance |
-| Ab Wheel | baseline | +20-30 % reps |
-| Poids | 77 | 77-80 kg |
+| Paramètre | Progression visée en 12 semaines |
+|---|---|
+| Back Squat 1RM | +7 à 11 % |
+| Bench 1RM | +3 à 6 % |
+| Deadlift 1RM | +4 à 7 % |
+| Tractions lestées 1RM | +3 à 5 % |
+| Tractions strictes | +11 à 28 % |
+| Broad Jump | +5 à 8 % |
+| Vertical Jump | +4 à 6 cm |
+| Sprint 10 m | −2 à 4 % |
+| Farmer Carry 2 × 40 | +20 % distance |
+| Ab Wheel | +20-30 % reps |
 
-Les départs sont ceux du **combine initial**, pas les estimations d'avant test. Chaque cible garde la progression relative que le programme visait, appliquée au vrai départ : le squat visait +7 à +11 %, le bench +4 à +6 %, les tractions lestées +13 %, le deadlift +15 à +19 %.
+**Les cibles sont des progressions, pas des kilos.** Elles s'appliquent au 1RM mesuré au **combine initial de chacun** : deux pratiquants qui démarrent à 100 et à 180 kg de squat ne visent pas le même nombre. Tant qu'une mesure initiale manque, l'objectif correspondant reste à définir — il ne s'invente pas.
 
-**Réserve sur le deadlift** : ces +15 à +19 % avaient été écrits sur un 130 que le programme annonçait lui-même comme sous-estimé. Appliqués aux 140 réels, ils demandent +22,5 à +27,5 kg en douze semaines, ce qui est beaucoup pour un deadlift déjà à ce niveau. La cible est transposée telle quelle par cohérence, mais c'est la seule ligne du tableau à prendre comme une borne haute plutôt que comme un objectif.
+Appliquées au combine initial de l'auteur — squat 110, bench 115, deadlift 140, tractions +45 — elles donnent : squat 117,5-122,5 kg, bench 117,5-122,5 kg, deadlift 145-150 kg, tractions +47,5 kg.
+
+**Pourquoi le deadlift a été revu.** La première version du programme visait le même nombre pour le deadlift et le squat — 150-155 kg pour les deux — parce qu'elle estimait le squat à 140 et le deadlift à 130, et voulait que le second rejoigne le premier. Le « +15 à +19 % » du deadlift n'était que l'arithmétique de cette convergence : 130 → 150. Le combine a inversé la prémisse (deadlift 140, squat 110), mais le recalage avait conservé le pourcentage au lieu de l'intention — le deadlift traînait un objectif de rattrapage d'un squat qui n'existe pas, deux fois plus exigeant que les autres lifts.
+
+**Le poids de corps ne porte plus de cible.** Une bande 77-80 kg est un objectif personnel, pas une recommandation transposable. Chacun fixe le sien, ou n'en fixe aucun.
 
 **Le vrai critère** : l'écart deadlift − squat. S'il devient nul ou positif, la chaîne postérieure a rattrapé son retard. Si les 1RM montent mais que les sauts stagnent, le programme n'a produit que de la force : demi-échec, le bloc suivant sera orienté vitesse.
 

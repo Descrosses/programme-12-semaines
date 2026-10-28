@@ -14,6 +14,7 @@ import { BLOCK_RULES, CONTRAST_BY_DAY, DELOAD_CORE, DELOAD_POLICY } from './bloc
 import { workLabel } from '../engine/format';
 import { EXERCISES, EXERCISE_IDS } from './exercises';
 import { MAIN_LIFT_TABLE } from './mainLiftTable';
+import { DEFAULT_SETTINGS_ROW } from '../db/db';
 
 /** Du test du combine vers la colonne de MESURES_COMBINE. */
 const MESURE_POUR: Record<string, keyof typeof MESURES_COMBINE> = {
@@ -33,6 +34,21 @@ const MESURE_POUR: Record<string, keyof typeof MESURES_COMBINE> = {
  * Les tractions strictes se comptent en répétitions, elles n'ont rien à faire
  * dans MESURES_COMBINE qui ne contient que des kilos.
  */
+/**
+ * La ligne du tableau §13 qui porte chaque gain, mot pour mot.
+ *
+ * C'est le contrat entre le code et le document : le .md annonce des
+ * progressions en pourcentage, le code en applique. Si l'un bouge sans
+ * l'autre, ce test tombe.
+ */
+const LIGNE_MD: Record<string, string> = {
+  'test-squat-1rm': '| Back Squat 1RM | +7 à 11 % |',
+  'test-bench-1rm': '| Bench 1RM | +3 à 6 % |',
+  'test-deadlift-1rm': '| Deadlift 1RM | +4 à 7 % |',
+  'test-weighted-pullup-1rm': '| Tractions lestées 1RM | +3 à 5 % |',
+  'test-strict-pullup-max': '| Tractions strictes | +11 à 28 % |',
+};
+
 const DEPART_MD: Record<string, number> = {
   'test-squat-1rm': 110,
   'test-bench-1rm': 115,
@@ -41,7 +57,6 @@ const DEPART_MD: Record<string, number> = {
   'test-strict-pullup-max': 18,
 };
 import {
-  BANDE_CIBLE_POIDS,
   cibleFor,
   COMBINE_METRICS,
   SPECIAL_SESSIONS,
@@ -486,14 +501,16 @@ describe('§13 — cibles à 12 semaines', () => {
       if (c.kind === 'relatif') {
         expect(MD_13, `${id} — cible`).toContain(c.label);
       } else if (c.kind === 'gain') {
-        // Un gain ne se lit pas dans le .md : c'est la cible du §13 divisée
-        // par le maximum mesuré. On vérifie donc le chemin inverse — le gain
-        // appliqué au maximum de Guillaume doit redonner le texte du .md.
-        const depart = DEPART_MD[id];
-        expect(depart, `${id} — départ inconnu dans le test`).toBeDefined();
-        const rendu = cibleFor(id, depart!)!;
-        expect(rendu, `${id} — cible non calculée`).not.toBeNull();
-        expect(MD_13, `${id} — cible reconstituée`).toContain(rendu.replace(' kg', ''));
+        // Le .md écrit la progression, le code l'applique : les deux doivent
+        // dire le même pourcentage. Le document arrondit à l'entier (« +11 à
+        // 28 % » pour 11,1 et 27,8 sur les tractions strictes, où un demi
+        // pourcent n'est même pas une répétition).
+        const ligne = LIGNE_MD[id];
+        expect(ligne, `${id} — ligne du .md inconnue dans le test`).toBeDefined();
+        expect(MD_13, `${id} — ligne du §13`).toContain(ligne!);
+        const [bas, haut] = ligne!.match(/\d+/g)!.slice(-2).map(Number);
+        expect(Math.round(c.minPct), `${id} — borne basse`).toBe(bas);
+        expect(Math.round(c.maxPct), `${id} — borne haute`).toBe(haut);
       }
     }
   });
@@ -519,18 +536,16 @@ describe('§13 — cibles à 12 semaines', () => {
    * déjà énorme ; l'ancienne cible du squat en demandait 36 %.
    */
   /*
-   * La bande cible existe en deux formes — le texte « 77-80 kg » du tableau et
-   * les deux nombres que le graphique de poids trace. Ce test les tient
-   * ensemble : modifier le .md sans modifier les deux fait tomber le test.
+   * La bande de poids du graphique était « 77-80 kg » pour tout le monde. Ce
+   * n'était pas une recommandation de santé : c'était le but personnel de
+   * l'auteur, affiché à quiconque ouvre l'écran Progrès. Elle est devenue un
+   * réglage que l'utilisateur remplit, vide par défaut.
    */
-  it('la bande de poids reste la transcription du .md', () => {
-    // Elle n'est plus un objectif servi à tout le monde — « 77-80 kg » est le
-    // but personnel de Guillaume, pas une recommandation de santé. Mais tant
-    // que la constante existe, elle doit dire ce que le .md dit.
-    expect(MD_13).toContain(
-      `| Poids | ${BANDE_CIBLE_POIDS.min} | ${BANDE_CIBLE_POIDS.min}-${BANDE_CIBLE_POIDS.max} kg |`,
-    );
-    expect(BANDE_CIBLE_POIDS.min).toBeLessThan(BANDE_CIBLE_POIDS.max);
+  it('aucune bande de poids n’est servie à tout le monde', () => {
+    expect(DEFAULT_SETTINGS_ROW.ciblePoidsBasKg, 'une cible de poids par défaut').toBeNull();
+    expect(DEFAULT_SETTINGS_ROW.ciblePoidsHautKg, 'une cible de poids par défaut').toBeNull();
+    expect(MD_13, 'le §13 garde une ligne Poids chiffrée').not.toMatch(/\|\s*Poids\s*\|/);
+    expect(MD_13).toContain('Le poids de corps ne porte plus de cible');
   });
 
   it('le poids de corps ne porte AUCUN objectif imposé', () => {
@@ -550,18 +565,29 @@ describe('§13 — cibles à 12 semaines', () => {
     }
   });
 
-  it('les gains redonnent bien les cibles du .md sur les maxima de Guillaume', () => {
-    // Le lien avec le programme écrit : appliqués aux maxima mesurés, les
-    // pourcentages doivent retomber sur les kilos du §13.
-    expect(cibleFor('test-squat-1rm', 110)).toBe('117,5-122,5 kg');
-    expect(cibleFor('test-bench-1rm', 115)).toBe('120-122,5 kg');
-    expect(cibleFor('test-deadlift-1rm', 140)).toBe('162,5-167,5 kg');
-    expect(cibleFor('test-weighted-pullup-1rm', 45)).toBe('+50 kg');
+  it('les gains redonnent les kilos que le §13 annonce pour l’auteur', () => {
+    /*
+     * Le §13 ne donne plus de cible en kilos à personne, mais il garde un
+     * paragraphe d'exemple : appliquées au combine de l'auteur, voilà ce que
+     * les progressions donnent. Ce test tient le paragraphe et le code
+     * ensemble — modifier un pourcentage sans corriger l'exemple le fait
+     * tomber.
+     */
+    const attendu: Record<string, string> = {
+      'test-squat-1rm': '117,5-122,5 kg',
+      'test-bench-1rm': '117,5-122,5 kg',
+      'test-deadlift-1rm': '145-150 kg',
+      'test-weighted-pullup-1rm': '+47,5 kg',
+    };
+    for (const [id, cible] of Object.entries(attendu)) {
+      expect(cibleFor(id, DEPART_MD[id]!), id).toBe(cible);
+      expect(MD_13, `${id} — exemple du §13`).toContain(cible.replace('+', ''));
+    }
   });
 
   it('deux utilisateurs différents reçoivent deux objectifs différents', () => {
     // Arrondis au disque de 2,5 kg : c'est ce qui existe sur une barre.
-    expect(cibleFor('test-squat-1rm', 100)).toBe('107,5-112,5 kg');
+    expect(cibleFor('test-squat-1rm', 100)).toBe('107,5-110 kg');
     expect(cibleFor('test-squat-1rm', 180)).toBe('192,5-200 kg');
   });
 

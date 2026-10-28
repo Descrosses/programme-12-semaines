@@ -66,7 +66,8 @@ function echelles(cadre: Cadre, hauteur: number, yMin: number, yMax: number) {
   const span = yMax - yMin || 1;
   return {
     total,
-    pxJour: (j: number) => PAD.left + (Math.min(Math.max(j, 0), total) / Math.max(1, total)) * largeurInterne,
+    pxJour: (j: number) =>
+      PAD.left + (Math.min(Math.max(j, 0), total) / Math.max(1, total)) * largeurInterne,
     px: (iso: string) =>
       PAD.left +
       (Math.min(Math.max(daysBetween(cadre.debut, iso), 0), total) / Math.max(1, total)) *
@@ -142,7 +143,12 @@ function FondBlocs({
 
 /**
  * Le graphique du poids : pesées brutes en points discrets, moyenne glissante
- * 7 jours en trait épais, bande horizontale sur la cible.
+ * 7 jours en trait épais, et — si l'utilisateur s'en est fixé une — une bande
+ * horizontale sur sa cible.
+ *
+ * `bande` vaut `null` tant que personne n'a saisi d'objectif, et c'est le cas
+ * normal : la courbe se trace seule, sans bande, sans cible annoncée dans la
+ * légende ni dans la description sonore.
  */
 export function WeightChart({
   entries,
@@ -153,7 +159,8 @@ export function WeightChart({
    *  premier jour affiché a besoin des six jours d'avant. */
   entries: Measurement[];
   cadre: Cadre;
-  bande: { min: number; max: number };
+  /** La cible de l'utilisateur, ou `null` s'il ne s'en est pas fixé. */
+  bande: { min: number; max: number } | null;
 }) {
   const [touche, setTouche] = useState<Touche | null>(null);
   const hauteur = 206;
@@ -171,9 +178,13 @@ export function WeightChart({
     );
   }
 
-  // La bande cible entre toujours dans le cadre : sinon on ne saurait pas de
-  // quel côté on se trouve.
-  const valeurs = [...pesees.map((p) => p.value), ...lignes.flat().map((p) => p.average), bande.min, bande.max];
+  // La bande cible, quand elle existe, entre toujours dans le cadre : sinon on
+  // ne saurait pas de quel côté on se trouve.
+  const valeurs = [
+    ...pesees.map((p) => p.value),
+    ...lignes.flat().map((p) => p.average),
+    ...(bande ? [bande.min, bande.max] : []),
+  ];
   const brutMin = Math.min(...valeurs);
   const brutMax = Math.max(...valeurs);
   const marge = (brutMax - brutMin || 2) * 0.1;
@@ -188,42 +199,62 @@ export function WeightChart({
         viewBox={`0 0 ${W} ${hauteur}`}
         className={styles.svg}
         role="img"
-        aria-label={`Poids de corps du ${humanDate(cadre.debut)} au ${humanDate(cadre.fin)}, moyenne glissante sur 7 jours, cible ${fr(bande.min)} à ${fr(bande.max)} kilos`}
+        aria-label={
+          `Poids de corps du ${humanDate(cadre.debut)} au ${humanDate(cadre.fin)}, ` +
+          `moyenne glissante sur 7 jours` +
+          (bande ? `, cible ${fr(bande.min)} à ${fr(bande.max)} kilos` : '')
+        }
       >
         <FondBlocs cadre={cadre} hauteur={hauteur} pxJour={pxJour} avecLabels />
 
         {graduations.map((g, i) => (
           <g key={i}>
-            <line x1={PAD.left} y1={py(g)} x2={W - PAD.right} y2={py(g)} className={styles.grille} />
+            <line
+              x1={PAD.left}
+              y1={py(g)}
+              x2={W - PAD.right}
+              y2={py(g)}
+              className={styles.grille}
+            />
             <text x={PAD.left - 5} y={py(g) + 3.5} className={styles.graduation} textAnchor="end">
               {fr(Math.round(g * 10) / 10)}
             </text>
           </g>
         ))}
 
-        {/* La cible du §13. La seule bande du graphique, et la seule du .md. */}
-        <rect
-          x={PAD.left}
-          y={py(bande.max)}
-          width={W - PAD.left - PAD.right}
-          height={Math.max(1, py(bande.min) - py(bande.max))}
-          className={styles.bande}
-        />
-        {[bande.min, bande.max].map((v) => (
-          <line
-            key={v}
-            x1={PAD.left}
-            y1={py(v)}
-            x2={W - PAD.right}
-            y2={py(v)}
-            className={styles.bandeBord}
-          />
-        ))}
+        {/* La cible de l'utilisateur, s'il s'en est fixé une. */}
+        {bande && (
+          <>
+            <rect
+              x={PAD.left}
+              y={py(bande.max)}
+              width={W - PAD.left - PAD.right}
+              height={Math.max(1, py(bande.min) - py(bande.max))}
+              className={styles.bande}
+            />
+            {[bande.min, bande.max].map((v) => (
+              <line
+                key={v}
+                x1={PAD.left}
+                y1={py(v)}
+                x2={W - PAD.right}
+                y2={py(v)}
+                className={styles.bandeBord}
+              />
+            ))}
+          </>
+        )}
 
         {/* La moyenne glissante, un tronçon par suite de jours mesurés. */}
         {lignes.map((tr, i) =>
           tr.length === 1 ? (
-            <circle key={i} cx={px(tr[0]!.date)} cy={py(tr[0]!.average)} r={3} className={styles.moyenneSeule} />
+            <circle
+              key={i}
+              cx={px(tr[0]!.date)}
+              cy={py(tr[0]!.average)}
+              r={3}
+              className={styles.moyenneSeule}
+            />
           ) : (
             <polyline
               key={i}
@@ -285,10 +316,12 @@ export function WeightChart({
           <span className={`${styles.pastille} ${styles.pastillePesee}`} />
           Pesées
         </span>
-        <span className={styles.item}>
-          <span className={`${styles.pastille} ${styles.pastilleBande}`} />
-          Cible {fr(bande.min)}-{fr(bande.max)} kg
-        </span>
+        {bande && (
+          <span className={styles.item}>
+            <span className={`${styles.pastille} ${styles.pastilleBande}`} />
+            Cible {fr(bande.min)}-{fr(bande.max)} kg
+          </span>
+        )}
       </figcaption>
     </figure>
   );
@@ -323,7 +356,13 @@ export function WaistChart({ entries, cadre }: { entries: Measurement[]; cadre: 
 
         {graduations.map((g, i) => (
           <g key={i}>
-            <line x1={PAD.left} y1={py(g)} x2={W - PAD.right} y2={py(g)} className={styles.grille} />
+            <line
+              x1={PAD.left}
+              y1={py(g)}
+              x2={W - PAD.right}
+              y2={py(g)}
+              className={styles.grille}
+            />
             <text x={PAD.left - 5} y={py(g) + 3.5} className={styles.graduation} textAnchor="end">
               {fr(Math.round(g * 10) / 10)}
             </text>
@@ -341,7 +380,13 @@ export function WaistChart({ entries, cadre }: { entries: Measurement[]; cadre: 
         )}
 
         {points.map((p) => (
-          <circle key={p.date} cx={px(p.date)} cy={py(p.value)} r={3} className={styles.pointTaille} />
+          <circle
+            key={p.date}
+            cx={px(p.date)}
+            cy={py(p.value)}
+            r={3}
+            className={styles.pointTaille}
+          />
         ))}
 
         {touche && points.some((p) => p.date === touche.date) && (

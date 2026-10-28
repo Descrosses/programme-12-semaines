@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
+import { bandePoids } from '../engine/ciblePoids';
 import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
@@ -143,6 +144,15 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
 
   const start = row.startDate;
   const ancreValide = start !== '' && isMonday(start);
+  const bande = bandePoids(row.ciblePoidsBasKg, row.ciblePoidsHautKg);
+  const hintCible =
+    row.ciblePoidsBasKg === null && row.ciblePoidsHautKg === null
+      ? 'Aucun objectif : le graphique trace ta courbe sans bande.'
+      : bande === null
+        ? row.ciblePoidsBasKg !== null && row.ciblePoidsHautKg !== null
+          ? 'L’objectif bas doit être le plus petit des deux.'
+          : 'Renseigne les deux bornes pour voir la bande.'
+        : `Bande affichée de ${fr(bande.min)} à ${fr(bande.max)} kg. Vide les deux champs pour la retirer.`;
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -257,6 +267,47 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
               Reprendre {fr(last3)} kg — moyenne de tes 3 dernières pesées
             </button>
           )}
+        </div>
+      </section>
+
+      {/* ------------------------------------------ objectif de poids --- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Objectif de poids</h2>
+        <p className={styles.cardSub}>
+          <b>Facultatif, et vide par défaut.</b> Le programme n’impose aucun poids de corps : un
+          objectif est personnel, il dépend de ta taille, de ton poste et de ce que tu cherches.
+          Renseigne-le si tu veux voir la bande sur le graphique de l’onglet Progrès.
+        </p>
+        <div className={styles.field}>
+          <Stepper
+            label="Objectif bas"
+            value={row.ciblePoidsBasKg}
+            step={0.5}
+            min={40}
+            max={160}
+            unit="kg"
+            emptyLabel="aucun"
+            onStep={(d) =>
+              void patch({ ciblePoidsBasKg: stepValue(row.ciblePoidsBasKg, d, 40, 160) })
+            }
+            onCommit={(v) => void patch({ ciblePoidsBasKg: v })}
+          />
+        </div>
+        <div className={styles.field}>
+          <Stepper
+            label="Objectif haut"
+            value={row.ciblePoidsHautKg}
+            step={0.5}
+            min={40}
+            max={160}
+            unit="kg"
+            emptyLabel="aucun"
+            onStep={(d) =>
+              void patch({ ciblePoidsHautKg: stepValue(row.ciblePoidsHautKg, d, 40, 160) })
+            }
+            onCommit={(v) => void patch({ ciblePoidsHautKg: v })}
+          />
+          <p className={styles.fieldHint}>{hintCible}</p>
         </div>
       </section>
 
