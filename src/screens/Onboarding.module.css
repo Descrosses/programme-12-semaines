@@ -1,0 +1,156 @@
+/*
+ * Le parcours d'accueil — trois écrans avant la première séance.
+ *
+ * Il réutilise les cartes et les boutons de `Screens.module.css` : ce n'est
+ * pas un autre univers graphique, c'est le même, avec en plus un compteur
+ * d'étapes et une barre de pied qui ne bouge pas d'une étape à l'autre.
+ */
+
+/* --- le compteur d'étapes, sous l'en-tête ------------------------------- */
+
+.etapes {
+  display: flex;
+  gap: 8px;
+  margin: 14px var(--pad) 0;
+}
+
+.etape {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+}
+
+/* L'étape en cours : le rouge de l'identité, en graphique et jamais en texte. */
+.etapeOn {
+  background: var(--accent);
+}
+
+/* Une étape déjà passée reste marquée, en plus sombre. */
+.etapePassee {
+  background: var(--accent-deep);
+}
+
+.compteur {
+  margin: 10px var(--pad) 0;
+  font-family: var(--font-cond);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* --- le pied de page ---------------------------------------------------- */
+
+/*
+ * Les deux actions sont toujours au même endroit, étape après étape : le
+ * bouton d'avancée en bas, le lien de retour au-dessus de la barre d'onglets.
+ * Rien ne saute d'un écran à l'autre.
+ */
+.pied {
+  margin-top: auto;
+  padding-bottom: 8px;
+}
+
+.retour {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 4px;
+  background: none;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+/* --- le choix « je connais mes maxima » / « je les testerai » ------------ */
+
+.choix {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 14px var(--pad);
+  /* La place du trait de sélection est réservée dès le départ : le texte ne
+     se décale pas quand on choisit. */
+  border-left: 4px solid transparent;
+  border-radius: var(--radius-sm);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  text-align: left;
+  font-weight: 700;
+}
+
+/*
+ * Le choix retenu : un trait rouge sur la tranche et un fond plus clair. Le
+ * rouge est graphique, jamais le texte — à cette taille il ne passerait pas
+ * le contraste.
+ */
+.optionOn {
+  border-left-color: var(--accent);
+  border-top-color: var(--line-strong);
+  border-right-color: var(--line-strong);
+  border-bottom-color: var(--line-strong);
+  background: var(--surface-3);
+}
+
+.optionTitre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* La coche n'apparaît que sur le choix retenu, et occupe sa place d'avance. */
+.coche {
+  flex: none;
+  width: 18px;
+  color: var(--vert);
+}
+
+.optionNote {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+/* --- le récapitulatif de fin -------------------------------------------- */
+
+.recap {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ligne {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--fs-small);
+}
+
+.ligneNom {
+  color: var(--ink-3);
+}
+
+.ligneValeur {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* « à mesurer » n'est pas une valeur : il ne doit pas en avoir l'air. */
+.ligneVide {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink-3);
+}

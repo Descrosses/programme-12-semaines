@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
 import { bandePoids } from '../engine/ciblePoids';
+import { poseMaximum } from '../engine/maxima';
 import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
@@ -47,25 +48,6 @@ const ONE_RM_FIELDS = [
   { id: 'deadlift', label: 'Deadlift' },
   { id: 'weighted-pullup', label: 'Tractions lestées' },
 ] as const;
-
-/**
- * Pose ou EFFACE un maximum, sans jamais écrire de zéro.
- *
- * Un `Stepper` vidé renvoie `null`. Écrire `{ 'back-squat': null }` ferait
- * croire au moteur qu'un maximum existe et vaut rien ; `oneRM` est un
- * `Record<string, number>`, une valeur absente s'exprime par l'absence de
- * clé. On la retire donc pour de bon.
- */
-function majOneRM(
-  actuel: SettingsRow['oneRM'],
-  id: string,
-  valeur: number | null,
-): SettingsRow['oneRM'] {
-  const suite = { ...actuel };
-  if (valeur === null) delete suite[id];
-  else suite[id] = valeur;
-  return suite;
-}
 
 export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
   const [row, setRow] = useState<SettingsRow | null>(null);
@@ -362,10 +344,10 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
               emptyLabel="à mesurer"
               onStep={(d) =>
                 void patch({
-                  oneRM: majOneRM(row.oneRM, f.id, stepValue(row.oneRM[f.id] ?? null, d, 0, 300)),
+                  oneRM: poseMaximum(row.oneRM, f.id, stepValue(row.oneRM[f.id] ?? null, d, 0, 300)),
                 })
               }
-              onCommit={(v) => void patch({ oneRM: majOneRM(row.oneRM, f.id, v) })}
+              onCommit={(v) => void patch({ oneRM: poseMaximum(row.oneRM, f.id, v) })}
             />
           </div>
         ))}
