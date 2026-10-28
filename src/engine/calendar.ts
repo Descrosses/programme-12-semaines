@@ -124,13 +124,21 @@ export function locateToday(startDate: string, todayIso: string): TodayState | n
 }
 
 /** Séance précédant immédiatement une case donnée, pour la navigation manuelle. */
-export function previousSession(startDate: string, week: WeekIndex, day: DayIndex): ScheduledSession | null {
+export function previousSession(
+  startDate: string,
+  week: WeekIndex,
+  day: DayIndex,
+): ScheduledSession | null {
   const all = schedule(startDate);
   const i = all.findIndex((s) => s.week === week && s.day === day);
   return i > 0 ? all[i - 1]! : null;
 }
 
-export function nextSession(startDate: string, week: WeekIndex, day: DayIndex): ScheduledSession | null {
+export function nextSession(
+  startDate: string,
+  week: WeekIndex,
+  day: DayIndex,
+): ScheduledSession | null {
   const all = schedule(startDate);
   const i = all.findIndex((s) => s.week === week && s.day === day);
   return i >= 0 && i < all.length - 1 ? all[i + 1]! : null;
@@ -178,8 +186,45 @@ export function humanDate(iso: string): string {
   const d = parseDate(iso);
   const jours = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   const mois = [
-    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
+    'janvier',
+    'février',
+    'mars',
+    'avril',
+    'mai',
+    'juin',
+    'juillet',
+    'août',
+    'septembre',
+    'octobre',
+    'novembre',
+    'décembre',
   ];
   return `${jours[d.getUTCDay()]} ${d.getUTCDate()} ${mois[d.getUTCMonth()]}`;
+}
+
+/**
+ * « 19 octobre » — la date SANS son jour de la semaine.
+ *
+ * Pour les endroits où le jour est déjà écrit à côté. Sur l'écran Semaine,
+ * chaque ligne porte déjà « LUN » dans sa colonne de gauche : répéter « lundi »
+ * trois centimètres plus loin poussait la date sur une seconde ligne, et la
+ * seconde ligne ne contenait que le mois.
+ */
+export function humanDateShort(iso: string): string {
+  const d = parseDate(iso);
+  const mois = [
+    'janvier',
+    'février',
+    'mars',
+    'avril',
+    'mai',
+    'juin',
+    'juillet',
+    'août',
+    'septembre',
+    'octobre',
+    'novembre',
+    'décembre',
+  ];
+  return `${d.getUTCDate()} ${mois[d.getUTCMonth()]}`;
 }

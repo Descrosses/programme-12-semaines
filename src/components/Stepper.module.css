@@ -55,7 +55,7 @@
 }
 
 .accent .value {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /*
@@ -102,7 +102,7 @@
 }
 
 .accent .input {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .unit {

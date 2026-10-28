@@ -63,6 +63,15 @@
   font-weight: 700;
 }
 
+/*
+ * Dégradé du rouge d'action vers son rouge profond, et non vers le rouge vif :
+ * le blanc ne fait que 4,3:1 sur #f01432, et le bandeau est écrit en petit.
+ * Du haut vers le bas on passe de 5,4:1 à 7,8:1 — lisible partout.
+ */
+.updateBar {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+}
+
 .updateLater {
   height: var(--tap);
   padding: 0 10px;
@@ -93,23 +102,50 @@
 }
 
 .tab {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
   min-height: 62px;
   padding: 4px 1px;
   color: var(--ink-3);
 }
 
+/*
+ * L'onglet actif se reconnaît à TROIS choses : sa couleur, son trait rouge en
+ * haut, et son libellé plus appuyé. Une seule d'entre elles suffirait à un œil
+ * normal ; les trois ensemble servent à celui qui distingue mal le rouge.
+ */
+/*
+ * Le LIBELLÉ prend le rouge éclairci, pas le rouge vif : à 10 px sur le fond
+ * de la barre, #f01432 ne fait que 3,4:1. Le trait du dessus, lui, est
+ * décoratif et garde le rouge vif.
+ */
 .tabOn {
-  color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tabOn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 22%;
+  right: 22%;
+  height: 3px;
+  border-radius: 0 0 2px 2px;
+  background: var(--accent-bright);
+}
+
+.tabOn .tabLabel {
+  font-weight: 700;
 }
 
 .tabIcon {
-  font-size: 1.125rem;
+  display: grid;
+  place-items: center;
   line-height: 1;
 }
 

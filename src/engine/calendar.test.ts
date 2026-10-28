@@ -5,6 +5,7 @@ import {
   dateFor,
   daysBetween,
   humanDate,
+  humanDateShort,
   isMonday,
   locateToday,
   nearestMonday,
@@ -242,5 +243,25 @@ describe('semaine en cours', () => {
 
   it('sans ancre, ne devine rien', () => {
     expect(currentWeek('', '2026-01-12')).toBeNull();
+  });
+});
+
+describe('humanDateShort', () => {
+  it('donne la date sans son jour de la semaine', () => {
+    expect(humanDateShort('2026-10-19')).toBe('19 octobre');
+    expect(humanDateShort('2026-11-02')).toBe('2 novembre');
+  });
+
+  it('couvre les mois accentués', () => {
+    expect(humanDateShort('2026-02-14')).toBe('14 février');
+    expect(humanDateShort('2026-08-03')).toBe('3 août');
+    expect(humanDateShort('2026-12-25')).toBe('25 décembre');
+  });
+
+  it('dit la même chose que `humanDate`, le jour en moins', () => {
+    // Le garde-fou qui compte : les deux doivent rester d'accord sur la date.
+    for (const iso of ['2026-01-01', '2026-06-30', '2026-10-19']) {
+      expect(humanDate(iso)).toContain(humanDateShort(iso));
+    }
   });
 });

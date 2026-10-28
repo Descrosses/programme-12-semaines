@@ -511,7 +511,7 @@
  * séries, il n'a pas à attirer l'œil en permanence.
  */
 .chrono {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .summaryRef {
@@ -569,7 +569,7 @@
 .resetYes {
   border: none;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
 }
 
 .resetNo {
@@ -720,7 +720,7 @@
   border-radius: var(--radius-sm);
   background: transparent;
   font-size: 0.75rem;
-  color: var(--accent);
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
@@ -772,7 +772,7 @@
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -859,7 +859,7 @@
 .uniteOn {
   border-color: var(--accent);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
 }
 
 /* --- « La dernière fois » -------------------------------------------------- */
@@ -902,7 +902,7 @@
 }
 
 .lastTimePlan b {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 700;
 }
 
@@ -1102,7 +1102,7 @@
   border: 1px dashed var(--accent);
   border-radius: var(--radius);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -1140,7 +1140,7 @@
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -1272,7 +1272,7 @@
 
 .panelPickedChange {
   flex: none;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -1303,7 +1303,7 @@
   border: 0;
   border-radius: var(--radius);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
   font-size: 1rem;
   font-weight: 700;
 }
@@ -1337,7 +1337,7 @@
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -1352,7 +1352,7 @@
 }
 
 .supersetPlus {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .supersetFormat {
@@ -1391,11 +1391,11 @@
  * retrouve sa place d'un coup d'œil après avoir reposé le téléphone.
  */
 .tourOuvert .tourTitre {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tourOuvert .setIndex {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tourHead {
@@ -1435,7 +1435,7 @@
 .stationLettre {
   flex: none;
   min-width: 20px;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 800;
 }
 
@@ -1455,7 +1455,7 @@
   align-items: center;
   gap: 10px;
   margin: 6px var(--pad);
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;

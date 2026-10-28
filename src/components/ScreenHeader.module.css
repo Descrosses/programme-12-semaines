@@ -1,0 +1,123 @@
+/*
+ * En-tête de retransmission.
+ *
+ * Le décor est en fond, le texte au-dessus, et l'un ne doit jamais coûter la
+ * lisibilité de l'autre : d'où le voile dégradé entre les deux.
+ */
+
+.header {
+  position: relative;
+  overflow: hidden;
+  padding: 18px var(--pad) 20px;
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  isolation: isolate;
+}
+
+.compact {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/*
+ * Le voile. Sans lui, un titre blanc posé sur une photo de stade éclairé perd
+ * son contraste exactement là où les projecteurs sont les plus vifs.
+ */
+.header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgb(6 20 38 / 35%) 0%, rgb(6 20 38 / 78%) 100%);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+}
+
+/* La photo, quand elle existe : en haut à droite, détourée, jamais sous le texte. */
+.photo {
+  top: -14px;
+  right: -18px;
+  width: 44%;
+  max-width: 190px;
+  height: auto;
+  z-index: -1;
+  opacity: 0.95;
+}
+
+.yard {
+  z-index: -1;
+  opacity: 0.16;
+}
+
+/*
+ * Sur-titre : petites capitales très pistées. C'est le détail typographique
+ * qui fait « tableau de score » — un mot ordinaire posé comme une étiquette.
+ */
+.eyebrow {
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+}
+
+/*
+ * Le titre. Condensé, capitales, légèrement penché.
+ *
+ * L'inclinaison est obtenue par `skewX` et non par une italique : la police
+ * embarquée n'a pas de variante italique, et en charger une seconde pour
+ * quelques titres coûterait 20 Ko pour rien. Le biais est léger — 6 degrés —
+ * parce qu'au-delà les capitales condensées commencent à se chevaucher.
+ */
+.title {
+  margin-top: 2px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: var(--track-display);
+  text-transform: uppercase;
+  transform: skewX(-6deg);
+  transform-origin: left bottom;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 45%);
+}
+
+/* Sous-titre entre deux traits rouges — la ligne de générique. */
+.subtitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.subtitle {
+  color: var(--ink-2);
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+ * Le trait de gauche est court et fixe, celui de droite occupe ce qui reste :
+ * le sous-titre reste calé à gauche, et la ligne va jusqu'au bord quelle que
+ * soit la longueur du texte.
+ */
+.ruleLeft {
+  flex: none;
+  width: 22px;
+}
+
+.ruleRight {
+  flex: 1;
+  width: auto;
+  min-width: 12px;
+}

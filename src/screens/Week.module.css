@@ -1,0 +1,333 @@
+/*
+ * Écran Semaine — NFL Classic Premium.
+ *
+ * ── Pourquoi un fichier à lui ──────────────────────────────────────────────
+ *
+ * `Screens.module.css` est partagé par Aujourd'hui, Progression, Combine et
+ * Réglages. Y repeindre les classes communes aurait modifié quatre écrans que
+ * personne n'a encore regardés. La refonte avance écran par écran : chacun
+ * prend son fichier au moment où il est repris, et les autres ne bougent pas.
+ */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+/* ------------------------------------------------- bande des semaines -- */
+
+/*
+ * La périodisation, lisible d'un coup d'œil : un carton par semaine, souligné
+ * de la couleur de son bloc. C'est le tableau de phases d'une préparation
+ * sportive, pas un sélecteur de dates.
+ */
+.weeks {
+  display: flex;
+  gap: 8px;
+  padding: 14px var(--pad);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.weeks::-webkit-scrollbar {
+  display: none;
+}
+
+.week {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 72px;
+  min-width: 72px;
+  min-height: 74px;
+  padding: 6px 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+}
+
+/* Le soulignement de bloc : posé en bas, pleine largeur, couleur injectée. */
+.week::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--bloc, var(--line-strong));
+}
+
+.weekNum {
+  font-family: var(--font-cond);
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.weekTag {
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  /*
+   * Règle du système : la couleur de bloc est GRAPHIQUE, jamais du texte.
+   * À 12 px, le rouge Force ne fait que 3,4:1 sur la pastille et le bleu
+   * Accumulation 3,2:1 — illisibles. L'identité du bloc est déjà portée par
+   * le trait de 3 px juste en dessous, qui n'a pas de contrainte de lecture.
+   */
+  color: var(--ink-3);
+}
+
+/*
+ * La semaine choisie domine : fond plus clair, bordure vive, et elle dépasse
+ * légèrement. On doit savoir où l'on est sans lire les chiffres.
+ */
+.weekOn {
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, var(--surface-3) 0%, var(--surface) 100%);
+  box-shadow: var(--shadow-card);
+  transform: scale(1.06);
+}
+
+.weekOn .weekNum {
+  color: #fff;
+}
+
+/* ------------------------------------------------------- carte de phase -- */
+
+.phase {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px var(--pad) 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--bloc, var(--accent));
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.phaseIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  /* Même règle : la carte montre son bloc par son filet de 4 px à gauche. */
+  color: var(--ink);
+}
+
+.phaseBody {
+  min-width: 0;
+}
+
+.phaseName {
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.phaseMeta {
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.35;
+}
+
+/* ------------------------------------------------------ liste des jours -- */
+
+.days {
+  margin: 0 var(--pad) 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.dayRow {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 78px;
+  padding: 12px 12px 12px 10px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.dayRow:first-child {
+  border-top: 0;
+}
+
+/*
+ * Le jour, barré d'un trait rouge incliné : c'est la marque de l'identité,
+ * reprise des génériques de retransmission. Elle sert aussi de repère — on
+ * retrouve sa ligne sans lire.
+ */
+.dayName {
+  position: relative;
+  display: block;
+  padding-left: 12px;
+  font-family: var(--font-cond);
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.dayName::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  bottom: -2px;
+  width: 4px;
+  border-radius: 1px;
+  background: var(--accent-bright);
+  transform: skewX(-10deg);
+}
+
+.dayBody {
+  min-width: 0;
+}
+
+.dayTitle {
+  display: block;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/*
+ * La date passe à la ligne plutôt que d'être coupée.
+ *
+ * Elle était tronquée en « lundi 19 oct… » : un repère de calendrier amputé
+ * ne sert à rien, et c'est précisément ce qu'on vient chercher sur cet écran.
+ * Deux lignes coûtent moins qu'une information illisible.
+ */
+.dayMeta {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 3px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.3;
+}
+
+.dayMeta svg {
+  margin-top: 2px;
+}
+
+.dayMetaText {
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------- statut -- */
+
+/*
+ * Le statut est un libellé, pas une pastille de couleur : « Faite », « Sautée »,
+ * « Aujourd'hui », « À faire ». La couleur ne fait que confirmer ce que le mot
+ * dit déjà — c'est la règle de l'appli, et elle vaut aussi pour la refonte.
+ */
+.status {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 66px;
+  min-height: 38px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--font-cond);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.statusDone {
+  border-color: transparent;
+  background: rgb(61 220 132 / 16%);
+  color: var(--vert);
+}
+
+.statusSkipped {
+  border-color: transparent;
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+
+.statusToday {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  box-shadow: var(--shadow-action);
+}
+
+/* ------------------------------------------------------- appel à l'action -- */
+
+.cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: calc(100% - 2 * var(--pad));
+  min-height: 60px;
+  margin: 0 var(--pad) 8px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--accent-bright) 0%, var(--accent) 100%);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-action);
+}
+
+/* Retour visuel au toucher : court, et coupé si le système le demande. */
+.cta:active {
+  transform: translateY(1px);
+  filter: brightness(0.94);
+}
+
+.loading {
+  padding: 36px var(--pad);
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/*
+ * Respiration sous le dernier élément. `--bottom-space` réserve déjà la
+ * hauteur de la navigation, mais un bouton collé à elle se touche mal : le
+ * pouce attrape l'onglet en dessous.
+ */
+.screen > :last-child {
+  margin-bottom: 14px;
+}
