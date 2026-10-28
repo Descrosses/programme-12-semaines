@@ -8,6 +8,11 @@
 .header {
   position: relative;
   overflow: hidden;
+  /* Hauteur minimale sans photo. */
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   padding: 18px var(--pad) 20px;
   background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
   isolation: isolate;
@@ -35,7 +40,42 @@
   position: relative;
 }
 
-/* La photo, quand elle existe : en haut à droite, détourée, jamais sous le texte. */
+/*
+ * Le voile du TEXTE, et non celui de l'en-tête.
+ *
+ * Le voile dégradé réglé en pourcentage marchait pour un titre d'une ligne et
+ * lâchait pour un titre de trois : « Combine initial — sauts, sprints, squat
+ * 1RM » remontait le bloc de texte jusqu'au tiers supérieur, là où le voile
+ * est volontairement transparent, et le sous-titre argenté y tombait à
+ * 2,5:1 sur les projecteurs.
+ *
+ * Celui-ci est accroché au bloc de texte lui-même : il fait exactement sa
+ * hauteur, plus 40 px de fondu au-dessus. Un titre long descend le fondu
+ * avec lui, un titre court laisse la photo respirer. Il va jusqu'aux bords
+ * de l'écran, sinon on verrait son arête dans la marge.
+ *
+ * Mesuré, pire pixel derrière le texte : titre blanc ≥ 9:1, sur-titre
+ * argenté ≥ 5,5:1, sur les sept visuels.
+ */
+.content::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--pad));
+  right: calc(-1 * var(--pad));
+  top: -40px;
+  bottom: -22px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(6 20 38 / 0%) 0%,
+    rgb(6 20 38 / 62%) 34px,
+    rgb(6 20 38 / 86%) 64px,
+    rgb(6 20 38 / 93%) 100%
+  );
+}
+
+/* La photo détourée : en haut à droite, en vignette, jamais sous le texte. */
 .photo {
   top: -14px;
   right: -18px;
@@ -44,6 +84,94 @@
   height: auto;
   z-index: -1;
   opacity: 0.95;
+}
+
+/*
+ * En-tête à photo : il devient le premier tiers de l'écran.
+ *
+ * Ce n'est pas de la mise en scène gratuite. L'écran Aujourd'hui tient en
+ * quatre éléments — la date, ce qu'on fait, la nutrition, le bouton — et
+ * laissait les deux tiers du bas vides. Donner la hauteur à la photo plutôt
+ * qu'au vide, c'est la même information dans un écran qui ne sonne pas creux.
+ *
+ * 42 svh et non vh : sur iOS, `vh` compte la barre d'URL comme si elle
+ * n'existait pas, et l'en-tête débordait au premier défilement.
+ */
+.hero {
+  min-height: max(268px, 42svh);
+  padding-bottom: 22px;
+}
+
+/*
+ * Version courte, pour les écrans qui sont d'abord une LISTE.
+ *
+ * Sur Semaine, l'en-tête pleine hauteur poussait les cinq jours sous la
+ * ligne de flottaison : il fallait défiler pour voir le lundi. Un écran dont
+ * le contenu est une liste ne peut pas donner 42 % de sa hauteur à une
+ * photo. 196 px montrent le casque et laissent trois jours visibles.
+ */
+.hero.compact {
+  min-height: 196px;
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+/* ------------------------------------------------- photo pleine largeur -- */
+
+/*
+ * La photo d'ambiance occupe tout l'en-tête. Elle part à 100 % d'opacité :
+ * c'est le voile qui règle sa présence, pas une transparence. Une photo
+ * à demi effacée sur un fond marine vire au bleu délavé ; la même photo
+ * entière sous un voile sombre garde ses noirs et ses lumières.
+ */
+.fond {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  opacity: 1;
+}
+
+/*
+ * Le voile de lecture, et la raison d'être de tout ce composant.
+ *
+ * Un stade de nuit, ce sont des projecteurs : des zones à 95 % de blanc,
+ * exactement là où le titre passe. Sans voile, un titre blanc y tombe à
+ * 1,1:1 — invisible.
+ *
+ * Mais un voile uniforme éteint la photo : la première version noircissait
+ * les projecteurs et il ne restait qu'une tache sombre. Le texte étant calé
+ * EN BAS de l'en-tête (`justify-content: flex-end`), le voile n'a aucune
+ * raison d'assombrir le haut. Il reste donc quasi transparent sur le tiers
+ * supérieur — là où vivent les projecteurs et les tribunes — et ne devient
+ * opaque qu'à partir de 55 %, là où commence la date.
+ */
+.voile {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(6 20 38 / 10%) 0%,
+    rgb(6 20 38 / 20%) 40%,
+    rgb(6 20 38 / 48%) 100%
+  );
+}
+
+/*
+ * Le raccord du bas. Sans lui, la photo s'arrête sur une ligne nette au
+ * milieu de l'écran et on voit le collage. Six pixels de dégradé vers la
+ * couleur de fond suffisent à ce que l'image semble y entrer.
+ */
+.voile::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  background: linear-gradient(180deg, rgb(6 20 38 / 0%) 0%, var(--bg) 100%);
 }
 
 .yard {

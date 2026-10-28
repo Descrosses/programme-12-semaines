@@ -1,0 +1,280 @@
+/*
+ * Écran Aujourd'hui — refonte NFL Classic Premium.
+ *
+ * Fichier séparé, comme pour l'écran Semaine, et pour la même raison :
+ * `Screens.module.css` est partagé par Progression, Combine, Nutrition et
+ * Réglages, qui ne sont pas encore refaits. Y toucher les changerait tous
+ * d'un coup, sans vérification.
+ *
+ * Règle tenue partout ici : aucune photo sous un champ de saisie, sous une
+ * valeur d'entraînement ou sous un bouton. Les photos vivent dans l'en-tête,
+ * derrière un voile, et nulle part ailleurs.
+ */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+/* ----------------------------------------------------- bloc d'ouverture -- */
+
+/*
+ * La ligne de méta sous le titre : intensité, semaine, jour, durée.
+ * Elle est DANS l'en-tête, donc sur la photo : d'où le fond semi-opaque de
+ * chaque pastille, qui lui redonne son propre contraste quel que soit le
+ * pixel de stade qui passe derrière.
+ */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgb(6 20 38 / 72%);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.metaItem b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/*
+ * La pastille d'intensité porte la couleur du bloc — par une PASTILLE, pas
+ * par un aplat.
+ *
+ * Remplie, elle se lisait comme un second bouton à côté du rouge d'action :
+ * deux aplats chauds côte à côte, dont un seul se touche. La couleur du bloc
+ * reste donc graphique, comme sur l'écran Semaine, et le mot garde le
+ * contraste du texte blanc.
+ */
+.metaBloc {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.metaBloc::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bloc, var(--ink-3));
+}
+
+/* Le texte libre de l'en-tête (« prochaine séance dans 2 jours »). */
+.lead {
+  margin-top: 10px;
+  max-width: 34ch;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.lead b {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------- actions -- */
+
+/*
+ * L'action principale. Pleine largeur, rouge, haute : c'est le seul bouton de
+ * l'écran qui doit se trouver sans chercher, pouce en main, sac posé.
+ */
+.primary {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: calc(100% - 2 * var(--pad));
+  min-height: 62px;
+  margin: var(--gap) var(--pad) 0;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--accent-bright) 0%, var(--accent) 100%);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.3125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-action);
+}
+
+.primary:active {
+  background: var(--accent-deep);
+  box-shadow: none;
+}
+
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 2 * var(--pad));
+  min-height: var(--tap);
+  margin: 10px var(--pad) 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.secondary:active {
+  background: var(--surface-2);
+}
+
+/* ------------------------------------------------------ carte nutrition -- */
+
+.nutriCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+}
+
+.nutriCard:active {
+  background: var(--surface-2);
+}
+
+.nutriIcon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.nutriText {
+  flex: 1;
+  min-width: 0;
+}
+
+.nutriText b {
+  display: block;
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.nutriText span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.nutriChevron {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------- alertes -- */
+
+/*
+ * Une alerte n'est PAS un bouton rouge, et ne doit jamais s'y confondre.
+ * Elle se distingue par trois choses à la fois : son filet de gauche, son
+ * pictogramme, et son fond de carte plutôt qu'un aplat. Le rouge d'action
+ * reste réservé au bouton plein.
+ */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  text-align: left;
+}
+
+.alertIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--orange);
+}
+
+.alertRouge {
+  border-left-color: var(--rouge);
+}
+
+.alertRouge .alertIcon {
+  color: var(--rouge);
+}
+
+.alertVert {
+  border-left-color: var(--vert);
+}
+
+.alertVert .alertIcon {
+  color: var(--vert);
+}
+
+/* --------------------------------------------------- premier démarrage -- */
+
+.card {
+  margin: var(--gap) var(--pad);
+  padding: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.input {
+  width: 100%;
+  border-color: var(--line-strong);
+  background: var(--bg-2);
+}
+
+.fieldHint {
+  margin-top: 8px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}

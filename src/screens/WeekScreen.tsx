@@ -111,7 +111,9 @@ export function WeekScreen({
         eyebrow={week === 0 ? 'Avant le programme' : `Bloc ${block.name}`}
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
         subtitle={block.objective}
-        visuel="ballon"
+        visuel="casque"
+        prioritaire
+        compact
       />
 
       {/*

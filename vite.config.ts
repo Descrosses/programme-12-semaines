@@ -27,10 +27,31 @@ export default defineConfig({
          * Tout est mis en cache à la première ouverture : polices comprises.
          * Après ça, l'appli fonctionne à 100 % hors ligne — c'est la condition
          * pour qu'elle serve en salle, où le réseau est aléatoire.
+         *
+         * Les photos d'ambiance (.webp) sont volontairement HORS de cette
+         * liste. Les pré-charger ferait passer l'installation de 670 Ko à
+         * 1,7 Mo pour de la décoration, sur un réseau de vestiaire. Elles
+         * passent par la règle d'exécution ci-dessous : la première fois
+         * qu'un écran s'ouvre en ligne, sa photo est gardée ; ensuite elle
+         * est là hors ligne aussi. Et si elle manque, l'écran reste complet
+         * — c'est tout l'intérêt du manifeste `visuels.ts`.
          */
         globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }: { request: Request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'visuels',
+              // 14 fichiers au total (7 visuels × 2 tailles) ; 20 laisse de la
+              // marge pour une image remplacée sans purger le reste.
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 180 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
       manifest: {
         name: 'Programme 12 semaines',
@@ -45,8 +66,8 @@ export default defineConfig({
         // et que les notifications locales soient autorisées sur iOS.
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#0d1014',
-        theme_color: '#0d1014',
+        background_color: '#061426',
+        theme_color: '#061426',
         categories: ['health', 'fitness', 'sports'],
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
