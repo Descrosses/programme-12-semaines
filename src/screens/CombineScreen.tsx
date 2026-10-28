@@ -11,7 +11,9 @@ import {
 import { fr } from '../engine/format';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
 import type { CombinePhase, CombineRow } from '../db/db';
-import styles from './Screens.module.css';
+import { Icon } from '../components/Icon';
+import { ScreenHeader } from '../components/ScreenHeader';
+import styles from './Combine.module.css';
 
 const PHASES: Array<{ id: CombinePhase; label: string; when: string }> = [
   { id: 'initial', label: 'Initial', when: 'Avant la semaine 1' },
@@ -95,43 +97,53 @@ export function CombineScreen() {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <h1 className={styles.h1}>Combine</h1>
-        <p className={styles.lead}>
-          Même lieu, mêmes chaussures, même protocole, idéalement même heure. C’est ce qui rend les
-          trois combines comparables.
-        </p>
-      </header>
+      <ScreenHeader
+        eyebrow="Trois mesures comparables"
+        title="Combine"
+        subtitle="Mêmes conditions à chaque fois"
+        visuel="stade"
+        compact
+      />
 
-      <div className={styles.weeks}>
+      <p className={styles.hint}>
+        Même lieu, mêmes chaussures, même protocole, idéalement même heure. C’est ce qui rend les
+        trois combines comparables.
+      </p>
+
+      <div className={styles.phases} role="group" aria-label="Combine affiché">
         {PHASES.map((p) => (
           <button
             key={p.id}
             type="button"
-            className={`${styles.week} ${phase === p.id ? styles.weekOn : ''}`}
-            style={{ width: 'auto', padding: '0 14px', borderBottomColor: 'var(--bloc-test)' }}
+            className={`${styles.phase} ${phase === p.id ? styles.phaseOn : ''}`}
             onClick={() => setPhase(p.id)}
             aria-pressed={phase === p.id}
           >
-            <span className={styles.weekNum} style={{ fontSize: '1rem' }}>
-              {p.label}
-            </span>
-            <span className={styles.weekTag}>{p.when}</span>
+            <span className={styles.phaseNom}>{p.label}</span>
+            <span className={styles.phaseQuand}>{p.when}</span>
           </button>
         ))}
       </div>
 
       {/* --- L'indicateur clé du programme -------------------------------- */}
       <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Écart deadlift − squat</h2>
+        <h2 className={styles.cardTitle}>
+          <span className={styles.cardIcon} aria-hidden="true">
+            <Icon name="chart" size="20px" />
+          </span>
+          Écart deadlift − squat
+        </h2>
         <p className={styles.cardSub}>
-          Le vrai critère du programme. S’il devient nul ou positif, la chaîne postérieure a rattrapé
-          son retard.
+          Le vrai critère du programme. S’il devient nul ou positif, la chaîne postérieure a
+          rattrapé son retard.
         </p>
         <div className={styles.keyStat}>
           <div
             className={styles.keyStatValue}
-            style={{ color: gapNow === null ? 'var(--ink-3)' : gapNow >= 0 ? 'var(--vert)' : 'var(--orange)' }}
+            style={{
+              color:
+                gapNow === null ? 'var(--ink-3)' : gapNow >= 0 ? 'var(--vert)' : 'var(--orange)',
+            }}
           >
             {gapNow === null ? '—' : `${gapNow > 0 ? '+' : ''}${fr(gapNow)} kg`}
           </div>
@@ -141,7 +153,16 @@ export function CombineScreen() {
 
       {/* --- Comparaison des trois combines -------------------------------- */}
       <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Comparaison</h2>
+        <h2 className={styles.cardTitle}>
+          <span className={styles.cardIcon} aria-hidden="true">
+            <Icon name="swap" size="20px" />
+          </span>
+          Comparaison
+        </h2>
+        <p className={styles.cardSub}>
+          La flèche suit le chiffre, la couleur dit si c’est un progrès : en vert, c’est mieux, même
+          quand la valeur baisse — un sprint plus court est un sprint plus rapide.
+        </p>
         <div className={styles.tableScroll}>
           <table className={styles.table}>
             <thead>
@@ -164,21 +185,36 @@ export function CombineScreen() {
                       ? f < i
                       : f > i
                     : null;
+                /*
+                 * La flèche suit le NOMBRE, pas le jugement. Sur un sprint,
+                 * passer de 1,82 à 1,74 est une progression mais la valeur
+                 * descend : une flèche vers le haut y contredirait le chiffre
+                 * écrit juste à côté. C'est la couleur, doublée du mot caché,
+                 * qui dit si c'est bien.
+                 */
+                const monte =
+                  typeof i === 'number' && typeof f === 'number' && f !== i ? f > i : null;
                 return (
                   <tr key={id}>
                     <td>{EXERCISES[id]?.name ?? id}</td>
                     <td>{typeof i === 'number' ? fr(i) : '—'}</td>
                     <td>{typeof s === 'number' ? fr(s) : '—'}</td>
                     <td
-                      className={
-                        better === null ? '' : better ? styles.deltaUp : styles.deltaDown
-                      }
+                      className={better === null ? '' : better ? styles.deltaUp : styles.deltaDown}
                     >
+                      {monte !== null && (
+                        <span className={styles.fleche} aria-hidden="true">
+                          {monte ? '↑' : '↓'}
+                        </span>
+                      )}
                       {typeof f === 'number' ? fr(f) : '—'}
+                      {better !== null && (
+                        <span className="visually-hidden">
+                          {better ? ' — progression' : ' — recul'}
+                        </span>
+                      )}
                     </td>
-                    <td style={{ color: 'var(--ink-3)', fontWeight: 500 }}>
-                      {TARGETS_12_WEEKS[id]?.target ?? '—'}
-                    </td>
+                    <td className={styles.cible}>{TARGETS_12_WEEKS[id]?.target ?? '—'}</td>
                   </tr>
                 );
               })}
@@ -189,7 +225,8 @@ export function CombineScreen() {
 
       {/* --- Saisie guidée -------------------------------------------------- */}
       <h2 className={styles.sectionTitle}>
-        Saisie — combine {PHASES.find((p) => p.id === phase)!.label.toLowerCase()}
+        Saisie · {PHASES.find((p) => p.id === phase)!.label}
+        <span className={styles.sectionRule} aria-hidden="true" />
       </h2>
       {phase === 's8' && (
         <p className={styles.hint}>Pas de 1RM cette semaine : tests athlétiques seulement.</p>
@@ -229,7 +266,7 @@ export function CombineScreen() {
                 dans Réglages, à n’importe quel moment.
               </p>
             )}
-            <div style={{ marginTop: 12 }}>
+            <div className={styles.stepperZone}>
               <Stepper
                 label={def.name}
                 value={draft[id] ?? null}
@@ -253,10 +290,7 @@ export function CombineScreen() {
                 <button
                   type="button"
                   className={styles.secondary}
-                  style={{ width: '100%', margin: '10px 0 0' }}
-                  onClick={() =>
-                    setDraft((prev) => ({ ...prev, [id]: settingsBodyweight }))
-                  }
+                  onClick={() => setDraft((prev) => ({ ...prev, [id]: settingsBodyweight }))}
                 >
                   Reprendre {fr(settingsBodyweight)} kg des Réglages
                 </button>
@@ -266,10 +300,23 @@ export function CombineScreen() {
       })}
 
       <button type="button" className={styles.primary} onClick={() => void save()}>
+        <Icon name="check" size="22px" />
         Enregistrer le combine
       </button>
     </div>
   );
+}
+
+/**
+ * Un écart s'écrit avec son signe, toujours.
+ *
+ * La légende écrivait « au départ -10 kg, aujourd'hui 6 kg » sous un chiffre
+ * affiché « +6 kg » : le même nombre apparaissait deux fois, une fois signé et
+ * une fois non. Sur l'indicateur central du programme, c'est le genre de
+ * détail qui fait douter du reste.
+ */
+function signe(v: number): string {
+  return `${v > 0 ? '+' : ''}${fr(v)}`;
 }
 
 /**
@@ -291,15 +338,13 @@ function gapLabel(
     return 'Saisis un deadlift et un squat 1RM pour le calculer.';
   }
   if (gapInitial !== null && gapFinal !== null) {
-    return `Au départ ${fr(gapInitial)} kg, aujourd’hui ${fr(gapFinal)} kg.`;
+    return `Au départ ${signe(gapInitial)} kg, aujourd’hui ${signe(gapFinal)} kg.`;
   }
   const m = byPhase('initial');
   const dl = m['test-deadlift-1rm'];
   const sq = m['test-squat-1rm'];
   if (typeof dl === 'number' && typeof sq === 'number') {
-    return `Combine initial : deadlift ${fr(dl)}, squat ${fr(sq)}, soit ${
-      gapInitial! > 0 ? '+' : ''
-    }${fr(gapInitial!)} kg.`;
+    return `Combine initial : deadlift ${fr(dl)}, squat ${fr(sq)}, soit ${signe(gapInitial!)} kg.`;
   }
   return 'Mesuré au combine final. Saisis le combine initial pour voir la progression.';
 }

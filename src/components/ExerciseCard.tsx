@@ -6,6 +6,7 @@ import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { PainWatch } from './PainWatch';
+import { Icon } from './Icon';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
@@ -160,7 +161,9 @@ export function ExerciseCard({
               Repos <b>{restLabel(ex.restSec)}</b>
             </span>
           )}
-          {overrideKg !== null && <span style={{ color: 'var(--accent)' }}>charge ajustée</span>}
+          {overrideKg !== null && (
+            <span style={{ color: 'var(--accent-ink)' }}>charge ajustée</span>
+          )}
         </div>
 
         {/*
@@ -355,7 +358,8 @@ export function ExerciseCard({
 
       {onReplace && (
         <button type="button" className={styles.replaceButton} onClick={onReplace}>
-          ⇄ Remplacer cet exercice
+          <Icon name="swap" size="18px" />
+          Remplacer cet exercice
         </button>
       )}
 
@@ -385,11 +389,12 @@ export function ExerciseCard({
             onClick={() => setOpenCues((v) => !v)}
             aria-expanded={openCues}
           >
+            <Icon name={openCues ? 'chevron-up' : 'chevron-down'} size="18px" />
             {openCues
-              ? '▲ Masquer les consignes'
+              ? 'Masquer les consignes'
               : ex.def.altBasicFit
-                ? '▼ Consignes et alternative Basic-Fit'
-                : '▼ Consignes'}
+                ? 'Consignes et alternative Basic-Fit'
+                : 'Consignes'}
           </button>
           {openCues && (
             <div className={styles.cues}>
@@ -748,7 +753,8 @@ export function SetEntry({
             onClick={() => setFailed((f) => !f)}
             aria-pressed={failed}
           >
-            {failed ? '✓ Rep ratée' : 'Rep ratée ?'}
+            {failed && <Icon name="check" size="16px" />}
+            {failed ? 'Rep ratée' : 'Rep ratée ?'}
           </button>
         )}
 

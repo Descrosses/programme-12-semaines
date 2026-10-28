@@ -1,0 +1,55 @@
+/*
+ * La carte, définie UNE fois.
+ *
+ * Elle était copiée à l'identique dans Screens, Progress et Combine : trois
+ * définitions du même objet, qui auraient divergé à la première retouche.
+ * Les trois la composent désormais d'ici (`composes`), et une correction se
+ * fait à un seul endroit.
+ *
+ * Ce fichier ne contient que ce qui est VRAIMENT commun aux cinq écrans. Tout
+ * ce qui est propre à un écran reste chez lui : une base partagée qui finit
+ * par porter des exceptions ne partage plus rien.
+ */
+
+.carte {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
+}
+
+/*
+ * Le titre de carte : capitales condensées, avec de quoi aligner un
+ * pictogramme à sa gauche.
+ */
+.carteTitre {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.carteSousTitre {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+/*
+ * Le pictogramme d'un titre de carte. Rouge éclairci : à 20 px c'est un
+ * graphique, il lui faut 3:1 — le rouge d'action n'en fait que 2,7 sur une
+ * carte.
+ */
+.carteIcone {
+  flex: none;
+  color: var(--accent-ink);
+}

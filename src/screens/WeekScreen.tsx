@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { BLOCKS, WEEK_BLOCKS, WEEK_DAYS } from '../data/program';
 import { DAY_LABELS, DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
-import { dateFor, humanDate } from '../engine/calendar';
+import { dateFor, humanDateShort } from '../engine/calendar';
 import { getSession } from '../engine/getSession';
 import {
   allReadiness,
@@ -15,7 +15,10 @@ import {
 import { explosiveTrend } from '../engine/trends';
 import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
-import styles from './Screens.module.css';
+import { Icon } from '../components/Icon';
+import { ScreenHeader } from '../components/ScreenHeader';
+import { DiagonalStripes } from '../components/Decor';
+import styles from './Week.module.css';
 
 interface DayLine {
   day: DayIndex;
@@ -104,18 +107,21 @@ export function WeekScreen({
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <h1 className={styles.h1}>{week === 0 ? 'Combine initial' : `Semaine ${week}`}</h1>
-        <p className={styles.lead}>
-          {week === 0 &&
-            'Six jours de tests avant le programme, espacés pour qu’aucun effort de tirage n’en suive un autre à moins de 48 h. Ton meilleur broad jump du lundi devient ta référence.'}
-          {week === 1 &&
-            'Première semaine complète, cinq séances. Tu arrives dessus après un dimanche de repos.'}
-          {week > 1 && block.objective}
-        </p>
-      </header>
+      <ScreenHeader
+        eyebrow={week === 0 ? 'Avant le programme' : `Bloc ${block.name}`}
+        title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
+        subtitle={block.objective}
+        visuel="casque"
+        prioritaire
+        compact
+      />
 
-      {/* Sélecteur de semaines, colorié par bloc — la périodisation se lit d'un coup d'œil. */}
+      {/*
+        Sélecteur de semaines, colorié par bloc — la périodisation se lit d'un
+        coup d'œil. La couleur passe par une variable CSS plutôt que par trois
+        propriétés en ligne : le soulignement, l'étiquette et la bordure de la
+        carte de phase la lisent toutes au même endroit.
+      */}
       <div className={styles.weeks} ref={bande}>
         {Array.from({ length: 13 }, (_, w) => {
           const b = BLOCKS[WEEK_BLOCKS[w as WeekIndex]];
@@ -125,32 +131,34 @@ export function WeekScreen({
               type="button"
               ref={w === week ? choisie : undefined}
               className={`${styles.week} ${w === week ? styles.weekOn : ''}`}
-              style={{ borderBottomColor: b.color }}
+              style={{ '--bloc': b.color } as CSSProperties}
               onClick={() => onChangeWeek(w as WeekIndex)}
               aria-current={w === week ? 'true' : undefined}
             >
               <span className={styles.weekNum}>{w === 0 ? 'T' : w}</span>
-              <span className={styles.weekTag} style={{ color: b.color }}>
-                {b.short}
-              </span>
+              <span className={styles.weekTag}>{b.short}</span>
             </button>
           );
         })}
       </div>
 
-      <div className={styles.blockBar} style={{ borderLeftColor: block.color }}>
-        <div>
-          <div className={styles.blockName}>{block.name}</div>
-          <div className={styles.blockMeta}>
+      <section className={styles.phase} style={{ '--bloc': block.color } as CSSProperties}>
+        <DiagonalStripes />
+        <span className={styles.phaseIcon}>
+          <Icon name="chart" size="22px" />
+        </span>
+        <div className={styles.phaseBody}>
+          <div className={styles.phaseName}>{block.name}</div>
+          <p className={styles.phaseMeta}>
             {block.intensityLabel} · {block.objective}
-          </div>
+          </p>
         </div>
-      </div>
+      </section>
 
       {lines === null ? (
         <div className={styles.loading}>Chargement…</div>
       ) : (
-        <div className={styles.cardFlush}>
+        <div className={styles.days}>
           {lines.map((l) => (
             <button
               key={l.day}
@@ -162,8 +170,11 @@ export function WeekScreen({
               <span className={styles.dayBody}>
                 <span className={styles.dayTitle}>{l.title}</span>
                 <span className={styles.dayMeta}>
-                  {l.intensity} · {l.duration}
-                  {l.date && ` · ${humanDate(l.date)}`}
+                  <Icon name="stopwatch" size="15px" />
+                  <span className={styles.dayMetaText}>
+                    {l.duration}
+                    {l.date && ` · ${humanDateShort(l.date)}`}
+                  </span>
                 </span>
               </span>
               <span
@@ -174,7 +185,7 @@ export function WeekScreen({
                       ? styles.statusSkipped
                       : l.isToday
                         ? styles.statusToday
-                        : styles.statusTodo
+                        : ''
                 }`}
               >
                 {l.status === 'done'
@@ -197,8 +208,9 @@ export function WeekScreen({
         treize fois la même chose, et une cible fausse pour les jours de repos
         de la semaine affichée.
       */}
-      <button type="button" className={styles.secondary} onClick={onGoNutrition}>
-        🍽 Voir la nutrition
+      <button type="button" className={styles.cta} onClick={onGoNutrition}>
+        <Icon name="meal" size="22px" />
+        Voir la nutrition
       </button>
     </div>
   );

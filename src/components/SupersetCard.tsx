@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Icon } from './Icon';
 import type { SetRow } from '../db/db';
 import type { ResolvedExercise } from '../engine/getSession';
 import {
@@ -103,7 +104,11 @@ export function SupersetCard({
               <span className={styles.tourTitre}>
                 Tour {i + 1} sur {tours}
               </span>
-              {tourFait(i) && <span className={styles.tourFlag}>✓ fait</span>}
+              {tourFait(i) && (
+                <span className={styles.tourFlag}>
+                  <Icon name="check" size="15px" /> fait
+                </span>
+              )}
             </div>
 
             <Station
@@ -124,7 +129,15 @@ export function SupersetCard({
             */}
             <div className={styles.tourChain}>
               <span />
-              {rythme === 'enchaine' ? 'ENCHAÎNE, SANS REPOS' : `↓ ${restLabel(paire.restSec)} ↓`}
+              {rythme === 'enchaine' ? (
+                'ENCHAÎNE, SANS REPOS'
+              ) : (
+                <>
+                  <Icon name="arrow-down" size="15px" />
+                  {restLabel(paire.restSec)}
+                  <Icon name="arrow-down" size="15px" />
+                </>
+              )}
               <span />
             </div>
 

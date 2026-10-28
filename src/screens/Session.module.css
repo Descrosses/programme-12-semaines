@@ -6,43 +6,115 @@
 
 /* ---------------------------------------------------------------- en-tête -- */
 
+/*
+ * En-tête de séance.
+ *
+ * Pas de photo ici, et c'est délibéré. L'écran fait déjà 10 000 px de haut et
+ * se consulte entre deux séries, essoufflé : chaque pixel donné à l'ambiance
+ * est un pixel de défilement en plus avant d'atteindre sa charge. L'identité
+ * passe par la typographie et le filet rouge, pas par une image.
+ */
 .header {
-  padding: var(--pad) var(--pad) 12px;
+  position: relative;
+  overflow: hidden;
+  padding: var(--pad) var(--pad) 14px;
   border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
 }
 
+/*
+ * Le retour. Cible pleine hauteur : c'est le seul bouton de navigation de
+ * l'écran, et on l'atteint avec le pouce d'une main qui tient encore la barre.
+ */
 .back {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  min-height: var(--tap);
   margin-left: -8px;
   padding: 0 8px;
   color: var(--ink-2);
-  font-size: var(--fs-small);
-  font-weight: 600;
-}
-
-.title {
   font-family: var(--font-cond);
-  font-size: var(--fs-title);
-  margin-top: 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
+/*
+ * Le titre, dans la même langue que les autres écrans : capitales condensées
+ * légèrement penchées, suivies d'un filet rouge.
+ */
+.title {
+  margin-top: 2px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: clamp(1.75rem, 8.5vw, 2.375rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+  text-transform: uppercase;
+  transform: skewX(-6deg);
+  transform-origin: left bottom;
+}
+
+.titleRule {
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+
+/*
+ * La ligne de méta. Chaque information dans sa propre pastille : en vrac sur
+ * une ligne, « Lundi lundi 5 octobre Prévu ≈ 75 min » formait une bouillie où
+ * rien ne se trouvait du regard.
+ */
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 10px;
-  margin-top: 8px;
-  font-size: var(--fs-small);
-  color: var(--ink-2);
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
 }
 
-.tag {
-  padding: 2px 9px;
-  border-radius: 6px;
-  font-weight: 700;
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--ink-2);
   font-size: 0.8125rem;
-  color: var(--ink-on-accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.metaItem b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/*
+ * L'intensité porte la couleur du bloc par une PASTILLE, pas par un aplat.
+ * Même règle que sur Semaine et Aujourd'hui : rempli, ce badge se lisait
+ * comme un bouton rouge à presser.
+ */
+.tag {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.tag::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bloc, var(--ink-3));
 }
 
 .note {
@@ -222,10 +294,15 @@
   padding: 12px var(--pad) 10px;
 }
 
+/* Le nom du mouvement, dans la langue des autres titres de carte. */
 .exName {
-  font-size: 1.0625rem;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
   font-weight: 700;
-  color: var(--ink-2);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
 }
 
 /* LA ligne. L'élément le plus visible de l'écran. */
@@ -423,6 +500,9 @@
 /* ------------------------------------------------------------- consignes -- */
 
 .disclosure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   padding: 0 var(--pad);
   min-height: var(--tap);
@@ -479,11 +559,24 @@
 
 .summary {
   margin: 0 var(--pad) 24px;
-  padding: 14px var(--pad);
+  padding: 16px var(--pad);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
   font-size: var(--fs-small);
   color: var(--ink-2);
+}
+
+/* Titre de carte, dans la langue des autres écrans. */
+.summary > h2,
+.summary > h3 {
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .summary dl {
@@ -511,7 +604,7 @@
  * séries, il n'a pas à attirer l'œil en permanence.
  */
 .chrono {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .summaryRef {
@@ -530,17 +623,20 @@
 }
 
 .resetClock {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   min-height: 48px;
   margin: 14px 0 0;
   padding: 0 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: transparent;
   color: var(--ink-2);
   font-size: var(--fs-small);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .resetConfirm {
@@ -569,7 +665,7 @@
 .resetYes {
   border: none;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
 }
 
 .resetNo {
@@ -594,10 +690,14 @@
   margin: 8px var(--pad) 0;
 }
 
+/*
+ * 34 px de haut : sous les 44 px de cible tactile, et répété sept fois sur
+ * l'écran. C'étaient les sept seules cibles trop petites de l'application,
+ * toutes sur celui où l'on a les doigts moites.
+ */
 .mediaToggle {
-  height: 34px;
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: var(--tap);
+  padding: 0 14px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
   color: var(--ink-2);
@@ -702,9 +802,12 @@
 }
 
 .exNoteLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--ink-2);
 }
 
 /* Dit en toutes lettres que rien n'est attendu ici. */
@@ -714,13 +817,18 @@
 }
 
 .exNoteBadge {
+  display: inline-flex;
   flex: none;
+  align-items: center;
+  gap: 5px;
+  min-height: var(--tap);
   padding: 2px 6px;
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
   font-size: 0.75rem;
-  color: var(--accent);
+  font-weight: 600;
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
@@ -772,7 +880,7 @@
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -859,7 +967,7 @@
 .uniteOn {
   border-color: var(--accent);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
 }
 
 /* --- « La dernière fois » -------------------------------------------------- */
@@ -902,7 +1010,7 @@
 }
 
 .lastTimePlan b {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 700;
 }
 
@@ -1077,16 +1185,19 @@
 }
 
 .replaceButton {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: calc(100% - 2 * var(--pad));
   min-height: 48px;
   margin: 8px var(--pad) 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink-2);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: var(--fs-small);
+  font-weight: 700;
 }
 
 /* --- La zone d'ajout, tout en bas de la liste ----------------------------- */
@@ -1102,7 +1213,7 @@
   border: 1px dashed var(--accent);
   border-radius: var(--radius);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -1140,7 +1251,7 @@
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -1272,7 +1383,7 @@
 
 .panelPickedChange {
   flex: none;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -1303,7 +1414,7 @@
   border: 0;
   border-radius: var(--radius);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
   font-size: 1rem;
   font-weight: 700;
 }
@@ -1315,12 +1426,25 @@
  * c'est elle qui dit qu'on est encore dans le même bloc — sans elle, le second
  * mouvement passe pour un exercice de plus.
  */
+/*
+ * Le bloc d'alternance.
+ *
+ * Son filet de gauche était rouge d'ACTION, collé au bord de l'écran, et
+ * courait sur 2 700 px — plus haut que trois écrans. À côté des boutons
+ * « Valider la série », qui sont le rouge auquel on obéit, cette barre tirait
+ * l'œil sans rien demander. Elle passe à l'argent des contours : les lettres
+ * de station (A, B) disent déjà que ces mouvements vont ensemble, et le
+ * titre du bloc le dit en toutes lettres.
+ *
+ * Le vert de la version terminée reste : lui marque un fait acquis, pas une
+ * action à faire.
+ */
 .superset {
   margin: 0 0 16px;
   padding: 0 0 4px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--line-strong);
   background: var(--surface);
 }
 
@@ -1337,7 +1461,7 @@
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   background: var(--accent);
-  color: var(--bg);
+  color: var(--ink-on-accent);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -1352,7 +1476,7 @@
 }
 
 .supersetPlus {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .supersetFormat {
@@ -1391,11 +1515,11 @@
  * retrouve sa place d'un coup d'œil après avoir reposé le téléphone.
  */
 .tourOuvert .tourTitre {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tourOuvert .setIndex {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tourHead {
@@ -1435,7 +1559,7 @@
 .stationLettre {
   flex: none;
   min-width: 20px;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 800;
 }
 
@@ -1455,7 +1579,7 @@
   align-items: center;
   gap: 10px;
   margin: 6px var(--pad);
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Icon } from './Icon';
 import { humanDate } from '../engine/calendar';
 import { noteHistory, noteWeekLabel } from '../engine/exerciseNotes';
 import { addNote, deleteNote, noteDraft, notesFor, saveNoteDraft, sessionNotes } from '../db/repo';
@@ -129,7 +130,8 @@ export function ExerciseNote({
     <section className={styles.exNote}>
       <div className={styles.exNoteHead}>
         <label htmlFor={`note-${slot}`} className={styles.exNoteLabel}>
-          📝 {label ?? 'Remarque'} <span className={styles.exNoteOptional}>— facultatif</span>
+          <Icon name="note" size="17px" /> {label ?? 'Remarque'}{' '}
+          <span className={styles.exNoteOptional}>— facultatif</span>
         </label>
         {historique.length > VISIBLES && (
           <button
@@ -138,7 +140,8 @@ export function ExerciseNote({
             onClick={() => setDeplie((v) => !v)}
             aria-expanded={deplie}
           >
-            {deplie ? '▲ masquer' : `▼ ${historique.length} au total`}
+            <Icon name={deplie ? 'chevron-up' : 'chevron-down'} size="16px" />
+            {deplie ? 'masquer' : `${historique.length} au total`}
           </button>
         )}
       </div>

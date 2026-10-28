@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
-import { LineChart, type Series } from "../components/Chart";
-import { Stepper, stepValue } from "../components/Stepper";
+import { useEffect, useState, useMemo } from 'react';
+import { LineChart, type Series } from '../components/Chart';
+import { Stepper, stepValue } from '../components/Stepper';
 import {
   HYDRATION_NOTE,
   NUTRITION_TARGETS,
@@ -9,14 +9,14 @@ import {
   SUPPLEMENTS_NOTE,
   TARGET_GAIN_KG_PER_WEEK,
   type DayKind,
-} from "../data/nutrition";
-import type { DayIndex, WeekIndex } from "../data/types";
-import { humanDate } from "../engine/calendar";
-import { fr } from "../engine/format";
-import { FOOD_LIBRARY, type LibraryFood } from "../data/foodLibrary";
-import { AddFoodSheet } from "../components/AddFoodSheet";
-import type { ExtraFoodRow } from "../db/db";
-import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from "../data/nutrition";
+} from '../data/nutrition';
+import type { DayIndex, WeekIndex } from '../data/types';
+import { humanDate } from '../engine/calendar';
+import { fr } from '../engine/format';
+import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
+import { AddFoodSheet } from '../components/AddFoodSheet';
+import type { ExtraFoodRow } from '../db/db';
+import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
   consumedTotal,
   extraMacros,
@@ -35,7 +35,7 @@ import {
   weeklyAverages,
   weightTrend,
   type Measurement,
-} from "../engine/nutrition";
+} from '../engine/nutrition';
 import {
   allCustomFoods,
   allFoodOverrides,
@@ -52,12 +52,14 @@ import {
   resetFoodOverrides,
   saveFoodOverride,
   saveMeasurement,
-} from "../db/repo";
-import { MealItems } from "../components/MealItems";
-import { MacroBar } from "../components/MacroBar";
-import { MacroProgress } from "../components/MacroProgress";
-import { shareOfDay } from "../engine/macroBar";
-import styles from "./Screens.module.css";
+} from '../db/repo';
+import { MealItems } from '../components/MealItems';
+import { MacroBar } from '../components/MacroBar';
+import { MacroProgress } from '../components/MacroProgress';
+import { shareOfDay } from '../engine/macroBar';
+import { Icon } from '../components/Icon';
+import { ScreenHeader } from '../components/ScreenHeader';
+import styles from './Screens.module.css';
 
 /**
  * Onglet Nutrition.
@@ -165,12 +167,7 @@ export function NutritionScreen({
   const target = targetForPhase(NUTRITION_TARGETS[kind], phase);
   const totalRepas = mealsTotal(target, overrides, catalogue);
   const ecart = mealsGap(target, overrides, catalogue);
-  const verdict = gapVerdict(
-    target,
-    overrides,
-    MEALS_GAP_TOLERANCE_PCT,
-    catalogue,
-  );
+  const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
   /*
    * Ce qui a été pris, et ce qu'il reste. Calculés sur le palier CONSULTÉ, et
    * la carte ne s'affiche que lorsqu'il est celui du jour : comparer ce qu'on a
@@ -219,8 +216,8 @@ export function NutritionScreen({
     .reverse();
   const series: Series[] = [
     {
-      label: "Moyenne 7 jours",
-      color: "var(--accent)",
+      label: 'Moyenne 7 jours',
+      color: 'var(--accent)',
       points: points.map((p, i) => ({ x: i, y: p.average! })),
     },
   ];
@@ -228,37 +225,37 @@ export function NutritionScreen({
   // jour redevient ambigu dès qu'on repasse par un 1er.
   const xLabels = Object.fromEntries(
     points.map((p, i) => {
-      const [, month, day] = p.endDate.split("-");
+      const [, month, day] = p.endDate.split('-');
       return [i, `${Number(day)}/${Number(month)}`];
     }),
   );
 
-  async function patchToday(patch: {
-    weightKg?: number | null;
-    waistCm?: number | null;
-  }) {
+  async function patchToday(patch: { weightKg?: number | null; waistCm?: number | null }) {
     await saveMeasurement(todayIso, patch);
     await reload();
   }
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <h1 className={styles.h1}>Nutrition</h1>
+      <ScreenHeader
+        eyebrow="Cinq prises par jour"
+        title="Nutrition"
+        subtitle="Glucides hauts, protéines suffisantes"
+        visuel="ballon"
+        compact
+      >
         <p className={styles.lead}>
-          Beaucoup de glucides, protéines suffisantes, lipides modérés. Cinq
-          prises, les mêmes aliments tous les jours — seuls les féculents
-          baissent les jours de repos. Touche un aliment pour corriger son
-          étiquette ou le remplacer.
+          Les mêmes aliments tous les jours — seuls les féculents baissent les jours de repos.
+          Touche un aliment pour corriger son étiquette ou le remplacer.
         </p>
-      </header>
+      </ScreenHeader>
 
       {/*
         Bandeau de deload — discret, et seulement quand il a quelque chose à
         dire. Il explique un chiffre qui a bougé tout seul : sans lui, les
         portions allégées ressembleraient à un bug.
       */}
-      {phase === "deloadLight" && (
+      {phase === 'deloadLight' && (
         <div className={styles.phaseNote}>
           <b>{DELOAD_BANNER.title}</b>
           <span>{DELOAD_BANNER.text}</span>
@@ -276,12 +273,10 @@ export function NutritionScreen({
         */}
         <div className={styles.keyStat}>
           <div className={styles.keyStatValue}>
-            {totalRepas.kcal.toLocaleString("fr-FR")}
+            {totalRepas.kcal.toLocaleString('fr-FR')}
             <span className={styles.keyStatUnit}> kcal / jour</span>
           </div>
-          <div className={styles.keyStatLabel}>
-            Ta cible aujourd’hui · {target.label}
-          </div>
+          <div className={styles.keyStatLabel}>Ta cible aujourd’hui · {target.label}</div>
         </div>
         {/* Même ordre que la barre juste en dessous — glucides, protéines,
             lipides. Deux ordres différents pour la même information se lisent
@@ -335,32 +330,33 @@ export function NutritionScreen({
           */}
         <div className={styles.keyStat}>
           <div className={styles.keyStatValue}>
-            {Math.abs(restant.kcal).toLocaleString("fr-FR")}
+            {Math.abs(restant.kcal).toLocaleString('fr-FR')}
             <span className={styles.keyStatUnit}>
-              {restant.kcal < 0 ? " kcal de trop" : " kcal restantes"}
+              {restant.kcal < 0 ? ' kcal de trop' : ' kcal restantes'}
             </span>
           </div>
           <div className={styles.keyStatLabel}>
-            {consomme.kcal.toLocaleString("fr-FR")} kcal pris sur{" "}
-            {prevu.kcal.toLocaleString("fr-FR")} · {prisIci} repas sur{" "}
-            {target.meals.length}
+            {consomme.kcal.toLocaleString('fr-FR')} kcal pris sur{' '}
+            {prevu.kcal.toLocaleString('fr-FR')} · {prisIci} repas sur {target.meals.length}
           </div>
         </div>
         <MacroProgress consumed={consomme} planned={prevu} />
         <p className={styles.fieldHint}>
-          Coche un repas quand tu l’as pris. Ce qui est compté, ce sont tes
-          quantités et tes remplacements — rien à ressaisir.
+          Coche un repas quand tu l’as pris. Ce qui est compté, ce sont tes quantités et tes
+          remplacements — rien à ressaisir.
         </p>
       </section>
 
       {/* --- Carburant du jour : une recommandation, jamais un ajout auto --- */}
-      <section
-        className={`${styles.card} ${styles.fuelCard} ${styles[`fuel_${carburant.level}`]}`}
-      >
+      <section className={`${styles.card} ${styles.fuelCard} ${styles[`fuel_${carburant.level}`]}`}>
         <div className={styles.fuelHead}>
-          <span className={styles.fuelDot} aria-hidden="true">
-            {carburant.emoji}
-          </span>
+          {/*
+            Une pastille dessinée, pas l'émoji du plan. Le cercle rouge de
+            20 px se lisait comme une alerte à côté d'un titre qui dit
+            simplement « séance exigeante ». L'émoji reste dans les données :
+            c'est la transcription du plan, et il sert ailleurs.
+          */}
+          <span className={styles.fuelDot} aria-hidden="true" />
           <span>
             <b className={styles.fuelTitle}>{carburant.title}</b>
             <span className={styles.fuelSubtitle}>{carburant.subtitle}</span>
@@ -384,16 +380,12 @@ export function NutritionScreen({
             */}
             <dl className={styles.fuelTotals}>
               <dt>Plan de base</dt>
-              <dd className="tnum">
-                ≈ {baseAujourdhui.kcal.toLocaleString("fr-FR")} kcal
-              </dd>
+              <dd className="tnum">≈ {baseAujourdhui.kcal.toLocaleString('fr-FR')} kcal</dd>
               <dt>Bonus séance</dt>
               <dd className="tnum">≈ +{carburant.kcal} kcal</dd>
               <dt>Total avec bonus</dt>
               <dd className="tnum">
-                ≈{" "}
-                {(baseAujourdhui.kcal + carburant.kcal).toLocaleString("fr-FR")}{" "}
-                kcal
+                ≈ {(baseAujourdhui.kcal + carburant.kcal).toLocaleString('fr-FR')} kcal
               </dd>
             </dl>
           </>
@@ -402,17 +394,16 @@ export function NutritionScreen({
         <p className={styles.fuelMessage}>{carburant.message}</p>
         {carburant.foods.length > 0 && (
           <p className={styles.fieldHint}>
-            Une recommandation, pas une obligation : tu la prends selon ta faim,
-            ta fatigue et l’évolution de ton poids. Protéines et lipides ne
-            bougent jamais.
+            Une recommandation, pas une obligation : tu la prends selon ta faim, ta fatigue et
+            l’évolution de ton poids. Protéines et lipides ne bougent jamais.
           </p>
         )}
       </section>
 
       {/* --- 4. Suggestion d'ajustement ------------------------------------ */}
-      {advice.kind !== "none" && (
+      {advice.kind !== 'none' && (
         <p
-          className={`${styles.alert} ${advice.kind === "add" ? styles.alertVert : styles.alertRouge}`}
+          className={`${styles.alert} ${advice.kind === 'add' ? styles.alertVert : styles.alertRouge}`}
         >
           <b>{advice.title}.</b> {advice.action}
         </p>
@@ -425,23 +416,16 @@ export function NutritionScreen({
         comme une séance, et ses repas doivent pouvoir se cocher. Choisir le
         palier du programme efface le choix plutôt que de l'enregistrer.
       */}
-      <div
-        className={styles.segment}
-        role="group"
-        aria-label="Palier alimentaire"
-      >
-        {(["train", "rest"] as const).map((k) => (
+      <div className={styles.segment} role="group" aria-label="Palier alimentaire">
+        {(['train', 'rest'] as const).map((k) => (
           <button
             key={k}
             type="button"
-            className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ""}`}
+            className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ''}`}
             onClick={() =>
               void (async () => {
                 setKind(k);
-                await setDayKindOverride(
-                  todayIso,
-                  k === kindProgramme ? null : k,
-                );
+                await setDayKindOverride(todayIso, k === kindProgramme ? null : k);
                 onDayKindChange();
               })()
             }
@@ -454,10 +438,8 @@ export function NutritionScreen({
       {kind !== kindProgramme && (
         <div className={`${styles.phaseNote} ${styles.choixNote}`}>
           <span>
-            Le programme prévoit{" "}
-            {NUTRITION_TARGETS[kindProgramme].label.toLowerCase()} aujourd’hui.
-            Tu as choisi l’autre palier : c’est lui qui compte, et ses repas se
-            cochent.
+            Le programme prévoit {NUTRITION_TARGETS[kindProgramme].label.toLowerCase()} aujourd’hui.
+            Tu as choisi l’autre palier : c’est lui qui compte, et ses repas se cochent.
           </span>
           <button
             type="button"
@@ -529,51 +511,7 @@ export function NutritionScreen({
                   dire 400 g. Deux versions du même repas à l'écran, c'est
                   exactement l'incohérence qu'on vient de chasser des totaux.
                 */}
-                    {!m.items && (
-                      <div className={styles.mealDetail}>{m.detail}</div>
-                    )}
-                    {/*
-                  Un repas décomposé affiche ses aliments : le détail écrit
-                  reste au-dessus comme rappel du plan, la liste en dessous est
-                  ce qui compte vraiment et ce qui se modifie.
-                */}
-                    <MealItems
-                      meal={m}
-                      overrides={overrides}
-                      customs={customs}
-                      catalogue={catalogue}
-                      onSave={async (foodId, patch) => {
-                        await saveFoodOverride(foodId, patch);
-                        setOverrides(await allFoodOverrides());
-                      }}
-                      onReset={async (foodId) => {
-                        await resetFoodOverrides(foodId);
-                        setOverrides(await allFoodOverrides());
-                      }}
-                      onCreateCustom={async (food) => {
-                        await saveCustomFood({
-                          foodId: food.id,
-                          label: food.label,
-                          unit: food.unit,
-                          per: food.per,
-                          kcal: food.kcal,
-                          proteinG: food.proteinG,
-                          carbsG: food.carbsG,
-                          fatG: food.fatG,
-                          referenceState: food.referenceState,
-                          category: food.category,
-                          addedAt: new Date().toISOString().slice(0, 10),
-                        });
-                        setCustoms(await chargerCustoms());
-                      }}
-                    />
-
-                    {/*
-                  Ce qui a été mangé EN PLUS de ce repas.
-                  Affiché sous les aliments du plan et nettement distingué :
-                  ce n'est pas une consigne, c'est un constat. Les confondre
-                  ferait passer un kiwi de mardi pour une ligne du programme.
-                */}
+                    {!m.items && <div className={styles.mealDetail}>{m.detail}</div>}
                   </div>
                   {/* Les deux nombres qui disent ce que ce repas PÈSE, ensemble :
                   ses calories, et sa part de la journée. */}
@@ -594,7 +532,7 @@ export function NutritionScreen({
                       type="button"
                       className={styles.mealTick}
                       aria-pressed={pris.has(m.id)}
-                      aria-label={`${m.name} — ${pris.has(m.id) ? "pris" : "pas encore pris"}`}
+                      aria-label={`${m.name} — ${pris.has(m.id) ? 'pris' : 'pas encore pris'}`}
                       onClick={() =>
                         void (async () => {
                           await setMealEaten(todayIso, m.id, !pris.has(m.id));
@@ -607,15 +545,59 @@ export function NutritionScreen({
                       écraserait le nom du repas à côté. */}
                       <span
                         className={`${styles.mealTickDot} ${
-                          pris.has(m.id) ? styles.mealTickOn : ""
+                          pris.has(m.id) ? styles.mealTickOn : ''
                         }`}
                         aria-hidden="true"
                       >
-                        ✓
+                        {pris.has(m.id) && <Icon name="check" size="17px" />}
                       </span>
                     </button>
                   }
                 </div>
+
+                {/*
+                  La liste des aliments occupe TOUTE la largeur de la carte,
+                  sous la ligne du repas.
+
+                  Elle vivait dans la colonne de gauche, celle que se partagent
+                  le nom du repas, sa barre de macros, ses calories et sa coche
+                  — il lui restait 60 % de la carte. « Poulet cuit » et
+                  « 150 g cuit » y passaient chacun sur deux lignes, et un
+                  repas de trois aliments occupait la hauteur de six.
+
+                  Même raison que pour les ajouts juste en dessous, sortis de
+                  cette colonne pour la même raison avant elle.
+                */}
+                <MealItems
+                  meal={m}
+                  overrides={overrides}
+                  customs={customs}
+                  catalogue={catalogue}
+                  onSave={async (foodId, patch) => {
+                    await saveFoodOverride(foodId, patch);
+                    setOverrides(await allFoodOverrides());
+                  }}
+                  onReset={async (foodId) => {
+                    await resetFoodOverrides(foodId);
+                    setOverrides(await allFoodOverrides());
+                  }}
+                  onCreateCustom={async (food) => {
+                    await saveCustomFood({
+                      foodId: food.id,
+                      label: food.label,
+                      unit: food.unit,
+                      per: food.per,
+                      kcal: food.kcal,
+                      proteinG: food.proteinG,
+                      carbsG: food.carbsG,
+                      fatG: food.fatG,
+                      referenceState: food.referenceState,
+                      category: food.category,
+                      addedAt: new Date().toISOString().slice(0, 10),
+                    });
+                    setCustoms(await chargerCustoms());
+                  }}
+                />
 
                 {/*
                 Les ajouts et leur bouton occupent toute la largeur, sous la
@@ -652,7 +634,7 @@ export function NutritionScreen({
           <button
             type="button"
             className={styles.secondary}
-            style={{ width: "100%", margin: "10px 0 0" }}
+            style={{ width: '100%', margin: '10px 0 0' }}
             onClick={() =>
               void (async () => {
                 await resetFoodOverrides();
@@ -660,15 +642,13 @@ export function NutritionScreen({
               })()
             }
           >
-            Réinitialiser aux valeurs par défaut (
-            {Object.keys(overrides).length})
+            Réinitialiser aux valeurs par défaut ({Object.keys(overrides).length})
           </button>
         )}
         <div className={styles.mealTotal}>
           <span>Total des repas listés</span>
           <span className="tnum">
-            ≈ {totalRepas.kcal.toLocaleString("fr-FR")} kcal ·{" "}
-            {totalRepas.proteinG} g
+            ≈ {totalRepas.kcal.toLocaleString('fr-FR')} kcal · {totalRepas.proteinG} g
           </span>
         </div>
         {/*
@@ -677,42 +657,36 @@ export function NutritionScreen({
           valeur absolue : un excédent s'annonçait comme un manque, et le conseil
           proposait d'ajouter du féculent à quelqu'un qui en avait déjà trop.
         */}
-        {verdict === "deficit" && (
-          <p
-            className={`${styles.alert} ${styles.alertRouge}`}
-            style={{ margin: "12px 0 0" }}
-          >
+        {verdict === 'deficit' && (
+          <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '12px 0 0' }}>
             <b>
-              Il manque {Math.abs(ecart.kcal).toLocaleString("fr-FR")} kcal pour
-              atteindre la cible de {target.kcal.toLocaleString("fr-FR")}.
-            </b>{" "}
-            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de{" "}
-            <b>moins</b> que prévu — à ce niveau tu ne prendras pas de poids. Il
-            faudrait environ{" "}
-            {starchToCloseGap(ecart.kcal).toLocaleString("fr-FR")} g de féculent
-            cuit en plus sur la journée : à ce volume, une sixième prise est
-            plus tenable que des assiettes plus grosses.
+              Il manque {Math.abs(ecart.kcal).toLocaleString('fr-FR')} kcal pour atteindre la cible
+              de {target.kcal.toLocaleString('fr-FR')}.
+            </b>{' '}
+            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de <b>moins</b> que prévu — à ce
+            niveau tu ne prendras pas de poids. Il faudrait environ{' '}
+            {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit en plus sur la
+            journée : à ce volume, une sixième prise est plus tenable que des assiettes plus
+            grosses.
           </p>
         )}
-        {verdict === "surplus" && (
-          <p className={styles.alert} style={{ margin: "12px 0 0" }}>
+        {verdict === 'surplus' && (
+          <p className={styles.alert} style={{ margin: '12px 0 0' }}>
             <b>
-              Tu dépasses la cible de {ecart.kcal.toLocaleString("fr-FR")} kcal{" "}
-              ({target.kcal.toLocaleString("fr-FR")} visées).
-            </b>{" "}
-            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de{" "}
-            <b>plus</b> que prévu — au-delà de la cible, ce que tu prends en
-            trop part surtout en gras. Il faudrait retirer environ{" "}
-            {starchToCloseGap(ecart.kcal).toLocaleString("fr-FR")} g de féculent
-            cuit sur la journée. Vérifie aussi les lignes marquées « modifié » :
-            une étiquette mal recopiée se voit ici avant de se voir sur la
-            balance.
+              Tu dépasses la cible de {ecart.kcal.toLocaleString('fr-FR')} kcal (
+              {target.kcal.toLocaleString('fr-FR')} visées).
+            </b>{' '}
+            Ces portions te font manger {fr(Math.abs(ecart.pct))} % de <b>plus</b> que prévu —
+            au-delà de la cible, ce que tu prends en trop part surtout en gras. Il faudrait retirer
+            environ {starchToCloseGap(ecart.kcal).toLocaleString('fr-FR')} g de féculent cuit sur la
+            journée. Vérifie aussi les lignes marquées « modifié » : une étiquette mal recopiée se
+            voit ici avant de se voir sur la balance.
           </p>
         )}
-        {verdict === "ok" && (
+        {verdict === 'ok' && (
           <p className={styles.fieldHint}>
-            Ajuste les féculents de ±30 g selon la faim et ta moyenne
-            hebdomadaire. Les quantités sont des repères, pas des lois.
+            Ajuste les féculents de ±30 g selon la faim et ta moyenne hebdomadaire. Les quantités
+            sont des repères, pas des lois.
           </p>
         )}
       </section>
@@ -721,8 +695,8 @@ export function NutritionScreen({
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Pesée du matin</h2>
         <p className={styles.cardSub}>
-          Au réveil, avant de manger ou de boire. Idéalement 4 à 7 fois par
-          semaine — mais une seule fois suffit à faire tourner la moyenne.
+          Au réveil, avant de manger ou de boire. Idéalement 4 à 7 fois par semaine — mais une seule
+          fois suffit à faire tourner la moyenne.
         </p>
         <div className={styles.field}>
           <Stepper
@@ -757,9 +731,8 @@ export function NutritionScreen({
             onCommit={(v) => void patchToday({ waistCm: v })}
           />
           <p className={styles.fieldHint}>
-            Optionnel, toutes les 1 à 2 semaines, même repère et même moment. Il
-            ne sert qu'à trancher un cas ambigu : poids qui monte, tour de
-            taille qui suit.
+            Optionnel, toutes les 1 à 2 semaines, même repère et même moment. Il ne sert qu'à
+            trancher un cas ambigu : poids qui monte, tour de taille qui suit.
           </p>
         </div>
       </section>
@@ -767,26 +740,26 @@ export function NutritionScreen({
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Moyenne 7 jours</h2>
         <p className={styles.cardSub}>
-          Une pesée isolée bouge de 1 à 2 kg selon l’hydratation, le sel de la
-          veille, le transit. Seule la moyenne veut dire quelque chose.
+          Une pesée isolée bouge de 1 à 2 kg selon l’hydratation, le sel de la veille, le transit.
+          Seule la moyenne veut dire quelque chose.
         </p>
         <div className={styles.keyStat}>
           <div className={styles.keyStatValue}>
-            {trend.average7 === null ? "—" : `${fr(trend.average7)}`}
+            {trend.average7 === null ? '—' : `${fr(trend.average7)}`}
             <span className={styles.keyStatUnit}> kg</span>
           </div>
           <div className={styles.keyStatLabel}>
             {trend.average7 === null
-              ? "Saisis ta première pesée pour lancer le suivi."
+              ? 'Saisis ta première pesée pour lancer le suivi.'
               : trend.deltaKg === null
-                ? `${trend.countThisWeek} pesée${trend.countThisWeek > 1 ? "s" : ""} cette semaine. Il faut une semaine de plus pour comparer.`
-                : `${trend.deltaKg > 0 ? "+" : ""}${fr(trend.deltaKg)} kg vs la semaine précédente · ${trend.countThisWeek} pesée${trend.countThisWeek > 1 ? "s" : ""}`}
+                ? `${trend.countThisWeek} pesée${trend.countThisWeek > 1 ? 's' : ''} cette semaine. Il faut une semaine de plus pour comparer.`
+                : `${trend.deltaKg > 0 ? '+' : ''}${fr(trend.deltaKg)} kg vs la semaine précédente · ${trend.countThisWeek} pesée${trend.countThisWeek > 1 ? 's' : ''}`}
           </div>
         </div>
         {trend.deltaKg !== null && (
           <p
             className={styles.fieldHint}
-            style={{ color: trend.onTarget ? "var(--vert)" : undefined }}
+            style={{ color: trend.onTarget ? 'var(--vert)' : undefined }}
           >
             {trend.onTarget
               ? `Dans la fourchette visée (+${fr(TARGET_GAIN_KG_PER_WEEK.min)} à +${fr(TARGET_GAIN_KG_PER_WEEK.max)} kg par semaine).`
@@ -857,7 +830,7 @@ async function chargerCustoms(): Promise<LibraryFood[]> {
     carbsG: r.carbsG,
     fatG: r.fatG,
     referenceState: r.referenceState,
-    category: r.category as LibraryFood["category"],
+    category: r.category as LibraryFood['category'],
     isCustom: true,
   }));
 }
@@ -899,11 +872,9 @@ function ExtrasDuRepas({
           <li key={x.id} className={styles.extraRow}>
             <span className={styles.extraName}>{x.label}</span>
             <span className={`${styles.extraQty} tnum`}>
-              {fr(x.qty)} {x.unit === "unité" ? "" : x.unit}
+              {fr(x.qty)} {x.unit === 'unité' ? '' : x.unit}
             </span>
-            <span className={`${styles.extraKcal} tnum`}>
-              {Math.round(macros.kcal)} kcal
-            </span>
+            <span className={`${styles.extraKcal} tnum`}>{Math.round(macros.kcal)} kcal</span>
             <button
               type="button"
               className={styles.extraRemove}

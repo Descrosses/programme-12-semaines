@@ -1,0 +1,75 @@
+/*
+ * Tout ce fichier est décoratif. Rien ici ne doit intercepter un appui, ni
+ * passer devant du texte.
+ */
+
+.yard,
+.glow,
+.stripes {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Lignes de yardage : collées au bas de leur conteneur, pleine largeur. */
+.yard {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  color: #6f93b8;
+  opacity: 0.22;
+}
+
+/* Halo de projecteurs : en haut, et seulement en haut. */
+.glow {
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 220px;
+}
+
+/* Bandes diagonales : coin droit d'une carte. */
+.stripes {
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+}
+
+/*
+ * Le trait d'accent. Taillé en biseau côté droit : c'est le détail qui fait
+ * « tableau de score » plutôt que « barre de progression ».
+ */
+.rule {
+  display: block;
+  width: 56px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+
+/* --------------------------------------------- emplacements de photos -- */
+
+/*
+ * Une photo d'ambiance ne doit jamais rendre un texte moins lisible. Elle est
+ * donc toujours en fond, derrière un voile, et jamais à pleine opacité.
+ */
+.visuel {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  object-fit: contain;
+  object-position: center;
+}
+
+.visuelCover {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.38;
+}

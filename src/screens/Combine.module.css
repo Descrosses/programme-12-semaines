@@ -1,0 +1,303 @@
+/*
+ * Écran Combine — refonte NFL Classic Premium.
+ *
+ * Fichier séparé, comme Semaine, Aujourd'hui et Progrès : Screens.module.css
+ * sert encore Nutrition et Réglages.
+ *
+ * C'est l'écran des TESTS : trois combines comparables, un indicateur-clé, un
+ * tableau, et une longue saisie. La saisie est la partie qui compte — on y est
+ * debout, essoufflé, après un sprint. Aucune photo, aucun décor au-dessous du
+ * tableau : à partir de là, il n'y a plus que des chiffres à poser.
+ */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+/* ---------------------------------------------------- choix du combine -- */
+
+/*
+ * Les trois combines. Ils détournaient la bande des semaines, qui posait un
+ * trait VERT sous les trois — y compris ceux qu'on n'avait pas choisis — et
+ * le sélectionné ne se distinguait que par la couleur de son libellé. Même
+ * défaut que sur Progrès, même correction : le trait n'est que sous celui-là.
+ */
+.phases {
+  display: flex;
+  gap: 8px;
+  margin: 14px var(--pad) 0;
+}
+
+.phase {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 62px;
+  padding: 8px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  text-align: center;
+}
+
+.phaseOn {
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, var(--surface-3) 0%, var(--surface) 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.phaseOn::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent-bright);
+}
+
+.phaseNom {
+  color: var(--ink-2);
+  font-family: var(--font-cond);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.phaseOn .phaseNom {
+  color: var(--ink);
+}
+
+.phaseQuand {
+  color: var(--ink-3);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------------- cartes -- */
+
+.card {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad);
+  padding: 16px var(--pad);
+}
+
+.cardTitle {
+  composes: carteTitre from '../styles/cartes.module.css';
+}
+
+.cardSub {
+  composes: carteSousTitre from '../styles/cartes.module.css';
+}
+
+.cardIcon {
+  composes: carteIcone from '../styles/cartes.module.css';
+}
+
+.fieldHint {
+  margin-top: 8px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.fieldHint b {
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------- l'indicateur central -- */
+
+/*
+ * L'écart deadlift − squat est LE critère du programme. Il a droit au
+ * traitement de tableau de score : chiffre énorme, incliné, posé sur un fond
+ * propre, avec sa légende dessous.
+ *
+ * Sa couleur reste décidée par l'écran (vert au-dessus de zéro, orange en
+ * dessous) mais elle ne porte pas seule : le signe + ou − est dans le chiffre
+ * et la légende dit la progression en toutes lettres.
+ */
+.keyStat {
+  position: relative;
+  margin-top: 14px;
+  padding: 18px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  text-align: center;
+}
+
+.keyStatValue {
+  font-family: var(--font-cond);
+  font-size: clamp(2.5rem, 14vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--track-display);
+  transform: skewX(-6deg);
+}
+
+.keyStatLabel {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+/* -------------------------------------------------------------- tableau -- */
+
+.tableScroll {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.table th,
+.table td {
+  padding: 9px 6px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+}
+
+.table th:first-child,
+.table td:first-child {
+  text-align: left;
+  color: var(--ink-2);
+}
+
+.table th {
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.table td {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.cible {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+/*
+ * Progression ou recul, dans la colonne du combine final.
+ *
+ * La flèche suit la VALEUR, la couleur dit si c'est bien. Les deux ne peuvent
+ * pas être confondus : sur un sprint, descendre de 1,82 à 1,74 est une
+ * progression, et une flèche qui monterait à côté d'un nombre qui baisse
+ * mentirait. Un mot caché double la couleur pour qui ne la distingue pas, et
+ * le sous-titre de la carte énonce la règle.
+ */
+/*
+ * `.table td` au-dessus pose une couleur, et il est plus spécifique qu'une
+ * classe seule : sans le préfixe, le vert et le rouge ne s'appliquaient pas
+ * et la colonne finale restait blanche.
+ */
+.table td.deltaUp {
+  color: var(--vert);
+}
+
+.table td.deltaDown {
+  color: var(--rouge);
+}
+
+.fleche {
+  margin-right: 3px;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------- saisie -- */
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px var(--pad) 0;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.sectionRule {
+  flex: 1;
+  height: 3px;
+  min-width: 12px;
+  border-radius: 2px;
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+
+.hint {
+  margin: 8px var(--pad) 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+.stepperZone {
+  margin-top: 14px;
+}
+
+/* ------------------------------------------------------------- boutons -- */
+
+.primary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: calc(100% - 2 * var(--pad));
+  min-height: 62px;
+  margin: var(--gap) var(--pad) 0;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--accent-bright) 0%, var(--accent) 100%);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.3125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-action);
+}
+
+.primary:active {
+  background: var(--accent-deep);
+  box-shadow: none;
+}
+
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--tap);
+  margin: 10px 0 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.secondary:active {
+  background: var(--surface-2);
+}

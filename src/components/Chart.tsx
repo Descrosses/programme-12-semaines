@@ -163,7 +163,7 @@ export function BarChart({
                 width={bw * 0.64}
                 height={Math.max(1, h)}
                 rx={2}
-                fill={b.color ?? 'var(--accent)'}
+                fill={b.color ?? 'var(--accent-ink)'}
               />
               <text
                 x={PAD.left + i * bw + bw / 2}

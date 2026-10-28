@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Icon } from './Icon';
 import { fr } from '../engine/format';
 import styles from './Stepper.module.css';
 
@@ -136,7 +137,7 @@ export function Stepper({
           >
             {value === null ? emptyLabel : fr(value)}
             <span className={styles.pencil} aria-hidden="true">
-              ✎
+              <Icon name="pencil" size="14px" />
             </span>
           </button>
         ) : (

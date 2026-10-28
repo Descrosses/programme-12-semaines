@@ -1,76 +1,151 @@
 /*
- * Jetons de design.
+ * Jetons de design — NFL CLASSIC PREMIUM.
  *
- * Contraintes : lu à un mètre, sous les néons d'une salle, une main, écran
- * peut-être mouillé. Donc fond sombre, contrastes élevés, aucun gris clair sur
- * gris, cibles tactiles de 48 px minimum.
+ * Contraintes inchangées, et elles priment sur l'esthétique : lu à un mètre,
+ * sous les néons d'une salle, une main, écran peut-être mouillé. Fond sombre,
+ * contrastes élevés, aucun gris pâle sur gris, cibles tactiles de 48 px.
  *
  * Tout ce qui se règle visuellement est ici. Une seule valeur à changer pour
- * modifier l'appli entière.
+ * modifier l'appli entière — c'est ce qui permettra d'ajouter plus tard une
+ * autre identité sans rien reconstruire.
+ *
+ * ── Les contrastes ont été MESURÉS, pas supposés ───────────────────────────
+ *
+ * Texte principal sur fond, sur carte et sur carte secondaire : 17,2 / 13,6 /
+ * 12,7 — AAA partout. Texte secondaire : 7,7 et 7,2 — AAA. Blanc sur le rouge
+ * d'action : 5,4 — AA. Le rouge d'action sur fond sombre ne tombe qu'à 3,4 :
+ * il est donc une couleur de FOND de bouton, jamais une couleur de petit
+ * texte.
  */
 
 :root {
-  /* --- Fonds, du plus profond au plus clair --- */
-  --bg: #0d1014;
-  --surface: #171d24;
-  --surface-2: #222a34;
-  --surface-3: #2e3843;
-  --line: #3d4956;
+  /* ----------------------------------------------------------------- fonds */
+  /* Bleu nuit profond : le ciel d'un stade éclairé, vu depuis la pelouse. */
+  --bg: #061426;
+  --bg-2: #0b2038;
+  --surface: #102a46;
+  --surface-2: #192f49;
+  --surface-3: #213a56;
 
-  /* --- Texte. Le secondaire reste à 8:1 sur --surface : jamais de gris pâle. */
-  --ink: #f4f7fa;
-  --ink-2: #c2cedb;
-  --ink-3: #8fa0b0; /* réservé aux libellés non essentiels */
-  --ink-on-accent: #10141a;
+  /*
+   * Deux bordures, et la distinction compte.
+   *
+   * `--line` sépare des lignes dans une liste : décoratif, aucun seuil de
+   * contraste à tenir. `--line-strong` dessine le contour d'un CONTRÔLE —
+   * bouton, champ, onglet — et doit atteindre 3:1 pour rester perceptible.
+   * Les confondre rendait les boutons secondaires invisibles sur carte.
+   */
+  --line: #35516b;
+  --line-strong: #4f7699;
 
-  /* --- Couleur d'action --- */
-  --accent: #ffb628;
-  --accent-dim: #6b4a08;
+  /* ----------------------------------------------------------------- texte */
+  --ink: #f5f7fa;
+  --ink-2: #aebecd;
+  --ink-3: #8fa6bc; /* libellés non essentiels — 5,8:1, reste lisible */
+  --ink-on-accent: #ffffff;
 
-  /* --- Feu tricolore (§4) --- */
+  /* ------------------------------------------------- couleur d'action */
+  /*
+   * Le rouge est la couleur de ce qu'on FAIT : valider, ouvrir, confirmer.
+   * Il n'est jamais seul à porter un statut — voir le feu tricolore ci-dessous.
+   */
+  --accent: #d50a20;
+  --accent-bright: #f01432;
+  --accent-deep: #a80718;
+  --accent-dim: #4a0a12;
+
+  /*
+   * Le rouge d'action est un FOND, jamais un petit texte : #d50a20 sur le
+   * fond marine ne fait que 3,4:1, et l'ancien accent ambré que ce rouge
+   * remplace en faisait 10,5. Tous les endroits qui écrivaient en accent
+   * (le chrono, les badges, les « + ajouter », les lettres de superset)
+   * passent donc par --accent-ink, un rouge éclairci qui tient 4,5:1 sur les
+   * quatre fonds du système : 7,4 sur --bg, 5,8 sur --surface, 5,4 sur
+   * --surface-2, 4,6 sur --surface-3.
+   *
+   * Sur un fond CLAIR c'est l'inverse : --accent y fait 5,4:1 et reste le
+   * bon choix (bouton blanc du bandeau de mise à jour).
+   */
+  --accent-ink: #ff7a85;
+
+  /* ------------------------------------------------------ feu tricolore (§4) */
+  /*
+   * Le rouge d'ALERTE n'est pas le rouge d'ACTION, et la teinte ne suffit pas
+   * à les distinguer : à côté d'un bouton rouge, un badge rouge se lit comme
+   * un second bouton. La readiness ROUGE se différencie donc par son texte,
+   * son icône et sa présentation (bandeau bordé), jamais par la seule couleur.
+   *
+   * Les règles de calcul et de déclenchement de §4 ne sont pas touchées.
+   */
   --vert: #3ddc84;
   --orange: #ff9f1c;
   --rouge: #ff5a4d;
 
+  /* Bleu de progression, pour ce qui se mesure sans se juger. */
+  --bleu: #3478c0;
   /*
-   * --- Macros, pour les barres de composition ---
-   *
-   * Trois teintes catégorielles, validées sur le fond des cartes (--surface-2) :
-   * bande de luminosité, plancher de chroma, séparation daltonienne (ΔE 10,5 au
-   * pire, deutan) et contraste. Choisies LOIN du feu tricolore et de --accent :
-   * une barre de macros n'est ni une alerte ni un bouton, et réutiliser ces
-   * couleurs-là ferait lire un jugement là où il n'y a qu'une composition.
+   * Le bleu des DONNÉES. Même raison que --accent-ink : une barre ou une
+   * courbe est un graphique porteur de sens et doit tenir 3:1 sur son fond.
+   * --bleu n'en fait que 3,2 sur le fond et 2,6 sur une carte ; celui-ci
+   * tient 6,3 sur une carte.
+   */
+  --bleu-ink: #6fb0ef;
+
+  /* ------------------------------------------------------------- macros */
+  /*
+   * Trois teintes catégorielles, validées sur --surface-2 : bande de
+   * luminosité, plancher de chroma, séparation daltonienne et contraste.
+   * Choisies LOIN du feu tricolore et de --accent : une barre de macros n'est
+   * ni une alerte ni un bouton.
    */
   --macro-glucides: #3d8dc9;
   --macro-proteines: #cf5a86;
   --macro-lipides: #a87b22;
 
-  /* --- Blocs (§2) --- */
+  /* --------------------------------------------------------- blocs (§2) */
+  /*
+   * Un seul jeton ici, et c'est voulu.
+   *
+   * Les couleurs des six blocs vivent dans `BLOCKS` (src/data/program.ts) :
+   * les écrans les lisent de là et les passent en `--bloc` au cas par cas.
+   * Les cinq autres jetons qui doublaient cette table n'étaient référencés
+   * nulle part — deux sources pour une même couleur, dont une morte.
+   *
+   * Celui-ci reste parce qu'il sert vraiment : le vert « test » marque, dans
+   * la carte média d'un exercice, la vidéo de RÉFÉRENCE — celle qui ne bouge
+   * pas. Ce n'est pas la couleur du bloc de test, c'est la même idée.
+   */
   --bloc-test: #7ac4a0;
-  --bloc-accumulation: #5aa7e0;
-  --bloc-deload: #9aabbc;
-  --bloc-maxforce: #e5533d;
-  --bloc-power: #f2b33d;
-  --bloc-taper: #7ac4a0;
 
-  /* --- Typographie --- */
+  /* -------------------------------------------------------- typographie */
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   /* Barlow Condensed est embarqué dans le projet (voir styles/fonts.css) :
      sans réseau, le repli système garde la mise en page lisible. */
   --font-cond: 'Barlow Condensed', 'Roboto Condensed', 'Arial Narrow', var(--font);
 
+  --fs-display: clamp(2.5rem, 13vw, 3.75rem); /* « SEMAINE 8 » */
   --fs-load: clamp(2.25rem, 11vw, 3.25rem); /* la ligne de charge */
   --fs-timer: clamp(2.75rem, 14vw, 4rem); /* le chrono */
   --fs-title: 1.5rem;
   --fs-body: 1rem;
   --fs-small: 0.875rem;
+  --fs-micro: 0.6875rem;
 
-  /* --- Géométrie --- */
+  /* Titres de retransmission : condensés, capitales, légèrement resserrés. */
+  --track-display: 0.01em;
+  --track-eyebrow: 0.18em;
+
+  /* ----------------------------------------------------------- géométrie */
   --tap: 48px; /* cible tactile minimale, non négociable */
   --radius: 14px;
   --radius-sm: 10px;
+  --radius-lg: 18px;
   --gap: 12px;
   --pad: 16px;
+
+  /* Ombres sobres : de la profondeur, pas du relief. */
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 6px 18px rgb(0 0 0 / 35%);
+  --shadow-action: 0 6px 18px rgb(213 10 32 / 32%);
 
   /* --- Hauteur réservée en bas pour la barre de chrono + la navigation --- */
   --bottom-space: calc(76px + env(safe-area-inset-bottom, 0px));

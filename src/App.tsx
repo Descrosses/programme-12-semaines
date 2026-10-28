@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { Icon, type IconName } from './components/Icon';
 import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
 import { CombineScreen } from './screens/CombineScreen';
@@ -20,13 +21,13 @@ import styles from './App.module.css';
 
 type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
 
-const TABS: Array<{ name: TabName; label: string; icon: string }> = [
-  { name: 'today', label: 'Aujourd’hui', icon: '▶' },
-  { name: 'week', label: 'Semaine', icon: '▦' },
-  { name: 'nutrition', label: 'Nutrition', icon: '🍽' },
-  { name: 'progress', label: 'Progrès', icon: '📈' },
-  { name: 'combine', label: 'Combine', icon: '⏱' },
-  { name: 'settings', label: 'Réglages', icon: '⚙' },
+const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
+  { name: 'today', label: 'Aujourd’hui', icon: 'play' },
+  { name: 'week', label: 'Semaine', icon: 'calendar' },
+  { name: 'nutrition', label: 'Nutrition', icon: 'meal' },
+  { name: 'progress', label: 'Progrès', icon: 'chart' },
+  { name: 'combine', label: 'Combine', icon: 'stopwatch' },
+  { name: 'settings', label: 'Réglages', icon: 'settings' },
 ];
 
 export function App() {
@@ -163,12 +164,16 @@ export function App() {
                 type="button"
                 className={`${styles.tab} ${active ? styles.tabOn : ''}`}
                 onClick={() =>
-                  navigate(tab.name === 'week' ? { name: 'week', week: weekForTab(route) } : { name: tab.name })
+                  navigate(
+                    tab.name === 'week'
+                      ? { name: 'week', week: weekForTab(route) }
+                      : { name: tab.name },
+                  )
                 }
                 aria-current={active ? 'page' : undefined}
               >
-                <span className={styles.tabIcon} aria-hidden="true">
-                  {tab.icon}
+                <span className={styles.tabIcon}>
+                  <Icon name={tab.icon} size="21px" />
                 </span>
                 <span className={styles.tabLabel}>{tab.label}</span>
               </button>

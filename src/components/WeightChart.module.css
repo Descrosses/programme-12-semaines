@@ -63,9 +63,14 @@
 
 /* --- Les données --------------------------------------------------------- */
 
+/*
+ * --accent-ink et non --accent : un trait de courbe est un graphique porteur
+ * de sens, il doit tenir 3:1 sur son fond. Le rouge d'action n'en fait que
+ * 2,7 sur une carte — la courbe du poids y disparaissait.
+ */
 .moyenne {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--accent-ink);
   stroke-width: 3.5;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -73,7 +78,7 @@
 
 /* Un tronçon d'un seul jour n'a pas de segment à tracer : un point suffit. */
 .moyenneSeule {
-  fill: var(--accent);
+  fill: var(--accent-ink);
 }
 
 .pesee {
@@ -144,7 +149,7 @@
 
 .pastilleMoyenne {
   height: 4px;
-  background: var(--accent);
+  background: var(--accent-ink);
 }
 
 .pastillePesee {

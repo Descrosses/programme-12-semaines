@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
+import { Icon } from '../components/Icon';
 import { ExerciseNote } from '../components/ExerciseNote';
 import { ExercisePanel } from '../components/ExercisePanel';
 import { SupersetCard } from '../components/SupersetCard';
@@ -7,7 +8,7 @@ import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
 import { BLOCKS } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
-import { humanDate } from '../engine/calendar';
+import { humanDateShort } from '../engine/calendar';
 import { fr, setSummary } from '../engine/format';
 import {
   clockLabel,
@@ -85,10 +86,14 @@ export function SessionScreen({
       <div className={styles.screen}>
         <header className={styles.header}>
           <button type="button" className={styles.back} onClick={onBack}>
-            ← Retour
+            <Icon name="arrow-left" size="18px" />
+            Retour
           </button>
           <h1 className={styles.title}>Repos</h1>
-          <p className={styles.meta}>Pas de séance prévue ce jour-là.</p>
+          <span className={styles.titleRule} aria-hidden="true" />
+          <div className={styles.meta}>
+            <span className={styles.metaItem}>Pas de séance prévue ce jour-là.</span>
+          </div>
         </header>
       </div>
     );
@@ -354,25 +359,37 @@ export function SessionScreen({
     <div className={styles.screen}>
       <header className={styles.header}>
         <button type="button" className={styles.back} onClick={onBack}>
-          ← Semaine {week}
+          <Icon name="arrow-left" size="18px" />
+          Semaine {week}
         </button>
         <h1 className={styles.title}>{session.title}</h1>
+        <span className={styles.titleRule} aria-hidden="true" />
         <div className={styles.meta}>
-          <span className={styles.tag} style={{ background: session.blockColor }}>
+          <span
+            className={`${styles.metaItem} ${styles.tag}`}
+            style={{ '--bloc': session.blockColor } as CSSProperties}
+          >
             {session.intensity}
           </span>
-          <span>{DAY_LABELS[day]}</span>
-          {data.date && <span>{humanDate(data.date)}</span>}
-          <span>
+          {/*
+            Le jour de la semaine et la date, dans une seule pastille. Ils
+            étaient côte à côte mais séparés, et `humanDate` répète déjà le
+            jour : on lisait « Lundi lundi 5 octobre ».
+          */}
+          <span className={styles.metaItem}>
+            {data.date ? `${DAY_LABELS[day]} ${humanDateShort(data.date)}` : DAY_LABELS[day]}
+          </span>
+          <span className={styles.metaItem}>
             Prévu <b>{session.durationLabel}</b>
           </span>
           {chrono !== null && (
-            <span className={styles.chrono}>
-              ⏱ <b className="tnum">{chrono}</b>
+            <span className={`${styles.metaItem} ${styles.chrono}`}>
+              <Icon name="stopwatch" size="14px" />
+              <b className="tnum">{chrono}</b>
               {row?.status === 'done' ? '' : ' en cours'}
             </span>
           )}
-          <span>
+          <span className={styles.metaItem}>
             Bloc <b>{BLOCKS[session.block].name}</b>
           </span>
         </div>
@@ -579,7 +596,7 @@ export function SessionScreen({
       </button>
 
       <div className={styles.summary}>
-        <b>Résumé</b>
+        <h2>Résumé</h2>
         <dl>
           <dt>Séries validées</dt>
           <dd>
@@ -662,7 +679,8 @@ export function SessionScreen({
               className={styles.resetClock}
               onClick={() => setResetDemande(true)}
             >
-              ⏱ Remettre le chrono à zéro
+              <Icon name="stopwatch" size="18px" />
+              Remettre le chrono à zéro
             </button>
           ))}
       </div>
