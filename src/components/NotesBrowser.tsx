@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Icon } from './Icon';
 import { EXERCISES } from '../data/exercises';
 import { humanDate } from '../engine/calendar';
 import { noteWeekLabel, notesByExercise } from '../engine/exerciseNotes';
@@ -76,7 +77,9 @@ export function NotesBrowser() {
               <span className={styles.noteGroupName}>{nom}</span>
               <span className={styles.noteGroupCount}>
                 {g.notes.length} remarque{g.notes.length > 1 ? 's' : ''}
-                {g.notes.length > 2 && (estOuvert ? ' ▲' : ' ▼')}
+                {g.notes.length > 2 && (
+                  <Icon name={estOuvert ? 'chevron-up' : 'chevron-down'} size="16px" />
+                )}
               </span>
             </button>
 

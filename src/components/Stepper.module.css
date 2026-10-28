@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 5px;
   font-family: var(--font-cond);
   font-size: 1.5rem;
   font-weight: 800;
@@ -63,10 +63,19 @@
  * peut taper dessus, sans voler de place au chiffre (il reste centré, le
  * crayon est posé à droite en discret).
  */
+/*
+ * Le crayon est un FRÈRE de la valeur, dans le même flex, et non un élément
+ * posé en absolu dans le coin droit.
+ *
+ * En absolu, il ne réservait aucune place : dès que la boîte se resserrait —
+ * les paires « reps + charge » côte à côte ne laissent que quelques dizaines
+ * de pixels à chacune — la valeur passait dessous. « PDC » s'affichait avec
+ * un crayon à cheval sur le C, sur chaque série de chaque exercice au poids
+ * du corps.
+ */
 .valueEditable {
-  position: relative;
   width: 100%;
-  padding: 0 18px;
+  padding: 0 8px;
   border-radius: 0;
 }
 
@@ -75,10 +84,7 @@
 }
 
 .pencil {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
+  flex: none;
   font-size: 0.8125rem;
   line-height: 1;
   color: var(--ink-3);

@@ -22,6 +22,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { Icon } from './Icon';
 import type { PainLogRow } from '../db/db';
 import { painLogFor, savePain } from '../db/repo';
 import { fr } from '../engine/format';
@@ -96,7 +97,9 @@ export function PainWatch({
       >
         <span className={styles.titre}>Suivi douleur</span>
         <span className={styles.resume}>{resume || 'rien de noté'}</span>
-        <span className={styles.chevron}>{ouvert ? '▲' : '▼'}</span>
+        <span className={styles.chevron} aria-hidden="true">
+          <Icon name={ouvert ? 'chevron-up' : 'chevron-down'} size="18px" />
+        </span>
       </button>
 
       {ouvert && (
