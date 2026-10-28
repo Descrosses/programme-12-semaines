@@ -65,6 +65,35 @@ select {
   border-radius: var(--radius-sm);
   min-height: var(--tap);
   padding: 0 12px;
+  /*
+   * `width: 100%` ne suffit pas à un champ de saisie sur iOS.
+   *
+   * Safari donne aux champs une largeur INTRINSÈQUE — celle de leur habillage
+   * natif — et un `input[type="date"]` la réclame même quand on lui demande
+   * 100 %. Le champ du « lundi du combine initial » dépassait donc sa carte
+   * d'une quinzaine de pixels sur la droite, sur iPhone seulement : aucun
+   * moteur de bureau ne reproduit ce comportement, et c'est pour ça qu'il a
+   * traversé toute la refonte sans se faire voir.
+   *
+   * `min-width: 0` retire ce plancher, `max-width: 100%` interdit de sortir
+   * du parent quoi qu'il arrive, et `appearance: none` neutralise l'habillage
+   * natif qui portait cette largeur. Le sélecteur de date d'iOS s'ouvre
+   * toujours normalement au toucher.
+   */
+  min-width: 0;
+  max-width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/*
+ * Sans son habillage natif, Safari ne centre plus verticalement le texte d'un
+ * champ de date : il faut lui donner la hauteur de ligne explicitement.
+ */
+input[type='date'] {
+  display: block;
+  width: 100%;
+  line-height: var(--tap);
 }
 
 input:focus-visible,

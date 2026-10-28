@@ -233,16 +233,30 @@
   margin-top: 10px;
 }
 
+/*
+ * Le sous-titre passe à la ligne plutôt que de se couper.
+ *
+ * En `nowrap` + ellipse, « Base de force, technique hinge, apprentissage des
+ * sauts » devenait « BASE DE FORCE, TECHNIQUE HINGE, APPRENTI… » et le filet
+ * de droite se réduisait à un moignon de 12 px. Deux blocs sur six sont dans
+ * ce cas — dont celui de la semaine 1, le premier écran qu'un nouveau venu
+ * ouvre après avoir posé sa date.
+ *
+ * Deux lignes au maximum : au-delà, le titre perdrait sa place.
+ */
 .subtitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
   color: var(--ink-2);
   font-family: var(--font-cond);
   font-size: var(--fs-small);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
 /*
@@ -255,8 +269,12 @@
   width: 22px;
 }
 
+/*
+ * Le filet de droite garde une longueur minimale lisible : réduit à 12 px il
+ * ressemblait à une poussière plus qu'à un trait.
+ */
 .ruleRight {
   flex: 1;
   width: auto;
-  min-width: 12px;
+  min-width: 28px;
 }
