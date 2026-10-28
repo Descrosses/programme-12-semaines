@@ -1,0 +1,204 @@
+/*
+ * Écran Progression — refonte NFL Classic Premium.
+ *
+ * Fichier séparé, comme Semaine et Aujourd'hui, pour la même raison :
+ * Screens.module.css sert encore Nutrition, Combine et Réglages, qui ne sont
+ * pas refaits. Y toucher les changerait sans vérification.
+ *
+ * Cet écran est un TABLEAU DE BORD : quatre vues, quatre cartes de courbes.
+ * Rien n'y est décoratif au point de coûter un pixel de graphique.
+ */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+/* ------------------------------------------------------ sélecteur de vue -- */
+
+/*
+ * Quatre vues. L'onglet actif ne prend PAS un aplat rouge : à côté des
+ * courbes rouges des cartes, un gros bloc rouge en haut d'écran se lisait
+ * comme un bouton d'action à presser. Il se reconnaît à son fond clair, à
+ * son trait rouge du dessous et à son libellé blanc — trois signaux, dont
+ * deux restent lisibles sans distinguer le rouge.
+ */
+.segment {
+  display: flex;
+  gap: 4px;
+  margin: 14px var(--pad) 0;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+}
+
+.segmentButton {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 4px;
+  border-radius: 8px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.segmentOn {
+  background: var(--surface-3);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+.segmentOn::after {
+  content: '';
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+}
+
+/* -------------------------------------------------- sélecteur de barre -- */
+
+/*
+ * Les quatre lifts suivis. Ils remplacent un détournement de la bande des
+ * semaines : celle-ci posait un trait rouge sous CHAQUE bouton, y compris
+ * ceux qu'on n'avait pas choisis, et le sélectionné ne se distinguait plus
+ * que par son fond. On ne savait pas quelle courbe on regardait.
+ */
+.lifts {
+  display: flex;
+  gap: 8px;
+  margin: 12px var(--pad) 0;
+}
+
+.lift {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-cond);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.liftOn {
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, var(--surface-3) 0%, var(--surface) 100%);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+/* Le trait rouge n'est QUE sous celui qu'on regarde. */
+.liftOn::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent-bright);
+}
+
+/* --------------------------------------------------------------- cartes -- */
+
+.card {
+  position: relative;
+  overflow: hidden;
+  margin: var(--gap) var(--pad);
+  padding: 16px var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.cardIcon {
+  flex: none;
+  color: var(--accent-ink);
+}
+
+.cardSub {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+/* La valeur du jour, mise en avant sous le titre de la carte des charges. */
+.cardValeur {
+  margin-top: 10px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.cardValeur small {
+  margin-left: 4px;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* -------------------------------------------------------------- alertes -- */
+
+/*
+ * Même règle que sur Aujourd'hui : une alerte n'est pas un bouton rouge.
+ * Filet de gauche, pictogramme, fond de carte.
+ */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: var(--gap) var(--pad) 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.alertIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--orange);
+}
+
+.alertRouge {
+  border-left-color: var(--rouge);
+}
+
+.alertRouge .alertIcon {
+  color: var(--rouge);
+}

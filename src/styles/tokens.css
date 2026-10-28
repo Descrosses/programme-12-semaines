@@ -83,6 +83,13 @@
 
   /* Bleu de progression, pour ce qui se mesure sans se juger. */
   --bleu: #3478c0;
+  /*
+   * Le bleu des DONNÉES. Même raison que --accent-ink : une barre ou une
+   * courbe est un graphique porteur de sens et doit tenir 3:1 sur son fond.
+   * --bleu n'en fait que 3,2 sur le fond et 2,6 sur une carte ; celui-ci
+   * tient 6,3 sur une carte.
+   */
+  --bleu-ink: #6fb0ef;
 
   /* ------------------------------------------------------------- macros */
   /*

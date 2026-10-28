@@ -50,22 +50,43 @@
 }
 
 .periode {
+  position: relative;
   flex: 1;
   min-width: 0;
   /* Non négociable : une cible tactile fait 48 px. */
   height: var(--tap);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  color: var(--ink-2);
-  font-size: var(--fs-small);
+  background: var(--surface);
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
+/*
+ * Même traitement que le sélecteur de vue au-dessus : fond clair, trait
+ * rouge, libellé blanc — et non un aplat rouge. Deux aplats rouges empilés
+ * se lisaient comme deux boutons d'action, alors que ce sont deux
+ * sélecteurs. Le rouge reste la couleur de ce qu'on FAIT.
+ */
 .periodeOn {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--ink-on-accent);
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, var(--surface-3) 0%, var(--surface) 100%);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+.periodeOn::after {
+  content: '';
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-bright);
 }
 
 /* --- Légende des blocs ---------------------------------------------------- */

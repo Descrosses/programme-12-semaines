@@ -20,7 +20,9 @@ import {
   toReadinessRecords,
 } from '../db/repo';
 import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
-import styles from './Screens.module.css';
+import { Icon } from '../components/Icon';
+import { ScreenHeader } from '../components/ScreenHeader';
+import styles from './Progress.module.css';
 
 /** Les quatre lifts que le programme suit vraiment (§13). */
 const LIFTS: Array<{ id: MainLiftId; label: string }> = [
@@ -42,6 +44,14 @@ const LIFTS: Array<{ id: MainLiftId; label: string }> = [
  * lignes. Empilé sous le reste, on ne l'aurait jamais atteint au pouce.
  */
 type Vue = 'chiffres' | 'poids' | 'remarques' | 'photos';
+
+/** Le sous-titre de l'en-tête suit la vue choisie. */
+const SOUS_TITRES: Record<Vue, string> = {
+  chiffres: 'Charges réelles contre plan',
+  poids: 'Poids de corps depuis le combine',
+  remarques: 'Tes notes, de la plus récente',
+  photos: 'Une photo par semaine',
+};
 
 export function ProgressScreen() {
   const [vue, setVue] = useState<Vue>('chiffres');
@@ -111,7 +121,7 @@ export function ProgressScreen() {
 
   const liftSeries: Series[] = [
     { label: 'Plan', color: 'var(--ink-3)', points: planPoints, dashed: true },
-    { label: 'Réel', color: 'var(--accent)', points: realPoints },
+    { label: 'Réel', color: 'var(--accent-ink)', points: realPoints },
   ];
 
   // --- broad jump dans le temps --------------------------------------------
@@ -156,7 +166,14 @@ export function ProgressScreen() {
     .map((v) => ({
       label: `${v.week}${DAY_LABELS_SHORT[v.day as 0 | 1 | 2 | 3 | 4][0]}`,
       value: Math.round((v.sum / v.n) * 10) / 10,
-      color: v.sum / v.n >= 9 ? 'var(--rouge)' : 'var(--accent)',
+      /*
+       * Bleu pour une séance ordinaire, rouge pour une séance encaissée à 9
+       * ou plus. Les deux étaient rouges : un rouge vif contre un rouge
+       * clair, impossible à séparer d'un coup d'œil alors que c'est tout ce
+       * qu'on cherche sur ce graphique. La nuance ne porte plus seule — le
+       * sous-titre dit déjà ce que signifie une barre rouge.
+       */
+      color: v.sum / v.n >= 9 ? 'var(--rouge)' : 'var(--bleu-ink)',
     }));
 
   const weeksX = Object.fromEntries(
@@ -165,16 +182,13 @@ export function ProgressScreen() {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <h1 className={styles.h1}>Progression</h1>
-        <p className={styles.lead}>
-          {vue === 'chiffres' && 'Ce que tu as réellement soulevé, comparé au plan.'}
-          {vue === 'poids' && 'Le poids de corps depuis le combine initial, pas sur sept jours.'}
-          {vue === 'remarques' &&
-            'Tout ce que tu as noté sur chaque mouvement, du plus récent au plus ancien.'}
-          {vue === 'photos' && 'Une photo par semaine. Ce que les courbes ne montrent pas.'}
-        </p>
-      </header>
+      <ScreenHeader
+        eyebrow="12 semaines"
+        title="Progression"
+        subtitle={SOUS_TITRES[vue]}
+        visuel="sprint"
+        compact
+      />
 
       <div className={styles.segment} role="group" aria-label="Vue">
         {(
@@ -207,38 +221,42 @@ export function ProgressScreen() {
         <>
           {trend?.declining && (
             <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
-              {trend.message}
+              <span className={styles.alertIcon} aria-hidden="true">
+                <Icon name="alert" size="18px" />
+              </span>
+              <span>{trend.message}</span>
             </p>
           )}
 
-          <div className={styles.weeks}>
+          <div className={styles.lifts} role="group" aria-label="Mouvement suivi">
             {LIFTS.map((l) => (
               <button
                 key={l.id}
                 type="button"
-                className={`${styles.week} ${lift === l.id ? styles.weekOn : ''}`}
-                style={{
-                  width: 'auto',
-                  padding: '0 14px',
-                  borderBottomColor: 'var(--accent)',
-                }}
+                className={`${styles.lift} ${lift === l.id ? styles.liftOn : ''}`}
                 onClick={() => setLift(l.id)}
                 aria-pressed={lift === l.id}
               >
-                <span className={styles.weekNum} style={{ fontSize: '1rem' }}>
-                  {l.label}
-                </span>
+                {l.label}
               </button>
             ))}
           </div>
 
           <section className={styles.card}>
-            <h2 className={styles.cardTitle}>{EXERCISES[lift]?.name} — charge par semaine</h2>
-            <p className={styles.cardSub}>
-              {realPoints.length === 0
-                ? 'Rien d’enregistré pour l’instant.'
-                : `Dernière charge travaillée : ${fr(realPoints[realPoints.length - 1]!.y)} kg.`}
-            </p>
+            <h2 className={styles.cardTitle}>
+              <span className={styles.cardIcon} aria-hidden="true">
+                <Icon name="chart" size="20px" />
+              </span>
+              {EXERCISES[lift]?.name}
+            </h2>
+            <p className={styles.cardSub}>Charge travaillée semaine par semaine, contre le plan.</p>
+            {realPoints.length === 0 ? (
+              <p className={styles.cardSub}>Rien d’enregistré pour l’instant.</p>
+            ) : (
+              <p className={styles.cardValeur}>
+                {fr(realPoints[realPoints.length - 1]!.y)} kg <small>dernière charge</small>
+              </p>
+            )}
             <LineChart
               series={liftSeries}
               xLabels={weeksX}
@@ -248,7 +266,12 @@ export function ProgressScreen() {
           </section>
 
           <section className={styles.card}>
-            <h2 className={styles.cardTitle}>Broad jump — readiness</h2>
+            <h2 className={styles.cardTitle}>
+              <span className={styles.cardIcon} aria-hidden="true">
+                <Icon name="arrow-up" size="20px" />
+              </span>
+              Broad jump
+            </h2>
             <p className={styles.cardSub}>
               Meilleur saut de chaque semaine. Deux baisses de suite déclenchent le cas 7 du
               programme.
@@ -262,7 +285,12 @@ export function ProgressScreen() {
           </section>
 
           <section className={styles.card}>
-            <h2 className={styles.cardTitle}>Durée des séances</h2>
+            <h2 className={styles.cardTitle}>
+              <span className={styles.cardIcon} aria-hidden="true">
+                <Icon name="stopwatch" size="20px" />
+              </span>
+              Durée des séances
+            </h2>
             <p className={styles.cardSub}>
               Mesurée entre la première ouverture de la séance et « Séance terminée ». Le trait
               clair sur la barre marque la durée prévue.
@@ -276,7 +304,12 @@ export function ProgressScreen() {
           </section>
 
           <section className={styles.card}>
-            <h2 className={styles.cardTitle}>RPE moyen par séance</h2>
+            <h2 className={styles.cardTitle}>
+              <span className={styles.cardIcon} aria-hidden="true">
+                <Icon name="alert" size="20px" />
+              </span>
+              RPE moyen par séance
+            </h2>
             <p className={styles.cardSub}>
               Les 12 dernières séances. Une barre rouge signale une séance encaissée à 9 ou plus.
             </p>

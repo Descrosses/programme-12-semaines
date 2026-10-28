@@ -109,8 +109,15 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète en départ de sprint entre deux plots, poussière de craie au sol.',
     cadrage: 'cover',
-    focus: '55% center',
-    usage: 'Bandeau des séances de puissance et de l’écran Progrès.',
+    /*
+     * « top » et non « center » : ce visuel sert deux emplacements de formes
+     * différentes. Dans le bandeau haut d'Aujourd'hui, l'image est rognée sur
+     * les CÔTÉS et seul le 62 % compte. Dans le bandeau court de Progrès,
+     * elle est rognée en HAUTEUR et seul le second terme compte — centré, il
+     * coupait la tête de l'athlète et il ne restait qu'un torse.
+     */
+    focus: '62% top',
+    usage: 'Bandeau des séances de puissance, et en-tête de Progrès.',
   },
   force: {
     display: '06_developpe_couche_display.webp',

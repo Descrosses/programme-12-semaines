@@ -160,7 +160,9 @@ export function ExerciseCard({
               Repos <b>{restLabel(ex.restSec)}</b>
             </span>
           )}
-          {overrideKg !== null && <span style={{ color: 'var(--accent)' }}>charge ajustée</span>}
+          {overrideKg !== null && (
+            <span style={{ color: 'var(--accent-ink)' }}>charge ajustée</span>
+          )}
         </div>
 
         {/*

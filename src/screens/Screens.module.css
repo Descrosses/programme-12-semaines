@@ -67,11 +67,29 @@
 
 /* ------------------------------------------------------------- cartes -- */
 
+/*
+ * La carte, définition commune.
+ *
+ * Elle est identique à `.card` de Progress.module.css, et c'est volontaire :
+ * les quatre composants de l'écran Progression (poids, remarques, photos,
+ * durées) importent CE fichier, partagé avec Nutrition, Combine et Réglages.
+ * Laisser l'ancienne définition ici aurait donné un écran Progression à deux
+ * langages — des cartes refondues sous l'onglet Charges, des cartes d'avant
+ * sous les trois autres.
+ *
+ * Les trois écrans non encore refaits héritent donc de la nouvelle carte dès
+ * maintenant. C'est la forme qu'ils prendront de toute façon ; les deux
+ * définitions seront fondues en une à l'étape d'harmonisation.
+ */
 .card {
+  position: relative;
+  overflow: hidden;
   margin: var(--gap) var(--pad);
-  padding: var(--pad);
-  background: var(--surface);
+  padding: 16px var(--pad);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  box-shadow: var(--shadow-card);
 }
 
 .cardFlush {
@@ -82,14 +100,23 @@
 }
 
 .cardTitle {
-  font-size: 1.0625rem;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
 }
 
 .cardSub {
-  margin-top: 4px;
+  margin-top: 6px;
   color: var(--ink-2);
   font-size: var(--fs-small);
+  line-height: 1.45;
 }
 
 .sectionTitle {
