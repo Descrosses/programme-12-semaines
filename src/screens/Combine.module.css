@@ -195,6 +195,17 @@
 }
 
 /*
+ * « à définir » n'est pas une valeur manquante par accident : c'est la bonne
+ * réponse tant que l'utilisateur n'a pas de performance initiale. On l'écrit
+ * en toutes lettres plutôt qu'avec un tiret, qui se confondrait avec les
+ * colonnes de mesures vides juste à gauche.
+ */
+.aDefinir {
+  font-style: italic;
+  font-weight: 500;
+}
+
+/*
  * Progression ou recul, dans la colonne du combine final.
  *
  * La flèche suit la VALEUR, la couleur dit si c'est bien. Les deux ne peuvent

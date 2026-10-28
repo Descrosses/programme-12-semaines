@@ -41,6 +41,7 @@ const ctx = (history: Occurrence[]): SessionContext => ({
   settings: {
     startDate: '2026-01-03',
     broadJumpBaselineCm: 240,
+    tableauOrigine: false,
     oneRM: { 'back-squat': 110, 'bench-press': 115, deadlift: 140, 'weighted-pullup': 45 },
   },
   history: { 'hip-thrust': history },
@@ -79,8 +80,16 @@ describe('une semaine de deload ne redéfinit pas le niveau', () => {
     expect(hipThrust(5, [occ(4, 90, 6)]).loadLine).toBe('4 × 6 × 100 kg');
   });
 
-  it('sans aucun historique, la valeur d’amorce du programme reprend la main', () => {
-    expect(hipThrust(5, []).loadLine).toBe('4 × 6 × 100 kg');
+  it('sans aucun historique, aucune charge n’est annoncée', () => {
+    /*
+     * Le programme portait une amorce de 100 kg : la charge de Hip Thrust de
+     * Guillaume. Elle était servie à qui n'avait jamais rien soulevé.
+     *
+     * Le volume reste — il vient du programme et vaut pour tout le monde. La
+     * charge, elle, attend la première séance. Pas 0 kg : un zéro est une
+     * performance, et le moteur le traiterait comme telle.
+     */
+    expect(hipThrust(5, []).loadLine).toBe('4 × 6');
   });
 });
 
@@ -126,9 +135,14 @@ describe('ce que le tri retient, mouvement par mouvement', () => {
 
 describe('ce qui ne doit PAS changer', () => {
   it('les lifts du tableau §9 ignorent l’historique — ils sont chiffrés', () => {
-    // Le deadlift de la semaine 5 vaut 117,5 kg quoi qu'il arrive.
+    /*
+     * Le deadlift de la semaine 5 vaut 82 % du 1RM — 115 kg sur un maximum de
+     * 140 — quoi qu'il arrive. Ce que ce test garde, c'est que l'historique
+     * ne s'en mêle pas : la case est chiffrée par le programme, pas déduite
+     * de la dernière séance. Le chiffre, lui, suit le maximum de chacun.
+     */
     const s = getSession(5 as WeekIndex, 5 as DayIndex, ctx(VECU));
-    expect(s!.exercises.find((e) => e.id === 'deadlift')!.loadLine).toBe('4 × 3 × 117,5 kg');
+    expect(s!.exercises.find((e) => e.id === 'deadlift')!.loadLine).toBe('4 × 3 × 115 kg');
   });
 
   it('la suggestion §11 part de la charge de référence, pas du deload', () => {
@@ -176,7 +190,9 @@ describe('entrée en bloc force max — la charge monte avec la baisse de reps',
   });
 
   it('la séance dit pourquoi la charge a bougé', () => {
-    const why = hipThrust(5, VECU).adjustments.map((a) => a.why).join(' ');
+    const why = hipThrust(5, VECU)
+      .adjustments.map((a) => a.why)
+      .join(' ');
     expect(why).toMatch(/moins de reps, plus de repos/i);
     expect(why).toMatch(/10 % de charge en plus/);
   });
@@ -189,9 +205,10 @@ describe('entrée en bloc force max — la charge monte avec la baisse de reps',
     expect(hipThrust(9, jusquA7).loadLine).toBe('4 × 5 × 120 kg');
   });
 
-  it('sans historique, la valeur d’amorce n’est pas corrigée', () => {
-    // 100 kg est déjà le point de départ choisi par le programme : le monter
-    // de 10 % reviendrait à décider à la place de Guillaume.
-    expect(hipThrust(5, []).loadLine).toBe('4 × 6 × 100 kg');
+  it('sans historique, il n’y a rien à corriger de 10 %', () => {
+    // Le +10 % d'entrée de bloc s'applique à une charge RÉELLE. Sans séance
+    // passée il n'y a pas de charge, donc rien à majorer — et surtout rien à
+    // inventer.
+    expect(hipThrust(5, []).loadLine).toBe('4 × 6');
   });
 });

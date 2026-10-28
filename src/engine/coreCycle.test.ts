@@ -21,6 +21,7 @@ import { setSummary } from './format';
 import { EXERCISES } from '../data/exercises';
 import { DELOAD_CORE } from '../data/blockRules';
 import type { DayIndex, WeekIndex } from '../data/types';
+import type { HistoryIndex } from './types';
 
 const ONE_RM = {
   'back-squat': 110,
@@ -29,9 +30,85 @@ const ONE_RM = {
   'weighted-pullup': 45,
 } as const;
 
+/**
+ * Un historique de portés, pour pouvoir observer le deload.
+ *
+ * Les charges d'accessoires ne sont plus écrites dans le programme : elles
+ * viennent de ce que l'utilisateur a réellement soulevé. Un deload « à 80 % de
+ * la charge » n'a donc rien à réduire tant qu'aucune séance n'a eu lieu — ce
+ * qui est le comportement voulu, mais ne se teste pas.
+ *
+ * Ces trois lignes jouent le rôle d'un utilisateur arrivé en semaine 3 avec
+ * ses propres charges. Elles ne sont plus une prescription du programme, juste
+ * le passé d'un utilisateur de test.
+ *
+ * Semaine 2 et non 3 : une séance ne peut pas se référencer elle-même, et
+ * plusieurs assertions portent sur la semaine 3.
+ */
+const PORTES_PASSES: HistoryIndex = {
+  'farmer-carry': [
+    {
+      exerciseId: 'farmer-carry',
+      week: 2,
+      day: 4 as DayIndex,
+      kg: 34,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'suitcase-carry': [
+    {
+      exerciseId: 'suitcase-carry',
+      week: 2,
+      day: 5 as DayIndex,
+      kg: 32,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'barbell-offset-hold': [
+    {
+      exerciseId: 'barbell-offset-hold',
+      week: 2,
+      day: 2 as DayIndex,
+      kg: 5,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'zercher-march': [
+    {
+      exerciseId: 'zercher-march',
+      week: 2,
+      day: 5 as DayIndex,
+      kg: 20,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+};
+
 const ctx = (over: Partial<SessionContext> = {}): SessionContext => ({
   ...EMPTY_CONTEXT,
-  settings: { startDate: '2026-01-03', broadJumpBaselineCm: 240, oneRM: { ...ONE_RM } },
+  settings: {
+    startDate: '2026-01-03',
+    broadJumpBaselineCm: 240,
+    oneRM: { ...ONE_RM },
+    tableauOrigine: false,
+  },
+  history: PORTES_PASSES,
   ...over,
 });
 
@@ -521,7 +598,9 @@ describe('Roman Side Bench et Zercher March', () => {
       expect(ex.altBasicFit, id).toBeTruthy();
       expect(ex.cues!.length, id).toBeGreaterThanOrEqual(5);
       expect(ex.cues!.join(' '), id).toMatch(/Muscles :/);
-      expect(ex.cues!.join(' '), id).toMatch(/Objectif athlétique :|Objectif athlétique|Objectif :/);
+      expect(ex.cues!.join(' '), id).toMatch(
+        /Objectif athlétique :|Objectif athlétique|Objectif :/,
+      );
     }
   });
 });

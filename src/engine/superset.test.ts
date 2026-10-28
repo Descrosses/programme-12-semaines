@@ -192,6 +192,7 @@ describe('la paire du lundi, dans le vrai programme', () => {
     settings: {
       startDate: '2026-08-24',
       broadJumpBaselineCm: 232,
+      tableauOrigine: false,
       oneRM: { 'back-squat': 140, 'bench-press': 115, deadlift: 180, 'weighted-pullup': 45 },
     },
   };

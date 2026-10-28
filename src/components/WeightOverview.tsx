@@ -6,9 +6,11 @@
  * assez cette semaine ? ». Elle ne répond pas à « où j'en suis depuis le
  * combine ? », et c'est à ça que sert cet écran.
  *
- * Rien n'est interprété ici. Le .md ne donne qu'une cible de poids (§13) ;
- * aucun seuil de « trop vite » ou de « pas assez » n'est inventé — celui qui
- * existe vit dans `nutritionAdvice`, avec les règles du .md derrière.
+ * Rien n'est interprété ici, et aucune cible n'est proposée : la bande du
+ * graphique vient du réglage « objectif de poids » que l'utilisateur remplit
+ * lui-même, vide par défaut. Aucun seuil de « trop vite » ou de « pas assez »
+ * n'est inventé — celui qui existe vit dans `nutritionAdvice`, avec les règles
+ * du .md derrière.
  *
  * Aucune migration de base : tout vient de la table `measurements` déjà
  * remplie par l'onglet Nutrition, déjà incluse dans l'export JSON.
@@ -16,7 +18,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { WeightChart, WaistChart } from './WeightChart';
-import { BANDE_CIBLE_POIDS, BLOCKS, WEEK_BLOCKS, type Block, type WeekIndex } from '../data/program';
+import { BLOCKS, WEEK_BLOCKS, type Block, type WeekIndex } from '../data/program';
+import { bandePoids } from '../engine/ciblePoids';
 import { fr } from '../engine/format';
 import type { Measurement } from '../engine/nutrition';
 import {
@@ -36,6 +39,7 @@ const BLOCS_LEGENDE: Block[] = [...new Set(Object.values(WEEK_BLOCKS))];
 export function WeightOverview() {
   const [entries, setEntries] = useState<Measurement[] | null>(null);
   const [startDate, setStartDate] = useState('');
+  const [cible, setCible] = useState<{ min: number; max: number } | null>(null);
   const [periode, setPeriode] = useState<Periode>('12s');
 
   const todayIso = new Date().toISOString().slice(0, 10);
@@ -43,10 +47,9 @@ export function WeightOverview() {
   useEffect(() => {
     void (async () => {
       const [rows, settings] = await Promise.all([allMeasurements(), getSettingsRow()]);
-      setEntries(
-        rows.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })),
-      );
+      setEntries(rows.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })));
       setStartDate(settings.startDate);
+      setCible(bandePoids(settings.ciblePoidsBasKg, settings.ciblePoidsHautKg));
     })();
   }, []);
 
@@ -70,7 +73,9 @@ export function WeightOverview() {
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Poids de corps</h2>
         <p className={styles.cardSub}>
-          Cible du programme : {fr(BANDE_CIBLE_POIDS.min)} à {fr(BANDE_CIBLE_POIDS.max)} kg.
+          {cible
+            ? `Ton objectif : ${fr(cible.min)} à ${fr(cible.max)} kg.`
+            : 'Aucun objectif de poids. Tu peux en fixer un dans Réglages — le programme n’en impose aucun.'}
         </p>
         <div className={local.chiffres}>
           <Chiffre label="Départ (combine)" valeur={vue.resume.depart} unite="kg" />
@@ -101,7 +106,7 @@ export function WeightOverview() {
 
       {/* --- Le graphique -------------------------------------------------- */}
       <section className={styles.card}>
-        <WeightChart entries={entries} cadre={vue.cadre} bande={BANDE_CIBLE_POIDS} />
+        <WeightChart entries={entries} cadre={vue.cadre} bande={cible} />
         {startDate && (
           <div className={local.blocs}>
             {BLOCS_LEGENDE.map((b) => (

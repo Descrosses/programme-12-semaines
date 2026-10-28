@@ -16,6 +16,7 @@ import type { WeekIndex } from '../data/types';
 const SETTINGS = {
   startDate: '2026-08-24',
   broadJumpBaselineCm: 232,
+  tableauOrigine: false,
   oneRM: { 'back-squat': 140, 'bench-press': 115, deadlift: 180, 'weighted-pullup': 45 },
 };
 
@@ -270,7 +271,9 @@ describe('le deload sur le réel ne vaut QUE là où le programme l’écrit', (
      * des douze semaines avant et après.
      */
     const ex = chargeDe('speed-squat', 8, 4, histoireDe('speed-squat', 7, 65, 65));
-    expect(ex.load.kg).toBe(55);
+    // 50 % du squat, et le squat de ce jeu d'essai vaut 140 : la case du
+    // deload reste celle du tableau, elle n'est pas recalculée sur le réel.
+    expect(ex.load.kg).toBe(70);
     expect(ex.adjustments.filter((a) => a.source === 'deload')).toHaveLength(0);
   });
 

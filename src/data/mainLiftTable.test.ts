@@ -20,18 +20,126 @@ const { headers, rows } = parseSection9();
 // ---------------------------------------------------------------------------
 
 const RECOPIE_MANUELLE: string[][] = [
-  ['1', '5×5×77,5 – RPE 7', '5×5×85 – RPE 7', '4×5×105 – RPE 7', '4×5×+20', '5×3×50', '3×6×60', '6×2×60'],
-  ['2', '5×5×82,5 – RPE 7,5', '5×5×87,5 – RPE 7,5', '4×5×110 – RPE 7,5', '4×5×+22,5', '5×3×52,5', '3×6×60', '6×2×60'],
-  ['3', '5×4×87,5 – RPE 8', '5×4×90 – RPE 8', '4×4×115 – RPE 8', '4×4×+25', '6×2×55', '3×6×62,5', '6×2×60'],
-  ['4', '3×3×70 – RPE 5', '3×3×77,5 – RPE 5', '3×3×92,5 – RPE 5', '3×3×+10', '3×3×45', '2×5×50', '4×2×55'],
-  ['5', '5×3×90 – RPE 8', '5×3×95 – RPE 8', '4×3×117,5 – RPE 8', '4×3×+30', '6×2×55', '4×5×65', '6×2×65'],
-  ['6', '4×3×95 – RPE 8,5', '4×3×97,5 – RPE 8,5', '3×3×125 – RPE 8,5', '4×3×+32,5', '6×2×57,5', '4×4×70', '6×2×65'],
-  ['7', '4×2×97,5 – RPE 9', '4×2×102,5 – RPE 9', '3×2×130 – RPE 9', '4×2×+35', '6×2×60', '4×4×70', '6×2×65'],
-  ['8', '3×3×77,5 – RPE 5', '3×3×82,5 – RPE 5', '3×3×97,5 – RPE 5', '3×2×+15', '3×2×45', '2×4×55', '4×2×55'],
-  ['9', '4×2×92,5 + contraste', '4×2×95 + contraste', '3×2×120 + contraste', '3×3×+30', '6×2×57,5', '3×3×70', '8×2×65'],
-  ['10', '4×2×95 + contraste', '4×2×97,5 + contraste', '3×2×127,5 + contraste', '3×3×+32,5', '6×2×60', '3×3×72,5', '8×2×65'],
-  ['11', '4×1-2×97,5 + contraste', '4×1-2×102,5 + contraste', '3×1-2×130 + contraste', '3×2×+35', '6×2×62,5', '3×3×75', '8×2×65'],
-  ['12', '3×2×77,5 puis TEST sam', '3×2×82,5 puis TEST dim', 'TEST mer', 'TEST dim', '3×2×50', '—', '2×2×55'],
+  [
+    '1',
+    '5×5×70 % – RPE 7',
+    '5×5×74 % – RPE 7',
+    '4×5×70 % – RPE 7',
+    '4×5×44 %',
+    '5×3×50',
+    '3×6×55 %',
+    '6×2×55 %',
+  ],
+  [
+    '2',
+    '5×5×75 % – RPE 7,5',
+    '5×5×76 % – RPE 7,5',
+    '4×5×75 % – RPE 7,5',
+    '4×5×50 %',
+    '5×3×52,5',
+    '3×6×55 %',
+    '6×2×55 %',
+  ],
+  [
+    '3',
+    '5×4×80 % – RPE 8',
+    '5×4×78 % – RPE 8',
+    '4×4×80 % – RPE 8',
+    '4×4×56 %',
+    '6×2×55',
+    '3×6×57 %',
+    '6×2×55 %',
+  ],
+  [
+    '4',
+    '3×3×64 % – RPE 5',
+    '3×3×67 % – RPE 5',
+    '3×3×64 % – RPE 5',
+    '3×3×22 %',
+    '3×3×45',
+    '2×5×45 %',
+    '4×2×50 %',
+  ],
+  [
+    '5',
+    '5×3×82 % – RPE 8',
+    '5×3×83 % – RPE 8',
+    '4×3×82 % – RPE 8',
+    '4×3×67 %',
+    '6×2×55',
+    '4×5×59 %',
+    '6×2×60 %',
+  ],
+  [
+    '6',
+    '4×3×86 % – RPE 8,5',
+    '4×3×85 % – RPE 8,5',
+    '3×3×86 % – RPE 8,5',
+    '4×3×72 %',
+    '6×2×57,5',
+    '4×4×64 %',
+    '6×2×60 %',
+  ],
+  [
+    '7',
+    '4×2×89 % – RPE 9',
+    '4×2×89 % – RPE 9',
+    '3×2×89 % – RPE 9',
+    '4×2×78 %',
+    '6×2×60',
+    '4×4×64 %',
+    '6×2×60 %',
+  ],
+  [
+    '8',
+    '3×3×70 % – RPE 5',
+    '3×3×72 % – RPE 5',
+    '3×3×70 % – RPE 5',
+    '3×2×33 %',
+    '3×2×45',
+    '2×4×50 %',
+    '4×2×50 %',
+  ],
+  [
+    '9',
+    '4×2×84 % + contraste',
+    '4×2×83 % + contraste',
+    '3×2×84 % + contraste',
+    '3×3×67 %',
+    '6×2×57,5',
+    '3×3×64 %',
+    '8×2×60 %',
+  ],
+  [
+    '10',
+    '4×2×86 % + contraste',
+    '4×2×85 % + contraste',
+    '3×2×86 % + contraste',
+    '3×3×72 %',
+    '6×2×60',
+    '3×3×66 %',
+    '8×2×60 %',
+  ],
+  [
+    '11',
+    '4×1-2×89 % + contraste',
+    '4×1-2×89 % + contraste',
+    '3×1-2×89 % + contraste',
+    '3×2×78 %',
+    '6×2×62,5',
+    '3×3×68 %',
+    '8×2×60 %',
+  ],
+  [
+    '12',
+    '3×2×70 % puis TEST sam',
+    '3×2×72 % puis TEST dim',
+    'TEST mer',
+    'TEST dim',
+    '3×2×50',
+    '—',
+    '2×2×50 %',
+  ],
 ];
 
 describe('§9 — lecture du fichier source', () => {
@@ -88,9 +196,23 @@ function attendu(cell: ParsedCell, presc: WeekPrescription | null, quoi: string)
   // charge
   expect(p.load, `${quoi} — charge`).not.toBeNull();
   const load = p.load!;
-  expect(load.kind, `${quoi} — type de charge`).toBe(cell.added ? 'added' : 'barbell');
-  if (load.kind === 'added' || load.kind === 'barbell') {
-    expect(load.kg, `${quoi} — kg`).toBe(cell.kg);
+  if (cell.pct) {
+    /*
+     * Une case en pourcentage ne porte PAS de kilo : le kilo se calcule sur le
+     * maximum de celui qui s'entraîne. Le `kgOrigine` à côté n'est pas la
+     * charge du programme, c'est ce que la case valait quand le tableau était
+     * écrit en kilos — il ne sert qu'aux installations qui tournaient déjà
+     * dessus, et il est vérifié séparément.
+     */
+    expect(load.kind, `${quoi} — type de charge`).toBe('pct1RM');
+    if (load.kind === 'pct1RM') {
+      expect(load.pct, `${quoi} — pourcentage`).toBe(cell.valeur);
+    }
+  } else {
+    expect(load.kind, `${quoi} — type de charge`).toBe(cell.added ? 'added' : 'barbell');
+    if (load.kind === 'added' || load.kind === 'barbell') {
+      expect(load.kg, `${quoi} — kg`).toBe(cell.valeur);
+    }
   }
 
   // RPE : présent dans la cellule ⇒ cible exacte dans le code

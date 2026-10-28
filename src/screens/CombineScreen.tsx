@@ -6,7 +6,7 @@ import {
   COMBINE_S8_METRICS,
   RAMPS,
   RAMPS_S12,
-  TARGETS_12_WEEKS,
+  cibleFor,
 } from '../data/testSessions';
 import { fr } from '../engine/format';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
@@ -214,7 +214,18 @@ export function CombineScreen() {
                         </span>
                       )}
                     </td>
-                    <td className={styles.cible}>{TARGETS_12_WEEKS[id]?.target ?? '—'}</td>
+                    {/*
+                      L'objectif se calcule sur CE qu'a fait l'utilisateur au
+                      combine initial, pas sur les maxima de l'auteur. Sans
+                      performance initiale il n'y a rien à calculer — et on
+                      l'écrit, plutôt que de servir un chiffre qui ne veut
+                      rien dire pour celui qui le lit.
+                    */}
+                    <td className={styles.cible}>
+                      {cibleFor(id, typeof i === 'number' ? i : null) ?? (
+                        <span className={styles.aDefinir}>à définir</span>
+                      )}
+                    </td>
                   </tr>
                 );
               })}

@@ -155,7 +155,7 @@ describe("migration v14 → v15", () => {
 
     const apres = ouvrirComplete();
     await apres.open();
-    expect(apres.verno).toBe(15);
+    expect(apres.verno).toBe(16);
 
     expect(await apres.sessions.count()).toBe(2);
     expect(await apres.sets.count()).toBe(2);
@@ -176,6 +176,10 @@ describe("migration v14 → v15", () => {
     const reglages = await apres.settings.get(1);
     expect(reglages?.oneRM["back-squat"]).toBe(140);
     expect(reglages?.startDate).toBe("2026-08-24");
+    // v16 : cette base avait une date de début, donc un plan en cours. Elle
+    // garde le tableau §9 en kilos — la mise à jour ne le réécrit pas au
+    // milieu des douze semaines.
+    expect(reglages?.tableauOrigine).toBe(true);
 
     // La remarque de séance reste AUSSI à sa place d'origine : la migration
     // recopie, elle ne déplace pas.

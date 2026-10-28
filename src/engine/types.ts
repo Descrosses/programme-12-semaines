@@ -19,12 +19,26 @@ export interface Settings {
   broadJumpBaselineCm: number | null;
   /** 1RM les plus récemment TESTÉS (le combine de S8 n'en teste aucun). */
   oneRM: Partial<Record<OneRMKey, number>>;
+  /**
+   * Cette installation garde le tableau §9 tel qu'il a été ÉCRIT, en kilos.
+   *
+   * Le §9 est passé des kilos aux pourcentages du 1RM de chacun : écrit en
+   * kilos, il servait les maxima de son auteur à tout le monde. Mais les
+   * installations qui tournaient déjà dessus suivaient un plan en cours, et
+   * une mise à jour de l'application n'a pas à le réécrire en silence au
+   * milieu des douze semaines.
+   *
+   * `true` pour elles, posé une seule fois à la migration ; `false` pour toute
+   * installation neuve, qui n'a aucun plan en cours à préserver.
+   */
+  tableauOrigine: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   startDate: '',
   broadJumpBaselineCm: null,
   oneRM: {},
+  tableauOrigine: false,
 };
 
 /** Une série réellement effectuée, telle que stockée en base. */

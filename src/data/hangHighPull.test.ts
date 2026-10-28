@@ -115,12 +115,7 @@ describe('sa place dans la séance du vendredi', () => {
   it('reste deuxième dans le bloc puissance, devant les pogos ajoutés', () => {
     for (const w of [9, 10, 11]) {
       const ids = vendredi(w as WeekIndex)!.exercises.map((e) => e.id);
-      expect(ids.slice(0, 4), `S${w}`).toEqual([
-        'broad-jump',
-        ID,
-        'pogo-jumps',
-        'lateral-bound',
-      ]);
+      expect(ids.slice(0, 4), `S${w}`).toEqual(['broad-jump', ID, 'pogo-jumps', 'lateral-bound']);
     }
   });
 
@@ -137,14 +132,15 @@ describe('sa place dans la séance du vendredi', () => {
 });
 
 describe('le volume suit les blocs du §8', () => {
-  it('semaines 1-3 — accumulation : 3 × 3, repos 90 s, 40 kg', () => {
+  it('semaines 1-3 — accumulation : 3 × 3, repos 90 s, charge à poser', () => {
     for (const w of [1, 2, 3] as WeekIndex[]) {
       const ex = hhp(w)!;
       expect(ex.sets, `S${w}`).toBe(3);
       expect(ex.work.kind, `S${w}`).toBe('reps');
       expect((ex.work as { reps: number }).reps, `S${w}`).toBe(3);
       expect(ex.restSec, `S${w}`).toBe(90);
-      expect(ex.load.kg, `S${w}`).toBe(40);
+      // Le VOLUME vient du programme, la CHARGE vient de l'utilisateur.
+      expect(ex.load.kg, `S${w}`).toBeNull();
     }
   });
 
@@ -176,10 +172,9 @@ describe('le volume suit les blocs du §8', () => {
       expect(ex.sets, `S${w}`).toBe(2);
       // Les reps ne bougent pas : c'est le VOLUME qui est divisé, pas l'effort.
       expect((ex.work as { reps: number }).reps, `S${w}`).toBe(3);
-      expect(
-        ex.adjustments.map((a) => a.why).join(' '),
-        `S${w}`,
-      ).toContain('volume de sauts divisé par 2');
+      expect(ex.adjustments.map((a) => a.why).join(' '), `S${w}`).toContain(
+        'volume de sauts divisé par 2',
+      );
     }
   });
 
@@ -223,9 +218,14 @@ describe('semaine 12 — absent, le vendredi est réservé aux tests', () => {
 });
 
 describe('la charge est autonome — aucun 1RM d’un autre mouvement', () => {
-  it('part de 40 kg tant que rien n’a été soulevé', () => {
-    expect(hhp(1)!.load.kg).toBe(40);
-    expect(hhp(1)!.load.source).toBe('programme');
+  it('n’annonce AUCUNE charge tant que rien n’a été soulevé', () => {
+    /*
+     * Le mouvement partait de 40 kg : la charge de Guillaume. Un nouvel
+     * utilisateur se la voyait attribuer sans avoir rien saisi. Une charge
+     * inconnue vaut `null` — pas 40, et surtout pas 0, qui serait une
+     * performance aux yeux du moteur.
+     */
+    expect(hhp(1)!.load.kg).toBeNull();
   });
 
   it('ne bouge pas quand les 1RM des Réglages changent', () => {
@@ -236,9 +236,9 @@ describe('la charge est autonome — aucun 1RM d’un autre mouvement', () => {
         ...CTX,
         settings: { ...CTX.settings, oneRM },
       })!.exercises.find((e) => e.id === ID)!.load.kg;
-    expect(avec({ 'back-squat': 110, deadlift: 140 })).toBe(40);
-    expect(avec({ 'back-squat': 220, deadlift: 260 })).toBe(40);
-    expect(avec({})).toBe(40);
+    expect(avec({ 'back-squat': 110, deadlift: 140 })).toBeNull();
+    expect(avec({ 'back-squat': 220, deadlift: 260 })).toBeNull();
+    expect(avec({})).toBeNull();
   });
 
   it('reprend ensuite la charge réellement soulevée', () => {

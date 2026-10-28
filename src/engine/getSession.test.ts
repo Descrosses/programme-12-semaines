@@ -20,10 +20,83 @@ const ONE_RM = {
   'weighted-pullup': 45,
 } as const;
 
+/*
+ * Le passé d'un utilisateur de test, pas une prescription du programme.
+ *
+ * Les charges d'accessoires ne sont plus écrites dans les données : elles
+ * viennent de ce que l'utilisateur a réellement soulevé. Les règles qui les
+ * MODIFIENT — deload à 80 %, readiness orange à −5 %, +10 % en force max —
+ * n'ont donc rien à modifier tant qu'aucune séance n'a eu lieu.
+ *
+ * Ces trois lignes donnent à ces règles de quoi mordre. Semaine 1 : toutes les
+ * assertions portent sur des semaines ultérieures, et une séance ne peut pas
+ * se référencer elle-même.
+ */
+const ACCESSOIRES_PASSES: Record<string, Occurrence[]> = {
+  'bulgarian-split-squat': [
+    {
+      exerciseId: 'bulgarian-split-squat',
+      week: 1,
+      day: 0,
+      kg: 18,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'hip-thrust': [
+    {
+      exerciseId: 'hip-thrust',
+      week: 1,
+      day: 5,
+      kg: 100,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'incline-db-press': [
+    {
+      exerciseId: 'incline-db-press',
+      week: 1,
+      day: 2,
+      kg: 30,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+  'chest-supported-row': [
+    {
+      exerciseId: 'chest-supported-row',
+      week: 1,
+      day: 2,
+      kg: 30,
+      rpe: null,
+      plannedKg: null,
+      failed: false,
+      targetRPE: null,
+      completed: true,
+    },
+  ],
+};
+
 function ctx(over: Partial<SessionContext> = {}): SessionContext {
   return {
     ...EMPTY_CONTEXT,
-    settings: { startDate: '2026-01-03', broadJumpBaselineCm: 240, oneRM: { ...ONE_RM } },
+    settings: {
+      startDate: '2026-01-03',
+      broadJumpBaselineCm: 240,
+      oneRM: { ...ONE_RM },
+      tableauOrigine: false,
+    },
+    history: ACCESSOIRES_PASSES,
     ...over,
   };
 }
@@ -339,9 +412,20 @@ describe('readiness ORANGE', () => {
     expect(find(s, 'rdl').load.kg).toBe(85); // 90 × 0,95 = 85,5 → 85
   });
 
-  it('−5 % au Bulgarian, arrondi au 2 kg', () => {
+  it('−5 % au Bulgarian, absorbé par le pas de 2 kg', () => {
+    /*
+     * 20 kg en entrée, pas 18 : la charge vient de l'historique (18 kg en
+     * semaine 1) et l'entrée en bloc force maximale la monte de 10 % (§8),
+     * 19,8 → 20. Ce +10 % ne s'applique QUE sur une charge réelle ; tant que
+     * le programme portait une amorce de 18 kg, il ne se déclenchait jamais
+     * et ce test observait un cas qu'aucun utilisateur ne rencontrait.
+     *
+     * Puis l'orange retire 5 % : 20 × 0,95 = 19, qui retombe sur 20 au pas de
+     * 2 kg. C'est le propos du test — une correction plus petite que le pas
+     * ne change pas la charge.
+     */
     const bulgarian = find(session(5, 0, orange), 'bulgarian-split-squat');
-    expect(bulgarian.load.kg).toBe(18); // 18 × 0,95 = 17,1 → 18 (pas de 2 kg)
+    expect(bulgarian.load.kg).toBe(20);
   });
 
   it('une série de moins sur les accessoires', () => {
@@ -371,7 +455,11 @@ describe('readiness ORANGE', () => {
         completed: true,
       },
     ];
-    const s = session(5, 0, ctx({ readiness: readiness(240, 230), history: { 'back-squat': historique } }));
+    const s = session(
+      5,
+      0,
+      ctx({ readiness: readiness(240, 230), history: { 'back-squat': historique } }),
+    );
     const squat = find(s, 'back-squat');
     expect(squat.suggestion?.case).toBe(2);
     // 90 + 5 = 95, puis −5 % = 90,25 → 90

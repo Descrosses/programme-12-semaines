@@ -17,13 +17,20 @@ export type ParsedCell =
   | { kind: 'absent'; raw: string }
   /** « TEST mer » : semaine de test, aucune charge planifiée. */
   | { kind: 'test'; raw: string }
-  /** « 5×5×100 – RPE 7 », « 4×5×+17,5 », « 4×1-2×125 + contraste ». */
+  /** « 5×5×70 % – RPE 7 », « 5×3×50 », « 4×1-2×89 % + contraste ». */
   | {
       kind: 'load';
       raw: string;
       sets: number;
       reps: number | { min: number; max: number };
-      kg: number;
+      /**
+       * Le chiffre de la case — un POURCENTAGE quand `pct` est vrai, des
+       * kilos sinon. Le §9 mêle les deux : les colonnes indexées sur un
+       * maximum sont en pourcentages, Push Press reste en kilos absolus.
+       */
+      valeur: number;
+      /** La case se lit « 70 % » et non « 70 kg ». */
+      pct: boolean;
       /** Le « + » de « +17,5 » : charge ajoutée au poids du corps. */
       added: boolean;
       rpe: number | null;
@@ -73,13 +80,16 @@ function parseCell(raw: string): ParsedCell {
       : { min: Number(repsRaw.slice(0, dash)), max: Number(repsRaw.slice(dash + 1)) };
 
   const rpeMatch = /RPE\s*([\d,]+)/i.exec(raw);
+  // « 70 % » : le signe suit immédiatement le nombre de la charge.
+  const pct = new RegExp(`×\\s*${m[4]!.replace(',', '[,.]')}\\s*%`).test(raw);
 
   return {
     kind: 'load',
     raw,
     sets: Number(m[1]!),
     reps,
-    kg: num(m[4]!),
+    valeur: num(m[4]!),
+    pct,
     added: m[3] === '+',
     rpe: rpeMatch ? num(rpeMatch[1]!) : null,
     contrast: /contraste/i.test(raw),

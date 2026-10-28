@@ -84,17 +84,36 @@ const a = (kg: number, optional = false): RampStep => ({ kg, reps: 1, attempt: t
 
 /** « 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 142,5 / 147,5 si rapide » */
 export const RAMP_SQUAT: RampStep[] = [
-  w(60, 5), w(80, 3), w(100, 2), w(115, 1), w(130, 1), a(142.5), a(147.5, true),
+  w(60, 5),
+  w(80, 3),
+  w(100, 2),
+  w(115, 1),
+  w(130, 1),
+  a(142.5),
+  a(147.5, true),
 ];
 
 /** « 60×5 / 80×3 / 95×1 / 107,5×1 / 117,5 / 122,5 / 125 » */
 export const RAMP_BENCH: RampStep[] = [
-  w(60, 5), w(80, 3), w(95, 1), w(107.5, 1), a(117.5), a(122.5), a(125, true),
+  w(60, 5),
+  w(80, 3),
+  w(95, 1),
+  w(107.5, 1),
+  a(117.5),
+  a(122.5),
+  a(125, true),
 ];
 
 /** « 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 137,5 / 142,5 / 147,5 selon vitesse » */
 export const RAMP_DEADLIFT: RampStep[] = [
-  w(60, 5), w(80, 3), w(100, 2), w(115, 1), w(130, 1), a(137.5), a(142.5, true), a(147.5, true),
+  w(60, 5),
+  w(80, 3),
+  w(100, 2),
+  w(115, 1),
+  w(130, 1),
+  a(137.5),
+  a(142.5, true),
+  a(147.5, true),
 ];
 
 /** « +20×3 / +30×1 / +36×1 / +40 / +42,5 » */
@@ -125,12 +144,25 @@ export const MESURES_COMBINE = {
 
 /** 110 mesuré → essais 112,5 (record) / 117,5 / 122,5 (cible §13). */
 export const RAMP_SQUAT_S12: RampStep[] = [
-  w(47.5, 5), w(62.5, 3), w(77.5, 2), w(90, 1), w(102.5, 1), a(112.5), a(117.5, true), a(122.5, true),
+  w(47.5, 5),
+  w(62.5, 3),
+  w(77.5, 2),
+  w(90, 1),
+  w(102.5, 1),
+  a(112.5),
+  a(117.5, true),
+  a(122.5, true),
 ];
 
 /** 115 mesuré → essais 117,5 (record) / 120 / 122,5 (cible §13). */
 export const RAMP_BENCH_S12: RampStep[] = [
-  w(57.5, 5), w(77.5, 3), w(90, 1), w(102.5, 1), a(117.5), a(120, true), a(122.5, true),
+  w(57.5, 5),
+  w(77.5, 3),
+  w(90, 1),
+  w(102.5, 1),
+  a(117.5),
+  a(120, true),
+  a(122.5, true),
 ];
 
 /**
@@ -146,7 +178,14 @@ export const RAMP_BENCH_S12: RampStep[] = [
  * volontairement pas un palier — voir la réserve sur TARGETS_12_WEEKS.
  */
 export const RAMP_DEADLIFT_S12: RampStep[] = [
-  w(65, 5), w(85, 3), w(107.5, 2), w(125, 1), w(130, 1), a(147.5), a(155, true), a(162.5, true),
+  w(65, 5),
+  w(85, 3),
+  w(107.5, 2),
+  w(125, 1),
+  w(130, 1),
+  a(147.5),
+  a(155, true),
+  a(162.5, true),
 ];
 
 /** +45 mesuré → essais +47,5 (record) / +50 (cible §13) / +52,5. */
@@ -266,7 +305,9 @@ const COMBINE_VENDREDI: SessionBlueprint = {
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
-  notes: ['Le bench ne fatigue ni la préhension ni le dos : il ne compromet pas le test de demain.'],
+  notes: [
+    'Le bench ne fatigue ni la préhension ni le dos : il ne compromet pas le test de demain.',
+  ],
   slots: [oneRM('test-bench-1rm', RAMP_BENCH), t('test-ab-wheel-max', maxSet(), 0)],
 };
 
@@ -340,8 +381,22 @@ const COMBINE_S8_DIMANCHE: SessionBlueprint = {
   slots: [
     t('test-ab-wheel-max', maxSet(), 0),
     t('test-leg-raise-max', maxSet(), 0),
-    { exId: 'incline-db-press', sets: 2, work: reps(8), load: dbPair(24), targetRPE: rpe(6), restSec: 90 },
-    { exId: 'one-arm-cable-row', sets: 2, work: reps(10, true), load: noLoad(), targetRPE: rpe(6), restSec: 75 },
+    {
+      exId: 'incline-db-press',
+      sets: 2,
+      work: reps(8),
+      load: dbPair(24),
+      targetRPE: rpe(6),
+      restSec: 90,
+    },
+    {
+      exId: 'one-arm-cable-row',
+      sets: 2,
+      work: reps(10, true),
+      load: noLoad(),
+      targetRPE: rpe(6),
+      restSec: 75,
+    },
     /*
      * Le Woodchop, et non la Landmine Rotation : depuis que celle-ci vit au
      * vendredi, la programmer ici la ferait apparaître deux fois dans la
@@ -396,9 +451,26 @@ const S12_LUNDI: SessionBlueprint = {
       restSec: 60,
       note: 'Léger.',
     },
-    { exId: 'ab-wheel', sets: 2, work: reps(6), load: bodyweight(), targetRPE: rpe(5), restSec: 60 },
-    fromTable('bench-press', 'bench-press', 120, 'Léger, vitesse de barre. Aucune progression automatique en taper.'),
-    fromTable('push-press', 'push-press', 120, 'Léger, vitesse de barre. Aucune progression automatique en taper.'),
+    {
+      exId: 'ab-wheel',
+      sets: 2,
+      work: reps(6),
+      load: bodyweight(),
+      targetRPE: rpe(5),
+      restSec: 60,
+    },
+    fromTable(
+      'bench-press',
+      'bench-press',
+      120,
+      'Léger, vitesse de barre. Aucune progression automatique en taper.',
+    ),
+    fromTable(
+      'push-press',
+      'push-press',
+      120,
+      'Léger, vitesse de barre. Aucune progression automatique en taper.',
+    ),
   ],
 };
 
@@ -413,7 +485,13 @@ const S12_MERCREDI: SessionBlueprint = {
     'Rien d’autre aujourd’hui.',
     'Les paliers affichés sont ceux du test initial : au-delà de 147,5 kg, monte à la sensation et à la vitesse de barre.',
   ],
-  slots: [oneRM('test-deadlift-1rm', RAMP_DEADLIFT_S12, 'Si la barre ralentit franchement, c’est le max.')],
+  slots: [
+    oneRM(
+      'test-deadlift-1rm',
+      RAMP_DEADLIFT_S12,
+      'Si la barre ralentit franchement, c’est le max.',
+    ),
+  ],
 };
 
 const S12_VENDREDI: SessionBlueprint = {
@@ -434,7 +512,12 @@ const S12_VENDREDI: SessionBlueprint = {
     t('test-sprint-20m', attempts(4), 240),
     t('test-strict-pullup-max', maxSet(), 0),
     t('test-leg-raise-max', maxSet(), 0),
-    fromTable('speed-squat', 'speed-squat', 90, 'Charge légère, juste pour garder la sensation de mouvement.'),
+    fromTable(
+      'speed-squat',
+      'speed-squat',
+      90,
+      'Charge légère, juste pour garder la sensation de mouvement.',
+    ),
   ],
 };
 
@@ -462,7 +545,11 @@ const S12_DIMANCHE: SessionBlueprint = {
   notes: ['Dernière séance du programme. Note tout.'],
   slots: [
     oneRM('test-bench-1rm', RAMP_BENCH_S12),
-    oneRM('test-weighted-pullup-1rm', RAMP_PULLUP_S12, 'Repos 4 min. Dead hang, menton franchement au-dessus.'),
+    oneRM(
+      'test-weighted-pullup-1rm',
+      RAMP_PULLUP_S12,
+      'Repos 4 min. Dead hang, menton franchement au-dessus.',
+    ),
     t('test-ab-wheel-max', maxSet(), 0, 'Arrêt à la perte de rétroversion.'),
   ],
 };
@@ -500,9 +587,7 @@ export function specialSession(week: number, day: DayIndex): SessionBlueprint | 
  * la moyenne de 3 matins doit être prête AVANT, pas relevée sur place.
  */
 export function isCombineDay(week: number, day: DayIndex): boolean {
-  return (
-    specialSession(week, day)?.title.startsWith('Combine') ?? false
-  );
+  return specialSession(week, day)?.title.startsWith('Combine') ?? false;
 }
 
 /** Les mesures relevées à chaque combine (§12), dans l'ordre d'affichage. */
@@ -537,34 +622,112 @@ export const COMBINE_S8_METRICS = COMBINE_METRICS.filter((m) => !m.endsWith('-1r
  * au vrai départ — squat +7 à +11 %, bench +4 à +6 %, tractions lestées +13 %,
  * deadlift +15 à +19 %.
  */
-export const TARGETS_12_WEEKS: Record<string, { start: string; target: string }> = {
-  /*
-   * Seule ligne à prendre comme une borne haute : ces +15 à +19 % avaient été
-   * écrits sur un 130 que le programme annonçait lui-même comme sous-estimé.
-   * Appliqués aux 140 mesurés, ils demandent +22,5 à +27,5 kg.
+/**
+ * Un objectif de fin de programme.
+ *
+ * ── Pourquoi deux formes ───────────────────────────────────────────────────
+ *
+ * Le §13 écrit ses cibles de deux façons, et la différence est fondamentale
+ * dès qu'il y a plus d'un utilisateur.
+ *
+ * Les cibles RELATIVES — « +5 à 8 % de broad jump », « −2 à 4 % sur 10 m » —
+ * sont la méthode du programme. Elles valent pour n'importe qui et s'affichent
+ * telles quelles.
+ *
+ * Les cibles ABSOLUES — « 117,5-122,5 kg au squat » — sont la méthode
+ * appliquée AUX MAXIMA DE GUILLAUME. Les servir à quelqu'un d'autre n'a aucun
+ * sens : un débutant à 70 kg de squat ne vise pas 122,5 kg en douze semaines,
+ * et un powerlifter à 200 kg ne vise pas une régression. Seul le GAIN est
+ * transposable, et il ne se calcule qu'une fois la performance initiale
+ * connue.
+ *
+ * ── Et quand il n'y a pas de règle ─────────────────────────────────────────
+ *
+ * `kind: 'aucune'` n'est pas un oubli. Le §13 ne donne pas de cible pour le
+ * sprint 20 m, et le poids de corps n'en reçoit plus : une bande 77-80 kg est
+ * l'objectif personnel de Guillaume, pas une recommandation de santé qu'on
+ * impose à un inconnu. Un objectif qu'on ne sait pas justifier ne s'invente
+ * pas — il s'affiche « à définir ».
+ */
+export type Cible =
+  /** Texte du programme, valable pour tout le monde. */
+  | { kind: 'relatif'; label: string }
+  /**
+   * Gain à appliquer à la performance initiale de l'utilisateur.
+   *
+   * Les bornes viennent des cibles §13 divisées par les maxima que Guillaume
+   * a mesurés : 117,5 ÷ 110 et 122,5 ÷ 110 donnent +6,8 % et +11,4 %. Ce ne
+   * sont donc pas des nombres inventés, c'est la même méthode exprimée dans
+   * la seule unité qui voyage d'un utilisateur à l'autre.
    */
-  'test-deadlift-1rm': { start: '140 kg', target: '162,5-167,5 kg' },
-  'test-squat-1rm': { start: '110 kg', target: '117,5-122,5 kg' },
-  'test-bench-1rm': { start: '115 kg', target: '120-122,5 kg' },
-  'test-weighted-pullup-1rm': { start: '+45 kg', target: '+50 kg' },
-  'test-strict-pullup-max': { start: '18', target: '20-23' },
-  'test-broad-jump': { start: 'référence', target: '+5 à 8 %' },
-  'test-vertical-jump': { start: 'référence', target: '+4 à 6 cm' },
-  'test-sprint-10m': { start: 'référence', target: '−2 à 4 %' },
-  'test-farmer-carry': { start: 'référence', target: '+20 % de distance' },
-  'test-ab-wheel-max': { start: 'référence', target: '+20-30 % de reps' },
-  'test-bodyweight': { start: '77 kg', target: '77-80 kg' },
+  | { kind: 'gain'; minPct: number; maxPct: number; unite: 'kg' | 'reps'; lest?: boolean }
+  /** Aucune cible chiffrable : le programme n'en donne pas. */
+  | { kind: 'aucune' };
+
+/*
+ * Les gains visés en douze semaines, décidés par Guillaume.
+ *
+ * ── Pourquoi ils ne sont plus dérivés du §13 ───────────────────────────────
+ *
+ * Les cibles du §13 n'avaient jamais été pensées en pourcentage. La version
+ * d'origine du programme, écrite AVANT le combine, visait le même nombre pour
+ * le deadlift et le squat — 150-155 kg pour les deux — parce que l'auteur
+ * croyait squatter 140 et tirer 130, et voulait que le second rejoigne le
+ * premier. Le « +15 à +19 % » du deadlift n'était que l'arithmétique de cette
+ * convergence : 130 → 150.
+ *
+ * Le combine a inversé la prémisse — deadlift 140, squat 110 — mais le recalage
+ * a conservé les pourcentages au lieu de l'intention. Le deadlift traînait
+ * donc un objectif de rattrapage d'un squat qui n'existe pas, deux fois plus
+ * exigeant que les autres lifts.
+ *
+ * Ces quatre fourchettes remplacent cette dérive. Elles ne se déduisent plus
+ * d'aucun calcul : ce sont les valeurs que Guillaume a fixées pour tous les
+ * utilisateurs de l'application.
+ */
+export const TARGETS_12_WEEKS: Record<string, Cible> = {
+  'test-squat-1rm': { kind: 'gain', minPct: 7, maxPct: 11, unite: 'kg' },
+  'test-bench-1rm': { kind: 'gain', minPct: 3, maxPct: 6, unite: 'kg' },
+  'test-deadlift-1rm': { kind: 'gain', minPct: 4, maxPct: 7, unite: 'kg' },
+  /* Le gain porte sur le LEST, pas sur poids de corps + lest. */
+  'test-weighted-pullup-1rm': { kind: 'gain', minPct: 3, maxPct: 5, unite: 'kg', lest: true },
+  /*
+   * Seul gain encore hérité du §13 : Guillaume n'a pas eu à le revoir, il
+   * porte sur un nombre de répétitions et non sur une barre chargée.
+   */
+  'test-strict-pullup-max': { kind: 'gain', minPct: 11.1, maxPct: 27.8, unite: 'reps' },
+  'test-broad-jump': { kind: 'relatif', label: '+5 à 8 %' },
+  'test-vertical-jump': { kind: 'relatif', label: '+4 à 6 cm' },
+  'test-sprint-10m': { kind: 'relatif', label: '−2 à 4 %' },
+  /* Libellés recopiés mot pour mot du §13 : « distance », pas « de distance ». */
+  'test-farmer-carry': { kind: 'relatif', label: '+20 % distance' },
+  'test-ab-wheel-max': { kind: 'relatif', label: '+20-30 % reps' },
+  /* Le §13 n'en donne pas. Ne pas confondre avec « pas encore mesuré ». */
+  'test-sprint-20m': { kind: 'aucune' },
+  'test-bodyweight': { kind: 'aucune' },
 };
 
 /**
- * §13 — la bande de poids visée, en chiffres utilisables par un graphique.
+ * L'objectif affiché pour une mesure, sachant ce que l'utilisateur a fait au
+ * combine initial.
  *
- * La même valeur existe déjà en texte dans `TARGETS_12_WEEKS['test-bodyweight']`
- * (« 77-80 kg »), mais un SVG a besoin de deux nombres. Les deux formes sont
- * tenues ensemble par un test de transcription : si le .md passe un jour à
- * 78-81, le test tombe ici et là, pas seulement sur l'une des deux.
- *
- * C'est la SEULE borne de poids que le .md donne. Aucun autre seuil — « trop
- * vite », « trop lent » — ne doit être inventé à partir d'elle.
+ * `null` en entrée — rien de mesuré — donne `null` en sortie : on ne calcule
+ * pas un objectif sur une performance qu'on n'a pas. L'écran affiche alors
+ * « à définir », et c'est la bonne réponse, pas un pis-aller.
  */
-export const BANDE_CIBLE_POIDS = { min: 77, max: 80 } as const;
+export function cibleFor(id: string, initial: number | null): string | null {
+  const c = TARGETS_12_WEEKS[id];
+  if (!c || c.kind === 'aucune') return null;
+  if (c.kind === 'relatif') return c.label;
+  if (initial === null || !Number.isFinite(initial) || initial <= 0) return null;
+
+  const pas = c.unite === 'reps' ? 1 : 2.5;
+  const arrondi = (v: number) => Math.round(v / pas) * pas;
+  const bas = arrondi(initial * (1 + c.minPct / 100));
+  const haut = arrondi(initial * (1 + c.maxPct / 100));
+  const signe = c.lest ? '+' : '';
+  const unite = c.unite === 'reps' ? '' : ' kg';
+  const nb = (v: number) => String(v).replace('.', ',');
+
+  return bas === haut ? `${signe}${nb(bas)}${unite}` : `${signe}${nb(bas)}-${nb(haut)}${unite}`;
+}

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
+import { bandePoids } from '../engine/ciblePoids';
+import { poseMaximum } from '../engine/maxima';
 import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { isWakeLockSupported } from '../timer/wakeLock';
@@ -24,11 +26,27 @@ import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
 import styles from './Screens.module.css';
 
+/*
+ * Les quatre lifts dont le programme teste le maximum.
+ *
+ * AUCUNE valeur de départ. Cette liste en portait quatre — squat 140, bench
+ * 120, deadlift 130, tractions +42 — qui étaient les ESTIMATIONS de Guillaume
+ * d'avant son combine, celles que le programme qualifie lui-même de fausses
+ * (le squat valait 110, le deadlift 140).
+ *
+ * Elles ne servaient pas de simple décor : un champ vide affichait ce chiffre
+ * et le readiness ROUGE prescrit 65 % du 1RM. Un débutant qui squatte 70 kg se
+ * voyait donc proposer 3 × 3 à 91 kg, soit 130 % de son maximum réel, sans
+ * avoir jamais rien saisi.
+ *
+ * Un maximum inconnu vaut `null`, jamais un nombre. Un zéro serait pire
+ * encore : c'est une performance, et le moteur le traiterait comme telle.
+ */
 const ONE_RM_FIELDS = [
-  { id: 'back-squat', label: 'Back Squat', start: 140 },
-  { id: 'bench-press', label: 'Bench Press', start: 120 },
-  { id: 'deadlift', label: 'Deadlift', start: 130 },
-  { id: 'weighted-pullup', label: 'Tractions lestées', start: 42 },
+  { id: 'back-squat', label: 'Back Squat' },
+  { id: 'bench-press', label: 'Bench Press' },
+  { id: 'deadlift', label: 'Deadlift' },
+  { id: 'weighted-pullup', label: 'Tractions lestées' },
 ] as const;
 
 export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
@@ -108,6 +126,15 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
 
   const start = row.startDate;
   const ancreValide = start !== '' && isMonday(start);
+  const bande = bandePoids(row.ciblePoidsBasKg, row.ciblePoidsHautKg);
+  const hintCible =
+    row.ciblePoidsBasKg === null && row.ciblePoidsHautKg === null
+      ? 'Aucun objectif : le graphique trace ta courbe sans bande.'
+      : bande === null
+        ? row.ciblePoidsBasKg !== null && row.ciblePoidsHautKg !== null
+          ? 'L’objectif bas doit être le plus petit des deux.'
+          : 'Renseigne les deux bornes pour voir la bande.'
+        : `Bande affichée de ${fr(bande.min)} à ${fr(bande.max)} kg. Vide les deux champs pour la retirer.`;
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -225,6 +252,47 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         </div>
       </section>
 
+      {/* ------------------------------------------ objectif de poids --- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Objectif de poids</h2>
+        <p className={styles.cardSub}>
+          <b>Facultatif, et vide par défaut.</b> Le programme n’impose aucun poids de corps : un
+          objectif est personnel, il dépend de ta taille, de ton poste et de ce que tu cherches.
+          Renseigne-le si tu veux voir la bande sur le graphique de l’onglet Progrès.
+        </p>
+        <div className={styles.field}>
+          <Stepper
+            label="Objectif bas"
+            value={row.ciblePoidsBasKg}
+            step={0.5}
+            min={40}
+            max={160}
+            unit="kg"
+            emptyLabel="aucun"
+            onStep={(d) =>
+              void patch({ ciblePoidsBasKg: stepValue(row.ciblePoidsBasKg, d, 40, 160) })
+            }
+            onCommit={(v) => void patch({ ciblePoidsBasKg: v })}
+          />
+        </div>
+        <div className={styles.field}>
+          <Stepper
+            label="Objectif haut"
+            value={row.ciblePoidsHautKg}
+            step={0.5}
+            min={40}
+            max={160}
+            unit="kg"
+            emptyLabel="aucun"
+            onStep={(d) =>
+              void patch({ ciblePoidsHautKg: stepValue(row.ciblePoidsHautKg, d, 40, 160) })
+            }
+            onCommit={(v) => void patch({ ciblePoidsHautKg: v })}
+          />
+          <p className={styles.fieldHint}>{hintCible}</p>
+        </div>
+      </section>
+
       {/* --------------------------------------------- référence de saut -- */}
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Référence broad jump</h2>
@@ -261,28 +329,25 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         <h2 className={styles.cardTitle}>1RM testés</h2>
         <p className={styles.cardSub}>
           Ils servent aux jours de <b>readiness rouge</b> (65 % du 1RM) et te donnent un repère de
-          progression. Ils ne touchent <b>pas</b> aux charges du tableau §9 : celles-ci sont écrites
-          en kilos dans le programme, et seules les règles de progression §11 les font bouger, à
-          partir de ce que tu as réellement soulevé.
+          progression. Laisse vide ce que tu n’as pas mesuré : l’appli dira « à mesurer » plutôt que
+          d’inventer un chiffre.
         </p>
         {ONE_RM_FIELDS.map((f) => (
           <div key={f.id} className={styles.field}>
             <Stepper
               label={f.label}
-              value={row.oneRM[f.id] ?? f.start}
+              value={row.oneRM[f.id] ?? null}
               step={2.5}
               min={0}
               max={300}
               unit="kg"
+              emptyLabel="à mesurer"
               onStep={(d) =>
                 void patch({
-                  oneRM: {
-                    ...row.oneRM,
-                    [f.id]: stepValue(row.oneRM[f.id] ?? f.start, d, 0, 300),
-                  },
+                  oneRM: poseMaximum(row.oneRM, f.id, stepValue(row.oneRM[f.id] ?? null, d, 0, 300)),
                 })
               }
-              onCommit={(v) => void patch({ oneRM: { ...row.oneRM, [f.id]: v ?? f.start } })}
+              onCommit={(v) => void patch({ oneRM: poseMaximum(row.oneRM, f.id, v) })}
             />
           </div>
         ))}

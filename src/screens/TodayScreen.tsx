@@ -18,13 +18,13 @@ import {
   allSets,
   buildHistoryIndex,
   getSettingsRow,
-  saveSettings,
   toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
-import type { SessionRow } from '../db/db';
+import type { SessionRow, SettingsRow } from '../db/db';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { OnboardingScreen } from './OnboardingScreen';
 import type { VisuelNom } from '../data/visuels';
 import styles from './Today.module.css';
 
@@ -97,6 +97,8 @@ export function TodayScreen({
     /** Le combine est aujourd'hui ou c'est la prochaine séance. */
     combineAhead: boolean;
     bodyweightKg: number | null;
+    /** Les réglages complets — le parcours d'accueil en a besoin en entier. */
+    settingsRow: SettingsRow | null;
     /** Le combine a mesuré des 1RM qui ne pilotent pas encore les charges. */
   }>({
     loading: true,
@@ -115,6 +117,7 @@ export function TodayScreen({
     startDate: '',
     combineAhead: false,
     bodyweightKg: null,
+    settingsRow: null,
   });
 
   useEffect(() => {
@@ -169,6 +172,7 @@ export function TodayScreen({
         startDate: settings.startDate,
         combineAhead: target ? isCombineDay(target.week, target.day) : false,
         bodyweightKg: settingsRow.bodyweightKg,
+        settingsRow,
       });
     })();
   }, []);
@@ -178,57 +182,14 @@ export function TodayScreen({
   const { today, trend } = state;
 
   /*
-   * Premier lancement : on demande l'ancre du calendrier ici, tout de suite,
-   * plutôt que de deviner une date. Rien d'autre ne s'affiche tant qu'elle
-   * manque — c'est elle qui date les 62 séances.
+   * Premier lancement : le parcours d'accueil prend la main. Il demande
+   * l'ancre du calendrier — sans elle rien ne peut s'afficher — puis propose
+   * les maxima et les mesures facultatives, sans jamais rien préremplir.
    */
-  if (!today) {
-    return (
-      <div className={styles.screen}>
-        <ScreenHeader
-          eyebrow="Programme 12 semaines"
-          title="Bienvenue"
-          subtitle="Pose ton point de départ"
-          visuel="stade"
-          prioritaire
-        >
-          <p className={styles.lead}>
-            Il manque une seule chose pour démarrer : le <b>lundi</b> de ton combine initial. Tout
-            le calendrier en découle, et il ne bougera plus ensuite.
-          </p>
-        </ScreenHeader>
-        <section className={styles.card}>
-          <div>
-            <label className={styles.label} htmlFor="start-date-onboarding">
-              Lundi du combine initial
-            </label>
-            <input
-              id="start-date-onboarding"
-              className={styles.input}
-              type="date"
-              value={state.startDate}
-              onChange={(e) =>
-                void (async () => {
-                  await saveSettings({ startDate: e.target.value });
-                  // Remonte l'info : l'application recalcule le palier
-                  // alimentaire du jour et remonte l'écran avec la date.
-                  onDataChanged();
-                })()
-              }
-            />
-            <p className={styles.fieldHint}>
-              Six jours de tests : squat lundi, tractions lestées mardi, deadlift jeudi, bench
-              vendredi, tractions max samedi. Dimanche repos, puis la semaine 1 démarre le lundi.
-            </p>
-          </div>
-        </section>
-        <button type="button" className={styles.secondary} onClick={onGoSettings}>
-          <Icon name="settings" size="18px" />
-          Ouvrir les Réglages
-        </button>
-      </div>
-    );
+  if (!today && state.settingsRow) {
+    return <OnboardingScreen row={state.settingsRow} onFini={onDataChanged} />;
   }
+  if (!today) return <div className={styles.loading}>Chargement…</div>;
 
   const status = (week: number, day: DayIndex) =>
     state.rows.find((r) => r.week === week && r.day === day)?.status ?? 'planned';
