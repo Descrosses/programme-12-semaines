@@ -21,7 +21,21 @@ export default defineConfig({
        */
       registerType: 'prompt',
       injectRegister: null,
-      includeAssets: ['icons/apple-touch-icon.png'],
+      /*
+       * Vide, et `globIgnores` ci-dessous écarte le dossier des icônes.
+       *
+       * Les icônes ne servent qu'au système : Safari télécharge
+       * `icone-apple-touch.png` au moment où l'on ajoute le raccourci, et
+       * l'appli n'en affiche aucune. Les pré-cacher reviendrait à transporter
+       * des fichiers qu'elle ne regarde jamais.
+       *
+       * L'exclusion ne porte toutefois QUE sur l'icône Apple et le favicon :
+       * les trois icônes déclarées dans le manifeste sont ajoutées au
+       * pré-cache par le plugin lui-même, hors de `globPatterns`, et il n'y a
+       * pas de réglage pour l'en empêcher. C'est d'ailleurs défendable — une
+       * invite d'installation hors ligne a besoin de son icône.
+       */
+      includeAssets: [],
       workbox: {
         /*
          * Tout est mis en cache à la première ouverture : polices comprises.
@@ -37,6 +51,7 @@ export default defineConfig({
          * — c'est tout l'intérêt du manifeste `visuels.ts`.
          */
         globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}'],
+        globIgnores: ['**/icons/**'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -70,10 +85,17 @@ export default defineConfig({
         theme_color: '#061426',
         categories: ['health', 'fitness', 'sports'],
         icons: [
-          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/icone-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icone-512.png', sizes: '512x512', type: 'image/png' },
+          /*
+           * La version « maskable » n'est pas la même image recadrée : Android
+           * peut découper l'icône en cercle, en goutte ou en losange, et ne
+           * garantit que le cercle central de 80 %. Le dessin y occupe donc
+           * 76 % du carré, entouré du blanc de la carte — sinon les disques
+           * d'haltère se faisaient trancher selon le téléphone.
+           */
           {
-            src: 'icons/icon-maskable-512.png',
+            src: 'icons/icone-maskable-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',

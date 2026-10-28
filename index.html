@@ -15,7 +15,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="12 semaines" />
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <!--
+      Les icônes portent des noms NEUFS plutôt que de remplacer les anciens
+      fichiers. iOS garde l'image d'un raccourci au moment où on l'ajoute, et
+      un navigateur peut servir longtemps un PNG déjà vu : réécrire
+      `apple-touch-icon.png` aurait laissé l'ancien haltère à l'écran sans
+      moyen de savoir quand il partirait. Un chemin qui n'a jamais existé ne
+      peut pas être en cache.
+    -->
+    <link rel="apple-touch-icon" href="icons/icone-apple-touch.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icone-192.png" />
 
     <title>Programme 12 semaines</title>
   </head>
