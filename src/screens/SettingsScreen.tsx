@@ -24,12 +24,47 @@ import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
 import styles from './Screens.module.css';
 
+/*
+ * Les quatre lifts dont le programme teste le maximum.
+ *
+ * AUCUNE valeur de départ. Cette liste en portait quatre — squat 140, bench
+ * 120, deadlift 130, tractions +42 — qui étaient les ESTIMATIONS de Guillaume
+ * d'avant son combine, celles que le programme qualifie lui-même de fausses
+ * (le squat valait 110, le deadlift 140).
+ *
+ * Elles ne servaient pas de simple décor : un champ vide affichait ce chiffre
+ * et le readiness ROUGE prescrit 65 % du 1RM. Un débutant qui squatte 70 kg se
+ * voyait donc proposer 3 × 3 à 91 kg, soit 130 % de son maximum réel, sans
+ * avoir jamais rien saisi.
+ *
+ * Un maximum inconnu vaut `null`, jamais un nombre. Un zéro serait pire
+ * encore : c'est une performance, et le moteur le traiterait comme telle.
+ */
 const ONE_RM_FIELDS = [
-  { id: 'back-squat', label: 'Back Squat', start: 140 },
-  { id: 'bench-press', label: 'Bench Press', start: 120 },
-  { id: 'deadlift', label: 'Deadlift', start: 130 },
-  { id: 'weighted-pullup', label: 'Tractions lestées', start: 42 },
+  { id: 'back-squat', label: 'Back Squat' },
+  { id: 'bench-press', label: 'Bench Press' },
+  { id: 'deadlift', label: 'Deadlift' },
+  { id: 'weighted-pullup', label: 'Tractions lestées' },
 ] as const;
+
+/**
+ * Pose ou EFFACE un maximum, sans jamais écrire de zéro.
+ *
+ * Un `Stepper` vidé renvoie `null`. Écrire `{ 'back-squat': null }` ferait
+ * croire au moteur qu'un maximum existe et vaut rien ; `oneRM` est un
+ * `Record<string, number>`, une valeur absente s'exprime par l'absence de
+ * clé. On la retire donc pour de bon.
+ */
+function majOneRM(
+  actuel: SettingsRow['oneRM'],
+  id: string,
+  valeur: number | null,
+): SettingsRow['oneRM'] {
+  const suite = { ...actuel };
+  if (valeur === null) delete suite[id];
+  else suite[id] = valeur;
+  return suite;
+}
 
 export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
   const [row, setRow] = useState<SettingsRow | null>(null);
@@ -261,28 +296,25 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         <h2 className={styles.cardTitle}>1RM testés</h2>
         <p className={styles.cardSub}>
           Ils servent aux jours de <b>readiness rouge</b> (65 % du 1RM) et te donnent un repère de
-          progression. Ils ne touchent <b>pas</b> aux charges du tableau §9 : celles-ci sont écrites
-          en kilos dans le programme, et seules les règles de progression §11 les font bouger, à
-          partir de ce que tu as réellement soulevé.
+          progression. Laisse vide ce que tu n’as pas mesuré : l’appli dira « à mesurer » plutôt que
+          d’inventer un chiffre.
         </p>
         {ONE_RM_FIELDS.map((f) => (
           <div key={f.id} className={styles.field}>
             <Stepper
               label={f.label}
-              value={row.oneRM[f.id] ?? f.start}
+              value={row.oneRM[f.id] ?? null}
               step={2.5}
               min={0}
               max={300}
               unit="kg"
+              emptyLabel="à mesurer"
               onStep={(d) =>
                 void patch({
-                  oneRM: {
-                    ...row.oneRM,
-                    [f.id]: stepValue(row.oneRM[f.id] ?? f.start, d, 0, 300),
-                  },
+                  oneRM: majOneRM(row.oneRM, f.id, stepValue(row.oneRM[f.id] ?? null, d, 0, 300)),
                 })
               }
-              onCommit={(v) => void patch({ oneRM: { ...row.oneRM, [f.id]: v ?? f.start } })}
+              onCommit={(v) => void patch({ oneRM: majOneRM(row.oneRM, f.id, v) })}
             />
           </div>
         ))}

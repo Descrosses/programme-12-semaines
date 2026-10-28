@@ -11,10 +11,7 @@
  */
 
 import {
-  bb,
   bodyweight,
-  dbPair,
-  dbSingle,
   autoreg,
   meters,
   noLoad,
@@ -71,7 +68,14 @@ const LUNDI: SessionBlueprint = {
     s('pogo-jumps', 3, reps(10), noLoad(), null, 45),
     s('box-jump', 4, reps(3), noLoad(), null, 90),
     fromTable('back-squat', 'back-squat', 210),
-    s('bulgarian-split-squat', 3, reps(8, true, 'jambe'), autoreg(18, 2, 'dbPair'), rpeRange(7, 8), 90),
+    s(
+      'bulgarian-split-squat',
+      3,
+      reps(8, true, 'jambe'),
+      autoreg(undefined, 2, 'dbPair'),
+      rpeRange(7, 8),
+      90,
+    ),
     fromTable('rdl', 'rdl', 150),
     s('ab-wheel', 3, reps(8), bodyweight(), null, 60),
   ],
@@ -89,8 +93,16 @@ const MERCREDI: SessionBlueprint = {
     s('plyo-push-up', 4, reps(4), bodyweight(), null, 90),
     fromTable('bench-press', 'bench-press', 180),
     fromTable('weighted-pullup', 'weighted-pullup', 150),
-    s('landmine-press-kneeling', 3, reps(8, true), bb(20), rpe(7), 75, 'Barre + 20 kg.'),
-    s('chest-supported-row', 3, reps(8), dbPair(30), rpe(8), 90),
+    s(
+      'landmine-press-kneeling',
+      3,
+      reps(8, true),
+      autoreg(undefined, 2.5, 'barbell'),
+      rpe(7),
+      75,
+      'Barre chargée.',
+    ),
+    s('chest-supported-row', 3, reps(8), autoreg(undefined, 2, 'dbPair'), rpe(8), 90),
     s('face-pull', 2, reps(15), autoreg(undefined, 1, 'cable'), null, 45),
     s('cable-external-rotation', 2, reps(12, true), autoreg(undefined, 1, 'cable'), null, 45),
     s('pallof-press', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 60),
@@ -106,7 +118,15 @@ const VENDREDI: SessionBlueprint = {
   readinessTest: true,
   notes: ['Tu dois sortir en te disant « j’aurais pu en faire plus ».'],
   slots: [
-    s('broad-jump', 5, reps(2), noLoad(), null, 120, 'Les 3 sauts du readiness comptent comme échauffement.'),
+    s(
+      'broad-jump',
+      5,
+      reps(2),
+      noLoad(),
+      null,
+      120,
+      'Les 3 sauts du readiness comptent comme échauffement.',
+    ),
     /*
      * Hang High Pull — deuxième, juste derrière le Broad Jump.
      *
@@ -125,13 +145,13 @@ const VENDREDI: SessionBlueprint = {
      * Pas de RPE cible, volontairement : §11 reporte alors le décalage réel
      * sans proposer de règle, et c'est la vitesse de barre qui décide.
      */
-    s('hang-high-pull', 3, reps(3), autoreg(40, 2.5, 'barbell'), null, 90),
+    s('hang-high-pull', 3, reps(3), autoreg(undefined, 2.5, 'barbell'), null, 90),
     s('lateral-bound', 3, reps(3, true), noLoad(), null, 75),
     fromTable('push-press', 'push-press', 120),
     fromTable('speed-squat', 'speed-squat', 60),
     s('jump-squat-db', 4, reps(4), textLoad('2 × 6-8 kg'), null, 90),
     s('explosive-cable-row', 3, reps(5), autoreg(undefined, 1, 'cable'), rpe(6), 75),
-    s('farmer-carry', 4, meters(25), dbPair(34), null, 90),
+    s('farmer-carry', 4, meters(25), autoreg(undefined, 2, 'dbPair'), null, 90),
     s('dead-bug-cable', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 45),
   ],
 };
@@ -148,11 +168,11 @@ const SAMEDI: SessionBlueprint = {
     s('broad-jump', 3, reps(2), noLoad(), null, 90, 'Potentiation, après le readiness.'),
     fromTable('deadlift', 'deadlift', 210),
     fromTable('front-squat', 'front-squat', 120),
-    s('hip-thrust', 4, reps(8), autoreg(100, 2.5, 'barbell'), rpe(8), 90),
+    s('hip-thrust', 4, reps(8), autoreg(undefined, 2.5, 'barbell'), rpe(8), 90),
     s('nordic-curl', 3, reps(5), bodyweight(), null, 120),
-    s('single-leg-rdl', 3, reps(8, true), dbSingle(20), null, 60),
+    s('single-leg-rdl', 3, reps(8, true), autoreg(undefined, 2, 'dbSingle'), null, 60),
     s('copenhagen-plank', 3, reps(8, true), noLoad(), null, 60),
-    s('suitcase-carry', 3, meters(30, true), dbSingle(32), null, 60),
+    s('suitcase-carry', 3, meters(30, true), autoreg(undefined, 2, 'dbSingle'), null, 60),
   ],
 };
 
@@ -165,7 +185,7 @@ const DIMANCHE: SessionBlueprint = {
   readinessTest: false,
   notes: ['Pas de gros travail excentrique jambes.'],
   slots: [
-    s('incline-db-press', 4, reps(8), dbPair(30), rpeRange(7, 8), 90),
+    s('incline-db-press', 4, reps(8), autoreg(undefined, 2, 'dbPair'), rpeRange(7, 8), 90),
     s('neutral-grip-pullup', 4, reps({ min: 6, max: 8 }), textLoad('+5 à +10 kg'), rpe(7), 90),
     s('one-arm-cable-row', 3, reps(10, true), autoreg(undefined, 1, 'cable'), null, 75),
     s('landmine-press-standing', 3, reps(8, true), autoreg(undefined, 2.5, 'barbell'), null, 75),

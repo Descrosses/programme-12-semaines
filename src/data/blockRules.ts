@@ -204,7 +204,7 @@ const zercherMarch = (sets: number, m: number) =>
     'zercher-march',
     sets,
     meters(m),
-    autoreg(20, 2.5, 'barbell'),
+    autoreg(undefined, 2.5, 'barbell'),
     90,
     `≈ ${Math.round(m / 0.65)} pas chargés. Buste vertical, pas courts. La série s’arrête si le dos s’arrondit, pas quand la distance est faite.`,
   );
@@ -213,7 +213,14 @@ const landmineRotation = (sets: number, r: number, restSec: number, note: string
   slot('landmine-rotation', sets, reps(r, true), autoreg(undefined, 2.5, 'barbell'), restSec, note);
 
 const offsetHold = (sets: number, sec: number, restSec: number, note: string) =>
-  slot('barbell-offset-hold', sets, hold(sec, true), autoreg(5, 2.5, 'barbell'), restSec, note);
+  slot(
+    'barbell-offset-hold',
+    sets,
+    hold(sec, true),
+    autoreg(undefined, 2.5, 'barbell'),
+    restSec,
+    note,
+  );
 
 const MAXFORCE: BlockRuleSet[] = [
   {

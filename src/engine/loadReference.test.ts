@@ -79,8 +79,16 @@ describe('une semaine de deload ne redéfinit pas le niveau', () => {
     expect(hipThrust(5, [occ(4, 90, 6)]).loadLine).toBe('4 × 6 × 100 kg');
   });
 
-  it('sans aucun historique, la valeur d’amorce du programme reprend la main', () => {
-    expect(hipThrust(5, []).loadLine).toBe('4 × 6 × 100 kg');
+  it('sans aucun historique, aucune charge n’est annoncée', () => {
+    /*
+     * Le programme portait une amorce de 100 kg : la charge de Hip Thrust de
+     * Guillaume. Elle était servie à qui n'avait jamais rien soulevé.
+     *
+     * Le volume reste — il vient du programme et vaut pour tout le monde. La
+     * charge, elle, attend la première séance. Pas 0 kg : un zéro est une
+     * performance, et le moteur le traiterait comme telle.
+     */
+    expect(hipThrust(5, []).loadLine).toBe('4 × 6');
   });
 });
 
@@ -176,7 +184,9 @@ describe('entrée en bloc force max — la charge monte avec la baisse de reps',
   });
 
   it('la séance dit pourquoi la charge a bougé', () => {
-    const why = hipThrust(5, VECU).adjustments.map((a) => a.why).join(' ');
+    const why = hipThrust(5, VECU)
+      .adjustments.map((a) => a.why)
+      .join(' ');
     expect(why).toMatch(/moins de reps, plus de repos/i);
     expect(why).toMatch(/10 % de charge en plus/);
   });
@@ -189,9 +199,10 @@ describe('entrée en bloc force max — la charge monte avec la baisse de reps',
     expect(hipThrust(9, jusquA7).loadLine).toBe('4 × 5 × 120 kg');
   });
 
-  it('sans historique, la valeur d’amorce n’est pas corrigée', () => {
-    // 100 kg est déjà le point de départ choisi par le programme : le monter
-    // de 10 % reviendrait à décider à la place de Guillaume.
-    expect(hipThrust(5, []).loadLine).toBe('4 × 6 × 100 kg');
+  it('sans historique, il n’y a rien à corriger de 10 %', () => {
+    // Le +10 % d'entrée de bloc s'applique à une charge RÉELLE. Sans séance
+    // passée il n'y a pas de charge, donc rien à majorer — et surtout rien à
+    // inventer.
+    expect(hipThrust(5, []).loadLine).toBe('4 × 6');
   });
 });
