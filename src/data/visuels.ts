@@ -67,11 +67,20 @@ export const VISUELS = {
   ballon: {
     display: '01_ballon_display.webp',
     mobile: '01_ballon_mobile.webp',
-    largeurs: { display: 1200, mobile: 640 },
+    largeurs: { display: 760, mobile: 420 },
     description: 'Ballon de football américain posé sur l’herbe, cuir texturé, coutures blanches.',
     cadrage: 'contain',
     focus: 'center',
-    usage: 'Vignette, jamais en bandeau : la source est sur fond blanc.',
+    /*
+     * Détouré. La source du pack était sur fond BLANC : posée telle quelle
+     * dans un en-tête marine, elle y collait un rectangle blanc. Le fond a été
+     * rendu transparent et l'image rognée au ballon.
+     *
+     * Deux tailles modestes (760 et 420 px) et non 1200 : cette image ne sert
+     * jamais de bandeau, seulement une vignette de 190 px. Le canal alpha
+     * compresse mal — en 1200 px elle pesait 204 Ko, plus que le stade.
+     */
+    usage: 'Vignette d’en-tête, en haut à droite. Jamais en bandeau.',
   },
   stade: {
     display: '02_stade_display.webp',

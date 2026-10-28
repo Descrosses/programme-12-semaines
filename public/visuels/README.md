@@ -5,7 +5,7 @@ par emplacement, choisie par `srcSet` et `sizes` (voir `src/data/visuels.ts`).
 
 | Fichier | Dimensions | Poids | Où |
 |---|---|---|---|
-| `01_ballon` | 1200×800 / 640×427 | 145 / 48 Ko | vignette (fond blanc : jamais en bandeau) |
+| `01_ballon` | 760×486 / 420×269 | 125 / 49 Ko | vignette d'en-tête Nutrition (détouré, alpha) |
 | `02_stade` | 1200×600 / 640×320 | 114 / 32 Ko | Aujourd'hui (repos, avant le départ), Combine |
 | `03_casque` | 1200×800 / 640×427 | 92 / 33 Ko | Semaine |
 | `04_montage_athlete` | 1097×1200 / 585×640 | 188 / 67 Ko | Aujourd'hui (programme terminé) |
@@ -52,6 +52,16 @@ Ces images sont des générations d'IA, et le guide du pack le dit lui-même :
 les marques ne crée aucun droit. Avant toute commercialisation il faut soit
 des photographies sous licence commerciale explicite, soit des prises de vue
 faites pour l'occasion.
+
+## `01_ballon` — détourage
+
+La source du pack était sur fond BLANC. Posée telle quelle dans un en-tête
+marine, elle y collait un rectangle blanc. Le fond a été rendu transparent
+(`-fuzz 14% -transparent white`) et l'image rognée au ballon.
+
+Deux tailles modestes, 760 et 420 px, et non 1200 : elle ne sert jamais de
+bandeau, seulement une vignette de 172 px. Le canal alpha compresse mal — en
+1200 px elle pesait 204 Ko, plus que le stade.
 
 ## `athlete-squat` — cadrage
 
