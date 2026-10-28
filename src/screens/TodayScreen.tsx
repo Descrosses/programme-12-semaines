@@ -46,6 +46,8 @@ function visuelDuJour(today: TodayState, week: WeekIndex | null): VisuelNom {
       return 'sprint';
     case 'test':
       return 'reception';
+    case 'maxforce':
+      return 'squat';
     default:
       return 'force';
   }

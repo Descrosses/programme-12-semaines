@@ -119,7 +119,24 @@ export const VISUELS = {
     description: 'Développé couché lourd, barre chargée, pareur derrière le banc.',
     cadrage: 'cover',
     focus: 'center 45%',
-    usage: 'Bandeau des séances de force.',
+    usage: 'Bandeau des semaines d’accumulation et de deload.',
+  },
+  squat: {
+    display: 'athlete-squat.webp',
+    mobile: 'athlete-squat-mobile.webp',
+    largeurs: { display: 1086, mobile: 640 },
+    description:
+      'Athlète en bas de squat sous une barre chargée, maillot bleu marine, salle sombre.',
+    cadrage: 'cover',
+    /*
+     * 12 % et non « center ». L'image est en portrait (1086 × 1448) alors que
+     * l'en-tête est presque carré : on n'en voit qu'environ deux tiers. Centré,
+     * le cadrage coupait le visage en haut. À 12 %, la fenêtre descend du haut
+     * du crâne jusque sous les genoux — le visage, la barre et la position de
+     * squat restent entiers, et seuls les pieds sortent.
+     */
+    focus: 'center 12%',
+    usage: 'Bandeau des semaines de force maximale.',
   },
   reception: {
     display: '07_reception_display.webp',
