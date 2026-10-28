@@ -153,8 +153,20 @@ export type LoadSpec =
   | { kind: 'dbSingle'; kg: number; step: 2 }
   /** Lest ajouté au poids du corps (tractions lestées « +17,5 »). */
   | { kind: 'added'; kg: number; step: 2.5 }
-  /** Pourcentage d'un 1RM testé (utilisé par l'ajustement ROUGE, §4). */
-  | { kind: 'pct1RM'; pct: number; lift: MainLiftId; step: 2.5 }
+  /**
+   * Pourcentage d'un 1RM testé.
+   *
+   * C'est la forme NORMALE des charges du §9 : le tableau donne une intensité,
+   * pas un kilo, et le kilo se calcule sur le maximum de celui qui s'entraîne.
+   * Sert aussi à l'ajustement ROUGE (§4 — 65 % du 1RM).
+   *
+   * `kgOrigine` est le kilo que le tableau §9 portait quand il était écrit en
+   * valeurs absolues, sur les maxima de son auteur. Il ne sert qu'aux
+   * installations qui tournaient déjà sur ce tableau-là (`tableauOrigine`),
+   * pour que mettre l'application à jour ne change pas leur plan en cours. Une
+   * installation neuve ne le lit jamais.
+   */
+  | { kind: 'pct1RM'; pct: number; lift: MainLiftId; step: 2.5; kgOrigine?: number }
   /**
    * Charge autorégulée : aucune valeur fixe au programme, elle sort de
    * l'historique réel (Bulgarian, Hip Thrust). `seed` = point de départ
@@ -178,6 +190,16 @@ export const bb = (kg: number, kgMax?: number): LoadSpec =>
 export const dbPair = (kg: number): LoadSpec => ({ kind: 'dbPair', kg, step: 2 });
 export const dbSingle = (kg: number): LoadSpec => ({ kind: 'dbSingle', kg, step: 2 });
 export const added = (kg: number): LoadSpec => ({ kind: 'added', kg, step: 2.5 });
+/**
+ * Une case du §9 : une intensité, et le kilo que le tableau d'origine portait.
+ *
+ * `pct` est en POURCENT (82), pas en fraction (0,82) : c'est ce que le
+ * programme écrit, et une case doit se relire telle qu'elle est au §9.
+ */
+export const pct = (pct: number, lift: MainLiftId, kgOrigine?: number): LoadSpec =>
+  kgOrigine === undefined
+    ? { kind: 'pct1RM', pct, lift, step: 2.5 }
+    : { kind: 'pct1RM', pct, lift, step: 2.5, kgOrigine };
 export const autoreg = (
   seed: number | undefined,
   step: LoadStep,

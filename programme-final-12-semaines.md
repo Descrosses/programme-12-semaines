@@ -376,30 +376,34 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 ## 9. Charges semaine par semaine
 
+**Les charges sont des pourcentages du 1RM de celui qui s'entraîne**, pas des kilos. Le tableau a longtemps été écrit en kilos absolus — ceux de l'auteur, calés sur son propre combine. Un pratiquant qui squatte 70 kg y lisait « 5 × 3 × 90 kg » en semaine 5.
+
 | Sem | Back Squat (lun) | Bench (mer) | Deadlift (sam) | Tractions lestées (mer) | Push Press (ven) | Front Squat (sam) | Speed Squat (ven) |
 |---|---|---|---|---|---|---|---|
-| 1 | 5×5×77,5 – RPE 7 | 5×5×85 – RPE 7 | 4×5×105 – RPE 7 | 4×5×+20 | 5×3×50 | 3×6×60 | 6×2×60 |
-| 2 | 5×5×82,5 – RPE 7,5 | 5×5×87,5 – RPE 7,5 | 4×5×110 – RPE 7,5 | 4×5×+22,5 | 5×3×52,5 | 3×6×60 | 6×2×60 |
-| 3 | 5×4×87,5 – RPE 8 | 5×4×90 – RPE 8 | 4×4×115 – RPE 8 | 4×4×+25 | 6×2×55 | 3×6×62,5 | 6×2×60 |
-| 4 | 3×3×70 – RPE 5 | 3×3×77,5 – RPE 5 | 3×3×92,5 – RPE 5 | 3×3×+10 | 3×3×45 | 2×5×50 | 4×2×55 |
-| 5 | 5×3×90 – RPE 8 | 5×3×95 – RPE 8 | 4×3×117,5 – RPE 8 | 4×3×+30 | 6×2×55 | 4×5×65 | 6×2×65 |
-| 6 | 4×3×95 – RPE 8,5 | 4×3×97,5 – RPE 8,5 | 3×3×125 – RPE 8,5 | 4×3×+32,5 | 6×2×57,5 | 4×4×70 | 6×2×65 |
-| 7 | 4×2×97,5 – RPE 9 | 4×2×102,5 – RPE 9 | 3×2×130 – RPE 9 | 4×2×+35 | 6×2×60 | 4×4×70 | 6×2×65 |
-| 8 | 3×3×77,5 – RPE 5 | 3×3×82,5 – RPE 5 | 3×3×97,5 – RPE 5 | 3×2×+15 | 3×2×45 | 2×4×55 | 4×2×55 |
-| 9 | 4×2×92,5 + contraste | 4×2×95 + contraste | 3×2×120 + contraste | 3×3×+30 | 6×2×57,5 | 3×3×70 | 8×2×65 |
-| 10 | 4×2×95 + contraste | 4×2×97,5 + contraste | 3×2×127,5 + contraste | 3×3×+32,5 | 6×2×60 | 3×3×72,5 | 8×2×65 |
-| 11 | 4×1-2×97,5 + contraste | 4×1-2×102,5 + contraste | 3×1-2×130 + contraste | 3×2×+35 | 6×2×62,5 | 3×3×75 | 8×2×65 |
-| 12 | 3×2×77,5 puis TEST sam | 3×2×82,5 puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×55 |
+| 1 | 5×5×70 % – RPE 7 | 5×5×74 % – RPE 7 | 4×5×70 % – RPE 7 | 4×5×44 % | 5×3×50 | 3×6×55 % | 6×2×55 % |
+| 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 5×3×52,5 | 3×6×55 % | 6×2×55 % |
+| 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 6×2×55 | 3×6×57 % | 6×2×55 % |
+| 4 | 3×3×64 % – RPE 5 | 3×3×67 % – RPE 5 | 3×3×64 % – RPE 5 | 3×3×22 % | 3×3×45 | 2×5×45 % | 4×2×50 % |
+| 5 | 5×3×82 % – RPE 8 | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×55 | 4×5×59 % | 6×2×60 % |
+| 6 | 4×3×86 % – RPE 8,5 | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×57,5 | 4×4×64 % | 6×2×60 % |
+| 7 | 4×2×89 % – RPE 9 | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×60 | 4×4×64 % | 6×2×60 % |
+| 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×45 | 2×4×50 % | 4×2×50 % |
+| 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 6×2×57,5 | 3×3×64 % | 8×2×60 % |
+| 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 6×2×60 | 3×3×66 % | 8×2×60 % |
+| 11 | 4×1-2×89 % + contraste | 4×1-2×89 % + contraste | 3×1-2×89 % + contraste | 3×2×78 % | 6×2×62,5 | 3×3×68 % | 8×2×60 % |
+| 12 | 3×2×70 % puis TEST sam | 3×2×72 % puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×50 % |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.
 
-**Tout le tableau est recalé sur les 1RM réellement testés au combine initial** : back squat 110 (estimé 140), bench 115 (estimé 120), deadlift 140 (estimé 130), tractions lestées +45 (estimé +42). Chaque case garde le pourcentage que le programme visait, appliqué au vrai maximum et arrondi au 2,5 kg. Le back squat était le plus faux : six semaines sur douze demandaient plus de 100 % du vrai max, dont un 5 × 4 à 110 kg en semaine 3, soit le 1RM exact.
+**Tant qu'un maximum n'est pas mesuré, sa colonne n'affiche aucune charge.** L'application écrit « à mesurer » et laisse le champ libre : elle ne propose ni valeur par défaut, ni estimation. Les six premiers jours — le combine initial — sont là pour ça.
 
-**Speed Squat et Front Squat — recalés sur le squat réellement testé (110 kg).** Les deux colonnes avaient été écrites sur un back squat supposé à 140 kg. Le combine initial en a mesuré 110 : le Speed Squat de la semaine 1, annoncé à 55 %, en valait en réalité 70 %, ce qui est une charge de force, pas de vitesse.
+**D'où viennent ces pourcentages.** Aucun n'a été inventé : chaque case est l'intensité que le tableau portait déjà, relue sur le maximum de son auteur (squat 110, bench 115, deadlift 140, tractions +45) et arrondie au point. Appliqués à ces mêmes maxima, ils redonnent les kilos d'origine au 2,5 kg près — le tableau n'a pas changé de contenu, il a changé d'unité. Le Speed Squat garde les pourcentages que §7 et §8 écrivaient déjà : 55 % en accumulation, 60 % en force maximale et en puissance, 50 % en deload et au taper.
 
-Le Speed Squat est recalculé directement sur les pourcentages écrits ici même — 55 % en accumulation, 60 % en force max et en puissance, 50 % en deload et au taper — appliqués à 110 kg, arrondis au 2,5 kg le plus proche.
+**Le deadlift est la seule colonne corrigée.** Elle sortait des bandes du §2 — 93 % en semaine 7 pour un bloc qui plafonne à 90 %, 91 % et 93 % en semaines 10-11 pour un bloc qui plafonne à 89 %. Ce n'était pas un arrondi : la colonne avait été écrite au-dessus des bandes parce que son auteur compensait un deadlift qu'il annonçait lui-même sous-estimé à 130 kg. Le combine en a mesuré 140 : la compensation n'a plus d'objet. La colonne reprend donc les intensités du back squat, qui sont dans les bandes et déjà dans le programme.
 
-Le Push Press ne bouge pas : il est donné en kilos absolus avec un plafond de RPE et sa propre règle de progression, et aucune de ses cases ne tombe sur un pourcentage d'un maximum de squat. Le RDL non plus, pour la même raison.
+**Push Press et RDL ne sont pas indexés** : kilos absolus, plafond de RPE, règle de progression propre. Aucune de leurs cases ne tombe sur un pourcentage d'un maximum testé, et le programme n'en écrit aucun pour eux — leur donner un pourcentage serait en inventer un.
+
+**Les installations qui tournaient déjà sur le tableau en kilos le gardent.** Elles suivent un plan commencé, et une mise à jour de l'application n'a pas à le réécrire au milieu des douze semaines : leurs charges restent celles qu'elles affichaient, colonne deadlift comprise. Seules les installations neuves reçoivent le tableau en pourcentages.
 
 ---
 

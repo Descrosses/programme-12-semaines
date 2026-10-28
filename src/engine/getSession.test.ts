@@ -90,7 +90,12 @@ const ACCESSOIRES_PASSES: Record<string, Occurrence[]> = {
 function ctx(over: Partial<SessionContext> = {}): SessionContext {
   return {
     ...EMPTY_CONTEXT,
-    settings: { startDate: '2026-01-03', broadJumpBaselineCm: 240, oneRM: { ...ONE_RM } },
+    settings: {
+      startDate: '2026-01-03',
+      broadJumpBaselineCm: 240,
+      oneRM: { ...ONE_RM },
+      tableauOrigine: false,
+    },
     history: ACCESSOIRES_PASSES,
     ...over,
   };

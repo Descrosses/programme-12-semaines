@@ -41,6 +41,7 @@ const ctx = (history: Occurrence[]): SessionContext => ({
   settings: {
     startDate: '2026-01-03',
     broadJumpBaselineCm: 240,
+    tableauOrigine: false,
     oneRM: { 'back-squat': 110, 'bench-press': 115, deadlift: 140, 'weighted-pullup': 45 },
   },
   history: { 'hip-thrust': history },
@@ -134,9 +135,14 @@ describe('ce que le tri retient, mouvement par mouvement', () => {
 
 describe('ce qui ne doit PAS changer', () => {
   it('les lifts du tableau §9 ignorent l’historique — ils sont chiffrés', () => {
-    // Le deadlift de la semaine 5 vaut 117,5 kg quoi qu'il arrive.
+    /*
+     * Le deadlift de la semaine 5 vaut 82 % du 1RM — 115 kg sur un maximum de
+     * 140 — quoi qu'il arrive. Ce que ce test garde, c'est que l'historique
+     * ne s'en mêle pas : la case est chiffrée par le programme, pas déduite
+     * de la dernière séance. Le chiffre, lui, suit le maximum de chacun.
+     */
     const s = getSession(5 as WeekIndex, 5 as DayIndex, ctx(VECU));
-    expect(s!.exercises.find((e) => e.id === 'deadlift')!.loadLine).toBe('4 × 3 × 117,5 kg');
+    expect(s!.exercises.find((e) => e.id === 'deadlift')!.loadLine).toBe('4 × 3 × 115 kg');
   });
 
   it('la suggestion §11 part de la charge de référence, pas du deload', () => {

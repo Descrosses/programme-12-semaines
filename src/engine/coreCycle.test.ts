@@ -102,7 +102,12 @@ const PORTES_PASSES: HistoryIndex = {
 
 const ctx = (over: Partial<SessionContext> = {}): SessionContext => ({
   ...EMPTY_CONTEXT,
-  settings: { startDate: '2026-01-03', broadJumpBaselineCm: 240, oneRM: { ...ONE_RM } },
+  settings: {
+    startDate: '2026-01-03',
+    broadJumpBaselineCm: 240,
+    oneRM: { ...ONE_RM },
+    tableauOrigine: false,
+  },
   history: PORTES_PASSES,
   ...over,
 });

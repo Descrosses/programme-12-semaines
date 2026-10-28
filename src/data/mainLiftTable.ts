@@ -29,10 +29,10 @@
 import {
   attempts,
   bb,
-  added,
   reps,
   rpe,
   rpeAtMost,
+  pct,
   rpeRange,
   type LiftSchedule,
   type LoadSpec,
@@ -80,51 +80,51 @@ const CONTRASTE = 'Contraste : série lourde → 2 min → explosif → 2 min �
  * barre, §8), laissé à `null` volontairement — voir note dans README.
  */
 const backSquat: LiftSchedule = [
-  p(5, 5, bb(77.5), rpe(7)),
-  p(5, 5, bb(82.5), rpe(7.5)),
-  p(5, 4, bb(87.5), rpe(8)),
-  p(3, 3, bb(70), rpe(5)),
-  p(5, 3, bb(90), rpe(8)),
-  p(4, 3, bb(95), rpe(8.5)),
-  p(4, 2, bb(97.5), rpe(9)),
-  p(3, 3, bb(77.5), rpe(5)),
-  p(4, 2, bb(92.5), null, { contrast: true, note: CONTRASTE }),
-  p(4, 2, bb(95), null, { contrast: true, note: CONTRASTE }),
-  p(4, r1to2, bb(97.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(77.5), rpeRange(5, 6), { note: 'Puis TEST 1RM le samedi.' }),
+  p(5, 5, pct(70, 'back-squat', 77.5), rpe(7)),
+  p(5, 5, pct(75, 'back-squat', 82.5), rpe(7.5)),
+  p(5, 4, pct(80, 'back-squat', 87.5), rpe(8)),
+  p(3, 3, pct(64, 'back-squat', 70), rpe(5)),
+  p(5, 3, pct(82, 'back-squat', 90), rpe(8)),
+  p(4, 3, pct(86, 'back-squat', 95), rpe(8.5)),
+  p(4, 2, pct(89, 'back-squat', 97.5), rpe(9)),
+  p(3, 3, pct(70, 'back-squat', 77.5), rpe(5)),
+  p(4, 2, pct(84, 'back-squat', 92.5), null, { contrast: true, note: CONTRASTE }),
+  p(4, 2, pct(86, 'back-squat', 95), null, { contrast: true, note: CONTRASTE }),
+  p(4, r1to2, pct(89, 'back-squat', 97.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, pct(70, 'back-squat', 77.5), rpeRange(5, 6), { note: 'Puis TEST 1RM le samedi.' }),
 ];
 
 /** Colonne « Bench (mer) ». */
 const benchPress: LiftSchedule = [
-  p(5, 5, bb(85), rpe(7)),
-  p(5, 5, bb(87.5), rpe(7.5)),
-  p(5, 4, bb(90), rpe(8)),
-  p(3, 3, bb(77.5), rpe(5)),
-  p(5, 3, bb(95), rpe(8)),
-  p(4, 3, bb(97.5), rpe(8.5)),
-  p(4, 2, bb(102.5), rpe(9)),
-  p(3, 3, bb(82.5), rpe(5)),
-  p(4, 2, bb(95), null, { contrast: true, note: CONTRASTE }),
-  p(4, 2, bb(97.5), null, { contrast: true, note: CONTRASTE }),
-  p(4, r1to2, bb(102.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(82.5), rpeAtMost(6), {
+  p(5, 5, pct(74, 'bench-press', 85), rpe(7)),
+  p(5, 5, pct(76, 'bench-press', 87.5), rpe(7.5)),
+  p(5, 4, pct(78, 'bench-press', 90), rpe(8)),
+  p(3, 3, pct(67, 'bench-press', 77.5), rpe(5)),
+  p(5, 3, pct(83, 'bench-press', 95), rpe(8)),
+  p(4, 3, pct(85, 'bench-press', 97.5), rpe(8.5)),
+  p(4, 2, pct(89, 'bench-press', 102.5), rpe(9)),
+  p(3, 3, pct(72, 'bench-press', 82.5), rpe(5)),
+  p(4, 2, pct(83, 'bench-press', 95), null, { contrast: true, note: CONTRASTE }),
+  p(4, 2, pct(85, 'bench-press', 97.5), null, { contrast: true, note: CONTRASTE }),
+  p(4, r1to2, pct(89, 'bench-press', 102.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, pct(72, 'bench-press', 82.5), rpeAtMost(6), {
     note: 'Placé le lundi, après le squat (décision de Guillaume). TEST 1RM le dimanche.',
   }),
 ];
 
 /** Colonne « Deadlift (sam) ». */
 const deadlift: LiftSchedule = [
-  p(4, 5, bb(105), rpe(7)),
-  p(4, 5, bb(110), rpe(7.5)),
-  p(4, 4, bb(115), rpe(8)),
-  p(3, 3, bb(92.5), rpe(5)),
-  p(4, 3, bb(117.5), rpe(8)),
-  p(3, 3, bb(125), rpe(8.5)),
-  p(3, 2, bb(130), rpe(9)),
-  p(3, 3, bb(97.5), rpe(5)),
-  p(3, 2, bb(120), null, { contrast: true, note: CONTRASTE }),
-  p(3, 2, bb(127.5), null, { contrast: true, note: CONTRASTE }),
-  p(3, r1to2, bb(130), null, { contrast: true, note: CONTRASTE }),
+  p(4, 5, pct(70, 'deadlift', 105), rpe(7)),
+  p(4, 5, pct(75, 'deadlift', 110), rpe(7.5)),
+  p(4, 4, pct(80, 'deadlift', 115), rpe(8)),
+  p(3, 3, pct(64, 'deadlift', 92.5), rpe(5)),
+  p(4, 3, pct(82, 'deadlift', 117.5), rpe(8)),
+  p(3, 3, pct(86, 'deadlift', 125), rpe(8.5)),
+  p(3, 2, pct(89, 'deadlift', 130), rpe(9)),
+  p(3, 3, pct(70, 'deadlift', 97.5), rpe(5)),
+  p(3, 2, pct(84, 'deadlift', 120), null, { contrast: true, note: CONTRASTE }),
+  p(3, 2, pct(86, 'deadlift', 127.5), null, { contrast: true, note: CONTRASTE }),
+  p(3, r1to2, pct(89, 'deadlift', 130), null, { contrast: true, note: CONTRASTE }),
   test1RM('TEST 1RM le mercredi.'),
 ];
 
@@ -138,17 +138,17 @@ const deadlift: LiftSchedule = [
  * pilote, pas de progression automatique.
  */
 const weightedPullup: LiftSchedule = [
-  p(4, 5, added(20), rpe(7)),
-  p(4, 5, added(22.5), rpe(7.5)),
-  p(4, 4, added(25), rpe(8)),
-  p(3, 3, added(10), rpe(5)),
-  p(4, 3, added(30), rpe(8)),
-  p(4, 3, added(32.5), rpe(8.5)),
-  p(4, 2, added(35), rpe(9)),
-  p(3, 2, added(15), rpe(5)),
-  p(3, 3, added(30), null, { note: 'Intention explosive (§8).' }),
-  p(3, 3, added(32.5), null, { note: 'Intention explosive (§8).' }),
-  p(3, 2, added(35), null, { note: 'Intention explosive (§8).' }),
+  p(4, 5, pct(44, 'weighted-pullup', 20), rpe(7)),
+  p(4, 5, pct(50, 'weighted-pullup', 22.5), rpe(7.5)),
+  p(4, 4, pct(56, 'weighted-pullup', 25), rpe(8)),
+  p(3, 3, pct(22, 'weighted-pullup', 10), rpe(5)),
+  p(4, 3, pct(67, 'weighted-pullup', 30), rpe(8)),
+  p(4, 3, pct(72, 'weighted-pullup', 32.5), rpe(8.5)),
+  p(4, 2, pct(78, 'weighted-pullup', 35), rpe(9)),
+  p(3, 2, pct(33, 'weighted-pullup', 15), rpe(5)),
+  p(3, 3, pct(67, 'weighted-pullup', 30), null, { note: 'Intention explosive (§8).' }),
+  p(3, 3, pct(72, 'weighted-pullup', 32.5), null, { note: 'Intention explosive (§8).' }),
+  p(3, 2, pct(78, 'weighted-pullup', 35), null, { note: 'Intention explosive (§8).' }),
   test1RM('TEST 1RM le dimanche.'),
 ];
 
@@ -193,17 +193,17 @@ const pushPress: LiftSchedule = [
  * 60 kg recalés en font 64 %, ce qui correspond.
  */
 const frontSquat: LiftSchedule = [
-  p(3, 6, bb(60), rpe(7)),
-  p(3, 6, bb(60), rpe(7)),
-  p(3, 6, bb(62.5), rpe(7)),
-  p(2, 5, bb(50), rpeAtMost(6)),
-  p(4, 5, bb(65), null),
-  p(4, 4, bb(70), null),
-  p(4, 4, bb(70), null),
-  p(2, 4, bb(55), rpeAtMost(6)),
-  p(3, 3, bb(70), rpe(7)),
-  p(3, 3, bb(72.5), rpe(7)),
-  p(3, 3, bb(75), rpe(7)),
+  p(3, 6, pct(55, 'back-squat', 60), rpe(7)),
+  p(3, 6, pct(55, 'back-squat', 60), rpe(7)),
+  p(3, 6, pct(57, 'back-squat', 62.5), rpe(7)),
+  p(2, 5, pct(45, 'back-squat', 50), rpeAtMost(6)),
+  p(4, 5, pct(59, 'back-squat', 65), null),
+  p(4, 4, pct(64, 'back-squat', 70), null),
+  p(4, 4, pct(64, 'back-squat', 70), null),
+  p(2, 4, pct(50, 'back-squat', 55), rpeAtMost(6)),
+  p(3, 3, pct(64, 'back-squat', 70), rpe(7)),
+  p(3, 3, pct(66, 'back-squat', 72.5), rpe(7)),
+  p(3, 3, pct(68, 'back-squat', 75), rpe(7)),
   null, // « — » : absent de la semaine 12
 ];
 
@@ -230,18 +230,20 @@ const frontSquat: LiftSchedule = [
  * mouvement de vitesse la progression se lit à la barre, pas au chargement.
  */
 const speedSquat: LiftSchedule = [
-  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
-  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
-  p(6, 2, bb(60), null, { note: '55 % de 110 — vitesse maximale.' }),
-  p(4, 2, bb(55), null, { note: 'Deload : volume divisé, intention conservée.' }),
-  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
-  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
-  p(6, 2, bb(65), null, { note: '60 % de 110.' }),
-  p(4, 2, bb(55), null, { note: 'Deload.' }),
-  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
-  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
-  p(8, 2, bb(65), null, { note: '60 % de 110 — 8 séries (§8).' }),
-  p(2, 2, bb(55), null, {
+  p(6, 2, pct(55, 'back-squat', 60), null, { note: '55 % du 1RM — vitesse maximale.' }),
+  p(6, 2, pct(55, 'back-squat', 60), null, { note: '55 % du 1RM — vitesse maximale.' }),
+  p(6, 2, pct(55, 'back-squat', 60), null, { note: '55 % du 1RM — vitesse maximale.' }),
+  p(4, 2, pct(50, 'back-squat', 55), null, {
+    note: 'Deload : volume divisé, intention conservée.',
+  }),
+  p(6, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM.' }),
+  p(6, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM.' }),
+  p(6, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM.' }),
+  p(4, 2, pct(50, 'back-squat', 55), null, { note: 'Deload.' }),
+  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
+  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
+  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
+  p(2, 2, pct(50, 'back-squat', 55), null, {
     note: 'Après les tests athlétiques du vendredi, charge légère (décision de Guillaume).',
   }),
 ];

@@ -74,11 +74,30 @@ export function resolveLoad(load: LoadSpec, ctx: ResolveContext): ResolvedLoad {
       return { kg: load.kg, shape: 'dbSingle', step: load.step, source: 'programme' };
 
     case 'pct1RM': {
+      const forme: LoadShape = load.lift === 'weighted-pullup' ? 'added' : 'barbell';
+
+      /*
+       * Les installations qui tournaient déjà sur le tableau en kilos le
+       * gardent : elles ont un plan en cours, et une mise à jour n'a pas à le
+       * réécrire au milieu des douze semaines. Leur maximum n'entre pas dans
+       * le calcul — c'est bien le kilo écrit qu'elles doivent revoir.
+       */
+      if (ctx.settings.tableauOrigine && load.kgOrigine !== undefined) {
+        return { kg: load.kgOrigine, shape: forme, step: load.step, source: 'programme' };
+      }
+
       const oneRM = ctx.settings.oneRM[load.lift as keyof Settings['oneRM']];
-      if (oneRM === undefined) return { ...NONE, step: load.step, shape: 'barbell' };
+      /*
+       * Pas de maximum = pas de charge. Surtout pas un repli sur le kilo
+       * d'origine : ce serait servir la performance de l'auteur du programme à
+       * quelqu'un dont on ne sait rien, et c'est exactement ce qu'on retire.
+       * L'écran dira « à mesurer ».
+       */
+      if (oneRM === undefined) return { ...NONE, step: load.step, shape: forme };
+
       return {
-        kg: roundToStep(oneRM * load.pct, load.step),
-        shape: load.lift === 'weighted-pullup' ? 'added' : 'barbell',
+        kg: roundToStep((oneRM * load.pct) / 100, load.step),
+        shape: forme,
         step: load.step,
         source: '1rm',
       };

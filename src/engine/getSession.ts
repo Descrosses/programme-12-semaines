@@ -547,7 +547,13 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
           `qui étaient ${Math.round(deloadReel * 100)} % d’un prévisionnel que tu as dépassé.`,
       });
     }
-  } else if (recalage && recalage.offsetKg !== 0 && load.source === 'programme') {
+    /*
+     * Le décalage s'applique à toute charge que le PROGRAMME chiffre — en
+     * kilos (Push Press, RDL) comme en pourcentage d'un maximum (les quatre
+     * lifts du §9). Seule une charge déjà tirée de l'historique en est
+     * exclue : elle est déjà le réel, la recaler le compterait deux fois.
+     */
+  } else if (recalage && recalage.offsetKg !== 0 && load.source !== 'historique') {
     const avant = load.kg;
     load = shiftLoad(load, recalage.offsetKg);
     if (load.kg !== avant) {
@@ -611,6 +617,22 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
       });
     }
     targetRPE = capRPE(targetRPE, DELOAD_POLICY.maxRPE);
+  }
+
+  /*
+   * Le maximum manque : on le DIT, au lieu de laisser un tiret muet.
+   *
+   * Une case du §9 est un pourcentage. Sans maximum mesuré, elle ne peut pas
+   * se chiffrer — et il n'est pas question de la remplir avec une estimation
+   * ou avec le chiffre de quelqu'un d'autre. Mais un champ vide sans
+   * explication laisse l'utilisateur chercher ce qui ne va pas : la note dit
+   * d'où viendrait le chiffre et où le renseigner.
+   */
+  if (loadSpec?.kind === 'pct1RM' && load.source === 'aucune') {
+    notes.push(
+      `Charge non calculée : le programme demande ${loadSpec.pct} % de ton 1RM, et il n’est pas ` +
+        `encore mesuré. Le combine initial le teste — ou saisis-le dans Réglages.`,
+    );
   }
 
   // 5. Progression §11 — suggestion uniquement.

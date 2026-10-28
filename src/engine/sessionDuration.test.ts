@@ -23,6 +23,7 @@ const CTX: SessionContext = {
   settings: {
     startDate: '2026-01-03',
     broadJumpBaselineCm: 240,
+    tableauOrigine: false,
     oneRM: { 'back-squat': 110, 'bench-press': 115, deadlift: 140, 'weighted-pullup': 45 },
   },
 };

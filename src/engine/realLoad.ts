@@ -27,7 +27,13 @@
  * Une charge qui vient DÉJÀ de l'historique — un Hip Thrust autorégulé, un
  * Bulgarian — n'a aucun décalage à recevoir : elle EST la dernière charge
  * réelle. Lui ajouter le décalage le compterait deux fois. Le garde-fou est
- * `source === 'programme'`, et rien d'autre.
+ * `source !== 'historique'`, et rien d'autre.
+ *
+ * Il s'est écrit `source === 'programme'` tant que le §9 était en kilos : les
+ * deux voulaient dire la même chose. Depuis que le tableau donne des
+ * pourcentages, une case du §9 se résout en `'1rm'` — et la condition
+ * d'origine a cessé en silence de recaler les quatre lifts principaux, c'est
+ * à dire précisément ceux pour qui le décalage compte le plus.
  *
  * Pur : aucun React, aucune base.
  */

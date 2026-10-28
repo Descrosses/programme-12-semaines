@@ -329,6 +329,16 @@ export interface SettingsRow {
    * elles enregistrent ce qu'il a réellement soulevé, pas ce qui était prévu.
    */
   oneRMCalibratedAt: string;
+  /**
+   * Cette installation garde le tableau §9 tel qu'il a été écrit, en kilos.
+   *
+   * Posé à `true` par la migration v16 sur toute base qui portait déjà une
+   * date de début : elle avait un plan en cours, écrit sur les maxima de
+   * l'auteur, et la mise à jour n'a pas à le réécrire au milieu des douze
+   * semaines. `false` partout ailleurs — une installation neuve reçoit le
+   * tableau en pourcentages de SES propres maxima.
+   */
+  tableauOrigine: boolean;
   /** Son et vibration en fin de repos. */
   soundEnabled: boolean;
   vibrationEnabled: boolean;
@@ -667,6 +677,32 @@ export class ProgrammeDB extends Dexie {
 
         if (reprises.length > 0) await tx.table('notes').bulkAdd(reprises);
       });
+
+    /*
+     * v16 — le §9 passe des kilos aux pourcentages, et les plans en cours
+     * ne bougent pas.
+     *
+     * Le tableau des charges était écrit en kilos absolus, calés sur les
+     * maxima de l'auteur du programme : une installation neuve servait donc
+     * ses charges à quelqu'un dont elle ne savait rien. Il est désormais écrit
+     * en pourcentages du maximum de chacun.
+     *
+     * Mais une base qui porte déjà une date de début suit un plan commencé sur
+     * l'ancien tableau. Le réécrire au milieu des douze semaines changerait
+     * des charges que personne n'a demandé à changer — on pose donc le drapeau
+     * qui lui laisse le tableau d'origine, en kilos.
+     *
+     * Aucun champ indexé n'est ajouté : le `stores` reste le même, seule la
+     * ligne de réglages est modifiée.
+     */
+    this.version(16).upgrade(async (tx) => {
+      const reglages = (await tx.table('settings').get(1)) as SettingsRow | undefined;
+      if (reglages === undefined) return;
+      await tx.table('settings').put({
+        ...reglages,
+        tableauOrigine: (reglages.startDate ?? '') !== '',
+      });
+    });
   }
 }
 
@@ -779,6 +815,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   bodyweightDate: '',
   ciblePoidsBasKg: null,
   ciblePoidsHautKg: null,
+  tableauOrigine: false,
   oneRMCalibratedAt: '',
   soundEnabled: true,
   vibrationEnabled: true,

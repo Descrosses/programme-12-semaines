@@ -14,9 +14,19 @@ import { EMPTY_CONTEXT, type HistoryIndex, type SessionContext } from './types';
 import { WEEK_DAYS } from '../data/program';
 import type { DayIndex, WeekIndex } from '../data/types';
 
+/*
+ * Un utilisateur qui a passé son combine : il a ses quatre maxima, donc les
+ * colonnes du §9 se chiffrent. Sans eux elles n'affichent rien, et ce fichier
+ * ne parlerait plus de grand-chose — c'est `plannedLoad.test.ts` qui couvre
+ * le cas « aucun maximum mesuré ».
+ */
 const CTX: SessionContext = {
   ...EMPTY_CONTEXT,
-  settings: { ...EMPTY_CONTEXT.settings, startDate: '2026-09-07' },
+  settings: {
+    ...EMPTY_CONTEXT.settings,
+    startDate: '2026-09-07',
+    oneRM: { 'back-squat': 110, 'bench-press': 115, deadlift: 140, 'weighted-pullup': 45 },
+  },
 };
 
 /** Toutes les cases du calendrier qui portent une séance, combines compris. */
@@ -121,16 +131,23 @@ describe('un champ de charge sur CHAQUE exercice du programme', () => {
         expect(entry.emptyLabel, ex.id).toBe('PDC');
       }
     }
-    expect([...vus].sort()).toEqual(['ab-wheel', 'box-jump', 'nordic-curl', 'plyo-push-up', 'pogo-jumps']);
+    expect([...vus].sort()).toEqual([
+      'ab-wheel',
+      'box-jump',
+      'nordic-curl',
+      'plyo-push-up',
+      'pogo-jumps',
+    ]);
   });
 
   it('la charge planifiée du .md reste celle du plan, la saisie ne la touche pas', () => {
     const samedi = getSession(1, 5, CTX)!;
     const deadlift = samedi.exercises.find((e) => e.id === 'deadlift')!;
-    expect(deadlift.load.kg).toBe(105);
-    expect(deadlift.loadLine).toContain('105 kg');
+    // 70 % de 140, le pourcentage que le §9 écrit pour la semaine 1.
+    expect(deadlift.load.kg).toBe(97.5);
+    expect(deadlift.loadLine).toContain('97,5 kg');
     // Le champ part de la valeur planifiée : c'est elle qu'on confirme ou corrige.
-    expect(loadEntryFor(deadlift).initialKg).toBe(105);
+    expect(loadEntryFor(deadlift).initialKg).toBe(97.5);
   });
 });
 

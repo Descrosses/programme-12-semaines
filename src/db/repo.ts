@@ -99,6 +99,7 @@ export function toEngineSettings(row: SettingsRow): Settings {
     startDate: row.startDate,
     broadJumpBaselineCm: row.broadJumpBaselineCm,
     oneRM: row.oneRM as Settings['oneRM'],
+    tableauOrigine: row.tableauOrigine,
   };
 }
 
