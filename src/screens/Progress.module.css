@@ -115,39 +115,21 @@
 /* --------------------------------------------------------------- cartes -- */
 
 .card {
-  position: relative;
-  overflow: hidden;
+  composes: carte from '../styles/cartes.module.css';
   margin: var(--gap) var(--pad);
   padding: 16px var(--pad);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
-  box-shadow: var(--shadow-card);
 }
 
 .cardTitle {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--ink);
-  font-family: var(--font-cond);
-  font-size: 1.1875rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1.15;
-}
-
-.cardIcon {
-  flex: none;
-  color: var(--accent-ink);
+  composes: carteTitre from '../styles/cartes.module.css';
 }
 
 .cardSub {
-  margin-top: 6px;
-  color: var(--ink-2);
-  font-size: var(--fs-small);
-  line-height: 1.45;
+  composes: carteSousTitre from '../styles/cartes.module.css';
+}
+
+.cardIcon {
+  composes: carteIcone from '../styles/cartes.module.css';
 }
 
 /* La valeur du jour, mise en avant sous le titre de la carte des charges. */

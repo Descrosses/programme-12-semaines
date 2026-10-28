@@ -57,6 +57,7 @@ import { MealItems } from '../components/MealItems';
 import { MacroBar } from '../components/MacroBar';
 import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
+import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
 import styles from './Screens.module.css';
 
@@ -548,7 +549,7 @@ export function NutritionScreen({
                         }`}
                         aria-hidden="true"
                       >
-                        ✓
+                        {pris.has(m.id) && <Icon name="check" size="17px" />}
                       </span>
                     </button>
                   }

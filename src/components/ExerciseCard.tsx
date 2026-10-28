@@ -753,7 +753,8 @@ export function SetEntry({
             onClick={() => setFailed((f) => !f)}
             aria-pressed={failed}
           >
-            {failed ? '✓ Rep ratée' : 'Rep ratée ?'}
+            {failed && <Icon name="check" size="16px" />}
+            {failed ? 'Rep ratée' : 'Rep ratée ?'}
           </button>
         )}
 

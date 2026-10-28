@@ -103,14 +103,19 @@
   --macro-lipides: #a87b22;
 
   /* --------------------------------------------------------- blocs (§2) */
-  /* La périodisation se lit d'un coup d'œil : force en rouge, puissance en
-     jaune, deload en gris — exactement ce que montrent les maquettes. */
+  /*
+   * Un seul jeton ici, et c'est voulu.
+   *
+   * Les couleurs des six blocs vivent dans `BLOCKS` (src/data/program.ts) :
+   * les écrans les lisent de là et les passent en `--bloc` au cas par cas.
+   * Les cinq autres jetons qui doublaient cette table n'étaient référencés
+   * nulle part — deux sources pour une même couleur, dont une morte.
+   *
+   * Celui-ci reste parce qu'il sert vraiment : le vert « test » marque, dans
+   * la carte média d'un exercice, la vidéo de RÉFÉRENCE — celle qui ne bouge
+   * pas. Ce n'est pas la couleur du bloc de test, c'est la même idée.
+   */
   --bloc-test: #7ac4a0;
-  --bloc-accumulation: #3478c0;
-  --bloc-deload: #9aabbc;
-  --bloc-maxforce: #f01432;
-  --bloc-power: #f2b33d;
-  --bloc-taper: #7ac4a0;
 
   /* -------------------------------------------------------- typographie */
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

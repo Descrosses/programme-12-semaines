@@ -109,8 +109,13 @@ export const VISUELS = {
     description:
       'Montage d’un athlète de football américain : portrait, sprint, développé couché et réception.',
     cadrage: 'cover',
-    focus: 'center 28%',
-    usage: 'Carte de présentation du programme. Jamais derrière du texte long.',
+    /*
+     * « top » : ce montage a son portrait tout en haut. Dans le bandeau court
+     * de Réglages on n'en voit qu'un tiers — centré, le cadrage commençait
+     * sous le menton et il ne restait qu'une épaule.
+     */
+    focus: 'center top',
+    usage: 'En-tête de Réglages, et Aujourd’hui quand les 12 semaines sont bouclées.',
   },
   sprint: {
     display: '05_sprint_display.webp',

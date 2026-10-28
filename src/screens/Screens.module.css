@@ -67,29 +67,11 @@
 
 /* ------------------------------------------------------------- cartes -- */
 
-/*
- * La carte, définition commune.
- *
- * Elle est identique à `.card` de Progress.module.css, et c'est volontaire :
- * les quatre composants de l'écran Progression (poids, remarques, photos,
- * durées) importent CE fichier, partagé avec Nutrition, Combine et Réglages.
- * Laisser l'ancienne définition ici aurait donné un écran Progression à deux
- * langages — des cartes refondues sous l'onglet Charges, des cartes d'avant
- * sous les trois autres.
- *
- * Les trois écrans non encore refaits héritent donc de la nouvelle carte dès
- * maintenant. C'est la forme qu'ils prendront de toute façon ; les deux
- * définitions seront fondues en une à l'étape d'harmonisation.
- */
+/* La carte, composée depuis la définition unique de `cartes.module.css`. */
 .card {
-  position: relative;
-  overflow: hidden;
+  composes: carte from '../styles/cartes.module.css';
   margin: var(--gap) var(--pad);
   padding: 16px var(--pad);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
-  box-shadow: var(--shadow-card);
 }
 
 .cardFlush {
@@ -100,23 +82,11 @@
 }
 
 .cardTitle {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--ink);
-  font-family: var(--font-cond);
-  font-size: 1.1875rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1.15;
+  composes: carteTitre from '../styles/cartes.module.css';
 }
 
 .cardSub {
-  margin-top: 6px;
-  color: var(--ink-2);
-  font-size: var(--fs-small);
-  line-height: 1.45;
+  composes: carteSousTitre from '../styles/cartes.module.css';
 }
 
 .sectionTitle {
@@ -1334,18 +1304,20 @@
   background: none;
 }
 
+/*
+ * La pastille de repas pris. Le pictogramme n'est rendu que quand le repas
+ * l'est : avant, un ✓ en `color: transparent` occupait la place et se
+ * révélait par la couleur, ce qu'un lecteur d'écran ou un rendu sans CSS
+ * annonçait comme coché à tort.
+ */
 .mealTickDot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 26px;
   height: 26px;
-  border: 2px solid var(--line);
+  border: 2px solid var(--line-strong);
   border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 700;
   line-height: 1;
-  color: transparent;
 }
 
 .mealTickOn {

@@ -1,4 +1,5 @@
 import type { Warmup } from '../data/types';
+import { Icon } from './Icon';
 import styles from '../screens/Session.module.css';
 
 /**
@@ -37,7 +38,7 @@ export function WarmupSection({
             aria-pressed={on}
           >
             <span className={`${styles.box} ${on ? styles.boxOn : ''}`} aria-hidden="true">
-              {on ? '✓' : ''}
+              {on ? <Icon name="check" size="18px" /> : null}
             </span>
             <span className={styles.warmupLabel}>{item.label}</span>
             {item.detail && <span className={styles.warmupDetail}>{item.detail}</span>}
