@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart, LineChart, type Series } from '../components/Chart';
+import { resolveLoad } from '../engine/loadResolver';
 import { NotesBrowser } from '../components/NotesBrowser';
 import { SessionDurations } from '../components/SessionDurations';
 import { VisualTracking } from '../components/VisualTracking';
@@ -105,14 +106,25 @@ export function ProgressScreen() {
 
   if (!data) return <div className={styles.loading}>Chargement…</div>;
 
-  // --- charge réelle vs plan, semaine par semaine ---------------------------
+  /*
+   * --- charge réelle vs plan, semaine par semaine --------------------------
+   *
+   * La courbe « Plan » se RÉSOUT, elle ne se lit plus. Le §9 donne des
+   * pourcentages depuis qu'il ne sert plus les kilos de son auteur : lire
+   * `load.kg` sur la prescription ne renvoyait donc plus rien, et la courbe
+   * prévisionnelle avait disparu de l'écran sans que rien ne le signale.
+   *
+   * On la résout SANS historique, volontairement : un objectif ne se réécrit
+   * pas quand une performance l'a dépassé. Le plan de la semaine 6 reste ce
+   * qu'il annonçait au départ, et c'est précisément ce qui rend l'écart
+   * lisible.
+   */
   const planPoints = [];
   for (let w = 1; w <= 12; w++) {
-    // Même base que les séances : la courbe « Plan » doit montrer le plan
-    // recalé, pas celui d'avant le combine.
     const p = prescriptionFor(lift, w);
-    const kg = p?.load && 'kg' in p.load ? p.load.kg : null;
-    if (kg !== null) planPoints.push({ x: w, y: kg });
+    if (!p?.load) continue;
+    const resolu = resolveLoad(p.load, { settings: data.ctx.settings, occurrences: [] });
+    if (resolu.kg !== null) planPoints.push({ x: w, y: resolu.kg });
   }
   const exId = LIFTS.find((l) => l.id === lift)!.id;
   const realPoints = (data.history[exId] ?? [])
@@ -123,6 +135,29 @@ export function ProgressScreen() {
     { label: 'Plan', color: 'var(--ink-3)', points: planPoints, dashed: true },
     { label: 'Réel', color: 'var(--accent-ink)', points: realPoints },
   ];
+
+  /*
+   * L'écart au plan, sur la DERNIÈRE semaine où les deux existent.
+   *
+   * Pas sur la semaine en cours : une semaine commencée mais pas encore
+   * travaillée n'a pas de réel, et afficher « −90 kg » parce que rien n'est
+   * saisi serait un mensonge. Pas non plus une moyenne sur douze semaines :
+   * ce qu'on veut savoir en ouvrant l'écran, c'est où on en est maintenant.
+   */
+  const ecart = (() => {
+    const plans = new Map(planPoints.map((p) => [p.x, p.y]));
+    let derniere: { semaine: number; plan: number; reel: number } | null = null;
+    for (const r of realPoints) {
+      const plan = plans.get(r.x);
+      if (plan === undefined) continue;
+      if (derniere === null || r.x >= derniere.semaine) {
+        derniere = { semaine: r.x, plan, reel: r.y };
+      }
+    }
+    if (derniere === null) return null;
+    const delta = Math.round((derniere.reel - derniere.plan) * 10) / 10;
+    return { ...derniere, delta };
+  })();
 
   // --- broad jump dans le temps --------------------------------------------
   const jumps = weeklyBests(toReadinessRecords(data.readiness));
@@ -255,6 +290,39 @@ export function ProgressScreen() {
             ) : (
               <p className={styles.cardValeur}>
                 {fr(realPoints[realPoints.length - 1]!.y)} kg <small>dernière charge</small>
+              </p>
+            )}
+            {ecart !== null && (
+              <p className={styles.ecart}>
+                <span>
+                  Semaine {ecart.semaine} — objectif {fr(ecart.plan)} kg
+                </span>
+                <span>réalisé {fr(ecart.reel)} kg</span>
+                <span
+                  className={`${styles.ecartValeur} ${
+                    ecart.delta > 0
+                      ? styles.ecartAvance
+                      : ecart.delta < 0
+                        ? styles.ecartRetard
+                        : styles.ecartEgal
+                  }`}
+                >
+                  {ecart.delta > 0 ? '+' : ecart.delta < 0 ? '−' : ''}
+                  {fr(Math.abs(ecart.delta))} kg
+                  <span className="visually-hidden">
+                    {ecart.delta > 0
+                      ? ' au-dessus du plan'
+                      : ecart.delta < 0
+                        ? ' en dessous du plan'
+                        : ' — pile sur le plan'}
+                  </span>
+                </span>
+              </p>
+            )}
+            {planPoints.length === 0 && (
+              <p className={styles.cardSub}>
+                Pas de courbe prévisionnelle : le plan est un pourcentage de ton 1RM, et il n’est
+                pas encore mesuré. Le combine initial le teste — ou saisis-le dans Réglages.
               </p>
             )}
             <LineChart

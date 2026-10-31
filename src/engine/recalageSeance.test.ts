@@ -63,9 +63,18 @@ describe('la semaine de deload se calcule sur le réel', () => {
     expect(a.what).toContain('105');
   });
 
-  it('sans historique, le tableau fait foi — on n’invente rien', () => {
+  it('sans historique, rien n’est affiché — et surtout rien n’est inventé', () => {
+    /*
+     * Le 75 du tableau est la charge de l'auteur du programme. Tant que
+     * l'utilisateur n'a pas soulevé ce mouvement une fois, elle ne lui est
+     * pas servie : le kilo du §9 est une forme, pas une prescription.
+     *
+     * Mais le plan garde son chiffre — c'est lui qui mesurera l'écart de la
+     * première série, et donc qui déplacera toute la forme au bon niveau.
+     */
     const ex = charge(8, { ...EMPTY_CONTEXT, settings: SETTINGS })!;
-    expect(ex.load.kg).toBe(75);
+    expect(ex.load.kg).toBeNull();
+    expect(ex.planKg).toBe(75);
     expect(ex.adjustments.filter((x) => x.source === 'deload')).toHaveLength(0);
   });
 
@@ -108,10 +117,22 @@ describe('le décalage cumulé suit le programme', () => {
     expect(ex.load.kg).toBe(75);
   });
 
-  it('sans historique, rien ne bouge', () => {
+  it('sans historique, rien ne bouge — et rien ne s’affiche', () => {
     const ex = charge(9, { ...EMPTY_CONTEXT, settings: SETTINGS })!;
-    expect(ex.load.kg).toBe(90);
+    expect(ex.load.kg).toBeNull();
+    expect(ex.planKg).toBe(90);
     expect(ex.adjustments.filter((x) => x.source === 'reel')).toHaveLength(0);
+  });
+
+  it('une installation déjà en cours garde les kilos du tableau', () => {
+    // Le drapeau `tableauOrigine` : un plan commencé ne se réécrit pas au
+    // milieu des douze semaines, Push Press et RDL compris.
+    const ex = charge(9, {
+      ...EMPTY_CONTEXT,
+      settings: { ...SETTINGS, tableauOrigine: true },
+    })!;
+    expect(ex.load.kg).toBe(90);
+    expect(ex.load.kgMax).toBe(95);
   });
 });
 

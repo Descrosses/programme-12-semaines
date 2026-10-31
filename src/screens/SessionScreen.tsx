@@ -27,6 +27,7 @@ import {
   setsOnSessionExercise,
   saveReadiness,
   saveSet,
+  startSession,
   toggleWarmupItem,
   updateSession,
 } from '../db/repo';
@@ -138,6 +139,13 @@ export function SessionScreen({
 
   async function handleSaveSet(ex: ResolvedExercise, payload: SetPayload) {
     if (!row?.id) return;
+    /*
+     * Valider une série, c'est s'entraîner : si le bouton « Démarrer » a été
+     * oublié, le chrono part ici. `startSession` est idempotent — une séance
+     * déjà commencée garde son heure de début, et la série qui suit ne la
+     * repousse pas.
+     */
+    await startSession(row.id);
     await saveSet({
       sessionId: row.id,
       exerciseId: ex.id,
@@ -166,6 +174,12 @@ export function SessionScreen({
       measureUnit: payload.measureUnit,
       failed: payload.failed,
     });
+    await data.reload();
+  }
+
+  async function handleStart() {
+    if (!row?.id) return;
+    await startSession(row.id);
     await data.reload();
   }
 
@@ -382,11 +396,15 @@ export function SessionScreen({
           <span className={styles.metaItem}>
             Prévu <b>{session.durationLabel}</b>
           </span>
-          {chrono !== null && (
+          {chrono !== null ? (
             <span className={`${styles.metaItem} ${styles.chrono}`}>
               <Icon name="stopwatch" size="14px" />
               <b className="tnum">{chrono}</b>
               {row?.status === 'done' ? '' : ' en cours'}
+            </span>
+          ) : (
+            <span className={styles.metaItem}>
+              <Icon name="stopwatch" size="14px" /> Pas commencée
             </span>
           )}
           <span className={styles.metaItem}>
@@ -401,6 +419,21 @@ export function SessionScreen({
           </p>
         ))}
       </header>
+
+      {/*
+        Démarrer — explicite, parce qu'ouvrir n'est pas commencer.
+        
+        Le chrono partait à l'ouverture : consulter la séance du lendemain
+        suffisait à le lancer. Il part maintenant d'ici, ou de la première
+        série validée. L'échauffement compte donc dans la durée, ce qui est
+        le but : c'est du temps de séance.
+      */}
+      {row?.id !== undefined && row.startedAt === undefined && row.status !== 'done' && (
+        <button type="button" className={styles.demarrer} onClick={() => void handleStart()}>
+          <Icon name="play" size="20px" />
+          Démarrer la séance
+        </button>
+      )}
 
       {session.warmup && (
         <WarmupSection

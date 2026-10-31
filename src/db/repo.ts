@@ -137,17 +137,18 @@ export async function ensureSession(
       const patch: Partial<SessionRow> = {};
       if (existing.date !== date) patch.date = date;
       /*
-       * Démarrage du chrono — à la PREMIÈRE ouverture, et jamais ensuite.
+       * OUVRIR N'EST PAS COMMENCER.
        *
-       * Les lignes créées avant le chrono n'ont pas d'heure de début. On la
-       * pose ici, mais seulement sur une séance encore à faire : poser
-       * « commencée maintenant » sur une séance déjà terminée en semaine 3
-       * inventerait une durée de plusieurs semaines. Une séance passée reste
-       * donc sans chrono, ce qui est la vérité — on ne l'a pas mesurée.
+       * Le chrono partait ici, à la première ouverture de la séance. Ça
+       * paraissait pratique et c'était faux : consulter le jeudi soir la
+       * séance du vendredi lançait le chrono, et le lendemain l'écran
+       * annonçait quatorze heures d'entraînement. Toutes les statistiques de
+       * durée en sortaient fausses, sans que rien ne le signale.
+       *
+       * `startedAt` ne se pose plus que sur une action volontaire —
+       * `startSession`, déclenché par le bouton « Démarrer la séance » ou par
+       * la première série validée.
        */
-      if (existing.startedAt === undefined && existing.status !== 'done') {
-        patch.startedAt = Date.now();
-      }
       if (Object.keys(patch).length > 0 && existing.id !== undefined) {
         await db.sessions.update(existing.id, patch);
         if (patch.date !== undefined) {
@@ -164,7 +165,8 @@ export async function ensureSession(
       status: 'planned',
       warmupChecked: [],
       notes: '',
-      startedAt: Date.now(),
+      // Pas de `startedAt` : la séance est créée à l'ouverture, elle ne
+      // commence qu'au bouton « Démarrer la séance ».
     };
     const id = await db.sessions.add(row);
     return { ...row, id };
@@ -181,6 +183,20 @@ export async function allSessions(): Promise<SessionRow[]> {
 
 export async function updateSession(id: number, patch: Partial<SessionRow>): Promise<void> {
   await db.sessions.update(id, patch);
+}
+
+/**
+ * Démarre la séance — le seul endroit qui pose l'heure de début.
+ *
+ * Idempotent : une séance déjà commencée garde SON heure de début. Le bouton
+ * peut être pressé deux fois, la première série peut arriver après le bouton,
+ * rien ne redémarre le chrono. Le seul moyen de le réécrire reste la remise à
+ * zéro, qui demande confirmation.
+ */
+export async function startSession(id: number): Promise<void> {
+  const row = await db.sessions.get(id);
+  if (row === undefined || row.startedAt !== undefined) return;
+  await db.sessions.update(id, { startedAt: Date.now() });
 }
 
 /**

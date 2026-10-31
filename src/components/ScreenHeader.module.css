@@ -108,7 +108,19 @@
  * 42 svh et non vh : sur iOS, `vh` compte la barre d'URL comme si elle
  * n'existait pas, et l'en-tête débordait au premier défilement.
  */
-.hero {
+/*
+ * La hauteur de l'en-tête ne dépend PAS du cadrage de sa photo.
+ *
+ * Elle en a dépendu, et ça se voyait : Nutrition est le seul écran dont le
+ * visuel est `contain` (le ballon, en vignette), il ne recevait donc pas
+ * `.hero` et son bandeau tombait à 112 px quand tous les autres en font 196.
+ * Un écran paraissait bâclé par un détail de manifeste d'images.
+ *
+ * `.hero` reste le marqueur « cette photo remplit le fond » ; la hauteur,
+ * elle, est posée sur tout en-tête qui porte un visuel, quel qu'il soit.
+ */
+.hero,
+.avecVisuel {
   min-height: max(268px, 42svh);
   padding-bottom: 22px;
 }
@@ -121,7 +133,8 @@
  * le contenu est une liste ne peut pas donner 42 % de sa hauteur à une
  * photo. 196 px montrent le casque et laissent trois jours visibles.
  */
-.hero.compact {
+.hero.compact,
+.avecVisuel.compact {
   min-height: 196px;
   padding-top: 14px;
   padding-bottom: 16px;

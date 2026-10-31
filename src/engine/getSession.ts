@@ -509,7 +509,17 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
    * déjà la dernière charge réelle ; lui ajouter le décalage le compterait
    * deux fois.
    */
-  const planKg = load.kg;
+  /*
+   * Le plan garde son chiffre même quand l'écran n'en affiche aucun.
+   *
+   * Une case « forme » (Push Press, RDL) ne s'affiche pas tant que
+   * l'utilisateur n'a rien soulevé — mais c'est elle qui sert de repère à sa
+   * première série : `plannedKg` l'enregistre, et le décalage mesuré dessus
+   * déplace toute la forme à son niveau dès la semaine suivante. Sans ça, la
+   * première série serait enregistrée sans plan, l'écart vaudrait zéro, et la
+   * semaine d'après lui reservirait le kilo de l'auteur.
+   */
+  const planKg = load.kg ?? (loadSpec.kind === 'forme' ? loadSpec.kg : null);
   const recalage = recalageFor(reference);
 
   /*
@@ -628,6 +638,23 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
    * explication laisse l'utilisateur chercher ce qui ne va pas : la note dit
    * d'où viendrait le chiffre et où le renseigner.
    */
+  /*
+   * Une FORME sans ancre : on explique au lieu d'afficher un tiret.
+   *
+   * Push Press et RDL ne sont rattachés à aucun maximum — le programme les
+   * gouverne par le RPE et la vitesse de barre, pas par un pourcentage. Leur
+   * kilo au tableau est celui de l'auteur : tant que l'utilisateur n'a rien
+   * soulevé, il ne lui est pas servi. On lui dit donc quoi faire, et sur quel
+   * critère choisir sa charge.
+   */
+  if (loadSpec?.kind === 'forme' && load.source === 'aucune') {
+    notes.push(
+      'Première fois sur ce mouvement : choisis ta charge toi-même, celle qui respecte la ' +
+        'consigne de vitesse. L’appli retient ton niveau et fait progresser le reste des douze ' +
+        'semaines à partir de là.',
+    );
+  }
+
   if (loadSpec?.kind === 'pct1RM' && load.source === 'aucune') {
     notes.push(
       `Charge non calculée : le programme demande ${loadSpec.pct} % de ton 1RM, et il n’est pas ` +

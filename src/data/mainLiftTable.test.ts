@@ -209,8 +209,16 @@ function attendu(cell: ParsedCell, presc: WeekPrescription | null, quoi: string)
       expect(load.pct, `${quoi} — pourcentage`).toBe(cell.valeur);
     }
   } else {
-    expect(load.kind, `${quoi} — type de charge`).toBe(cell.added ? 'added' : 'barbell');
-    if (load.kind === 'added' || load.kind === 'barbell') {
+    /*
+     * Une case en kilos est soit une charge telle quelle, soit une FORME —
+     * Push Press et RDL, dont le kilo est celui de l'auteur et dont seule la
+     * progression est transposable. Dans les deux cas le chiffre du .md doit
+     * s'y retrouver : c'est lui qui donne la forme.
+     */
+    expect(load.kind, `${quoi} — type de charge`).toBe(
+      cell.added ? 'added' : cell.forme ? 'forme' : 'barbell',
+    );
+    if (load.kind === 'added' || load.kind === 'barbell' || load.kind === 'forme') {
       expect(load.kg, `${quoi} — kg`).toBe(cell.valeur);
     }
   }
@@ -272,14 +280,17 @@ describe('RDL (hors tableau §9)', () => {
       expect(p).not.toBeNull();
       expect(p!.sets).toBe(sets);
       expect(p!.work).toMatchObject({ kind: 'reps', reps: r, perSide: false });
-      expect(p!.load).toMatchObject({ kind: 'barbell', kg });
+      // Le RDL est une FORME : son kilo donne la progression, pas la charge
+      // à mettre sur la barre — il ne s'affiche qu'une fois que l'utilisateur
+      // a soulevé le mouvement une première fois.
+      expect(p!.load).toMatchObject({ kind: 'forme', kg });
     });
   });
 
   it('S9-11 porte un plafond assumé à 95 kg', () => {
     for (const week of [9, 10, 11]) {
       const load = prescriptionFor('rdl', week)!.load!;
-      expect(load).toMatchObject({ kind: 'barbell', kg: 90, kgMax: 95 });
+      expect(load).toMatchObject({ kind: 'forme', kg: 90, kgMax: 95 });
     }
   });
 });

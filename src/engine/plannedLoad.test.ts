@@ -170,16 +170,22 @@ describe('sans 1RM mesuré, aucune charge n’est inventée', () => {
     expect(squat.notes.find((n) => /non calculée/.test(n))).toBeUndefined();
   });
 
-  it('mais le push press, lui, reste chiffré : il ne suit aucun maximum', () => {
+  it('le push press ne suit aucun maximum — mais son kilo n’est qu’une forme', () => {
     // Kilos absolus, plafond de RPE, règle de progression propre (§7, §8).
     const attendu = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
     const vierge = contexte({});
     for (let w = 1; w <= 12; w++) {
       const load = prescriptionFor('push-press', w)?.load;
-      expect(load?.kind, `push press S${w}`).toBe('barbell');
-      if (load?.kind === 'barbell') expect(load.kg, `push press S${w}`).toBe(attendu[w - 1]);
+      // Une FORME : le kilo donne la progression, pas la charge à charger.
+      expect(load?.kind, `push press S${w}`).toBe('forme');
+      if (load?.kind === 'forme') expect(load.kg, `push press S${w}`).toBe(attendu[w - 1]);
     }
-    expect(kgResolu('push-press', 1, vierge)).toBe(50);
+    /*
+     * Et il ne s'affiche pas non plus tant que rien n'a été soulevé : ces
+     * 50 kg sont ceux de l'auteur. Dès la première série enregistrée, le
+     * décalage déplace la forme entière au niveau de l'utilisateur.
+     */
+    expect(kgResolu('push-press', 1, vierge) ?? null).toBeNull();
   });
 });
 

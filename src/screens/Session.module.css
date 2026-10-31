@@ -1606,3 +1606,31 @@
   color: var(--ink-3);
   font-size: 0.78rem;
 }
+
+/* ------------------------------------------------- démarrer la séance ---- */
+
+/*
+ * Le bouton qui lance le chrono.
+ *
+ * Il n'existe que tant que la séance n'a pas commencé, et il occupe la place
+ * que prendra l'échauffement : c'est la première action de la séance, elle
+ * doit être la première chose sous l'en-tête. Pleine largeur et 60 px de
+ * haut — on l'actionne avec le pouce, debout, souvent les mains occupées.
+ */
+.demarrer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  height: 60px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
