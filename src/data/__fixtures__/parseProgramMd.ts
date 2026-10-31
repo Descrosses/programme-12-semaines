@@ -31,6 +31,13 @@ export type ParsedCell =
       valeur: number;
       /** La case se lit « 70 % » et non « 70 kg ». */
       pct: boolean;
+      /**
+       * La case donne une FORME de progression, pas une charge : son kilo est
+       * celui de l'auteur du programme et ne vaut que pour mesurer l'écart au
+       * plan. Push Press et RDL, les deux colonnes que le programme ne
+       * rattache à aucun maximum.
+       */
+      forme: boolean;
       /** Le « + » de « +17,5 » : charge ajoutée au poids du corps. */
       added: boolean;
       rpe: number | null;
@@ -62,7 +69,10 @@ function splitRow(line: string): string[] {
     .map((c) => c.trim());
 }
 
-function parseCell(raw: string): ParsedCell {
+/** Les en-têtes des colonnes dont le kilo n'est qu'une forme. */
+const COLONNES_FORME = ['Push Press (ven)'];
+
+function parseCell(raw: string, forme = false): ParsedCell {
   if (raw === '—' || raw === '-' || raw === '') return { kind: 'absent', raw };
 
   // sets × reps × charge   (reps peut être « 1-2 », charge peut être « +17,5 »)
@@ -90,6 +100,7 @@ function parseCell(raw: string): ParsedCell {
     reps,
     valeur: num(m[4]!),
     pct,
+    forme: forme && !pct,
     added: m[3] === '+',
     rpe: rpeMatch ? num(rpeMatch[1]!) : null,
     contrast: /contraste/i.test(raw),
@@ -115,7 +126,12 @@ export function parseSection9(markdown = readFileSync(MD_PATH, 'utf8')): ParsedS
   // tableLines[1] est la ligne de séparation « |---|---| »
   const rows = tableLines.slice(2).map<ParsedRow>((line) => {
     const cells = splitRow(line);
-    return { week: Number(cells[0]), cells: cells.slice(1).map(parseCell) };
+    return {
+      week: Number(cells[0]),
+      cells: cells
+        .slice(1)
+        .map((c, i) => parseCell(c, COLONNES_FORME.includes(headers[i + 1] ?? ''))),
+    };
   });
 
   return { headers, rows };

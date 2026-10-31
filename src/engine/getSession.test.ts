@@ -32,7 +32,29 @@ const ONE_RM = {
  * assertions portent sur des semaines ultérieures, et une séance ne peut pas
  * se référencer elle-même.
  */
+/**
+ * Une occurrence conforme au plan : charge réelle = charge annoncée.
+ *
+ * Push Press et RDL ne s'affichent qu'une fois le mouvement soulevé — leur
+ * kilo au tableau est une FORME, pas une prescription. Ces deux occurrences
+ * posent l'ancre sans décaler quoi que ce soit : réel = plan, décalage nul,
+ * donc les semaines suivantes montrent exactement le tableau.
+ */
+const conforme = (exerciseId: string, week: number, day: number, kg: number): Occurrence => ({
+  exerciseId,
+  week,
+  day: day as Occurrence['day'],
+  kg,
+  rpe: null,
+  plannedKg: kg,
+  failed: false,
+  targetRPE: null,
+  completed: true,
+});
+
 const ACCESSOIRES_PASSES: Record<string, Occurrence[]> = {
+  rdl: [conforme('rdl', 1, 0, 80)],
+  'push-press': [conforme('push-press', 1, 4, 50)],
   'bulgarian-split-squat': [
     {
       exerciseId: 'bulgarian-split-squat',
@@ -295,8 +317,17 @@ describe('bloc puissance (S9-11) — contraste', () => {
 describe('deload (S4) — §8', () => {
   it('les lifts tabulés prennent la valeur du tableau, pas la formule', () => {
     expect(find(session(4, 0), 'back-squat').loadLine).toBe('3 × 3 × 70 kg');
-    expect(find(session(4, 0), 'rdl').loadLine).toBe('2 × 8 × 72,5 kg');
     expect(find(session(4, 5), 'front-squat').loadLine).toBe('2 × 5 × 50 kg');
+  });
+
+  it('sauf le RDL, pour qui le programme ÉCRIT la formule', () => {
+    /*
+     * « Deload : 80 % de la semaine 3 » est écrit noir sur blanc au §8 pour
+     * ce mouvement-là, et pour lui seul parmi les lifts tabulés. 80 % de la
+     * dernière charge réelle hors deload — 80 kg ici — donne 64, arrondi à
+     * 65. Le 72,5 du tableau n'était que 80 % d'un prévisionnel.
+     */
+    expect(find(session(4, 0), 'rdl').loadLine).toBe('2 × 8 × 65 kg');
   });
 
   it('les accessoires non tabulés passent à 2 séries et 80 % de la charge réelle', () => {

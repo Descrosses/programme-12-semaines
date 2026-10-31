@@ -29,6 +29,10 @@ import styles from './ScreenHeader.module.css';
  * c'est l'ambiance. Un visuel `contain` (le ballon, posé sur fond blanc) ne
  * peut pas servir de fond — il se range en vignette en haut à droite, où son
  * fond se fond dans le dégradé.
+ *
+ * Le cadrage décide de la PLACE de la photo, jamais de la hauteur du bandeau :
+ * tout en-tête qui porte un visuel a la même, sinon l'écran au ballon paraît
+ * rabougri à côté des autres.
  */
 export function ScreenHeader({
   eyebrow,
@@ -59,7 +63,7 @@ export function ScreenHeader({
   return (
     <header
       className={`${styles.header} ${compact ? styles.compact : ''} ${
-        pleineImage ? styles.hero : ''
+        pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''
       }`}
     >
       <StadiumGlow />

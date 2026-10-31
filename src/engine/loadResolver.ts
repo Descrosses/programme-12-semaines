@@ -103,8 +103,33 @@ export function resolveLoad(load: LoadSpec, ctx: ResolveContext): ResolvedLoad {
       };
     }
 
+    case 'forme': {
+      /*
+       * Le kilo n'est pas une prescription, c'est un repère de forme.
+       *
+       * Une installation déjà en cours le garde tel quel. Pour les autres, il
+       * ne s'affiche qu'une fois que l'utilisateur a soulevé ce mouvement au
+       * moins une fois : le décalage calculé sur cette première série déplace
+       * alors toute la forme à son niveau, semaine après semaine.
+       *
+       * Avant ça, rien. Afficher 80 kg de RDL à quelqu'un dont on ne sait
+       * rien, c'est lui servir la charge de l'auteur du programme — et c'est
+       * exactement ce qu'on retire.
+       */
+      const connu = ctx.settings.tableauOrigine || lastCompleted(ctx.occurrences) !== null;
+      if (!connu) return { ...NONE, step: load.step, shape: 'barbell' };
+      return {
+        kg: load.kg,
+        shape: 'barbell',
+        step: load.step,
+        source: 'programme',
+        ...(load.kgMax !== undefined ? { kgMax: load.kgMax } : {}),
+      };
+    }
+
     case 'autoreg': {
       const shape: LoadShape = load.as;
+
       const last = lastCompleted(ctx.occurrences);
       if (last?.kg != null) {
         return { kg: last.kg, shape, step: load.step, source: 'historique' };

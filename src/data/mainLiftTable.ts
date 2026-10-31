@@ -28,11 +28,11 @@
 
 import {
   attempts,
-  bb,
   reps,
   rpe,
   rpeAtMost,
   pct,
+  forme,
   rpeRange,
   type LiftSchedule,
   type LoadSpec,
@@ -158,18 +158,18 @@ const weightedPullup: LiftSchedule = [
  * §8 deload « zéro série au-dessus de RPE 6 » pour S4 et S8.
  */
 const pushPress: LiftSchedule = [
-  p(5, 3, bb(50), rpeAtMost(7)),
-  p(5, 3, bb(52.5), rpeAtMost(7)),
-  p(6, 2, bb(55), rpeAtMost(7)),
-  p(3, 3, bb(45), rpeAtMost(6)),
-  p(6, 2, bb(55), rpeRange(6, 7)),
-  p(6, 2, bb(57.5), rpeRange(6, 7)),
-  p(6, 2, bb(60), rpeRange(6, 7)),
-  p(3, 2, bb(45), rpeAtMost(6)),
-  p(6, 2, bb(57.5), rpeRange(6, 7)),
-  p(6, 2, bb(60), rpeRange(6, 7)),
-  p(6, 2, bb(62.5), rpeRange(6, 7)),
-  p(3, 2, bb(50), rpeAtMost(6), {
+  p(5, 3, forme(50), rpeAtMost(7)),
+  p(5, 3, forme(52.5), rpeAtMost(7)),
+  p(6, 2, forme(55), rpeAtMost(7)),
+  p(3, 3, forme(45), rpeAtMost(6)),
+  p(6, 2, forme(55), rpeRange(6, 7)),
+  p(6, 2, forme(57.5), rpeRange(6, 7)),
+  p(6, 2, forme(60), rpeRange(6, 7)),
+  p(3, 2, forme(45), rpeAtMost(6)),
+  p(6, 2, forme(57.5), rpeRange(6, 7)),
+  p(6, 2, forme(60), rpeRange(6, 7)),
+  p(6, 2, forme(62.5), rpeRange(6, 7)),
+  p(3, 2, forme(50), rpeAtMost(6), {
     note: 'Placé le lundi, après le squat (décision de Guillaume).',
   }),
 ];
@@ -265,23 +265,23 @@ const speedSquat: LiftSchedule = [
  *           proportion — les autres ont leur propre règle (§8).
  */
 const romanianDeadlift: LiftSchedule = [
-  p(3, 8, bb(80), rpe(7)),
-  p(3, 8, bb(85), rpe(7)),
-  p(3, 8, bb(90), rpe(7)),
-  p(2, 8, bb(72.5), rpeAtMost(6), {
+  p(3, 8, forme(80), rpe(7)),
+  p(3, 8, forme(85), rpe(7)),
+  p(3, 8, forme(90), rpe(7)),
+  p(2, 8, forme(72.5), rpeAtMost(6), {
     deloadFromRealFactor: 0.8,
     note: 'Deload : 80 % de la semaine 3.',
   }),
-  p(3, 6, bb(90), null),
-  p(4, 5, bb(92.5), null),
-  p(4, 5, bb(95), null),
-  p(2, 5, bb(75), rpeAtMost(6), {
+  p(3, 6, forme(90), null),
+  p(4, 5, forme(92.5), null),
+  p(4, 5, forme(95), null),
+  p(2, 5, forme(75), rpeAtMost(6), {
     deloadFromRealFactor: 0.8,
     note: 'Deload : 80 % de la semaine 7.',
   }),
-  p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
-  p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
-  p(3, 5, bb(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
+  p(3, 5, forme(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
+  p(3, 5, forme(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
+  p(3, 5, forme(90, 95), rpe(7), { note: 'Plafond assumé à 95 kg.' }),
   null, // absent du taper
 ];
 

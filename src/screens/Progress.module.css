@@ -184,3 +184,43 @@
 .alertRouge .alertIcon {
   color: var(--rouge);
 }
+
+/* ------------------------------------------------ écart au plan ---------- */
+
+/*
+ * La comparaison objectif / réalisé, sous le chiffre du jour.
+ *
+ * Trois lignes serrées plutôt qu'une phrase : l'œil cherche un écart, pas une
+ * explication. Le signe et la couleur disent la même chose deux fois — un
+ * daltonien lit le « + », tout le monde lit la couleur.
+ */
+.ecart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 8px;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+
+.ecartValeur {
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+/* Au-dessus du plan : le vert est lisible en petit, contrairement au rouge. */
+.ecartAvance {
+  color: var(--vert);
+}
+
+/* En dessous : `--accent-ink`, la seule déclinaison du rouge qui passe à
+   cette taille (le rouge de marque est un fond de bouton, pas du texte). */
+.ecartRetard {
+  color: var(--accent-ink);
+}
+
+.ecartEgal {
+  color: var(--ink-2);
+}

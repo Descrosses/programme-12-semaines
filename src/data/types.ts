@@ -178,6 +178,22 @@ export type LoadSpec =
       step: LoadStep;
       as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable';
     }
+  /**
+   * Une FORME de progression écrite en kilos.
+   *
+   * Push Press et RDL ne sont rattachés à aucun maximum : le programme les
+   * donne en kilos absolus, avec un plafond de RPE et leur propre règle de
+   * progression. Ces kilos sont ceux de l'auteur — mais ce qu'ils portent,
+   * c'est une forme : 80 → 85 → 90, deload, 90 → 92,5 → 95.
+   *
+   * La forme est transposable, le kilo ne l'est pas. Tant que l'utilisateur
+   * n'a pas fait une première série, rien ne s'affiche : la valeur ne sert
+   * qu'à mesurer son écart au plan. Dès qu'il en a fait une, le décalage
+   * déplace la forme entière à son niveau — c'est le mécanisme qui existait
+   * déjà, il suffisait de ne pas lui servir le premier kilo de quelqu'un
+   * d'autre.
+   */
+  | { kind: 'forme'; kg: number; kgMax?: number; step: 2.5 }
   | { kind: 'bodyweight' }
   /** Charge non chiffrable, on affiche le texte du programme tel quel. */
   | { kind: 'text'; label: string }
@@ -206,6 +222,10 @@ export const autoreg = (
   as: 'barbell' | 'dbPair' | 'dbSingle' | 'cable',
 ): LoadSpec =>
   seed === undefined ? { kind: 'autoreg', step, as } : { kind: 'autoreg', seed, step, as };
+
+/** Une case dont le kilo n'est qu'une forme de progression (Push Press, RDL). */
+export const forme = (kg: number, kgMax?: number): LoadSpec =>
+  kgMax === undefined ? { kind: 'forme', kg, step: 2.5 } : { kind: 'forme', kg, kgMax, step: 2.5 };
 export const bodyweight = (): LoadSpec => ({ kind: 'bodyweight' });
 export const textLoad = (label: string): LoadSpec => ({ kind: 'text', label });
 export const noLoad = (): LoadSpec => ({ kind: 'none' });
