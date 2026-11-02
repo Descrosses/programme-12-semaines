@@ -43,7 +43,7 @@ import type {
 } from '../data/types';
 import { fr, loadLine as formatLoadLine, workLabel } from './format';
 import { resolveLoad, scaleLoad, withKg, type ResolvedLoad } from './loadResolver';
-import { deloadFromReal, recalageFor, shiftLoad } from './realLoad';
+import { deloadFromReal, recalageFor, scaleToReal, shiftLoad } from './realLoad';
 import { dureeEstimeeMin, dureeLabel } from './sessionDuration';
 import { applyProgression, lastCompleted, type ProgressionResult } from './progression';
 import { roundToStep } from './rounding';
@@ -562,19 +562,31 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
      * kilos (Push Press, RDL) comme en pourcentage d'un maximum (les quatre
      * lifts du §9). Seule une charge déjà tirée de l'historique en est
      * exclue : elle est déjà le réel, la recaler le compterait deux fois.
+     *
+     * Mais PAS dans la même unité. Une case écrite en pourcentage se recale
+     * en proportion ; une case écrite en kilos, et un lest, se recalent en
+     * kilos. Voir `scaleToReal` pour le détail — en deux mots : reporter des
+     * kilos sur un pourcentage alourdit les semaines légères, et ce sont les
+     * deloads.
      */
-  } else if (recalage && recalage.offsetKg !== 0 && load.source !== 'historique') {
+  } else if (recalage && load.source !== 'historique' && load.kg !== null) {
+    const proportionnel = loadSpec.kind === 'pct1RM' && !lest;
     const avant = load.kg;
-    load = shiftLoad(load, recalage.offsetKg);
+    load = proportionnel ? scaleToReal(load, recalage.facteur) : shiftLoad(load, recalage.offsetKg);
     if (load.kg !== avant) {
+      const ecart =
+        `en semaine ${recalage.refWeek} tu as fait ${fr(recalage.refKg)} kg ` +
+        `là où le plan annonçait ${fr(recalage.refPlannedKg!)} kg`;
       adjustments.push({
         source: 'reel',
-        what: `${fr(avant!)} → ${fr(load.kg!)} kg`,
-        why:
-          `Recalé sur ce que tu soulèves vraiment : en semaine ${recalage.refWeek} tu as fait ` +
-          `${fr(recalage.refKg)} kg là où le plan annonçait ${fr(recalage.refPlannedKg!)} kg. ` +
-          `Ton décalage de ${recalage.offsetKg > 0 ? '+' : '−'}${fr(Math.abs(recalage.offsetKg))} kg ` +
-          `suit le programme semaine après semaine.`,
+        what: `${fr(avant)} → ${fr(load.kg!)} kg`,
+        why: proportionnel
+          ? `Recalé sur ce que tu soulèves vraiment : ${ecart}. Le programme demande un ` +
+            `POURCENTAGE de ton maximum, donc ton écart le suit en proportion — ` +
+            `${fr(Math.round(recalage.facteur * 1000) / 10)} % du plan, cette semaine comme les autres.`
+          : `Recalé sur ce que tu soulèves vraiment : ${ecart}. Ton décalage de ` +
+            `${recalage.offsetKg > 0 ? '+' : '−'}${fr(Math.abs(recalage.offsetKg))} kg ` +
+            `suit le programme semaine après semaine.`,
       });
     }
   }
@@ -686,6 +698,9 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
           targetRPE,
           step: load.step,
           isLowerBody: LOWER_BODY_FN.has(def.fn),
+          // Même unité que l'affichage : une case en pourcentage reporte
+          // l'écart en proportion, pas en kilos.
+          enPourcentage: loadSpec.kind === 'pct1RM' && load.shape !== 'added',
           ...(load.kgMax !== undefined ? { kgMax: load.kgMax } : {}),
         });
 

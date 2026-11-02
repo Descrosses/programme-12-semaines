@@ -53,6 +53,16 @@ export interface Recalage {
   refPlannedKg: number | null;
   /** `refKg − refPlannedKg`, arrondi. 0 quand le plan de l'époque est inconnu. */
   offsetKg: number;
+  /**
+   * `refKg / refPlannedKg` — le même écart, exprimé en PROPORTION.
+   *
+   * Les deux formes du même fait, et il faut les deux parce que le §9 mêle
+   * deux unités. Une case en pourcentage du 1RM se recale en proportion ; une
+   * case en kilos (Push Press, RDL) et un LEST se recalent en kilos.
+   *
+   * `1` quand le plan de l'époque est inconnu : on ne décale alors rien.
+   */
+  facteur: number;
 }
 
 /**
@@ -75,6 +85,7 @@ export function recalageFor(reference: Occurrence[]): Recalage | null {
       refWeek: o.week,
       refPlannedKg: o.plannedKg,
       offsetKg: o.plannedKg === null ? 0 : arrondi(o.kg - o.plannedKg),
+      facteur: o.plannedKg === null || o.plannedKg <= 0 ? 1 : o.kg / o.plannedKg,
     };
   }
   return null;
@@ -96,6 +107,44 @@ export function shiftLoad(load: ResolvedLoad, offsetKg: number): ResolvedLoad {
     ...load,
     kg: roundToStep(load.kg + offsetKg, load.step),
     ...(load.kgMax !== undefined ? { kgMax: roundToStep(load.kgMax + offsetKg, load.step) } : {}),
+    source: 'historique',
+  };
+}
+
+/**
+ * Le plan, recalé en PROPORTION — pour les cases écrites en pourcentage.
+ *
+ * ── Pourquoi un décalage en kilos ne marche pas sur un pourcentage ─────────
+ *
+ * Le §9 donne une intensité : 89 % en semaine 7, 70 % en semaine 8. Soulever
+ * 107,5 kg là où le plan annonçait 97,5 (89 % de 110) ne dit pas « +10 kg »,
+ * ça dit « ton maximum vaut 120, pas 110 ». Reporter les +10 kg tels quels sur
+ * la semaine 8 donne 87,5 kg, soit 72,4 % de 120 — alors que le programme
+ * demande 70 %, et qu'une semaine de deload est exactement celle où on ne veut
+ * PAS de charge en trop.
+ *
+ * L'erreur vaut `(pct_référence − pct_semaine) × (facteur − 1) / facteur` :
+ * nulle quand les deux semaines partagent la même intensité, maximale sur les
+ * deloads. Elle était invisible dans le bloc de force, où toutes les semaines
+ * tournent autour de 85 %, et grossissait là où ça compte.
+ *
+ * La proportion, elle, revient à relire le tableau sur le maximum que la
+ * performance implique : `plan × (réel / prévu)` = `pct × 1RM_impliqué`. Les
+ * deux calculs sont le même, et c'est pour ça que celui-ci est le bon.
+ *
+ * ── Ce qui reste en kilos ──────────────────────────────────────────────────
+ *
+ * Un LEST n'est pas une charge : +10 kg à la ceinture restent +10 kg, que la
+ * semaine demande 44 % ou 78 %, parce que le corps porte le reste. Et une case
+ * que le programme écrit en kilos (Push Press, RDL) n'a pas de pourcentage à
+ * mettre à l'échelle — sa progression est en paliers de 2,5 kg.
+ */
+export function scaleToReal(load: ResolvedLoad, facteur: number): ResolvedLoad {
+  if (load.kg === null || facteur === 1) return load;
+  return {
+    ...load,
+    kg: roundToStep(load.kg * facteur, load.step),
+    ...(load.kgMax !== undefined ? { kgMax: roundToStep(load.kgMax * facteur, load.step) } : {}),
     source: 'historique',
   };
 }

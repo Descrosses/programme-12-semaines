@@ -55,11 +55,29 @@ export interface ProgressionInput {
   step: LoadStep;
   /** §11 cas 2 : +5 kg bas du corps, +2,5 kg haut du corps. */
   isLowerBody: boolean;
+  /**
+   * La case de la semaine est écrite en POURCENTAGE du 1RM.
+   *
+   * Change la façon de reporter l'écart au plan, et rien d'autre : en
+   * proportion plutôt qu'en kilos. Soulever 107,5 là où le plan annonçait
+   * 97,5 ne dit pas « +10 kg », ça dit « ton maximum vaut 10,3 % de plus » —
+   * et sur une semaine de deload à 70 %, les deux ne donnent pas le même
+   * chiffre. Voir `scaleToReal` dans `realLoad.ts`.
+   *
+   * Faux par défaut : Push Press, RDL et accessoires sont en kilos, et un
+   * LEST reste une différence, jamais une proportion.
+   */
+  enPourcentage?: boolean;
   /** Plafond assumé (RDL S9-11). */
   kgMax?: number;
 }
 
 const EPS = 1e-9;
+
+/** `1.103` → « 110,3 % » — en français, la virgule est la décimale. */
+function signedPct(facteur: number): string {
+  return `${String(Math.round(facteur * 1000) / 10).replace('.', ',')} %`;
+}
 
 const NOTHING: ProgressionResult = {
   case: null,
@@ -80,7 +98,7 @@ const NOTHING: ProgressionResult = {
  * séance, il vit dans `trends.ts`.
  */
 export function applyProgression(input: ProgressionInput): ProgressionResult {
-  const { history, plannedKg, targetRPE, step, isLowerBody, kgMax } = input;
+  const { history, plannedKg, targetRPE, step, isLowerBody, kgMax, enPourcentage } = input;
 
   if (plannedKg === null) return { ...NOTHING };
 
@@ -92,7 +110,18 @@ export function applyProgression(input: ProgressionInput): ProgressionResult {
   if (!last || last.kg === null) return base;
 
   const offsetKg = last.plannedKg === null ? 0 : round2(last.kg - last.plannedKg);
-  const withOffset = round2(plannedKg + offsetKg);
+  /*
+   * Le plan recalé sur le réel — dans l'unité de la case.
+   *
+   * `withOffset` sert de base à tout §11 : c'est « ce que le plan annonce,
+   * compte tenu de ce que tu soulèves vraiment ». En pourcentage du 1RM, cette
+   * base est le plan MULTIPLIÉ par le rapport réel/prévu ; en kilos, c'est le
+   * plan augmenté de l'écart. Les deux coïncident quand les deux semaines
+   * partagent la même intensité, et divergent sur les deloads.
+   */
+  const facteur = last.plannedKg === null || last.plannedKg <= 0 ? 1 : last.kg / last.plannedKg;
+  const withOffset =
+    enPourcentage === true ? round2(plannedKg * facteur) : round2(plannedKg + offsetKg);
 
   // Bloc contraste ou taper : la colonne RPE est vide, la vitesse de barre
   // pilote. On reporte le décalage mais on ne propose aucune règle.
@@ -107,12 +136,23 @@ export function applyProgression(input: ProgressionInput): ProgressionResult {
       reason:
         offsetKg === 0
           ? ''
-          : `Pas de RPE cible cette semaine : on garde ton décalage de ${signed(offsetKg)} kg.`,
+          : enPourcentage === true
+            ? `Pas de RPE cible cette semaine : on garde ton écart au plan, ` +
+              `${signedPct(facteur)} de ce qu'il annonce.`
+            : `Pas de RPE cible cette semaine : on garde ton décalage de ${signed(offsetKg)} kg.`,
     };
   }
 
   const verdict = classify(last, history);
-  const result = suggest(verdict, { last, plannedKg, offsetKg, withOffset, step, isLowerBody, kgMax });
+  const result = suggest(verdict, {
+    last,
+    plannedKg,
+    offsetKg,
+    withOffset,
+    step,
+    isLowerBody,
+    kgMax,
+  });
   return { ...base, ...result, offsetKg };
 }
 
