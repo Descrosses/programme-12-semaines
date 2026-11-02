@@ -240,11 +240,50 @@ describe('la paire du lundi, dans le vrai programme', () => {
     }
   });
 
-  it('aucune paire dans les semaines qui n’ont pas l’alternance', () => {
-    // Semaines 1 à 4 : le Roman Side Bench n'existe pas encore.
-    // Semaine 8 : deload, et le programme n'y écrit aucune alternance.
-    for (const w of [1, 2, 3, 4, 8]) {
+  it('aucune paire avant la semaine 5 — le Roman Side Bench n’existe pas encore', () => {
+    for (const w of [1, 2, 3, 4]) {
       expect(paires(w, 0), `S${w}`).toHaveLength(0);
+    }
+  });
+
+  it('la semaine 8 garde l’alternance, en version deload', () => {
+    /*
+     * Ce test affirmait l'inverse, et il avait tort : « le programme n'y
+     * écrit aucune alternance ». §7 écrit « à partir de la semaine 5, il
+     * s'enchaîne en alternance avec le Roman Side Bench », sans exclure la
+     * huitième ; et le tableau de deload du §8 donne une valeur aux DEUX
+     * mouvements, côte à côte.
+     *
+     * Ce que l'écran montrait : deux cartes séparées, sous un texte qui
+     * promettait une alternance. La règle de deload insérait le Roman Side
+     * Bench sans identifiant de paire.
+     */
+    const paire = paires(8, 0);
+    expect(paire, 'la semaine 8 a perdu son alternance').toHaveLength(1);
+    expect(paire[0]!.a.id).toBe('ab-wheel');
+    expect(paire[0]!.b.id).toBe('roman-side-bench');
+    // À volume égal, sinon « une série de chaque » n'a plus de sens.
+    expect(paire[0]!.a.sets).toBe(paire[0]!.b.sets);
+    expect(paire[0]!.tours).toBe(2);
+  });
+
+  it('le texte ne promet jamais une alternance qui n’existe pas', () => {
+    /*
+     * L'autre moitié du même défaut : la note « en alternance avec l'Ab
+     * Wheel » était écrite d'avance, y compris le samedi — où l'Ab Wheel
+     * n'est pas dans la séance. Six samedis sur douze annonçaient une
+     * alternance avec un mouvement absent.
+     */
+    for (let w = 1; w <= 12; w++) {
+      for (const d of WEEK_DAYS[w as WeekIndex]) {
+        const ex = seance(w, d).find((e) => e.id === 'roman-side-bench');
+        if (!ex) continue;
+        const promet = ex.notes.some((n) => /alternance avec l’Ab Wheel/.test(n));
+        const alterne = paires(w, d).some((p) => p.b.id === 'roman-side-bench');
+        expect(promet, `S${w} j${d} — le texte et l’écran ne disent pas la même chose`).toBe(
+          alterne,
+        );
+      }
     }
   });
 

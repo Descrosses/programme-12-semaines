@@ -366,7 +366,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. Plus de Bear Crawl, et la Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
-- **Lundi** : Box Jump 3 × 2, Squat 3 × 2 × 77,5 kg RPE 5-6, Bulgarian 2 × 5 léger, Ab Wheel 2 × 6. Terminé.
+- **Lundi** : Box Jump 3 × 2, Squat 3 × 2 à 70 % RPE 5-6, Bulgarian 2 × 5 léger, **Ab Wheel 2 × 6 en alternance avec Roman Side Bench 2 × 6/côté** (45 s entre les stations). Terminé.
 - **Mercredi** : échauffement, puis **TEST Deadlift 1RM**. Rien d'autre.
 - **Vendredi** : **TESTS Broad Jump, Vertical Jump, sprint 10/20 m, tractions strictes max, Hanging Leg Raise max.** Durée 45 min max.
 - **Samedi** : **TEST Back Squat 1RM + Farmer Carry.**
