@@ -187,16 +187,33 @@ const slot = (
  */
 const TRONC_LUNDI = 'tronc-lundi';
 
-const romanSideBench = (sets: number, r: number, superset?: string) => ({
-  ...slot(
-    'roman-side-bench',
-    sets,
-    reps(r, true),
-    bodyweight(),
-    45,
-    'En alternance avec l’Ab Wheel : une série de chaque, 45 s entre les stations. Amplitude confortable uniquement.',
-  ),
-  ...(superset ? { superset } : {}),
+/**
+ * Le Roman Side Bench — et avec quoi il alterne, dit à chaque insertion.
+ *
+ * ── Pourquoi le paramètre est obligatoire ──────────────────────────────────
+ *
+ * Sa note annonçait « en alternance avec l'Ab Wheel » dans tous les cas,
+ * alors que c'est l'identifiant de paire qui réalise l'alternance à l'écran.
+ * Le texte et le mécanisme pouvaient donc se désaccorder — et ils l'ont fait,
+ * dans les deux sens :
+ *
+ *   • la règle de deload l'insérait sans identifiant : la semaine 8 affichait
+ *     deux cartes séparées sous un texte qui promettait une alternance ;
+ *   • le samedi des blocs force max et puissance, l'Ab Wheel n'est PAS dans
+ *     la séance : six samedis sur douze annonçaient une alternance avec un
+ *     mouvement absent.
+ *
+ * `superset` est donc à déclarer à chaque fois, `null` voulant dire « seul,
+ * et c'est voulu ». La note en découle au lieu d'être écrite d'avance : on ne
+ * peut plus promettre une alternance qui n'existe pas.
+ */
+const ALTERNANCE =
+  'En alternance avec l’Ab Wheel : une série de chaque, 45 s entre les stations. Amplitude confortable uniquement.';
+const SEUL = 'Amplitude confortable uniquement, sans chercher l’amplitude maximale.';
+
+const romanSideBench = (sets: number, r: number, superset: string | null) => ({
+  ...slot('roman-side-bench', sets, reps(r, true), bodyweight(), 45, superset ? ALTERNANCE : SEUL),
+  ...(superset === null ? {} : { superset }),
 });
 
 const zercherMarch = (sets: number, m: number) =>
@@ -411,7 +428,8 @@ const MAXFORCE: BlockRuleSet[] = [
        */
       remove('single-leg-rdl'),
       { op: 'insert', slot: zercherMarch(2, 12) },
-      { op: 'insert', slot: romanSideBench(3, 8) },
+      // Pas d'Ab Wheel le samedi : il est seul, et sa note le dit.
+      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {
@@ -620,7 +638,8 @@ const POWER: BlockRuleSet[] = [
       patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
       remove('suitcase-carry'),
       { op: 'insert', slot: zercherMarch(2, 12) },
-      { op: 'insert', slot: romanSideBench(3, 8) },
+      // Pas d'Ab Wheel le samedi : il est seul, et sa note le dit.
+      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {
@@ -689,7 +708,20 @@ const DELOAD_S8: BlockRuleSet[] = [
      * programme passe avant le volume de bloc, et les 3 × 8 des semaines
      * normales ne doivent pas s'y glisser.
      */
-    rules: [{ op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8) }],
+    rules: [
+      /*
+       * L'Ab Wheel reçoit le même identifiant de paire et le même repos que
+       * dans les semaines normales : c'est lui qui fait tenir l'alternance.
+       * Les séries, elles, sont ramenées à 2 × 6 par `DELOAD_CORE` après
+       * cette règle — les deux moitiés restent donc à volume égal.
+       */
+      patch('ab-wheel', {
+        restSec: 45,
+        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+        superset: TRONC_LUNDI,
+      }),
+      { op: 'insert', after: 'ab-wheel', slot: romanSideBench(2, 8, TRONC_LUNDI) },
+    ],
   },
   {
     block: 'deload',
