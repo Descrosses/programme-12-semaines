@@ -69,7 +69,9 @@ export function loadLabel(load: ResolvedLoad): string {
   if (load.kg === null) return '';
   switch (load.shape) {
     case 'added':
-      return `+${fr(load.kg)} kg`;
+      // Un lest à zéro, c'est le corps seul — pas « +0 kg », qui se lit comme
+      // une charge et n'en est pas une.
+      return load.kg === 0 ? 'poids du corps' : `+${fr(load.kg)} kg`;
     case 'dbPair':
       return `2 × ${fr(load.kg)} kg`;
     default:
