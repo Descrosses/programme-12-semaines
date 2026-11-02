@@ -67,6 +67,15 @@ function ctx(history: Record<string, Occurrence[]>): SessionContext {
 const charge = (ex: string, week: number, day: number, c: SessionContext) =>
   getSession(week as WeekIndex, day as DayIndex, c)!.exercises.find((e) => e.id === ex)!;
 
+/** Le même, mais en cherchant le mouvement dans toute la semaine. */
+const charge0 = (ex: string, week: number, c: SessionContext) => {
+  for (const d of [0, 1, 2, 3, 4, 5, 6] as DayIndex[]) {
+    const trouve = getSession(week as WeekIndex, d, c)?.exercises.find((e) => e.id === ex);
+    if (trouve) return trouve;
+  }
+  return null;
+};
+
 /** Le pourcentage que le §9 demande cette semaine-là. */
 const pctDe = (ex: string, week: number) => {
   const load = prescriptionFor(ex as never, week)?.load;
@@ -129,6 +138,92 @@ describe('dans l’autre sens', () => {
   it('un écart nul ne déplace rien', () => {
     const conforme = ctx({ 'back-squat': [occ('back-squat', 7, 0, 97.5, 97.5)] });
     expect(charge('back-squat', 8, 0, conforme).load.kg).toBe(77.5);
+  });
+});
+
+describe('§11 ne s’applique pas en semaine de deload', () => {
+  /*
+   * Trouvé en balayant les douze semaines : l'appli affichait bien 85 kg en
+   * semaine 8 (70 % recalé) mais SUGGÉRAIT 90 kg, parce que la semaine 7
+   * était sortie trop facile. §11 dit quoi faire d'une séance trop facile ;
+   * §8 dit ce qu'est un deload — « zéro série au-dessus de RPE 6 », « tu dois
+   * sortir en te disant j'aurais pu en faire plus ». Proposer une
+   * progression dans la seule semaine dont le but est de dissiper la fatigue,
+   * c'est appliquer une règle hors de son domaine.
+   */
+  const facile: Occurrence = {
+    ...occ('back-squat', 7, 0, 107.5, 97.5),
+    rpe: 7,
+    targetRPE: { min: 9, max: 9, label: 'RPE 9' },
+  };
+  const apres = ctx({ 'back-squat': [facile] });
+
+  it('aucune progression n’est proposée en semaine 8', () => {
+    const ex = charge('back-squat', 8, 0, apres);
+    expect(ex.suggestion?.case, 'un cas §11 s’applique sur un deload').toBeNull();
+    // `toBe(NaN)` passe contre `NaN` : on vérifie d'abord que c'est un vrai
+    // nombre, sinon un calcul cassé ferait passer le test en silence.
+    expect(Number.isFinite(ex.load.kg)).toBe(true);
+    expect(ex.suggestion?.suggestedKg).toBe(ex.load.kg);
+  });
+
+  it('et la semaine suivante, §11 reprend normalement', () => {
+    const ex = charge('back-squat', 9, 0, apres);
+    expect(ex.load.kg).toBe(102.5);
+    expect(ex.suggestion?.suggestedKg).toBe(102.5);
+  });
+
+  it('le niveau réel n’est pas perdu pour autant', () => {
+    // C'est le recalage qui le porte, pas §11 : la semaine 8 reste à 70 %
+    // du maximum impliqué, donc bien au-dessus des 77,5 kg du tableau brut.
+    expect(charge('back-squat', 8, 0, apres).load.kg).toBe(85);
+  });
+});
+
+describe('aucune charge ne devient négative', () => {
+  /*
+   * Trouvé en balayant les douze semaines avec un utilisateur qui sous-performe
+   * systématiquement. Un écart NÉGATIF reporté sur un lest donnait des charges
+   * en dessous de zéro, affichées « +−10 kg » — le signe doublé disait assez
+   * que personne n'avait prévu ce chemin.
+   *
+   * Une ceinture ne porte pas −10 kg. Zéro est ici une vraie valeur, pas une
+   * absence : c'est la traction au poids du corps.
+   */
+  const faible = ctx({ 'weighted-pullup': [occ('weighted-pullup', 7, 2, 10, 35)] });
+
+  it('le lest s’arrête au poids du corps', () => {
+    const ex = charge('weighted-pullup', 8, 2, faible);
+    expect(ex.load.kg).toBe(0);
+    expect(ex.load.kg).toBeGreaterThanOrEqual(0);
+  });
+
+  it('et l’écran le DIT, au lieu d’afficher « +0 kg »', () => {
+    expect(charge('weighted-pullup', 8, 2, faible).loadLine).toContain('poids du corps');
+    expect(charge('weighted-pullup', 8, 2, faible).loadLine).not.toContain('+0');
+    expect(charge('weighted-pullup', 8, 2, faible).loadLine).not.toContain('+-');
+  });
+
+  it('les semaines plus chargées restent chiffrées', () => {
+    // Le plancher ne mange que ce qui passerait sous zéro : la semaine 10,
+    // dont le plan est plus lourd, garde un lest.
+    expect(charge('weighted-pullup', 10, 2, faible).load.kg).toBe(7.5);
+  });
+
+  it('sur aucune semaine, sur aucun lift, une charge ne passe sous zéro', () => {
+    const sous = ctx({
+      'weighted-pullup': [occ('weighted-pullup', 7, 2, 5, 35)],
+      'push-press': [occ('push-press', 7, 4, 20, 60)],
+      rdl: [occ('rdl', 7, 0, 40, 95)],
+    });
+    for (const id of ['weighted-pullup', 'push-press', 'rdl']) {
+      for (let w = 8; w <= 12; w++) {
+        const ex = charge0(id, w, sous);
+        if (!ex || ex.load.kg === null) continue;
+        expect(ex.load.kg, `${id} S${w}`).toBeGreaterThanOrEqual(0);
+        expect(ex.loadLine, `${id} S${w}`).not.toContain('+-');
+      }
+    }
   });
 });
 

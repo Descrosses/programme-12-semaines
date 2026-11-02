@@ -70,6 +70,20 @@ export interface ProgressionInput {
   enPourcentage?: boolean;
   /** Plafond assumé (RDL S9-11). */
   kgMax?: number;
+  /**
+   * La semaine à venir est un DELOAD.
+   *
+   * §11 ne s'y applique pas. Ses règles disent quoi faire d'une séance trop
+   * facile ou trop dure ; une semaine de deload, elle, est prescrite par §8 —
+   * « zéro série au-dessus de RPE 6 », « tu dois sortir en te disant j'aurais
+   * pu en faire plus ». Proposer +5 kg parce que la semaine 7 était facile,
+   * c'est contredire la seule semaine dont le but est de dissiper la fatigue.
+   *
+   * Rien n'est perdu pour autant : le recalage porte déjà le niveau réel sur
+   * toutes les semaines, deload compris. §11 n'est que l'ajustement fin
+   * par-dessus, et il reprend la semaine suivante.
+   */
+  isDeload?: boolean;
 }
 
 const EPS = 1e-9;
@@ -98,7 +112,8 @@ const NOTHING: ProgressionResult = {
  * séance, il vit dans `trends.ts`.
  */
 export function applyProgression(input: ProgressionInput): ProgressionResult {
-  const { history, plannedKg, targetRPE, step, isLowerBody, kgMax, enPourcentage } = input;
+  const { history, plannedKg, targetRPE, step, isLowerBody, kgMax, enPourcentage, isDeload } =
+    input;
 
   if (plannedKg === null) return { ...NOTHING };
 
@@ -123,9 +138,23 @@ export function applyProgression(input: ProgressionInput): ProgressionResult {
   const withOffset =
     enPourcentage === true ? round2(plannedKg * facteur) : round2(plannedKg + offsetKg);
 
+  /*
+   * Deload : on affiche le plan recalé, et aucune règle §11 par-dessus.
+   *
+   * §11 dit quoi faire d'une séance trop facile ou trop dure. Une semaine de
+   * deload, elle, est prescrite par §8 — « zéro série au-dessus de RPE 6 ».
+   * Proposer +5 kg parce que la semaine d'avant était facile contredirait la
+   * seule semaine dont le but est de dissiper la fatigue.
+   *
+   * Rien n'est perdu : le recalage porte déjà le niveau réel sur toutes les
+   * semaines, deload compris. §11 reprend la semaine suivante.
+   *
+   * Même branche que le bloc contraste ci-dessous — dans les deux cas on
+   * reporte l'écart et on ne propose rien.
+   */
   // Bloc contraste ou taper : la colonne RPE est vide, la vitesse de barre
   // pilote. On reporte le décalage mais on ne propose aucune règle.
-  if (targetRPE === null || last.targetRPE === null || last.rpe === null) {
+  if (isDeload === true || targetRPE === null || last.targetRPE === null || last.rpe === null) {
     const { kg, capped } = capKg(roundToStep(withOffset, step), kgMax);
     return {
       ...base,
@@ -134,7 +163,7 @@ export function applyProgression(input: ProgressionInput): ProgressionResult {
       capped,
       source: offsetKg === 0 ? 'plan' : 'historique',
       reason:
-        offsetKg === 0
+        isDeload === true || offsetKg === 0
           ? ''
           : enPourcentage === true
             ? `Pas de RPE cible cette semaine : on garde ton écart au plan, ` +

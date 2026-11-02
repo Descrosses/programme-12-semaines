@@ -103,10 +103,25 @@ export function recalageFor(reference: Occurrence[]): Recalage | null {
  */
 export function shiftLoad(load: ResolvedLoad, offsetKg: number): ResolvedLoad {
   if (load.kg === null || offsetKg === 0) return load;
+  /*
+   * Plancher à zéro — aucune charge n'est négative.
+   *
+   * Le cas qui l'a révélé : un écart NÉGATIF reporté sur un lest. Quelqu'un
+   * qui tire ses tractions à +10 kg là où le plan en annonce 35 traîne un
+   * décalage de −25 ; appliqué à la semaine 8, dont le plan est +15, il
+   * donnait « +−10 kg » à l'écran. Une ceinture ne porte pas −10 kg, et le
+   * signe doublé disait assez que personne n'avait prévu ce chemin.
+   *
+   * Zéro est ici une vraie valeur, pas une absence : c'est la traction au
+   * poids du corps, et `loadLabel` l'écrit comme telle. En dessous, il
+   * faudrait de l'assistance — le programme n'en parle pas, et l'application
+   * ne va pas l'inventer.
+   */
+  const plancher = (v: number) => Math.max(0, roundToStep(v, load.step));
   return {
     ...load,
-    kg: roundToStep(load.kg + offsetKg, load.step),
-    ...(load.kgMax !== undefined ? { kgMax: roundToStep(load.kgMax + offsetKg, load.step) } : {}),
+    kg: plancher(load.kg + offsetKg),
+    ...(load.kgMax !== undefined ? { kgMax: plancher(load.kgMax + offsetKg) } : {}),
     source: 'historique',
   };
 }

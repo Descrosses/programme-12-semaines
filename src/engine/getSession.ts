@@ -701,6 +701,8 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
           // Même unité que l'affichage : une case en pourcentage reporte
           // l'écart en proportion, pas en kilos.
           enPourcentage: loadSpec.kind === 'pct1RM' && load.shape !== 'added',
+          // §8 prescrit la semaine de deload : §11 n'a rien à proposer dessus.
+          isDeload: o.isDeload,
           ...(load.kgMax !== undefined ? { kgMax: load.kgMax } : {}),
         });
 
