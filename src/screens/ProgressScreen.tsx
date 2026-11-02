@@ -4,6 +4,7 @@ import { resolveLoad } from '../engine/loadResolver';
 import { NotesBrowser } from '../components/NotesBrowser';
 import { SessionDurations } from '../components/SessionDurations';
 import { VisualTracking } from '../components/VisualTracking';
+import { WeeklyReport } from '../components/WeeklyReport';
 import { WeightOverview } from '../components/WeightOverview';
 import { EXERCISES } from '../data/exercises';
 import { prescriptionFor } from '../data/mainLiftTable';
@@ -44,7 +45,7 @@ const LIFTS: Array<{ id: MainLiftId; label: string }> = [
  * son propre sélecteur de période, deux graphiques et un tableau de treize
  * lignes. Empilé sous le reste, on ne l'aurait jamais atteint au pouce.
  */
-type Vue = 'chiffres' | 'poids' | 'remarques' | 'photos';
+type Vue = 'chiffres' | 'poids' | 'remarques' | 'photos' | 'bilan';
 
 /** Le sous-titre de l'en-tête suit la vue choisie. */
 const SOUS_TITRES: Record<Vue, string> = {
@@ -52,6 +53,7 @@ const SOUS_TITRES: Record<Vue, string> = {
   poids: 'Poids de corps depuis le combine',
   remarques: 'Tes notes, de la plus récente',
   photos: 'Une photo par semaine',
+  bilan: 'À relire, puis à envoyer au coach',
 };
 
 export function ProgressScreen() {
@@ -230,8 +232,9 @@ export function ProgressScreen() {
           [
             ['chiffres', 'Charges'],
             ['poids', 'Poids'],
-            ['remarques', 'Remarques'],
+            ['remarques', 'Notes'],
             ['photos', 'Photos'],
+            ['bilan', 'Bilan'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -251,6 +254,8 @@ export function ProgressScreen() {
       {vue === 'remarques' && <NotesBrowser />}
 
       {vue === 'photos' && <VisualTracking />}
+
+      {vue === 'bilan' && <WeeklyReport />}
 
       {vue === 'chiffres' && (
         <>
