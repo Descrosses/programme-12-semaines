@@ -107,21 +107,29 @@ export default defineConfig({
         // et que les notifications locales soient autorisées sur iOS.
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#061426',
-        theme_color: '#061426',
+        /*
+         * Le graphite de la plateforme, et non le bleu nuit de POWER 12.
+         *
+         * Ces deux couleurs ne décorent rien : `background_color` est le fond
+         * de l'écran de lancement, derrière l'icône. Laisser le bleu nuit y
+         * aurait posé l'icône graphite sur un carré bleu pendant une seconde,
+         * à chaque ouverture.
+         */
+        background_color: '#0c0e11',
+        theme_color: '#0c0e11',
         categories: ['health', 'fitness', 'sports'],
         icons: [
-          { src: 'icons/icone-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icons/icone-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/majk-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/majk-512.png', sizes: '512x512', type: 'image/png' },
           /*
            * La version « maskable » n'est pas la même image recadrée : Android
            * peut découper l'icône en cercle, en goutte ou en losange, et ne
-           * garantit que le cercle central de 80 %. Le dessin y occupe donc
-           * 76 % du carré, entouré du blanc de la carte — sinon les disques
-           * d'haltère se faisaient trancher selon le téléphone.
+           * garantit que le cercle central de 80 %. Le logo y occupe donc 76 %
+           * du carré, entouré du graphite de la marque — sinon les deux cartes
+           * se faisaient trancher selon le téléphone.
            */
           {
-            src: 'icons/icone-maskable-512.png',
+            src: 'icons/majk-maskable-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
