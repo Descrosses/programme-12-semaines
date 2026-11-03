@@ -54,6 +54,28 @@ export function v14Schema(): Array<[number, Record<string, string>]> {
   ];
 }
 
+/**
+ * Les `stores()` cumulés jusqu'à la v16 incluse.
+ *
+ * La v16 ne touche pas au schéma — elle ne pose qu'un drapeau dans les
+ * réglages — donc elle n'ajoute rien ici. Seule la v15 s'ajoute à la v14.
+ */
+export function v16Schema(): Array<[number, Record<string, string>]> {
+  return [
+    ...v14Schema(),
+    [
+      15,
+      {
+        notes: "++id, exerciseId, [exerciseId+week], [week+day], week, date",
+        noteDrafts: "++id, &[slot+week+day], [week+day]",
+        sessionExercises:
+          "++id, sessionId, [sessionId+originalExerciseId], [week+day], exerciseId, originalExerciseId",
+      },
+    ],
+    [16, {}],
+  ];
+}
+
 /** Efface une base jetable entre deux tests. */
 export async function deleteDB(name: string): Promise<void> {
   await new Promise<void>((resolve, reject) => {

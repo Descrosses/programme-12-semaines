@@ -135,6 +135,7 @@ describe('deux ouvertures simultanées de la même séance', () => {
     const { ensureSession } = await import('./repo');
 
     await db.sessions.add({
+      cycleId: 1,
       week: 3,
       day: 0,
       date: '2026-09-14',

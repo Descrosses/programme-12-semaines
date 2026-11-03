@@ -16,6 +16,7 @@ import {
   db,
   type CombinePhase,
   type CombineRow,
+  type CycleRow,
   type ExerciseMediaRow,
   type CustomFoodRow,
   type DayKindRow,
@@ -37,6 +38,97 @@ import {
   type SetRow,
   type SettingsRow,
 } from './db';
+
+// ----------------------------------------------------------------- cycles --
+
+/*
+ * Tout ce qui suit repose sur une idée simple : une ligne de séance, de série
+ * ou de remarque appartient à UN cycle, et les fonctions de ce fichier
+ * résolvent ce cycle toutes seules.
+ *
+ * Les écrans ne passent donc aucun identifiant de cycle, et n'ont pas changé
+ * d'une ligne. C'est voulu : tant qu'il n'y a qu'un cycle, l'application se
+ * comporte exactement comme avant, et les 1 081 tests existants le prouvent.
+ * Le jour où l'écran « Mon parcours » permettra d'en ouvrir un autre, il
+ * suffira de passer le cycle voulu en argument.
+ */
+
+/** Le cycle en cours, ou le plus récent. `null` sur une base encore vierge. */
+export async function cycleActif(): Promise<CycleRow | null> {
+  const enCours = await db.cycles.where('statut').equals('en-cours').toArray();
+  if (enCours.length > 0) {
+    // Le plus récemment commencé gagne : deux cycles en cours sont permis.
+    return enCours.sort((a, b) => b.startDate.localeCompare(a.startDate))[0] ?? null;
+  }
+  const tous = await db.cycles.toArray();
+  return tous.sort((a, b) => (b.id ?? 0) - (a.id ?? 0))[0] ?? null;
+}
+
+export async function tousLesCycles(): Promise<CycleRow[]> {
+  const tous = await db.cycles.toArray();
+  return tous.sort((a, b) => a.startDate.localeCompare(b.startDate));
+}
+
+/**
+ * Le cycle dans lequel écrire, créé s'il n'existe pas encore.
+ *
+ * Séparé de `cycleActif` à dessein : LIRE une base vierge doit répondre
+ * « rien », pas fabriquer un cycle. Seule une écriture réelle — une première
+ * série saisie, une date de début posée — fait naître le premier cycle.
+ */
+export async function cyclePourEcriture(): Promise<CycleRow> {
+  /*
+   * DANS UNE TRANSACTION, et le test de course l'a prouvé tout de suite.
+   *
+   * La première version lisait, ne trouvait rien, puis créait. Trois appels
+   * concurrents — l'écran qui recharge, React qui monte ses effets deux fois,
+   * deux frappes rapprochées — voyaient tous les trois « aucun cycle » et en
+   * créaient trois. Les séances partaient alors dans trois cycles différents,
+   * et `writeRace.test.ts` comptait trois lignes là où il en attendait une.
+   *
+   * IndexedDB sérialise les transactions `readwrite` de portée commune : la
+   * deuxième lit ce que la première a écrit, et trouve le cycle.
+   *
+   * La lecture des réglages reste dehors : `settings` n'est pas dans la
+   * portée, et l'y ajouter élargirait le verrou pour rien.
+   */
+  const reglages = await getSettingsRow();
+  const aujourdhui = new Date().toISOString().slice(0, 10);
+
+  return db.transaction('rw', db.cycles, async () => {
+    const existant = await cycleActif();
+    if (existant?.id !== undefined) return existant;
+
+    const nouveau: CycleRow = {
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: reglages.startDate,
+      statut: 'en-cours',
+      endedAt: '',
+      createdAt: aujourdhui,
+    };
+    const id = await db.cycles.add(nouveau);
+    return { ...nouveau, id };
+  });
+}
+
+/** L'identifiant du cycle à écrire. */
+async function idEcriture(): Promise<number> {
+  const c = await cyclePourEcriture();
+  return c.id as number;
+}
+
+/**
+ * L'identifiant du cycle à lire, ou `null`.
+ *
+ * `null` ne veut pas dire « toutes les lignes » mais « aucune » : une base
+ * sans cycle n'a aucune ligne rattachée, et répondre « tout » rouvrirait
+ * exactement la porte que la v17 vient de fermer.
+ */
+async function idLecture(): Promise<number | null> {
+  const c = await cycleActif();
+  return c?.id ?? null;
+}
 
 // --------------------------------------------------------------- réglages --
 
@@ -76,7 +168,10 @@ export async function saveSettings(patch: Partial<SettingsRow>): Promise<Setting
 export async function realignScheduleDates(startDate: string): Promise<number> {
   let recalees = 0;
 
-  for (const row of await db.sessions.toArray()) {
+  const cycleId = await idLecture();
+  if (cycleId === null) return 0;
+
+  for (const row of await db.sessions.where('cycleId').equals(cycleId).toArray()) {
     const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
     if (row.date === attendue || row.id === undefined) continue;
     await db.sessions.update(row.id, { date: attendue });
@@ -84,7 +179,7 @@ export async function realignScheduleDates(startDate: string): Promise<number> {
     recalees += 1;
   }
 
-  for (const row of await db.readiness.toArray()) {
+  for (const row of await db.readiness.where('cycleId').equals(cycleId).toArray()) {
     const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
     if (row.date === attendue || row.id === undefined) continue;
     await db.readiness.update(row.id, { date: attendue });
@@ -131,8 +226,15 @@ export async function ensureSession(
    * IndexedDB sérialise les transactions `readwrite` de portée commune : la
    * seconde lit ce que la première a écrit, et trouve la séance.
    */
+  // Hors transaction : la portée ci-dessous ne contient pas `cycles`, et
+  // Dexie refuse toute lecture d'une table non déclarée.
+  const cycleId = await idEcriture();
+
   return db.transaction('rw', db.sessions, db.sets, async () => {
-    const existing = await db.sessions.where('[week+day]').equals([week, day]).first();
+    const existing = await db.sessions
+      .where('[cycleId+week+day]')
+      .equals([cycleId, week, day])
+      .first();
     if (existing) {
       const patch: Partial<SessionRow> = {};
       if (existing.date !== date) patch.date = date;
@@ -159,6 +261,7 @@ export async function ensureSession(
       return existing;
     }
     const row: SessionRow = {
+      cycleId,
       week,
       day,
       date,
@@ -174,11 +277,15 @@ export async function ensureSession(
 }
 
 export async function getSession(week: number, day: DayIndex): Promise<SessionRow | undefined> {
-  return db.sessions.where('[week+day]').equals([week, day]).first();
+  const cycleId = await idLecture();
+  if (cycleId === null) return undefined;
+  return db.sessions.where('[cycleId+week+day]').equals([cycleId, week, day]).first();
 }
 
 export async function allSessions(): Promise<SessionRow[]> {
-  return db.sessions.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.sessions.where('cycleId').equals(cycleId).toArray();
 }
 
 export async function updateSession(id: number, patch: Partial<SessionRow>): Promise<void> {
@@ -254,6 +361,7 @@ export interface SetInput {
  */
 export async function saveSet(input: SetInput): Promise<number> {
   const row: SetRow = {
+    cycleId: await idEcriture(),
     sessionId: input.sessionId,
     exerciseId: input.exerciseId,
     week: input.week,
@@ -296,24 +404,36 @@ export async function setsForSession(sessionId: number): Promise<SetRow[]> {
 }
 
 export async function allSets(): Promise<SetRow[]> {
-  return db.sets.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.sets.where('cycleId').equals(cycleId).toArray();
 }
 
 // -------------------------------------------------------------- readiness --
 
-export async function saveReadiness(row: ReadinessRow): Promise<void> {
-  const existing = await db.readiness.where('[week+day]').equals([row.week, row.day]).first();
+export async function saveReadiness(row: Omit<ReadinessRow, 'cycleId'>): Promise<void> {
+  const cycleId = await idEcriture();
+  const complete: ReadinessRow = { ...row, cycleId };
+  const existing = await db.readiness
+    .where('[cycleId+week+day]')
+    .equals([cycleId, row.week, row.day])
+    .first();
   // `put` plutôt que `update` : on remplace la ligne entière, y compris le
   // tableau des 3 essais.
-  await db.readiness.put(existing?.id === undefined ? row : { ...row, id: existing.id });
+  await db.readiness.put(existing?.id === undefined ? complete : { ...complete, id: existing.id });
 }
 
 export async function getReadiness(week: number, day: DayIndex): Promise<ReadinessRow | undefined> {
-  return db.readiness.where('[week+day]').equals([week, day]).first();
+  const cycleId = await idLecture();
+  if (cycleId === null) return undefined;
+  return db.readiness.where('[cycleId+week+day]').equals([cycleId, week, day]).first();
 }
 
 export async function allReadiness(): Promise<ReadinessRow[]> {
-  return db.readiness.orderBy('date').toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.readiness.where('cycleId').equals(cycleId).toArray();
+  return lignes.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export function toReadinessRecords(rows: ReadinessRow[]): ReadinessRecord[] {
@@ -331,8 +451,10 @@ export async function saveCombine(
   phase: CombinePhase,
   patch: Partial<Omit<CombineRow, 'id' | 'phase'>>,
 ): Promise<CombineRow> {
-  const existing = await db.combines.where('phase').equals(phase).first();
+  const cycleId = await idEcriture();
+  const existing = await db.combines.where('[cycleId+phase]').equals([cycleId, phase]).first();
   const next: CombineRow = {
+    cycleId,
     phase,
     date: patch.date ?? existing?.date ?? new Date().toISOString().slice(0, 10),
     metrics: { ...(existing?.metrics ?? {}), ...(patch.metrics ?? {}) },
@@ -347,7 +469,9 @@ export async function saveCombine(
 }
 
 export async function allCombines(): Promise<CombineRow[]> {
-  return db.combines.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.combines.where('cycleId').equals(cycleId).toArray();
 }
 
 // ----------------------------------------------------------- mesures corps --
@@ -401,18 +525,28 @@ export async function allMeasurements(): Promise<MeasurementRow[]> {
 // ----------------------------------------------------------- suivi visuel --
 
 /** Enregistre la photo de la semaine. Une seule par semaine : la reprise remplace. */
-export async function savePhoto(row: Omit<ProgressPhotoRow, 'id'>): Promise<ProgressPhotoRow> {
-  const existing = await db.progressPhotos.where('week').equals(row.week).first();
+export async function savePhoto(
+  row: Omit<ProgressPhotoRow, 'id' | 'cycleId'>,
+): Promise<ProgressPhotoRow> {
+  const cycleId = await idEcriture();
+  const complet: ProgressPhotoRow = { ...row, cycleId };
+  const existing = await db.progressPhotos
+    .where('[cycleId+week]')
+    .equals([cycleId, row.week])
+    .first();
   if (existing?.id !== undefined) {
-    await db.progressPhotos.put({ ...row, id: existing.id });
-    return { ...row, id: existing.id };
+    await db.progressPhotos.put({ ...complet, id: existing.id });
+    return { ...complet, id: existing.id };
   }
-  const id = await db.progressPhotos.add(row);
-  return { ...row, id };
+  const id = await db.progressPhotos.add(complet);
+  return { ...complet, id };
 }
 
 export async function allPhotos(): Promise<ProgressPhotoRow[]> {
-  return db.progressPhotos.orderBy('week').toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.progressPhotos.where('cycleId').equals(cycleId).toArray();
+  return lignes.sort((a, b) => a.week - b.week);
 }
 
 export async function deletePhoto(id: number): Promise<void> {
@@ -424,26 +558,37 @@ export async function deletePhoto(id: number): Promise<void> {
  * but : comparer le squat de la semaine 1 à celui de la semaine 9.
  */
 export async function saveExerciseMedia(
-  row: Omit<ExerciseMediaRow, 'id'>,
+  row: Omit<ExerciseMediaRow, 'id' | 'cycleId'>,
 ): Promise<ExerciseMediaRow> {
+  const cycleId = await idEcriture();
+  const complet: ExerciseMediaRow = { ...row, cycleId };
   const existing = await db.exerciseMedia
     .where('[exerciseId+date]')
     .equals([row.exerciseId, row.date])
     .first();
   if (existing?.id !== undefined) {
-    await db.exerciseMedia.put({ ...row, id: existing.id });
-    return { ...row, id: existing.id };
+    await db.exerciseMedia.put({ ...complet, id: existing.id });
+    return { ...complet, id: existing.id };
   }
-  const id = await db.exerciseMedia.add(row);
-  return { ...row, id };
+  const id = await db.exerciseMedia.add(complet);
+  return { ...complet, id };
 }
 
 export async function mediaForExercise(exerciseId: string): Promise<ExerciseMediaRow[]> {
-  return db.exerciseMedia.where('exerciseId').equals(exerciseId).sortBy('date');
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.exerciseMedia
+    .where('[cycleId+exerciseId]')
+    .equals([cycleId, exerciseId])
+    .toArray();
+  return lignes.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function allExerciseMedia(): Promise<ExerciseMediaRow[]> {
-  return db.exerciseMedia.orderBy('date').toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.exerciseMedia.where('cycleId').equals(cycleId).toArray();
+  return lignes.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function deleteExerciseMedia(id: number): Promise<void> {
@@ -481,21 +626,32 @@ export async function deleteExerciseReference(id: number): Promise<void> {
 }
 
 /** Trace de vidéo : la date, pas le fichier. */
-export async function logVideo(row: Omit<ExerciseVideoLogRow, 'id'>): Promise<void> {
+export async function logVideo(row: Omit<ExerciseVideoLogRow, 'id' | 'cycleId'>): Promise<void> {
+  const cycleId = await idEcriture();
+  const complet: ExerciseVideoLogRow = { ...row, cycleId };
   const existing = await db.exerciseVideoLog
     .where('[exerciseId+date]')
     .equals([row.exerciseId, row.date])
     .first();
-  if (existing?.id !== undefined) await db.exerciseVideoLog.put({ ...row, id: existing.id });
-  else await db.exerciseVideoLog.add(row);
+  if (existing?.id !== undefined) await db.exerciseVideoLog.put({ ...complet, id: existing.id });
+  else await db.exerciseVideoLog.add(complet);
 }
 
 export async function videoLogForExercise(exerciseId: string): Promise<ExerciseVideoLogRow[]> {
-  return db.exerciseVideoLog.where('exerciseId').equals(exerciseId).sortBy('date');
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.exerciseVideoLog
+    .where('[cycleId+exerciseId]')
+    .equals([cycleId, exerciseId])
+    .toArray();
+  return lignes.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function allVideoLog(): Promise<ExerciseVideoLogRow[]> {
-  return db.exerciseVideoLog.orderBy('date').toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.exerciseVideoLog.where('cycleId').equals(cycleId).toArray();
+  return lignes.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function deleteVideoLog(id: number): Promise<void> {
@@ -524,8 +680,8 @@ export async function saveExerciseNote(input: {
   text: string;
 }): Promise<void> {
   const existing = await db.exerciseNotes
-    .where('[exerciseId+week+day]')
-    .equals([input.exerciseId, input.week, input.day])
+    .where('[cycleId+exerciseId+week+day]')
+    .equals([await idEcriture(), input.exerciseId, input.week, input.day])
     .first();
 
   const texte = normalizeNote(input.text);
@@ -535,6 +691,7 @@ export async function saveExerciseNote(input: {
   }
 
   const row: ExerciseNoteRow = {
+    cycleId: await idEcriture(),
     exerciseId: input.exerciseId,
     week: input.week,
     day: input.day,
@@ -548,11 +705,16 @@ export async function saveExerciseNote(input: {
 
 /** Toutes les remarques laissées sur un mouvement, sur les 12 semaines. */
 export async function notesForExercise(exerciseId: string): Promise<ExerciseNoteRow[]> {
-  return db.exerciseNotes.where('exerciseId').equals(exerciseId).toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.exerciseNotes.where('exerciseId').equals(exerciseId).toArray();
+  return lignes.filter((n) => n.cycleId === cycleId);
 }
 
 export async function allExerciseNotes(): Promise<ExerciseNoteRow[]> {
-  return db.exerciseNotes.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.exerciseNotes.where('cycleId').equals(cycleId).toArray();
 }
 
 // ------------------------------------------- remarques appendues (v15) --
@@ -579,6 +741,7 @@ export async function addNote(input: {
   const texte = normalizeNote(input.text);
   if (texte === null) return null;
   const row: NoteRow = {
+    cycleId: await idEcriture(),
     exerciseId: input.exerciseId,
     week: input.week,
     day: input.day,
@@ -592,7 +755,10 @@ export async function addNote(input: {
 
 /** Toutes les remarques laissées sur un mouvement, sur les 12 semaines. */
 export async function notesFor(exerciseId: string): Promise<NoteRow[]> {
-  return db.notes.where('exerciseId').equals(exerciseId).toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const lignes = await db.notes.where('exerciseId').equals(exerciseId).toArray();
+  return lignes.filter((n) => n.cycleId === cycleId);
 }
 
 /**
@@ -604,12 +770,16 @@ export async function notesFor(exerciseId: string): Promise<NoteRow[]> {
  * semaines.
  */
 export async function sessionNotes(): Promise<NoteRow[]> {
-  const toutes = await db.notes.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  const toutes = await db.notes.where('cycleId').equals(cycleId).toArray();
   return toutes.filter((n) => n.exerciseId === null);
 }
 
 export async function allNotes(): Promise<NoteRow[]> {
-  return db.notes.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.notes.where('cycleId').equals(cycleId).toArray();
 }
 
 /**
@@ -651,7 +821,7 @@ export async function addSessionExercise(input: {
   kg: number | null;
   restSec: number;
 }): Promise<SessionExerciseRow> {
-  const row: SessionExerciseRow = { ...input, at: Date.now() };
+  const row: SessionExerciseRow = { ...input, cycleId: await idEcriture(), at: Date.now() };
   const id = await db.sessionExercises.add(row);
   return { ...row, id };
 }
@@ -669,7 +839,9 @@ export async function sessionExercisesFor(sessionId: number): Promise<SessionExe
  * dizaines de lignes : un index par jour n'achèterait rien.
  */
 export async function allSessionExercises(): Promise<SessionExerciseRow[]> {
-  return db.sessionExercises.toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return [];
+  return db.sessionExercises.where('cycleId').equals(cycleId).toArray();
 }
 
 /**
@@ -717,7 +889,9 @@ export async function noteDraft(
   week: number,
   day: DayIndex,
 ): Promise<NoteDraftRow | undefined> {
-  return db.noteDrafts.where('[slot+week+day]').equals([slot, week, day]).first();
+  const cycleId = await idLecture();
+  if (cycleId === null) return undefined;
+  return db.noteDrafts.where('[cycleId+slot+week+day]').equals([cycleId, slot, week, day]).first();
 }
 
 /**
@@ -749,13 +923,21 @@ export async function saveNoteDraft(input: {
    * recoupe : la seconde ne démarre qu'une fois la première validée, donc la
    * lecture voit toujours ce que l'écriture précédente a posé.
    */
+  // Hors transaction, pour la même raison que dans `ensureSession` : la
+  // portée déclarée ne contient pas `cycles`.
+  const cycleId = await idEcriture();
+
   await db.transaction('rw', db.noteDrafts, async () => {
-    const existing = await noteDraft(input.slot, input.week, input.day);
+    const existing = await db.noteDrafts
+      .where('[cycleId+slot+week+day]')
+      .equals([cycleId, input.slot, input.week, input.day])
+      .first();
     if (input.text.trim() === '') {
       if (existing?.id !== undefined) await db.noteDrafts.delete(existing.id);
       return;
     }
     const row: NoteDraftRow = {
+      cycleId,
       slot: input.slot,
       week: input.week,
       day: input.day,
@@ -806,7 +988,13 @@ export async function commitNoteDraft(
  * Rend le nombre de remarques ajoutées, pour que l'écran puisse le dire.
  */
 export async function commitAllDrafts(week: number, day: DayIndex): Promise<number> {
-  const brouillons = await db.noteDrafts.where('[week+day]').equals([week, day]).toArray();
+  const cycleId = await idLecture();
+  if (cycleId === null) return 0;
+  const brouillons = await db.noteDrafts
+    .where('[week+day]')
+    .equals([week, day])
+    .filter((d) => d.cycleId === cycleId)
+    .toArray();
   let n = 0;
   for (const b of brouillons) {
     const exerciseId = b.slot === SESSION_NOTE_SLOT ? null : b.slot;

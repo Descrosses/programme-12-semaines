@@ -26,6 +26,7 @@ const serie = (
   patch: Partial<SetRow> = {},
 ): SetRow => ({
   id: ++sequence,
+  cycleId: 1,
   sessionId: week * 10 + day,
   exerciseId,
   week,

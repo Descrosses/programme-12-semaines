@@ -25,12 +25,32 @@ async function monterBaseJetable(): Promise<ProgrammeDB> {
   await jetable.open();
   const mod = await import('./db');
   Object.defineProperty(mod, 'db', { value: jetable, configurable: true, writable: true });
+  /*
+   * Un cycle, créé explicitement.
+   *
+   * Depuis la v17, une ligne de séance ou de série n'est lue que si elle
+   * appartient à un cycle connu. Insérer des lignes « à la main » sans créer
+   * le cycle qui va avec produirait une base que l'application considère,
+   * à juste titre, comme vide.
+   */
+  await jetable.cycles.add({
+    id: 1,
+    programmeId: 'power12',
+    programmeVersion: '1.2',
+    startDate: '2026-09-14',
+    statut: 'en-cours',
+    endedAt: '',
+    createdAt: '2026-09-14',
+  });
   return jetable;
 }
 
 const base = { week: 5, day: 0 as const, date: '2026-09-28' };
 
 const serie = (sessionId: number, exerciseId: string, setIndex: number, kg: number) => ({
+  // Un seul cycle dans ces tests : ils vérifient le remplacement d'exercice,
+  // pas la coexistence de deux programmes.
+  cycleId: 1,
   sessionId,
   exerciseId,
   week: 5,
