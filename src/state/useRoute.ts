@@ -13,6 +13,7 @@ import type { DayIndex, WeekIndex } from '../data/types';
 export type Route =
   | { name: 'accueil' }
   | { name: 'catalogue' }
+  | { name: 'parcours' }
   | { name: 'today' }
   | { name: 'week'; week: WeekIndex }
   | { name: 'session'; week: WeekIndex; day: DayIndex }
@@ -28,6 +29,8 @@ export function parseRoute(hash: string): Route {
       return { name: 'accueil' };
     case 'catalogue':
       return { name: 'catalogue' };
+    case 'parcours':
+      return { name: 'parcours' };
     case 'today':
       return { name: 'today' };
     case 'week':

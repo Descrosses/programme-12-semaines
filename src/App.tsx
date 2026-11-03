@@ -4,6 +4,7 @@ import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
 import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
+import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { NutritionScreen } from './screens/NutritionScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
@@ -22,7 +23,7 @@ import type { DayKind } from './data/nutrition';
 import styles from './App.module.css';
 
 type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
-type PlateformeName = 'accueil' | 'catalogue';
+type PlateformeName = 'accueil' | 'catalogue' | 'parcours';
 
 const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
   { name: 'today', label: 'Aujourd’hui', icon: 'play' },
@@ -45,6 +46,7 @@ const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
 const PLATEFORME: Array<{ name: PlateformeName; label: string; icon: IconName }> = [
   { name: 'accueil', label: 'Accueil', icon: 'home' },
   { name: 'catalogue', label: 'Programmes', icon: 'book' },
+  { name: 'parcours', label: 'Parcours', icon: 'repeat' },
 ];
 
 export function App() {
@@ -130,7 +132,8 @@ export function App() {
   const inSession = route.name === 'session';
   // Deux niveaux : la plateforme choisit un programme, le programme mène une
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
-  const dansPlateforme = route.name === 'accueil' || route.name === 'catalogue';
+  const dansPlateforme =
+    route.name === 'accueil' || route.name === 'catalogue' || route.name === 'parcours';
 
   /*
    * Sur iOS, un élément en `position: fixed` est ancré au layout viewport, pas
@@ -252,6 +255,15 @@ function renderScreen(
     case 'catalogue':
       return (
         <CatalogueScreen
+          key={dataVersion}
+          onOuvrirProgramme={() => navigate({ name: 'today' })}
+          onDataChanged={refresh}
+        />
+      );
+
+    case 'parcours':
+      return (
+        <ParcoursScreen
           key={dataVersion}
           onOuvrirProgramme={() => navigate({ name: 'today' })}
           onDataChanged={refresh}
