@@ -5,10 +5,14 @@
  * fichier JSON contient l'intégralité de l'historique, lisible et réimportable.
  */
 
-import { blobToDataUrl, dataUrlToBlob } from "../media/photo";
+import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
 import {
   db,
   type CombineRow,
+  type CustomFoodRow,
+  type DayKindRow,
+  type FoodOverrideRow,
+  type MealLogRow,
   type ExerciseVideoLogRow,
   type MeasurementRow,
   type ExerciseNoteRow,
@@ -21,13 +25,49 @@ import {
   type SessionRow,
   type SetRow,
   type SettingsRow,
-} from "./db";
+} from './db';
 
 /** Version du format, pour qu'un export d'aujourd'hui reste lisible plus tard. */
-export const EXPORT_VERSION = 1;
+export const EXPORT_VERSION = 2;
+
+/*
+ * Les tables que la sauvegarde couvre, nommées une fois.
+ *
+ * Elles ne servent pas à construire l'export — `exportAll` et `exportPhotos`
+ * nomment leurs tables une par une, et c'est plus lisible ainsi. Elles servent
+ * à le VÉRIFIER : `exportRoundTrip.test.ts` compare cette union à la liste
+ * réelle des tables de la base, et échoue si l'une manque.
+ *
+ * C'est la seule protection qui tienne dans le temps. Deux trous ont déjà été
+ * trouvés après coup — `exerciseNotes`, puis les quatre tables de nutrition
+ * ci-dessous, qui n'ont jamais été sauvegardées depuis leur création. Un
+ * commentaire n'empêche pas le troisième ; un test qui casse, si.
+ */
+export const TABLES_SAUVEGARDEES = [
+  'settings',
+  'sessions',
+  'sets',
+  'readiness',
+  'combines',
+  'measurements',
+  'exerciseVideoLog',
+  'painLog',
+  'extraFoods',
+  'notes',
+  'noteDrafts',
+  'sessionExercises',
+  'exerciseNotes',
+  'mealLog',
+  'dayKind',
+  'foodOverrides',
+  'customFoods',
+] as const;
+
+/** Les tables du second fichier, celui des images. */
+export const TABLES_PHOTOS = ['progressPhotos', 'exerciseMedia', 'exerciseReference'] as const;
 
 export interface ExportFile {
-  format: "programme-12-semaines";
+  format: 'programme-12-semaines';
   version: number;
   exportedAt: string;
   settings: SettingsRow | null;
@@ -68,6 +108,22 @@ export interface ExportFile {
    */
   exerciseNotes?: ExerciseNoteRow[];
   /**
+   * Les quatre tables de l'onglet Nutrition (v8 à v14).
+   *
+   * Elles manquaient à la sauvegarde depuis leur création : un changement de
+   * téléphone, ou une restauration après panne, effaçait en silence tous les
+   * repas cochés, les aliments remplacés, les aliments créés à la main et les
+   * jours forcés en entraînement ou en repos. L'historique d'entraînement
+   * revenait, l'historique alimentaire non.
+   *
+   * Optionnelles, comme les autres : un fichier exporté avant aujourd'hui
+   * (version 1) n'a aucune de ces clés et reste réimportable tel quel.
+   */
+  mealLog?: MealLogRow[];
+  dayKind?: DayKindRow[];
+  foodOverrides?: FoodOverrideRow[];
+  customFoods?: CustomFoodRow[];
+  /**
    * Toujours `false`. Les photos ont leur propre fichier : voir
    * `exportPhotos()` et le commentaire qui l'accompagne.
    */
@@ -91,7 +147,7 @@ export interface ExportFile {
  * reconnaît tout seul lequel des deux on lui donne.
  */
 export interface PhotoExportFile {
-  format: "programme-12-semaines-photos";
+  format: 'programme-12-semaines-photos';
   version: number;
   exportedAt: string;
   progressPhotos: Array<{
@@ -135,6 +191,10 @@ export async function exportAll(): Promise<ExportFile> {
     noteDrafts,
     sessionExercises,
     exerciseNotes,
+    mealLog,
+    dayKind,
+    foodOverrides,
+    customFoods,
   ] = await Promise.all([
     db.settings.get(1),
     db.sessions.toArray(),
@@ -149,10 +209,14 @@ export async function exportAll(): Promise<ExportFile> {
     db.noteDrafts.toArray(),
     db.sessionExercises.toArray(),
     db.exerciseNotes.toArray(),
+    db.mealLog.toArray(),
+    db.dayKind.toArray(),
+    db.foodOverrides.toArray(),
+    db.customFoods.toArray(),
   ]);
 
   return {
-    format: "programme-12-semaines",
+    format: 'programme-12-semaines',
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
     settings: settings ?? null,
@@ -168,6 +232,10 @@ export async function exportAll(): Promise<ExportFile> {
     noteDrafts,
     sessionExercises,
     exerciseNotes,
+    mealLog,
+    dayKind,
+    foodOverrides,
+    customFoods,
     photosIncluded: false,
   };
 }
@@ -180,7 +248,7 @@ export async function exportPhotos(): Promise<PhotoExportFile> {
     db.exerciseReference.toArray(),
   ]);
   return {
-    format: "programme-12-semaines-photos",
+    format: 'programme-12-semaines-photos',
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
     progressPhotos: await Promise.all(
@@ -221,9 +289,9 @@ export function exportFileName(now = new Date()): string {
 }
 
 function download(content: string, filename: string): void {
-  const blob = new Blob([content], { type: "application/json" });
+  const blob = new Blob([content], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = url;
   a.download = filename;
   document.body.appendChild(a);
@@ -251,10 +319,7 @@ export async function downloadPhotoExport(): Promise<{
 }> {
   const file = await exportPhotos();
   const json = JSON.stringify(file);
-  download(
-    json,
-    `programme-12-semaines-photos-${new Date().toISOString().slice(0, 10)}.json`,
-  );
+  download(json, `programme-12-semaines-photos-${new Date().toISOString().slice(0, 10)}.json`);
   return {
     bytes: new Blob([json]).size,
     count: file.progressPhotos.length + file.exerciseMedia.length,
@@ -274,6 +339,10 @@ export interface ImportReport {
   noteDrafts: number;
   sessionExercises: number;
   exerciseNotes: number;
+  mealLog: number;
+  dayKind: number;
+  foodOverrides: number;
+  customFoods: number;
   settings: boolean;
 }
 
@@ -285,8 +354,8 @@ export interface PhotoImportReport {
 
 /** Ce que contient un fichier déposé — l'import s'adapte au lieu d'exiger. */
 export type AnyExportFile =
-  | { kind: "données"; file: ExportFile }
-  | { kind: "photos"; file: PhotoExportFile };
+  | { kind: 'données'; file: ExportFile }
+  | { kind: 'photos'; file: PhotoExportFile };
 
 /**
  * Reconnaît lequel des deux fichiers on vient de recevoir.
@@ -299,31 +368,27 @@ export function parseAnyExport(text: string): AnyExportFile {
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error("Ce fichier n’est pas du JSON valide.");
+    throw new Error('Ce fichier n’est pas du JSON valide.');
   }
-  if (
-    (parsed as { format?: string })?.format === "programme-12-semaines-photos"
-  ) {
+  if ((parsed as { format?: string })?.format === 'programme-12-semaines-photos') {
     const f = parsed as PhotoExportFile;
     return {
-      kind: "photos",
+      kind: 'photos',
       file: {
-        format: "programme-12-semaines-photos",
+        format: 'programme-12-semaines-photos',
         version: f.version ?? EXPORT_VERSION,
-        exportedAt: f.exportedAt ?? "",
+        exportedAt: f.exportedAt ?? '',
         progressPhotos: f.progressPhotos ?? [],
         exerciseMedia: f.exerciseMedia ?? [],
         exerciseReference: f.exerciseReference ?? [],
       },
     };
   }
-  return { kind: "données", file: parseExport(text) };
+  return { kind: 'données', file: parseExport(text) };
 }
 
 /** Remplace les photos par celles du fichier. Ne touche à aucune autre table. */
-export async function importPhotos(
-  file: PhotoExportFile,
-): Promise<PhotoImportReport> {
+export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportReport> {
   const progress = await Promise.all(
     file.progressPhotos.map(async (p) => {
       const blob = await dataUrlToBlob(p.dataUrl);
@@ -368,7 +433,7 @@ export async function importPhotos(
   );
 
   await db.transaction(
-    "rw",
+    'rw',
     [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
     async () => {
       await Promise.all([
@@ -395,21 +460,21 @@ export function parseExport(text: string): ExportFile {
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error("Ce fichier n’est pas du JSON valide.");
+    throw new Error('Ce fichier n’est pas du JSON valide.');
   }
   const f = parsed as Partial<ExportFile>;
-  if (f?.format !== "programme-12-semaines") {
-    throw new Error("Ce fichier ne vient pas de cette application.");
+  if (f?.format !== 'programme-12-semaines') {
+    throw new Error('Ce fichier ne vient pas de cette application.');
   }
-  if (typeof f.version !== "number" || f.version > EXPORT_VERSION) {
+  if (typeof f.version !== 'number' || f.version > EXPORT_VERSION) {
     throw new Error(
       `Ce fichier vient d’une version plus récente (${String(f.version)}). Mets l’application à jour.`,
     );
   }
   return {
-    format: "programme-12-semaines",
+    format: 'programme-12-semaines',
     version: f.version,
-    exportedAt: f.exportedAt ?? "",
+    exportedAt: f.exportedAt ?? '',
     settings: f.settings ?? null,
     sessions: f.sessions ?? [],
     sets: f.sets ?? [],
@@ -425,6 +490,10 @@ export function parseExport(text: string): ExportFile {
     noteDrafts: f.noteDrafts ?? [],
     sessionExercises: f.sessionExercises ?? [],
     exerciseNotes: f.exerciseNotes ?? [],
+    mealLog: f.mealLog ?? [],
+    dayKind: f.dayKind ?? [],
+    foodOverrides: f.foodOverrides ?? [],
+    customFoods: f.customFoods ?? [],
     photosIncluded: false,
   };
 }
@@ -438,7 +507,7 @@ export function parseExport(text: string): ExportFile {
  */
 export async function importAll(file: ExportFile): Promise<ImportReport> {
   return db.transaction(
-    "rw",
+    'rw',
     [
       db.settings,
       db.sessions,
@@ -453,6 +522,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.noteDrafts,
       db.sessionExercises,
       db.exerciseNotes,
+      db.mealLog,
+      db.dayKind,
+      db.foodOverrides,
+      db.customFoods,
     ],
     async () => {
       const measurements = file.measurements ?? [];
@@ -463,6 +536,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       const noteDrafts = file.noteDrafts ?? [];
       const sessionExercises = file.sessionExercises ?? [];
       const exerciseNotes = file.exerciseNotes ?? [];
+      const mealLog = file.mealLog ?? [];
+      const dayKind = file.dayKind ?? [];
+      const foodOverrides = file.foodOverrides ?? [];
+      const customFoods = file.customFoods ?? [];
       await Promise.all([
         db.sessions.clear(),
         db.sets.clear(),
@@ -476,6 +553,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.noteDrafts.clear(),
         db.sessionExercises.clear(),
         db.exerciseNotes.clear(),
+        db.mealLog.clear(),
+        db.dayKind.clear(),
+        db.foodOverrides.clear(),
+        db.customFoods.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
       await db.sessions.bulkAdd(file.sessions);
@@ -490,6 +571,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       await db.noteDrafts.bulkAdd(noteDrafts);
       await db.sessionExercises.bulkAdd(sessionExercises);
       await db.exerciseNotes.bulkAdd(exerciseNotes);
+      await db.mealLog.bulkAdd(mealLog);
+      await db.dayKind.bulkAdd(dayKind);
+      await db.foodOverrides.bulkAdd(foodOverrides);
+      await db.customFoods.bulkAdd(customFoods);
 
       return {
         sessions: file.sessions.length,
@@ -504,6 +589,10 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         noteDrafts: noteDrafts.length,
         sessionExercises: sessionExercises.length,
         exerciseNotes: exerciseNotes.length,
+        mealLog: mealLog.length,
+        dayKind: dayKind.length,
+        foodOverrides: foodOverrides.length,
+        customFoods: customFoods.length,
         settings: file.settings !== null,
       };
     },
@@ -513,7 +602,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
 /** Efface tout l'historique. Les réglages sont conservés. */
 export async function resetHistory(): Promise<void> {
   await db.transaction(
-    "rw",
+    'rw',
     [
       db.sessions,
       db.sets,
@@ -556,7 +645,7 @@ export async function resetHistory(): Promise<void> {
  */
 export async function resetPhotos(): Promise<void> {
   await db.transaction(
-    "rw",
+    'rw',
     [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
     async () => {
       await Promise.all([
