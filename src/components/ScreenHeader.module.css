@@ -80,28 +80,36 @@
  * détouré s'arrête sur une arête nette au milieu du titre.
  */
 /*
- * La vignette est dimensionnée par sa HAUTEUR, et tient entièrement dans
- * l'en-tête.
+ * Le visuel détouré : grand, et fondu dans le fond.
  *
- * Elle l'était par sa largeur — 42 % de l'écran — et débordait de huit pixels
- * en haut et de douze à droite. Tant que l'en-tête changeait de hauteur d'un
- * écran à l'autre, ce débord passait pour un cadrage ; une fois tous les
- * en-têtes à la même hauteur, le ballon est resté le seul élément coupé de
- * l'application, et ça se voyait.
+ * Trois états successifs, et deux erreurs de ma part avant celui-ci.
  *
- * En hauteur relative, la vignette suit l'en-tête quelle que soit sa taille
- * future, au lieu de suivre la largeur de l'écran — dont elle n'a aucune
- * raison de dépendre.
+ * 1. À l'origine : dimensionné par la largeur de l'écran, coupé en haut et à
+ *    droite. Tant que les en-têtes avaient des hauteurs différentes, le
+ *    débord passait pour un cadrage ; une fois tous alignés, c'était le seul
+ *    élément coupé de l'application.
+ * 2. Ma correction : petit et entièrement dans le cadre. Guillaume : « c'est
+ *    pire ». Il avait raison — un objet net et minuscule dans un coin ne
+ *    ressemble à rien, là où les six autres en-têtes sont des photos pleine
+ *    page que le voile fait disparaître dans le fond.
+ * 3. Ici : grand, et fondu. Il occupe toute la hauteur de l'en-tête, déborde
+ *    volontairement en haut et à droite, et son masque radial le dissout vers
+ *    la gauche et le bas — là où passent le titre et le sous-titre. Il se lit
+ *    comme une ambiance, pas comme une vignette posée.
+ *
+ * L'opacité est basse pour la même raison. Le ballon est le SEUL visuel
+ * détouré de l'application ; les six autres passent sous le voile de
+ * l'en-tête, qui les éteint. Celui-ci est au-dessus du voile — sans quoi il
+ * disparaîtrait entièrement — et c'est donc son opacité qui joue ce rôle.
  */
 .photo {
-  top: 14px;
-  right: 12px;
+  top: -22px;
+  right: -34px;
   width: auto;
-  height: 46%;
-  max-height: 96px;
+  height: 104%;
   z-index: 0;
-  opacity: 0.92;
-  mask-image: linear-gradient(205deg, #000 52%, transparent 92%);
+  opacity: 0.55;
+  mask-image: radial-gradient(120% 130% at 88% 8%, #000 28%, rgb(0 0 0 / 50%) 62%, transparent 92%);
 }
 
 /*
