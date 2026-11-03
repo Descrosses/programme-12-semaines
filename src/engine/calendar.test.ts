@@ -265,3 +265,40 @@ describe('humanDateShort', () => {
     }
   });
 });
+
+describe('un autre programme, une autre structure', () => {
+  /*
+   * La preuve que la couture sert à quelque chose.
+   *
+   * Une structure de quatre semaines, quatre séances par semaine, sans
+   * semaine 0 — c'est exactement la forme de MASS 4. Le calendrier doit la
+   * poser sans rien savoir d'elle, et surtout sans retomber sur les treize
+   * semaines de POWER 12.
+   */
+  const MASS_LIKE = {
+    semaines: [1, 2, 3, 4],
+    joursDeLaSemaine: (w: number) => (w >= 1 && w <= 4 ? ([0, 1, 3, 5] as const) : ([] as const)),
+  };
+
+  it('pose quatre semaines de quatre séances, et pas treize', () => {
+    const toutes = schedule('2026-11-02', MASS_LIKE);
+    expect(toutes).toHaveLength(16);
+    expect(new Set(toutes.map((s) => s.week))).toEqual(new Set([1, 2, 3, 4]));
+  });
+
+  it('ne commence pas par une semaine 0 quand le programme n’en a pas', () => {
+    const toutes = schedule('2026-11-02', MASS_LIKE);
+    expect(toutes[0]?.week).toBe(1);
+    expect(toutes[0]?.date).toBe('2026-11-09');
+  });
+
+  it('situe aujourd’hui dans CE programme, pas dans l’autre', () => {
+    const etat = locateToday('2026-11-02', '2026-11-09', MASS_LIKE);
+    expect(etat?.kind).toBe('session');
+    const dernier = schedule('2026-11-02', MASS_LIKE).at(-1);
+    expect(locateToday('2026-11-02', '2027-01-01', MASS_LIKE)).toEqual({
+      kind: 'finished',
+      last: dernier,
+    });
+  });
+});
