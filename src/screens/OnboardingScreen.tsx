@@ -91,7 +91,6 @@ export function OnboardingScreen({
         }
         visuel={etape === 1 ? 'stade' : undefined}
         prioritaire={etape === 1}
-        compact={etape !== 1}
       />
 
       <div className={local.etapes} aria-hidden="true">

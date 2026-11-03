@@ -223,7 +223,6 @@ export function ProgressScreen() {
         title="Progression"
         subtitle={SOUS_TITRES[vue]}
         visuel="sprint"
-        compact
       />
 
       <div className={styles.segment} role="group" aria-label="Vue">

@@ -135,7 +135,7 @@ export function ProgressVolumeScreen({ programme }: { programme: ModuleProgramme
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader eyebrow="MASS 4" title="Progrès" subtitle={SOUS_TITRES[vue]} compact />
+      <ScreenHeader eyebrow="MASS 4" title="Progrès" subtitle={SOUS_TITRES[vue]} />
 
       <div className={styles.segment} role="group" aria-label="Vue">
         {(

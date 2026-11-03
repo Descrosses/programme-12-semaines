@@ -112,7 +112,6 @@ export function NutritionPrincipesScreen({ todayKind }: { todayKind: DayKind }) 
         eyebrow={todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}
         title="Nutrition"
         subtitle="Des principes, pas des grammes"
-        compact
       />
 
       <section className={styles.card}>
