@@ -38,6 +38,12 @@ export interface SetPayload {
    */
   measureUnit: string | null;
   failed: boolean;
+  /**
+   * La deuxième partie de la série : les reps, et la charge allégée s'il y en
+   * a une. `secondKg` à `null` se lit « la même charge », pas « aucune ».
+   */
+  secondReps: number | null;
+  secondKg: number | null;
 }
 
 /**
@@ -377,6 +383,46 @@ export function ExerciseCard({
       )}
 
       {/*
+        L'alternance une jambe / deux jambes, quand le mouvement alterne.
+
+        Posée AVANT la planche et les consignes : c'est la première chose à
+        savoir devant la machine, parce qu'elle change le nombre de séries à
+        faire et pas seulement la manière.
+
+        Deux couleurs, et la frise des quatre semaines. La frise répond à la
+        question que le bandeau seul laisse ouverte — « et la semaine
+        prochaine ? » — et surtout elle rend visible que les deux exercices de
+        jambes alternent EN OPPOSITION, ce que le document dit et qu'on ne
+        croit pas tant qu'on ne le voit pas.
+      */}
+      {ex.def.alternance && (
+        <div
+          className={`${styles.alternance} ${
+            ex.def.alternance.mode === 'unilateral' ? styles.alternanceUni : styles.alternanceBi
+          }`}
+        >
+          <p className={styles.alternanceTitre}>
+            {ex.def.alternance.mode === 'unilateral'
+              ? 'Cette semaine : une jambe à la fois'
+              : 'Cette semaine : les deux jambes'}
+          </p>
+          <ol className={styles.frise}>
+            {ex.def.alternance.frise.map((s) => (
+              <li
+                key={s.semaine}
+                className={s.mode === 'unilateral' ? styles.friseUni : styles.friseBi}
+                aria-label={`Semaine ${s.semaine} : ${
+                  s.mode === 'unilateral' ? 'une jambe' : 'les deux jambes'
+                }`}
+              >
+                S{s.semaine}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {/*
         La planche d'exécution, quand le mouvement en a une.
 
         Posée AVANT le bloc de consignes et hors de lui : les consignes se
@@ -600,6 +646,22 @@ export function SetEntry({
     saved?.measureValue ?? plannedMeasureOf(ex) ?? ex.lastMeasure ?? measure?.min ?? 0,
   );
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
+  /*
+   * La deuxième partie de la série, quand le programme en prescrit une SUR
+   * CETTE SÉRIE. `onSets` absent vaut « sur toutes » ; MASS 4 s'en sert pour
+   * sa technique à trois séries, dont seules la première et la troisième se
+   * jouent en deux temps.
+   *
+   * Les champs partent vides, jamais préremplis : une dégressive non saisie
+   * doit rester absente de l'historique plutôt que d'y inscrire un chiffre
+   * que personne n'a fait.
+   */
+  const seconde =
+    ex.def.secondPart && (ex.def.secondPart.onSets?.includes(index) ?? true)
+      ? ex.def.secondPart
+      : null;
+  const [secondReps, setSecondReps] = useState<number | null>(saved?.secondReps ?? null);
+  const [secondKg, setSecondKg] = useState<number | null>(saved?.secondKg ?? null);
 
   /*
    * Changer d'unité remet le champ sur une valeur qui a du sens dans la
@@ -636,6 +698,10 @@ export function SetEntry({
       measureValue: measure ? value : null,
       measureUnit: measure ? (unite ?? measureBase?.unit ?? null) : null,
       failed,
+      secondReps: seconde ? secondReps : null,
+      // Pas de champ de charge : on écrit `null`, qui se lit « la même charge
+      // que la première partie » et non « aucune charge ».
+      secondKg: seconde?.withLoad ? secondKg : null,
     });
     setEditing(false);
     if (ex.restSec > 0) {
@@ -675,6 +741,17 @@ export function SetEntry({
           {saved.actualRpe !== null && (
             <span className={`${styles.setSummaryValue} tnum`}>
               {fr(saved.actualRpe)} <span className={styles.setSummaryUnit}>RPE</span>
+            </span>
+          )}
+          {saved.secondReps !== null && saved.secondReps !== undefined && (
+            <span className={`${styles.setSummaryValue} tnum`}>
+              <span className={styles.setSummaryUnit}>puis</span> {saved.secondReps}{' '}
+              <span className={styles.setSummaryUnit}>
+                reps
+                {saved.secondKg !== null && saved.secondKg !== undefined
+                  ? ` à ${fr(saved.secondKg)} kg`
+                  : ''}
+              </span>
             </span>
           )}
           {saved.failed && <span className={styles.failFlag}>Rep ratée</span>}
@@ -768,6 +845,56 @@ export function SetEntry({
             {failed && <Icon name="check" size="16px" />}
             {failed ? 'Rep ratée' : 'Rep ratée ?'}
           </button>
+        )}
+
+        {seconde !== null && (
+          <div className={styles.seconde}>
+            <p className={styles.secondeTitre}>
+              {seconde.label}
+              {!seconde.withLoad && (
+                /*
+                 * Dit sous le titre et non à côté du champ : placé dans la
+                 * rangée des champs, « la même » se lisait comme un second
+                 * champ qu'on aurait oublié de remplir.
+                 */
+                <span className={styles.secondeMemeCharge}>Charge : la même</span>
+              )}
+            </p>
+            <div className={styles.steppers}>
+              <div className={seconde.withLoad ? '' : styles.stepperWide}>
+                <Stepper
+                  label={seconde.withLoad ? 'Reps' : 'Échec — reps'}
+                  value={secondReps}
+                  step={1}
+                  min={0}
+                  max={60}
+                  /*
+                   * Un tiret, et non « à saisir » : dans la dégressive les
+                   * deux champs sont côte à côte sur une demi-largeur, et le
+                   * texte débordait de son cadre en se coupant en deux. Les
+                   * étiquettes au-dessus disent déjà ce qu'on attend.
+                   */
+                  emptyLabel="—"
+                  onStep={(d) => setSecondReps((v) => stepValue(v, d, 0, 60))}
+                  onCommit={(v) => setSecondReps(v)}
+                />
+              </div>
+              {seconde.withLoad && (
+                <div>
+                  <Stepper
+                    label="Charge · kg"
+                    value={secondKg}
+                    step={2.5}
+                    min={KG_MIN}
+                    max={KG_MAX}
+                    emptyLabel="—"
+                    onStep={(d) => setSecondKg((v) => stepValue(v, d, KG_MIN, KG_MAX))}
+                    onCommit={(v) => setSecondKg(v)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         <button type="button" className={styles.validate} onClick={() => void validate()}>

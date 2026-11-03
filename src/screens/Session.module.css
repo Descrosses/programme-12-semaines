@@ -1634,3 +1634,114 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+
+/* ------------------------------------- deuxième partie d'une série ------ */
+
+/*
+ * MASS 4 construit plusieurs séries en deux temps : une dégressive, ou un
+ * passage à l'échec après cinq secondes de pause. Le second effort compte
+ * autant que le premier, et se saisit donc à part.
+ *
+ * Encadré et décalé : sans la séparation, les deux jeux de champs se lisent
+ * comme une seule série à quatre valeurs, et on ne sait plus lequel est
+ * lequel une fois la barre en main.
+ */
+.seconde {
+  margin-top: 10px;
+  padding: 10px 12px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.secondeTitre {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+/*
+ * « Charge : la même » — dit explicitement qu'il n'y a rien à alléger.
+ *
+ * Sur sa propre ligne sous le titre : à côté du champ de reps, il se lisait
+ * comme un second champ qu'on aurait oublié de remplir.
+ */
+.secondeMemeCharge {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+
+/* ------------------------------------ alternance une jambe / deux ------- */
+
+/*
+ * Deux couleurs, et elles ne servent qu'ici.
+ *
+ * Le jaune pour « une jambe », le marine pour « les deux ». Ce sont celles de
+ * l'application de référence, et le jaune n'est utilisé nulle part ailleurs
+ * dans l'écran de séance : impossible de le confondre avec le rouge d'une
+ * action ou avec l'encadré d'un superset.
+ *
+ * Écrites en dur plutôt qu'en jetons de thème parce qu'elles doivent rester
+ * les mêmes dans les deux univers : un bandeau qui change de sens d'un thème
+ * à l'autre ne serait plus un repère.
+ */
+.alternance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.alternanceUni {
+  border: 2px solid #f2b33d;
+  background: rgb(242 179 61 / 12%);
+}
+
+.alternanceBi {
+  border: 2px solid #4b6584;
+  background: rgb(75 101 132 / 16%);
+}
+
+.alternanceTitre {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+/* La frise : quatre pastilles, une par semaine du cycle. */
+.frise {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frise li {
+  min-width: 30px;
+  padding: 2px 0;
+  border-radius: 999px;
+  font-family: var(--font-cond);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.friseUni {
+  background: #f2b33d;
+  color: #1a1a18;
+}
+
+.friseBi {
+  background: rgb(75 101 132 / 55%);
+  color: var(--ink);
+}

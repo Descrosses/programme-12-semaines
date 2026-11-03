@@ -21,7 +21,7 @@
  * chacun le leur.
  */
 
-import type { LigneMass4 } from './types';
+import { SEMAINES_MASS4, type LigneMass4, type Technique } from './types';
 
 /** La semaine 1 sert à trouver ses charges : aucune série optionnelle. */
 export const PREMIERE_SEMAINE_OPTIONNELLE = 2;
@@ -81,9 +81,77 @@ export function modePour(ligne: LigneMass4, semaine: number): ModeExecution | nu
   return impaire ? 'bilateral' : 'unilateral';
 }
 
+/**
+ * Le mode de CHAQUE semaine du cycle, pour la frise de l'écran de séance.
+ *
+ * Savoir qu'on est à une jambe cette semaine ne dit pas quand on repassera à
+ * deux. La frise le montre d'un coup d'œil, et évite surtout l'erreur
+ * inverse : croire que l'alternance va dans le même sens pour les deux
+ * exercices de jambes, alors que le document les fait alterner en opposition.
+ *
+ * `null` quand le mouvement n'alterne pas : il n'y a alors rien à montrer.
+ */
+export function frisePour(
+  ligne: LigneMass4,
+): ReadonlyArray<{ semaine: number; mode: ModeExecution }> | null {
+  if (ligne.alternance === undefined) return null;
+  return SEMAINES_MASS4.map((semaine) => ({
+    semaine,
+    // `modePour` ne rend `null` que sans alternance, cas déjà écarté.
+    mode: modePour(ligne, semaine) as ModeExecution,
+  }));
+}
+
 /** Les répétitions telles qu'elles s'affichent, une fois le mode connu. */
 export function repsAffichees(ligne: LigneMass4, semaine: number): string {
   const mode = modePour(ligne, semaine);
   if (mode === null) return ligne.reps;
   return mode === 'unilateral' ? `${ligne.reps} / jambe` : ligne.reps;
+}
+
+/**
+ * La DEUXIÈME PARTIE d'une série, déduite de la technique.
+ *
+ * ── Ce qu'elle est ────────────────────────────────────────────────────────
+ *
+ * Plusieurs séries de MASS 4 se jouent en deux temps, et le second compte
+ * autant que le premier : « 6 reps lourdes, puis AUSSITÔT 10 à 12 reps à
+ * ≈ 60 % ». Les noter dans un seul champ perdrait la moitié du travail, et
+ * comparer deux semaines deviendrait impossible — on ne saurait pas si 12
+ * reps sont la partie lourde ou l'allégée.
+ *
+ * ── Les trois cas du document, et un seul piège ───────────────────────────
+ *
+ * Deux techniques allègent la charge et l'écrivent : la dégressive après
+ * série lourde, et la dégressive après 10 reps. Toutes deux portent donc
+ * `withLoad`.
+ *
+ * La troisième, « trois séries différentes », est le piège. Le document la
+ * détaille série par série : la 1 et la 3 finissent par « 5 s de pause, puis
+ * max de reps », la 2 non — elle est faite de 5 reps suivies de 5 s de
+ * contraction tenue, trois fois, et n'a pas de seconde partie. Et dans ce
+ * cas-là on ne touche PAS à la charge : d'où `withLoad: false`, qui fera
+ * écrire « la même » à l'écran plutôt qu'un champ vide à remplir.
+ *
+ * Appliquer la deuxième partie aux trois séries aurait demandé une saisie
+ * pour un effort que le programme ne demande pas.
+ */
+export function secondePartiePour(
+  technique: Technique,
+): { label: string; withLoad: boolean; onSets?: number[] } | undefined {
+  switch (technique) {
+    case 'lourde-degressive':
+      return { label: 'Puis aussitôt 10 à 12 reps à ≈ 60 %', withLoad: true };
+    case 'degressive-max':
+      return { label: 'Puis aussitôt le max de reps à ≈ 60 %', withLoad: true };
+    case 'trois-series':
+      return {
+        label: 'Après 5 s de pause : max de reps jusqu’à l’échec',
+        withLoad: false,
+        // Séries 1 et 3. La série 2 est faite de contractions tenues.
+        onSets: [0, 2],
+      };
+    default:
+      return undefined;
+  }
 }

@@ -173,6 +173,8 @@ export function SessionScreen({
       measureValue: payload.measureValue,
       measureUnit: payload.measureUnit,
       failed: payload.failed,
+      secondReps: payload.secondReps,
+      secondKg: payload.secondKg,
     });
     await data.reload();
   }

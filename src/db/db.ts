@@ -83,6 +83,26 @@ export interface SetRow {
   /** §11 cas 5. */
   failed: boolean;
 
+  /**
+   * La DEUXIÈME PARTIE de la série, quand le programme en prescrit une.
+   *
+   * MASS 4 construit plusieurs de ses séries en deux temps : une dégressive
+   * (« 6 reps lourdes, puis aussitôt 10 à 12 reps à ≈ 60 % ») ou un passage à
+   * l'échec après une pause de 5 s. Ce sont deux efforts distincts dans la
+   * même série, et les écraser l'un sur l'autre perdrait la moitié du travail.
+   *
+   * `secondKg` à `null` ne veut pas dire « aucune charge » mais « la MÊME
+   * charge que la première partie » : c'est le cas de l'échec après pause, où
+   * l'on ne touche pas à la barre. La dégressive, elle, écrit son allègement.
+   *
+   * Les deux champs sont absents des lignes écrites avant eux, et de toutes
+   * celles de POWER 12, qui ne prescrit aucune série en deux temps. Aucune
+   * migration n'est nécessaire : ils ne sont pas indexés, et `undefined` s'y
+   * lit comme « pas de deuxième partie ».
+   */
+  secondReps?: number | null;
+  secondKg?: number | null;
+
   doneAt: number;
 }
 
