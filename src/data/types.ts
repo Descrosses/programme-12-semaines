@@ -51,8 +51,34 @@ export type Block = 'test' | 'accumulation' | 'deload' | 'maxforce' | 'power' | 
  */
 export type DayIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-/** Semaine 0 = combine initial (§12), semaines 1 à 12 = le programme. */
-export type WeekIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+/**
+ * Un numéro de semaine dans un programme. 0 = le combine initial (§12).
+ *
+ * ── Pourquoi ce n'est plus une union de littéraux ──────────────────────────
+ *
+ * C'était `0 | 1 | … | 12`, et ça disait deux choses à la fois : « c'est un
+ * numéro de semaine » et « ce programme dure douze semaines ». La première est
+ * vraie pour tous les programmes, la seconde n'est vraie que pour POWER 12 :
+ * MASS 4 en dure quatre, et POWER 28 en durerait vingt-huit.
+ *
+ * Le type ne porte donc plus que la première. La durée appartient au
+ * programme, qui la déclare dans `DUREE_SEMAINES`, et c'est `semaineValide`
+ * qui vérifie qu'un numéro tient dedans — à l'exécution, là où arrivent les
+ * valeurs douteuses : une ancre d'URL, un fichier importé, une vieille ligne.
+ *
+ * Ce que le compilateur ne refuse plus, un test le refuse : l'empreinte du
+ * programme est recalculée semaine par semaine, et une semaine de trop ou de
+ * moins s'y verrait immédiatement.
+ */
+export type WeekIndex = number;
+
+/** Nombre de semaines d'entraînement de POWER 12, hors combine initial. */
+export const DUREE_SEMAINES = 12;
+
+/** Le numéro tient-il dans le programme, combine initial compris ? */
+export function semaineValide(n: number, duree: number = DUREE_SEMAINES): boolean {
+  return Number.isInteger(n) && n >= 0 && n <= duree;
+}
 
 export const DAY_LABELS: Record<DayIndex, string> = {
   0: 'Lundi',

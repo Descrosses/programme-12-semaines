@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { NUTRITION_TARGETS, type DayKind } from '../data/nutrition';
-import { BLOCKS, WEEK_BLOCKS, isCombineDay } from '../data/program';
+import { BLOCKS, WEEK_BLOCKS, blocDeLaSemaine, couleurDuBloc, isCombineDay } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
   humanDate,
@@ -208,7 +208,8 @@ export function TodayScreen({
           ? today.first.week
           : today.last.week;
 
-  const bloc = semaineDuJour === null ? null : BLOCKS[WEEK_BLOCKS[semaineDuJour]];
+  const blocSemaine = semaineDuJour === null ? null : blocDeLaSemaine(semaineDuJour);
+  const bloc = blocSemaine === null ? null : BLOCKS[blocSemaine];
 
   const entete =
     today.kind === 'session'
@@ -232,7 +233,7 @@ export function TodayScreen({
           <div className={styles.meta}>
             <span
               className={`${styles.metaItem} ${styles.metaBloc}`}
-              style={{ '--bloc': BLOCKS[WEEK_BLOCKS[today.session.week]].color } as CSSProperties}
+              style={{ '--bloc': couleurDuBloc(today.session.week) } as CSSProperties}
             >
               {state.intensity}
             </span>

@@ -14,7 +14,7 @@ import { getSession, hasSession } from './getSession';
 import { EMPTY_CONTEXT, type SessionContext } from './types';
 import { BASE_SESSIONS } from '../data/baseSessions';
 import { specialSession } from '../data/testSessions';
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 import { hold, meters, reps } from '../data/types';
 import type { DayIndex, WeekIndex } from '../data/types';
 
@@ -87,7 +87,7 @@ describe('l’étiquette du §3 tient ce que la séance fait', () => {
   it('chaque séance des douze semaines tombe dans sa fourchette', () => {
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (!hasSession(week, day)) continue;
         const s = getSession(week, day, CTX);
         if (!s) continue;

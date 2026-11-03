@@ -12,7 +12,7 @@
 import { describe, expect, it } from 'vitest';
 import { gripHint } from './format';
 import { getSession, hasSession } from './getSession';
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 import { EMPTY_CONTEXT, type Occurrence, type SessionContext } from './types';
 import type { DayIndex, WeekIndex } from '../data/types';
 
@@ -50,7 +50,7 @@ describe('le plan chiffre la distance des portés', () => {
   it('aucun porté du programme ne prescrit 5 m', () => {
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (!hasSession(week, day)) continue;
         for (const ex of getSession(week, day, CTX)?.exercises ?? []) {
           if (ex.work.kind !== 'distance') continue;
@@ -129,7 +129,7 @@ describe('une haltère ou deux — le pense-bête', () => {
     let vus = 0;
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (!hasSession(week, day)) continue;
         for (const ex of getSession(week, day, CTX)?.exercises ?? []) {
           if (ex.load.shape !== 'dbPair' && ex.load.shape !== 'dbSingle') continue;

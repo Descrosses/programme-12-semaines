@@ -177,6 +177,41 @@ export const WEEK_DAYS: Record<WeekIndex, readonly DayIndex[]> = {
   12: TRAINING_DAYS,
 };
 
+/**
+ * Le bloc d'une semaine, ou `null` si la semaine n'est pas dans le programme.
+ *
+ * Depuis que `WeekIndex` est un nombre et non une liste figée, une semaine 14
+ * est une valeur que le compilateur accepte. Elle n'existe pourtant pas : ce
+ * qui rentre d'une ancre d'URL ou d'une vieille ligne doit donc pouvoir
+ * recevoir « aucun bloc » plutôt qu'un bloc inventé.
+ */
+export function blocDeLaSemaine(week: number): Block | null {
+  return WEEK_BLOCKS[week] ?? null;
+}
+
+/**
+ * Les semaines du programme, combine initial compris, dans l'ordre.
+ *
+ * Déduite de `WEEK_BLOCKS` et non écrite à la main : un programme de quatre
+ * semaines produira cinq entrées sans qu'une seule boucle d'écran ait à le
+ * savoir. Les `Array.from({ length: 13 })` qui traînaient dans l'interface
+ * disaient « douze semaines » en dur, à trois endroits différents.
+ */
+export const SEMAINES: readonly number[] = Object.keys(WEEK_BLOCKS)
+  .map(Number)
+  .sort((a, b) => a - b);
+
+/** La couleur du bloc d'une semaine. Transparente hors programme. */
+export function couleurDuBloc(week: number): string {
+  const cle = blocDeLaSemaine(week);
+  return cle === null ? 'transparent' : BLOCKS[cle].color;
+}
+
+/** Les jours portés par une semaine. Vide hors programme, jamais `undefined`. */
+export function joursDeLaSemaine(week: number): readonly DayIndex[] {
+  return WEEK_DAYS[week] ?? [];
+}
+
 // ---------------------------------------------------------------------------
 // §4 — Readiness, §11 — règles de progression : seuils bruts.
 // L'engine s'en sert, il ne les redéfinit pas.

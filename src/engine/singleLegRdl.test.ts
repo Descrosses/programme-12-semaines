@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 import { getSession } from './getSession';
 import { EMPTY_CONTEXT, type SessionContext } from './types';
 import { BLOCK_RULES } from '../data/blockRules';
-import { WEEK_BLOCKS, WEEK_DAYS } from '../data/program';
+import { WEEK_BLOCKS, joursDeLaSemaine } from '../data/program';
 import { specialSession } from '../data/testSessions';
 import type { DayIndex, WeekIndex } from '../data/types';
 
@@ -84,7 +84,7 @@ describe('Single-Leg RDL — retiré par le bloc, pas par un numéro de semaine'
     // retirer du samedi aurait pu laisser une occurrence orpheline.
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (day === 5) continue;
         expect(ids(week, day), `S${week} j${day}`).not.toContain('single-leg-rdl');
       }

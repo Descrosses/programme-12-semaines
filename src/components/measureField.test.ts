@@ -12,7 +12,7 @@
 import { describe, expect, it } from 'vitest';
 import { measureOf, showsLoadField } from './ExerciseCard';
 import { getSession, hasSession } from '../engine/getSession';
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 import { EMPTY_CONTEXT, type SessionContext } from '../engine/types';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { WeekIndex } from '../data/types';
@@ -27,7 +27,7 @@ function tousLesExercices(): Map<string, ResolvedExercise> {
   const out = new Map<string, ResolvedExercise>();
   for (let w = 0; w <= 12; w++) {
     const week = w as WeekIndex;
-    for (const day of WEEK_DAYS[week]) {
+    for (const day of joursDeLaSemaine(week)) {
       if (!hasSession(week, day)) continue;
       for (const ex of getSession(week, day, CTX)?.exercises ?? []) {
         if (!out.has(ex.id)) out.set(ex.id, ex);
@@ -60,7 +60,7 @@ describe('le Broad Jump du vendredi se note en distance', () => {
   it('vaut pour toutes les semaines, pas seulement le combine', () => {
     // Le bug venait de là : la mesure était conditionnée au rôle `test`.
     for (const week of [1, 5, 9, 12] as WeekIndex[]) {
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (!hasSession(week, day)) continue;
         const ex = getSession(week, day, CTX)?.exercises.find((e) => e.id === 'broad-jump');
         if (!ex) continue;

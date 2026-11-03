@@ -12,7 +12,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { EXERCISES } from './exercises';
-import { WEEK_DAYS } from './program';
+import { joursDeLaSemaine } from './program';
 import { getSession, hasSession } from '../engine/getSession';
 import { EMPTY_CONTEXT, type SessionContext } from '../engine/types';
 import type { WeekIndex } from './types';
@@ -122,7 +122,7 @@ describe('sa place dans la séance du vendredi', () => {
   it('n’apparaît QUE le vendredi', () => {
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         if (!hasSession(week, day) || day === VENDREDI) continue;
         const ids = getSession(week, day, CTX)?.exercises.map((e) => e.id) ?? [];
         expect(ids, `S${week} jour ${day}`).not.toContain(ID);

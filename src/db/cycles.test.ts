@@ -73,7 +73,8 @@ describe('le dépôt et les cycles', () => {
 
   it('isole deux cycles qui portent la même semaine', async () => {
     const base = await monterBaseJetable();
-    const { ensureSession, saveSet, allSessions, allSets } = await import('./repo');
+    const { ensureSession, saveSet, allSessions, allSets, demarrerCycle, terminerCycle } =
+      await import('./repo');
 
     // Cycle 1 : une séance et une série à 100 kg.
     const s1 = await ensureSession(1, 0, '2026-09-21');
@@ -82,14 +83,11 @@ describe('le dépôt et les cycles', () => {
 
     // Le premier cycle se termine, un second démarre.
     const premier = (await base.cycles.toArray())[0];
-    await base.cycles.update(premier?.id as number, { statut: 'termine', endedAt: '2026-12-06' });
-    await base.cycles.add({
+    await terminerCycle(premier?.id as number, '2026-12-06');
+    await demarrerCycle({
       programmeId: 'power12',
       programmeVersion: '1.2',
       startDate: '2027-01-04',
-      statut: 'en-cours',
-      endedAt: '',
-      createdAt: '2026-12-20',
     });
 
     // Le second cycle part d'un historique vide, sans rien avoir effacé.
@@ -112,21 +110,122 @@ describe('le dépôt et les cycles', () => {
     expect(toutes.map((s) => s.actualKg).sort((a, b) => (a ?? 0) - (b ?? 0))).toEqual([100, 110]);
   });
 
+  it('désigne le cycle courant au lieu de le deviner', async () => {
+    const base = await monterBaseJetable();
+    const { demarrerCycle, cycleActif, getSettingsRow } = await import('./repo');
+
+    const premier = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    expect((await getSettingsRow()).cycleActifId).toBe(premier.id);
+
+    const second = await demarrerCycle({
+      programmeId: 'mass4',
+      programmeVersion: '1.0',
+      startDate: '2026-12-14',
+    });
+    expect((await getSettingsRow()).cycleActifId).toBe(second.id);
+    expect((await cycleActif())?.id).toBe(second.id);
+
+    // Les deux tournent : démarrer n'a rien terminé.
+    expect((await base.cycles.toArray()).filter((c) => c.statut === 'en-cours')).toHaveLength(2);
+  });
+
+  it('planifie un cycle sans quitter celui qu’on est en train de faire', async () => {
+    await monterBaseJetable();
+    const { demarrerCycle, cycleActif } = await import('./repo');
+
+    const courant = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    const prevu = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2027-03-01',
+      statut: 'prevu',
+    });
+
+    expect(prevu.statut).toBe('prevu');
+    expect((await cycleActif())?.id).toBe(courant.id);
+  });
+
+  it('aligne le calendrier sur le cycle qu’on active', async () => {
+    await monterBaseJetable();
+    const { demarrerCycle, activerCycle, getSettingsRow } = await import('./repo');
+
+    const premier = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    const second = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2027-01-04',
+    });
+    expect((await getSettingsRow()).startDate).toBe('2027-01-04');
+
+    await activerCycle(premier.id as number);
+    const reglages = await getSettingsRow();
+    expect(reglages.cycleActifId).toBe(premier.id);
+    // Le point qui compte : la date de début suit, sinon les séances du
+    // premier cycle s'afficheraient aux dates du second.
+    expect(reglages.startDate).toBe('2026-09-14');
+    expect(second.startDate).toBe('2027-01-04');
+  });
+
+  it('terminer un cycle n’efface rien et ne déplace personne', async () => {
+    const base = await monterBaseJetable();
+    const { ensureSession, demarrerCycle, terminerCycle, cycleActif } = await import('./repo');
+
+    const cycle = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    await ensureSession(1, 0, '2026-09-21');
+
+    await terminerCycle(cycle.id as number, '2026-12-06');
+
+    const relu = await base.cycles.get(cycle.id as number);
+    expect(relu?.statut).toBe('termine');
+    expect(relu?.endedAt).toBe('2026-12-06');
+    expect(await base.sessions.count()).toBe(1);
+    // Terminer ne téléporte pas l'application ailleurs.
+    expect((await cycleActif())?.id).toBe(cycle.id);
+  });
+
+  it('garde la date de début du cycle d’accord avec les réglages', async () => {
+    const base = await monterBaseJetable();
+    const { demarrerCycle, saveSettings } = await import('./repo');
+
+    const cycle = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+
+    await saveSettings({ startDate: '2026-09-21' });
+
+    expect((await base.cycles.get(cycle.id as number))?.startDate).toBe('2026-09-21');
+  });
+
   it('garde un combine « initial » par cycle, ce qui était impossible', async () => {
     const base = await monterBaseJetable();
-    const { saveCombine, allCombines } = await import('./repo');
+    const { saveCombine, allCombines, demarrerCycle, terminerCycle } = await import('./repo');
 
     await saveCombine('initial', { date: '2026-09-14', metrics: { 'test-squat-1rm': 125 } });
 
     const premier = (await base.cycles.toArray())[0];
-    await base.cycles.update(premier?.id as number, { statut: 'termine' });
-    await base.cycles.add({
+    await terminerCycle(premier?.id as number, '2026-12-06');
+    await demarrerCycle({
       programmeId: 'power12',
       programmeVersion: '1.2',
       startDate: '2027-01-04',
-      statut: 'en-cours',
-      endedAt: '',
-      createdAt: '2026-12-20',
     });
 
     await saveCombine('initial', { date: '2027-01-04', metrics: { 'test-squat-1rm': 137.5 } });

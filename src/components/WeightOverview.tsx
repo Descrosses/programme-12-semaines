@@ -18,7 +18,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { WeightChart, WaistChart } from './WeightChart';
-import { BLOCKS, WEEK_BLOCKS, type Block, type WeekIndex } from '../data/program';
+import { BLOCKS, WEEK_BLOCKS, couleurDuBloc, type Block } from '../data/program';
 import { bandePoids } from '../engine/ciblePoids';
 import { fr } from '../engine/format';
 import type { Measurement } from '../engine/nutrition';
@@ -150,7 +150,7 @@ export function WeightOverview() {
                     <th scope="row" className={local.sem}>
                       <span
                         className={local.semTrait}
-                        style={{ background: BLOCKS[WEEK_BLOCKS[s.week as WeekIndex]].color }}
+                        style={{ background: couleurDuBloc(s.week) }}
                       />
                       {s.week === 0 ? 'Comb.' : `S${s.week}`}
                     </th>

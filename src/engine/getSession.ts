@@ -19,7 +19,8 @@ import {
   DELOAD_POLICY,
   READINESS_THRESHOLDS,
   WEEK_BLOCKS,
-  WEEK_DAYS,
+  joursDeLaSemaine,
+  blocDeLaSemaine,
   blockNotesFor,
   rulesFor,
 } from '../data/program';
@@ -169,7 +170,7 @@ export interface ResolvedSession {
 
 /** Cette case du calendrier porte-t-elle une séance ? */
 export function hasSession(week: WeekIndex, day: DayIndex): boolean {
-  return (WEEK_DAYS[week] as readonly DayIndex[]).includes(day);
+  return joursDeLaSemaine(week).includes(day);
 }
 
 const LOWER_BODY_FN = new Set(['squat', 'hinge', 'jump', 'carry']);
@@ -189,7 +190,10 @@ export function getSession(
 ): ResolvedSession | null {
   if (!hasSession(week, day)) return null;
 
-  const block = WEEK_BLOCKS[week];
+  const block = blocDeLaSemaine(week);
+  // Une semaine hors programme n'a pas de bloc, donc pas de séance. Même
+  // règle qu'en dessous : refuser plutôt qu'inventer.
+  if (block === null) return null;
   const special = specialSession(week, day);
   // `hasSession` a déjà écarté les jours vides ; si aucune trame ne répond ici,
   // c'est que `WEEK_DAYS` et `BASE_SESSIONS` se contredisent — on refuse plutôt

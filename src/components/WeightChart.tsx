@@ -23,7 +23,7 @@
  */
 
 import { useState } from 'react';
-import { BLOCKS, WEEK_BLOCKS, type WeekIndex } from '../data/program';
+import { couleurDuBloc, type WeekIndex } from '../data/program';
 import { addDays, daysBetween, humanDate } from '../engine/calendar';
 import { fr } from '../engine/format';
 import type { Measurement } from '../engine/nutrition';
@@ -113,7 +113,7 @@ function FondBlocs({
           y={haut}
           width={largeur}
           height={bas - haut}
-          fill={BLOCKS[WEEK_BLOCKS[w]].color}
+          fill={couleurDuBloc(w)}
           opacity={0.13}
         />
       ))}

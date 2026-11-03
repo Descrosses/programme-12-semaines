@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { BLOCKS, WEEK_BLOCKS, WEEK_DAYS } from '../data/program';
+import { BLOCKS, SEMAINES, blocDeLaSemaine, joursDeLaSemaine } from '../data/program';
 import { DAY_LABELS, DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
 import { dateFor, humanDateShort } from '../engine/calendar';
 import { getSession } from '../engine/getSession';
@@ -80,7 +80,7 @@ export function WeekScreen({
       const todayIso = new Date().toISOString().slice(0, 10);
 
       const out: DayLine[] = [];
-      for (const day of WEEK_DAYS[week]) {
+      for (const day of joursDeLaSemaine(week)) {
         const s = getSession(week, day, {
           settings,
           history,
@@ -103,7 +103,11 @@ export function WeekScreen({
     })();
   }, [week]);
 
-  const block = BLOCKS[WEEK_BLOCKS[week]];
+  const blocCourant = blocDeLaSemaine(week);
+  // Une semaine hors programme n'a rien à montrer. L'ancre d'URL est déjà
+  // bornée, mais c'est elle qui décide, pas une longueur écrite en dur.
+  if (blocCourant === null) return null;
+  const block = BLOCKS[blocCourant];
 
   return (
     <div className={styles.screen}>
@@ -123,8 +127,10 @@ export function WeekScreen({
         carte de phase la lisent toutes au même endroit.
       */}
       <div className={styles.weeks} ref={bande}>
-        {Array.from({ length: 13 }, (_, w) => {
-          const b = BLOCKS[WEEK_BLOCKS[w as WeekIndex]];
+        {SEMAINES.map((w) => {
+          const cle = blocDeLaSemaine(w);
+          if (cle === null) return null;
+          const b = BLOCKS[cle];
           return (
             <button
               key={w}
