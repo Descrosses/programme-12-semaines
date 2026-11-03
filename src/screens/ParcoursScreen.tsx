@@ -25,14 +25,17 @@
  * d'être.
  */
 
-import { useEffect, useState } from 'react';
-import { ScreenHeader } from '../components/ScreenHeader';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { EnTetePlateforme } from '../components/EnTetePlateforme';
+import { Icon } from '../components/Icon';
+import { Visuel } from '../components/Visuel';
+import { HABILLAGE } from '../data/famillesVisuel';
 import { programmeParId } from '../data/catalogue';
 import { EXERCISES } from '../data/exercises';
 import { COMBINE_METRICS } from '../data/testSessions';
 import type { CombineRow, CycleRow } from '../db/db';
 import { activerCycle, combinesDuCycle, resumesDesCycles, type ResumeCycle } from '../db/repo';
-import { schedule } from '../engine/calendar';
+import { currentWeek, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
 import { fr } from '../engine/format';
 import { lowerIsBetter } from '../engine/lastPerformance';
@@ -42,6 +45,8 @@ import local from './Parcours.module.css';
 interface Vue extends ResumeCycle {
   total: number;
   combines: CombineRow[];
+  semaine: number | null;
+  semaines: number;
 }
 
 /*
@@ -54,12 +59,6 @@ interface Vue extends ResumeCycle {
  * s'affichent ; la couleur, non.
  */
 const SANS_JUGEMENT = new Set(['test-bodyweight']);
-
-const SECTIONS: Array<{ cle: CycleRow['statut']; titre: string; vide: string }> = [
-  { cle: 'en-cours', titre: 'En cours', vide: 'Aucun programme en cours.' },
-  { cle: 'termine', titre: 'Terminés', vide: 'Aucun programme terminé pour l’instant.' },
-  { cle: 'prevu', titre: 'Prévus', vide: 'Aucun programme planifié.' },
-];
 
 function jour(iso: string): string {
   if (iso === '') return '—';
@@ -79,6 +78,14 @@ export function ParcoursScreen({
 }) {
   const [vues, setVues] = useState<Vue[] | null>(null);
   const [bilanOuvert, setBilanOuvert] = useState<number | null>(null);
+  /**
+   * Quelle des deux rubriques est ouverte, ou aucune.
+   *
+   * La maquette les montre fermées : l'écran doit tenir sur une hauteur
+   * d'iPhone, et les cycles en cours — la raison pour laquelle on l'ouvre —
+   * seraient sinon repoussés sous un historique qu'on consulte rarement.
+   */
+  const [rubrique, setRubrique] = useState<'bilans' | 'termines' | null>(null);
 
   useEffect(() => {
     let vivant = true;
@@ -91,6 +98,20 @@ export function ParcoursScreen({
             r.cycle.startDate === ''
               ? 0
               : schedule(r.cycle.startDate, modulePourCycle(r.cycle.programmeId)).length,
+          /*
+           * La semaine où en est ce cycle, et le nombre qu'il en compte.
+           * Calculés AVEC son propre programme : quatre semaines pour MASS 4,
+           * douze pour POWER 12.
+           */
+          semaine:
+            r.cycle.startDate === ''
+              ? null
+              : currentWeek(
+                  r.cycle.startDate,
+                  new Date().toISOString().slice(0, 10),
+                  modulePourCycle(r.cycle.programmeId),
+                ),
+          semaines: modulePourCycle(r.cycle.programmeId).dureeSemaines,
           combines: r.cycle.id === undefined ? [] : await combinesDuCycle(r.cycle.id),
         })),
       );
@@ -101,6 +122,21 @@ export function ParcoursScreen({
     };
   }, []);
 
+  const enCours = (vues ?? []).filter((v) => v.cycle.statut === 'en-cours');
+  const termines = (vues ?? []).filter((v) => v.cycle.statut === 'termine');
+  const prevus = (vues ?? []).filter((v) => v.cycle.statut === 'prevu');
+  /** Les cycles qui ont de quoi faire un bilan : au moins une mesure relevée. */
+  const avecBilan = (vues ?? []).filter((v) => lignesDeBilan(v).length > 0);
+  const totalFaites = (vues ?? []).reduce((n, v) => n + v.faites, 0);
+  /*
+   * « Progression du cycle » est celle du PREMIER cycle en cours, pas une
+   * moyenne des cycles : une moyenne entre un cycle à 54 % et un cycle à 0 %
+   * ne décrit aucun des deux.
+   */
+  const actif = enCours[0];
+  const pourcentActif =
+    actif === undefined || actif.total === 0 ? 0 : Math.round((actif.faites / actif.total) * 100);
+
   async function ouvrir(cycle: CycleRow) {
     if (cycle.id === undefined) return;
     await activerCycle(cycle.id);
@@ -110,13 +146,15 @@ export function ParcoursScreen({
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader
-        eyebrow="Plan d’ensemble"
-        title="Mon parcours"
-        subtitle="Tes cycles, du premier au dernier"
-        visuel="sprint"
-        compact
-      />
+      <EnTetePlateforme />
+
+      <div className={local.titreEcran}>
+        <h1 className={local.grandTitre}>
+          <span className={local.barreTitre} aria-hidden="true" />
+          Mon parcours
+        </h1>
+        <p className={local.sousTitreEcran}>Mes cycles, mes bilans, ma progression</p>
+      </div>
 
       {vues === null && <p className={styles.hint}>Lecture de tes cycles…</p>}
 
@@ -130,144 +168,291 @@ export function ParcoursScreen({
         </section>
       )}
 
-      {vues !== null &&
-        vues.length > 0 &&
-        SECTIONS.map((section) => {
-          const dedans = vues.filter((v) => v.cycle.statut === section.cle);
-          return (
-            <section key={section.cle}>
-              <h2 className={styles.sectionTitle}>
-                {section.titre}
-                <span className={local.compte}> {dedans.length}</span>
-              </h2>
+      {vues !== null && vues.length > 0 && (
+        <>
+          {/* ------------------------------------------ cycles en cours -- */}
+          <div className={local.enteteSection}>
+            <h2 className={local.titreSection}>
+              <span className={local.barreTitre} aria-hidden="true" />
+              Cycles en cours
+            </h2>
+            <span className={local.compte}>
+              {enCours.length} cycle{enCours.length > 1 ? 's' : ''}
+            </span>
+          </div>
 
-              {dedans.length === 0 && <p className={styles.hint}>{section.vide}</p>}
+          {enCours.length === 0 && <p className={styles.hint}>Aucun programme en cours.</p>}
 
-              {dedans.map((v) => {
+          {enCours.map((v) => {
+            const programme = programmeParId(v.cycle.programmeId);
+            const habillage = programme === null ? null : HABILLAGE[programme.familleId];
+            const pourcent = v.total === 0 ? 0 : Math.round((v.faites / v.total) * 100);
+            return (
+              <button
+                key={v.cycle.id}
+                type="button"
+                className={local.carteCycle}
+                style={{ '--teinte': habillage?.teinte ?? 'var(--accent)' } as CSSProperties}
+                onClick={() => void ouvrir(v.cycle)}
+              >
+                {habillage?.photo !== undefined && (
+                  <span className={local.cyclePhoto} aria-hidden="true">
+                    <Visuel nom={habillage.photo} sizes="100vw" />
+                  </span>
+                )}
+                <span className={local.cycleVoile} aria-hidden="true" />
+                <span className={local.cycleCorps}>
+                  <span className={local.cycleNom}>{programme?.nom ?? v.cycle.programmeId}</span>
+                  <span className={local.cycleSemaine}>
+                    Semaine <b>{v.semaine ?? 0}</b> / {v.semaines}
+                  </span>
+                  <span className={local.jauge} aria-hidden="true">
+                    <i style={{ width: `${pourcent}%` }} />
+                  </span>
+                  <span className={local.cycleChiffres}>
+                    {v.total === 0
+                      ? 'Date de début à poser.'
+                      : `${v.faites} séance${v.faites > 1 ? 's' : ''} sur ${v.total} · ${pourcent} %`}
+                  </span>
+                </span>
+                <span className={local.cycleChevron} aria-hidden="true">
+                  <Icon name="arrow-right" size="18px" />
+                </span>
+              </button>
+            );
+          })}
+
+          {/* ------------------------------------------ les deux accès --- */}
+          <button
+            type="button"
+            className={local.rubrique}
+            onClick={() => setRubrique(rubrique === 'bilans' ? null : 'bilans')}
+            aria-expanded={rubrique === 'bilans'}
+          >
+            <span className={local.rubriqueIcone} aria-hidden="true">
+              <Icon name="chart" size="20px" />
+            </span>
+            <span className={local.rubriqueTexte}>
+              <b>Mes bilans</b>
+              <span>Mes résultats et mes évolutions</span>
+            </span>
+            <span className={local.rubriqueChevron} aria-hidden="true">
+              <Icon name={rubrique === 'bilans' ? 'chevron-up' : 'arrow-right'} size="17px" />
+            </span>
+          </button>
+
+          {rubrique === 'bilans' && (
+            <div className={local.rubriqueCorps}>
+              {avecBilan.length === 0 && (
+                <p className={styles.hint}>
+                  Aucun bilan pour l’instant : il se construit à partir des combinés, et aucun cycle
+                  n’en a deux de renseignés.
+                </p>
+              )}
+              {avecBilan.map((v) => bilanDuCycle(v, bilanOuvert, setBilanOuvert))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className={local.rubrique}
+            onClick={() => setRubrique(rubrique === 'termines' ? null : 'termines')}
+            aria-expanded={rubrique === 'termines'}
+          >
+            <span className={local.rubriqueIcone} aria-hidden="true">
+              <Icon name="calendar" size="20px" />
+            </span>
+            <span className={local.rubriqueTexte}>
+              <b>Mes cycles terminés</b>
+              <span>Historique de mes programmes</span>
+            </span>
+            <span className={local.rubriqueChevron} aria-hidden="true">
+              <Icon name={rubrique === 'termines' ? 'chevron-up' : 'arrow-right'} size="17px" />
+            </span>
+          </button>
+
+          {rubrique === 'termines' && (
+            <div className={local.rubriqueCorps}>
+              {termines.length === 0 && (
+                <p className={styles.hint}>Aucun programme terminé pour l’instant.</p>
+              )}
+              {termines.map((v) => {
                 const programme = programmeParId(v.cycle.programmeId);
                 const pourcent = v.total === 0 ? 0 : Math.round((v.faites / v.total) * 100);
-                const ouvert = bilanOuvert === v.cycle.id;
-                const initial = v.combines.find((c) => c.phase === 'initial')?.metrics ?? {};
-                const final = v.combines.find((c) => c.phase === 'final')?.metrics ?? {};
-                const lignes = COMBINE_METRICS.map((id) => ({
-                  id,
-                  i: initial[id],
-                  f: final[id],
-                })).filter((l) => typeof l.i === 'number' || typeof l.f === 'number');
-
                 return (
                   <article key={v.cycle.id} className={styles.card}>
                     <div className={local.entete}>
                       <h3 className={local.nom}>{programme?.nom ?? v.cycle.programmeId}</h3>
                       <span className={local.version}>version {v.cycle.programmeVersion}</span>
                     </div>
-
                     <p className={styles.cardSub}>
-                      {programme?.dureeSemaines ?? '—'} semaines · {jour(v.cycle.startDate)}
-                      {v.cycle.endedAt !== '' && ` → ${jour(v.cycle.endedAt)}`}
+                      {jour(v.cycle.startDate)}
+                      {v.cycle.endedAt !== '' && ` → ${jour(v.cycle.endedAt)}`} · {v.faites} séance
+                      {v.faites > 1 ? 's' : ''} sur {v.total} · {pourcent} %
                     </p>
-
-                    {v.total > 0 && (
-                      <>
-                        <div className={local.jauge} aria-hidden="true">
-                          <i style={{ width: `${pourcent}%` }} />
-                        </div>
-                        <p className={local.chiffres}>
-                          {v.faites} séance{v.faites > 1 ? 's' : ''} sur {v.total} · {pourcent} % de
-                          complétion
-                        </p>
-                      </>
-                    )}
-
-                    {v.total === 0 && <p className={local.chiffres}>Date de début à poser.</p>}
-
-                    <div className={local.actions}>
-                      {section.cle !== 'termine' && (
-                        <button
-                          type="button"
-                          className={local.ouvrir}
-                          onClick={() => void ouvrir(v.cycle)}
-                        >
-                          Ouvrir ce cycle
-                        </button>
-                      )}
-
-                      {lignes.length > 0 && (
-                        <button
-                          type="button"
-                          className={local.secondaire}
-                          onClick={() => setBilanOuvert(ouvert ? null : (v.cycle.id ?? null))}
-                          aria-expanded={ouvert}
-                        >
-                          {ouvert ? 'Masquer le bilan' : 'Voir le bilan'}
-                        </button>
-                      )}
-                    </div>
-
-                    {lignes.length === 0 && (
-                      <p className={local.sansBilan}>
-                        Pas encore de bilan : il se construit à partir des combinés, et celui-ci
-                        n’en a aucun de renseigné.
-                      </p>
-                    )}
-
-                    {ouvert && (
-                      <table className={local.bilan}>
-                        <thead>
-                          <tr>
-                            <th scope="col">Mouvement</th>
-                            <th scope="col">Initial</th>
-                            <th scope="col">Final</th>
-                            <th scope="col">Écart</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {lignes.map(({ id, i, f }) => {
-                            const chiffre = typeof i === 'number' && typeof f === 'number';
-                            const mieux =
-                              chiffre && !SANS_JUGEMENT.has(id)
-                                ? lowerIsBetter(id)
-                                  ? f < i
-                                  : f > i
-                                : null;
-                            /*
-                             * L'écart garde le SIGNE du nombre, pas celui du
-                             * jugement : un sprint qui passe de 1,86 à 1,80
-                             * s'écrit −3 %, et c'est la couleur qui dit que
-                             * c'est une progression. Écrire +3 % contredirait
-                             * les deux chiffres de la même ligne.
-                             */
-                            const ecart =
-                              chiffre && i !== 0 ? Math.round(((f - i) / i) * 1000) / 10 : null;
-                            return (
-                              <tr key={id}>
-                                <td>{EXERCISES[id]?.name ?? id}</td>
-                                <td>{typeof i === 'number' ? fr(i) : '—'}</td>
-                                <td>{typeof f === 'number' ? fr(f) : '—'}</td>
-                                <td
-                                  className={
-                                    mieux === null ? '' : mieux ? local.mieux : local.moins
-                                  }
-                                >
-                                  {ecart === null ? '—' : `${ecart > 0 ? '+' : ''}${fr(ecart)} %`}
-                                  {mieux !== null && (
-                                    <span className="visually-hidden">
-                                      {mieux ? ' — progression' : ' — recul'}
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    )}
                   </article>
                 );
               })}
-            </section>
-          );
-        })}
+              {prevus.length > 0 && (
+                <>
+                  <h3 className={styles.sectionTitle}>Prévus</h3>
+                  {prevus.map((v) => (
+                    <article key={v.cycle.id} className={styles.card}>
+                      <div className={local.entete}>
+                        <h3 className={local.nom}>
+                          {programmeParId(v.cycle.programmeId)?.nom ?? v.cycle.programmeId}
+                        </h3>
+                      </div>
+                      <p className={styles.cardSub}>Départ prévu le {jour(v.cycle.startDate)}</p>
+                      <button
+                        type="button"
+                        className={local.ouvrir}
+                        onClick={() => void ouvrir(v.cycle)}
+                      >
+                        Ouvrir ce cycle
+                      </button>
+                    </article>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* ---------------------------------------------- progression -- */}
+          <div className={local.enteteSection}>
+            <h2 className={local.titreSection}>
+              <span className={local.barreTitre} aria-hidden="true" />
+              Ma progression
+            </h2>
+          </div>
+
+          {/*
+            Trois chiffres, tous lus dans les données réelles. Aucun n'est une
+            projection : « progression du cycle » est le pourcentage du cycle
+            actif, pas une estimation de forme.
+          */}
+          <div className={local.tuiles}>
+            <div className={local.tuile}>
+              <span className={local.tuileIcone} aria-hidden="true">
+                <Icon name="check" size="22px" />
+              </span>
+              <span className={local.tuileValeur}>{totalFaites}</span>
+              <span className={local.tuileLibelle}>
+                Séances
+                <br />
+                réalisées
+              </span>
+            </div>
+            <div className={local.tuile}>
+              <span className={local.tuileIcone} aria-hidden="true">
+                <Icon name="chart" size="22px" />
+              </span>
+              <span className={local.tuileValeur}>{pourcentActif} %</span>
+              <span className={local.tuileLibelle}>
+                Progression
+                <br />
+                du cycle
+              </span>
+            </div>
+            <div className={local.tuile}>
+              <span className={local.tuileIcone} aria-hidden="true">
+                <Icon name="repeat" size="22px" />
+              </span>
+              <span className={local.tuileValeur}>{enCours.length}</span>
+              <span className={local.tuileLibelle}>
+                Cycles
+                <br />
+                en cours
+              </span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
+  );
+}
+
+/** Les mesures comparables d'un cycle : celles qui ont au moins un relevé. */
+function lignesDeBilan(v: Vue): Array<{ id: string; i?: number | null; f?: number | null }> {
+  const initial = v.combines.find((c) => c.phase === 'initial')?.metrics ?? {};
+  const final = v.combines.find((c) => c.phase === 'final')?.metrics ?? {};
+  return COMBINE_METRICS.map((id) => ({ id, i: initial[id], f: final[id] })).filter(
+    (l) => typeof l.i === 'number' || typeof l.f === 'number',
+  );
+}
+
+/**
+ * Le bilan d'un cycle : le tableau initial / final / écart.
+ *
+ * Sorti du composant parce qu'il est désormais rendu depuis la rubrique
+ * « Mes bilans » et non plus au fil des sections. La logique n'a pas changé —
+ * mêmes mesures, même règle de couleur, même traitement du poids de corps.
+ */
+function bilanDuCycle(v: Vue, ouvertId: number | null, setOuvert: (id: number | null) => void) {
+  const programme = programmeParId(v.cycle.programmeId);
+  const ouvert = ouvertId === v.cycle.id;
+  const lignes = lignesDeBilan(v);
+
+  return (
+    <article key={v.cycle.id} className={styles.card}>
+      <div className={local.entete}>
+        <h3 className={local.nom}>{programme?.nom ?? v.cycle.programmeId}</h3>
+        <span className={local.version}>version {v.cycle.programmeVersion}</span>
+      </div>
+      <p className={styles.cardSub}>
+        {jour(v.cycle.startDate)}
+        {v.cycle.endedAt !== '' && ` → ${jour(v.cycle.endedAt)}`}
+      </p>
+
+      <button
+        type="button"
+        className={local.secondaire}
+        onClick={() => setOuvert(ouvert ? null : (v.cycle.id ?? null))}
+        aria-expanded={ouvert}
+      >
+        {ouvert ? 'Masquer le bilan' : 'Voir le bilan'}
+      </button>
+
+      {ouvert && (
+        <table className={local.bilan}>
+          <thead>
+            <tr>
+              <th scope="col">Mouvement</th>
+              <th scope="col">Initial</th>
+              <th scope="col">Final</th>
+              <th scope="col">Écart</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lignes.map(({ id, i, f }) => {
+              const chiffre = typeof i === 'number' && typeof f === 'number';
+              const mieux =
+                chiffre && !SANS_JUGEMENT.has(id) ? (lowerIsBetter(id) ? f! < i! : f! > i!) : null;
+              /*
+               * L'écart garde le SIGNE du nombre, pas celui du jugement : un
+               * sprint qui passe de 1,86 à 1,80 s'écrit −3 %, et c'est la
+               * couleur qui dit que c'est une progression.
+               */
+              const ecart = chiffre && i !== 0 ? Math.round(((f! - i!) / i!) * 1000) / 10 : null;
+              return (
+                <tr key={id}>
+                  <td>{EXERCISES[id]?.name ?? id}</td>
+                  <td>{typeof i === 'number' ? fr(i) : '—'}</td>
+                  <td>{typeof f === 'number' ? fr(f) : '—'}</td>
+                  <td className={mieux === null ? '' : mieux ? local.mieux : local.moins}>
+                    {ecart === null ? '—' : `${ecart > 0 ? '+' : ''}${fr(ecart)} %`}
+                    {mieux !== null && (
+                      <span className="visually-hidden">
+                        {mieux ? ' — progression' : ' — recul'}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </article>
   );
 }

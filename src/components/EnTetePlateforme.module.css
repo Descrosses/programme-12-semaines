@@ -1,0 +1,112 @@
+/*
+ * Le bandeau de la plateforme.
+ *
+ * Les obliques rouges sont posées en `clip-path` plutôt qu'en images : elles
+ * sont géométriques, elles doivent suivre la couleur d'accent du thème, et
+ * une image de plus à télécharger pour deux triangles serait du poids pour
+ * rien.
+ */
+
+.entete {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 6px) var(--pad) 10px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+}
+
+/*
+ * Les biseaux rouges des deux coins.
+ *
+ * Fins et courts : une première version les dessinait sur 46 % de la largeur
+ * et 78 % de la hauteur, ce qui donnait deux grands triangles rouges qui
+ * mangeaient l'en-tête au lieu de l'encadrer. La maquette les montre comme
+ * deux éclats dans les angles, et c'est ce que `clip-path` dessine ici.
+ */
+.obliqueGauche,
+.obliqueDroite {
+  position: absolute;
+  top: 0;
+  width: 34%;
+  height: 62%;
+  pointer-events: none;
+}
+
+.obliqueGauche {
+  left: 0;
+  background: linear-gradient(150deg, var(--accent-bright), var(--accent-deep));
+  clip-path: polygon(0 0, 52% 0, 0 100%);
+}
+
+.obliqueDroite {
+  right: 0;
+  background: linear-gradient(210deg, var(--accent-bright), var(--accent-deep));
+  clip-path: polygon(100% 0, 48% 0, 100% 100%);
+}
+
+/* Un second éclat, plus clair et décalé, comme sur la maquette. */
+.obliqueGauche::after,
+.obliqueDroite::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 10%);
+}
+
+.obliqueGauche::after {
+  clip-path: polygon(0 0, 22% 0, 0 44%);
+}
+
+.obliqueDroite::after {
+  clip-path: polygon(100% 0, 78% 0, 100% 44%);
+}
+
+.logo {
+  position: relative;
+  display: block;
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+}
+
+/* Le nom remonte sur le logo : son fond graphite les fait se rejoindre. */
+.marque {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: -14px 0 0;
+}
+
+.nom {
+  font-family: var(--font-cond);
+  font-size: clamp(1.9rem, 8.6vw, 2.5rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.trait {
+  display: block;
+  width: 34px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: skewX(-18deg);
+}
+
+.signature {
+  position: relative;
+  margin: 4px 0 0;
+  font-family: var(--font-cond);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}

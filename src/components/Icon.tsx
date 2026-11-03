@@ -55,6 +55,7 @@ export type IconName =
   | 'alert'
   | 'helmet'
   | 'ruler'
+  | 'profil'
   | 'home';
 
 /** Les tracés, sur une grille de 24. Trait de 2, extrémités rondes. */
@@ -79,6 +80,8 @@ const PATHS: Record<IconName, string> = {
    * instrument de mesure.
    */
   ruler: 'M3 9h18v6H3zM8 9v3M12 9v4M16 9v3',
+  /* Buste et épaules : l'emplacement du profil, dans l'en-tête de la plateforme. */
+  profil: 'M12 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7M5 20a7 7 0 0114 0',
   'arrow-left': 'M19 12H5M11 6l-6 6 6 6',
   'arrow-right': 'M5 12h14M13 6l6 6-6 6',
   'arrow-up': 'M12 19V5M6 11l6-6 6 6',
