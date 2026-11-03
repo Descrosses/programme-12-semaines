@@ -79,15 +79,29 @@
  * Le dégradé de masque efface son bord bas-gauche : sans lui, un objet
  * détouré s'arrête sur une arête nette au milieu du titre.
  */
+/*
+ * La vignette est dimensionnée par sa HAUTEUR, et tient entièrement dans
+ * l'en-tête.
+ *
+ * Elle l'était par sa largeur — 42 % de l'écran — et débordait de huit pixels
+ * en haut et de douze à droite. Tant que l'en-tête changeait de hauteur d'un
+ * écran à l'autre, ce débord passait pour un cadrage ; une fois tous les
+ * en-têtes à la même hauteur, le ballon est resté le seul élément coupé de
+ * l'application, et ça se voyait.
+ *
+ * En hauteur relative, la vignette suit l'en-tête quelle que soit sa taille
+ * future, au lieu de suivre la largeur de l'écran — dont elle n'a aucune
+ * raison de dépendre.
+ */
 .photo {
-  top: -8px;
-  right: -12px;
-  width: 42%;
-  max-width: 172px;
-  height: auto;
+  top: 14px;
+  right: 12px;
+  width: auto;
+  height: 46%;
+  max-height: 96px;
   z-index: 0;
   opacity: 0.92;
-  mask-image: linear-gradient(205deg, #000 46%, transparent 86%);
+  mask-image: linear-gradient(205deg, #000 52%, transparent 92%);
 }
 
 /*
