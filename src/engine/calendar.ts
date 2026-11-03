@@ -25,7 +25,7 @@
  * Plus aucun cas particulier, contrairement à la version à 3 jours.
  */
 
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 
 /**
@@ -80,7 +80,7 @@ export function schedule(startDate: string): ScheduledSession[] {
   const out: ScheduledSession[] = [];
   for (let w = 0; w <= 12; w++) {
     const week = w as WeekIndex;
-    for (const day of WEEK_DAYS[week]) {
+    for (const day of joursDeLaSemaine(week)) {
       out.push({
         week,
         day,

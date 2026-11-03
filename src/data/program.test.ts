@@ -66,7 +66,14 @@ import {
   TARGETS_12_WEEKS,
 } from './testSessions';
 import { WARMUPS } from './warmups';
-import { WEEK_BLOCKS, WEEK_DAYS, BLOCKS } from './program';
+import {
+  WEEK_BLOCKS,
+  WEEK_DAYS,
+  BLOCKS,
+  SEMAINES,
+  blocDeLaSemaine,
+  joursDeLaSemaine,
+} from './program';
 import { DAY_LABELS, type DayIndex } from './types';
 
 /** Les cinq jours d'entraînement d'une semaine type, dans l'ordre réel. */
@@ -427,10 +434,22 @@ describe('§12 — paliers du test final', () => {
 describe('périodisation §2', () => {
   it('chaque semaine 0-12 a un bloc', () => {
     for (let w = 0; w <= 12; w++) {
-      const block = WEEK_BLOCKS[w as keyof typeof WEEK_BLOCKS];
-      expect(block, `semaine ${w}`).toBeDefined();
-      expect(BLOCKS[block]).toBeDefined();
+      const block = blocDeLaSemaine(w);
+      expect(block, `semaine ${w}`).not.toBeNull();
+      if (block !== null) expect(BLOCKS[block]).toBeDefined();
     }
+  });
+
+  it('n’invente aucun bloc hors du programme', () => {
+    // Depuis que `WeekIndex` est un nombre, une semaine 13 compile. Elle ne
+    // doit pour autant rien renvoyer.
+    expect(blocDeLaSemaine(13)).toBeNull();
+    expect(blocDeLaSemaine(-1)).toBeNull();
+    expect(joursDeLaSemaine(13)).toEqual([]);
+  });
+
+  it('expose exactement les treize semaines du programme', () => {
+    expect(SEMAINES).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
   });
 
   it('les blocs suivent le tableau §2', () => {

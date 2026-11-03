@@ -17,6 +17,7 @@ import {
   type CombinePhase,
   type CombineRow,
   type CycleRow,
+  type CycleStatut,
   type ExerciseMediaRow,
   type CustomFoodRow,
   type DayKindRow,
@@ -53,11 +54,26 @@ import {
  * suffira de passer le cycle voulu en argument.
  */
 
-/** Le cycle en cours, ou le plus récent. `null` sur une base encore vierge. */
+/**
+ * Le cycle courant — celui que l'application ouvre et sur lequel elle écrit.
+ *
+ * Il est DÉSIGNÉ par `settings.cycleActifId`, pas déduit. La déduction
+ * marchait tant qu'il n'y avait qu'un cycle ; avec un POWER et un MASS qui
+ * tournent en parallèle, deviner lequel l'utilisateur regarde serait une
+ * source d'erreur qu'aucun message ne signalerait.
+ *
+ * Le repli existe quand même, pour une base qui porterait des cycles sans
+ * pointeur : le plus récent des cycles en cours, sinon le dernier créé.
+ */
 export async function cycleActif(): Promise<CycleRow | null> {
+  const reglages = await getSettingsRow();
+  if (reglages.cycleActifId) {
+    const designe = await db.cycles.get(reglages.cycleActifId);
+    if (designe) return designe;
+  }
+
   const enCours = await db.cycles.where('statut').equals('en-cours').toArray();
   if (enCours.length > 0) {
-    // Le plus récemment commencé gagne : deux cycles en cours sont permis.
     return enCours.sort((a, b) => b.startDate.localeCompare(a.startDate))[0] ?? null;
   }
   const tous = await db.cycles.toArray();
@@ -95,7 +111,14 @@ export async function cyclePourEcriture(): Promise<CycleRow> {
   const reglages = await getSettingsRow();
   const aujourdhui = new Date().toISOString().slice(0, 10);
 
-  return db.transaction('rw', db.cycles, async () => {
+  /*
+   * `settings` est dans la portée en plus de `cycles` : la création pose le
+   * pointeur `cycleActifId` dans la foulée, et `cycleActif` lit les deux. Les
+   * enchaîner hors transaction ne marche pas — Dexie garde la zone de la
+   * transaction sur toute la chaîne de promesses, et une écriture dans une
+   * table non déclarée part en `NotFoundError`.
+   */
+  return db.transaction('rw', [db.cycles, db.settings], async () => {
     const existant = await cycleActif();
     if (existant?.id !== undefined) return existant;
 
@@ -108,8 +131,74 @@ export async function cyclePourEcriture(): Promise<CycleRow> {
       createdAt: aujourdhui,
     };
     const id = await db.cycles.add(nouveau);
+    await db.settings.put({ ...reglages, cycleActifId: id });
     return { ...nouveau, id };
   });
+}
+
+/**
+ * Démarre un nouveau cycle et le rend courant.
+ *
+ * Ne touche à AUCUN cycle existant : le précédent garde ses séances, ses
+ * charges et son statut. C'est tout l'intérêt de l'étape — refaire POWER 12
+ * n'efface pas le premier, il s'ajoute à côté.
+ *
+ * `settings.startDate` suit le cycle courant : c'est lui que le calendrier
+ * lit, et les deux doivent dire la même chose. Le recalage des dates se
+ * charge du reste.
+ */
+export async function demarrerCycle(input: {
+  programmeId: string;
+  programmeVersion: string;
+  startDate: string;
+  statut?: CycleStatut;
+}): Promise<CycleRow> {
+  const aujourdhui = new Date().toISOString().slice(0, 10);
+  const nouveau: CycleRow = {
+    programmeId: input.programmeId,
+    programmeVersion: input.programmeVersion,
+    startDate: input.startDate,
+    statut: input.statut ?? 'en-cours',
+    endedAt: '',
+    createdAt: aujourdhui,
+  };
+  const id = await db.cycles.add(nouveau);
+  const cycle = { ...nouveau, id };
+
+  // Un cycle seulement PRÉVU ne devient pas courant : on le planifie sans
+  // quitter celui qu'on est en train de faire.
+  if (cycle.statut === 'en-cours') await activerCycle(id);
+  return cycle;
+}
+
+/**
+ * Clôt un cycle. Rien n'est effacé : il passe en « terminé » et garde tout.
+ *
+ * Le cycle courant ne change pas automatiquement. Terminer son programme un
+ * dimanche soir ne doit pas téléporter l'application dans un autre cycle sans
+ * que personne l'ait demandé.
+ */
+export async function terminerCycle(id: number, dateFin?: string): Promise<void> {
+  await db.cycles.update(id, {
+    statut: 'termine',
+    endedAt: dateFin ?? new Date().toISOString().slice(0, 10),
+  });
+}
+
+/**
+ * Rend un cycle courant, et aligne le calendrier sur SA date de début.
+ *
+ * `settings.startDate` est la copie que lit le calendrier. La laisser sur
+ * l'ancien cycle afficherait les séances du nouveau aux dates de l'ancien —
+ * un décalage silencieux de plusieurs mois.
+ */
+export async function activerCycle(id: number): Promise<CycleRow | null> {
+  const cycle = await db.cycles.get(id);
+  if (!cycle) return null;
+
+  const reglages = await getSettingsRow();
+  await db.settings.put({ ...reglages, cycleActifId: id, startDate: cycle.startDate });
+  return cycle;
 }
 
 /** L'identifiant du cycle à écrire. */
@@ -143,6 +232,14 @@ export async function saveSettings(patch: Partial<SettingsRow>): Promise<Setting
   const next = { ...current, ...patch, id: 1 as const };
   await db.settings.put(next);
   if (next.startDate !== current.startDate && next.startDate !== '') {
+    /*
+     * La date de début appartient au CYCLE, et `settings.startDate` n'en est
+     * que la copie que lit le calendrier. Les laisser diverger ferait afficher
+     * les séances d'un cycle aux dates d'un autre, sans message d'erreur.
+     */
+    if (next.cycleActifId) {
+      await db.cycles.update(next.cycleActifId, { startDate: next.startDate });
+    }
     await realignScheduleDates(next.startDate);
   }
   return next;

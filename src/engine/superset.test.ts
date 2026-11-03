@@ -12,7 +12,7 @@ import {
 import { reps, type DayIndex, type Work, type WeekIndex } from '../data/types';
 import { getSession, type ResolvedExercise } from './getSession';
 import { EMPTY_CONTEXT, type SessionContext } from './types';
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 
 const ex = (
   id: string,
@@ -275,7 +275,7 @@ describe('la paire du lundi, dans le vrai programme', () => {
      * alternance avec un mouvement absent.
      */
     for (let w = 1; w <= 12; w++) {
-      for (const d of WEEK_DAYS[w as WeekIndex]) {
+      for (const d of joursDeLaSemaine(w)) {
         const ex = seance(w, d).find((e) => e.id === 'roman-side-bench');
         if (!ex) continue;
         const promet = ex.notes.some((n) => /alternance avec l’Ab Wheel/.test(n));
@@ -289,7 +289,7 @@ describe('la paire du lundi, dans le vrai programme', () => {
 
   it('aucun autre jour du programme ne forme de paire', () => {
     for (let w = 0; w <= 12; w++) {
-      for (const d of WEEK_DAYS[w as WeekIndex]) {
+      for (const d of joursDeLaSemaine(w)) {
         if (d === 0) continue;
         expect(paires(w, d), `S${w} j${d}`).toHaveLength(0);
       }

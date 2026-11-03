@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { getSession, hasSession } from './getSession';
 import { KG_MAX, emptyLabelForShape, loadEntryFor, parseKg, stepForShape } from './loadEntry';
 import { EMPTY_CONTEXT, type HistoryIndex, type SessionContext } from './types';
-import { WEEK_DAYS } from '../data/program';
+import { joursDeLaSemaine } from '../data/program';
 import type { DayIndex, WeekIndex } from '../data/types';
 
 /*
@@ -34,7 +34,7 @@ function toutesLesSeances(ctx: SessionContext = CTX) {
   const out: Array<{ week: WeekIndex; day: DayIndex; session: ReturnType<typeof getSession> }> = [];
   for (let w = 0; w <= 12; w++) {
     const week = w as WeekIndex;
-    for (const day of WEEK_DAYS[week]) {
+    for (const day of joursDeLaSemaine(week)) {
       if (!hasSession(week, day)) continue;
       out.push({ week, day, session: getSession(week, day, ctx) });
     }

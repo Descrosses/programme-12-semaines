@@ -166,7 +166,7 @@ describe('migration v16 → v17', () => {
 
     const apres = new ProgrammeDB(NOM);
     await apres.open();
-    expect(apres.verno).toBe(17);
+    expect(apres.verno).toBe(18);
 
     expect(await apres.sessions.count()).toBe(2);
     expect(await apres.sets.count()).toBe(1);
@@ -218,6 +218,18 @@ describe('migration v16 → v17', () => {
       const orphelines = lignes.filter((l) => l.cycleId !== id);
       expect({ table: nom, orphelines: orphelines.length }).toEqual({ table: nom, orphelines: 0 });
     }
+
+    apres.close();
+  });
+
+  it('désigne le cycle courant, au lieu de le laisser deviner (v18)', async () => {
+    await remplirV16();
+    const apres = new ProgrammeDB(NOM);
+    await apres.open();
+
+    const cycle = (await apres.cycles.toArray())[0];
+    const reglages = await apres.settings.get(1);
+    expect(reglages?.cycleActifId).toBe(cycle?.id);
 
     apres.close();
   });

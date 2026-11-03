@@ -362,6 +362,16 @@ export interface SettingsRow {
    * tableau en pourcentages de SES propres maxima.
    */
   tableauOrigine: boolean;
+  /**
+   * Le cycle que l'application ouvre et sur lequel elle écrit.
+   *
+   * Un pointeur explicite, et non une déduction. Tant qu'il n'y avait qu'un
+   * cycle, « le plus récent en cours » suffisait ; dès que deux peuvent
+   * tourner en parallèle — un POWER et un MASS, comme le prévoit le plan —
+   * deviner lequel l'utilisateur regarde serait une source d'erreur
+   * silencieuse. `0` signifie « pas encore choisi », jamais « le premier ».
+   */
+  cycleActifId: number;
   /** Son et vibration en fin de repos. */
   soundEnabled: boolean;
   vibrationEnabled: boolean;
@@ -881,7 +891,35 @@ export class ProgrammeDB extends Dexie {
               ligne.cycleId = cycleId;
             });
         }
+
+        /*
+         * Et on pointe dessus. La v17 déduisait le cycle courant ; depuis la
+         * v18 il est désigné. Le poser ici évite qu'une base migrée reste une
+         * seconde sans cycle courant, le temps qu'un écran en demande un.
+         */
+        if (reglages !== undefined) {
+          await tx.table('settings').put({ ...reglages, cycleActifId: cycleId });
+        }
       });
+
+    /*
+     * v18 — le cycle courant est DÉSIGNÉ, non plus deviné.
+     *
+     * Aucun champ indexé n'est ajouté : `settings` n'a qu'une ligne et qu'une
+     * clé. Seule cette ligne change, et seulement si elle existe déjà.
+     */
+    this.version(18).upgrade(async (tx) => {
+      const reglages = (await tx.table('settings').get(1)) as SettingsRow | undefined;
+      if (reglages === undefined) return;
+      if (reglages.cycleActifId) return;
+
+      const cycles = (await tx.table('cycles').toArray()) as CycleRow[];
+      const enCours = cycles.filter((c) => c.statut === 'en-cours');
+      const choisi = (enCours.length > 0 ? enCours : cycles).at(-1);
+      if (choisi?.id === undefined) return;
+
+      await tx.table('settings').put({ ...reglages, cycleActifId: choisi.id });
+    });
   }
 }
 
@@ -996,6 +1034,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   ciblePoidsHautKg: null,
   tableauOrigine: false,
   oneRMCalibratedAt: '',
+  cycleActifId: 0,
   soundEnabled: true,
   vibrationEnabled: true,
 };
