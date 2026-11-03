@@ -113,7 +113,7 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       setRow(await getSettingsRow());
       onChanged();
       setMessage({
-        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées, ${report.painLog} notes de douleur, ${report.extraFoods} aliments ajoutés, ${report.notes + report.exerciseNotes} remarques, ${report.sessionExercises} exercices de séance. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
+        text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées, ${report.painLog} notes de douleur, ${report.extraFoods} aliments ajoutés, ${report.notes + report.exerciseNotes} remarques, ${report.sessionExercises} exercices de séance, ${report.mealLog} repas cochés, ${report.customFoods + report.foodOverrides} aliments personnels. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
         kind: 'ok',
       });
     } catch (e) {
