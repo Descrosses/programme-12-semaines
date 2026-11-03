@@ -145,3 +145,293 @@
   color: var(--accent-ink);
   font-weight: 700;
 }
+
+/* ===================================================================== */
+/*  La refonte Dcross-fit : titres, cartes de cycle, tuiles              */
+/* ===================================================================== */
+
+.titreEcran {
+  margin: 16px 0 18px;
+}
+
+.grandTitre {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-family: var(--font-cond);
+  font-size: clamp(1.7rem, 7.6vw, 2.1rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.barreTitre {
+  display: block;
+  flex: 0 0 auto;
+  width: 6px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: skewX(-14deg);
+}
+
+.sousTitreEcran {
+  margin: 8px 0 0 18px;
+  font-size: var(--fs-body);
+  color: var(--ink-3);
+}
+
+.enteteSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0 12px;
+}
+
+.titreSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-cond);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.compte {
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+
+/* --------------------------------------------------- carte de cycle -- */
+
+.carteCycle {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  margin-bottom: 12px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg, 18px);
+  background: var(--surface);
+  text-align: left;
+}
+
+.cyclePhoto {
+  position: absolute;
+  inset: 0;
+}
+
+.cyclePhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+}
+
+.cycleVoile {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(var(--voile) / 97%) 8%,
+      rgb(var(--voile) / 62%) 58%,
+      rgb(var(--voile) / 12%) 100%
+    ),
+    linear-gradient(90deg, color-mix(in srgb, var(--teinte) 34%, transparent), transparent 78%);
+}
+
+.cycleCorps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: var(--pad);
+}
+
+.cycleNom {
+  font-family: var(--font-cond);
+  font-size: 1.9rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.cycleSemaine {
+  font-size: var(--fs-body);
+  color: var(--ink-2);
+}
+
+.cycleSemaine b {
+  color: var(--ink);
+}
+
+.cycleChiffres {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.cycleChevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 12%);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------- rubriques -- */
+
+.rubrique {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 72px;
+  margin-top: 12px;
+  padding: 12px var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: left;
+}
+
+.rubriqueIcone {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+.rubriqueTexte {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rubriqueTexte b {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.rubriqueTexte span {
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+
+.rubriqueChevron {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: var(--ink-3);
+}
+
+.rubriqueCorps {
+  margin-top: 10px;
+}
+
+/* ---------------------------------------------------------- tuiles -- */
+
+/*
+ * Trois tuiles de chiffres.
+ *
+ * `minmax(0, 1fr)` et non `1fr` : sans le minimum à zéro, « Progression du
+ * cycle » élargit sa colonne et la troisième tuile sort de l'écran.
+ */
+.tuiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tuile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  /* La lueur rouge de la maquette, qui monte du bas de la tuile. */
+  background:
+    radial-gradient(
+      120% 90% at 50% 120%,
+      color-mix(in srgb, var(--accent) 24%, transparent),
+      transparent 70%
+    ),
+    var(--surface);
+  text-align: center;
+}
+
+.tuileIcone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.tuileValeur {
+  font-family: var(--font-cond);
+  font-size: 1.8rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.tuileLibelle {
+  font-size: 0.74rem;
+  line-height: 1.25;
+  color: var(--ink-2);
+}
+
+/*
+ * Les marges horizontales des blocs ajoutés.
+ *
+ * Le conteneur `.screen` n'en porte aucune : dans ces écrans, chaque bloc
+ * pose la sienne. Sans ces lignes, les cartes et les tuiles allaient d'un
+ * bord à l'autre et « 1 cycle » sortait de l'écran par la droite.
+ */
+.titreEcran,
+.enteteSection,
+.carteCycle,
+.rubrique,
+.tuiles {
+  margin-left: var(--pad);
+  margin-right: var(--pad);
+}
+
+.carteCycle,
+.rubrique {
+  width: calc(100% - var(--pad) * 2);
+}
