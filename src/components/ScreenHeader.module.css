@@ -32,7 +32,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgb(6 20 38 / 35%) 0%, rgb(6 20 38 / 78%) 100%);
+  background: linear-gradient(180deg, rgb(var(--voile) / 35%) 0%, rgb(var(--voile) / 78%) 100%);
   pointer-events: none;
 }
 
@@ -68,10 +68,10 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgb(6 20 38 / 0%) 0%,
-    rgb(6 20 38 / 62%) 34px,
-    rgb(6 20 38 / 86%) 64px,
-    rgb(6 20 38 / 93%) 100%
+    rgb(var(--voile) / 0%) 0%,
+    rgb(var(--voile) / 62%) 34px,
+    rgb(var(--voile) / 86%) 64px,
+    rgb(var(--voile) / 93%) 100%
   );
 }
 
@@ -177,9 +177,9 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgb(6 20 38 / 10%) 0%,
-    rgb(6 20 38 / 20%) 40%,
-    rgb(6 20 38 / 48%) 100%
+    rgb(var(--voile) / 10%) 0%,
+    rgb(var(--voile) / 20%) 40%,
+    rgb(var(--voile) / 48%) 100%
   );
 }
 
@@ -195,7 +195,7 @@
   right: 0;
   bottom: 0;
   height: 56px;
-  background: linear-gradient(180deg, rgb(6 20 38 / 0%) 0%, var(--bg) 100%);
+  background: linear-gradient(180deg, rgb(var(--voile) / 0%) 0%, var(--bg) 100%);
 }
 
 .yard {
@@ -235,7 +235,7 @@
   text-transform: uppercase;
   transform: skewX(-6deg);
   transform-origin: left bottom;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 45%);
+  text-shadow: var(--ombre-titre);
 }
 
 /* Sous-titre entre deux traits rouges — la ligne de générique. */
