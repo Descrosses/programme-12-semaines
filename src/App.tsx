@@ -17,6 +17,7 @@ import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
 import { modulePourCycle } from './programmes/registre';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
+import { MARQUE_CAPITALES } from './data/marque';
 import { themePour } from './state/theme';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
@@ -271,7 +272,7 @@ export function App() {
       <RestBar timer={timer} />
 
       {dansPlateforme && (
-        <nav className={styles.nav} aria-label="Navigation Dcross-fit">
+        <nav className={styles.nav} aria-label={`Navigation ${MARQUE_CAPITALES}`}>
           {PLATEFORME.map((tab) => {
             const active = route.name === tab.name;
             return (
@@ -294,6 +295,37 @@ export function App() {
 
       {!inSession && !dansPlateforme && programme !== null && (
         <nav className={styles.nav} aria-label={`Navigation ${programme.id}`}>
+          {/*
+            Le retour vers l'accueil, en PREMIÈRE case de la barre.
+
+            ── Pourquoi dans la barre, et pas dans les en-têtes ────────────
+
+            Il vivait dans l'écran Aujourd'hui, et nulle part ailleurs : une
+            puce « ← Dcross-fit » posée au-dessus du bandeau, qui rallongeait
+            cet écran-là et décalait sa photo vers le bas. Les cinq autres
+            rubriques n'avaient aucun retour — il fallait repasser par
+            Aujourd'hui pour sortir du programme.
+
+            Le mettre ici le rend identique partout, au même pixel, sans
+            ajouter un seul bandeau ni toucher à un seul en-tête. Et il vaut
+            pour TOUS les programmes, présents et à venir : il est posé par
+            l'application, pas déclaré par chaque module.
+
+            Il n'apparaît pas pendant une séance — la barre entière disparaît
+            alors, et c'est voulu : on ne sort pas d'une séance en cours par
+            un appui à côté.
+          */}
+          <button
+            type="button"
+            className={`${styles.tab} ${styles.tabRetour}`}
+            onClick={() => navigate({ name: 'accueil' })}
+          >
+            <span className={styles.tabIcon}>
+              <Icon name="arrow-left" size="21px" />
+            </span>
+            <span className={styles.tabLabel}>{MARQUE_CAPITALES}</span>
+          </button>
+
           {programme.onglets.map((tab) => {
             const active = route.name === tab.route;
             return (
@@ -401,7 +433,6 @@ function renderScreen(
   const today = (
     <TodayScreen
       key={dataVersion}
-      onGoAccueil={() => navigate({ name: 'accueil' })}
       onOpen={openSession}
       onGoWeek={(w) => navigate({ name: 'week', week: w })}
       onGoSettings={() => navigate({ name: 'settings' })}

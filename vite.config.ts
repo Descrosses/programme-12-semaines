@@ -87,10 +87,18 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'Programme 12 semaines',
-        short_name: '12 semaines',
+        /*
+         * Le NOM AFFICHÉ change, pas l'identité technique.
+         *
+         * `start_url`, `scope` et le chemin de base restent ceux du dépôt :
+         * les raccourcis déjà posés sur un écran d'accueil pointent dessus, et
+         * les changer les casserait. Seuls le nom, le nom court et la
+         * description sont de l'affichage.
+         */
+        name: 'MAJK',
+        short_name: 'MAJK',
         description:
-          'Programme de préparation physique de 12 semaines : séances, charges, readiness et progression, hors ligne.',
+          'MAJK — tes programmes d’entraînement, ta progression et tes performances, hors ligne.',
         lang: 'fr',
         dir: 'ltr',
         start_url: base,

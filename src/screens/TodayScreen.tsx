@@ -64,7 +64,6 @@ function visuelDuJour(today: TodayState, week: WeekIndex | null): VisuelNom {
  * disponible pour les jours où le programme décale.
  */
 export function TodayScreen({
-  onGoAccueil,
   onOpen,
   onGoWeek,
   onGoSettings,
@@ -72,8 +71,6 @@ export function TodayScreen({
   onDataChanged,
   todayKind,
 }: {
-  /** Remonte d'un cran : de la séance du jour à la plateforme Dcross-fit. */
-  onGoAccueil: () => void;
   onOpen: (week: WeekIndex, day: DayIndex) => void;
   onGoWeek: (week: WeekIndex) => void;
   onGoSettings: () => void;
@@ -247,15 +244,6 @@ export function TodayScreen({
 
   return (
     <div className={styles.screen}>
-      {/*
-        Le seul chemin de retour vers la plateforme depuis le programme. Il est
-        discret par choix : on passe sa journée dans POWER 12, on ne remonte au
-        catalogue qu'exceptionnellement.
-      */}
-      <button type="button" className={styles.retourPlateforme} onClick={onGoAccueil}>
-        <Icon name="arrow-left" size="15px" />
-        <span>Dcross-fit</span>
-      </button>
       <ScreenHeader
         eyebrow={humanDate(new Date().toISOString().slice(0, 10))}
         title={entete.titre}
