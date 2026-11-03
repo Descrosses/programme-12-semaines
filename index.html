@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#061426" />
+    <meta name="theme-color" content="#0c0e11" />
     <meta name="color-scheme" content="dark" />
     <meta
       name="description"
@@ -19,13 +19,17 @@
       Les icônes portent des noms NEUFS plutôt que de remplacer les anciens
       fichiers. iOS garde l'image d'un raccourci au moment où on l'ajoute, et
       un navigateur peut servir longtemps un PNG déjà vu : réécrire
-      `apple-touch-icon.png` aurait laissé l'ancien haltère à l'écran sans
-      moyen de savoir quand il partirait. Un chemin qui n'a jamais existé ne
+      `apple-touch-icon.png` aurait laissé l'ancienne image à l'écran sans
+      moyen de savoir quand elle partirait. Un chemin qui n'a jamais existé ne
       peut pas être en cache.
+
+      C'est la deuxième fois que la règle sert : les fichiers `majk-*`
+      remplacent les `icone-*`, qui restent en place le temps que les anciens
+      raccourcis disparaissent.
     -->
-    <link rel="apple-touch-icon" href="icons/icone-apple-touch.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icone-192.png" />
+    <link rel="apple-touch-icon" href="icons/majk-apple-touch.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/majk-favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/majk-192.png" />
 
     <!--
       Aperçu de lien (Open Graph).
@@ -52,14 +56,14 @@
     />
     <meta
       property="og:image"
-      content="https://descrosses.github.io/programme-12-semaines/partage-1200x630.jpg"
+      content="https://descrosses.github.io/programme-12-semaines/partage-majk-1200x630.jpg"
     />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Casque de football américain et barre de musculation, sur un stade de nuit."
+      content="Le logo MAJK : un as et un valet de cœur, sur fond graphite."
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="MAJK — programmes, progression, performance" />
@@ -69,7 +73,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://descrosses.github.io/programme-12-semaines/partage-1200x630.jpg"
+      content="https://descrosses.github.io/programme-12-semaines/partage-majk-1200x630.jpg"
     />
 
     <title>MAJK</title>
