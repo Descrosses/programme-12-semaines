@@ -39,7 +39,6 @@ export function ScreenHeader({
   title,
   subtitle,
   visuel,
-  compact = false,
   /** Premier écran ouvert : sa photo se charge tout de suite, pas en différé. */
   prioritaire = false,
   children,
@@ -52,19 +51,15 @@ export function ScreenHeader({
   subtitle?: string;
   /** Photo d'ambiance, quand elle existe. */
   visuel?: VisuelNom;
-  /** Version resserrée, pour les écrans qui ont beaucoup à montrer. */
-  compact?: boolean;
   prioritaire?: boolean;
   /** Ce qui vient sous le sous-titre, dans l'en-tête. */
   children?: ReactNode;
 }) {
   const pleineImage = visuel !== undefined && VISUELS[visuel].cadrage === 'cover';
 
-  return (
+  const entete = (
     <header
-      className={`${styles.header} ${compact ? styles.compact : ''} ${
-        pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''
-      }`}
+      className={`${styles.header} ${pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''}`}
     >
       <StadiumGlow />
       {visuel &&
@@ -81,15 +76,43 @@ export function ScreenHeader({
       <div className={styles.content}>
         {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
         <h1 className={styles.title}>{title}</h1>
-        {subtitle && (
-          <div className={styles.subtitleRow}>
-            <AccentRule className={styles.ruleLeft} />
-            <span className={styles.subtitle}>{subtitle}</span>
-            <AccentRule className={styles.ruleRight} />
-          </div>
-        )}
-        {children}
+        {/*
+          La ligne de sous-titre est TOUJOURS rendue, même vide.
+          Le bloc de titre étant calé en bas de l'en-tête, une rubrique sans
+          sous-titre voyait son titre descendre de 28 pt : c'est le cas des
+          écrans Aujourd'hui et Semaine de MASS 4, qui n'a pas de bloc de
+          périodisation à annoncer. La ligne garde sa place, le titre garde
+          la sienne.
+        */}
+        <div className={styles.subtitleRow} aria-hidden={subtitle === undefined || undefined}>
+          {subtitle !== undefined && (
+            <>
+              <AccentRule className={styles.ruleLeft} />
+              <span className={styles.subtitle}>{subtitle}</span>
+              <AccentRule className={styles.ruleRight} />
+            </>
+          )}
+        </div>
       </div>
     </header>
+  );
+
+  /*
+   * Ce qui suit le bloc de titre vit EN DEHORS de l'en-tête.
+   *
+   * C'était dedans, sous le sous-titre, et ça déplaçait toute la rubrique :
+   * le bloc de titre est calé en bas de l'en-tête, donc chaque ligne ajoutée
+   * en dessous le repoussait vers le haut. Réglages, qui porte une phrase,
+   * remontait son trait rouge de 27 points ; Nutrition, qui en porte trois,
+   * de 62. Deux écrans sur six, et un décalage qu'aucune règle n'expliquait.
+   *
+   * En sortant ces blocs, le trait rouge tombe au même pixel partout.
+   */
+  if (children === undefined) return entete;
+  return (
+    <>
+      {entete}
+      <div className={styles.apres}>{children}</div>
+    </>
   );
 }

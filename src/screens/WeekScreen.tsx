@@ -145,7 +145,6 @@ export function WeekScreen({
         subtitle={block?.objective}
         {...(programme.id === 'power12' ? ({ visuel: 'casque' } as const) : {})}
         prioritaire
-        compact
       />
 
       {/*

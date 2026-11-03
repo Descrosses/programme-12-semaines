@@ -175,7 +175,6 @@ export function SettingsScreen({
         title="Réglages"
         subtitle="Tout reste sur ce téléphone"
         {...(programme.reglages.visuel === undefined ? {} : { visuel: programme.reglages.visuel })}
-        compact
       >
         <p className={styles.lead}>Tout est stocké sur ce téléphone. Rien ne part sur internet.</p>
       </ScreenHeader>

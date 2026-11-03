@@ -102,7 +102,6 @@ export function CombineScreen() {
         title="Combine"
         subtitle="Mêmes conditions à chaque fois"
         visuel="stade"
-        compact
       />
 
       <p className={styles.hint}>

@@ -242,7 +242,6 @@ export function NutritionScreen({
         title="Nutrition"
         subtitle="Glucides hauts, protéines suffisantes"
         visuel="ballon"
-        compact
       >
         <p className={styles.lead}>
           Les mêmes aliments tous les jours — seuls les féculents baissent les jours de repos.

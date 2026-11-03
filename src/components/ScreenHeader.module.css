@@ -8,19 +8,12 @@
 .header {
   position: relative;
   overflow: hidden;
-  /* Hauteur minimale sans photo. */
-  min-height: 112px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 18px var(--pad) 20px;
   background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
   isolation: isolate;
-}
-
-.compact {
-  padding-top: 14px;
-  padding-bottom: 14px;
 }
 
 /*
@@ -98,46 +91,47 @@
 }
 
 /*
- * En-tête à photo : il devient le premier tiers de l'écran.
+ * UNE SEULE HAUTEUR pour toutes les rubriques d'un programme.
  *
- * Ce n'est pas de la mise en scène gratuite. L'écran Aujourd'hui tient en
- * quatre éléments — la date, ce qu'on fait, la nutrition, le bouton — et
- * laissait les deux tiers du bas vides. Donner la hauteur à la photo plutôt
- * qu'au vide, c'est la même information dans un écran qui ne sonne pas creux.
+ * Elle a longtemps varié, et c'est ce que Guillaume a vu : le trait rouge et
+ * le titre ne tombaient pas au même endroit d'un onglet à l'autre. Trois
+ * hauteurs cohabitaient — 112 px sans photo, 196 px en version courte, et
+ * 42 % de la hauteur d'écran pour l'écran Aujourd'hui. Mesuré sur ses
+ * captures : le trait était à 170 pt sur Progrès, Semaine et Combine, à
+ * 143 sur Réglages, à 108 sur Nutrition et à 293 sur Aujourd'hui.
  *
- * 42 svh et non vh : sur iOS, `vh` compte la barre d'URL comme si elle
- * n'existait pas, et l'en-tête débordait au premier défilement.
+ * Un en-tête dont la hauteur dépend du cadrage de sa photo ou de la présence
+ * d'un paragraphe est un en-tête dont personne ne peut prédire la position.
+ * 196 px est la valeur des trois écrans qu'il a désignés comme référence.
+ *
+ * Le coût est assumé et il n'est pas nul : l'écran Aujourd'hui perd sa grande
+ * photo de une. Elle avait été choisie pour remplir un écran qui sonnait
+ * creux ; l'alignement a été jugé plus important.
  */
-/*
- * La hauteur de l'en-tête ne dépend PAS du cadrage de sa photo.
- *
- * Elle en a dépendu, et ça se voyait : Nutrition est le seul écran dont le
- * visuel est `contain` (le ballon, en vignette), il ne recevait donc pas
- * `.hero` et son bandeau tombait à 112 px quand tous les autres en font 196.
- * Un écran paraissait bâclé par un détail de manifeste d'images.
- *
- * `.hero` reste le marqueur « cette photo remplit le fond » ; la hauteur,
- * elle, est posée sur tout en-tête qui porte un visuel, quel qu'il soit.
- */
-.hero,
-.avecVisuel {
-  min-height: max(268px, 42svh);
-  padding-bottom: 22px;
+.header {
+  min-height: 196px;
 }
 
 /*
- * Version courte, pour les écrans qui sont d'abord une LISTE.
+ * `.hero` reste le marqueur « cette photo remplit le fond » : il décide du
+ * voile et du calque, ni de la hauteur ni du rembourrage.
  *
- * Sur Semaine, l'en-tête pleine hauteur poussait les cinq jours sous la
- * ligne de flottaison : il fallait défiler pour voir le lundi. Un écran dont
- * le contenu est une liste ne peut pas donner 42 % de sa hauteur à une
- * photo. 196 px montrent le casque et laissent trois jours visibles.
+ * Quatre rembourrages cohabitaient — 18/20 de base, 14/14 en version courte,
+ * 22 en bas avec photo, 14/16 avec les deux. Comme le bloc de titre est calé
+ * EN BAS, chacun déplaçait le trait rouge de quelques points : l'écran
+ * Aujourd'hui tombait 6 pt plus haut que les autres, et les écrans sans photo
+ * 2 pt plus bas. Il n'en reste qu'un.
  */
-.hero.compact,
-.avecVisuel.compact {
-  min-height: 196px;
-  padding-top: 14px;
-  padding-bottom: 16px;
+
+/*
+ * Ce qui suivait le sous-titre DANS l'en-tête, et qui vit maintenant dessous.
+ *
+ * Même marge horizontale que le bloc de titre, pour que les deux restent sur
+ * la même verticale. Le fond de l'en-tête fond déjà vers la couleur de page :
+ * ces blocs ne changent donc pas d'aspect en sortant du cadre.
+ */
+.apres {
+  padding: 10px var(--pad) 0;
 }
 
 /* ------------------------------------------------- photo pleine largeur -- */
@@ -239,10 +233,16 @@
 }
 
 /* Sous-titre entre deux traits rouges — la ligne de générique. */
+/*
+ * `min-height` : la ligne occupe sa place même quand il n'y a pas de
+ * sous-titre à écrire. C'est elle qui garantit que le titre tombe au même
+ * pixel dans toutes les rubriques, avec ou sans sous-titre.
+ */
 .subtitleRow {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 18px;
   margin-top: 10px;
 }
 
