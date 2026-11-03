@@ -53,7 +53,8 @@ export type IconName =
   | 'pencil'
   | 'image'
   | 'alert'
-  | 'helmet';
+  | 'helmet'
+  | 'home';
 
 /** Les tracés, sur une grille de 24. Trait de 2, extrémités rondes. */
 const PATHS: Record<IconName, string> = {
@@ -89,6 +90,9 @@ const PATHS: Record<IconName, string> = {
   image: 'M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6',
   alert: 'M12 3L2 20h20zM12 10v4M12 17h.01',
   helmet: 'M4 13a8 8 0 0116 0v3h-5l-2 3H8a4 4 0 01-4-4zM4 14h11',
+  /* L'accueil de la plateforme. Un toit, pas un casque : le §13 interdit
+     toute référence au football américain hors de l'univers POWER. */
+  home: 'M3 11l9-7 9 7M5.5 9.5V20h13V9.5M10 20v-6h4v6',
 };
 
 /**

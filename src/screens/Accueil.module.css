@@ -1,0 +1,139 @@
+/*
+ * L'accueil n'invente aucune couleur : tout vient des jetons.
+ * Les seules formes propres à cet écran sont la jauge d'avancement et les
+ * deux lignes d'action, qui n'existent nulle part ailleurs.
+ */
+
+.famille {
+  margin: 8px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.nomProgramme {
+  margin: 0;
+  font-family: var(--font-cond);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.version {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--ink-3);
+  letter-spacing: 0;
+}
+
+/* Jauge d'avancement. Décorative : le chiffre est écrit juste en dessous. */
+.jauge {
+  height: 7px;
+  margin-top: 12px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.jauge i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+/* L'action du jour : la plus grande cible de l'écran, et la seule en rouge. */
+.principal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  padding: 14px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  text-align: left;
+  cursor: pointer;
+}
+
+.principal:active {
+  background: var(--accent-deep);
+}
+
+.principalIcone {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 18%);
+  flex: none;
+}
+
+.principalTexte {
+  flex: 1;
+  min-width: 0;
+}
+
+.principalTexte b {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.principalTexte s {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  text-decoration: none;
+  color: rgb(255 255 255 / 82%);
+}
+
+/* Le lien vers le catalogue : même gabarit, ton neutre. */
+.lien {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 2 * var(--pad));
+  margin: var(--gap) var(--pad) 0;
+  padding: 13px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.lienIcone {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  flex: none;
+}
+
+.lienTexte {
+  flex: 1;
+  min-width: 0;
+}
+
+.lienTexte b {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.lienTexte s {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  text-decoration: none;
+  color: var(--ink-3);
+}

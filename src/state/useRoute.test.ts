@@ -37,6 +37,12 @@ describe('routage des séances', () => {
   it('les autres écrans sont inchangés', () => {
     expect(parseRoute('#/nutrition')).toEqual({ name: 'nutrition' });
     expect(parseRoute('#/week/0')).toEqual({ name: 'week', week: 0 });
-    expect(parseRoute('#/')).toEqual({ name: 'today' });
+    // L'ancre vide ouvre désormais la plateforme, pas la séance du jour :
+    // avec un catalogue, « aujourd'hui » ne dit plus de quel programme il
+    // s'agit. `#/today` continue de mener droit à la séance.
+    expect(parseRoute('#/')).toEqual({ name: 'accueil' });
+    expect(parseRoute('#/today')).toEqual({ name: 'today' });
+    expect(parseRoute('#/accueil')).toEqual({ name: 'accueil' });
+    expect(parseRoute('#/catalogue')).toEqual({ name: 'catalogue' });
   });
 });

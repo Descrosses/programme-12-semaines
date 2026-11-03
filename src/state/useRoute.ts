@@ -11,6 +11,8 @@ import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
 
 export type Route =
+  | { name: 'accueil' }
+  | { name: 'catalogue' }
   | { name: 'today' }
   | { name: 'week'; week: WeekIndex }
   | { name: 'session'; week: WeekIndex; day: DayIndex }
@@ -22,6 +24,12 @@ export type Route =
 export function parseRoute(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   switch (parts[0]) {
+    case 'accueil':
+      return { name: 'accueil' };
+    case 'catalogue':
+      return { name: 'catalogue' };
+    case 'today':
+      return { name: 'today' };
     case 'week':
       return { name: 'week', week: clampWeek(parts[1]) };
     case 'session':
@@ -35,7 +43,15 @@ export function parseRoute(hash: string): Route {
     case 'settings':
       return { name: 'settings' };
     default:
-      return { name: 'today' };
+      /*
+       * L'ancre vide ouvre la plateforme, plus la séance du jour.
+       *
+       * C'est le seul changement visible de cette étape : avec un catalogue et
+       * plusieurs cycles possibles, ouvrir directement sur une séance ne dit
+       * plus DE QUEL programme elle vient. L'accueil le dit, et met l'action
+       * du jour en premier pour que le détour coûte un appui, pas plus.
+       */
+      return { name: 'accueil' };
   }
 }
 
@@ -47,6 +63,8 @@ export function routeToHash(route: Route): string {
       return `#/session/${route.week}/${route.day}`;
     case 'today':
       return '#/today';
+    case 'accueil':
+      return '#/accueil';
     default:
       return `#/${route.name}`;
   }
