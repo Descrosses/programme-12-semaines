@@ -155,6 +155,35 @@
   font-weight: 700;
 }
 
+/*
+ * Le retour vers l'accueil : une sortie, pas un onglet.
+ *
+ * Il ne prend jamais l'état actif — on ne « se trouve » jamais dessus — et un
+ * trait vertical le sépare des rubriques du programme. Sans cette séparation,
+ * sept cases identiques se lisent comme sept rubriques, et on cherche
+ * longtemps laquelle fait sortir.
+ */
+.tabRetour {
+  position: relative;
+  color: var(--ink-3);
+}
+
+.tabRetour::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  right: 0;
+  bottom: 14px;
+  width: 1px;
+  background: var(--line);
+}
+
+/* À sept cases, le libellé doit tenir dans 57 px sur un iPhone standard. */
+.tabRetour .tabLabel {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
 .tabIcon {
   display: grid;
   place-items: center;
