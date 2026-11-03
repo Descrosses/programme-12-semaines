@@ -6,9 +6,11 @@
  */
 
 import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
+import { cyclePourEcriture } from './repo';
 import {
   db,
   type CombineRow,
+  type CycleRow,
   type CustomFoodRow,
   type DayKindRow,
   type FoodOverrideRow,
@@ -28,7 +30,7 @@ import {
 } from './db';
 
 /** Version du format, pour qu'un export d'aujourd'hui reste lisible plus tard. */
-export const EXPORT_VERSION = 2;
+export const EXPORT_VERSION = 3;
 
 /*
  * Les tables que la sauvegarde couvre, nommées une fois.
@@ -44,6 +46,7 @@ export const EXPORT_VERSION = 2;
  * commentaire n'empêche pas le troisième ; un test qui casse, si.
  */
 export const TABLES_SAUVEGARDEES = [
+  'cycles',
   'settings',
   'sessions',
   'sets',
@@ -124,6 +127,19 @@ export interface ExportFile {
   foodOverrides?: FoodOverrideRow[];
   customFoods?: CustomFoodRow[];
   /**
+   * Les cycles (v17), et avec eux la clé de lecture de tout le reste.
+   *
+   * Chaque ligne de séance, de série ou de remarque porte le `cycleId` du
+   * cycle auquel elle appartient. Exporter les lignes sans les cycles rendrait
+   * ces numéros muets : à la réimportation, plus moyen de savoir lequel des
+   * deux POWER 12 on est en train de relire.
+   *
+   * Absent d'un fichier de version 1 ou 2, qui est d'avant les cycles.
+   * L'import lui en fabrique alors un seul et y rattache tout — exactement ce
+   * que fait la montée v17 sur une base existante.
+   */
+  cycles?: CycleRow[];
+  /**
    * Toujours `false`. Les photos ont leur propre fichier : voir
    * `exportPhotos()` et le commentaire qui l'accompagne.
    */
@@ -195,6 +211,7 @@ export async function exportAll(): Promise<ExportFile> {
     dayKind,
     foodOverrides,
     customFoods,
+    cycles,
   ] = await Promise.all([
     db.settings.get(1),
     db.sessions.toArray(),
@@ -213,6 +230,7 @@ export async function exportAll(): Promise<ExportFile> {
     db.dayKind.toArray(),
     db.foodOverrides.toArray(),
     db.customFoods.toArray(),
+    db.cycles.toArray(),
   ]);
 
   return {
@@ -236,6 +254,7 @@ export async function exportAll(): Promise<ExportFile> {
     dayKind,
     foodOverrides,
     customFoods,
+    cycles,
     photosIncluded: false,
   };
 }
@@ -343,6 +362,7 @@ export interface ImportReport {
   dayKind: number;
   foodOverrides: number;
   customFoods: number;
+  cycles: number;
   settings: boolean;
 }
 
@@ -393,6 +413,7 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
     file.progressPhotos.map(async (p) => {
       const blob = await dataUrlToBlob(p.dataUrl);
       return {
+        cycleId: cyclePhotos,
         week: p.week,
         date: p.date,
         width: p.width,
@@ -406,6 +427,7 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
     file.exerciseMedia.map(async (m) => {
       const blob = await dataUrlToBlob(m.dataUrl);
       return {
+        cycleId: cyclePhotos,
         exerciseId: m.exerciseId,
         week: m.week,
         day: m.day as 0 | 1 | 2 | 3 | 4,
@@ -417,6 +439,8 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
       };
     }),
   );
+
+  const cyclePhotos = (await cyclePourEcriture()).id as number;
 
   const references = await Promise.all(
     (file.exerciseReference ?? []).map(async (r) => {
@@ -494,6 +518,7 @@ export function parseExport(text: string): ExportFile {
     dayKind: f.dayKind ?? [],
     foodOverrides: f.foodOverrides ?? [],
     customFoods: f.customFoods ?? [],
+    cycles: f.cycles ?? [],
     photosIncluded: false,
   };
 }
@@ -506,6 +531,27 @@ export function parseExport(text: string): ExportFile {
  * L'écran d'import prévient avant d'appeler cette fonction.
  */
 export async function importAll(file: ExportFile): Promise<ImportReport> {
+  /*
+   * Le cycle de destination, résolu AVANT la transaction — la portée
+   * ci-dessous ne contient pas `cycles` pour les lectures, et Dexie refuse de
+   * lire une table non déclarée.
+   *
+   * Deux cas, et un seul demande du travail :
+   *
+   * - Le fichier vient de la version 3 : il porte ses cycles et ses lignes
+   *   savent déjà à qui elles appartiennent. On les remet tels quels, numéros
+   *   d'origine compris, sinon les `cycleId` des lignes ne désigneraient plus
+   *   rien.
+   * - Le fichier est plus ancien : il n'a pas de cycle, et ses lignes non
+   *   plus. On en crée un et on y rattache tout, exactement comme la montée
+   *   v17 le fait sur une base existante.
+   */
+  const cyclesDuFichier = file.cycles ?? [];
+  const cycleDeSecours = cyclesDuFichier.length === 0 ? await cyclePourEcriture() : null;
+  const idSecours = cycleDeSecours?.id ?? 1;
+  const rattacher = <T extends { cycleId?: number }>(lignes: T[]): T[] =>
+    cyclesDuFichier.length > 0 ? lignes : lignes.map((l) => ({ ...l, cycleId: idSecours }));
+
   return db.transaction(
     'rw',
     [
@@ -526,6 +572,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.dayKind,
       db.foodOverrides,
       db.customFoods,
+      db.cycles,
     ],
     async () => {
       const measurements = file.measurements ?? [];
@@ -541,6 +588,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       const foodOverrides = file.foodOverrides ?? [];
       const customFoods = file.customFoods ?? [];
       await Promise.all([
+        db.cycles.clear(),
         db.sessions.clear(),
         db.sets.clear(),
         db.readiness.clear(),
@@ -559,18 +607,29 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.customFoods.clear(),
       ]);
       if (file.settings) await db.settings.put({ ...file.settings, id: 1 });
-      await db.sessions.bulkAdd(file.sessions);
-      await db.sets.bulkAdd(file.sets);
-      await db.readiness.bulkAdd(file.readiness);
-      await db.combines.bulkAdd(file.combines);
+
+      /*
+       * Les cycles d'abord, et AVEC leurs identifiants : un `cycleId` de 2 sur
+       * une série ne veut dire quelque chose que si le cycle 2 existe sous ce
+       * numéro-là. Une base vidée réattribuerait sinon 1, 2, 3 dans l'ordre
+       * d'insertion, et les lignes se retrouveraient rattachées au mauvais
+       * cycle sans que rien ne le signale.
+       */
+      if (cyclesDuFichier.length > 0) await db.cycles.bulkAdd(cyclesDuFichier);
+      else if (cycleDeSecours) await db.cycles.add(cycleDeSecours);
+
+      await db.sessions.bulkAdd(rattacher(file.sessions));
+      await db.sets.bulkAdd(rattacher(file.sets));
+      await db.readiness.bulkAdd(rattacher(file.readiness));
+      await db.combines.bulkAdd(rattacher(file.combines));
       await db.measurements.bulkAdd(measurements);
-      await db.exerciseVideoLog.bulkAdd(videoLog);
+      await db.exerciseVideoLog.bulkAdd(rattacher(videoLog));
       await db.painLog.bulkAdd(painLog);
       await db.extraFoods.bulkAdd(extraFoods);
-      await db.notes.bulkAdd(notes);
-      await db.noteDrafts.bulkAdd(noteDrafts);
-      await db.sessionExercises.bulkAdd(sessionExercises);
-      await db.exerciseNotes.bulkAdd(exerciseNotes);
+      await db.notes.bulkAdd(rattacher(notes));
+      await db.noteDrafts.bulkAdd(rattacher(noteDrafts));
+      await db.sessionExercises.bulkAdd(rattacher(sessionExercises));
+      await db.exerciseNotes.bulkAdd(rattacher(exerciseNotes));
       await db.mealLog.bulkAdd(mealLog);
       await db.dayKind.bulkAdd(dayKind);
       await db.foodOverrides.bulkAdd(foodOverrides);
@@ -593,6 +652,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         dayKind: dayKind.length,
         foodOverrides: foodOverrides.length,
         customFoods: customFoods.length,
+        cycles: cyclesDuFichier.length > 0 ? cyclesDuFichier.length : 1,
         settings: file.settings !== null,
       };
     },

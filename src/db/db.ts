@@ -12,6 +12,15 @@ export type SessionStatus = 'planned' | 'done' | 'skipped';
 
 export interface SessionRow {
   id?: number;
+  /**
+   * Le cycle auquel cette ligne appartient (v17).
+   *
+   * Sans lui, refaire POWER 12 une deuxième fois écraserait le premier : les
+   * index uniques de cette base sont posés sur la semaine et le jour, qui se
+   * répètent d'un cycle à l'autre. Il est obligatoire, et non optionnel, pour
+   * que le compilateur refuse une écriture qui l'oublierait.
+   */
+  cycleId: number;
   week: number;
   day: DayIndex;
   /** `YYYY-MM-DD`. */
@@ -32,6 +41,8 @@ export interface SessionRow {
 
 export interface SetRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   sessionId: number;
   exerciseId: string;
   week: number;
@@ -77,6 +88,8 @@ export interface SetRow {
 
 export interface ReadinessRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   date: string;
   week: number;
   day: DayIndex;
@@ -191,6 +204,8 @@ export interface MeasurementRow {
  */
 export interface ProgressPhotoRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   week: number;
   /** `YYYY-MM-DD` du jour de la prise. */
   date: string;
@@ -204,6 +219,8 @@ export interface ProgressPhotoRow {
 /** Photo d'exécution d'un mouvement, prise depuis la fiche d'exercice. */
 export interface ExerciseMediaRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   exerciseId: string;
   week: number;
   day: DayIndex;
@@ -247,6 +264,8 @@ export interface ExerciseReferenceRow {
  */
 export interface ExerciseVideoLogRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   exerciseId: string;
   week: number;
   day: DayIndex;
@@ -271,6 +290,8 @@ export interface ExerciseVideoLogRow {
  */
 export interface ExerciseNoteRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   exerciseId: string;
   week: number;
   day: DayIndex;
@@ -285,6 +306,8 @@ export type CombinePhase = 'initial' | 's8' | 'final';
 
 export interface CombineRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   phase: CombinePhase;
   date: string;
   /** Clé = id d'exercice de test, valeur = mesure. */
@@ -344,7 +367,71 @@ export interface SettingsRow {
   vibrationEnabled: boolean;
 }
 
+/**
+ * Les tables dont une ligne appartient à UN cycle précis.
+ *
+ * Ce sont celles qui parlent de semaines et de jours. Les autres — réglages,
+ * pesées, douleurs, repas, aliments, images de référence — appartiennent à la
+ * personne et traversent les cycles sans leur appartenir : une pesée du
+ * 2 novembre reste une pesée du 2 novembre, quel que soit le programme suivi
+ * ce jour-là.
+ */
+export const TABLES_PAR_CYCLE = [
+  'sessions',
+  'sets',
+  'readiness',
+  'combines',
+  'progressPhotos',
+  'exerciseMedia',
+  'exerciseVideoLog',
+  'exerciseNotes',
+  'notes',
+  'noteDrafts',
+  'sessionExercises',
+] as const;
+
+/**
+ * Marque d'une ligne écrite avant que les cycles existent.
+ *
+ * Seule la montée v15 en pose : elle recopie des remarques alors que la v17,
+ * qui attribue les cycles, n'a pas encore tourné. Dexie enchaîne les montées
+ * dans l'ordre au cours de la même ouverture, donc la v17 remplace ce zéro
+ * par le vrai cycle quelques instants plus tard. Aucune ligne ne reste à 0.
+ */
+export const CYCLE_NON_RATTACHE = 0;
+
+/** Où en est un cycle, du point de vue de l'utilisateur. */
+export type CycleStatut = 'prevu' | 'en-cours' | 'termine';
+
+/**
+ * Une exécution d'un programme par un utilisateur.
+ *
+ * C'est l'objet qui manquait. Jusqu'ici l'application confondait « le
+ * programme POWER 12 » et « mon POWER 12 commencé le 14 septembre » : il ne
+ * pouvait donc y en avoir qu'un, et le refaire aurait écrasé le premier.
+ *
+ * Le cycle fige la VERSION du programme au moment où il démarre. Publier une
+ * version 1.3 ne touche donc aucun cycle en cours — il finit avec les règles
+ * sous lesquelles il a commencé, ce qui est la seule façon honnête de
+ * comparer deux cycles entre eux.
+ */
+export interface CycleRow {
+  id?: number;
+  /** Identifiant du programme, jamais son nom affiché : `power12`, `mass4`. */
+  programmeId: string;
+  /** Version figée au démarrage. */
+  programmeVersion: string;
+  /** `YYYY-MM-DD` — le lundi d'ancrage, comme `settings.startDate`. */
+  startDate: string;
+  statut: CycleStatut;
+  /** `YYYY-MM-DD` de clôture, vide tant que le cycle n'est pas terminé. */
+  endedAt: string;
+  /** `YYYY-MM-DD` de création de la ligne. */
+  createdAt: string;
+}
+
 export class ProgrammeDB extends Dexie {
+  cycles!: Table<CycleRow, number>;
   sessions!: Table<SessionRow, number>;
   sets!: Table<SetRow, number>;
   readiness!: Table<ReadinessRow, number>;
@@ -652,6 +739,7 @@ export class ProgrammeDB extends Dexie {
           const texte = (n.text ?? '').trim();
           if (texte === '') continue;
           reprises.push({
+            cycleId: CYCLE_NON_RATTACHE,
             exerciseId: n.exerciseId,
             week: n.week,
             day: n.day,
@@ -666,6 +754,7 @@ export class ProgrammeDB extends Dexie {
           const texte = (s.notes ?? '').trim();
           if (texte === '') continue;
           reprises.push({
+            cycleId: CYCLE_NON_RATTACHE,
             exerciseId: null,
             week: s.week,
             day: s.day,
@@ -703,6 +792,96 @@ export class ProgrammeDB extends Dexie {
         tableauOrigine: (reglages.startDate ?? '') !== '',
       });
     });
+
+    /*
+     * v17 — la base apprend qu'il peut y avoir plusieurs cycles.
+     *
+     * ── Ce qui bloquait ────────────────────────────────────────────────────
+     *
+     * Cinq index UNIQUES liaient la base à une seule exécution du programme :
+     * `sessions &[week+day]`, `combines &phase`, `progressPhotos &week`,
+     * `exerciseNotes &[exerciseId+week+day]` et `noteDrafts &[slot+week+day]`.
+     * Refaire POWER 12 une seconde fois n'aurait pas « ajouté » un historique :
+     * la première séance du second cycle serait entrée en collision avec celle
+     * du premier, et Dexie aurait refusé l'écriture. Il n'y avait pas de bug à
+     * corriger — il y avait un objet manquant.
+     *
+     * ── Ce que fait la montée ──────────────────────────────────────────────
+     *
+     * Elle crée la table `cycles`, ajoute `cycleId` aux onze tables qui
+     * parlent de semaines et de jours, et refait les cinq index uniques en y
+     * incluant le cycle. Les anciens index non uniques restent en place : les
+     * requêtes existantes continuent de fonctionner mot pour mot.
+     *
+     * ── Ce qu'elle ne fait pas ─────────────────────────────────────────────
+     *
+     * Elle ne supprime aucune ligne, n'en déplace aucune, et ne recalcule
+     * aucune charge. Chaque ligne déjà écrite reçoit `cycleId: 1`, c'est-à-dire
+     * exactement ce qu'elle est déjà : le premier POWER 12. Une base vide
+     * ressort vide, sans cycle inventé — un cycle n'existe qu'à partir du
+     * moment où une date de début a été saisie.
+     *
+     * ── Pourquoi l'ordre compte ────────────────────────────────────────────
+     *
+     * Les lignes qui n'ont pas encore de `cycleId` sont absentes des nouveaux
+     * index composés : IndexedDB ignore une ligne à qui manque une partie de
+     * la clé. Aucune collision n'est donc possible PENDANT la montée, et
+     * l'unicité ne reprend ses droits qu'une fois toutes les lignes marquées.
+     */
+    this.version(17)
+      .stores({
+        cycles: '++id, statut, startDate, programmeId',
+        // `[week+day]` reste indexé, sans unicité : des requêtes et des tests
+        // s'en servent encore pour viser un créneau sans dire quel cycle.
+        sessions: '++id, cycleId, &[cycleId+week+day], [week+day], date, status',
+        sets: '++id, cycleId, sessionId, [sessionId+exerciseId], exerciseId, [exerciseId+week], [cycleId+exerciseId+week], date',
+        readiness: '++id, cycleId, date, [week+day], [cycleId+week+day], week',
+        combines: '++id, cycleId, phase, &[cycleId+phase], date',
+        progressPhotos: '++id, cycleId, week, &[cycleId+week], date',
+        exerciseMedia:
+          '++id, cycleId, exerciseId, [exerciseId+date], [cycleId+exerciseId], week, date',
+        exerciseVideoLog:
+          '++id, cycleId, exerciseId, [exerciseId+date], [cycleId+exerciseId], week, date',
+        exerciseNotes:
+          '++id, cycleId, &[cycleId+exerciseId+week+day], exerciseId, [exerciseId+week], date',
+        notes:
+          '++id, cycleId, exerciseId, [exerciseId+week], [week+day], [cycleId+week+day], week, date',
+        noteDrafts: '++id, cycleId, &[cycleId+slot+week+day], [week+day]',
+        sessionExercises:
+          '++id, cycleId, sessionId, [sessionId+originalExerciseId], [week+day], [cycleId+week+day], exerciseId, originalExerciseId',
+      })
+      .upgrade(async (tx) => {
+        const reglages = (await tx.table('settings').get(1)) as SettingsRow | undefined;
+
+        /*
+         * Y a-t-il quelque chose à rattacher ? Une base neuve, ouverte pour la
+         * première fois sur cette version, n'a ni date de début ni la moindre
+         * ligne : lui fabriquer un cycle reviendrait à prétendre qu'elle a
+         * commencé un programme. L'onboarding s'en chargera le moment venu.
+         */
+        const nbSeances = await tx.table('sessions').count();
+        const debut = reglages?.startDate ?? '';
+        if (debut === '' && nbSeances === 0) return;
+
+        const aujourdhui = new Date().toISOString().slice(0, 10);
+        const cycleId = (await tx.table('cycles').add({
+          programmeId: 'power12',
+          programmeVersion: '1.2',
+          startDate: debut,
+          statut: 'en-cours',
+          endedAt: '',
+          createdAt: aujourdhui,
+        })) as number;
+
+        for (const table of TABLES_PAR_CYCLE) {
+          await tx
+            .table(table)
+            .toCollection()
+            .modify((ligne: { cycleId?: number }) => {
+              ligne.cycleId = cycleId;
+            });
+        }
+      });
   }
 }
 
@@ -844,6 +1023,8 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
  */
 export interface NoteRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   /** Id du mouvement, ou `null` pour une remarque de séance. */
   exerciseId: string | null;
   week: number;
@@ -875,6 +1056,8 @@ export interface NoteRow {
  */
 export interface NoteDraftRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   slot: string;
   week: number;
   day: DayIndex;
@@ -909,6 +1092,8 @@ export const SESSION_NOTE_SLOT = '__seance__';
  */
 export interface SessionExerciseRow {
   id?: number;
+  /** Le cycle auquel cette ligne appartient (v17). */
+  cycleId: number;
   sessionId: number;
   week: number;
   day: DayIndex;

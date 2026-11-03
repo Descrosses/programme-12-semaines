@@ -83,7 +83,20 @@ describe('les séances déjà enregistrées', () => {
   it('gardent leur durée telle quelle', async () => {
     // Une séance d'avant le correctif, avec son heure de début. L'ouvrir ne
     // doit ni la perdre, ni la recalculer.
+    //
+    // Le cycle est créé explicitement : depuis la v17, une séance insérée
+    // sans son cycle est une séance que l'application ne lit pas.
+    await db.cycles.add({
+      id: 1,
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-07',
+      statut: 'en-cours',
+      endedAt: '',
+      createdAt: '2026-09-07',
+    });
     await db.sessions.add({
+      cycleId: 1,
       week: 3,
       day: 0,
       date: '2026-09-07',

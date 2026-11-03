@@ -126,6 +126,7 @@ describe('export / import', () => {
     const { exportAll, importAll } = await import('./export');
 
     await base.sessions.add({
+      cycleId: 1,
       week: 3,
       day: 0,
       date: '2026-09-14',
@@ -137,6 +138,7 @@ describe('export / import', () => {
     });
     await base.notes.bulkAdd([
       {
+        cycleId: 1,
         exerciseId: 'bench-press',
         week: 1,
         day: 2,
@@ -145,6 +147,7 @@ describe('export / import', () => {
         at: 1_756_600_000_000,
       },
       {
+        cycleId: 1,
         exerciseId: null,
         week: 1,
         day: 2,
@@ -154,6 +157,7 @@ describe('export / import', () => {
       },
     ]);
     await base.noteDrafts.add({
+      cycleId: 1,
       slot: 'deadlift',
       week: 3,
       day: 5,
@@ -162,6 +166,7 @@ describe('export / import', () => {
       updatedAt: 1_758_200_000_000,
     });
     await base.sessionExercises.add({
+      cycleId: 1,
       sessionId: 1,
       week: 3,
       day: 0,
@@ -177,6 +182,7 @@ describe('export / import', () => {
       at: 1_757_000_500_000,
     });
     await base.exerciseNotes.add({
+      cycleId: 1,
       exerciseId: 'rdl',
       week: 2,
       day: 5,
