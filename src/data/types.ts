@@ -343,6 +343,14 @@ export interface ExerciseDef {
   altBasicFit?: string;
   /** Consignes dépliables. */
   cues?: string[];
+  /**
+   * Planche d'exécution livrée avec l'application, ex. `fiches/db-curl.webp`.
+   *
+   * Absente pour les mouvements de POWER 12, qui n'en ont pas : son programme
+   * décrit l'exécution par l'intention et les consignes, pas par l'image. Les
+   * trente mouvements de MASS 4 en ont une chacun.
+   */
+  fiche?: string;
   /** Règle §5 : chaque rep est une tentative de performance, on arrête si ça ralentit. */
   explosive?: boolean;
   /** Unité mesurée lors d'un test ou d'un saut. */
