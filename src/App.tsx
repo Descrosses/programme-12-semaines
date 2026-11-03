@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { Icon, type IconName } from './components/Icon';
 import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
+import { AccueilScreen } from './screens/AccueilScreen';
+import { CatalogueScreen } from './screens/CatalogueScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { NutritionScreen } from './screens/NutritionScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
@@ -20,6 +22,7 @@ import type { DayKind } from './data/nutrition';
 import styles from './App.module.css';
 
 type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
+type PlateformeName = 'accueil' | 'catalogue';
 
 const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
   { name: 'today', label: 'Aujourd’hui', icon: 'play' },
@@ -28,6 +31,20 @@ const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
   { name: 'progress', label: 'Progrès', icon: 'chart' },
   { name: 'combine', label: 'Combine', icon: 'stopwatch' },
   { name: 'settings', label: 'Réglages', icon: 'settings' },
+];
+
+/*
+ * La barre de la PLATEFORME, et non celle du programme.
+ *
+ * Deux barres plutôt qu'une seule à huit entrées : les onglets de POWER 12
+ * servent à mener une séance, ceux-ci à choisir ce qu'on fait. Les mélanger
+ * donnerait une barre où « Nutrition » et « Catalogue » voisinent sans rapport
+ * l'un avec l'autre, et obligerait à toucher la navigation de POWER 12 —
+ * exactement ce que le brief interdit.
+ */
+const PLATEFORME: Array<{ name: PlateformeName; label: string; icon: IconName }> = [
+  { name: 'accueil', label: 'Accueil', icon: 'home' },
+  { name: 'catalogue', label: 'Programmes', icon: 'book' },
 ];
 
 export function App() {
@@ -111,6 +128,9 @@ export function App() {
   // Pendant une séance, la barre de navigation disparaît : l'écran est long,
   // le pouce navigue dedans, et une barre de plus multiplierait les appuis ratés.
   const inSession = route.name === 'session';
+  // Deux niveaux : la plateforme choisit un programme, le programme mène une
+  // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
+  const dansPlateforme = route.name === 'accueil' || route.name === 'catalogue';
 
   /*
    * Sur iOS, un élément en `position: fixed` est ancré au layout viewport, pas
@@ -154,7 +174,29 @@ export function App() {
 
       <RestBar timer={timer} />
 
-      {!inSession && (
+      {dansPlateforme && (
+        <nav className={styles.nav} aria-label="Navigation Dcross-fit">
+          {PLATEFORME.map((tab) => {
+            const active = route.name === tab.name;
+            return (
+              <button
+                key={tab.name}
+                type="button"
+                className={`${styles.tab} ${active ? styles.tabOn : ''}`}
+                onClick={() => navigate({ name: tab.name })}
+                aria-current={active ? 'page' : undefined}
+              >
+                <span className={styles.tabIcon}>
+                  <Icon name={tab.icon} size="21px" />
+                </span>
+                <span className={styles.tabLabel}>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      )}
+
+      {!inSession && !dansPlateforme && (
         <nav className={styles.nav} aria-label="Navigation principale">
           {TABS.map((tab) => {
             const active = route.name === tab.name;
@@ -198,6 +240,24 @@ function renderScreen(
   timer: ReturnType<typeof useRestTimer>,
 ) {
   switch (route.name) {
+    case 'accueil':
+      return (
+        <AccueilScreen
+          key={dataVersion}
+          onReprendre={() => navigate({ name: 'today' })}
+          onCatalogue={() => navigate({ name: 'catalogue' })}
+        />
+      );
+
+    case 'catalogue':
+      return (
+        <CatalogueScreen
+          key={dataVersion}
+          onOuvrirProgramme={() => navigate({ name: 'today' })}
+          onDataChanged={refresh}
+        />
+      );
+
     case 'session':
       return (
         <SessionScreen
@@ -259,6 +319,7 @@ function renderScreen(
       return (
         <TodayScreen
           key={dataVersion}
+          onGoAccueil={() => navigate({ name: 'accueil' })}
           onOpen={openSession}
           onGoWeek={(w) => navigate({ name: 'week', week: w })}
           onGoSettings={() => navigate({ name: 'settings' })}
