@@ -160,7 +160,7 @@ export const FAMILLES: readonly Famille[] = [
   {
     id: 'femmes',
     nom: 'FEMMES',
-    sousTitre: 'À définir',
+    sousTitre: 'Programmes à venir',
     /*
      * Aucun programme, et c'est volontaire. Le §4 interdit d'en inventer les
      * objectifs, les exercices ou les durées, et le §15 dit que son identité

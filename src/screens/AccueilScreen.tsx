@@ -3,50 +3,83 @@
  *
  * ── Ce qu'il répond ────────────────────────────────────────────────────────
  *
- * Une seule question : « où j'en suis, et qu'est-ce que je fais maintenant ».
- * Le reste — le catalogue, les autres programmes — est à un appui, pas sur
- * cet écran.
+ * Trois questions, dans cet ordre : où j'en suis, qu'est-ce que je fais
+ * maintenant, et qu'est-ce qui existe d'autre. Le reste est à un appui.
  *
- * ── Pourquoi il existe ─────────────────────────────────────────────────────
+ * ── Pourquoi il a été refait ───────────────────────────────────────────────
  *
- * Tant qu'il n'y avait qu'un programme, l'application pouvait ouvrir
- * directement sur la séance du jour : il n'y avait rien d'autre à montrer.
- * Dès qu'il y a un catalogue et plusieurs cycles, il faut un endroit qui dise
- * lequel est en cours, sinon l'utilisateur ne sait plus ce qu'il regarde.
+ * Il portait le thème de POWER 12 : bleu nuit, et une photo de stade en tête
+ * d'écran. Tant que l'application ÉTAIT POWER 12, c'était cohérent. Avec trois
+ * familles au catalogue, l'accueil annonçait l'une d'elles au lieu d'annoncer
+ * la plateforme — et habiller le hall d'entrée aux couleurs d'un seul des
+ * programmes qu'il héberge revient à en désigner un favori.
  *
- * Le coût est un geste de plus au démarrage. Il est compensé en mettant
- * l'action du jour en premier, en gros, avant tout le reste.
+ * La structure suit la maquette de Guillaume : logo, bienvenue, programme en
+ * cours, prochaine séance, familles, parcours. Les chiffres, eux, viennent du
+ * système existant — cycle actif, calendrier du programme, séances faites.
+ * Aucun n'est décoratif.
  */
 
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon';
-import { ScreenHeader } from '../components/ScreenHeader';
-import { programmeParId, type ProgrammeDefinition } from '../data/catalogue';
+import { Visuel } from '../components/Visuel';
+import { FAMILLES, programmeParId, type ProgrammeDefinition } from '../data/catalogue';
+import type { FamilleId } from '../data/catalogue';
+import { LOGO, MARQUE_CAPITALES, SIGNATURE } from '../data/marque';
 import type { DayIndex, WeekIndex } from '../data/types';
+import type { VisuelNom } from '../data/visuels';
 import { locateToday, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
 import { allSessions, cycleActif, getSettingsRow } from '../db/repo';
 import type { CycleRow } from '../db/db';
 import { EMPTY_CONTEXT } from '../engine/types';
-import styles from './Screens.module.css';
-import local from './Accueil.module.css';
+import styles from './Accueil.module.css';
+
+/**
+ * La photo de chaque famille.
+ *
+ * Provisoire, et déclarée ici plutôt que devinée : ce sont les visuels déjà
+ * présents dans le manifeste, choisis pour ce qu'ils montrent — un départ de
+ * sprint pour la force et l'explosivité, un développé couché lourd pour la
+ * prise de masse.
+ *
+ * FEMMES n'en a aucune, et c'est volontaire. Lui prêter une photo d'un autre
+ * univers reviendrait à décider de son identité visuelle, ce qui reste à
+ * faire. La carte affiche alors son dégradé seul, et reste lisible.
+ */
+const PHOTO_FAMILLE: Partial<Record<FamilleId, VisuelNom>> = {
+  power: 'sprint',
+  mass: 'force',
+};
 
 interface Etat {
   cycle: CycleRow | null;
   programme: ProgrammeDefinition | null;
   faites: number;
   total: number;
-  prochaine: { week: WeekIndex; day: DayIndex; titre: string; date: string } | null;
+  semaine: WeekIndex | null;
+  semaines: number;
+  prochaine: { week: WeekIndex; day: DayIndex; titre: string; date: string; duree: string } | null;
 }
 
-const VIDE: Etat = { cycle: null, programme: null, faites: 0, total: 0, prochaine: null };
+const VIDE: Etat = {
+  cycle: null,
+  programme: null,
+  faites: 0,
+  total: 0,
+  semaine: null,
+  semaines: 0,
+  prochaine: null,
+};
 
 export function AccueilScreen({
   onReprendre,
   onCatalogue,
+  onParcours,
 }: {
   onReprendre: () => void;
   onCatalogue: () => void;
+  onParcours: () => void;
 }) {
   const [etat, setEtat] = useState<Etat>(VIDE);
   const [pret, setPret] = useState(false);
@@ -89,11 +122,20 @@ export function AccueilScreen({
             day: cible.day,
             titre: resolue?.title ?? 'Séance',
             date: cible.date,
+            duree: resolue?.durationLabel ?? '',
           };
         }
       }
 
-      setEtat({ cycle, programme, faites, total: planifiees.length, prochaine });
+      setEtat({
+        cycle,
+        programme,
+        faites,
+        total: planifiees.length,
+        semaine: prochaine?.week ?? null,
+        semaines: module.dureeSemaines,
+        prochaine,
+      });
       setPret(true);
     })();
     return () => {
@@ -102,97 +144,185 @@ export function AccueilScreen({
   }, []);
 
   const pourcent = etat.total === 0 ? 0 : Math.round((etat.faites / etat.total) * 100);
-  const jourLong = (iso: string) =>
-    new Date(`${iso}T12:00:00`).toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
+  const photoDuCycle =
+    etat.programme === null ? undefined : PHOTO_FAMILLE[etat.programme.familleId];
 
   return (
-    <div className={styles.screen}>
-      <ScreenHeader
-        eyebrow="Dcross-fit"
-        title={etat.cycle === null ? 'Bienvenue' : 'Bon retour'}
-        subtitle={
-          etat.cycle === null ? 'Choisis un programme pour commencer' : 'Ton programme en cours'
-        }
-        visuel="stade"
-        prioritaire
-        compact
-      />
+    <div className={styles.ecran}>
+      {/* ------------------------------------------------- en-tête ------- */}
+      <header className={styles.entete}>
+        <img
+          className={styles.logo}
+          src={`${import.meta.env.BASE_URL}${LOGO.petit}`}
+          srcSet={`${import.meta.env.BASE_URL}${LOGO.petit} 300w, ${import.meta.env.BASE_URL}${LOGO.grand} 600w`}
+          sizes="150px"
+          alt={MARQUE_CAPITALES}
+          width={150}
+          height={150}
+          decoding="async"
+        />
+        <h1 className={styles.marque}>{MARQUE_CAPITALES}</h1>
+        <p className={styles.signature}>{SIGNATURE}</p>
+      </header>
 
-      {!pret && <p className={styles.hint}>Lecture de tes données…</p>}
+      <p className={styles.bienvenue}>
+        Bonjour Guillaume
+        <span className={styles.sousBienvenue}>Ton espace d’entraînement.</span>
+      </p>
 
+      {!pret && <p className={styles.attente}>Lecture de tes données…</p>}
+
+      {/* --------------------------------------- programme en cours ------ */}
       {pret && etat.cycle !== null && (
-        <>
-          <section className={styles.card}>
-            <h2 className={local.nomProgramme}>
+        <button type="button" className={styles.enCours} onClick={onReprendre}>
+          {photoDuCycle !== undefined && (
+            <span className={styles.enCoursPhoto} aria-hidden="true">
+              <Visuel nom={photoDuCycle} sizes="420px" prioritaire />
+            </span>
+          )}
+          <span className={styles.enCoursVoile} aria-hidden="true" />
+          <span className={styles.enCoursCorps}>
+            <span className={styles.badge}>En cours</span>
+            <span className={styles.enCoursNom}>
               {etat.programme?.nom ?? etat.cycle.programmeId}
-              <span className={local.version}> · version {etat.cycle.programmeVersion}</span>
-            </h2>
-            <p className={local.famille}>{etat.programme?.resume ?? 'Programme en cours'}</p>
-
+            </span>
+            {etat.semaine !== null && (
+              <span className={styles.enCoursSemaine}>
+                Semaine <b>{etat.semaine}</b> / {etat.semaines}
+              </span>
+            )}
             {etat.total > 0 && (
               <>
-                <div className={local.jauge} aria-hidden="true">
+                <span className={styles.jauge} aria-hidden="true">
                   <i style={{ width: `${pourcent}%` }} />
-                </div>
-                <p className={styles.cardSub}>
-                  {etat.faites} séance{etat.faites > 1 ? 's' : ''} faite
-                  {etat.faites > 1 ? 's' : ''} sur {etat.total} · {pourcent} %
-                </p>
+                </span>
+                <span className={styles.enCoursChiffres}>
+                  {etat.faites} séance{etat.faites > 1 ? 's' : ''} sur {etat.total} · {pourcent} %
+                </span>
               </>
             )}
-          </section>
+          </span>
+          <span className={styles.chevronCarte} aria-hidden="true">
+            <Icon name="arrow-right" size="18px" />
+          </span>
+        </button>
+      )}
 
-          {etat.prochaine !== null && (
-            <button type="button" className={local.principal} onClick={onReprendre}>
-              <span className={local.principalIcone}>
-                <Icon name="play" size="20px" />
-              </span>
-              <span className={local.principalTexte}>
-                <b>{etat.prochaine.titre}</b>
-                <s>
-                  {jourLong(etat.prochaine.date)} · semaine {etat.prochaine.week}
-                </s>
-              </span>
-              <Icon name="arrow-right" size="18px" />
-            </button>
-          )}
+      {/* ------------------------------------------ prochaine séance ----- */}
+      {pret && etat.cycle !== null && etat.prochaine !== null && (
+        <button type="button" className={styles.prochaine} onClick={onReprendre}>
+          <span className={styles.prochaineIcone} aria-hidden="true">
+            <Icon name="calendar" size="20px" />
+          </span>
+          <span className={styles.prochaineTexte}>
+            <span className={styles.prochaineEtiquette}>
+              Prochaine séance · {etat.programme?.nom ?? ''}
+            </span>
+            <b>{etat.prochaine.titre}</b>
+            <span className={styles.prochaineMeta}>
+              {etat.prochaine.duree !== '' && (
+                <>
+                  <Icon name="stopwatch" size="14px" /> {etat.prochaine.duree} ·{' '}
+                </>
+              )}
+              {jourLong(etat.prochaine.date)}
+            </span>
+          </span>
+          <span className={styles.lecture} aria-hidden="true">
+            <Icon name="play" size="18px" />
+          </span>
+        </button>
+      )}
 
-          {etat.prochaine === null && (
-            <button type="button" className={local.principal} onClick={onReprendre}>
-              <span className={local.principalTexte}>
-                <b>Reprendre le programme</b>
-                <s>Pose ta date de début pour voir ton calendrier</s>
-              </span>
-              <Icon name="arrow-right" size="18px" />
-            </button>
-          )}
-        </>
+      {pret && etat.cycle !== null && etat.prochaine === null && (
+        <button type="button" className={styles.prochaine} onClick={onReprendre}>
+          <span className={styles.prochaineIcone} aria-hidden="true">
+            <Icon name="calendar" size="20px" />
+          </span>
+          <span className={styles.prochaineTexte}>
+            <b>Reprendre le programme</b>
+            <span className={styles.prochaineMeta}>
+              Pose ta date de début pour voir ton calendrier
+            </span>
+          </span>
+          <span className={styles.lecture} aria-hidden="true">
+            <Icon name="arrow-right" size="18px" />
+          </span>
+        </button>
       )}
 
       {pret && etat.cycle === null && (
-        <section className={styles.card}>
-          <h2 className={styles.cardTitle}>Aucun programme en cours</h2>
-          <p className={styles.cardSub}>
-            Le catalogue dit ce qui existe et ce qui est prêt. Un seul programme est jouable
-            aujourd’hui : POWER 12.
-          </p>
-        </section>
+        <button type="button" className={styles.prochaine} onClick={onCatalogue}>
+          <span className={styles.prochaineIcone} aria-hidden="true">
+            <Icon name="book" size="20px" />
+          </span>
+          <span className={styles.prochaineTexte}>
+            <b>Aucun programme en cours</b>
+            <span className={styles.prochaineMeta}>Ouvre le catalogue pour en démarrer un</span>
+          </span>
+          <span className={styles.lecture} aria-hidden="true">
+            <Icon name="arrow-right" size="18px" />
+          </span>
+        </button>
       )}
 
-      <button type="button" className={local.lien} onClick={onCatalogue}>
-        <span className={local.lienIcone}>
-          <Icon name="book" size="19px" />
+      {/* ----------------------------------------------- familles -------- */}
+      <div className={styles.sectionTete}>
+        <h2 className={styles.sectionTitre}>Mes programmes</h2>
+        <button type="button" className={styles.sectionLien} onClick={onCatalogue}>
+          Tous les programmes
+          <Icon name="arrow-right" size="15px" />
+        </button>
+      </div>
+
+      <div className={styles.familles}>
+        {FAMILLES.map((famille) => {
+          const photo = PHOTO_FAMILLE[famille.id];
+          const aVenir = famille.programmes.every((p) => p.statut === 'a-venir');
+          return (
+            <button
+              key={famille.id}
+              type="button"
+              className={`${styles.famille} ${styles[`famille_${famille.id}`] ?? ''}`}
+              onClick={onCatalogue}
+            >
+              {photo !== undefined && (
+                <span className={styles.famillePhoto} aria-hidden="true">
+                  <Visuel nom={photo} sizes="220px" />
+                </span>
+              )}
+              <span className={styles.familleVoile} aria-hidden="true" />
+              {aVenir && <span className={styles.familleBadge}>À venir</span>}
+              <span className={styles.familleTexte}>
+                <span className={styles.familleNom}>{famille.nom}</span>
+                <span className={styles.familleSous}>{famille.sousTitre}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ----------------------------------------------- parcours -------- */}
+      <button type="button" className={styles.parcours} onClick={onParcours}>
+        <span className={styles.parcoursIcone} aria-hidden="true">
+          <Icon name="repeat" size="20px" />
         </span>
-        <span className={local.lienTexte}>
-          <b>Catalogue</b>
-          <s>POWER · MASS · Femmes à venir</s>
+        <span className={styles.prochaineTexte}>
+          <b>Mon parcours</b>
+          <span className={styles.prochaineMeta}>Mes cycles, mes bilans, ma progression</span>
         </span>
-        <Icon name="arrow-right" size="17px" />
+        <span className={styles.chevron} aria-hidden="true">
+          <Icon name="arrow-right" size="17px" />
+        </span>
       </button>
     </div>
   );
+}
+
+function jourLong(iso: string): string {
+  return new Date(`${iso}T12:00:00`).toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
 }

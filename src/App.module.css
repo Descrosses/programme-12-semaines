@@ -92,10 +92,22 @@
   max-width: 560px;
   margin: 0 auto;
   display: grid;
-  /* Six onglets depuis l'ajout de Nutrition : 65 px chacun sur un iPhone
-     standard, ce qui reste au-dessus des 48 px de cible tactile en hauteur.
-     Les libellés rétrécissent, les zones d'appui non. */
-  grid-template-columns: repeat(6, 1fr);
+  /*
+   * Les colonnes suivent le NOMBRE RÉEL d'onglets, au lieu d'être figées à six.
+   *
+   * Elles l'étaient, et la barre de la plateforme n'en porte que trois :
+   * Accueil, Programmes et Parcours occupaient les trois premières colonnes
+   * sur six et se tassaient contre le bord gauche, la moitié droite de
+   * l'écran restant vide. `grid-auto-columns` répartit à parts égales quel
+   * que soit le nombre — trois pour la plateforme, six pour POWER 12, cinq ou
+   * sept pour un programme à venir.
+   *
+   * Avec six onglets, un iPhone standard donne 65 px chacun, ce qui reste
+   * au-dessus des 48 px de cible tactile. Les libellés rétrécissent, les
+   * zones d'appui non.
+   */
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   background: var(--surface);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom, 0px);
