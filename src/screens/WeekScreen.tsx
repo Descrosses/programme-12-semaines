@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { BLOCKS, SEMAINES, blocDeLaSemaine, joursDeLaSemaine } from '../data/program';
+import { blocInfo } from '../data/program';
+import { modulePourCycle } from '../programmes/registre';
+import type { ModuleProgramme } from '../programmes/types';
 import { DAY_LABELS, DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
 import { dateFor, humanDateShort } from '../engine/calendar';
-import { getSession } from '../engine/getSession';
+
 import {
   allReadiness,
+  cycleActif,
   allSessions,
   allSets,
   buildHistoryIndex,
@@ -47,12 +50,28 @@ export function WeekScreen({
   const choisie = useRef<HTMLButtonElement>(null);
 
   /*
+   * Le programme du cycle en cours. POWER 12 tant que c'est lui qui tourne,
+   * MASS 4 si c'est lui — et c'est ce module qui dit combien de semaines
+   * afficher, quels jours portent une séance, et s'il y a un bloc à annoncer.
+   */
+  const [programme, setProgramme] = useState<ModuleProgramme | null>(null);
+
+  useEffect(() => {
+    void cycleActif().then((c) => setProgramme(modulePourCycle(c?.programmeId ?? null)));
+  }, []);
+
+  /*
    * La bande se recale sur la semaine choisie, à l'ouverture comme à chaque
    * changement.
    *
    * On pose `scrollLeft` plutôt que d'appeler `scrollIntoView` : celui-ci fait
    * aussi défiler la PAGE pour amener l'élément dans le champ, et l'écran
    * sauterait verticalement à chaque semaine touchée.
+   *
+   * `programme` fait partie des dépendances, et ce n'est pas décoratif : la
+   * bande n'existe qu'une fois le programme chargé, donc au premier passage
+   * la référence est vide et il n'y a rien à recaler. Sans cette dépendance,
+   * l'écran s'ouvrait sur la semaine 1 quelle que soit la semaine demandée.
    */
   useEffect(() => {
     const c = bande.current;
@@ -64,9 +83,10 @@ export function WeekScreen({
       gauche: b.offsetLeft - c.offsetLeft,
       largeur: b.offsetWidth,
     });
-  }, [week]);
+  }, [week, programme]);
 
   useEffect(() => {
+    if (programme === null) return;
     void (async () => {
       const settingsRow = await getSettingsRow();
       const settings = toEngineSettings(settingsRow);
@@ -80,8 +100,8 @@ export function WeekScreen({
       const todayIso = new Date().toISOString().slice(0, 10);
 
       const out: DayLine[] = [];
-      for (const day of joursDeLaSemaine(week)) {
-        const s = getSession(week, day, {
+      for (const day of programme.joursDeLaSemaine(week)) {
+        const s = programme.getSession(week, day, {
           settings,
           history,
           readiness: null,
@@ -101,21 +121,29 @@ export function WeekScreen({
       }
       setLines(out);
     })();
-  }, [week]);
+  }, [week, programme]);
 
-  const blocCourant = blocDeLaSemaine(week);
-  // Une semaine hors programme n'a rien à montrer. L'ancre d'URL est déjà
-  // bornée, mais c'est elle qui décide, pas une longueur écrite en dur.
-  if (blocCourant === null) return null;
-  const block = BLOCKS[blocCourant];
+  if (programme === null) return null;
+
+  /*
+   * Un programme peut n'avoir AUCUN bloc de périodisation : MASS 4 répète la
+   * même séance quatre semaines de suite. Le bandeau de phase et le sur-titre
+   * « Bloc … » se taisent alors, au lieu d'afficher une case vide ou, pire,
+   * un bloc emprunté à l'autre programme.
+   */
+  const blocCourant = programme.blocDeLaSemaine(week);
+  const block = blocInfo(blocCourant);
+  if (!programme.semaines.includes(week)) return null;
 
   return (
     <div className={styles.screen}>
       <ScreenHeader
-        eyebrow={week === 0 ? 'Avant le programme' : `Bloc ${block.name}`}
+        eyebrow={
+          week === 0 ? 'Avant le programme' : block === null ? 'Volume' : `Bloc ${block.name}`
+        }
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
-        subtitle={block.objective}
-        visuel="casque"
+        subtitle={block?.objective}
+        {...(programme.id === 'power12' ? ({ visuel: 'casque' } as const) : {})}
         prioritaire
         compact
       />
@@ -127,39 +155,40 @@ export function WeekScreen({
         carte de phase la lisent toutes au même endroit.
       */}
       <div className={styles.weeks} ref={bande}>
-        {SEMAINES.map((w) => {
-          const cle = blocDeLaSemaine(w);
-          if (cle === null) return null;
-          const b = BLOCKS[cle];
+        {programme.semaines.map((w) => {
+          const cle = programme.blocDeLaSemaine(w);
+          const b = blocInfo(cle);
           return (
             <button
               key={w}
               type="button"
               ref={w === week ? choisie : undefined}
               className={`${styles.week} ${w === week ? styles.weekOn : ''}`}
-              style={{ '--bloc': b.color } as CSSProperties}
+              style={{ '--bloc': b?.color ?? 'transparent' } as CSSProperties}
               onClick={() => onChangeWeek(w as WeekIndex)}
               aria-current={w === week ? 'true' : undefined}
             >
               <span className={styles.weekNum}>{w === 0 ? 'T' : w}</span>
-              <span className={styles.weekTag}>{b.short}</span>
+              {b !== null && <span className={styles.weekTag}>{b.short}</span>}
             </button>
           );
         })}
       </div>
 
-      <section className={styles.phase} style={{ '--bloc': block.color } as CSSProperties}>
-        <DiagonalStripes />
-        <span className={styles.phaseIcon}>
-          <Icon name="chart" size="22px" />
-        </span>
-        <div className={styles.phaseBody}>
-          <div className={styles.phaseName}>{block.name}</div>
-          <p className={styles.phaseMeta}>
-            {block.intensityLabel} · {block.objective}
-          </p>
-        </div>
-      </section>
+      {block !== null && (
+        <section className={styles.phase} style={{ '--bloc': block.color } as CSSProperties}>
+          <DiagonalStripes />
+          <span className={styles.phaseIcon}>
+            <Icon name="chart" size="22px" />
+          </span>
+          <div className={styles.phaseBody}>
+            <div className={styles.phaseName}>{block.name}</div>
+            <p className={styles.phaseMeta}>
+              {block.intensityLabel} · {block.objective}
+            </p>
+          </div>
+        </section>
+      )}
 
       {lines === null ? (
         <div className={styles.loading}>Chargement…</div>

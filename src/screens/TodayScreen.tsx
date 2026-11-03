@@ -1,6 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { NUTRITION_TARGETS, type DayKind } from '../data/nutrition';
-import { BLOCKS, WEEK_BLOCKS, blocDeLaSemaine, couleurDuBloc, isCombineDay } from '../data/program';
+import { WEEK_BLOCKS, blocInfo, isCombineDay } from '../data/program';
+import { modulePourCycle } from '../programmes/registre';
+import type { ModuleProgramme } from '../programmes/types';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
   humanDate,
@@ -10,9 +12,10 @@ import {
   type TodayState,
 } from '../engine/calendar';
 import { fr } from '../engine/format';
-import { getSession } from '../engine/getSession';
+
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import {
+  cycleActif,
   allReadiness,
   allSessions,
   allSets,
@@ -87,6 +90,12 @@ export function TodayScreen({
   /** Palier alimentaire du jour affiché — pas celui d'une semaine entière. */
   todayKind: DayKind;
 }) {
+  /** Le programme du cycle en cours : c'est lui qui dit s'il y a un bloc. */
+  const [programme, setProgramme] = useState<ModuleProgramme | null>(null);
+  useEffect(() => {
+    void cycleActif().then((c) => setProgramme(modulePourCycle(c?.programmeId ?? null)));
+  }, []);
+
   const [state, setState] = useState<{
     loading: boolean;
     today: TodayState | null;
@@ -128,7 +137,14 @@ export function TodayScreen({
       const settingsRow = await getSettingsRow();
       const settings = toEngineSettings(settingsRow);
       const todayIso = new Date().toISOString().slice(0, 10);
-      const today = locateToday(settings.startDate, todayIso);
+      /*
+        Le calendrier et la séance viennent du PROGRAMME du cycle. Sans ça,
+        un cycle MASS 4 annonçait « Upper Strength — bench + tractions » un
+        mercredi, qui est un jour de repos chez lui : les noms comme les jours
+        étaient ceux de POWER 12.
+      */
+      const module = modulePourCycle((await cycleActif())?.programmeId ?? null);
+      const today = locateToday(settings.startDate, todayIso, module);
 
       const [sets, readinessRows, rows] = await Promise.all([
         allSets(),
@@ -153,7 +169,7 @@ export function TodayScreen({
               ? today.first
               : null;
       if (target) {
-        const s = getSession(target.week, target.day, {
+        const s = module.getSession(target.week, target.day, {
           settings,
           history,
           readiness: null,
@@ -211,8 +227,14 @@ export function TodayScreen({
           ? today.first.week
           : today.last.week;
 
-  const blocSemaine = semaineDuJour === null ? null : blocDeLaSemaine(semaineDuJour);
-  const bloc = blocSemaine === null ? null : BLOCKS[blocSemaine];
+  /*
+   * Le bloc vient du PROGRAMME du cycle, pas de POWER 12. Un programme sans
+   * périodisation — MASS 4 — rend `null`, et la pastille de bloc disparaît au
+   * lieu d'emprunter celle du voisin.
+   */
+  const blocSemaine =
+    programme === null || semaineDuJour === null ? null : programme.blocDeLaSemaine(semaineDuJour);
+  const bloc = blocInfo(blocSemaine);
 
   const entete =
     today.kind === 'session'
@@ -238,14 +260,20 @@ export function TodayScreen({
         eyebrow={humanDate(new Date().toISOString().slice(0, 10))}
         title={entete.titre}
         subtitle={entete.sous}
-        visuel={visuelDuJour(today, semaineDuJour)}
+        {...(programme === null || programme.id === 'power12'
+          ? { visuel: visuelDuJour(today, semaineDuJour) }
+          : {})}
         prioritaire
       >
         {today.kind === 'session' && (
           <div className={styles.meta}>
             <span
               className={`${styles.metaItem} ${styles.metaBloc}`}
-              style={{ '--bloc': couleurDuBloc(today.session.week) } as CSSProperties}
+              style={
+                {
+                  '--bloc': programme?.couleurDuBloc(today.session.week) ?? 'transparent',
+                } as CSSProperties
+              }
             >
               {state.intensity}
             </span>

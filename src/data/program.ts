@@ -201,6 +201,18 @@ export const SEMAINES: readonly number[] = Object.keys(WEEK_BLOCKS)
   .map(Number)
   .sort((a, b) => a - b);
 
+/**
+ * La fiche d'un bloc, ou `null`.
+ *
+ * Prend une chaîne et non un `Block` : depuis que les programmes déclarent
+ * eux-mêmes leur périodisation, le nom de bloc qui arrive ici peut venir d'un
+ * autre programme — ou d'aucun. MASS 4 n'en a pas du tout.
+ */
+export function blocInfo(cle: string | null): BlockInfo | null {
+  if (cle === null) return null;
+  return (BLOCKS as Record<string, BlockInfo | undefined>)[cle] ?? null;
+}
+
 /** La couleur du bloc d'une semaine. Transparente hors programme. */
 export function couleurDuBloc(week: number): string {
   const cle = blocDeLaSemaine(week);
