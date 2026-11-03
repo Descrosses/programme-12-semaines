@@ -38,7 +38,9 @@
   padding: 4px 10px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  background: rgb(6 20 38 / 72%);
+  /* Le même voile que l'en-tête : c'est le fond de l'écran vu à travers la
+     photo, pas une couleur en soi. En thème clair il devient crème. */
+  background: rgb(var(--voile) / 72%);
   color: var(--ink-2);
   font-size: 0.8125rem;
   font-weight: 600;

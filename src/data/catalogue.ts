@@ -111,7 +111,7 @@ export const FAMILLES: readonly Famille[] = [
     nom: 'MASS',
     sousTitre: 'Prise de masse & congestion',
     resume:
-      'Hypertrophie, volume d’entraînement et congestion. Le programme existe et tourne dans sa propre application ; son intégration ici est en cours.',
+      'Hypertrophie, volume d’entraînement et congestion. Les charges sont autorégulées : tu les choisis et tu les notes.',
     programmes: [
       {
         id: 'mass4',
@@ -119,11 +119,19 @@ export const FAMILLES: readonly Famille[] = [
         nom: 'MASS 4',
         version: '1.0',
         dureeSemaines: 4,
-        statut: 'a-venir',
+        statut: 'disponible',
         resume:
-          'Quatre semaines de volume et de congestion. Conçu et testé, pas encore intégré à Dcross-fit.',
-        objectifs: [],
-        prerequis: [],
+          'Quatre semaines de volume et de congestion, quatre séances par semaine. La même séance chaque semaine, et des charges que tu choisis toi-même.',
+        objectifs: [
+          'Prise de masse musculaire et congestion',
+          'Progression par le volume, sans recherche de force maximale',
+          'Techniques d’intensité : séries dégressives, supersets, tempo imposé',
+        ],
+        prerequis: [
+          'Niveau débutant avancé ou intermédiaire, déjà entraîné',
+          'Quatre séances par semaine, environ 60 minutes',
+          'Une salle avec Smith machine, poulies, machines guidées et haltères',
+        ],
       },
       {
         id: 'mass8',

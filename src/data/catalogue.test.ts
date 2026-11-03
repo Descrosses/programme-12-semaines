@@ -26,7 +26,7 @@ describe('catalogue Dcross-fit', () => {
      * pas « comment le faire passer » mais « ce programme se joue-t-il
      * vraiment du début à la fin dans cette application ».
      */
-    expect(programmesDisponibles().map((p) => p.id)).toEqual(['power12']);
+    expect(programmesDisponibles().map((p) => p.id)).toEqual(['power12', 'mass4']);
   });
 
   it('fait correspondre le programme par défaut à la durée du moteur', () => {

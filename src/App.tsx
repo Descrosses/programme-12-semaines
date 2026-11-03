@@ -12,6 +12,7 @@ import { SessionScreen } from './screens/SessionScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
+import { modulePourCycle } from './programmes/registre';
 import { themePour } from './state/theme';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
@@ -100,7 +101,8 @@ export function App() {
       const row = await getSettingsRow();
       setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
       const iso = new Date().toISOString().slice(0, 10);
-      const today = locateToday(row.startDate, iso);
+      const programme = modulePourCycle((await cycleActif())?.programmeId ?? null);
+      const today = locateToday(row.startDate, iso, programme);
       const duProgramme: DayKind = today?.kind === 'session' ? 'train' : 'rest';
       setKindProgramme(duProgramme);
       setTodayKind((await dayKindOverride(iso)) ?? duProgramme);

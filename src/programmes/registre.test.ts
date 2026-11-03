@@ -22,10 +22,22 @@ describe('registre des programmes', () => {
   });
 
   it('rend `null` pour un programme annoncé mais pas encore écrit', () => {
-    // MASS 4 figure au catalogue en « à venir ». Il n'a pas de module.
-    expect(moduleParId('mass4')).toBeNull();
+    // POWER 28 figure au catalogue en « à venir ». Il n'a pas de module.
     expect(moduleParId('power28')).toBeNull();
+    expect(moduleParId('mass8')).toBeNull();
     expect(moduleParId(null)).toBeNull();
+  });
+
+  it('joue MASS 4, et le décrit comme il est', () => {
+    const m = moduleParId('mass4');
+    expect(m).not.toBeNull();
+    expect(m?.dureeSemaines).toBe(4);
+    // Quatre semaines, sans semaine 0 : MASS 4 n'a pas de combine initial.
+    expect(m?.semaines).toEqual([1, 2, 3, 4]);
+    // Et aucun bloc de périodisation : la même séance chaque semaine.
+    expect(m?.blocDeLaSemaine(1)).toBeNull();
+    expect(m?.joursDeLaSemaine(1)).toEqual([0, 1, 3, 5]);
+    expect(m?.joursDeLaSemaine(5)).toEqual([]);
   });
 
   it('ne laisse jamais un cycle sans programme', () => {

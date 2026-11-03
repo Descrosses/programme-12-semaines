@@ -19,7 +19,10 @@ import {
   repsAffichees,
   seriesPour,
 } from './progression';
+import { EMPTY_CONTEXT } from '../../engine/types';
+import { MASS4 } from './module';
 import { SEANCES_MASS4, seancePour } from './seances';
+import { travailPour } from './travail';
 import { JOURS_MASS4, SEMAINES_MASS4 } from './types';
 
 describe('MASS 4 — structure', () => {
@@ -219,5 +222,102 @@ describe('MASS 4 — ce que le programme ne fait PAS', () => {
     // La même séance chaque semaine : il n'y a rien à périodiser.
     const texte = JSON.stringify(SEANCES_MASS4);
     expect(texte).not.toMatch(/deload|accumulation|intensification/i);
+  });
+});
+
+describe('MASS 4 — lecture des répétitions', () => {
+  it('reconnaît les formes simples du document', () => {
+    expect(travailPour('12')).toEqual({
+      kind: 'reps',
+      reps: 12,
+      perSide: false,
+      sideLabel: 'côté',
+    });
+    expect(travailPour('8-10')).toEqual({
+      kind: 'reps',
+      reps: { min: 8, max: 10 },
+      perSide: false,
+      sideLabel: 'côté',
+    });
+  });
+
+  it('comprend « par bras », « par côté » et « par jambe »', () => {
+    expect(travailPour('15 / bras')).toMatchObject({ reps: 15, perSide: true, sideLabel: 'côté' });
+    expect(travailPour('8 / jambe')).toMatchObject({ perSide: true, sideLabel: 'jambe' });
+    expect(travailPour('30 s / côté')).toEqual({ kind: 'time', seconds: 30, perSide: true });
+  });
+
+  it('ne garde que la première partie d’une technique en deux temps', () => {
+    // « 6 + 10-12 » : la dégressive est décrite par la technique, pas ici.
+    expect(travailPour('6 + 10-12')).toMatchObject({ reps: 6 });
+    expect(travailPour('10 + max')).toMatchObject({ reps: 10 });
+  });
+
+  it('rend `null` plutôt que d’inventer un chiffre', () => {
+    expect(travailPour('au feeling')).toBeNull();
+    expect(travailPour('')).toBeNull();
+  });
+
+  it('lit toutes les lignes du programme sans en manquer une', () => {
+    const illisibles = SEANCES_MASS4.flatMap((s) =>
+      s.lignes.filter((l) => travailPour(l.reps) === null).map((l) => l.exerciceId),
+    );
+    expect(illisibles).toEqual([]);
+  });
+});
+
+describe('MASS 4 — la séance assemblée', () => {
+  it('ne rend rien hors de ses quatre semaines, ni les jours de repos', () => {
+    expect(MASS4.getSession(0, 0, EMPTY_CONTEXT)).toBeNull();
+    expect(MASS4.getSession(5, 0, EMPTY_CONTEXT)).toBeNull();
+    // Mercredi, vendredi, dimanche : repos.
+    expect(MASS4.getSession(1, 2, EMPTY_CONTEXT)).toBeNull();
+    expect(MASS4.getSession(1, 4, EMPTY_CONTEXT)).toBeNull();
+    expect(MASS4.getSession(1, 6, EMPTY_CONTEXT)).toBeNull();
+  });
+
+  it('n’annonce aucun bloc de périodisation', () => {
+    expect(MASS4.blocDeLaSemaine(1)).toBeNull();
+    expect(MASS4.blocDeLaSemaine(4)).toBeNull();
+  });
+
+  it('ne pose aucune charge sur aucun exercice', () => {
+    for (const semaine of [1, 2, 3, 4]) {
+      for (const jour of [0, 1, 3, 5] as const) {
+        const s = MASS4.getSession(semaine, jour, EMPTY_CONTEXT);
+        for (const ex of s?.exercises ?? []) {
+          expect({ ex: ex.id, kg: ex.load.kg }).toEqual({ ex: ex.id, kg: null });
+          expect({ ex: ex.id, source: ex.load.source }).toEqual({ ex: ex.id, source: 'aucune' });
+        }
+      }
+    }
+  });
+
+  it('garde la même séance de la semaine 1 à la 4, aux séries près', () => {
+    const s1 = MASS4.getSession(1, 0, EMPTY_CONTEXT);
+    const s4 = MASS4.getSession(4, 0, EMPTY_CONTEXT);
+    expect(s1?.exercises.map((e) => e.id)).toEqual(s4?.exercises.map((e) => e.id));
+    expect(s1?.title).toBe(s4?.title);
+  });
+
+  it('annonce la quatrième série possible à partir de la semaine 2', () => {
+    const texte = (semaine: number) =>
+      JSON.stringify(
+        MASS4.getSession(semaine, 0, EMPTY_CONTEXT)?.exercises.find(
+          (e) => e.id === 'developpe-militaire-smith',
+        )?.notes,
+      );
+    expect(texte(1)).not.toContain('Quatrième série');
+    expect(texte(2)).toContain('Quatrième série');
+  });
+
+  it('estime une durée proche des 60 minutes annoncées', () => {
+    for (const jour of [0, 1, 3, 5] as const) {
+      const min = MASS4.getSession(1, jour, EMPTY_CONTEXT)?.plannedMin ?? 0;
+      expect({ jour, dans_la_fourchette: min >= 45 && min <= 75 }).toEqual({
+        jour,
+        dans_la_fourchette: true,
+      });
+    }
   });
 });
