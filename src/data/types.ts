@@ -344,6 +344,34 @@ export interface ExerciseDef {
   /** Consignes dépliables. */
   cues?: string[];
   /**
+   * La série se joue en DEUX TEMPS, et la seconde se saisit séparément.
+   *
+   * `withLoad` dit si cette seconde partie a sa propre charge : une
+   * dégressive allège la barre et l'écrit, un passage à l'échec après pause
+   * garde la même et ne demande que les reps.
+   *
+   * `onSets` limite la deuxième partie à certaines séries, numérotées depuis
+   * zéro. MASS 4 en a besoin : sa technique « trois séries différentes »
+   * construit les séries 1 et 3 en deux temps, et la série 2 en un seul.
+   * Absent, la deuxième partie vaut pour toutes les séries.
+   *
+   * Absent pour tous les mouvements de POWER 12, qui n'en prescrit aucune.
+   */
+  secondPart?: { label: string; withLoad: boolean; onSets?: number[] };
+  /**
+   * Le mouvement alterne entre une jambe et les deux, d'une semaine à l'autre.
+   *
+   * `mode` est celui de la semaine affichée ; `frise` donne les quatre
+   * semaines du cycle, parce que savoir qu'on est à une jambe aujourd'hui ne
+   * dit pas quand on repassera à deux.
+   *
+   * Absent pour POWER 12, qui n'a aucun mouvement de ce type.
+   */
+  alternance?: {
+    mode: 'unilateral' | 'bilateral';
+    frise: ReadonlyArray<{ semaine: number; mode: 'unilateral' | 'bilateral' }>;
+  };
+  /**
    * Planche d'exécution livrée avec l'application, ex. `fiches/db-curl.webp`.
    *
    * Absente pour les mouvements de POWER 12, qui n'en ont pas : son programme

@@ -14,16 +14,18 @@ import { EXERCICES_MASS4, TECHNIQUES, TOUS_LES_EXERCICES_MASS4 } from './exercic
 import {
   CONDITIONS_SERIE_OPTIONNELLE,
   SEANCE_ALLEGEE,
+  frisePour,
   modePour,
   proposeSerieOptionnelle,
   repsAffichees,
+  secondePartiePour,
   seriesPour,
 } from './progression';
 import { EMPTY_CONTEXT } from '../../engine/types';
 import { MASS4 } from './module';
 import { SEANCES_MASS4, seancePour } from './seances';
 import { travailPour } from './travail';
-import { JOURS_MASS4, SEMAINES_MASS4 } from './types';
+import { JOURS_MASS4, SEMAINES_MASS4, type LigneMass4 } from './types';
 
 describe('MASS 4 — structure', () => {
   it('tient en quatre semaines, sans semaine 0', () => {
@@ -318,6 +320,92 @@ describe('MASS 4 — la séance assemblée', () => {
         jour,
         dans_la_fourchette: true,
       });
+    }
+  });
+});
+
+describe('deuxième partie de série', () => {
+  it('donne une dégressive AVEC charge aux deux techniques qui allègent', () => {
+    expect(secondePartiePour('lourde-degressive')).toEqual({
+      label: 'Puis aussitôt 10 à 12 reps à ≈ 60 %',
+      withLoad: true,
+    });
+    expect(secondePartiePour('degressive-max')).toEqual({
+      label: 'Puis aussitôt le max de reps à ≈ 60 %',
+      withLoad: true,
+    });
+  });
+
+  it('ne demande PAS de charge à l’échec après pause', () => {
+    /*
+     * « 5 s de pause, puis max de reps » : on ne touche pas à la barre. Un
+     * champ de charge y ferait saisir un chiffre que le programme ne demande
+     * pas, et un `null` dans la base y veut dire « la même », pas « aucune ».
+     */
+    const p = secondePartiePour('trois-series');
+    expect(p?.withLoad).toBe(false);
+  });
+
+  it('limite l’échec aux séries 1 et 3 de la technique à trois séries', () => {
+    /*
+     * Le document construit la série 2 autrement : 5 reps suivies de 5 s de
+     * contraction tenue, trois fois. Elle n'a pas de deuxième partie, et lui
+     * en demander une ferait saisir un effort qui n'existe pas.
+     */
+    expect(secondePartiePour('trois-series')?.onSets).toEqual([0, 2]);
+  });
+
+  it('n’en donne aucune aux séries droites ni aux supersets', () => {
+    expect(secondePartiePour('droite')).toBeUndefined();
+    expect(secondePartiePour('superset')).toBeUndefined();
+  });
+});
+
+describe('frise d’alternance', () => {
+  const ligne = (alternance: LigneMass4['alternance']): LigneMass4 => ({
+    exerciceId: 'x',
+    series: 3,
+    reps: '10',
+    reposSec: 90,
+    technique: 'droite',
+    ...(alternance === undefined ? {} : { alternance }),
+  });
+
+  it('ne rend rien pour un mouvement qui n’alterne pas', () => {
+    expect(frisePour(ligne(undefined))).toBeNull();
+  });
+
+  it('fait alterner les deux exercices de jambes EN OPPOSITION', () => {
+    /*
+     * C'est tout l'enjeu : le document met le leg extension à une jambe en S1
+     * et S3, et le leg curl à DEUX jambes aux mêmes semaines. Les aligner
+     * serait invisible en lisant le code, et faux à la salle.
+     */
+    const extension = frisePour(ligne('unilateral-impair'));
+    const curl = frisePour(ligne('bilateral-impair'));
+    expect(extension?.map((s) => s.mode)).toEqual([
+      'unilateral',
+      'bilateral',
+      'unilateral',
+      'bilateral',
+    ]);
+    expect(curl?.map((s) => s.mode)).toEqual([
+      'bilateral',
+      'unilateral',
+      'bilateral',
+      'unilateral',
+    ]);
+  });
+
+  it('couvre les quatre semaines du cycle, dans l’ordre', () => {
+    expect(frisePour(ligne('unilateral-impair'))?.map((s) => s.semaine)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('dit la même chose que `modePour`, semaine par semaine', () => {
+    // Deux sources pour la même règle finiraient par diverger.
+    const l = ligne('unilateral-impair');
+    for (const { semaine, mode } of frisePour(l) ?? []) {
+      expect({ semaine, mode }).toEqual({ semaine, mode: modePour(l, semaine) });
     }
   });
 });

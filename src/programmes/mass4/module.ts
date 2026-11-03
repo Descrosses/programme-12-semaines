@@ -28,7 +28,14 @@ import type { SessionContext } from '../../engine/types';
 import type { ModuleProgramme } from '../types';
 import { EXERCICES_MASS4, TECHNIQUES } from './exercices';
 import { fichePour } from './fiches';
-import { modePour, proposeSerieOptionnelle, repsAffichees, seriesPour } from './progression';
+import {
+  frisePour,
+  modePour,
+  proposeSerieOptionnelle,
+  repsAffichees,
+  secondePartiePour,
+  seriesPour,
+} from './progression';
 import { seancePour } from './seances';
 import { travailPour } from './travail';
 import { JOURS_MASS4, SEMAINES_MASS4, type LigneMass4 } from './types';
@@ -75,10 +82,20 @@ const FAMILLE: Record<string, MovementFn> = {
 
 const TRONC = new Set(['gainage-debout-valise', 'ab-wheel', 'roman-side-bench', 'releve-de-buste']);
 
-function definition(id: string): ExerciseDef {
+function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
+  const id = ligne.exerciceId;
   const e = EXERCICES_MASS4[id];
   const role: ExerciseRole = TRONC.has(id) ? 'core' : 'accessory';
   const fiche = fichePour(id);
+  /*
+   * La deuxième partie vient de la TECHNIQUE de la ligne, pas de l'exercice :
+   * le même mouvement peut se jouer en deux temps dans une séance et en séries
+   * droites dans une autre. C'est la raison pour laquelle elle est posée ici
+   * et non dans le catalogue des mouvements.
+   */
+  const seconde = secondePartiePour(ligne.technique);
+  const mode = modePour(ligne, semaine);
+  const frise = frisePour(ligne);
   return {
     id,
     name: e?.nom ?? id,
@@ -86,6 +103,8 @@ function definition(id: string): ExerciseDef {
     role,
     ...(e?.consigne === undefined ? {} : { intent: e.consigne }),
     ...(fiche === undefined ? {} : { fiche }),
+    ...(seconde === undefined ? {} : { secondPart: seconde }),
+    ...(mode === null || frise === null ? {} : { alternance: { mode, frise } }),
   };
 }
 
@@ -95,9 +114,11 @@ function notesPour(ligne: LigneMass4, semaine: number): string[] {
   const technique = TECHNIQUES[ligne.technique];
   if (technique !== undefined && ligne.technique !== 'droite') out.push(technique);
 
-  const mode = modePour(ligne, semaine);
-  if (mode === 'unilateral') out.push('Cette semaine : une jambe à la fois.');
-  if (mode === 'bilateral') out.push('Cette semaine : les deux jambes.');
+  /*
+   * Le mode de la semaine n'est plus écrit ici : il est porté par le bandeau
+   * d'alternance de la carte, avec sa frise des quatre semaines. Le répéter en
+   * note donnerait deux fois la même phrase sur le même écran.
+   */
 
   if (proposeSerieOptionnelle(ligne, semaine)) {
     out.push(
@@ -116,7 +137,7 @@ function exercicePour(ligne: LigneMass4, semaine: number): ResolvedExercise {
   const travail = travailPour(ligne.reps);
 
   return {
-    def: definition(ligne.exerciceId),
+    def: definition(ligne, semaine),
     id: ligne.exerciceId,
     name: EXERCICES_MASS4[ligne.exerciceId]?.nom ?? ligne.exerciceId,
     sets: series,

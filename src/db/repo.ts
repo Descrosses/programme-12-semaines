@@ -495,6 +495,9 @@ export interface SetInput {
   /** « m » ou « pas ». Voyage avec la série, jamais converti. */
   measureUnit?: string | null;
   failed: boolean;
+  /** Deuxième partie de la série : reps, et charge allégée s'il y en a une. */
+  secondReps?: number | null;
+  secondKg?: number | null;
 }
 
 /**
@@ -521,6 +524,8 @@ export async function saveSet(input: SetInput): Promise<number> {
     measureValue: input.measureValue ?? null,
     measureUnit: input.measureUnit ?? null,
     failed: input.failed,
+    secondReps: input.secondReps ?? null,
+    secondKg: input.secondKg ?? null,
     doneAt: Date.now(),
   };
 
