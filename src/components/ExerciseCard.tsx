@@ -4,6 +4,7 @@ import { fr, gripHint, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
+import { FicheMouvement } from './FicheMouvement';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { PainWatch } from './PainWatch';
 import { Icon } from './Icon';
@@ -374,6 +375,17 @@ export function ExerciseCard({
       {ex.def.painWatch && (
         <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
       )}
+
+      {/*
+        La planche d'exécution, quand le mouvement en a une.
+
+        Posée AVANT le bloc de consignes et hors de lui : les consignes se
+        lisent une fois, la fiche se rouvre à chaque fois qu'on ne sait plus
+        comment se placer. L'enfouir derrière un chevron à déplier ajouterait
+        un appui à ce geste-là. Les mouvements de POWER 12 n'ont pas de
+        planche, et le composant ne rend alors rien.
+      */}
+      <FicheMouvement def={ex.def} />
 
       {/*
         L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une

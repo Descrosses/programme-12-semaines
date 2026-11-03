@@ -1,0 +1,88 @@
+/*
+ * La fiche de mouvement en plein écran.
+ *
+ * Le voile est posé en dur et non sur un jeton de thème : il doit rester
+ * sombre dans les deux univers. Sur le thème clair de MASS, un voile clair
+ * rendrait les bords de l'infographie indiscernables du fond, et on ne verrait
+ * plus où l'image commence.
+ */
+
+.ouvrir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: rgb(10 18 26 / 96%);
+}
+
+.barre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) var(--pad) 10px;
+  color: #ffffff;
+  font-size: var(--fs-small);
+}
+
+.fermer {
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+}
+
+.defilement {
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+
+.imageBouton {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.image {
+  display: block;
+  width: 100vw;
+  max-width: 560px;
+  height: auto;
+  margin: 0 auto;
+}
+
+/*
+ * 220 % de la largeur de l'écran : c'est la valeur à laquelle les points clés
+ * de l'infographie deviennent lisibles sur un téléphone, mesurée sur les
+ * planches elles-mêmes et non choisie au hasard.
+ */
+.imageZoom {
+  display: block;
+  width: 220vw;
+  max-width: none;
+  height: auto;
+}

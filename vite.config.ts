@@ -49,8 +49,26 @@ export default defineConfig({
          * qu'un écran s'ouvre en ligne, sa photo est gardée ; ensuite elle
          * est là hors ligne aussi. Et si elle manque, l'écran reste complet
          * — c'est tout l'intérêt du manifeste `visuels.ts`.
+         *
+         * Les FICHES DE MOUVEMENT, elles, sont pré-cachées, et le second
+         * motif ci-dessous ne sert qu'à ça. Ce n'est pas une exception
+         * arbitraire au raisonnement précédent, c'est son application : une
+         * photo d'ambiance qui manque laisse l'écran complet, une fiche qui
+         * manque laisse l'utilisateur devant une machine sans savoir quoi en
+         * faire. Et le moment où l'on se pose la question est précisément
+         * celui où le réseau n'est pas là.
+         *
+         * Le prix est assumé : l'installation passe d'environ 760 Ko à 4,9 Mo.
+         * C'est un téléchargement unique, et les planches portent du texte —
+         * les recompresser plus petit coûterait la lisibilité des points clés,
+         * c'est-à-dire la seule chose qu'elles servent à montrer.
+         *
+         * Les 4,1 Mo sont téléchargés même par un cycle POWER 12, qui n'a pas
+         * de fiches. Séparer les deux demanderait deux services workers ou un
+         * pré-cache conditionnel, pour économiser un téléchargement unique sur
+         * le téléphone d'une personne qui utilise les deux programmes.
          */
-        globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}'],
+        globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}', 'fiches/*.webp'],
         globIgnores: ['**/icons/**'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,

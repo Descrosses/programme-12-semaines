@@ -27,6 +27,7 @@ import type { ResolvedExercise, ResolvedSession } from '../../engine/getSession'
 import type { SessionContext } from '../../engine/types';
 import type { ModuleProgramme } from '../types';
 import { EXERCICES_MASS4, TECHNIQUES } from './exercices';
+import { fichePour } from './fiches';
 import { modePour, proposeSerieOptionnelle, repsAffichees, seriesPour } from './progression';
 import { seancePour } from './seances';
 import { travailPour } from './travail';
@@ -77,12 +78,14 @@ const TRONC = new Set(['gainage-debout-valise', 'ab-wheel', 'roman-side-bench', 
 function definition(id: string): ExerciseDef {
   const e = EXERCICES_MASS4[id];
   const role: ExerciseRole = TRONC.has(id) ? 'core' : 'accessory';
+  const fiche = fichePour(id);
   return {
     id,
     name: e?.nom ?? id,
     fn: FAMILLE[id] ?? 'push',
     role,
     ...(e?.consigne === undefined ? {} : { intent: e.consigne }),
+    ...(fiche === undefined ? {} : { fiche }),
   };
 }
 
