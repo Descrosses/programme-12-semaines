@@ -25,7 +25,21 @@
  * Plus aucun cas particulier, contrairement à la version à 3 jours.
  */
 
-import { joursDeLaSemaine } from '../data/program';
+import { SEMAINES, joursDeLaSemaine } from '../data/program';
+import type { StructureProgramme } from '../programmes/types';
+
+/**
+ * La structure par défaut : celle de POWER 12.
+ *
+ * Elle existe parce que le calendrier est appelé depuis une vingtaine
+ * d'endroits, dont beaucoup de tests écrits avant qu'un second programme soit
+ * envisageable. La rendre obligatoire n'aurait rien prouvé de plus et aurait
+ * noyé le vrai changement sous des mises à jour mécaniques.
+ *
+ * Elle disparaîtra le jour où un second programme sera jouable : à ce
+ * moment-là, laisser un défaut deviendrait une source d'erreur silencieuse.
+ */
+const STRUCTURE_PAR_DEFAUT: StructureProgramme = { semaines: SEMAINES, joursDeLaSemaine };
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 
 /**
@@ -76,11 +90,13 @@ export interface ScheduledSession {
 }
 
 /** Toutes les séances du programme, dans l'ordre chronologique. */
-export function schedule(startDate: string): ScheduledSession[] {
+export function schedule(
+  startDate: string,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
+): ScheduledSession[] {
   const out: ScheduledSession[] = [];
-  for (let w = 0; w <= 12; w++) {
-    const week = w as WeekIndex;
-    for (const day of joursDeLaSemaine(week)) {
+  for (const week of prog.semaines) {
+    for (const day of prog.joursDeLaSemaine(week)) {
       out.push({
         week,
         day,
@@ -106,9 +122,14 @@ export type TodayState =
  * Écran « Aujourd'hui » : que fait-on maintenant ?
  * @param todayIso date du jour, `YYYY-MM-DD`
  */
-export function locateToday(startDate: string, todayIso: string): TodayState | null {
+export function locateToday(
+  startDate: string,
+  todayIso: string,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
+): TodayState | null {
   if (!startDate) return null;
-  const all = schedule(startDate);
+  const all = schedule(startDate, prog);
+  if (all.length === 0) return null;
   const first = all[0]!;
   const last = all[all.length - 1]!;
 
@@ -128,8 +149,9 @@ export function previousSession(
   startDate: string,
   week: WeekIndex,
   day: DayIndex,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
 ): ScheduledSession | null {
-  const all = schedule(startDate);
+  const all = schedule(startDate, prog);
   const i = all.findIndex((s) => s.week === week && s.day === day);
   return i > 0 ? all[i - 1]! : null;
 }
@@ -138,8 +160,9 @@ export function nextSession(
   startDate: string,
   week: WeekIndex,
   day: DayIndex,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
 ): ScheduledSession | null {
-  const all = schedule(startDate);
+  const all = schedule(startDate, prog);
   const i = all.findIndex((s) => s.week === week && s.day === day);
   return i >= 0 && i < all.length - 1 ? all[i + 1]! : null;
 }

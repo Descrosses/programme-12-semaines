@@ -6,12 +6,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
-import { getSession as buildSession, type ResolvedSession } from '../engine/getSession';
+import { type ResolvedSession } from '../engine/getSession';
+import { modulePourCycle } from '../programmes/registre';
 import { readiness as computeReadiness } from '../engine/readiness';
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import type { HistoryIndex, ReadinessResult } from '../engine/types';
 import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
 import {
+  cycleActif,
   allReadiness,
   allSessionExercises,
   buildHistoryIndex,
@@ -65,12 +67,20 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const settings = toEngineSettings(settingsRow);
     const date = settings.startDate ? dateFor(settings.startDate, week, day) : '';
 
-    const [sets, readinessRows, readinessRow, customRows] = await Promise.all([
+    const [sets, readinessRows, readinessRow, customRows, cycle] = await Promise.all([
       allSets(),
       allReadiness(),
       getReadiness(week, day),
       allSessionExercises(),
+      cycleActif(),
     ]);
+
+    /*
+     * La séance ne vient plus « du moteur » mais DU PROGRAMME du cycle en
+     * cours. C'est toute la couture : l'application ne sait plus à quel
+     * programme elle parle, elle demande au module de répondre.
+     */
+    const programme = modulePourCycle(cycle?.programmeId ?? null);
 
     const history = buildHistoryIndex(sets);
     const trend = explosiveTrend(toReadinessRecords(readinessRows), date || undefined);
@@ -79,7 +89,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       ? computeReadiness(settings.broadJumpBaselineCm, readinessRow.jumpCm)
       : null;
 
-    const prescrite = buildSession(week, day, {
+    const prescrite = programme.getSession(week, day, {
       settings,
       history,
       readiness: readinessResult,

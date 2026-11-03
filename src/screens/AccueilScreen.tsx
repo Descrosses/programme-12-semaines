@@ -24,9 +24,9 @@ import { ScreenHeader } from '../components/ScreenHeader';
 import { programmeParId, type ProgrammeDefinition } from '../data/catalogue';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { locateToday, schedule } from '../engine/calendar';
+import { modulePourCycle } from '../programmes/registre';
 import { allSessions, cycleActif, getSettingsRow } from '../db/repo';
 import type { CycleRow } from '../db/db';
-import { getSession as buildSession } from '../engine/getSession';
 import { EMPTY_CONTEXT } from '../engine/types';
 import styles from './Screens.module.css';
 import local from './Accueil.module.css';
@@ -62,8 +62,11 @@ export function AccueilScreen({
       if (!vivant) return;
 
       const programme = cycle === null ? null : programmeParId(cycle.programmeId);
+      // Le calendrier d'un cycle est celui de SON programme : quatre semaines
+      // pour MASS 4, treize pour POWER 12.
+      const module = modulePourCycle(cycle?.programmeId ?? null);
       const debut = cycle?.startDate ?? reglages.startDate;
-      const planifiees = debut === '' ? [] : schedule(debut);
+      const planifiees = debut === '' ? [] : schedule(debut, module);
       const faites = seances.filter((s) => s.status === 'done').length;
 
       /*
@@ -74,13 +77,13 @@ export function AccueilScreen({
       let prochaine: Etat['prochaine'] = null;
       if (debut !== '') {
         const aujourdhui = new Date().toISOString().slice(0, 10);
-        const ici = locateToday(debut, aujourdhui);
+        const ici = locateToday(debut, aujourdhui, module);
         const cible =
           ici?.kind === 'session'
             ? ici.session
             : (planifiees.find((p) => p.date >= aujourdhui) ?? null);
         if (cible) {
-          const resolue = buildSession(cible.week, cible.day, EMPTY_CONTEXT);
+          const resolue = module.getSession(cible.week, cible.day, EMPTY_CONTEXT);
           prochaine = {
             week: cible.week,
             day: cible.day,

@@ -31,7 +31,7 @@
  */
 
 import type { DayIndex, WeekIndex } from '../data/types';
-import { getSession } from './getSession';
+import { POWER12 } from '../programmes/power12';
 import { readiness } from './readiness';
 import { DEFAULT_SETTINGS, type SessionContext, type Settings } from './types';
 
@@ -118,7 +118,6 @@ export const CONTEXTES: Contexte[] = [
   },
 ];
 
-const SEMAINES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 const JOURS = [0, 1, 2, 3, 4, 5, 6] as const;
 
 /** Une valeur absente s'écrit toujours pareil : jamais 0, jamais vide. */
@@ -135,9 +134,15 @@ function ou(valeur: number | null | undefined): string {
 function empreinteContexte(c: Contexte): string[] {
   const lignes: string[] = [`### ${c.nom}`];
 
-  for (const semaine of SEMAINES) {
+  /*
+   * L'empreinte passe par le MODULE de programme, et non plus par le moteur
+   * directement. C'est ce qui lui donne son second rôle : elle ne vérifie plus
+   * seulement que les règles n'ont pas bougé, elle vérifie que la couture
+   * posée au-dessus du moteur ne change rien à ce qu'il répond.
+   */
+  for (const semaine of POWER12.semaines) {
     for (const jour of JOURS) {
-      const s = getSession(semaine as WeekIndex, jour as DayIndex, c.ctx);
+      const s = POWER12.getSession(semaine as WeekIndex, jour as DayIndex, c.ctx);
       if (s === null || s === undefined || s.exercises.length === 0) continue;
 
       lignes.push(

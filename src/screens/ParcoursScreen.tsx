@@ -33,6 +33,7 @@ import { COMBINE_METRICS } from '../data/testSessions';
 import type { CombineRow, CycleRow } from '../db/db';
 import { activerCycle, combinesDuCycle, resumesDesCycles, type ResumeCycle } from '../db/repo';
 import { schedule } from '../engine/calendar';
+import { modulePourCycle } from '../programmes/registre';
 import { fr } from '../engine/format';
 import { lowerIsBetter } from '../engine/lastPerformance';
 import styles from './Screens.module.css';
@@ -86,7 +87,10 @@ export function ParcoursScreen({
       const completes = await Promise.all(
         resumes.map(async (r) => ({
           ...r,
-          total: r.cycle.startDate === '' ? 0 : schedule(r.cycle.startDate).length,
+          total:
+            r.cycle.startDate === ''
+              ? 0
+              : schedule(r.cycle.startDate, modulePourCycle(r.cycle.programmeId)).length,
           combines: r.cycle.id === undefined ? [] : await combinesDuCycle(r.cycle.id),
         })),
       );
