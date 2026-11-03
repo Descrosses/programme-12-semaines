@@ -214,6 +214,67 @@ describe('le dépôt et les cycles', () => {
     expect((await base.cycles.get(cycle.id as number))?.startDate).toBe('2026-09-21');
   });
 
+  it('compte les séances de chaque cycle, y compris ceux qu’on ne regarde pas', async () => {
+    const base = await monterBaseJetable();
+    const { ensureSession, updateSession, demarrerCycle, terminerCycle, resumesDesCycles } =
+      await import('./repo');
+
+    const premier = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    const s1 = await ensureSession(1, 0, '2026-09-21');
+    const s2 = await ensureSession(1, 2, '2026-09-23');
+    await updateSession(s1.id as number, { status: 'done' });
+    await updateSession(s2.id as number, { status: 'done' });
+    await terminerCycle(premier.id as number, '2026-12-06');
+
+    const second = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2027-01-04',
+    });
+    const s3 = await ensureSession(1, 0, '2027-01-11');
+    await updateSession(s3.id as number, { status: 'done' });
+
+    const resumes = await resumesDesCycles();
+    const parId = new Map(resumes.map((r) => [r.cycle.id, r.faites]));
+
+    /*
+     * Le point du test : le cycle terminé n'est PAS celui qu'on regarde, et
+     * ses deux séances doivent quand même être comptées. Tout le reste du
+     * dépôt filtre sur le cycle courant ; cette lecture-ci ne le fait pas.
+     */
+    expect(parId.get(premier.id)).toBe(2);
+    expect(parId.get(second.id)).toBe(1);
+    expect(await base.sessions.count()).toBe(3);
+  });
+
+  it('lit les combinés d’un cycle qui n’est pas le courant', async () => {
+    await monterBaseJetable();
+    const { saveCombine, demarrerCycle, terminerCycle, combinesDuCycle } = await import('./repo');
+
+    const premier = await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2026-09-14',
+    });
+    await saveCombine('initial', { metrics: { 'test-squat-1rm': 125 } });
+    await saveCombine('final', { metrics: { 'test-squat-1rm': 137.5 } });
+    await terminerCycle(premier.id as number, '2026-12-06');
+
+    await demarrerCycle({
+      programmeId: 'power12',
+      programmeVersion: '1.2',
+      startDate: '2027-01-04',
+    });
+
+    const anciens = await combinesDuCycle(premier.id as number);
+    expect(anciens.map((c) => c.phase).sort()).toEqual(['final', 'initial']);
+    expect(anciens.find((c) => c.phase === 'final')?.metrics['test-squat-1rm']).toBe(137.5);
+  });
+
   it('garde un combine « initial » par cycle, ce qui était impossible', async () => {
     const base = await monterBaseJetable();
     const { saveCombine, allCombines, demarrerCycle, terminerCycle } = await import('./repo');

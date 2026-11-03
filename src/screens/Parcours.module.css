@@ -1,0 +1,147 @@
+/*
+ * Mon parcours réutilise les cartes et les titres de section communs.
+ * Seules la jauge, le tableau de bilan et les deux boutons sont propres à cet
+ * écran — et aucun n'introduit de couleur nouvelle.
+ */
+
+.compte {
+  color: var(--ink-3);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.entete {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nom {
+  margin: 0;
+  font-family: var(--font-cond);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.version {
+  color: var(--ink-3);
+  font-size: 0.78rem;
+}
+
+.jauge {
+  height: 6px;
+  margin-top: 11px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.jauge i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.chiffres {
+  margin: 7px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+
+.ouvrir {
+  flex: 1 1 auto;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ouvrir:active {
+  background: var(--accent-deep);
+}
+
+.secondaire {
+  flex: 1 1 auto;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sansBilan {
+  margin: 11px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------- tableau de bilan -- */
+
+.bilan {
+  width: 100%;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.bilan th {
+  padding: 0 0 8px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.bilan th:first-child {
+  text-align: left;
+}
+
+.bilan td {
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  text-align: right;
+}
+
+.bilan td:first-child {
+  color: var(--ink);
+  text-align: left;
+}
+
+/*
+ * La couleur dit si c'est un progrès, le chiffre dit ce qui s'est passé.
+ * Les deux sont nécessaires : sur un sprint, une valeur qui baisse est une
+ * bonne nouvelle.
+ */
+.mieux {
+  color: var(--vert);
+  font-weight: 700;
+}
+
+.moins {
+  color: var(--accent-ink);
+  font-weight: 700;
+}

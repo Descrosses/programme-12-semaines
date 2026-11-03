@@ -136,6 +136,43 @@ export async function cyclePourEcriture(): Promise<CycleRow> {
   });
 }
 
+/** Un cycle et ce qu'on peut en dire sans ouvrir ses séances une par une. */
+export interface ResumeCycle {
+  cycle: CycleRow;
+  /** Séances marquées faites dans CE cycle. */
+  faites: number;
+}
+
+/**
+ * Tous les cycles, avec leur avancement — y compris ceux qu'on ne regarde pas.
+ *
+ * C'est la première lecture qui sort du cycle courant. Jusqu'ici, tout le
+ * dépôt filtrait sur lui : c'était le bon réflexe tant qu'aucun écran ne
+ * montrait les autres. « Mon parcours » montre justement les autres, et il
+ * doit pouvoir les compter sans devenir le cycle courant au passage.
+ */
+export async function resumesDesCycles(): Promise<ResumeCycle[]> {
+  const cycles = await tousLesCycles();
+  return Promise.all(
+    cycles.map(async (cycle) => ({
+      cycle,
+      faites:
+        cycle.id === undefined
+          ? 0
+          : await db.sessions
+              .where('cycleId')
+              .equals(cycle.id)
+              .filter((s) => s.status === 'done')
+              .count(),
+    })),
+  );
+}
+
+/** Les combinés d'UN cycle précis, courant ou non. */
+export async function combinesDuCycle(cycleId: number): Promise<CombineRow[]> {
+  return db.combines.where('cycleId').equals(cycleId).toArray();
+}
+
 /**
  * Démarre un nouveau cycle et le rend courant.
  *
