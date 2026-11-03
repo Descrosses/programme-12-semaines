@@ -18,7 +18,21 @@
  * texte.
  */
 
-:root {
+/*
+ * ── Les thèmes ─────────────────────────────────────────────────────────────
+ *
+ * POWER est le thème par DÉFAUT, et c'est volontaire : l'application est née
+ * avec lui, et le nommer sans le déplacer garantit qu'aucun pixel ne bouge.
+ * `:root` et `[data-theme='power']` portent donc exactement les mêmes valeurs.
+ *
+ * Les autres univers ne redéfinissent que les COULEURS. Les tailles, les
+ * espacements, les rayons, les polices et les cibles tactiles restent communs :
+ * ils viennent des contraintes de la salle — lu à un mètre, une main, écran
+ * peut-être mouillé — et ces contraintes ne changent pas avec le programme.
+ */
+
+:root,
+[data-theme='power'] {
   /* ----------------------------------------------------------------- fonds */
   /* Bleu nuit profond : le ciel d'un stade éclairé, vu depuis la pelouse. */
   --bg: #061426;
@@ -144,9 +158,107 @@
   --pad: 16px;
 
   /* Ombres sobres : de la profondeur, pas du relief. */
+  /*
+   * Le voile posé sur les photos d'en-tête, et l'ombre du titre par-dessus.
+   *
+   * Exprimés en composantes pour pouvoir servir à plusieurs opacités. C'était
+   * la seule couleur encore écrite en dur dans l'application — cinq fois dans
+   * `ScreenHeader.module.css` — et c'est elle qui rendait un en-tête clair
+   * impossible : un voile bleu nuit sous un texte sombre ne laisse rien lire.
+   */
+  /*
+   * Le texte le plus affirmé qui existe — celui d'un élément sélectionné,
+   * posé sur une surface et non sur l'accent. Il valait `#fff` en dur à deux
+   * endroits, ce qui marchait tant que tous les fonds étaient sombres.
+   */
+  --ink-fort: #ffffff;
+  --voile: 6 20 38;
+  --ombre-titre: 0 2px 12px rgb(0 0 0 / 45%);
+
   --shadow-card: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 6px 18px rgb(0 0 0 / 35%);
   --shadow-action: 0 6px 18px rgb(213 10 32 / 32%);
 
   /* --- Hauteur réservée en bas pour la barre de chrono + la navigation --- */
   --bottom-space: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+/*
+ * ── MASS — prise de masse & congestion ─────────────────────────────────────
+ *
+ * Crème, beige, noir, taupe, accents dorés très discrets. Les valeurs ne sont
+ * pas inventées : elles ont été RELEVÉES au pixel dans le visuel de référence
+ * fourni par Guillaume, plutôt qu'estimées à l'œil.
+ *
+ * Deux conséquences qui ne sautent pas aux yeux :
+ *
+ * 1. Le fond est clair, donc `--ink` devient sombre et `--ink-on-accent`
+ *    devient clair. Toute l'inversion tient dans ces jetons : aucun composant
+ *    n'a de couleur en dur, c'est ce qui rend la bascule possible.
+ * 2. `--accent` n'est PAS rouge ici. Le brief l'interdit explicitement pour
+ *    MASS : l'élément actif se reconnaît au noir et à la graisse, pas à une
+ *    couleur vive. L'accent est donc le noir d'encre, et le doré ne sert
+ *    qu'aux traits et aux pictogrammes.
+ *
+ * Contrastes mesurés sur cette palette : encre sur fond 15,8 ; encre sur carte
+ * 16,3 ; texte secondaire 6,2 ; crème sur le noir d'action 15,8. Le taupe des
+ * petits libellés tient 4,6 sur la carte — au-dessus du seuil AA.
+ */
+[data-theme='mass'] {
+  --bg: #f1e9e0;
+  --bg-2: #ece3d8;
+  --surface: #f7f1e9;
+  --surface-2: #f3ece2;
+  --surface-3: #eee4d8;
+
+  --line: #e6ddd1;
+  --line-strong: #d8ccbd;
+
+  --ink: #1a1a18;
+  --ink-2: #45403b;
+  --ink-3: #6b6459;
+  --ink-on-accent: #f7f1e9;
+
+  /* L'action est noire, jamais rouge : c'est la règle du §14. */
+  --accent: #1a1a18;
+  --accent-bright: #2c2c28;
+  --accent-deep: #000000;
+  --accent-dim: #e6ddd1;
+  /* Le doré discret, pour les traits et les pictogrammes. */
+  --accent-ink: #8f7659;
+
+  /* Les couleurs d'état restent lisibles sur clair, donc assombries. */
+  --vert: #1f7a45;
+  --orange: #9a6414;
+  --rouge: #a3281f;
+  --bleu: #2b5d86;
+  --bleu-ink: #1d4664;
+
+  --macro-glucides: #2b5d86;
+  --macro-proteines: #8f7659;
+  --macro-lipides: #9a6414;
+  --bloc-test: #6b6459;
+
+  /* Le voile devient crème : c'est lui qui rend un en-tête clair lisible. */
+  --ink-fort: #1a1a18;
+  --voile: 241 233 224;
+  --ombre-titre: 0 1px 8px rgb(241 233 224 / 85%);
+
+  /* Les ombres doivent être presque invisibles sur crème. */
+  --shadow-card: 0 1px 2px rgb(60 48 32 / 6%);
+  --shadow-action: 0 2px 8px rgb(60 48 32 / 10%);
+}
+
+/*
+ * ── FEMMES — structure seulement ───────────────────────────────────────────
+ *
+ * Volontairement vide. Le §15 dit que l'identité de cette famille sera
+ * définie plus tard, et le §4 interdit d'en supposer quoi que ce soit — y
+ * compris qu'elle serait rose.
+ *
+ * Ce bloc existe pour une seule raison : rendre évident où poser cette
+ * identité le jour où elle sera choisie. Tant qu'il est vide, la famille
+ * hérite du thème POWER, et aucun écran ne casse.
+ */
+[data-theme='femmes'] {
+  /* À définir avec Guillaume. */
 }
