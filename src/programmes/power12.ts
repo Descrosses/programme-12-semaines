@@ -26,6 +26,34 @@ import type { ModuleProgramme } from './types';
 
 export const POWER12: ModuleProgramme = {
   id: 'power12',
+
+  /*
+   * Exactement la barre que l'application a toujours eue, déplacée ici sans
+   * rien y changer : mêmes libellés, mêmes pictogrammes, même ordre. Elle
+   * vivait dans `App.tsx`, en dur, ce qui l'imposait à tous les programmes.
+   */
+  onglets: [
+    { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
+    { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
+    { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition' },
+    { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'progress' },
+    { route: 'combine', label: 'Combine', icon: 'stopwatch', vue: 'combine' },
+    { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
+  ],
+
+  /*
+   * Mot pour mot ce que l'écran Réglages affichait avant que ces textes
+   * appartiennent au programme : un test le verrouille, parce que « ne perdre
+   * aucune fonctionnalité existante » vaut aussi pour les libellés.
+   */
+  reglages: {
+    eyebrow: 'Programme 12 semaines',
+    visuel: 'athlete',
+    refPoids: '§12',
+    // Les 1RM et la référence de broad jump pilotent le §9 et le feu tricolore.
+    force: true,
+  },
+
   dureeSemaines: DUREE_SEMAINES,
   semaines: SEMAINES,
   joursDeLaSemaine,

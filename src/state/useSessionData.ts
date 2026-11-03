@@ -65,7 +65,6 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
   const reload = useCallback(async () => {
     const settingsRow = await getSettingsRow();
     const settings = toEngineSettings(settingsRow);
-    const date = settings.startDate ? dateFor(settings.startDate, week, day) : '';
 
     const [sets, readinessRows, readinessRow, customRows, cycle] = await Promise.all([
       allSets(),
@@ -81,6 +80,13 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
      * programme elle parle, elle demande au module de répondre.
      */
     const programme = modulePourCycle(cycle?.programmeId ?? null);
+
+    /*
+     * La date se calcule AVEC ce programme : l'origine du calendrier est sa
+     * première semaine, qui n'est la semaine 0 que pour POWER 12. Sans lui,
+     * les séances d'un cycle MASS étaient datées d'une semaine trop tard.
+     */
+    const date = settings.startDate ? dateFor(settings.startDate, week, day, programme) : '';
 
     const history = buildHistoryIndex(sets);
     const trend = explosiveTrend(toReadinessRecords(readinessRows), date || undefined);

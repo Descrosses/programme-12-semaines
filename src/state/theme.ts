@@ -6,15 +6,15 @@
  * Deux niveaux, deux identités :
  *
  * - Dans un PROGRAMME, c'est l'univers de sa famille. POWER est bleu nuit et
- *   rouge, MASS est crème et noir. C'est ce qui donne le sentiment de changer
- *   de programme, et pas seulement de changer de contenu.
+ *   rouge, MASS est ardoise claire, blanc et rouge. C'est ce qui donne le
+ *   sentiment de changer de programme, et pas seulement de contenu.
  * - Dans la PLATEFORME — accueil, catalogue, parcours — c'est l'identité
  *   Dcross-fit, commune à tout le monde. Elle ne peut pas prendre les couleurs
  *   d'un programme : le catalogue montre les trois familles à la fois, et
  *   l'habiller aux couleurs de l'une d'elles ferait croire à un classement.
  *
- * C'est exactement ce que montrent les deux visuels de référence : un
- * catalogue sombre, et un écran de semaine MASS en crème.
+ * C'est exactement ce que montrent les références : un catalogue sombre, et
+ * l'application MASS existante, en ardoise claire.
  *
  * ── Pourquoi une fonction et pas trois lignes dans le composant ────────────
  *

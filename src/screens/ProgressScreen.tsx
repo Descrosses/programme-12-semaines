@@ -3,6 +3,7 @@ import { BarChart, LineChart, type Series } from '../components/Chart';
 import { resolveLoad } from '../engine/loadResolver';
 import { NotesBrowser } from '../components/NotesBrowser';
 import { SessionDurations } from '../components/SessionDurations';
+import { POWER12 } from '../programmes/power12';
 import { VisualTracking } from '../components/VisualTracking';
 import { WeightOverview } from '../components/WeightOverview';
 import { EXERCISES } from '../data/exercises';
@@ -368,6 +369,7 @@ export function ProgressScreen() {
               readinessRows={data.readiness}
               baselineCm={data.baseline}
               ctx={data.ctx}
+              programme={POWER12}
             />
           </section>
 

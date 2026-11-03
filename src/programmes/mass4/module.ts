@@ -159,6 +159,51 @@ function dureeMinutes(lignes: readonly LigneMass4[], semaine: number): number {
 
 export const MASS4: ModuleProgramme = {
   id: 'mass4',
+
+  /*
+   * La barre de MASS, relevée dans l'application MASS existante — celle que
+   * Guillaume utilise et qu'il a désignée comme référence. Elle diffère de
+   * celle de POWER sur un seul onglet, et ce n'est pas un détail : Combine y
+   * est remplacé par Mesures.
+   *
+   * Pourquoi : le combine de POWER mesure des maximums et un écart
+   * deadlift–squat. MASS 4 ne prescrit aucun kilo et ne contient ni squat
+   * barre, ni deadlift, ni développé couché. Ce qui se mesure dans MASS, c'est
+   * le poids de corps et le tour de bras, au début et à la fin des quatre
+   * semaines.
+   *
+   * Les routes restent celles de l'application : `#/nutrition` et
+   * `#/progress` mènent ici à d'autres écrans, pas à d'autres adresses.
+   */
+  onglets: [
+    { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
+    { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
+    { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition-principes' },
+    { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'progress-volume' },
+    { route: 'mesures', label: 'Mesures', icon: 'ruler', vue: 'mesures' },
+    { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
+  ],
+
+  reglages: {
+    eyebrow: 'Programme 4 semaines',
+    /*
+     * Aucune photo : les visuels de MASS restent à produire. Reprendre ceux de
+     * POWER mettait un joueur de football américain en tête des Réglages d'un
+     * programme de bodybuilding — c'est la raison pour laquelle ce champ est
+     * absent plutôt que rempli avec le premier visuel disponible.
+     */
+    /*
+     * Le document de MASS 4 ne numérote pas ses sections : il n'y a donc
+     * aucune référence à afficher, et « §12 » renvoyait au document de POWER.
+     */
+    refPoids: null,
+    /*
+     * Aucun maximum testé, aucune référence de saut : « les charges sont
+     * autorégulées, tu les choisis et tu les notes ».
+     */
+    force: false,
+  },
+
   dureeSemaines: 4,
   semaines: SEMAINES_MASS4,
 

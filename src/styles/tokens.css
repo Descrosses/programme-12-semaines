@@ -185,67 +185,77 @@
 /*
  * ── MASS — prise de masse & congestion ─────────────────────────────────────
  *
- * Crème, beige, noir, taupe, accents dorés très discrets. Les valeurs ne sont
- * pas inventées : elles ont été RELEVÉES au pixel dans le visuel de référence
- * fourni par Guillaume, plutôt qu'estimées à l'œil.
+ * Ardoise claire, blanc, rouge et marine. Les valeurs ne sont pas inventées :
+ * elles sont RELEVÉES dans les jetons de l'application MASS existante, celle
+ * que Guillaume utilise déjà et qu'il a désignée comme la référence. Elles ne
+ * sont pas estimées à l'œil sur une capture, et pas davantage dérivées de la
+ * palette de POWER.
+ *
+ * Une version précédente de ce bloc était crème, beige et noire : elle avait
+ * été relevée sur un visuel de marque. Guillaume a tranché pour le
+ * bleu/blanc/rouge, parce que c'est une application qui tourne et qu'il a
+ * utilisée, là où le crème n'était qu'une image. Le crème n'est pas conservé
+ * en commentaire : une palette morte dans une feuille de style finit toujours
+ * par être réveillée par erreur.
  *
  * Deux conséquences qui ne sautent pas aux yeux :
  *
  * 1. Le fond est clair, donc `--ink` devient sombre et `--ink-on-accent`
- *    devient clair. Toute l'inversion tient dans ces jetons : aucun composant
+ *    devient blanc. Toute l'inversion tient dans ces jetons : aucun composant
  *    n'a de couleur en dur, c'est ce qui rend la bascule possible.
- * 2. `--accent` n'est PAS rouge ici. Le brief l'interdit explicitement pour
- *    MASS : l'élément actif se reconnaît au noir et à la graisse, pas à une
- *    couleur vive. L'accent est donc le noir d'encre, et le doré ne sert
- *    qu'aux traits et aux pictogrammes.
+ * 2. `--accent` est rouge ici, et c'est voulu — contrairement au visuel de
+ *    marque crème, l'application de référence utilise bien le rouge pour
+ *    l'action. La règle « ne pas utiliser automatiquement le rouge » visait un
+ *    choix par défaut non réfléchi ; ici le rouge est le choix explicite de
+ *    Guillaume, relevé dans son application.
  *
- * Contrastes mesurés sur cette palette : encre sur fond 15,8 ; encre sur carte
- * 16,3 ; texte secondaire 6,2 ; crème sur le noir d'action 15,8. Le taupe des
- * petits libellés tient 4,6 sur la carte — au-dessus du seuil AA.
+ * Contrastes mesurés sur cette palette : encre sur fond 13,1 ; encre sur carte
+ * 14,9 ; texte secondaire 8,0 sur carte ; blanc sur le rouge d'action 4,6. Le
+ * gris des petits libellés tient 5,1 sur la carte — au-dessus du seuil AA.
  */
 [data-theme='mass'] {
-  --bg: #f1e9e0;
-  --bg-2: #ece3d8;
-  --surface: #f7f1e9;
-  --surface-2: #f3ece2;
-  --surface-3: #eee4d8;
+  --bg: #e9edf1;
+  --bg-2: #e1e7ed;
+  --surface: #ffffff;
+  --surface-2: #f1f4f7;
+  --surface-3: #e2e8ef;
 
-  --line: #e6ddd1;
-  --line-strong: #d8ccbd;
+  --line: #d5dce4;
+  --line-strong: #c3cdd8;
 
-  --ink: #1a1a18;
-  --ink-2: #45403b;
-  --ink-3: #6b6459;
-  --ink-on-accent: #f7f1e9;
+  --ink: #14202b;
+  --ink-2: #3e4c5a;
+  --ink-3: #5e6b78; /* réservé aux libellés non essentiels */
+  --ink-on-accent: #ffffff;
 
-  /* L'action est noire, jamais rouge : c'est la règle du §14. */
-  --accent: #1a1a18;
-  --accent-bright: #2c2c28;
-  --accent-deep: #000000;
-  --accent-dim: #e6ddd1;
-  /* Le doré discret, pour les traits et les pictogrammes. */
-  --accent-ink: #8f7659;
+  /* Le rouge des programmes de prise de masse, sur ardoise claire. */
+  --accent: #d62f33;
+  --accent-bright: #e04449;
+  --accent-deep: #ab2225;
+  --accent-dim: #f4c7c8;
+  /* Le marine des en-têtes : c'est lui qui porte traits et pictogrammes. */
+  --accent-ink: #1d2b3a;
 
   /* Les couleurs d'état restent lisibles sur clair, donc assombries. */
-  --vert: #1f7a45;
-  --orange: #9a6414;
-  --rouge: #a3281f;
-  --bleu: #2b5d86;
+  --vert: #1e8a4c;
+  --orange: #b8560a;
+  --rouge: #b3261e;
+  --bleu: #2f6fa8;
   --bleu-ink: #1d4664;
 
-  --macro-glucides: #2b5d86;
-  --macro-proteines: #8f7659;
-  --macro-lipides: #9a6414;
-  --bloc-test: #6b6459;
+  --macro-glucides: #3d8dc9;
+  --macro-proteines: #cf5a86;
+  --macro-lipides: #a87b22;
+  --bloc-test: #d62f33;
 
-  /* Le voile devient crème : c'est lui qui rend un en-tête clair lisible. */
-  --ink-fort: #1a1a18;
-  --voile: 241 233 224;
-  --ombre-titre: 0 1px 8px rgb(241 233 224 / 85%);
+  /* Le voile devient ardoise claire : il rend un en-tête clair lisible. */
+  --ink-fort: #14202b;
+  --voile: 233 237 241;
+  --ombre-titre: 0 1px 8px rgb(233 237 241 / 85%);
 
-  /* Les ombres doivent être presque invisibles sur crème. */
-  --shadow-card: 0 1px 2px rgb(60 48 32 / 6%);
-  --shadow-action: 0 2px 8px rgb(60 48 32 / 10%);
+  /* Les ombres doivent rester discrètes sur un fond clair. */
+  --shadow-card: 0 1px 2px rgb(20 32 43 / 8%);
+  --shadow-action: 0 2px 8px rgb(20 32 43 / 12%);
 }
 
 /*

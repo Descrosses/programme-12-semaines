@@ -108,7 +108,7 @@ export function WeekScreen({
           explosiveDecline: trend.declining,
         });
         if (!s) continue;
-        const date = settings.startDate ? dateFor(settings.startDate, week, day) : '';
+        const date = settings.startDate ? dateFor(settings.startDate, week, day, programme) : '';
         out.push({
           day,
           title: s.title,

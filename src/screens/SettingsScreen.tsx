@@ -24,6 +24,7 @@ import {
 } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
+import type { ModuleProgramme } from '../programmes/types';
 import styles from './Screens.module.css';
 
 /*
@@ -49,7 +50,25 @@ const ONE_RM_FIELDS = [
   { id: 'weighted-pullup', label: 'Tractions lestées' },
 ] as const;
 
-export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
+export function SettingsScreen({
+  onChanged,
+  programme,
+}: {
+  onChanged: () => void;
+  /**
+   * Le programme du cycle en cours.
+   *
+   * Cet écran est le seul que deux programmes partagent vraiment : la date de
+   * début, le poids de corps, la sauvegarde et la remise à zéro leur sont
+   * communes. Tout le reste était écrit pour POWER 12 et se voyait sous MASS
+   * — photo de football américain, « Programme 12 semaines », et un récapitulatif
+   * annonçant squat, deadlift et bench à un programme qui n'en contient aucun.
+   *
+   * Les valeurs masquées ne sont jamais effacées : elles restent en base et
+   * réapparaissent dès qu'un cycle POWER redevient actif.
+   */
+  programme: ModuleProgramme;
+}) {
   const [row, setRow] = useState<SettingsRow | null>(null);
   /**
    * Moyenne des 3 dernières pesées du journal Nutrition — exactement ce que
@@ -137,13 +156,25 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
         : `Bande affichée de ${fr(bande.min)} à ${fr(bande.max)} kg. Vide les deux champs pour la retirer.`;
   const today = new Date().toISOString().slice(0, 10);
 
+  /*
+   * Le programme commence-t-il par une semaine 0 ?
+   *
+   * C'est ce qui distingue un combine initial d'un simple premier lundi, et
+   * c'est déduit de la structure plutôt que déclaré : un programme qui porte
+   * une semaine 0 a forcément quelque chose à y faire.
+   */
+  const avecCombine = programme.semaines.includes(0);
+  const derniereSemaine = programme.semaines[programme.semaines.length - 1] ?? 1;
+  const joursDeFin = programme.joursDeLaSemaine(derniereSemaine);
+  const dernierJour = joursDeFin[joursDeFin.length - 1] ?? 0;
+
   return (
     <div className={styles.screen}>
       <ScreenHeader
-        eyebrow="Programme 12 semaines"
+        eyebrow={programme.reglages.eyebrow}
         title="Réglages"
         subtitle="Tout reste sur ce téléphone"
-        visuel="athlete"
+        {...(programme.reglages.visuel === undefined ? {} : { visuel: programme.reglages.visuel })}
         compact
       >
         <p className={styles.lead}>Tout est stocké sur ce téléphone. Rien ne part sur internet.</p>
@@ -161,12 +192,20 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Date de début</h2>
         <p className={styles.cardSub}>
-          Le <b>lundi</b> du combine initial. Tout le calendrier en découle : le combine tient sur
-          six jours, puis la semaine 1 démarre le lundi suivant.
+          {avecCombine ? (
+            <>
+              Le <b>lundi</b> du combine initial. Tout le calendrier en découle : le combine tient
+              sur six jours, puis la semaine 1 démarre le lundi suivant.
+            </>
+          ) : (
+            <>
+              Le <b>lundi</b> de la semaine 1. Tout le calendrier en découle.
+            </>
+          )}
         </p>
         <div className={styles.field}>
           <label className={styles.label} htmlFor="start-date">
-            Lundi du combine initial
+            {avecCombine ? 'Lundi du combine initial' : 'Lundi de la semaine 1'}
           </label>
           <input
             id="start-date"
@@ -179,8 +218,8 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
             <>
               <p className={`${styles.alert} ${styles.alertRouge}`} style={{ margin: '10px 0 0' }}>
                 <b>{humanDate(start)} n’est pas un lundi.</b> Tout le calendrier est calé sur le
-                lundi du combine : avec cette date, toutes les séances tombent le mauvais jour de la
-                semaine.
+                lundi {avecCombine ? 'du combine' : 'de la semaine 1'} : avec cette date, toutes les
+                séances tombent le mauvais jour de la semaine.
               </p>
               <button
                 type="button"
@@ -192,13 +231,19 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
               </button>
             </>
           )}
-          {ancreValide && (
+          {ancreValide && avecCombine && (
             <p className={styles.fieldHint}>
               Combine : squat le {humanDate(dateFor(start, 0, 0))}, tractions lestées le{' '}
               {humanDate(dateFor(start, 0, 1))}, deadlift le {humanDate(dateFor(start, 0, 3))},
               bench le {humanDate(dateFor(start, 0, 4))}, tractions max le{' '}
               {humanDate(dateFor(start, 0, 5))}. Semaine 1 le {humanDate(dateFor(start, 1, 0))},
               dernière séance le {humanDate(dateFor(start, 12, 6))}.
+            </p>
+          )}
+          {ancreValide && !avecCombine && (
+            <p className={styles.fieldHint}>
+              Semaine 1 le {humanDate(dateFor(start, 1, 0, programme))}, dernière séance le{' '}
+              {humanDate(dateFor(start, derniereSemaine, dernierJour, programme))}.
             </p>
           )}
         </div>
@@ -208,9 +253,10 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Poids de corps</h2>
         <p className={styles.cardSub}>
-          §12 — <b>moyenne de 3 matinées, à jeun</b>. C’est un relevé de maison, pas une mesure de
-          séance : il ne figure plus dans le flux du combine. Saisis-le ici quand tu veux, la veille
-          ou le matin même.
+          {programme.reglages.refPoids === null ? '' : `${programme.reglages.refPoids} — `}
+          <b>moyenne de 3 matinées, à jeun</b>. C’est un relevé de maison, pas une mesure de séance
+          {avecCombine ? ' : il ne figure plus dans le flux du combine.' : '.'} Saisis-le ici quand
+          tu veux, la veille ou le matin même.
         </p>
         <div className={styles.field}>
           <Stepper
@@ -294,64 +340,72 @@ export function SettingsScreen({ onChanged }: { onChanged: () => void }) {
       </section>
 
       {/* --------------------------------------------- référence de saut -- */}
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Référence broad jump</h2>
-        <p className={styles.cardSub}>
-          Meilleur des 3 essais du combine initial. Elle est figée : c’est elle qui décide du feu
-          tricolore avant chaque séance jambes.
-        </p>
-        <div className={styles.field}>
-          <Stepper
-            label="Référence"
-            value={row.broadJumpBaselineCm}
-            step={5}
-            min={100}
-            max={400}
-            unit="cm"
-            tone="accent"
-            onStep={(d) =>
-              void patch({
-                broadJumpBaselineCm: stepValue(row.broadJumpBaselineCm, d, 100, 400),
-              })
-            }
-            onCommit={(v) => void patch({ broadJumpBaselineCm: v })}
-          />
-          <p className={styles.fieldHint}>
-            {row.broadJumpBaselineCm === null
-              ? 'Non définie : aucun verdict de readiness ne sera calculé.'
-              : `Orange en dessous de ${fr(Math.round(row.broadJumpBaselineCm * 0.98 * 10) / 10)} cm, rouge en dessous de ${fr(Math.round(row.broadJumpBaselineCm * 0.95 * 10) / 10)} cm.`}
+      {programme.reglages.force && (
+        <section className={styles.card}>
+          <h2 className={styles.cardTitle}>Référence broad jump</h2>
+          <p className={styles.cardSub}>
+            Meilleur des 3 essais du combine initial. Elle est figée : c’est elle qui décide du feu
+            tricolore avant chaque séance jambes.
           </p>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------- 1RM ----- */}
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>1RM testés</h2>
-        <p className={styles.cardSub}>
-          Ils servent aux jours de <b>readiness rouge</b> (65 % du 1RM) et te donnent un repère de
-          progression. Laisse vide ce que tu n’as pas mesuré : l’appli dira « à mesurer » plutôt que
-          d’inventer un chiffre.
-        </p>
-        {ONE_RM_FIELDS.map((f) => (
-          <div key={f.id} className={styles.field}>
+          <div className={styles.field}>
             <Stepper
-              label={f.label}
-              value={row.oneRM[f.id] ?? null}
-              step={2.5}
-              min={0}
-              max={300}
-              unit="kg"
-              emptyLabel="à mesurer"
+              label="Référence"
+              value={row.broadJumpBaselineCm}
+              step={5}
+              min={100}
+              max={400}
+              unit="cm"
+              tone="accent"
               onStep={(d) =>
                 void patch({
-                  oneRM: poseMaximum(row.oneRM, f.id, stepValue(row.oneRM[f.id] ?? null, d, 0, 300)),
+                  broadJumpBaselineCm: stepValue(row.broadJumpBaselineCm, d, 100, 400),
                 })
               }
-              onCommit={(v) => void patch({ oneRM: poseMaximum(row.oneRM, f.id, v) })}
+              onCommit={(v) => void patch({ broadJumpBaselineCm: v })}
             />
+            <p className={styles.fieldHint}>
+              {row.broadJumpBaselineCm === null
+                ? 'Non définie : aucun verdict de readiness ne sera calculé.'
+                : `Orange en dessous de ${fr(Math.round(row.broadJumpBaselineCm * 0.98 * 10) / 10)} cm, rouge en dessous de ${fr(Math.round(row.broadJumpBaselineCm * 0.95 * 10) / 10)} cm.`}
+            </p>
           </div>
-        ))}
-      </section>
+        </section>
+      )}
+
+      {/* ------------------------------------------------------- 1RM ----- */}
+      {programme.reglages.force && (
+        <section className={styles.card}>
+          <h2 className={styles.cardTitle}>1RM testés</h2>
+          <p className={styles.cardSub}>
+            Ils servent aux jours de <b>readiness rouge</b> (65 % du 1RM) et te donnent un repère de
+            progression. Laisse vide ce que tu n’as pas mesuré : l’appli dira « à mesurer » plutôt
+            que d’inventer un chiffre.
+          </p>
+          {ONE_RM_FIELDS.map((f) => (
+            <div key={f.id} className={styles.field}>
+              <Stepper
+                label={f.label}
+                value={row.oneRM[f.id] ?? null}
+                step={2.5}
+                min={0}
+                max={300}
+                unit="kg"
+                emptyLabel="à mesurer"
+                onStep={(d) =>
+                  void patch({
+                    oneRM: poseMaximum(
+                      row.oneRM,
+                      f.id,
+                      stepValue(row.oneRM[f.id] ?? null, d, 0, 300),
+                    ),
+                  })
+                }
+                onCommit={(v) => void patch({ oneRM: poseMaximum(row.oneRM, f.id, v) })}
+              />
+            </div>
+          ))}
+        </section>
+      )}
 
       {/* ---------------------------------------------------- alertes ---- */}
       <section className={styles.card}>

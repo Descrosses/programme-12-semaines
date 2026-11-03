@@ -1,5 +1,4 @@
 import { DAY_LABELS_SHORT, type DayIndex, type WeekIndex } from '../data/types';
-import { getSession as buildSession } from '../engine/getSession';
 import { humanDate } from '../engine/calendar';
 import {
   gapLabel,
@@ -10,6 +9,7 @@ import {
 import { readiness as computeReadiness } from '../engine/readiness';
 import type { SessionContext } from '../engine/types';
 import type { ReadinessRow, SessionRow } from '../db/db';
+import type { ModuleProgramme } from '../programmes/types';
 import styles from '../screens/Screens.module.css';
 
 /**
@@ -31,6 +31,7 @@ export function SessionDurations({
   readinessRows,
   baselineCm,
   ctx,
+  programme,
 }: {
   rows: SessionRow[];
   /**
@@ -45,12 +46,24 @@ export function SessionDurations({
   readinessRows: ReadinessRow[];
   baselineCm: number | null;
   ctx: SessionContext;
+  /**
+   * Le programme qui a prescrit ces séances.
+   *
+   * Sans lui, la durée prévue était toujours calculée par le moteur de POWER
+   * 12 — ce composant importait `getSession` en dur. Les séances d'un cycle
+   * MASS étaient donc comparées à la durée d'une séance de POWER au même jour
+   * de la même semaine, c'est-à-dire à un chiffre qui ne les concernait pas.
+   *
+   * POWER 12 passe son propre module, dont `getSession` est exactement la
+   * fonction importée auparavant : son affichage est inchangé.
+   */
+  programme: ModuleProgramme;
 }) {
   const parSeance = new Map(readinessRows.map((r) => [`${r.week}/${r.day}`, r]));
 
   const entries = sessionDurations(rows, (week, day) => {
     const releve = parSeance.get(`${week}/${day}`);
-    const s = buildSession(week as WeekIndex, day as DayIndex, {
+    const s = programme.getSession(week as WeekIndex, day as DayIndex, {
       ...ctx,
       readiness: releve ? computeReadiness(baselineCm, releve.jumpCm) : null,
     });

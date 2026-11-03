@@ -47,3 +47,24 @@ export function moduleParId(id: string | null): ModuleProgramme | null {
 export function modulePourCycle(programmeId: string | null): ModuleProgramme {
   return moduleParId(programmeId) ?? moduleParId(PROGRAMME_PAR_DEFAUT) ?? POWER12;
 }
+
+/**
+ * Ce programme chiffre-t-il son plan alimentaire ?
+ *
+ * `true` pour POWER 12, dont l'écran Nutrition porte un objectif de calories,
+ * des macronutriments et un journal de repas. `false` pour MASS 4, dont le
+ * document l'interdit en une phrase : « pas de calories, pas de macros
+ * chiffrées, pas de grammes ».
+ *
+ * Lu depuis les onglets plutôt que déclaré à part : un programme qui ouvre
+ * l'écran Nutrition de POWER chiffre forcément, et un qui ouvre les principes
+ * ne chiffre forcément pas. Deux sources diraient un jour deux choses
+ * différentes.
+ *
+ * Sert hors de cet écran — la carte de raccourci de l'écran Aujourd'hui
+ * annonçait « 3 226 kcal · 190 g de protéines » sous un cycle MASS, alors que
+ * l'onglet Nutrition, lui, n'affichait plus aucun chiffre.
+ */
+export function nutritionChiffree(programme: ModuleProgramme): boolean {
+  return programme.onglets.some((o) => o.vue === 'nutrition');
+}

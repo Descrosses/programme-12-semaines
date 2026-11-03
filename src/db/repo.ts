@@ -39,6 +39,7 @@ import {
   type SetRow,
   type SettingsRow,
 } from './db';
+import { modulePourCycle } from '../programmes/registre';
 
 // ----------------------------------------------------------------- cycles --
 
@@ -305,8 +306,15 @@ export async function realignScheduleDates(startDate: string): Promise<number> {
   const cycleId = await idLecture();
   if (cycleId === null) return 0;
 
+  /*
+   * Le recalage se fait AVEC le programme du cycle : l'origine du calendrier
+   * est sa première semaine. Avec le calcul par défaut, recaler un cycle MASS
+   * aurait déplacé toutes ses séances d'une semaine.
+   */
+  const programme = modulePourCycle((await cycleActif())?.programmeId ?? null);
+
   for (const row of await db.sessions.where('cycleId').equals(cycleId).toArray()) {
-    const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
+    const attendue = dateFor(startDate, row.week as WeekIndex, row.day, programme);
     if (row.date === attendue || row.id === undefined) continue;
     await db.sessions.update(row.id, { date: attendue });
     await db.sets.where('sessionId').equals(row.id).modify({ date: attendue });
@@ -314,7 +322,7 @@ export async function realignScheduleDates(startDate: string): Promise<number> {
   }
 
   for (const row of await db.readiness.where('cycleId').equals(cycleId).toArray()) {
-    const attendue = dateFor(startDate, row.week as WeekIndex, row.day);
+    const attendue = dateFor(startDate, row.week as WeekIndex, row.day, programme);
     if (row.date === attendue || row.id === undefined) continue;
     await db.readiness.update(row.id, { date: attendue });
     recalees += 1;
