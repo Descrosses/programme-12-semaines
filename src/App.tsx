@@ -344,6 +344,7 @@ function renderScreen(
           key={dataVersion}
           onReprendre={() => navigate({ name: 'today' })}
           onCatalogue={() => navigate({ name: 'catalogue' })}
+          onParcours={() => navigate({ name: 'parcours' })}
         />
       );
 

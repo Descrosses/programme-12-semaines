@@ -1,139 +1,452 @@
 /*
- * L'accueil n'invente aucune couleur : tout vient des jetons.
- * Les seules formes propres à cet écran sont la jauge d'avancement et les
- * deux lignes d'action, qui n'existent nulle part ailleurs.
+ * L'accueil Dcross-fit.
+ *
+ * Toutes les couleurs viennent des jetons du thème `dcross` : graphite,
+ * anthracite, blanc, rouge sportif. Aucune valeur en dur, pour que le jour où
+ * la charte bouge, elle bouge d'un seul endroit.
  */
 
-.famille {
-  margin: 8px 0 0;
-  color: var(--ink-3);
-  font-size: var(--fs-small);
-  line-height: 1.45;
+.ecran {
+  padding: 0 var(--pad) var(--bottom-space);
 }
 
-.nomProgramme {
-  margin: 0;
+/* ------------------------------------------------------------ en-tête -- */
+
+/*
+ * Le logo et la marque sont centrés, détachés du contenu.
+ *
+ * Le logo est affiché TEL QUEL : ni recadré, ni détouré, ni recoloré. Son
+ * propre fond est un graphite presque identique à celui de l'écran, ce qui
+ * fait disparaître les bords du carré sans avoir à y toucher.
+ */
+.entete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 0 4px;
+}
+
+.logo {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.marque {
+  margin: -12px 0 0;
   font-family: var(--font-cond);
-  font-size: 1.45rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: clamp(2rem, 9vw, 2.6rem);
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: var(--track-display, 0.02em);
+  color: var(--ink);
+  text-transform: uppercase;
 }
 
-.version {
-  font-family: var(--font);
-  font-size: 0.78rem;
+.signature {
+  margin: 2px 0 0;
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.bienvenue {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 18px 0 14px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.sousBienvenue {
+  font-size: var(--fs-body);
   font-weight: 400;
   color: var(--ink-3);
-  letter-spacing: 0;
 }
 
-/* Jauge d'avancement. Décorative : le chiffre est écrit juste en dessous. */
-.jauge {
-  height: 7px;
-  margin-top: 12px;
-  border-radius: 4px;
-  background: var(--surface-3);
+.attente {
+  margin: 0 0 14px;
+  color: var(--ink-3);
+}
+
+/* -------------------------------------------------- programme en cours -- */
+
+/*
+ * La carte du programme en cours est la plus grande de l'écran, et c'est
+ * délibéré : c'est la réponse à « où j'en suis », qui est la raison pour
+ * laquelle on ouvre l'application.
+ */
+.enCours {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  padding: 0;
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg, 18px);
+  background: var(--surface);
+  text-align: left;
+  box-shadow: var(--shadow-card);
+}
+
+.enCoursPhoto {
+  position: absolute;
+  inset: 0;
+}
+
+.enCoursPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Le voile part du bas et s'éclaircit vers le haut : le texte occupe la
+ * gauche et le bas de la carte, la photo reste lisible à droite.
+ */
+.enCoursVoile {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(var(--voile) / 96%) 0%,
+      rgb(var(--voile) / 70%) 58%,
+      rgb(var(--voile) / 20%) 100%
+    ),
+    linear-gradient(0deg, rgb(var(--voile) / 85%) 0%, rgb(var(--voile) / 0%) 70%);
+}
+
+.enCoursCorps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--pad);
+}
+
+.badge {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: var(--fs-micro, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.enCoursNom {
+  font-family: var(--font-cond);
+  font-size: 2.1rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.enCoursSemaine {
+  font-size: var(--fs-body);
+  color: var(--ink-2);
+}
+
+.enCoursSemaine b {
+  color: var(--ink);
+}
+
+.jauge {
+  display: block;
+  height: 6px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 16%);
 }
 
 .jauge i {
   display: block;
   height: 100%;
-  border-radius: 4px;
+  border-radius: 999px;
   background: var(--accent);
 }
 
-/* L'action du jour : la plus grande cible de l'écran, et la seule en rouge. */
-.principal {
+.enCoursChiffres {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+/*
+ * La pastille de chevron.
+ *
+ * Deux usages, deux positionnements, et c'est la raison d'être des deux
+ * classes : dans la carte du programme en cours elle est posée en absolu sur
+ * la photo, dans une ligne elle est un simple élément de la rangée.
+ *
+ * Les avoir fondues en une seule classe absolue a produit un chevron fantôme
+ * au milieu de l'écran : « Mon parcours » n'était pas un ancêtre positionné,
+ * donc son chevron se calait sur la fenêtre et flottait par-dessus la carte du
+ * programme.
+ */
+.chevron {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
-  gap: 12px;
-  width: calc(100% - 2 * var(--pad));
-  margin: var(--gap) var(--pad) 0;
-  padding: 14px 16px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--ink-on-accent);
-  text-align: left;
-  cursor: pointer;
-}
-
-.principal:active {
-  background: var(--accent-deep);
-}
-
-.principalIcone {
-  display: grid;
-  place-items: center;
+  justify-content: center;
   width: 34px;
   height: 34px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 18%);
-  flex: none;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--ink-2);
 }
 
-.principalTexte {
-  flex: 1;
-  min-width: 0;
+.chevronCarte {
+  composes: chevron;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: rgb(255 255 255 / 12%);
+  color: var(--ink);
 }
 
-.principalTexte b {
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-}
+/* ------------------------------------------------- prochaine séance ---- */
 
-.principalTexte s {
-  display: block;
-  margin-top: 2px;
-  font-size: var(--fs-small);
-  text-decoration: none;
-  color: rgb(255 255 255 / 82%);
-}
-
-/* Le lien vers le catalogue : même gabarit, ton neutre. */
-.lien {
+.prochaine,
+.parcours {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: calc(100% - 2 * var(--pad));
-  margin: var(--gap) var(--pad) 0;
-  padding: 13px 16px;
+  width: 100%;
+  min-height: 72px;
+  margin-top: 12px;
+  padding: 12px var(--pad);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  color: var(--ink);
   text-align: left;
-  cursor: pointer;
 }
 
-.lienIcone {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: var(--surface-3);
-  color: var(--ink-2);
-  flex: none;
+.prochaineIcone,
+.parcoursIcone {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-dim);
+  color: var(--accent-ink);
 }
 
-.lienTexte {
-  flex: 1;
+.prochaineTexte {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
-.lienTexte b {
-  display: block;
-  font-size: 0.95rem;
+.prochaineTexte b {
+  font-size: var(--fs-body);
   font-weight: 700;
+  color: var(--ink);
 }
 
-.lienTexte s {
-  display: block;
-  margin-top: 2px;
+.prochaineEtiquette {
   font-size: var(--fs-small);
-  text-decoration: none;
   color: var(--ink-3);
+}
+
+.prochaineMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+
+.lecture {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+/* ------------------------------------------------------- familles ------ */
+
+.sectionTete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 26px 0 12px;
+}
+
+/* Le trait rouge devant le titre de section, comme dans la maquette. */
+.sectionTitre {
+  position: relative;
+  margin: 0;
+  padding-left: 16px;
+  font-family: var(--font-cond);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.sectionTitre::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  width: 5px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: skewX(-12deg);
+}
+
+.sectionLien {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--tap);
+  padding: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+/*
+ * Trois cartes sur une ligne, qui tiennent sur la largeur d'un téléphone.
+ *
+ * `minmax(0, 1fr)` et non `1fr` : sans le minimum à zéro, un nom long force la
+ * colonne à s'élargir et la troisième carte sort de l'écran.
+ */
+.familles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.famille {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  text-align: left;
+}
+
+.famillePhoto {
+  position: absolute;
+  inset: 0;
+}
+
+.famillePhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Chaque famille a sa teinte, posée sur la photo.
+ *
+ * C'est ce qui distingue les cartes d'un coup d'œil sans écrire la couleur
+ * dans le texte. Le bleu de POWER et le rouge de MASS reprennent les accents
+ * de leurs univers respectifs ; FEMMES reste neutre — son identité visuelle
+ * n'est pas décidée, et lui attribuer le rose par défaut serait la décider.
+ */
+.familleVoile {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgb(var(--voile) / 94%) 8%, rgb(var(--voile) / 30%) 70%);
+}
+
+.famille_power .familleVoile {
+  background:
+    linear-gradient(0deg, rgb(var(--voile) / 94%) 8%, rgb(var(--voile) / 30%) 70%),
+    linear-gradient(0deg, rgb(43 93 134 / 45%), rgb(43 93 134 / 10%));
+}
+
+.famille_mass .familleVoile {
+  background:
+    linear-gradient(0deg, rgb(var(--voile) / 94%) 8%, rgb(var(--voile) / 30%) 70%),
+    linear-gradient(0deg, rgb(168 20 29 / 55%), rgb(168 20 29 / 12%));
+}
+
+.famille_femmes .familleVoile {
+  background: linear-gradient(0deg, rgb(var(--voile) / 92%) 8%, var(--surface-3) 100%);
+}
+
+.familleBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 14%);
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.familleTexte {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.familleNom {
+  font-family: var(--font-cond);
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.familleSous {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------- parcours ------ */
+
+.parcours {
+  margin-top: 22px;
+}
+
+.parcoursIcone {
+  background: var(--surface-3);
+  color: var(--ink-2);
 }

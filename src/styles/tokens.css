@@ -183,6 +183,66 @@
 }
 
 /*
+ * ── DCROSS-FIT — l'identité de la plateforme ───────────────────────────────
+ *
+ * Graphite dominant, anthracite, blanc, rouge sportif en accent.
+ *
+ * Ce bloc existe parce que la plateforme n'avait pas d'identité : l'accueil,
+ * le catalogue et le parcours empruntaient le thème de POWER 12 — bleu nuit,
+ * et une photo de stade en tête d'écran. On ne distinguait plus Dcross-fit du
+ * seul programme qu'il hébergeait, ce qui était défendable à un programme et
+ * ne l'est plus à trois familles.
+ *
+ * Les valeurs sont relevées dans la maquette fournie par Guillaume, pas
+ * choisies : le graphite de fond, l'anthracite des cartes et le rouge de la
+ * barre de progression viennent de l'image, échantillonnés au pixel.
+ *
+ * Le rouge est volontairement le MÊME ton que celui de POWER : c'est le rouge
+ * de la marque, pas celui d'un programme. Ce qui distingue les deux univers
+ * est le fond — graphite neutre ici, bleu nuit là-bas.
+ */
+[data-theme='dcross'] {
+  --bg: #0c0e11;
+  --bg-2: #101317;
+  --surface: #16191e;
+  --surface-2: #1c2026;
+  --surface-3: #23272e;
+
+  --line: #2a2f36;
+  --line-strong: #3b414a;
+
+  --ink: #ffffff;
+  --ink-2: #b9c0c9;
+  --ink-3: #8a929c;
+  --ink-on-accent: #ffffff;
+
+  --accent: #da1d28;
+  --accent-bright: #ef3b45;
+  --accent-deep: #a8141d;
+  --accent-dim: #3a1418;
+  --accent-ink: #ef5058;
+
+  --vert: #2fae63;
+  --orange: #e08a2b;
+  --rouge: #e4444c;
+  --bleu: #4b8fd0;
+  --bleu-ink: #7fb2e4;
+
+  --macro-glucides: #4b8fd0;
+  --macro-proteines: #d4728f;
+  --macro-lipides: #c49a3a;
+  --bloc-test: #da1d28;
+
+  /* Le voile des en-têtes : le graphite du fond, en composantes séparées. */
+  --ink-fort: #ffffff;
+  --voile: 12 14 17;
+  --ombre-titre: 0 1px 10px rgb(12 14 17 / 85%);
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-action: 0 6px 20px rgb(0 0 0 / 45%);
+}
+
+/*
  * ── MASS — prise de masse & congestion ─────────────────────────────────────
  *
  * Ardoise claire, blanc, rouge et marine. Les valeurs ne sont pas inventées :
