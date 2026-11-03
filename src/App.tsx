@@ -12,13 +12,14 @@ import { SessionScreen } from './screens/SessionScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
+import { themePour } from './state/theme';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
 import { useRoute, type Route } from './state/useRoute';
 import { weekForTab, writeLastWeek } from './state/lastWeek';
 import { useViewportOffset } from './state/useViewportOffset';
 import { currentWeek, locateToday } from './engine/calendar';
-import { dayKindOverride, getSettingsRow } from './db/repo';
+import { cycleActif, dayKindOverride, getSettingsRow } from './db/repo';
 import type { DayKind } from './data/nutrition';
 import styles from './App.module.css';
 
@@ -134,6 +135,27 @@ export function App() {
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
   const dansPlateforme =
     route.name === 'accueil' || route.name === 'catalogue' || route.name === 'parcours';
+
+  /*
+   * L'univers graphique se pose sur la racine du document, et non sur un
+   * conteneur React : la barre de navigation, les feuilles modales et la
+   * couleur de fond du navigateur vivent toutes en dehors de l'arbre des
+   * écrans. Un attribut sur `<html>` les atteint toutes d'un coup.
+   */
+  useEffect(() => {
+    let vivant = true;
+    void (async () => {
+      const cycle = await cycleActif();
+      if (!vivant) return;
+      document.documentElement.dataset.theme = themePour(
+        cycle?.programmeId ?? null,
+        dansPlateforme,
+      );
+    })();
+    return () => {
+      vivant = false;
+    };
+  }, [dansPlateforme, dataVersion]);
 
   /*
    * Sur iOS, un élément en `position: fixed` est ancré au layout viewport, pas

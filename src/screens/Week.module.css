@@ -98,7 +98,7 @@
 }
 
 .weekOn .weekNum {
-  color: #fff;
+  color: var(--ink-fort);
 }
 
 /* ------------------------------------------------------- carte de phase -- */
