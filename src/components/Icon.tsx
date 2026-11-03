@@ -54,6 +54,7 @@ export type IconName =
   | 'image'
   | 'alert'
   | 'helmet'
+  | 'ruler'
   | 'home';
 
 /** Les tracés, sur une grille de 24. Trait de 2, extrémités rondes. */
@@ -70,6 +71,14 @@ const PATHS: Record<IconName, string> = {
    */
   settings:
     'M4 7h5M13 7h7M4 12h11M19 12h1M4 17h3M11 17h9M11 7a2 2 0 104 0 2 2 0 00-4 0M15 12a2 2 0 104 0 2 2 0 00-4 0M7 17a2 2 0 104 0 2 2 0 00-4 0',
+  /*
+   * Un mètre ruban déroulé, pour l'onglet Mesures de MASS.
+   *
+   * Les graduations sont inégales — longue, courte, longue — parce que trois
+   * traits de même hauteur à 21 px se lisent comme une grille, pas comme un
+   * instrument de mesure.
+   */
+  ruler: 'M3 9h18v6H3zM8 9v3M12 9v4M16 9v3',
   'arrow-left': 'M19 12H5M11 6l-6 6 6 6',
   'arrow-right': 'M5 12h14M13 6l6 6-6 6',
   'arrow-up': 'M12 19V5M6 11l6-6 6 6',

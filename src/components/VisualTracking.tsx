@@ -15,6 +15,9 @@ import {
 } from '../db/repo';
 import type { ProgressPhotoRow } from '../db/db';
 import type { WeekIndex } from '../data/types';
+import { cycleActif } from '../db/repo';
+import { modulePourCycle } from '../programmes/registre';
+import type { ModuleProgramme } from '../programmes/types';
 import styles from '../screens/Screens.module.css';
 
 /**
@@ -36,6 +39,15 @@ export function VisualTracking() {
   const [usage, setUsage] = useState<PhotoUsage | null>(null);
   const [a, setA] = useState<number | null>(null);
   const [b, setB] = useState<number | null>(null);
+  /**
+   * Le programme du cycle, pour dater les semaines.
+   *
+   * Sans lui, la semaine courante et la date affichée sous la photo étaient
+   * calculées sur la structure de POWER 12 — treize semaines à partir d'une
+   * semaine 0 — y compris pendant un cycle MASS, qui en compte quatre à partir
+   * de la semaine 1.
+   */
+  const [programme, setProgramme] = useState<ModuleProgramme | null>(null);
 
   const todayIso = new Date().toISOString().slice(0, 10);
 
@@ -49,6 +61,7 @@ export function VisualTracking() {
     setStartDate(settings.startDate);
     setMeasurements(m.map((r) => ({ date: r.date, weightKg: r.weightKg, waistCm: r.waistCm })));
     setUsage(await photoUsage());
+    setProgramme(modulePourCycle((await cycleActif())?.programmeId ?? null));
     // Par défaut on compare la première et la dernière : c'est la comparaison
     // qu'on veut voir, pas deux semaines voisines qui se ressemblent.
     if (rows.length >= 2) {
@@ -61,9 +74,9 @@ export function VisualTracking() {
     void reload();
   }, []);
 
-  if (!photos) return <div className={styles.loading}>Chargement…</div>;
+  if (!photos || programme === null) return <div className={styles.loading}>Chargement…</div>;
 
-  const week = currentWeek(startDate, todayIso);
+  const week = currentWeek(startDate, todayIso, programme);
   const thisWeekPhoto = week === null ? undefined : photos.find((p) => p.week === week);
   const photoA = photos.find((p) => p.week === a);
   const photoB = photos.find((p) => p.week === b);
@@ -135,7 +148,8 @@ export function VisualTracking() {
                 <PhotoCapture label="Prendre la photo de la semaine" onCapture={capture} />
                 {startDate && (
                   <p className={styles.fieldHint}>
-                    Semaine {week}, à partir du {humanDate(dateFor(startDate, week as WeekIndex, 0))}.
+                    Semaine {week}, à partir du{' '}
+                    {humanDate(dateFor(startDate, week as WeekIndex, 0, programme))}.
                   </p>
                 )}
               </>

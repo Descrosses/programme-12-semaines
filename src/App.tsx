@@ -6,6 +6,9 @@ import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
+import { MesuresScreen } from './screens/MesuresScreen';
+import { NutritionPrincipesScreen } from './screens/NutritionPrincipesScreen';
+import { ProgressVolumeScreen } from './screens/ProgressVolumeScreen';
 import { NutritionScreen } from './screens/NutritionScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
 import { SessionScreen } from './screens/SessionScreen';
@@ -13,6 +16,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
 import { modulePourCycle } from './programmes/registre';
+import type { ModuleProgramme, OngletProgramme } from './programmes/types';
 import { themePour } from './state/theme';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
@@ -24,17 +28,22 @@ import { cycleActif, dayKindOverride, getSettingsRow } from './db/repo';
 import type { DayKind } from './data/nutrition';
 import styles from './App.module.css';
 
-type TabName = 'today' | 'week' | 'nutrition' | 'progress' | 'combine' | 'settings';
 type PlateformeName = 'accueil' | 'catalogue' | 'parcours';
 
-const TABS: Array<{ name: TabName; label: string; icon: IconName }> = [
-  { name: 'today', label: 'Aujourd’hui', icon: 'play' },
-  { name: 'week', label: 'Semaine', icon: 'calendar' },
-  { name: 'nutrition', label: 'Nutrition', icon: 'meal' },
-  { name: 'progress', label: 'Progrès', icon: 'chart' },
-  { name: 'combine', label: 'Combine', icon: 'stopwatch' },
-  { name: 'settings', label: 'Réglages', icon: 'settings' },
-];
+/*
+ * La barre du bas N'EST PLUS ÉCRITE ICI.
+ *
+ * Elle l'a été longtemps, et c'était juste tant qu'il n'existait qu'un
+ * programme. Dès qu'un second est arrivé, cette liste en dur lui a imposé les
+ * onglets du premier : un cycle MASS affichait un onglet Combine qui réclame
+ * des 1RM à un programme qui n'en prescrit aucun, et un onglet Progrès qui
+ * traçait une courbe de développé couché dans un programme où le développé
+ * couché ne figure pas.
+ *
+ * Chaque programme déclare donc ses propres onglets dans son module
+ * (`programmes/types.ts`), et l'application lit cette liste. POWER 12 déclare
+ * exactement les six onglets qu'il avait : rien n'a bougé de son côté.
+ */
 
 /*
  * La barre de la PLATEFORME, et non celle du programme.
@@ -50,6 +59,24 @@ const PLATEFORME: Array<{ name: PlateformeName; label: string; icon: IconName }>
   { name: 'catalogue', label: 'Programmes', icon: 'book' },
   { name: 'parcours', label: 'Parcours', icon: 'repeat' },
 ];
+
+/**
+ * Les routes qui désignent un onglet de programme.
+ *
+ * Sert à distinguer « cette adresse est un onglet qui n'existe pas dans ce
+ * programme » — on ramène alors à la séance du jour — de « cette adresse
+ * n'est pas un onglet du tout », comme une séance ou le catalogue, qu'il ne
+ * faut surtout pas détourner.
+ */
+const ONGLETS_POSSIBLES = new Set<Route['name']>([
+  'today',
+  'week',
+  'nutrition',
+  'progress',
+  'combine',
+  'mesures',
+  'settings',
+]);
 
 export function App() {
   const [alerts, setAlerts] = useState({ sound: true, vibration: true });
@@ -90,6 +117,16 @@ export function App() {
    * semaine-là, et le bandeau doit le dire.
    */
   const [todayWeek, setTodayWeek] = useState<WeekIndex | null>(null);
+  /**
+   * Le module du programme en cours, `null` tant qu'on ne le sait pas encore.
+   *
+   * `null` plutôt que POWER 12 par défaut : au démarrage à froid, la lecture
+   * du cycle actif est asynchrone. Avec POWER 12 comme valeur initiale, un
+   * cycle MASS affichait une fraction de seconde la barre de POWER — six
+   * onglets dont un Combine — avant de se corriger. La barre est donc
+   * simplement absente le temps de la lecture, ce qui ne montre rien de faux.
+   */
+  const [programme, setProgramme] = useState<ModuleProgramme | null>(null);
   const timer = useRestTimer(alerts);
   const [route, navigate] = useRoute();
   const appUpdate = useAppUpdate();
@@ -101,13 +138,16 @@ export function App() {
       const row = await getSettingsRow();
       setAlerts({ sound: row.soundEnabled, vibration: row.vibrationEnabled });
       const iso = new Date().toISOString().slice(0, 10);
-      const programme = modulePourCycle((await cycleActif())?.programmeId ?? null);
-      const today = locateToday(row.startDate, iso, programme);
+      const moduleDuCycle = modulePourCycle((await cycleActif())?.programmeId ?? null);
+      setProgramme(moduleDuCycle);
+      const today = locateToday(row.startDate, iso, moduleDuCycle);
       const duProgramme: DayKind = today?.kind === 'session' ? 'train' : 'rest';
       setKindProgramme(duProgramme);
       setTodayKind((await dayKindOverride(iso)) ?? duProgramme);
       setTodayDay(today?.kind === 'session' ? today.session.day : null);
-      setTodayWeek(currentWeek(row.startDate, new Date().toISOString().slice(0, 10)));
+      setTodayWeek(
+        currentWeek(row.startDate, new Date().toISOString().slice(0, 10), moduleDuCycle),
+      );
     })();
   }, [dataVersion]);
 
@@ -159,6 +199,33 @@ export function App() {
     };
   }, [dansPlateforme, dataVersion]);
 
+  /**
+   * L'onglet du programme que la route désigne, `null` si elle n'en désigne
+   * aucun.
+   *
+   * `null` arrive dans deux cas : la route n'est pas un onglet (une séance,
+   * l'accueil), ou c'est un onglet d'un AUTRE programme — un `#/combine`
+   * gardé en favori puis ouvert pendant un cycle MASS, qui n'a pas de combine.
+   */
+  const onglet = programme?.onglets.find((o) => o.route === route.name) ?? null;
+
+  /*
+   * Une route d'onglet qui n'appartient pas au programme en cours ramène à la
+   * séance du jour.
+   *
+   * Sans ça, `#/combine` sous MASS laissait l'URL sur un onglet inexistant :
+   * aucun onglet de la barre n'était marqué actif, et le contenu affiché ne
+   * correspondait plus à l'adresse. On remplace l'entrée d'historique plutôt
+   * que d'en ajouter une, pour que le bouton Retour ne rebondisse pas.
+   */
+  useEffect(() => {
+    if (programme === null) return;
+    const estUnOnglet = ONGLETS_POSSIBLES.has(route.name);
+    if (estUnOnglet && !programme.onglets.some((o) => o.route === route.name)) {
+      navigate({ name: 'today' }, true);
+    }
+  }, [programme, route, navigate]);
+
   /*
    * Sur iOS, un élément en `position: fixed` est ancré au layout viewport, pas
    * à ce qu'on voit. Pendant le défilement, la barre de chrono remontait donc
@@ -187,6 +254,8 @@ export function App() {
       <main>
         {renderScreen(
           route,
+          programme,
+          onglet,
           dataVersion,
           todayKind,
           kindProgramme,
@@ -223,20 +292,20 @@ export function App() {
         </nav>
       )}
 
-      {!inSession && !dansPlateforme && (
-        <nav className={styles.nav} aria-label="Navigation principale">
-          {TABS.map((tab) => {
-            const active = route.name === tab.name;
+      {!inSession && !dansPlateforme && programme !== null && (
+        <nav className={styles.nav} aria-label={`Navigation ${programme.id}`}>
+          {programme.onglets.map((tab) => {
+            const active = route.name === tab.route;
             return (
               <button
-                key={tab.name}
+                key={tab.route}
                 type="button"
                 className={`${styles.tab} ${active ? styles.tabOn : ''}`}
                 onClick={() =>
                   navigate(
-                    tab.name === 'week'
+                    tab.route === 'week'
                       ? { name: 'week', week: weekForTab(route) }
-                      : { name: tab.name },
+                      : { name: tab.route },
                   )
                 }
                 aria-current={active ? 'page' : undefined}
@@ -256,6 +325,8 @@ export function App() {
 
 function renderScreen(
   route: Route,
+  programme: ModuleProgramme | null,
+  onglet: OngletProgramme | null,
   dataVersion: number,
   todayKind: DayKind,
   kindProgramme: DayKind,
@@ -322,8 +393,47 @@ function renderScreen(
         />
       );
 
+    default:
+      break;
+  }
+
+  const today = (
+    <TodayScreen
+      key={dataVersion}
+      onGoAccueil={() => navigate({ name: 'accueil' })}
+      onOpen={openSession}
+      onGoWeek={(w) => navigate({ name: 'week', week: w })}
+      onGoSettings={() => navigate({ name: 'settings' })}
+      onGoNutrition={() => navigate({ name: 'nutrition' })}
+      onDataChanged={refresh}
+      todayKind={todayKind}
+    />
+  );
+
+  /*
+   * Tant que le programme du cycle n'est pas lu, un onglet autre que la séance
+   * du jour n'affiche rien.
+   *
+   * Afficher la séance du jour à sa place ferait clignoter un écran qu'on n'a
+   * pas demandé — recharger `#/settings` montrait l'écran Aujourd'hui une
+   * fraction de seconde. La séance du jour, elle, s'affiche tout de suite :
+   * c'est l'écran d'atterrissage, et il sait se charger seul.
+   */
+  if (programme === null) return route.name === 'today' ? today : null;
+
+  /*
+   * L'aiguillage des onglets se fait sur la VUE, pas sur la route.
+   *
+   * C'est ce qui permet à `#/nutrition` d'ouvrir le plan au gramme près sous
+   * POWER 12 et les principes sous MASS 4, sans changer d'adresse : c'est le
+   * module du programme qui a dit, dans ses onglets, quel écran répond.
+   */
+  switch (onglet?.vue) {
     case 'progress':
       return <ProgressScreen key={dataVersion} />;
+
+    case 'progress-volume':
+      return <ProgressVolumeScreen key={dataVersion} programme={programme} />;
 
     case 'nutrition':
       /*
@@ -345,24 +455,19 @@ function renderScreen(
         />
       );
 
+    case 'nutrition-principes':
+      return <NutritionPrincipesScreen key={dataVersion} todayKind={todayKind} />;
+
     case 'combine':
       return <CombineScreen key={dataVersion} />;
 
+    case 'mesures':
+      return <MesuresScreen key={dataVersion} />;
+
     case 'settings':
-      return <SettingsScreen key={dataVersion} onChanged={refresh} />;
+      return <SettingsScreen key={dataVersion} onChanged={refresh} programme={programme} />;
 
     default:
-      return (
-        <TodayScreen
-          key={dataVersion}
-          onGoAccueil={() => navigate({ name: 'accueil' })}
-          onOpen={openSession}
-          onGoWeek={(w) => navigate({ name: 'week', week: w })}
-          onGoSettings={() => navigate({ name: 'settings' })}
-          onGoNutrition={() => navigate({ name: 'nutrition' })}
-          onDataChanged={refresh}
-          todayKind={todayKind}
-        />
-      );
+      return today;
   }
 }

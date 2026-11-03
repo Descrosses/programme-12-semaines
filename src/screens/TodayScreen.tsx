@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { NUTRITION_TARGETS, type DayKind } from '../data/nutrition';
 import { WEEK_BLOCKS, blocInfo, isCombineDay } from '../data/program';
-import { modulePourCycle } from '../programmes/registre';
+import { modulePourCycle, nutritionChiffree } from '../programmes/registre';
 import type { ModuleProgramme } from '../programmes/types';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
@@ -322,8 +322,19 @@ export function TodayScreen({
         <span className={styles.nutriText}>
           <b>Nutrition — {NUTRITION_TARGETS[todayKind].label.toLowerCase()}</b>
           <span>
-            {NUTRITION_TARGETS[todayKind].kcal.toLocaleString('fr-FR')} kcal ·{' '}
-            {NUTRITION_TARGETS[todayKind].proteinG} g de protéines
+            {/*
+              Les calories et les protéines sont celles de POWER 12. Un
+              programme qui ne chiffre pas son plan alimentaire renvoie vers
+              ses principes sans annoncer un objectif qu'il ne donne pas.
+            */}
+            {programme !== null && !nutritionChiffree(programme) ? (
+              'Des principes, pas de calories ni de grammes'
+            ) : (
+              <>
+                {NUTRITION_TARGETS[todayKind].kcal.toLocaleString('fr-FR')} kcal ·{' '}
+                {NUTRITION_TARGETS[todayKind].proteinG} g de protéines
+              </>
+            )}
           </span>
         </span>
         <span className={styles.nutriChevron} aria-hidden="true">

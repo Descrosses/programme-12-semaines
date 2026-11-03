@@ -1,10 +1,10 @@
 /**
  * Routage minimal par ancre d'URL.
  *
- * Pas de bibliothèque de routage : l'appli a six écrans et aucun besoin de
- * chargement différé ni de navigation imbriquée. Utiliser l'ancre (`#/…`)
- * plutôt qu'un état interne donne gratuitement le bouton Retour du téléphone,
- * qui est le geste naturel pour sortir d'une séance.
+ * Pas de bibliothèque de routage : l'appli a une poignée d'écrans et aucun
+ * besoin de chargement différé ni de navigation imbriquée. Utiliser l'ancre
+ * (`#/…`) plutôt qu'un état interne donne gratuitement le bouton Retour du
+ * téléphone, qui est le geste naturel pour sortir d'une séance.
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -20,6 +20,7 @@ export type Route =
   | { name: 'progress' }
   | { name: 'nutrition' }
   | { name: 'combine' }
+  | { name: 'mesures' }
   | { name: 'settings' };
 
 export function parseRoute(hash: string): Route {
@@ -43,6 +44,8 @@ export function parseRoute(hash: string): Route {
       return { name: 'nutrition' };
     case 'combine':
       return { name: 'combine' };
+    case 'mesures':
+      return { name: 'mesures' };
     case 'settings':
       return { name: 'settings' };
     default:

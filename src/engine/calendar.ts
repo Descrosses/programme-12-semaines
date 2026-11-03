@@ -72,14 +72,42 @@ export function daysBetween(fromIso: string, toIso: string): number {
   return Math.round((parseDate(toIso).getTime() - parseDate(fromIso).getTime()) / MS_PER_DAY);
 }
 
-/** Décalage, en jours depuis `startDate`, d'une case du calendrier. */
-export function offsetFor(week: WeekIndex, day: DayIndex): number {
-  return week * 7 + dayOffset(day);
+/**
+ * Décalage, en jours depuis `startDate`, d'une case du calendrier.
+ *
+ * ── Pourquoi `premiereSemaine` existe ─────────────────────────────────────
+ *
+ * Ce calcul valait `week * 7 + jour`, ce qui pose implicitement que la date de
+ * début est le lundi de la SEMAINE 0. C'est vrai pour POWER 12, qui commence
+ * par un combine initial en semaine 0.
+ *
+ * Ce ne l'est pas pour un programme qui démarre en semaine 1. MASS 4 est dans
+ * ce cas : sa date de début est le lundi de sa première séance, et l'ancien
+ * calcul plaçait cette première séance SEPT JOURS plus tard. L'écran des
+ * réglages l'avouait sans le savoir — « lundi de la semaine 1 : 12 octobre »
+ * juste au-dessus de « Semaine 1 le lundi 19 octobre ».
+ *
+ * La première semaine du programme est donc l'origine, quelle que soit sa
+ * valeur. Pour POWER 12 elle vaut 0 et rien ne change — c'est la valeur par
+ * défaut, et l'empreinte du programme le vérifie.
+ */
+export function offsetFor(week: WeekIndex, day: DayIndex, premiereSemaine = 0): number {
+  return (week - premiereSemaine) * 7 + dayOffset(day);
+}
+
+/** La première semaine d'un programme, qui sert d'origine au calendrier. */
+function premiereSemaineDe(prog: StructureProgramme): number {
+  return prog.semaines[0] ?? 0;
 }
 
 /** Date d'une séance. */
-export function dateFor(startDate: string, week: WeekIndex, day: DayIndex): string {
-  return addDays(startDate, offsetFor(week, day));
+export function dateFor(
+  startDate: string,
+  week: WeekIndex,
+  day: DayIndex,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
+): string {
+  return addDays(startDate, offsetFor(week, day, premiereSemaineDe(prog)));
 }
 
 export interface ScheduledSession {
@@ -100,7 +128,7 @@ export function schedule(
       out.push({
         week,
         day,
-        date: dateFor(startDate, week, day),
+        date: dateFor(startDate, week, day, prog),
         label: DAY_LABELS[day],
       });
     }
@@ -175,9 +203,13 @@ export function nextSession(
  * qui est la lecture naturelle quand on se photographie le lundi matin.
  * `null` tant que le calendrier n'a pas d'ancre.
  */
-export function currentWeek(startDate: string, todayIso: string): WeekIndex | null {
+export function currentWeek(
+  startDate: string,
+  todayIso: string,
+  prog: StructureProgramme = STRUCTURE_PAR_DEFAUT,
+): WeekIndex | null {
   if (!startDate) return null;
-  const all = schedule(startDate);
+  const all = schedule(startDate, prog);
   const first = all[0]!;
   if (todayIso < first.date) return first.week;
   let week = first.week;

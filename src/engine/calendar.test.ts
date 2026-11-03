@@ -289,7 +289,31 @@ describe('un autre programme, une autre structure', () => {
   it('ne commence pas par une semaine 0 quand le programme n’en a pas', () => {
     const toutes = schedule('2026-11-02', MASS_LIKE);
     expect(toutes[0]?.week).toBe(1);
-    expect(toutes[0]?.date).toBe('2026-11-09');
+  });
+
+  it('fait tomber la première séance SUR la date de début', () => {
+    /*
+     * Ce test a été écrit après coup, et l'assertion qu'il remplace disait le
+     * contraire : elle attendait le 9 novembre pour une date de début au 2.
+     *
+     * Elle décrivait le code plutôt que l'intention. `offsetFor` valait
+     * `week * 7`, ce qui prend la date de début pour le lundi de la SEMAINE 0 ;
+     * un programme qui commence en semaine 1 démarrait donc une semaine après
+     * la date choisie. L'écran des réglages l'affichait noir sur blanc —
+     * « lundi de la semaine 1 : 12 octobre », puis « Semaine 1 le lundi
+     * 19 octobre » — et personne ne pouvait caler son cycle correctement.
+     *
+     * Pour POWER 12 rien ne change : sa première semaine EST la semaine 0,
+     * son combine tombe bien le lundi choisi, et l'empreinte le vérifie.
+     */
+    expect(schedule('2026-11-02', MASS_LIKE)[0]?.date).toBe('2026-11-02');
+    expect(dateFor('2026-11-02', 1, 0, MASS_LIKE)).toBe('2026-11-02');
+    // La quatrième et dernière semaine tombe trois semaines plus tard.
+    expect(dateFor('2026-11-02', 4, 5, MASS_LIKE)).toBe('2026-11-28');
+    // POWER 12, lui, garde son combine le jour même et sa semaine 1 au lundi
+    // suivant.
+    expect(dateFor('2026-11-02', 0, 0)).toBe('2026-11-02');
+    expect(dateFor('2026-11-02', 1, 0)).toBe('2026-11-09');
   });
 
   it('situe aujourd’hui dans CE programme, pas dans l’autre', () => {
