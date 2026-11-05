@@ -11,7 +11,6 @@ import {
   importAll,
   importPhotos,
   parseAnyExport,
-  resetHistory,
   resetPhotos,
 } from '../db/export';
 import { formatBytes } from '../media/photo';
@@ -83,7 +82,6 @@ export function SettingsScreen({
     text: string;
     kind: 'ok' | 'erreur';
   } | null>(null);
-  const [confirmReset, setConfirmReset] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -575,57 +573,13 @@ export function SettingsScreen({
         )}
       </section>
 
-      {/* -------------------------------------------------- remise à zéro -- */}
       <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Remise à zéro</h2>
+        <h2 className={styles.cardTitle}>Gestion des données</h2>
         <p className={styles.cardSub}>
-          Efface séances, séries, readiness, combines et pesées. Les réglages ci-dessus et les
-          photos sont conservés.
+          La suppression globale de l’historique est désactivée pour protéger
+          les séances et les performances de tous tes programmes.
+          Pour retirer un cycle, utilise la rubrique Parcours.
         </p>
-        {!confirmReset ? (
-          <button
-            type="button"
-            className={styles.secondary}
-            style={{ width: '100%', margin: '12px 0 0', color: 'var(--rouge)' }}
-            onClick={() => setConfirmReset(true)}
-          >
-            Effacer tout l’historique
-          </button>
-        ) : (
-          <>
-            <p className={styles.fieldHint} style={{ color: 'var(--rouge)' }}>
-              Irréversible. Exporte d’abord si tu veux garder une trace.
-            </p>
-            <button
-              type="button"
-              className={styles.secondary}
-              style={{
-                width: '100%',
-                margin: '10px 0 0',
-                background: 'var(--rouge)',
-                color: 'var(--ink-on-accent)',
-              }}
-              onClick={() =>
-                void (async () => {
-                  await resetHistory();
-                  setConfirmReset(false);
-                  onChanged();
-                  setMessage({ text: 'Historique effacé.', kind: 'ok' });
-                })()
-              }
-            >
-              Oui, tout effacer
-            </button>
-            <button
-              type="button"
-              className={styles.secondary}
-              style={{ width: '100%', margin: '10px 0 0' }}
-              onClick={() => setConfirmReset(false)}
-            >
-              Annuler
-            </button>
-          </>
-        )}
       </section>
     </div>
   );
