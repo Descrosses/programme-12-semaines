@@ -34,7 +34,7 @@ import { programmeParId } from '../data/catalogue';
 import { EXERCISES } from '../data/exercises';
 import { COMBINE_METRICS } from '../data/testSessions';
 import type { CombineRow, CycleRow } from '../db/db';
-import { activerCycle, combinesDuCycle, resumesDesCycles, type ResumeCycle } from '../db/repo';
+import { activerCycle, combinesDuCycle, resumesDesCycles, supprimerCycleNonCommence, type ResumeCycle } from '../db/repo';
 import { currentWeek, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
 import { fr } from '../engine/format';
@@ -78,6 +78,8 @@ export function ParcoursScreen({
 }) {
   const [vues, setVues] = useState<Vue[] | null>(null);
   const [bilanOuvert, setBilanOuvert] = useState<number | null>(null);
+  const [suppressionEnCours, setSuppressionEnCours] = useState<number | null>(null);
+  const [erreurSuppression, setErreurSuppression] = useState('');
   /**
    * Quelle des deux rubriques est ouverte, ou aucune.
    *
@@ -142,6 +144,27 @@ export function ParcoursScreen({
     await activerCycle(cycle.id);
     onDataChanged();
     onOuvrirProgramme();
+  }
+
+  async function supprimer(cycle: CycleRow) {
+    if (cycle.id === undefined || suppressionEnCours !== null) return;
+    const nom = programmeParId(cycle.programmeId)?.nom ?? cycle.programmeId;
+    if (!window.confirm(`Supprimer « ${nom} » ?\\n\\nCette action est définitive. Aucun entraînement enregistré ne sera supprimé.`)) return;
+    setSuppressionEnCours(cycle.id);
+    setErreurSuppression('');
+    try {
+      const supprime = await supprimerCycleNonCommence(cycle.id);
+      if (!supprime) {
+        setErreurSuppression('Suppression refusée : ce programme est actif ou contient des données.');
+        return;
+      }
+      setVues((prev) => prev?.filter((v) => v.cycle.id !== cycle.id) ?? null);
+      onDataChanged();
+    } catch {
+      setErreurSuppression('Impossible de supprimer ce programme. Réessaie plus tard.');
+    } finally {
+      setSuppressionEnCours(null);
+    }
   }
 
   return (
@@ -293,6 +316,7 @@ export function ParcoursScreen({
                   </article>
                 );
               })}
+              {erreurSuppression && <p role="alert" className={styles.hint}>{erreurSuppression}</p>}
               {prevus.length > 0 && (
                 <>
                   <h3 className={styles.sectionTitle}>Prévus</h3>
@@ -310,6 +334,14 @@ export function ParcoursScreen({
                         onClick={() => void ouvrir(v.cycle)}
                       >
                         Ouvrir ce cycle
+                      </button>
+                      <button
+                        type="button"
+                        className={local.supprimerCycle}
+                        disabled={suppressionEnCours !== null}
+                        onClick={() => void supprimer(v.cycle)}
+                      >
+                        {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer ce programme'}
                       </button>
                     </article>
                   ))}
