@@ -170,7 +170,7 @@ export async function resumesDesCycles(): Promise<ResumeCycle[]> {
 }
 
 /**
- * Supprime uniquement un cycle planifié, jamais un cycle avec des traces.
+ * Supprime un cycle prévu ou en cours uniquement s'il est totalement vierge.
  * La vérification et la suppression sont atomiques pour éviter une saisie
  * concurrente entre le contrôle et l'effacement.
  */
@@ -182,9 +182,8 @@ export async function supprimerCycleNonCommence(id: number): Promise<boolean> {
       db.exerciseNotes, db.notes, db.noteDrafts, db.sessionExercises],
     async () => {
       const cycle = await db.cycles.get(id);
-      if (!cycle || cycle.statut !== 'prevu') return false;
+      if (!cycle || cycle.statut === 'termine') return false;
       const settings = await db.settings.get(1);
-      if (settings?.cycleActifId === id) return false;
 
       const tables = [
         db.sessions, db.sets, db.readiness, db.combines,
@@ -193,6 +192,15 @@ export async function supprimerCycleNonCommence(id: number): Promise<boolean> {
       ];
       for (const table of tables) {
         if (await table.where('cycleId').equals(id).count() > 0) return false;
+      }
+      if (settings?.cycleActifId === id) {
+        const autres = await db.cycles.where('statut').equals('en-cours').toArray();
+        const repli = autres.find((autre) => autre.id !== id);
+        if (!repli?.id) return false;
+        await db.settings.update(1, {
+          cycleActifId: repli.id,
+          startDate: repli.startDate,
+        });
       }
       await db.cycles.delete(id);
       return true;

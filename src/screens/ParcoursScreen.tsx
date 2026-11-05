@@ -149,13 +149,13 @@ export function ParcoursScreen({
   async function supprimer(cycle: CycleRow) {
     if (cycle.id === undefined || suppressionEnCours !== null) return;
     const nom = programmeParId(cycle.programmeId)?.nom ?? cycle.programmeId;
-    if (!window.confirm(`Supprimer « ${nom} » ?\\n\\nCette action est définitive. Aucun entraînement enregistré ne sera supprimé.`)) return;
+    if (!window.confirm(`Supprimer « ${nom} » ?\\n\\nCette action est définitive. La suppression est refusée si des données sont enregistrées.`)) return;
     setSuppressionEnCours(cycle.id);
     setErreurSuppression('');
     try {
       const supprime = await supprimerCycleNonCommence(cycle.id);
       if (!supprime) {
-        setErreurSuppression('Suppression refusée : ce programme est actif ou contient des données.');
+        setErreurSuppression('Suppression refusée : ce programme contient des données ou ne peut pas être retiré sans perdre le cycle actif.');
         return;
       }
       setVues((prev) => prev?.filter((v) => v.cycle.id !== cycle.id) ?? null);
@@ -211,8 +211,8 @@ export function ParcoursScreen({
             const habillage = programme === null ? null : HABILLAGE[programme.familleId];
             const pourcent = v.total === 0 ? 0 : Math.round((v.faites / v.total) * 100);
             return (
+              <div key={v.cycle.id}>
               <button
-                key={v.cycle.id}
                 type="button"
                 className={local.carteCycle}
                 style={{ '--teinte': habillage?.teinte ?? 'var(--accent)' } as CSSProperties}
@@ -242,6 +242,17 @@ export function ParcoursScreen({
                   <Icon name="arrow-right" size="18px" />
                 </span>
               </button>
+              {v.faites === 0 && (
+                <button
+                  type="button"
+                  className={local.supprimerCycleEnCours}
+                  disabled={suppressionEnCours !== null}
+                  onClick={() => void supprimer(v.cycle)}
+                >
+                  {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer ce programme'}
+                </button>
+              )}
+              </div>
             );
           })}
 
