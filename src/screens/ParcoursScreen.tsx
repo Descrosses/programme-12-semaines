@@ -79,6 +79,7 @@ export function ParcoursScreen({
   const [vues, setVues] = useState<Vue[] | null>(null);
   const [bilanOuvert, setBilanOuvert] = useState<number | null>(null);
   const [suppressionEnCours, setSuppressionEnCours] = useState<number | null>(null);
+  const [menuCycleId, setMenuCycleId] = useState<number | null>(null);
   const [erreurSuppression, setErreurSuppression] = useState('');
   /**
    * Quelle des deux rubriques est ouverte, ou aucune.
@@ -150,6 +151,7 @@ export function ParcoursScreen({
     if (cycle.id === undefined || suppressionEnCours !== null) return;
     const nom = programmeParId(cycle.programmeId)?.nom ?? cycle.programmeId;
     if (!window.confirm(`Supprimer « ${nom} » ?\\n\\nCette action est définitive. La suppression est refusée si des données sont enregistrées.`)) return;
+    setMenuCycleId(null);
     setSuppressionEnCours(cycle.id);
     setErreurSuppression('');
     try {
@@ -211,7 +213,7 @@ export function ParcoursScreen({
             const habillage = programme === null ? null : HABILLAGE[programme.familleId];
             const pourcent = v.total === 0 ? 0 : Math.round((v.faites / v.total) * 100);
             return (
-              <div key={v.cycle.id}>
+              <div key={v.cycle.id} className={local.cycleAvecMenu}>
               <button
                 type="button"
                 className={local.carteCycle}
@@ -242,15 +244,39 @@ export function ParcoursScreen({
                   <Icon name="arrow-right" size="18px" />
                 </span>
               </button>
-              {v.faites === 0 && (
-                <button
-                  type="button"
-                  className={local.supprimerCycleEnCours}
-                  disabled={suppressionEnCours !== null}
-                  onClick={() => void supprimer(v.cycle)}
+              {v.faites === 0 && v.cycle.id !== undefined && (
+                <div
+                  className={local.actionsCycle}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget)) setMenuCycleId(null);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') setMenuCycleId(null);
+                  }}
                 >
-                  {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer ce programme'}
-                </button>
+                  <button
+                    type="button"
+                    className={local.boutonMenuCycle}
+                    aria-label={`Options du programme ${programme?.nom ?? v.cycle.programmeId}`}
+                    aria-expanded={menuCycleId === v.cycle.id}
+                    aria-haspopup="true"
+                    disabled={suppressionEnCours !== null}
+                    onClick={() => setMenuCycleId(menuCycleId === v.cycle.id ? null : (v.cycle.id ?? null))}
+                  >
+                    ⋯
+                  </button>
+                  {menuCycleId === v.cycle.id && (
+                    <div className={local.menuCycle}>
+                      <button
+                        type="button"
+                        className={local.actionSupprimer}
+                        onClick={() => void supprimer(v.cycle)}
+                      >
+                        Supprimer ce programme
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
               </div>
             );
