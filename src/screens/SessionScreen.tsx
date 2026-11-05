@@ -7,7 +7,7 @@ import { ExercisePanel } from '../components/ExercisePanel';
 import { SupersetCard } from '../components/SupersetCard';
 import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
-import { BLOCKS, WEEK_BLOCKS } from '../data/program';
+import { BLOCKS } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import { humanDateShort } from '../engine/calendar';
 import { fr, setSummary } from '../engine/format';
@@ -145,10 +145,10 @@ export function SessionScreen({
     dismissed: reminderHidden || !!row?.overrunReminderDismissed,
   });
   const previous = data.previousSession;
-  const previousIncomplete = previous?.status === 'done' && previous.cycleId === row?.cycleId &&
+  const previousIncomplete = !!previous && previous.cycleId === row?.cycleId &&
     row?.partialFollowupChoice === undefined &&
-    previous.incompleteExerciseIds !== undefined && previous.incompleteExerciseIds.length > 0;
-  const affected = previous?.incompleteExerciseIds ?? [];
+    data.previousIncompleteExerciseIds.length > 0;
+  const affected = data.previousIncompleteExerciseIds;
   async function chooseFollowup(choice: 'programme' | 'previous') {
     if (!row?.id || !previous?.id) return;
     if (choice === 'previous') {
@@ -158,7 +158,7 @@ export function SessionScreen({
         const past = data.previousSets.filter(s => s.exerciseId === ex.id);
         const kg = previousUniformLoad(past);
         if (canResumePreviousLoad({
-          previousBlock: WEEK_BLOCKS[previous.week as keyof typeof WEEK_BLOCKS] ?? 'unknown',
+          previousBlock: data.previousBlock ?? 'unknown',
           currentBlock: session.block, currentKg: ex.load.kg, previousKg: kg,
           previousFailed: past.some(s => s.failed),
           hasVariablePrescriptions: !!ex.ramp,
