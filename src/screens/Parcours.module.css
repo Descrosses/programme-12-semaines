@@ -465,7 +465,7 @@
 .supprimerDansCarte {
   position: absolute;
   right: 12px;
-  bottom: 24px;
+  bottom: 8px;
   z-index: 3;
   min-height: 36px;
   padding: 6px 12px;
