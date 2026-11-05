@@ -1,4 +1,5 @@
 import { useState, type CSSProperties } from 'react';
+import { shouldRemindSession, missingPrescribedSets, previousUniformLoad, hasRecordedEffort, canResumePreviousLoad } from '../engine/partialSession';
 import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
 import { Icon } from '../components/Icon';
 import { ExerciseNote } from '../components/ExerciseNote';
@@ -6,7 +7,7 @@ import { ExercisePanel } from '../components/ExercisePanel';
 import { SupersetCard } from '../components/SupersetCard';
 import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
-import { BLOCKS } from '../data/program';
+import { BLOCKS, WEEK_BLOCKS } from '../data/program';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import { humanDateShort } from '../engine/calendar';
 import { fr, setSummary } from '../engine/format';
@@ -65,6 +66,7 @@ export function SessionScreen({
 }) {
   const data = useSessionData(week, day);
   const [resetDemande, setResetDemande] = useState(false);
+  const [reminderHidden, setReminderHidden] = useState(false);
   /*
    * Quel panneau est ouvert : `{ remplace: id }` pour un remplacement,
    * `{ ajout: true }` pour un ajout, `null` pour aucun. Un seul à la fois —
@@ -102,7 +104,7 @@ export function SessionScreen({
 
   const { session, row } = data;
   const overrides = row?.loadOverrides ?? {};
-  const doneSets = Object.values(data.savedSets).flat().length;
+  const doneSets = Object.values(data.savedSets).flat().filter(hasRecordedEffort).length;
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
   /*
    * `SessionExerciseRow` satisfait `CustomRow` — elle porte en plus le
@@ -136,6 +138,42 @@ export function SessionScreen({
   const chrono = row ? clockLabel(row, now) : null;
   const reel = row ? elapsedMin(row, now) : null;
   const verdict = reel === null ? null : durationVerdict(reel, session.plannedMin);
+  const reminder = shouldRemindSession({
+    startedAt: row?.startedAt, finishedAt: row?.finishedAt, now,
+    plannedMin: session.plannedMin,
+    addedExercise: duJour.some(r => r.kind === 'add'),
+    dismissed: reminderHidden || !!row?.overrunReminderDismissed,
+  });
+  const previous = data.previousSession;
+  const previousIncomplete = previous?.status === 'done' && previous.cycleId === row?.cycleId &&
+    row?.partialFollowupChoice === undefined &&
+    previous.incompleteExerciseIds !== undefined && previous.incompleteExerciseIds.length > 0;
+  const affected = previous?.incompleteExerciseIds ?? [];
+  async function chooseFollowup(choice: 'programme' | 'previous') {
+    if (!row?.id || !previous?.id) return;
+    if (choice === 'previous') {
+      const next = { ...overrides };
+      for (const ex of session.exercises) {
+        if (!affected.includes(ex.id) || ex.load.kg === null) continue;
+        const past = data.previousSets.filter(s => s.exerciseId === ex.id);
+        const kg = previousUniformLoad(past);
+        if (canResumePreviousLoad({
+          previousBlock: WEEK_BLOCKS[previous.week as keyof typeof WEEK_BLOCKS] ?? 'unknown',
+          currentBlock: session.block, currentKg: ex.load.kg, previousKg: kg,
+          previousFailed: past.some(s => s.failed),
+          hasVariablePrescriptions: !!ex.ramp,
+        })) next[ex.id] = kg!;
+      }
+      await updateSession(row.id, { loadOverrides: next, partialFollowupChoice: choice });
+    } else {
+      await updateSession(row.id, { partialFollowupChoice: choice });
+    }
+    await data.reload();
+  }
+  async function dismissReminder() {
+    setReminderHidden(true);
+    if (row?.id) await updateSession(row.id, { overrunReminderDismissed: true });
+  }
 
   async function handleSaveSet(ex: ResolvedExercise, payload: SetPayload) {
     if (!row?.id) return;
@@ -295,9 +333,11 @@ export function SessionScreen({
      * faire perdre. En terminant la séance, on ajoute ce qui restait.
      */
     if (finishing) await commitAllDrafts(week, day);
+    const incompleteExerciseIds = finishing ? missingPrescribedSets(session.exercises, data.savedSets) : [];
     await updateSession(row.id, {
       status: finishing ? 'done' : 'planned',
       finishedAt: finishing ? Date.now() : undefined,
+      incompleteExerciseIds,
     });
     if (finishing) {
       timer.skip();
@@ -622,6 +662,26 @@ export function SessionScreen({
         />
       </section>
 
+      {reminder && (
+        <section className={styles.guidance} role="status">
+          <strong>Tout va bien ? 😊</strong>
+          <p>Ta séance dépasse de 50 % sa durée prévue. Tu es toujours à l’entraînement ?</p>
+          <div className={styles.guidanceActions}>
+            <button type="button" onClick={() => void dismissReminder()}>Je continue</button>
+            <button type="button" onClick={() => void handleFinish()}>Terminer ma séance</button>
+          </div>
+        </section>
+      )}
+      {previousIncomplete && row?.status !== 'done' && (
+        <section className={styles.guidance}>
+          <strong>Un point sur ta dernière séance 💪</strong>
+          <p>Certaines séries de la semaine précédente n’ont pas été terminées. Tu peux suivre les charges de cette semaine ou reprendre une charge réellement utilisée, seulement si elle est compatible. Les exercices non compatibles conservent leur programmation. Les prochaines progressions continueront à utiliser tes performances réelles.</p>
+          <div className={styles.guidanceActions}>
+            <button type="button" onClick={() => void chooseFollowup('programme')}>Suivre le programme</button>
+            <button type="button" onClick={() => void chooseFollowup('previous')}>Reprendre les charges compatibles</button>
+          </div>
+        </section>
+      )}
       <button
         type="button"
         className={`${styles.finish} ${row?.status === 'done' ? styles.finishDone : ''}`}
