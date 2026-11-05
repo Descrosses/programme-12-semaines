@@ -169,6 +169,37 @@ export async function resumesDesCycles(): Promise<ResumeCycle[]> {
   );
 }
 
+/**
+ * Supprime uniquement un cycle planifié, jamais un cycle avec des traces.
+ * La vérification et la suppression sont atomiques pour éviter une saisie
+ * concurrente entre le contrôle et l'effacement.
+ */
+export async function supprimerCycleNonCommence(id: number): Promise<boolean> {
+  return db.transaction(
+    'rw',
+    [db.cycles, db.settings, db.sessions, db.sets, db.readiness, db.combines,
+      db.progressPhotos, db.exerciseMedia, db.exerciseVideoLog,
+      db.exerciseNotes, db.notes, db.noteDrafts, db.sessionExercises],
+    async () => {
+      const cycle = await db.cycles.get(id);
+      if (!cycle || cycle.statut !== 'prevu') return false;
+      const settings = await db.settings.get(1);
+      if (settings?.cycleActifId === id) return false;
+
+      const tables = [
+        db.sessions, db.sets, db.readiness, db.combines,
+        db.progressPhotos, db.exerciseMedia, db.exerciseVideoLog,
+        db.exerciseNotes, db.notes, db.noteDrafts, db.sessionExercises,
+      ];
+      for (const table of tables) {
+        if (await table.where('cycleId').equals(id).count() > 0) return false;
+      }
+      await db.cycles.delete(id);
+      return true;
+    },
+  );
+}
+
 /** Les combinés d'UN cycle précis, courant ou non. */
 export async function combinesDuCycle(cycleId: number): Promise<CombineRow[]> {
   return db.combines.where('cycleId').equals(cycleId).toArray();
