@@ -400,6 +400,8 @@ export interface SettingsRow {
   /** Son et vibration en fin de repos. */
   soundEnabled: boolean;
   vibrationEnabled: boolean;
+  /** Ancienne installation : conserve l'affichage du plan nutritionnel historique. */
+  legacyNutritionPlan: boolean;
 }
 
 /**
@@ -945,6 +947,17 @@ export class ProgrammeDB extends Dexie {
 
       await tx.table('settings').put({ ...reglages, cycleActifId: choisi.id });
     });
+
+    /* v19 — conserver l'ancien plan UNIQUEMENT pour les installations existantes.
+     * Une base neuve n'a pas de ligne settings lors de sa création.
+     * Aucune mesure, repas ou performance n'est supprimé ni modifié.
+     */
+    this.version(19).upgrade(async (tx) => {
+      const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
+      if (existing && existing.legacyNutritionPlan === undefined) {
+        await tx.table('settings').update(1, { legacyNutritionPlan: true });
+      }
+    });
   }
 }
 
@@ -1062,6 +1075,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   cycleActifId: 0,
   soundEnabled: true,
   vibrationEnabled: true,
+  legacyNutritionPlan: false,
 };
 
 /**
