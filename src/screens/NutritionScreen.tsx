@@ -52,6 +52,7 @@ import {
   resetFoodOverrides,
   saveFoodOverride,
   saveMeasurement,
+  getSettingsRow,
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
 import { MacroBar } from '../components/MacroBar';
@@ -92,6 +93,7 @@ export function NutritionScreen({
   onDayKindChange: () => void;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
+  const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
   const [customs, setCustoms] = useState<LibraryFood[]>([]);
@@ -116,6 +118,8 @@ export function NutritionScreen({
   const todayIso = new Date().toISOString().slice(0, 10);
 
   async function reload() {
+    const settings = await getSettingsRow();
+    setLegacyPlan(settings.legacyNutritionPlan);
     const all = await allMeasurements();
     setRows(
       all.map((r) => ({
@@ -154,7 +158,41 @@ export function NutritionScreen({
     [customs],
   );
 
-  if (!rows) return <div className={styles.loading}>Chargement…</div>;
+  if (!rows || legacyPlan === null) return <div className={styles.loading}>Chargement…</div>;
+
+  // Une installation neuve ne reçoit pas les calories, menus ou conseils
+  // personnels de l'auteur. Les mesures restent utilisables.
+  if (!legacyPlan) {
+    return (
+      <div className={styles.screen}>
+        <ScreenHeader eyebrow="Suivi personnel" title="Nutrition"
+          subtitle="Tes objectifs restent à définir" visuel="ballon" />
+        <section className={styles.card}>
+          <h2 className={styles.cardTitle}>Aucun objectif nutritionnel configuré</h2>
+          <p className={styles.cardSub}>
+            MAJK ne définit pas tes calories ni tes macronutriments à ta place.
+            La configuration des objectifs personnels sera ajoutée séparément.
+          </p>
+        </section>
+        <section className={styles.card}>
+          <h2 className={styles.cardTitle}>Pesée du matin</h2>
+          <div className={styles.field}>
+            <Stepper label={`Poids — ${humanDate(todayIso)}`}
+              value={todayRow.weightKg} step={0.1} min={40} max={160} unit="kg"
+              tone="accent"
+              onStep={(d) => void patchToday({ weightKg: stepValue(todayRow.weightKg, d, 40, 160) })}
+              onCommit={(v) => void patchToday({ weightKg: v })} />
+          </div>
+          <div className={styles.field}>
+            <Stepper label="Tour de taille" value={todayRow.waistCm}
+              step={0.5} min={60} max={150} unit="cm" tone="accent"
+              onStep={(d) => void patchToday({ waistCm: stepValue(todayRow.waistCm, d, 60, 150) })}
+              onCommit={(v) => void patchToday({ waistCm: v })} />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   /*
    * La phase de la journée — ce que la périodisation change dans l'assiette.
