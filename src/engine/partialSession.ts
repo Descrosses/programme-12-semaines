@@ -39,7 +39,7 @@ export function previousUniformLoad(
 ): number | null {
   const performed = rows.filter(hasRecordedEffort);
   if (performed.length === 0 || performed.some(s => s.actualKg === null)) return null;
-  const kg = performed[0].actualKg;
+  const kg = performed[0]?.actualKg ?? null;
   return kg !== null && performed.every(s => s.actualKg === kg) ? kg : null;
 }
 
