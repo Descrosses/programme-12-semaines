@@ -37,6 +37,11 @@ export interface SessionRow {
   loadOverrides?: Record<string, number>;
   startedAt?: number;
   finishedAt?: number;
+  /** Rappel de dépassement acquitté, par séance. */
+  overrunReminderDismissed?: boolean;
+  /** Décision explicite à la reprise, sans changer les formules du moteur. */
+  partialFollowupChoice?: 'programme' | 'previous';
+  incompleteExerciseIds?: string[];
 }
 
 export interface SetRow {
