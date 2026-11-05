@@ -18,6 +18,7 @@ import {
   allSessionExercises,
   buildHistoryIndex,
   allSets,
+  allSessions,
   ensureSession,
   getReadiness,
   getSettingsRow,
@@ -35,6 +36,8 @@ export interface SessionData {
   row: SessionRow | null;
   /** Séries déjà enregistrées, groupées par exercice. */
   savedSets: Record<string, SetRow[]>;
+  previousSession: SessionRow | null;
+  previousSets: SetRow[];
   /**
    * Les occurrences réelles des 12 semaines, déjà construites ici pour §11.
    * L'encart « la dernière fois » lit la MÊME chose : une seule requête, une
@@ -66,12 +69,13 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const settingsRow = await getSettingsRow();
     const settings = toEngineSettings(settingsRow);
 
-    const [sets, readinessRows, readinessRow, customRows, cycle] = await Promise.all([
+    const [sets, readinessRows, readinessRow, customRows, cycle, sessions] = await Promise.all([
       allSets(),
       allReadiness(),
       getReadiness(week, day),
       allSessionExercises(),
       cycleActif(),
+      allSessions(),
     ]);
 
     /*
@@ -127,8 +131,12 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       for (const list of Object.values(savedSets)) list.sort((a, b) => a.setIndex - b.setIndex);
     }
 
+    const previousSession = sessions.find(s => s.cycleId === cycle?.id && s.week === week - 1 && s.day === day) ?? null;
+    const previousSets = previousSession?.id === undefined ? [] : sets.filter(s => s.sessionId === previousSession.id);
     setState({
       loading: false,
+      previousSession,
+      previousSets,
       session,
       row,
       savedSets,
@@ -157,6 +165,8 @@ function empty(): Omit<SessionData, 'reload'> {
     session: null,
     row: null,
     savedSets: {},
+    previousSession: null,
+    previousSets: [],
     readinessRow: null,
     readiness: null,
     baselineCm: null,
