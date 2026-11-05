@@ -25,10 +25,10 @@ describe('suppression securisee des cycles prevus', () => {
     expect(await db.cycles.get(id)).toBeUndefined();
   });
 
-  it('refuse un cycle en cours meme avec zero seance terminee', async () => {
+  it('supprime un cycle en cours vierge non actif', async () => {
     const id = await creer('en-cours');
-    expect(await supprimerCycleNonCommence(id)).toBe(false);
-    expect(await db.cycles.get(id)).toBeDefined();
+    expect(await supprimerCycleNonCommence(id)).toBe(true);
+    expect(await db.cycles.get(id)).toBeUndefined();
   });
 
   it('refuse un cycle prevu avec une seance non terminee', async () => {
@@ -55,6 +55,33 @@ describe('suppression securisee des cycles prevus', () => {
     });
     expect(await supprimerCycleNonCommence(id)).toBe(false);
     expect(await db.sets.where('cycleId').equals(id).count()).toBe(1);
+  });
+
+  it('refuse une seance incomplete dans un cycle en cours', async () => {
+    const id = await creer('en-cours');
+    await db.sessions.add({
+      cycleId: id, week: 1, day: 0, date: '2026-11-09',
+      status: 'planned', warmupChecked: [], notes: '',
+      startedAt: Date.now(),
+    });
+    expect(await supprimerCycleNonCommence(id)).toBe(false);
+    expect(await db.cycles.get(id)).toBeDefined();
+  });
+
+  it('reaffecte le cycle actif a un autre cycle en cours', async () => {
+    const autre = await creer('en-cours');
+    const id = await creer('en-cours');
+    await db.settings.put({
+      id: 1, cycleActifId: id, startDate: '2026-11-09',
+      oneRM: {}, bodyweightKg: null, bodyweightDate: '',
+      broadJumpBaselineCm: null, ciblePoidsBasKg: null,
+      ciblePoidsHautKg: null, tableauOrigine: false,
+      oneRMCalibratedAt: '', soundEnabled: true,
+      vibrationEnabled: true, legacyNutritionPlan: false,
+    });
+    expect(await supprimerCycleNonCommence(id)).toBe(true);
+    expect((await db.settings.get(1))?.cycleActifId).toBe(autre);
+    expect(await db.cycles.get(autre)).toBeDefined();
   });
 
   it('refuse la suppression du cycle pointe comme actif', async () => {
