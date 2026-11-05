@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
+import { missingPrescribedSets } from '../engine/partialSession';
 import { type ResolvedSession } from '../engine/getSession';
 import { modulePourCycle } from '../programmes/registre';
 import { readiness as computeReadiness } from '../engine/readiness';
@@ -18,6 +19,7 @@ import {
   allSessionExercises,
   buildHistoryIndex,
   allSets,
+  allSessions,
   ensureSession,
   getReadiness,
   getSettingsRow,
@@ -35,6 +37,10 @@ export interface SessionData {
   row: SessionRow | null;
   /** Séries déjà enregistrées, groupées par exercice. */
   savedSets: Record<string, SetRow[]>;
+  previousSession: SessionRow | null;
+  previousSets: SetRow[];
+  previousBlock: string | null;
+  previousIncompleteExerciseIds: string[];
   /**
    * Les occurrences réelles des 12 semaines, déjà construites ici pour §11.
    * L'encart « la dernière fois » lit la MÊME chose : une seule requête, une
@@ -66,12 +72,13 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const settingsRow = await getSettingsRow();
     const settings = toEngineSettings(settingsRow);
 
-    const [sets, readinessRows, readinessRow, customRows, cycle] = await Promise.all([
+    const [sets, readinessRows, readinessRow, customRows, cycle, sessions] = await Promise.all([
       allSets(),
       allReadiness(),
       getReadiness(week, day),
       allSessionExercises(),
       cycleActif(),
+      allSessions(),
     ]);
 
     /*
@@ -127,8 +134,25 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       for (const list of Object.values(savedSets)) list.sort((a, b) => a.setIndex - b.setIndex);
     }
 
+    const previousSession = sessions.find(s => s.cycleId === cycle?.id && s.week === week - 1 && s.day === day) ?? null;
+    const previousSets = previousSession?.id === undefined ? [] : sets.filter(s => s.sessionId === previousSession.id);
+    // Le programme du cycle fait autorité, y compris pour MASS (jamais WEEK_BLOCKS de POWER).
+    const previousPrescribed = previousSession && (previousSession.startedAt !== undefined || previousSets.length > 0)
+      ? programme.getSession(previousSession.week, previousSession.day, {
+          settings, history, readiness: null, explosiveDecline: false,
+        })
+      : null;
+    const previousSaved: Record<string, SetRow[]> = {};
+    for (const set of previousSets) (previousSaved[set.exerciseId] ??= []).push(set);
+    const previousIncompleteExerciseIds = previousPrescribed
+      ? missingPrescribedSets(previousPrescribed.exercises, previousSaved)
+      : [];
     setState({
       loading: false,
+      previousSession,
+      previousSets,
+      previousBlock: previousPrescribed?.block ?? null,
+      previousIncompleteExerciseIds,
       session,
       row,
       savedSets,
@@ -157,6 +181,10 @@ function empty(): Omit<SessionData, 'reload'> {
     session: null,
     row: null,
     savedSets: {},
+    previousSession: null,
+    previousSets: [],
+    previousBlock: null,
+    previousIncompleteExerciseIds: [],
     readinessRow: null,
     readiness: null,
     baselineCm: null,
