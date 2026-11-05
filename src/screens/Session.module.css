@@ -1745,3 +1745,10 @@
   background: rgb(75 101 132 / 55%);
   color: var(--ink);
 }
+
+/* Accompagnement discret, adapté au tactile. */
+.guidance { margin: 16px var(--pad); padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); }
+.guidance strong { display: block; margin-bottom: 8px; }
+.guidance p { margin: 0 0 12px; line-height: 1.5; }
+.guidanceActions { display: flex; flex-wrap: wrap; gap: 8px; }
+.guidanceActions button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; }
