@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { NUTRITION_TARGETS, type DayKind } from '../data/nutrition';
+import type { DayKind } from '../data/nutrition';
+import { cibleDuJour } from '../engine/cibleDuJour';
 import { WEEK_BLOCKS, blocInfo, isCombineDay } from '../data/program';
 import { modulePourCycle, nutritionChiffree } from '../programmes/registre';
 import type { ModuleProgramme } from '../programmes/types';
@@ -211,6 +212,20 @@ export function TodayScreen({
     state.rows.find((r) => r.week === week && r.day === day)?.status ?? 'planned';
 
   /*
+   * La cible du raccourci nutrition vient de la MÊME source que l'onglet :
+   * les menus quand ils sont affichés, les chiffres saisis sinon. Lire le
+   * plan en dur ici l'annonçait à des gens qui ne le voient nulle part
+   * ailleurs.
+   */
+  const cibleNutrition =
+    state.settingsRow === null
+      ? null
+      : (cibleDuJour(todayKind, {
+          menus: state.settingsRow.legacyNutritionPlan,
+          cibles: state.settingsRow.ciblesNutrition,
+        })?.cible ?? null);
+
+  /*
    * L'en-tête ne décide de rien : il reçoit un sur-titre, un titre et un
    * sous-titre déjà choisis ici, à partir du même `today` qu'avant. Les
    * quatre cas de journée sont strictement les mêmes qu'avant la refonte.
@@ -308,21 +323,23 @@ export function TodayScreen({
           <Icon name="meal" size="22px" />
         </span>
         <span className={styles.nutriText}>
-          <b>Nutrition — {NUTRITION_TARGETS[todayKind].label.toLowerCase()}</b>
+          <b>Nutrition — {todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}</b>
           <span>
             {/*
-              Les calories et les protéines sont celles de POWER 12. Un
-              programme qui ne chiffre pas son plan alimentaire renvoie vers
-              ses principes sans annoncer un objectif qu'il ne donne pas.
+              CE RACCOURCI ANNONÇAIT LES CHIFFRES DE GUILLAUME À TOUT LE MONDE.
+              Il lisait `NUTRITION_TARGETS` en dur, hors de toute condition :
+              une installation neuve, qui ne voit pourtant aucun plan dans
+              l'onglet Nutrition, se faisait annoncer ici 3 226 kcal et 190 g
+              de protéines — la diète de quelqu'un d'autre.
+              Il lit maintenant la même source que l'onglet : les menus quand
+              ils sont affichés, les cibles saisies sinon, et rien du tout
+              quand il n'y a ni l'un ni l'autre.
             */}
-            {programme !== null && !nutritionChiffree(programme) ? (
-              'Des principes, pas de calories ni de grammes'
-            ) : (
-              <>
-                {NUTRITION_TARGETS[todayKind].kcal.toLocaleString('fr-FR')} kcal ·{' '}
-                {NUTRITION_TARGETS[todayKind].proteinG} g de protéines
-              </>
-            )}
+            {programme !== null && !nutritionChiffree(programme)
+              ? 'Des principes, pas de calories ni de grammes'
+              : cibleNutrition === null
+                ? 'Pose tes cibles dans les Réglages'
+                : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal · ${String(cibleNutrition.proteinG)} g de protéines`}
           </span>
         </span>
         <span className={styles.nutriChevron} aria-hidden="true">

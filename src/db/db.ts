@@ -6,6 +6,7 @@
  */
 
 import Dexie, { type Table } from 'dexie';
+import type { CiblesNutrition } from '../data/ciblesNutrition';
 import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
 
 export type SessionStatus = 'planned' | 'done' | 'skipped';
@@ -402,6 +403,14 @@ export interface SettingsRow {
   vibrationEnabled: boolean;
   /** Ancienne installation : conserve l'affichage du plan nutritionnel historique. */
   legacyNutritionPlan: boolean;
+  /**
+   * Les cibles nutritionnelles saisies, ou `null` tant que rien n'est posé.
+   *
+   * Ne sert QUE sans menus : quand le plan historique est affiché, ce sont
+   * ses repas qui font foi, et deux vérités vaudraient moins qu'une. Voir
+   * `src/data/ciblesNutrition.ts`.
+   */
+  ciblesNutrition: CiblesNutrition | null;
 }
 
 /**
@@ -952,6 +961,17 @@ export class ProgrammeDB extends Dexie {
      * Une base neuve n'a pas de ligne settings lors de sa création.
      * Aucune mesure, repas ou performance n'est supprimé ni modifié.
      */
+    /* v20 — la place des cibles nutritionnelles saisies.
+     *
+     * Aucune valeur n'est posée, et surtout pas celles du plan de Guillaume :
+     * les recopier dans une base neuve reviendrait à prescrire ses 3 226 kcal
+     * à quelqu'un d'autre. `null` veut dire « rien n'est encore décidé », et
+     * c'est exactement l'état d'une installation neuve.
+     *
+     * Rien n'est supprimé ni modifié : la montée n'écrit pas une ligne.
+     */
+    this.version(20).stores({});
+
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
       if (existing && existing.legacyNutritionPlan === undefined) {
@@ -1076,6 +1096,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   soundEnabled: true,
   vibrationEnabled: true,
   legacyNutritionPlan: false,
+  ciblesNutrition: null,
 };
 
 /**

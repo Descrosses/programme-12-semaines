@@ -1,5 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
+import {
+  BORNES,
+  CIBLES_NUTRITION_VIERGES,
+  ECART_TOLERE,
+  ecartKcal,
+  kcalDesMacros,
+  macrosValides,
+  type CiblesMacros,
+  type CiblesNutrition,
+} from '../data/ciblesNutrition';
+import type { DayKind } from '../data/types';
 import { bandePoids } from '../engine/ciblePoids';
 import { poseMaximum } from '../engine/maxima';
 import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
@@ -588,10 +599,57 @@ export function SettingsScreen({
           </span>
         </button>
         <p className={styles.fieldHint}>
-          Coupé, l’onglet Nutrition ne garde que la pesée du matin : ni calories, ni macros, ni
-          menus. Rien n’est effacé — tes pesées, tes repas cochés et tes aliments restent en base et
+          Coupé, l’onglet Nutrition ne garde que la pesée du matin et tes cibles si tu en as posé.
+          Rien n’est effacé — tes pesées, tes repas cochés et tes aliments restent en base et
           reviennent tels quels en le rallumant.
         </p>
+      </section>
+
+      {/* ------------------------------------------------- mes cibles ---- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Mes cibles nutritionnelles</h2>
+        <p className={styles.cardSub}>
+          <b>Facultatif, et vide par défaut.</b> MAJK ne décide pas combien tu dois manger. Si tu as
+          des chiffres — d’un diététicien, d’un coach, ou les tiens — pose-les ici : l’onglet
+          Nutrition affichera tes barres de macros et l’écart du jour.
+        </p>
+        {row.legacyNutritionPlan && (
+          <p className={styles.fieldHint}>
+            {/*
+              Dire pourquoi ces champs ne servent à rien en ce moment vaut
+              mieux que de les griser sans un mot : quelqu'un qui les
+              remplirait sans comprendre croirait l'écran cassé.
+            */}
+            Ton plan nutritionnel est affiché : ce sont ses repas qui font foi, et la cible du jour
+            vient de leur somme. Ce que tu poses ici est conservé, mais ne sera utilisé que si tu
+            masques le plan.
+          </p>
+        )}
+        {(['train', 'rest'] as const).map((kind) => (
+          <CiblesDuJour
+            key={kind}
+            kind={kind}
+            valeurs={(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES)[kind]}
+            onChange={(suivantes) =>
+              void patch({
+                ciblesNutrition: {
+                  ...(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES),
+                  [kind]: suivantes,
+                } as CiblesNutrition,
+              })
+            }
+          />
+        ))}
+        {row.ciblesNutrition !== null && (
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '12px 0 0' }}
+            onClick={() => void patch({ ciblesNutrition: null })}
+          >
+            Effacer mes cibles
+          </button>
+        )}
       </section>
 
       <section className={styles.card}>
@@ -602,5 +660,77 @@ export function SettingsScreen({
         </p>
       </section>
     </div>
+  );
+}
+
+/**
+ * Les quatre nombres d'une journée.
+ *
+ * Chaque champ s'enregistre seul, dès qu'il change : une journée à moitié
+ * remplie survit à un changement d'écran, et on peut poser ses chiffres en
+ * deux fois. Tant que les quatre n'y sont pas, l'encart le dit — sans rien
+ * corriger sous les doigts.
+ */
+function CiblesDuJour({
+  kind,
+  valeurs,
+  onChange,
+}: {
+  kind: DayKind;
+  valeurs: CiblesMacros;
+  onChange: (suivantes: CiblesMacros) => void;
+}) {
+  const titre = kind === 'train' ? 'Jour d’entraînement' : 'Jour de repos';
+  const pose = (champ: keyof CiblesMacros, v: number | null) =>
+    onChange({ ...valeurs, [champ]: v });
+
+  const champs = [
+    { cle: 'kcal' as const, label: 'Calories', unite: 'kcal', pas: 50, bornes: BORNES.kcal },
+    { cle: 'proteinG' as const, label: 'Protéines', unite: 'g', pas: 5, bornes: BORNES.proteinG },
+    { cle: 'carbsG' as const, label: 'Glucides', unite: 'g', pas: 5, bornes: BORNES.carbsG },
+    { cle: 'fatG' as const, label: 'Lipides', unite: 'g', pas: 5, bornes: BORNES.fatG },
+  ];
+
+  const completes = macrosValides(valeurs);
+  const manquants = champs.filter((c) => valeurs[c.cle] === null).length;
+  const ecart = completes ? ecartKcal(valeurs) : 0;
+
+  return (
+    <>
+      <h3 className={styles.sectionTitle}>{titre}</h3>
+      {champs.map((c) => (
+        <div key={c.cle} className={styles.field}>
+          <Stepper
+            label={`${c.label} · ${c.unite}`}
+            value={valeurs[c.cle]}
+            step={c.pas}
+            min={c.bornes.min}
+            max={c.bornes.max}
+            emptyLabel="à poser"
+            onStep={(d) => pose(c.cle, stepValue(valeurs[c.cle], d, c.bornes.min, c.bornes.max))}
+            onCommit={(v) => pose(c.cle, v)}
+          />
+        </div>
+      ))}
+      {manquants > 0 && (
+        <p className={styles.fieldHint}>
+          {manquants === 4
+            ? 'Rien de posé pour cette journée.'
+            : `Il manque ${String(manquants)} valeur${manquants > 1 ? 's' : ''} : les quatre sont nécessaires pour afficher une cible.`}
+        </p>
+      )}
+      {completes && ecart > ECART_TOLERE && (
+        <p className={styles.fieldHint} style={{ color: 'var(--accent-ink)' }}>
+          {/*
+            On SIGNALE l'écart, on ne réécrit rien. Ces chiffres peuvent venir
+            d'un diététicien et ne pas tomber juste à l'unité ; les corriger
+            sous les doigts serait pire que de les laisser.
+          */}
+          Tes macros pèsent {kcalDesMacros(valeurs).toLocaleString('fr-FR')} kcal, pour une cible
+          annoncée à {valeurs.kcal.toLocaleString('fr-FR')}. Vérifie, ou garde tel quel si c’est
+          voulu.
+        </p>
+      )}
+    </>
   );
 }

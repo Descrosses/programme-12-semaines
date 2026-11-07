@@ -6,6 +6,16 @@
  * Tout ce qui décide se trouve dans `src/engine/`.
  */
 
+/**
+ * Jour d'entraînement ou jour de repos — les deux seuls paliers du plan.
+ *
+ * Déclaré ICI et non dans `nutrition.ts` : les CIBLES nutritionnelles ne
+ * doivent dépendre d'aucun menu, et `nutrition.ts` porte les neuf prises de
+ * Guillaume. Une dépendance dans ce sens aurait ramené tout le plan derrière
+ * quatre nombres.
+ */
+export type DayKind = 'train' | 'rest';
+
 // ---------------------------------------------------------------------------
 // Vocabulaire
 // ---------------------------------------------------------------------------
