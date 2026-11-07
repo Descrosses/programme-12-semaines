@@ -844,13 +844,13 @@
 }
 
 .summary::after {
-  content: "+";
+  content: '+';
   font-size: 1.375rem;
   color: var(--ink-3);
 }
 
 .details[open] .summary::after {
-  content: "−";
+  content: '−';
 }
 
 .detailsBody {
@@ -1560,4 +1560,63 @@
 .noteText {
   color: var(--ink);
   line-height: 1.45;
+}
+
+/* ---------------------------------------------------------- la fiche ---- */
+
+/*
+ * Le texte à copier s'affiche en chasse fixe et se coupe où il veut : c'est
+ * une ligne technique, pas une phrase. Un débordement horizontal ici ferait
+ * défiler tout l'écran de côté — le genre de défaut qu'on ne remarque qu'une
+ * fois sur le téléphone.
+ */
+.fichePre {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ficheZone {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  resize: vertical;
+}
+
+.ficheZone:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* L'aperçu avant d'appliquer : encadré, pour qu'on voie que c'est un état. */
+.fichePreview {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.fichePreview p {
+  margin: 0 0 8px;
+}
+
+.fichePreview p:last-child {
+  margin-bottom: 0;
 }

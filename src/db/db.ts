@@ -411,6 +411,15 @@ export interface SettingsRow {
    * `src/data/ciblesNutrition.ts`.
    */
   ciblesNutrition: CiblesNutrition | null;
+  /**
+   * Les aliments que la personne a déclarés aimer, par leur identifiant de
+   * catalogue. `null` tant que rien n'a été importé.
+   *
+   * Ne prescrit rien et n'interdit rien : sert à remonter ces aliments-là en
+   * tête du sélecteur, pour ne pas faire défiler cinquante lignes à chaque
+   * saisie. Tout le catalogue reste accessible.
+   */
+  alimentsPreferes: string[] | null;
 }
 
 /**
@@ -972,6 +981,10 @@ export class ProgrammeDB extends Dexie {
      */
     this.version(20).stores({});
 
+    /* v21 — la place des aliments préférés. Comme la v20 : aucune valeur
+     * posée, aucune ligne écrite. */
+    this.version(21).stores({});
+
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
       if (existing && existing.legacyNutritionPlan === undefined) {
@@ -1097,6 +1110,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   vibrationEnabled: true,
   legacyNutritionPlan: false,
   ciblesNutrition: null,
+  alimentsPreferes: null,
 };
 
 /**
