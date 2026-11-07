@@ -20,34 +20,33 @@
  * bibliothèques qui divergeraient seraient la pire façon de s'en apercevoir.
  */
 
-import { useState } from "react";
-import {
-  FOOD_LIBRARY,
-  stateLabel,
-  type LibraryFood,
-} from "../data/foodLibrary";
-import { extraMacros } from "../engine/nutrition";
-import { fr } from "../engine/format";
-import { FoodPicker } from "./FoodSwapSheet";
-import { Stepper, stepValue } from "./Stepper";
-import styles from "../screens/Screens.module.css";
+import { useState } from 'react';
+import { FOOD_LIBRARY, stateLabel, type LibraryFood } from '../data/foodLibrary';
+import { extraMacros } from '../engine/nutrition';
+import { fr } from '../engine/format';
+import { FoodPicker } from './FoodSwapSheet';
+import { Stepper, stepValue } from './Stepper';
+import styles from '../screens/Screens.module.css';
 
 /** Pas, minimum et maximum du curseur, selon ce que l'aliment se compte. */
 function reglage(food: LibraryFood) {
-  return food.unit === "unité"
+  return food.unit === 'unité'
     ? { step: 1, min: 1, max: 20, depart: 1, unite: food.unit }
-    : { step: 10, min: 5, max: 1000, depart: 100, unite: "g" };
+    : { step: 10, min: 5, max: 1000, depart: 100, unite: 'g' };
 }
 
 export function AddFoodSheet({
   mealName,
   customs,
+  preferes,
   onAdd,
   onCreateCustom,
   onClose,
 }: {
   mealName: string;
   customs: LibraryFood[];
+  /** Les aliments déclarés par la personne, remontés en tête du sélecteur. */
+  preferes?: readonly string[];
   /*
    * L'aliment ENTIER remonte, pas son seul identifiant : c'est sa composition
    * du jour qui sera recopiée dans la ligne, et c'est ici qu'on la tient.
@@ -76,23 +75,12 @@ export function AddFoodSheet({
   const apercu = choisi ? extraMacros({ ...choisi, qty }) : null;
 
   return (
-    <div
-      className={styles.sheet}
-      role="dialog"
-      aria-label={`Ajouter un aliment à ${mealName}`}
-    >
+    <div className={styles.sheet} role="dialog" aria-label={`Ajouter un aliment à ${mealName}`}>
       <div className={styles.sheetHead}>
         <h3 className={styles.sheetTitle}>
-          {choisi
-            ? `Combien de ${choisi.label.toLowerCase()} ?`
-            : `Ajouter à ${mealName}`}
+          {choisi ? `Combien de ${choisi.label.toLowerCase()} ?` : `Ajouter à ${mealName}`}
         </h3>
-        <button
-          type="button"
-          className={styles.sheetClose}
-          onClick={onClose}
-          aria-label="Fermer"
-        >
+        <button type="button" className={styles.sheetClose} onClick={onClose} aria-label="Fermer">
           ×
         </button>
       </div>
@@ -100,6 +88,7 @@ export function AddFoodSheet({
       {!choisi ? (
         <FoodPicker
           customs={customs}
+          preferes={preferes}
           // Pas de famille évidente pour un ajout : on ouvre sur les fruits,
           // de loin ce qui s'ajoute le plus souvent hors plan.
           categorieParDefaut="fruit"
@@ -113,16 +102,13 @@ export function AddFoodSheet({
         />
       ) : (
         <div className={styles.foodEdit}>
-          <p className={styles.fieldHint} style={{ margin: "0 0 12px" }}>
-            {Math.round(choisi.kcal)} kcal{" "}
-            {choisi.per === 1 ? "par unité" : "pour 100 g"}
-            {stateLabel(choisi.referenceState)
-              ? ` · ${stateLabel(choisi.referenceState)}`
-              : ""}
+          <p className={styles.fieldHint} style={{ margin: '0 0 12px' }}>
+            {Math.round(choisi.kcal)} kcal {choisi.per === 1 ? 'par unité' : 'pour 100 g'}
+            {stateLabel(choisi.referenceState) ? ` · ${stateLabel(choisi.referenceState)}` : ''}
           </p>
 
           <Stepper
-            label={choisi.unit === "unité" ? "Quantité" : "Quantité"}
+            label={choisi.unit === 'unité' ? 'Quantité' : 'Quantité'}
             value={qty}
             step={r!.step}
             min={r!.min}
@@ -134,10 +120,9 @@ export function AddFoodSheet({
           />
 
           {apercu && (
-            <p className={styles.fieldHint} style={{ margin: "12px 0 0" }}>
-              Ça ajoute <b>{Math.round(apercu.kcal)} kcal</b> — G{" "}
-              {Math.round(apercu.carbsG)} g · P {Math.round(apercu.proteinG)} g
-              · L {Math.round(apercu.fatG)} g.
+            <p className={styles.fieldHint} style={{ margin: '12px 0 0' }}>
+              Ça ajoute <b>{Math.round(apercu.kcal)} kcal</b> — G {Math.round(apercu.carbsG)} g · P{' '}
+              {Math.round(apercu.proteinG)} g · L {Math.round(apercu.fatG)} g.
             </p>
           )}
 
@@ -152,11 +137,7 @@ export function AddFoodSheet({
             >
               Ajouter {fr(qty)} {r!.unite}
             </button>
-            <button
-              type="button"
-              className={styles.secondary}
-              onClick={() => setChoisi(null)}
-            >
+            <button type="button" className={styles.secondary} onClick={() => setChoisi(null)}>
               Changer d’aliment
             </button>
           </div>

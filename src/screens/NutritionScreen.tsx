@@ -106,6 +106,7 @@ export function NutritionScreen({
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
   const [cibles, setCibles] = useState<CiblesNutrition | null>(null);
+  const [preferes, setPreferes] = useState<readonly string[]>([]);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
   const [customs, setCustoms] = useState<LibraryFood[]>([]);
@@ -133,6 +134,7 @@ export function NutritionScreen({
     const settings = await getSettingsRow();
     setLegacyPlan(settings.legacyNutritionPlan);
     setCibles(settings.ciblesNutrition);
+    setPreferes(settings.alimentsPreferes ?? []);
     const all = await allMeasurements();
     setRows(
       all.map((r) => ({
@@ -311,6 +313,7 @@ export function NutritionScreen({
           <AddFoodSheet
             mealName={ajoutPour.name}
             customs={customs}
+            preferes={preferes}
             onAdd={(food, qty) =>
               void (async () => {
                 await addExtra(todayIso, MEAL_LIBRE, qty, food);
@@ -677,6 +680,7 @@ export function NutritionScreen({
         <AddFoodSheet
           mealName={ajoutPour.name}
           customs={customs}
+          preferes={preferes}
           onAdd={(food, qty) =>
             void (async () => {
               await addExtra(todayIso, ajoutPour.id, qty, food);
