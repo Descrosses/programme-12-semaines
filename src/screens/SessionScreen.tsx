@@ -525,7 +525,7 @@ export function SessionScreen({
       )}
 
       {blocs.map((bloc) =>
-        bloc.kind === 'paire' ? (
+        bloc.kind === 'circuit' ? (
           /*
            * Deux mouvements menés ensemble : un seul encadré, les séries dans
            * l'ordre où elles se font. Les fiches des deux exercices — remarque,
@@ -534,17 +534,12 @@ export function SessionScreen({
            */
           <SupersetCard
             key={`superset-${bloc.id}`}
-            paire={bloc}
+            circuit={bloc}
             savedSets={data.savedSets}
             overrides={overrides}
             timer={timer}
             onSaveSet={handleSaveSet}
-            fiches={
-              <>
-                {carte(bloc.a, true)}
-                {carte(bloc.b, true)}
-              </>
-            }
+            fiches={<>{bloc.exs.map((ex) => carte(ex, true))}</>}
           />
         ) : (
           carte(bloc.ex, false)

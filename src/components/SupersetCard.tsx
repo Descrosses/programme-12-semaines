@@ -1,14 +1,15 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { Icon } from './Icon';
 import type { SetRow } from '../db/db';
 import type { ResolvedExercise } from '../engine/getSession';
 import {
   avancement,
   consigneRythme,
+  lettreStation,
   titreRythme,
   tourActif,
   travailCourt,
-  type Paire,
+  type Circuit,
 } from '../engine/superset';
 import { restLabel } from '../engine/format';
 import type { RestTimer } from '../state/useRestTimer';
@@ -16,7 +17,12 @@ import { SetEntry, type SetPayload } from './ExerciseCard';
 import styles from '../screens/Session.module.css';
 
 /**
- * Deux mouvements menés ensemble, dans un seul encadré.
+ * Plusieurs mouvements menés ensemble, dans un seul encadré.
+ *
+ * Deux reste le cas ordinaire — POWER 12 et MASS 4 n'ont que des paires. Mais
+ * la carte compte ses stations au lieu de les nommer `a` et `b` : un circuit
+ * de trois s'affiche A, B, C sans rien de plus, et c'est ce que réclament les
+ * programmes en circuit qu'on importera.
  *
  * ── Ce que ça change concrètement ──────────────────────────────────────────
  *
@@ -40,20 +46,20 @@ import styles from '../screens/Session.module.css';
  * l'écran les six champs qu'on cherchait justement à ranger.
  */
 export function SupersetCard({
-  paire,
+  circuit,
   savedSets,
   overrides,
   timer,
   onSaveSet,
   fiches,
 }: {
-  paire: Paire;
+  circuit: Circuit;
   savedSets: Record<string, SetRow[]>;
   overrides: Record<string, number>;
   timer: RestTimer;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   /**
-   * Les deux fiches d'exercice, rendues sous les tours.
+   * Les fiches d'exercice, une par station, rendues sous les tours.
    *
    * Passées en `ReactNode` plutôt que construites ici : elles portent la
    * remarque, le suivi de douleur, le remplacement et les consignes, c'est-à-
@@ -62,29 +68,40 @@ export function SupersetCard({
    */
   fiches: ReactNode;
 }) {
-  const { a, b, tours, rythme } = paire;
+  const { exs, tours, rythme } = circuit;
+  const titre = titreRythme(rythme, exs.length);
 
   const serie = (ex: ResolvedExercise, i: number) =>
     (savedSets[ex.id] ?? []).find((s) => s.setIndex === i) ?? null;
-  const tourFait = (i: number) => serie(a, i) !== null && serie(b, i) !== null;
+  /*
+   * Un tour est fait quand TOUTES ses stations le sont. Une station qui a
+   * moins de séries que le tour en cours — un deload qui n'allège qu'un des
+   * mouvements — ne doit pas retenir le tour : elle n'a rien à y saisir.
+   */
+  const tourFait = (i: number) => exs.every((ex) => i >= ex.sets || serie(ex, i) !== null);
   const actif = tourActif(tours, tourFait);
-  const { faites, total } = avancement(paire, (ex) => (savedSets[ex.id] ?? []).length);
+  const { faites, total } = avancement(circuit, (ex) => (savedSets[ex.id] ?? []).length);
   const fini = faites >= total;
 
   return (
     <section
       className={`${styles.superset} ${fini ? styles.supersetDone : ''}`}
-      aria-label={`${titreRythme(rythme)} : ${a.name} et ${b.name}`}
+      aria-label={`${titre} : ${exs.map((e) => e.name).join(', ')}`}
     >
       <div className={styles.supersetHead}>
-        <span className={styles.supersetBadge}>{titreRythme(rythme).toUpperCase()}</span>
+        <span className={styles.supersetBadge}>{titre.toUpperCase()}</span>
         <h3 className={styles.supersetTitle}>
-          {a.name} <span className={styles.supersetPlus}>+</span> {b.name}
+          {exs.map((ex, i) => (
+            <span key={ex.id}>
+              {i > 0 && <span className={styles.supersetPlus}> + </span>}
+              {ex.name}
+            </span>
+          ))}
         </h3>
         <div className={`${styles.supersetFormat} tnum`}>
-          {tours} tour{tours > 1 ? 's' : ''} · {travailCourt(a.work)} et {travailCourt(b.work)}
+          {tours} tour{tours > 1 ? 's' : ''} · {exs.map((e) => travailCourt(e.work)).join(' · ')}
         </div>
-        <p className={styles.supersetConsigne}>{consigneRythme(paire)}</p>
+        <p className={styles.supersetConsigne}>{consigneRythme(circuit)}</p>
         <div className={`${styles.supersetCount} tnum`}>
           {faites} / {total} séries
         </div>
@@ -111,45 +128,42 @@ export function SupersetCard({
               )}
             </div>
 
-            <Station
-              ex={a}
-              lettre="A"
-              index={i}
-              overrides={overrides}
-              saved={serie(a, i)}
-              timer={timer}
-              onSaveSet={onSaveSet}
-            />
-
-            {/*
-              Ce qui sépare les deux stations, dit en toutes lettres. Sur un
-              enchaînement, c'est « aucun repos » ; sur une alternance, c'est le
-              repos du programme. Les deux sont des consignes, pas de la
-              décoration.
-            */}
-            <div className={styles.tourChain}>
-              <span />
-              {rythme === 'enchaine' ? (
-                'ENCHAÎNE, SANS REPOS'
-              ) : (
-                <>
-                  <Icon name="arrow-down" size="15px" />
-                  {restLabel(paire.restSec)}
-                  <Icon name="arrow-down" size="15px" />
-                </>
-              )}
-              <span />
-            </div>
-
-            <Station
-              ex={b}
-              lettre="B"
-              index={i}
-              overrides={overrides}
-              saved={serie(b, i)}
-              timer={timer}
-              onSaveSet={onSaveSet}
-            />
+            {exs.map((ex, station) => (
+              <Fragment key={ex.id}>
+                {/*
+                  Ce qui sépare deux stations, dit en toutes lettres, et répété
+                  entre CHAQUE paire de stations — sur un circuit de trois, on
+                  ne lit pas la consigne une fois pour deux passages. Sur un
+                  enchaînement c'est « aucun repos » ; sur une alternance c'est
+                  le repos du programme. Les deux sont des consignes, pas de la
+                  décoration.
+                */}
+                {station > 0 && (
+                  <div className={styles.tourChain}>
+                    <span />
+                    {rythme === 'enchaine' ? (
+                      'ENCHAÎNE, SANS REPOS'
+                    ) : (
+                      <>
+                        <Icon name="arrow-down" size="15px" />
+                        {restLabel(circuit.restSec)}
+                        <Icon name="arrow-down" size="15px" />
+                      </>
+                    )}
+                    <span />
+                  </div>
+                )}
+                <Station
+                  ex={ex}
+                  lettre={lettreStation(station)}
+                  index={i}
+                  overrides={overrides}
+                  saved={serie(ex, i)}
+                  timer={timer}
+                  onSaveSet={onSaveSet}
+                />
+              </Fragment>
+            ))}
           </div>
         );
       })}
@@ -179,7 +193,8 @@ function Station({
   onSaveSet,
 }: {
   ex: ResolvedExercise;
-  lettre: 'A' | 'B';
+  /** A, B, C… — fournie par `lettreStation`, pas devinée ici. */
+  lettre: string;
   index: number;
   overrides: Record<string, number>;
   saved: SetRow | null;
