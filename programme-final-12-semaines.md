@@ -246,8 +246,9 @@ Pas de gros travail excentrique jambes.
 | Landmine Rotation | 3 × 5/côté | 2 × 4/côté |
 | Barbell Offset Hold | 3 × 25 s/côté | 2 × 15 s/côté |
 | Zercher March | 2 × 12 m | 2 × 10 m, −20 % |
+| Copenhagen Plank dynamique | 3 × 8/côté | 2 × 6/côté |
 
-Les quatre dernières lignes n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry et le Suitcase Carry, eux, ne figurent plus au programme à partir de la semaine 5 — leurs lignes ne valent plus que pour la semaine 4.
+Le Copenhagen Plank est repris et déplacé au **vendredi** : il doublonnait avec le Suitcase Carry du samedi, les deux résistant à la flexion latérale. Les quatre lignes qui le précèdent n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry et le Suitcase Carry, eux, ne figurent plus au programme à partir de la semaine 5 — leurs lignes ne valent plus que pour la semaine 4.
 
 Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
 Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).

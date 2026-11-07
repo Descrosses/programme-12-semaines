@@ -70,7 +70,8 @@ const LIST: ExerciseDef[] = [
       'Une série peut être facile musculairement et mal tolérée par l’adducteur. Le RPE ne décide pas seul.',
       'Si la gêne augmente pendant la séance : réduis la charge, ou arrête l’exercice. Ne force pas à travers.',
     ],
-    painWatch: 'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
+    painWatch:
+      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   def({
     id: 'bulgarian-split-squat',
@@ -85,7 +86,8 @@ const LIST: ExerciseDef[] = [
       'Adducteur gauche : reste dans l’amplitude confortable, surveille la stabilité du bassin.',
       'Ne cherche pas la douleur. Si elle redevient importante, réduis la charge ou suspends l’exercice temporairement.',
     ],
-    painWatch: 'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
+    painWatch:
+      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   def({
     id: 'rdl',
@@ -199,9 +201,13 @@ const LIST: ExerciseDef[] = [
    *
    * ── Pourquoi il existe ────────────────────────────────────────────────────
    *
-   * Depuis la suspension du Copenhagen Plank, l'anti-flexion latérale ne
-   * repose plus que sur le Suitcase Carry du samedi. Une fonction, un jour,
-   * septième exercice d'une séance de 90 minutes.
+   * Il est né de la suspension du Copenhagen Plank : l'anti-flexion latérale
+   * ne reposait plus que sur le Suitcase Carry du samedi — une fonction, un
+   * jour, septième exercice d'une séance de 90 minutes.
+   *
+   * Le Copenhagen est revenu depuis, mais le VENDREDI. Les deux ne se
+   * croisent donc jamais dans la même séance, et celui-ci garde sa raison
+   * d'être propre : voir juste en dessous pourquoi ce n'est pas un doublon.
    *
    * ── Pourquoi lui et pas un second porté ──────────────────────────────────
    *
@@ -300,8 +306,7 @@ const LIST: ExerciseDef[] = [
     measure: 'kg',
     intent:
       'Extension explosive hanches-genoux-chevilles, barre proche du corps, tirage jusqu’à hauteur de poitrine environ. Priorité à la vitesse, jamais à la charge.',
-    progressionRule:
-      '+2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.',
+    progressionRule: '+2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.',
     altBasicFit: 'Aucune nécessaire : une barre olympique et des disques suffisent.',
     cues: [
       'Erreur à éviter : tirer avec les bras avant l’extension complète des hanches.',
@@ -429,20 +434,25 @@ const LIST: ExerciseDef[] = [
     role: 'core',
     intent: 'Pied supérieur sur banc, monte et descends le bassin.',
     /*
-     * Suspendu, pas supprimé. L'exercice met l'adducteur en tension maximale,
-     * c'est précisément ce qu'il entraîne — et c'est précisément ce qui fait
-     * mal aujourd'hui. Rien ne le remplace : le samedi garde le Suitcase
-     * Carry, et les six autres fonctions du tronc sont déjà couvertes cinq
-     * jours sur sept. Y substituer un exercice reviendrait à ajouter du
-     * volume pour combler un vide qui n'en est pas un.
+     * REPRIS après suspension, et déplacé du samedi au vendredi.
      *
-     * Pas de semaine de reprise écrite ici : elle dépend des symptômes et,
-     * idéalement, de l'avis d'un kiné du sport.
+     * Il avait été suspendu pour une douleur à l'adducteur gauche : l'exercice
+     * met cet adducteur en tension maximale, c'est ce qu'il entraîne, et
+     * c'était ce qui faisait mal. La suspension est levée sur décision de
+     * Guillaume, douleur disparue.
+     *
+     * Il ne revient PAS à sa place d'origine. Le samedi porte déjà le Suitcase
+     * Carry, et les deux résistent à la flexion latérale : les faire le même
+     * jour, c'est faire deux fois le même travail en croyant en faire deux.
+     * Le vendredi n'en avait aucune — le Farmer Carry est bilatéral, le Dead
+     * Bug résiste à l'extension.
+     *
+     * Le vendredi est aussi le meilleur jour pour l'adducteur : deux jours
+     * après le squat du lundi, un avant le deadlift du samedi.
      */
-    suspended: {
-      reason:
-        'Douleur adducteur gauche. Reprise non planifiée : elle dépendra de l’évolution des symptômes et de l’avis d’un kiné du sport.',
-    },
+    cues: [
+      'Sécurité : à la moindre gêne à l’aine, arrête la série. Une douleur articulaire qui dure plus de 48 h veut dire que l’exercice ressort du programme.',
+    ],
   }),
   def({
     id: 'zercher-march',
@@ -674,7 +684,8 @@ const LIST: ExerciseDef[] = [
     fn: 'test',
     role: 'test',
     measure: 'kg',
-    intent: 'Progression selon la vitesse de barre. Si la barre ralentit franchement, c’est le max.',
+    intent:
+      'Progression selon la vitesse de barre. Si la barre ralentit franchement, c’est le max.',
   }),
   def({
     id: 'test-weighted-pullup-1rm',
