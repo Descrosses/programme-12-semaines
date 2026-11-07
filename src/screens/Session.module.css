@@ -295,6 +295,28 @@
 }
 
 /* Le nom du mouvement, dans la langue des autres titres de carte. */
+/*
+ * Le nom du mouvement et sa fiche sur la MÊME ligne.
+ *
+ * La fiche était en bas de la carte, après les séries : au moment où on se
+ * demande comment se placer, elle était à deux écrans de défilement. Elle
+ * remonte à côté du nom, là où l'œil arrive déjà. `flex-wrap` la fait
+ * passer dessous quand le nom prend toute la largeur — « Développé militaire
+ * Smith » ne doit pas être écrasé pour lui faire de la place.
+ */
+.exTitreLigne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.exTitreLigne .exName {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .exName {
   color: var(--ink);
   font-family: var(--font-cond);
@@ -1439,32 +1461,66 @@
  * Le vert de la version terminée reste : lui marque un fait acquis, pas une
  * action à faire.
  */
+/*
+ * L'ENCADRÉ NÉON — et il vaut pour tous les programmes.
+ *
+ * Le filet de gauche ne suffisait pas : à mi-défilement, deux mouvements
+ * menés ensemble se lisaient encore comme deux exercices de suite. Le bloc
+ * est maintenant cerné sur ses quatre côtés, avec un halo qui le détache du
+ * fond — le même geste visuel que le modèle.
+ *
+ * Tout part de `--accent`, le rouge d'action de chaque thème, et rien n'est
+ * écrit en dur : un programme ajouté demain hérite de son encadré sans une
+ * ligne de CSS de plus, dans sa propre teinte.
+ */
 .superset {
-  margin: 0 0 16px;
-  padding: 0 0 4px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
+  margin: var(--gap) var(--pad);
   background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
+    0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+  overflow: hidden;
 }
 
+/* Fini, le bloc passe au vert : un fait acquis, plus une action à faire. */
 .supersetDone {
-  border-left-color: var(--vert);
+  border-color: var(--vert);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--vert) 12%, transparent),
+    0 6px 18px color-mix(in srgb, var(--vert) 16%, transparent);
 }
 
+/*
+ * L'en-tête est lavé d'accent. Sur le fond clair de MASS c'est le rose pâle
+ * du modèle ; sur les thèmes sombres, le même mélange donne un fond teinté
+ * au lieu d'un blanc qui éblouirait en salle.
+ */
 .supersetHead {
   padding: 14px var(--pad) 10px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.supersetDone .supersetHead {
+  background: color-mix(in srgb, var(--vert) 8%, var(--surface));
 }
 
 .supersetBadge {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  border-radius: 999px;
   background: var(--accent);
   color: var(--ink-on-accent);
   font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.supersetDone .supersetBadge {
+  background: var(--vert);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--vert) 55%, transparent);
 }
 
 .supersetTitle {
@@ -1574,12 +1630,13 @@
  * repos » ou « 45 s » — pas un ornement : elle dit ce qu'on fait entre les
  * deux, et c'est précisément ce qui se perdait avec deux cartes séparées.
  */
+/* Ce qui sépare les deux stations, à l'accent du thème, comme le modèle. */
 .tourChain {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 6px var(--pad);
-  color: var(--accent-ink);
+  color: var(--accent-ink-fort);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -1588,7 +1645,7 @@
 .tourChain span {
   flex: 1;
   height: 1px;
-  background: var(--line);
+  background: color-mix(in srgb, var(--accent-ink-fort) 35%, var(--line));
 }
 
 /* Les deux fiches d'exercice, sous les tours. */

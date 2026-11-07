@@ -81,6 +81,8 @@
    * bon choix (bouton blanc du bandeau de mise à jour).
    */
   --accent-ink: #ff7a85;
+  /* Accent posé sur --surface : voir la note de --accent-ink-fort plus bas. */
+  --accent-ink-fort: #ff7a85;
 
   /* ------------------------------------------------------ feu tricolore (§4) */
   /*
@@ -221,6 +223,7 @@
   --accent-deep: #a8141d;
   --accent-dim: #3a1418;
   --accent-ink: #ef5058;
+  --accent-ink-fort: #ef5058;
 
   --vert: #2fae63;
   --orange: #e08a2b;
@@ -295,6 +298,16 @@
   --accent-dim: #f4c7c8;
   /* Le marine des en-têtes : c'est lui qui porte traits et pictogrammes. */
   --accent-ink: #1d2b3a;
+  /*
+   * --accent-ink-fort : l'accent écrit SUR --surface, et pas sur le fond.
+   *
+   * Sur les thèmes sombres c'est le même rouge éclairci que --accent-ink.
+   * Sur le fond blanc de MASS, --accent-ink est volontairement un bleu nuit
+   * — il doit tenir sur le fond gris de l'écran. Mais sur le blanc d'une
+   * carte, le rouge plein tient 4,87:1, au-dessus des 4,5:1 exigés : c'est
+   * lui qu'on écrit, et c'est ce que montre le modèle.
+   */
+  --accent-ink-fort: #d62f33;
 
   /* Les couleurs d'état restent lisibles sur clair, donc assombries. */
   --vert: #1e8a4c;

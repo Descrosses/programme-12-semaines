@@ -158,7 +158,19 @@ export function ExerciseCard({
   return (
     <article className={`${styles.exercise} ${allDone ? styles.exerciseDone : ''}`}>
       <div className={styles.exHead}>
-        <div className={styles.exName}>{ex.name}</div>
+        <div className={styles.exTitreLigne}>
+          <div className={styles.exName}>{ex.name}</div>
+          {/*
+            La planche d'exécution, au plus près du nom du mouvement.
+
+            Elle était tout en bas de la carte, après les séries : « comment
+            on se place, déjà ? » se pose les mains sur la barre, et la
+            réponse demandait deux écrans de défilement. Un mouvement sans
+            planche — ceux de POWER 12 — ne rend rien, et la ligne reste
+            celle du nom seul.
+          */}
+          <FicheMouvement def={ex.def} variante="entete" />
+        </div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
 
         <div className={styles.exSub}>
@@ -421,17 +433,6 @@ export function ExerciseCard({
           </ol>
         </div>
       )}
-
-      {/*
-        La planche d'exécution, quand le mouvement en a une.
-
-        Posée AVANT le bloc de consignes et hors de lui : les consignes se
-        lisent une fois, la fiche se rouvre à chaque fois qu'on ne sait plus
-        comment se placer. L'enfouir derrière un chevron à déplier ajouterait
-        un appui à ce geste-là. Les mouvements de POWER 12 n'ont pas de
-        planche, et le composant ne rend alors rien.
-      */}
-      <FicheMouvement def={ex.def} />
 
       {/*
         L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une
