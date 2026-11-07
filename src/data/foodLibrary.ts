@@ -25,12 +25,7 @@
  * plan ; il ne change pas ici.
  */
 
-import {
-  PRODUITS,
-  type FoodCategory,
-  type FoodProduct,
-  type ReferenceState,
-} from './nutrition';
+import { PRODUITS, type FoodCategory, type FoodProduct, type ReferenceState } from './nutrition';
 
 /** Un aliment de la bibliothèque : un produit, plus son identifiant. */
 export interface LibraryFood extends FoodProduct {
@@ -48,49 +43,408 @@ export interface LibraryFood extends FoodProduct {
  */
 const ALTERNATIVES: Record<string, FoodProduct> = {
   // ------------------------------------------------------------- PROTÉINES --
-  dinde: { label: 'Dinde cuite', unit: 'g', per: 100, kcal: 150, proteinG: 30, carbsG: 0, fatG: 3, referenceState: 'cuit', category: 'proteine' },
-  steakHache5: { label: 'Steak haché 5 % cuit', unit: 'g', per: 100, kcal: 170, proteinG: 26, carbsG: 0, fatG: 7, referenceState: 'cuit', category: 'proteine' },
-  boeuf: { label: 'Bœuf maigre cuit', unit: 'g', per: 100, kcal: 200, proteinG: 29, carbsG: 0, fatG: 9, referenceState: 'cuit', category: 'proteine' },
-  poissonBlanc: { label: 'Poisson blanc cuit', unit: 'g', per: 100, kcal: 100, proteinG: 22, carbsG: 0, fatG: 1.2, referenceState: 'cuit', category: 'proteine', hint: 'Cabillaud, colin, lieu.' },
-  thon: { label: 'Thon au naturel', unit: 'g', per: 100, kcal: 110, proteinG: 25, carbsG: 0, fatG: 1, referenceState: 'na', category: 'proteine', hint: 'Égoutté.' },
-  jambonBlanc: { label: 'Jambon blanc', unit: 'g', per: 100, kcal: 110, proteinG: 20, carbsG: 1, fatG: 3, referenceState: 'na', category: 'proteine' },
+  dinde: {
+    label: 'Dinde cuite',
+    unit: 'g',
+    per: 100,
+    kcal: 150,
+    proteinG: 30,
+    carbsG: 0,
+    fatG: 3,
+    referenceState: 'cuit',
+    category: 'proteine',
+  },
+  steakHache5: {
+    label: 'Steak haché 5 % cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 170,
+    proteinG: 26,
+    carbsG: 0,
+    fatG: 7,
+    referenceState: 'cuit',
+    category: 'proteine',
+  },
+  boeuf: {
+    label: 'Bœuf maigre cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 200,
+    proteinG: 29,
+    carbsG: 0,
+    fatG: 9,
+    referenceState: 'cuit',
+    category: 'proteine',
+  },
+  poissonBlanc: {
+    label: 'Poisson blanc cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 100,
+    proteinG: 22,
+    carbsG: 0,
+    fatG: 1.2,
+    referenceState: 'cuit',
+    category: 'proteine',
+    hint: 'Cabillaud, colin, lieu.',
+  },
+  thon: {
+    label: 'Thon au naturel',
+    unit: 'g',
+    per: 100,
+    kcal: 110,
+    proteinG: 25,
+    carbsG: 0,
+    fatG: 1,
+    referenceState: 'na',
+    category: 'proteine',
+    hint: 'Égoutté.',
+  },
+  jambonBlanc: {
+    label: 'Jambon blanc',
+    unit: 'g',
+    per: 100,
+    kcal: 110,
+    proteinG: 20,
+    carbsG: 1,
+    fatG: 3,
+    referenceState: 'na',
+    category: 'proteine',
+  },
 
   // -------------------------------------------------------------- FÉCULENTS --
-  rizCru: { label: 'Riz cru', unit: 'g', per: 100, kcal: 350, proteinG: 7, carbsG: 77, fatG: 0.9, referenceState: 'cru', category: 'feculent', hint: 'Pèse-le cru AVANT cuisson, sinon prends « Riz cuit ».' },
-  patesCrues: { label: 'Pâtes crues', unit: 'g', per: 100, kcal: 360, proteinG: 12.5, carbsG: 71, fatG: 1.5, referenceState: 'cru', category: 'feculent' },
-  pommesDeTerre: { label: 'Pommes de terre cuites', unit: 'g', per: 100, kcal: 85, proteinG: 2, carbsG: 18, fatG: 0.1, referenceState: 'cuit', category: 'feculent' },
-  pataeDouce: { label: 'Patate douce cuite', unit: 'g', per: 100, kcal: 90, proteinG: 1.6, carbsG: 20, fatG: 0.1, referenceState: 'cuit', category: 'feculent' },
-  avoine: { label: 'Flocons d’avoine nature', unit: 'g', per: 100, kcal: 380, proteinG: 13, carbsG: 60, fatG: 7, referenceState: 'cru', category: 'feculent' },
-  semoule: { label: 'Semoule cuite', unit: 'g', per: 100, kcal: 120, proteinG: 4, carbsG: 25, fatG: 0.2, referenceState: 'cuit', category: 'feculent' },
-  quinoa: { label: 'Quinoa cuit', unit: 'g', per: 100, kcal: 120, proteinG: 4.4, carbsG: 21, fatG: 1.9, referenceState: 'cuit', category: 'feculent' },
+  rizCru: {
+    label: 'Riz cru',
+    unit: 'g',
+    per: 100,
+    kcal: 350,
+    proteinG: 7,
+    carbsG: 77,
+    fatG: 0.9,
+    referenceState: 'cru',
+    category: 'feculent',
+    hint: 'Pèse-le cru AVANT cuisson, sinon prends « Riz cuit ».',
+  },
+  patesCrues: {
+    label: 'Pâtes crues',
+    unit: 'g',
+    per: 100,
+    kcal: 360,
+    proteinG: 12.5,
+    carbsG: 71,
+    fatG: 1.5,
+    referenceState: 'cru',
+    category: 'feculent',
+  },
+  pommesDeTerre: {
+    label: 'Pommes de terre cuites',
+    unit: 'g',
+    per: 100,
+    kcal: 85,
+    proteinG: 2,
+    carbsG: 18,
+    fatG: 0.1,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
+  pataeDouce: {
+    label: 'Patate douce cuite',
+    unit: 'g',
+    per: 100,
+    kcal: 90,
+    proteinG: 1.6,
+    carbsG: 20,
+    fatG: 0.1,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
+  avoine: {
+    label: 'Flocons d’avoine nature',
+    unit: 'g',
+    per: 100,
+    kcal: 380,
+    proteinG: 13,
+    carbsG: 60,
+    fatG: 7,
+    referenceState: 'cru',
+    category: 'feculent',
+  },
+  semoule: {
+    label: 'Semoule cuite',
+    unit: 'g',
+    per: 100,
+    kcal: 120,
+    proteinG: 4,
+    carbsG: 25,
+    fatG: 0.2,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
+  quinoa: {
+    label: 'Quinoa cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 120,
+    proteinG: 4.4,
+    carbsG: 21,
+    fatG: 1.9,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
 
   // ----------------------------------------------------------- LÉGUMINEUSES --
-  lentilles: { label: 'Lentilles cuites', unit: 'g', per: 100, kcal: 115, proteinG: 9, carbsG: 17, fatG: 0.4, referenceState: 'cuit', category: 'legumineuse' },
-  haricotsRouges: { label: 'Haricots rouges cuits', unit: 'g', per: 100, kcal: 125, proteinG: 8.5, carbsG: 20, fatG: 0.5, referenceState: 'cuit', category: 'legumineuse' },
-  poisChiches: { label: 'Pois chiches cuits', unit: 'g', per: 100, kcal: 140, proteinG: 8, carbsG: 21, fatG: 2.5, referenceState: 'cuit', category: 'legumineuse' },
+  lentilles: {
+    label: 'Lentilles cuites',
+    unit: 'g',
+    per: 100,
+    kcal: 115,
+    proteinG: 9,
+    carbsG: 17,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legumineuse',
+  },
+  haricotsRouges: {
+    label: 'Haricots rouges cuits',
+    unit: 'g',
+    per: 100,
+    kcal: 125,
+    proteinG: 8.5,
+    carbsG: 20,
+    fatG: 0.5,
+    referenceState: 'cuit',
+    category: 'legumineuse',
+  },
+  poisChiches: {
+    label: 'Pois chiches cuits',
+    unit: 'g',
+    per: 100,
+    kcal: 140,
+    proteinG: 8,
+    carbsG: 21,
+    fatG: 2.5,
+    referenceState: 'cuit',
+    category: 'legumineuse',
+  },
 
   // ---------------------------------------------------------------- LÉGUMES --
-  haricotsVerts: { label: 'Haricots verts cuits', unit: 'g', per: 100, kcal: 30, proteinG: 1.8, carbsG: 4, fatG: 0.2, referenceState: 'cuit', category: 'legume' },
-  carottes: { label: 'Carottes cuites', unit: 'g', per: 100, kcal: 35, proteinG: 0.8, carbsG: 7, fatG: 0.2, referenceState: 'cuit', category: 'legume' },
-  courgettes: { label: 'Courgettes cuites', unit: 'g', per: 100, kcal: 20, proteinG: 1.2, carbsG: 2.5, fatG: 0.2, referenceState: 'cuit', category: 'legume' },
-  epinards: { label: 'Épinards cuits', unit: 'g', per: 100, kcal: 25, proteinG: 2.9, carbsG: 1.5, fatG: 0.4, referenceState: 'cuit', category: 'legume' },
-  salade: { label: 'Salade verte', unit: 'g', per: 100, kcal: 15, proteinG: 1.2, carbsG: 1.5, fatG: 0.2, referenceState: 'na', category: 'legume' },
+  haricotsVerts: {
+    label: 'Haricots verts cuits',
+    unit: 'g',
+    per: 100,
+    kcal: 30,
+    proteinG: 1.8,
+    carbsG: 4,
+    fatG: 0.2,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
+  carottes: {
+    label: 'Carottes cuites',
+    unit: 'g',
+    per: 100,
+    kcal: 35,
+    proteinG: 0.8,
+    carbsG: 7,
+    fatG: 0.2,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
+  courgettes: {
+    label: 'Courgettes cuites',
+    unit: 'g',
+    per: 100,
+    kcal: 20,
+    proteinG: 1.2,
+    carbsG: 2.5,
+    fatG: 0.2,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
+  epinards: {
+    label: 'Épinards cuits',
+    unit: 'g',
+    per: 100,
+    kcal: 25,
+    proteinG: 2.9,
+    carbsG: 1.5,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
+  salade: {
+    label: 'Salade verte',
+    unit: 'g',
+    per: 100,
+    kcal: 15,
+    proteinG: 1.2,
+    carbsG: 1.5,
+    fatG: 0.2,
+    referenceState: 'na',
+    category: 'legume',
+  },
+  /*
+   * Poivrons et tomates viennent du questionnaire « plan alimentaire », qui
+   * les donne CRUS — et c'est ainsi qu'on les mange. Les deux passent le
+   * contrôle 4/4/9 : poivrons 30,7 kcal calculées pour 31 annoncées ; tomates
+   * 21 pour 18, l'écart tenant aux fibres comptées dans les glucides, soit
+   * 3 kcal sur un aliment qui en pèse 18.
+   */
+  poivrons: {
+    label: 'Poivrons crus',
+    unit: 'g',
+    per: 100,
+    kcal: 31,
+    proteinG: 1,
+    carbsG: 6,
+    fatG: 0.3,
+    referenceState: 'cru',
+    category: 'legume',
+  },
+  tomates: {
+    label: 'Tomates crues',
+    unit: 'g',
+    per: 100,
+    kcal: 18,
+    proteinG: 0.9,
+    carbsG: 3.9,
+    fatG: 0.2,
+    referenceState: 'cru',
+    category: 'legume',
+  },
 
   // ----------------------------------------------------------------- FRUITS --
-  orange: { label: 'Orange', unit: 'unité', per: 1, kcal: 70, proteinG: 1.3, carbsG: 15, fatG: 0.2, referenceState: 'na', category: 'fruit' },
-  kiwi: { label: 'Kiwi', unit: 'unité', per: 1, kcal: 45, proteinG: 0.9, carbsG: 9, fatG: 0.4, referenceState: 'na', category: 'fruit' },
-  raisin: { label: 'Raisin', unit: 'g', per: 100, kcal: 70, proteinG: 0.6, carbsG: 16, fatG: 0.2, referenceState: 'na', category: 'fruit' },
-  ananas: { label: 'Ananas', unit: 'g', per: 100, kcal: 50, proteinG: 0.5, carbsG: 12, fatG: 0.1, referenceState: 'na', category: 'fruit' },
+  orange: {
+    label: 'Orange',
+    unit: 'unité',
+    per: 1,
+    kcal: 70,
+    proteinG: 1.3,
+    carbsG: 15,
+    fatG: 0.2,
+    referenceState: 'na',
+    category: 'fruit',
+  },
+  kiwi: {
+    label: 'Kiwi',
+    unit: 'unité',
+    per: 1,
+    kcal: 45,
+    proteinG: 0.9,
+    carbsG: 9,
+    fatG: 0.4,
+    referenceState: 'na',
+    category: 'fruit',
+  },
+  raisin: {
+    label: 'Raisin',
+    unit: 'g',
+    per: 100,
+    kcal: 70,
+    proteinG: 0.6,
+    carbsG: 16,
+    fatG: 0.2,
+    referenceState: 'na',
+    category: 'fruit',
+  },
+  ananas: {
+    label: 'Ananas',
+    unit: 'g',
+    per: 100,
+    kcal: 50,
+    proteinG: 0.5,
+    carbsG: 12,
+    fatG: 0.1,
+    referenceState: 'na',
+    category: 'fruit',
+  },
 
   // --------------------------------------------------------------- LAITIERS --
-  fromageBlanc: { label: 'Fromage blanc 3 %', unit: 'g', per: 100, kcal: 75, proteinG: 7.5, carbsG: 4.5, fatG: 3, referenceState: 'na', category: 'laitier' },
-  yaourtGrec: { label: 'Yaourt grec', unit: 'g', per: 100, kcal: 110, proteinG: 9, carbsG: 4, fatG: 6, referenceState: 'na', category: 'laitier' },
-  whey: { label: 'Whey', unit: 'g', per: 100, kcal: 400, proteinG: 80, carbsG: 8, fatG: 5, referenceState: 'na', category: 'proteine' },
+  fromageBlanc: {
+    label: 'Fromage blanc 3 %',
+    unit: 'g',
+    per: 100,
+    kcal: 75,
+    proteinG: 7.5,
+    carbsG: 4.5,
+    fatG: 3,
+    referenceState: 'na',
+    category: 'laitier',
+  },
+  yaourtGrec: {
+    label: 'Yaourt grec',
+    unit: 'g',
+    per: 100,
+    kcal: 110,
+    proteinG: 9,
+    carbsG: 4,
+    fatG: 6,
+    referenceState: 'na',
+    category: 'laitier',
+  },
+  whey: {
+    label: 'Whey',
+    unit: 'g',
+    per: 100,
+    kcal: 400,
+    proteinG: 80,
+    carbsG: 8,
+    fatG: 5,
+    referenceState: 'na',
+    category: 'proteine',
+  },
 
   // ------------------------------------------------------------------- GRAS --
-  beurreCacahuete: { label: 'Beurre de cacahuète', unit: 'g', per: 100, kcal: 600, proteinG: 25, carbsG: 12, fatG: 50, referenceState: 'na', category: 'gras' },
-  noix: { label: 'Noix', unit: 'g', per: 100, kcal: 650, proteinG: 15, carbsG: 7, fatG: 62, referenceState: 'na', category: 'gras' },
-  avocat: { label: 'Avocat', unit: 'g', per: 100, kcal: 160, proteinG: 2, carbsG: 2, fatG: 15, referenceState: 'na', category: 'gras' },
+  beurreCacahuete: {
+    label: 'Beurre de cacahuète',
+    unit: 'g',
+    per: 100,
+    kcal: 600,
+    proteinG: 25,
+    carbsG: 12,
+    fatG: 50,
+    referenceState: 'na',
+    category: 'gras',
+  },
+  noix: {
+    label: 'Noix',
+    unit: 'g',
+    per: 100,
+    kcal: 650,
+    proteinG: 15,
+    carbsG: 7,
+    fatG: 62,
+    referenceState: 'na',
+    category: 'gras',
+  },
+  avocat: {
+    label: 'Avocat',
+    unit: 'g',
+    per: 100,
+    kcal: 160,
+    proteinG: 2,
+    carbsG: 2,
+    fatG: 15,
+    referenceState: 'na',
+    category: 'gras',
+  },
+  /*
+   * Rangé dans « gras » faute de mieux : il porte 43 g de lipides, mais aussi
+   * 46 g de glucides. Aucune des huit familles ne décrit vraiment une
+   * confiserie, et inventer une famille pour un seul aliment coûterait plus
+   * que cette approximation. 602 kcal calculées pour 598 annoncées.
+   */
+  chocolatNoir: {
+    label: 'Chocolat noir ≥ 70 %',
+    unit: 'g',
+    per: 100,
+    kcal: 598,
+    proteinG: 7.8,
+    carbsG: 46,
+    fatG: 43,
+    referenceState: 'na',
+    category: 'gras',
+  },
 };
 
 /** Tous les aliments livrés : ceux du plan, puis les alternatives. */
@@ -123,22 +477,20 @@ export function stateLabel(state: ReferenceState): string | null {
  * Sans accent ni casse : « pates » doit trouver « Pâtes cuites », parce que
  * personne ne tape les accents d'une main en cuisine.
  */
-export function searchFoods(
-  query: string,
-  customs: LibraryFood[] = [],
-  limit = 40,
-): LibraryFood[] {
+export function searchFoods(query: string, customs: LibraryFood[] = [], limit = 40): LibraryFood[] {
   const tous = [...Object.values(FOOD_LIBRARY), ...customs];
   const q = normalise(query);
   if (q === '') return tous.slice(0, limit);
-  return tous
-    .map((f) => ({ f, score: score(normalise(f.label), q) }))
-    .filter((x) => x.score > 0)
-    /* Un libellé qui COMMENCE par la recherche passe devant : taper « pou »
+  return (
+    tous
+      .map((f) => ({ f, score: score(normalise(f.label), q) }))
+      .filter((x) => x.score > 0)
+      /* Un libellé qui COMMENCE par la recherche passe devant : taper « pou »
        doit proposer le poulet avant le beurre de cacahuète. */
-    .sort((a, b) => b.score - a.score || a.f.label.localeCompare(b.f.label))
-    .slice(0, limit)
-    .map((x) => x.f);
+      .sort((a, b) => b.score - a.score || a.f.label.localeCompare(b.f.label))
+      .slice(0, limit)
+      .map((x) => x.f)
+  );
 }
 
 function score(label: string, q: string): number {
@@ -148,11 +500,7 @@ function score(label: string, q: string): number {
 }
 
 function normalise(t: string): string {
-  return t
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .trim();
+  return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
 }
 
 /** Les aliments d'une famille, triés par libellé. */
