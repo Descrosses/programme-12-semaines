@@ -1,5 +1,17 @@
 /**
- * Deux mouvements dans un seul encadré — et le rythme qui va avec.
+ * Plusieurs mouvements dans un seul encadré — et le rythme qui va avec.
+ *
+ * ── Deux, puis N ───────────────────────────────────────────────────────────
+ *
+ * Ce module ne connaissait que la PAIRE : station A, station B, écrit en dur.
+ * POWER 12 et MASS 4 n'ont jamais eu besoin d'autre chose. Mais un programme
+ * apporté par quelqu'un d'autre, lui, compte ses circuits par trois — « trois
+ * exercices, la séquence répétée deux fois en dix minutes » est la forme la
+ * plus courante du renforcement en circuit.
+ *
+ * Le bloc porte donc une LISTE de mouvements. Deux reste le cas ordinaire,
+ * trois ou plus devient possible, et rien dans les deux programmes existants
+ * ne change : un circuit de deux se comporte exactement comme la paire d'hier.
  *
  * ── Ce que ça résout ───────────────────────────────────────────────────────
  *
@@ -39,17 +51,17 @@ import type { Work } from '../data/types';
 
 export type Rythme = 'enchaine' | 'alterne';
 
-export interface Paire {
-  kind: 'paire';
+export interface Circuit {
+  kind: 'circuit';
   id: string;
-  a: ResolvedExercise;
-  b: ResolvedExercise;
+  /** Les stations, dans l'ordre où elles se font. Deux au minimum. */
+  exs: readonly ResolvedExercise[];
   rythme: Rythme;
-  /** Nombre de tours : le plus grand des deux nombres de séries. */
+  /** Nombre de tours : le plus grand des nombres de séries des stations. */
   tours: number;
   /**
-   * Le repos qui compte. En enchaîné, celui du SECOND — c'est lui qui suit le
-   * duo. En alterné, le repos de chaque station.
+   * Le repos qui compte. En enchaîné, celui de la DERNIÈRE station — c'est
+   * lui qui suit le circuit. En alterné, le repos entre deux stations.
    */
   restSec: number;
 }
@@ -59,15 +71,24 @@ export interface Solo {
   ex: ResolvedExercise;
 }
 
-export type Bloc = Paire | Solo;
+export type Bloc = Circuit | Solo;
 
 /**
- * Le rythme de la paire, lu dans les repos de la trame.
+ * Le rythme du circuit, lu dans les repos de la trame.
  *
- * Premier créneau sans repos → on enchaîne. Sinon, on alterne.
+ * Toutes les stations sauf la dernière sans repos → on enchaîne : rien ne
+ * sépare les mouvements, et le repos vient après le circuit entier. Sinon on
+ * alterne, et le repos écrit entre les stations est celui qu'on respecte.
+ *
+ * Pour deux mouvements, c'est mot pour mot la règle d'avant.
  */
-export function rythmeDe(a: ResolvedExercise, b: ResolvedExercise): Rythme {
-  return a.restSec === 0 && b.restSec > 0 ? 'enchaine' : 'alterne';
+export function rythmeDe(exs: readonly ResolvedExercise[]): Rythme {
+  const derniere = exs[exs.length - 1];
+  if (derniere === undefined) return 'alterne';
+  const avant = exs.slice(0, -1);
+  return avant.length > 0 && avant.every((e) => e.restSec === 0) && derniere.restSec > 0
+    ? 'enchaine'
+    : 'alterne';
 }
 
 /**
@@ -87,20 +108,24 @@ export function groupSupersets(exercises: ResolvedExercise[]): Bloc[] {
   const blocs: Bloc[] = [];
   for (let i = 0; i < exercises.length; i++) {
     const ex = exercises[i]!;
-    const suivant = exercises[i + 1];
-    if (ex.superset && suivant?.superset === ex.superset) {
-      const rythme = rythmeDe(ex, suivant);
-      blocs.push({
-        kind: 'paire',
-        id: ex.superset,
-        a: ex,
-        b: suivant,
-        rythme,
-        tours: Math.max(ex.sets, suivant.sets),
-        restSec: rythme === 'enchaine' ? suivant.restSec : ex.restSec,
-      });
-      i++; // le voisin est déjà consommé
-      continue;
+    if (ex.superset) {
+      // Toute la suite qui porte le MÊME identifiant, pas seulement le voisin.
+      let fin = i + 1;
+      while (exercises[fin]?.superset === ex.superset) fin++;
+      const exs = exercises.slice(i, fin);
+      if (exs.length >= 2) {
+        const rythme = rythmeDe(exs);
+        blocs.push({
+          kind: 'circuit',
+          id: ex.superset,
+          exs,
+          rythme,
+          tours: Math.max(...exs.map((e) => e.sets)),
+          restSec: rythme === 'enchaine' ? exs[exs.length - 1]!.restSec : ex.restSec,
+        });
+        i = fin - 1; // les stations suivantes sont déjà consommées
+        continue;
+      }
     }
     blocs.push({ kind: 'solo', ex });
   }
@@ -118,20 +143,42 @@ export function travailCourt(work: Work): string {
   return workLabel(1, work).replace(/^1 × /, '');
 }
 
-/** « Alternance » / « Superset » — le mot qui coiffe l'encadré. */
-export function titreRythme(rythme: Rythme): string {
-  return rythme === 'enchaine' ? 'Superset' : 'Alternance';
-}
+/** « deux », « trois »… pour écrire la consigne en toutes lettres. */
+const NOMBRES = ['', '', 'deux', 'trois', 'quatre', 'cinq', 'six'] as const;
 
-/** La phrase qui dit comment mener le bloc, sans répéter le programme. */
-export function consigneRythme(p: Paire): string {
-  return p.rythme === 'enchaine'
-    ? `Les deux enchaînés, sans repos. Repos ${restLabel(p.restSec)} après le duo.`
-    : `Une série de chaque, ${restLabel(p.restSec)} entre les stations.`;
+export function enToutesLettres(n: number): string {
+  return NOMBRES[n] ?? String(n);
 }
 
 /**
- * Le tour en cours : le premier dont les DEUX mouvements ne sont pas validés.
+ * « Alternance » / « Superset » / « Circuit » — le mot qui coiffe l'encadré.
+ *
+ * Au-delà de deux mouvements enchaînés, « superset » devient faux : le mot
+ * dit deux. C'est « circuit » que les programmes écrivent, et c'est celui que
+ * la personne cherchera des yeux sur sa feuille.
+ */
+export function titreRythme(rythme: Rythme, stations = 2): string {
+  if (rythme === 'alterne') return 'Alternance';
+  return stations > 2 ? 'Circuit' : 'Superset';
+}
+
+/** La phrase qui dit comment mener le bloc, sans répéter le programme. */
+export function consigneRythme(c: Circuit): string {
+  const n = c.exs.length;
+  return c.rythme === 'enchaine'
+    ? `Les ${enToutesLettres(n)} enchaînés, sans repos. Repos ${restLabel(c.restSec)} après le ${
+        n > 2 ? 'circuit' : 'duo'
+      }.`
+    : `Une série de chaque, ${restLabel(c.restSec)} entre les stations.`;
+}
+
+/** La lettre d'une station : A, B, C… Au-delà de Z, le rang en chiffres. */
+export function lettreStation(index: number): string {
+  return index < 26 ? String.fromCharCode(65 + index) : String(index + 1);
+}
+
+/**
+ * Le tour en cours : le premier dont les mouvements ne sont PAS tous validés.
  *
  * C'est lui qu'on ouvre, et lui seul : trois tours dépliés en même temps
  * remettraient à l'écran les six champs qu'on cherchait à ranger.
@@ -150,11 +197,11 @@ export function tourActif(tours: number, faits: (tour: number) => boolean): numb
  * comme nul découragerait sans raison.
  */
 export function avancement(
-  p: Paire,
+  c: Circuit,
   valides: (ex: ResolvedExercise) => number,
 ): { faites: number; total: number } {
   return {
-    faites: Math.min(valides(p.a), p.a.sets) + Math.min(valides(p.b), p.b.sets),
-    total: p.a.sets + p.b.sets,
+    faites: c.exs.reduce((n, ex) => n + Math.min(valides(ex), ex.sets), 0),
+    total: c.exs.reduce((n, ex) => n + ex.sets, 0),
   };
 }
