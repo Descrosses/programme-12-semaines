@@ -11,7 +11,7 @@ import {
   type CiblesNutrition,
 } from '../data/ciblesNutrition';
 import type { DayKind } from '../data/types';
-import { genererFiche, lireFiche, type LectureFiche } from '../engine/fiche';
+import { genererFiche, lireFiche, MARQUEUR, type LectureFiche } from '../engine/fiche';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
 import { bandePoids } from '../engine/ciblePoids';
 import { poseMaximum } from '../engine/maxima';
@@ -656,6 +656,7 @@ export function SettingsScreen({
 
       {/* ----------------------------------------------------- la fiche -- */}
       <CarteFiche row={row} patch={patch} />
+      <CarteFichePour />
 
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Gestion des données</h2>
@@ -890,6 +891,130 @@ function CarteFiche({
             </button>
           )}
         </div>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Préparer la fiche de QUELQU'UN D'AUTRE.
+ *
+ * ── Pourquoi une carte séparée ────────────────────────────────────────────
+ *
+ * « Copier ma fiche », juste au-dessus, lit les réglages de celui qui tient
+ * le téléphone. Pour envoyer 2 100 kcal à quelqu'un, il aurait fallu écraser
+ * ses propres chiffres, copier, puis les remettre — et un oubli au milieu, et
+ * on s'entraîne pendant des semaines sur la diète d'un autre.
+ *
+ * Ce formulaire ne touche À RIEN. Pas de `patch`, pas de base : tout vit dans
+ * l'état du composant et disparaît quand on quitte l'écran. C'est voulu — ce
+ * sont les données de santé de quelqu'un d'autre, elles n'ont aucune raison
+ * de rester sur ce téléphone une fois le message envoyé.
+ *
+ * ── Ce qu'il ne fait pas ──────────────────────────────────────────────────
+ *
+ * Il ne calcule rien. Le poids, la taille, l'objectif se lisent dans le
+ * questionnaire ; les huit nombres se décident, ils ne se déduisent pas.
+ */
+function CarteFichePour() {
+  const [cibles, setCibles] = useState<CiblesNutrition>(CIBLES_NUTRITION_VIERGES);
+  const [collage, setCollage] = useState('');
+  const [copie, setCopie] = useState(false);
+
+  // Les aliments se lisent dans ce qu'on colle : le même analyseur que pour
+  // une fiche reçue, donc les deux dialectes d'identifiants sont acceptés.
+  const lu = collage.trim() === '' ? null : lireFiche(collage);
+  const aliments = lu?.aliments ?? [];
+
+  const fiche = genererFiche({ cibles, aliments });
+  const prete = fiche.includes('=');
+
+  return (
+    <section className={styles.card}>
+      <h2 className={styles.cardTitle}>Préparer une fiche pour quelqu’un</h2>
+      <p className={styles.cardSub}>
+        Pour un client. <b>Rien n’est enregistré ici</b> — ni dans tes réglages, ni en base. Tu
+        remplis, tu copies, tu envoies, et l’écran oublie tout.
+      </p>
+      <p className={styles.fieldHint}>
+        MAJK ne calcule pas ses calories. Son poids, sa taille et son objectif sont dans son
+        questionnaire : c’est toi qui lis, et toi qui décides.
+      </p>
+
+      {(['train', 'rest'] as const).map((kind) => (
+        <CiblesDuJour
+          key={kind}
+          kind={kind}
+          valeurs={cibles[kind]}
+          onChange={(suivantes) => setCibles({ ...cibles, [kind]: suivantes })}
+        />
+      ))}
+
+      <h3 className={styles.sectionTitle}>Ses aliments (facultatif)</h3>
+      <textarea
+        className={styles.ficheZone}
+        value={collage}
+        onChange={(e) => {
+          setCollage(e.target.value);
+          setCopie(false);
+        }}
+        placeholder={`Colle son message. La ligne ${MARQUEUR} y suffit.`}
+        rows={3}
+      />
+      {lu !== null && (
+        <p className={styles.fieldHint}>
+          {/*
+            Distinguer « pas de ligne MAJK1 » de « ligne lue, aucun aliment
+            connu » : le premier cas se corrige en recollant le bon message,
+            le second en complétant le catalogue. Un seul message pour les
+            deux renverrait Guillaume chercher la mauvaise cause.
+          */}
+          {!lu.trouvee
+            ? `Pas de ligne ${MARQUEUR} dans ce texte : c’est elle qui porte les aliments.`
+            : aliments.length > 0
+              ? `${String(aliments.length)} aliment${aliments.length > 1 ? 's' : ''} reconnu${aliments.length > 1 ? 's' : ''}.`
+              : 'Ligne lue, mais aucun aliment reconnu.'}
+          {lu.inconnus.length > 0 && ` Non reconnus : ${lu.inconnus.join(', ')}.`}
+        </p>
+      )}
+
+      {prete ? (
+        <>
+          <pre className={styles.fichePre}>{fiche}</pre>
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '10px 0 0' }}
+            onClick={() =>
+              void (async () => {
+                try {
+                  await navigator.clipboard.writeText(fiche);
+                  setCopie(true);
+                } catch {
+                  setCopie(false);
+                }
+              })()
+            }
+          >
+            {copie ? 'Copié ✓' : 'Copier sa fiche'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '10px 0 0' }}
+            onClick={() => {
+              setCibles(CIBLES_NUTRITION_VIERGES);
+              setCollage('');
+              setCopie(false);
+            }}
+          >
+            Vider, pour la personne suivante
+          </button>
+        </>
+      ) : (
+        <p className={styles.fieldHint}>
+          Il faut les quatre valeurs d’au moins une des deux journées pour produire une fiche.
+        </p>
       )}
     </section>
   );
