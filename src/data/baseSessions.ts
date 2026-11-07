@@ -112,7 +112,13 @@ const MERCREDI: SessionBlueprint = {
 const VENDREDI: SessionBlueprint = {
   day: 4,
   title: 'Total Body Power',
-  durationLabel: '50-95 min',
+  /*
+   * 100 et non 95 depuis l'arrivée du Copenhagen Plank : la séance la plus
+   * chargée des douze semaines (S9, bloc puissance) atteint 99 minutes.
+   * L'étiquette dit ce que la séance fait — la raccourcir en la mentant
+   * n'aurait trompé que celui qui la lit avant de partir à la salle.
+   */
+  durationLabel: '50-100 min',
   intensity: 'RAPIDE',
   warmup: 'lower',
   readinessTest: true,
@@ -153,6 +159,16 @@ const VENDREDI: SessionBlueprint = {
     s('explosive-cable-row', 3, reps(5), autoreg(undefined, 1, 'cable'), rpe(6), 75),
     s('farmer-carry', 4, meters(25), autoreg(undefined, 2, 'dbPair'), null, 90),
     s('dead-bug-cable', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 45),
+    /*
+     * Copenhagen Plank — venu du samedi, où il doublonnait avec le Suitcase
+     * Carry sur la flexion latérale.
+     *
+     * Le vendredi n'en avait aucune : le Farmer Carry est bilatéral, donc
+     * symétrique, et le Dead Bug résiste à l'extension. Il ferme la séance,
+     * après le travail chargé — un exercice qui met l'adducteur en tension
+     * maximale n'a rien à faire avant le Push Press ou le Speed Squat.
+     */
+    s('copenhagen-plank', 3, reps(8, true), noLoad(), null, 60),
   ],
 };
 
@@ -171,7 +187,16 @@ const SAMEDI: SessionBlueprint = {
     s('hip-thrust', 4, reps(8), autoreg(undefined, 2.5, 'barbell'), rpe(8), 90),
     s('nordic-curl', 3, reps(5), bodyweight(), null, 120),
     s('single-leg-rdl', 3, reps(8, true), autoreg(undefined, 2, 'dbSingle'), null, 60),
-    s('copenhagen-plank', 3, reps(8, true), noLoad(), null, 60),
+    /*
+     * Le Copenhagen Plank était ICI, juste au-dessus du Suitcase Carry. Il est
+     * parti au vendredi, et ce n'est pas un détail de rangement : les deux
+     * résistent à la FLEXION LATÉRALE, et les faire le même jour, c'est faire
+     * deux fois le même travail en croyant en faire deux.
+     *
+     * Le vendredi est aussi le meilleur jour pour l'adducteur, qui l'avait
+     * fait suspendre : deux jours après le squat du lundi, un avant le
+     * deadlift d'aujourd'hui — la plus large fenêtre de la semaine.
+     */
     s('suitcase-carry', 3, meters(30, true), autoreg(undefined, 2, 'dbSingle'), null, 60),
   ],
 };

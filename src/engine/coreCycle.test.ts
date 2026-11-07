@@ -16,7 +16,6 @@
 import { describe, expect, it } from 'vitest';
 import { getSession, type ResolvedExercise } from './getSession';
 import { EMPTY_CONTEXT, type SessionContext } from './types';
-import { readiness } from './readiness';
 import { setSummary } from './format';
 import { EXERCISES } from '../data/exercises';
 import { DELOAD_CORE } from '../data/blockRules';
@@ -244,45 +243,103 @@ describe('le deload touche enfin le tronc et les portés', () => {
   });
 });
 
-describe('Copenhagen Plank — suspendu, pas supprimé', () => {
-  it('il ne figure dans aucune séance, quelle que soit la semaine', () => {
+describe('Copenhagen Plank — repris, et déplacé', () => {
+  /*
+   * Il a été suspendu pour une douleur à l'adducteur gauche, puis repris sur
+   * décision de Guillaume. Il ne revient PAS à sa place d'origine.
+   */
+  it('n’est plus suspendu', () => {
+    expect(EXERCISES['copenhagen-plank']!.suspended).toBeUndefined();
+  });
+
+  it('est au vendredi, toutes les semaines d’entraînement', () => {
+    for (const w of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+      expect(ids(session(w, 4).exercises), `S${w}`).toContain('copenhagen-plank');
+    }
+  });
+
+  it('a QUITTÉ le samedi, où il doublonnait avec le Suitcase Carry', () => {
+    // Les deux résistent à la flexion latérale. C'est tout l'objet du
+    // déplacement : les faire le même jour, c'est faire deux fois le même
+    // travail en croyant en faire deux.
+    for (const w of [1, 3, 5, 9]) {
+      expect(ids(session(w, 5).exercises), `S${w}`).not.toContain('copenhagen-plank');
+    }
+  });
+
+  it('le deload de la semaine 8 l’allège comme les autres', () => {
+    const ex = session(8, 4).exercises.find((e) => e.id === 'copenhagen-plank');
+    expect(ex?.sets).toBe(2);
+  });
+
+  it('la règle du bloc puissance l’a suivi au vendredi', () => {
+    // Une règle qui désigne un exercice absent de la trame du jour ne plante
+    // pas : elle ne fait rien, en silence.
+    const ex = session(9, 4).exercises.find((e) => e.id === 'copenhagen-plank');
+    expect(ex?.sets).toBe(3);
+    expect(ex?.work).toMatchObject({ kind: 'reps', reps: 5, perSide: true });
+  });
+
+  it('porte une consigne d’arrêt à la gêne — c’est lui qui avait fait mal', () => {
+    expect(EXERCISES['copenhagen-plank']!.cues!.join(' ')).toMatch(/gêne à l’aine/i);
+  });
+});
+
+/*
+ * LA RÈGLE DE GUILLAUME : jamais deux exercices du tronc de la MÊME FAMILLE
+ * le même jour.
+ *
+ * Elle ne compte pas les exercices, elle compte les familles. Trois exercices
+ * de tronc dans une séance ne posent aucun problème s'ils travaillent trois
+ * choses différentes ; deux en posent un s'ils travaillent la même.
+ *
+ * Les familles ci-dessous sont celles que les fiches du catalogue écrivent
+ * elles-mêmes — « Anti-extension. » pour le Dead Bug, « Anti-rotation
+ * dynamique » pour le Pallof, « résister à la flexion latérale » pour
+ * l'Offset Hold. Rien n'est deviné ici.
+ */
+const FAMILLE: Readonly<Record<string, string>> = {
+  'ab-wheel': 'anti-extension',
+  'hanging-leg-raise': 'anti-extension',
+  'dead-bug-cable': 'anti-extension',
+  'pallof-press': 'anti-rotation',
+  'cable-chop': 'rotation',
+  'landmine-rotation': 'rotation',
+  'roman-side-bench': 'flexion latérale',
+  'suitcase-carry': 'flexion latérale',
+  'barbell-offset-hold': 'flexion latérale',
+  'copenhagen-plank': 'flexion latérale',
+  'farmer-carry': 'porté symétrique',
+  'zercher-march': 'porté antérieur',
+  'bear-crawl': 'stabilité globale',
+};
+
+describe('jamais deux exercices du tronc de la même famille le même jour', () => {
+  it('sur les douze semaines, les cinq jours', () => {
     for (let w = 1; w <= 12; w++) {
-      for (const d of [0, 2, 4, 5, DIMANCHE]) {
-        const s = getSession(w as WeekIndex, d as DayIndex, ctx());
-        expect(ids(s?.exercises ?? []), `S${w} j${d}`).not.toContain('copenhagen-plank');
+      for (const d of [0, 2, 4, 5, 6]) {
+        const s = session(w, d);
+        const familles = s.exercises
+          .filter((e) => e.def.role === 'core' || e.def.role === 'carry')
+          .map((e) => FAMILLE[e.id] ?? `INCONNUE:${e.id}`);
+        expect(new Set(familles).size, `S${w} j${d} — ${familles.join(', ')}`).toBe(
+          familles.length,
+        );
       }
     }
   });
 
-  it('le samedi dit pourquoi, au lieu de le faire disparaître en silence', () => {
-    const s = session(3, 5);
-    expect(s.suspended.map((x) => x.id)).toEqual(['copenhagen-plank']);
-    expect(s.suspended[0]!.reason).toMatch(/adducteur gauche/i);
-    // Aucune semaine de reprise écrite : elle dépend des symptômes.
-    expect(s.suspended[0]!.reason).not.toMatch(/semaine \d/i);
-  });
-
-  it('il reste au catalogue — sinon l’historique des semaines 1-3 serait orphelin', () => {
-    expect(EXERCISES['copenhagen-plank']).toBeDefined();
-    expect(EXERCISES['copenhagen-plank']!.suspended).toBeDefined();
-  });
-
-  it('une suspension passe avant le feu tricolore et avant le deload', () => {
-    const rouge = ctx({ readiness: readiness(150, 240) });
-    expect(ids(session(5, 5, rouge).exercises)).not.toContain('copenhagen-plank');
-    expect(ids(session(4, 5).exercises)).not.toContain('copenhagen-plank');
-  });
-
-  it('rien ne le remplace : le samedi ne gagne aucun exercice', () => {
-    expect(ids(session(3, 5).exercises)).toEqual([
-      'broad-jump',
-      'deadlift',
-      'front-squat',
-      'hip-thrust',
-      'nordic-curl',
-      'single-leg-rdl',
-      'suitcase-carry',
-    ]);
+  it('chaque exercice du tronc a une famille déclarée', () => {
+    // Un exercice ajouté sans famille rendrait la règle au-dessus muette :
+    // « INCONNUE:x » ne ressemble à aucune autre, donc ne déclenche rien.
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        for (const e of session(w, d).exercises) {
+          if (e.def.role !== 'core' && e.def.role !== 'carry') continue;
+          expect(FAMILLE[e.id], `S${w} j${d} — ${e.id}`).toBeDefined();
+        }
+      }
+    }
   });
 });
 
@@ -476,10 +533,21 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
       .map((e) => e.id);
 
   it('la répartition voulue, semaine par semaine', () => {
+    /*
+     * Le vendredi en porte TROIS depuis le retour du Copenhagen Plank, et
+     * c'est une décision, pas une dérive : Guillaume a choisi de garder
+     * l'Offset Hold du mercredi ET de reprendre le Copenhagen. Le vendredi
+     * était le seul jour libre de flexion latérale dans les deux moitiés du
+     * programme.
+     *
+     * Les trois familles y restent distinctes — rotation, anti-extension,
+     * flexion latérale — ce que le describe suivant vérifie sur les douze
+     * semaines. C'est cette règle-là qui compte, pas le décompte.
+     */
     const attendu: Record<number, string[]> = {
       0: ['ab-wheel', 'roman-side-bench'],
       2: ['pallof-press', 'barbell-offset-hold'],
-      4: ['landmine-rotation', 'dead-bug-cable'],
+      4: ['landmine-rotation', 'dead-bug-cable', 'copenhagen-plank'],
       5: ['zercher-march', 'roman-side-bench'],
       6: ['hanging-leg-raise', 'cable-chop'],
     };
@@ -493,12 +561,17 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
   it('les trois jours d’entraînement de la semaine 8 en gardent deux aussi', () => {
     // Samedi et dimanche de la S8 sont des séances de combine : la règle ne
     // s'y applique pas, et c'est voulu — ce sont des tests, pas des séances.
-    for (const d of [0, 2, 4]) expect(tronc(8, d), `j${d}`).toHaveLength(2);
+    for (const d of [0, 2]) expect(tronc(8, d), `j${d}`).toHaveLength(2);
+    // Le vendredi en a trois, Copenhagen compris, deload inclus.
+    expect(tronc(8, 4)).toHaveLength(3);
   });
 
-  it('les semaines 1 à 4 gardent leur répartition d’origine', () => {
+  it('les semaines 1 à 4 gardent leur répartition, Copenhagen en plus', () => {
     expect(tronc(3, 0)).toEqual(['ab-wheel']);
-    expect(tronc(3, 4)).toEqual(['farmer-carry', 'dead-bug-cable']);
+    // Le vendredi gagne le Copenhagen : porté symétrique, anti-extension,
+    // flexion latérale. Trois exercices, trois familles.
+    expect(tronc(3, 4)).toEqual(['farmer-carry', 'dead-bug-cable', 'copenhagen-plank']);
+    // Et le samedi ne garde QUE le Suitcase Carry : c'est de là qu'il vient.
     expect(tronc(3, 5)).toEqual(['suitcase-carry']);
     expect(tronc(3, 6)).toEqual(['cable-chop', 'hanging-leg-raise', 'bear-crawl']);
   });

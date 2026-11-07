@@ -524,7 +524,9 @@ describe('readiness ROUGE', () => {
      * exercice qui fait mal.
      */
     expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift', 'roman-side-bench']);
-    expect(session(5, 5, rouge).suspended.map((x) => x.id)).toEqual(['copenhagen-plank']);
+    // Plus aucun exercice suspendu : le Copenhagen a été repris et déplacé
+    // au vendredi. La mécanique de suspension, elle, reste en place.
+    expect(session(5, 5, rouge).suspended).toEqual([]);
   });
 
   it('aucun mouvement explosif ne survit', () => {

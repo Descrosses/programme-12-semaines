@@ -151,6 +151,13 @@ export const DELOAD_CORE: Readonly<Record<string, { sets: number; work: Work }>>
   'landmine-rotation': { sets: 2, work: reps(4, true) },
   'barbell-offset-hold': { sets: 2, work: hold(15, true) },
   'zercher-march': { sets: 2, work: meters(10) },
+  /*
+   * Repris en semaine… ce que décide Guillaume, donc présent dès la S1 et
+   * concerné par le deload comme les autres. Il manquait à cette table tant
+   * qu'il était suspendu : une ligne absente ici, et l'exercice traverse la
+   * semaine 8 à son volume plein.
+   */
+  'copenhagen-plank': { sets: 2, work: reps(6, true) },
 };
 
 // ---------------------------------------------------------------------------
@@ -615,6 +622,13 @@ const POWER: BlockRuleSet[] = [
        * sorti libère largement de quoi le financer.
        */
       patch('dead-bug-cable', { sets: 2, work: reps(5, true) }),
+      /*
+       * Le Copenhagen suit son exercice : cette règle visait le samedi, où il
+       * vivait avant. Une règle qui désigne un exercice absent de la trame du
+       * jour ne plante pas — elle ne fait rien, en silence. Un test de
+       * `program.test.ts` l'interdit précisément pour cette raison.
+       */
+      patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
       {
         op: 'insert',
         after: 'lateral-bound',
@@ -635,7 +649,6 @@ const POWER: BlockRuleSet[] = [
       patch('deadlift', { contrastWith: 'broad-jump' }),
       patch('hip-thrust', { sets: 4, work: reps(5), targetRPE: rpeRange(7, 8), note: 'Explosif.' }),
       patch('nordic-curl', { sets: 2, work: reps(4) }),
-      patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
       remove('suitcase-carry'),
       { op: 'insert', slot: zercherMarch(2, 12) },
       // Pas d'Ab Wheel le samedi : il est seul, et sa note le dit.
