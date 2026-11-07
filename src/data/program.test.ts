@@ -46,6 +46,7 @@ const LIGNE_MD: Record<string, string> = {
   'test-bench-1rm': '| Bench 1RM | +3 à 6 % |',
   'test-deadlift-1rm': '| Deadlift 1RM | +4 à 7 % |',
   'test-weighted-pullup-1rm': '| Tractions lestées 1RM | +3 à 5 % |',
+  'test-push-press-1rm': '| Push Press 1RM | +5 à 8 % |',
   'test-strict-pullup-max': '| Tractions strictes | +11 à 28 % |',
 };
 
@@ -267,7 +268,6 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
       'test-weighted-pullup-1rm',
       'test-deadlift-1rm',
       'test-strict-pullup-max',
-      'test-farmer-carry',
       'test-leg-raise-max',
     ]);
     const jours = SPECIAL_SESSIONS.filter(
@@ -363,8 +363,31 @@ describe('séances écrites en toutes lettres (§12, §8 S12)', () => {
 describe('§12 — paliers du test final', () => {
   const md = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
 
+  /*
+   * Ces quatre boucles ne portent que sur les lifts dont un maximum a été
+   * MESURÉ. Le push press n'en a pas — il vient d'entrer au combine — donc il
+   * n'a pas de paliers recalés, et comparer les siens à un maximum qui
+   * n'existe pas donnerait des NaN silencieux. Son absence est vérifiée juste
+   * en dessous, explicitement.
+   */
+  const recales = Object.entries(RAMPS_S12).filter((e) => e[0] in MESURES_COMBINE);
+
+  it('le push press n’a pas de paliers recalés : rien ne l’a jamais mesuré', () => {
+    expect(MESURES_COMBINE).not.toHaveProperty('push-press');
+    // La S12 garde les MÊMES essais — c'est ce qui rend les deux mesures
+    // comparables — avec une mise en route plus courte, le corps sortant
+    // déjà d'un squat 1RM.
+    const essaisDe = (r: readonly { kg: number; attempt?: boolean }[]) =>
+      r.filter((x) => x.attempt).map((x) => x.kg);
+    expect(essaisDe(RAMPS_S12['push-press'])).toEqual(essaisDe(RAMPS['push-press']));
+    expect(RAMPS_S12['push-press'].length).toBeLessThan(RAMPS['push-press'].length);
+    // Et ses deux derniers essais sont facultatifs, faute de savoir où il va.
+    const essais = RAMPS['push-press'].filter((r) => r.attempt);
+    expect(essais.slice(1).every((r) => r.optional === true)).toBe(true);
+  });
+
   it('aucun échauffement n’atteint le 1RM mesuré', () => {
-    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+    for (const [lift, ramp] of recales) {
       const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
       for (const step of ramp.filter((r) => !r.attempt)) {
         expect(step.kg, `${lift} — échauffement à ${step.kg} pour un max de ${max}`).toBeLessThan(
@@ -378,7 +401,7 @@ describe('§12 — paliers du test final', () => {
     // Un maximum mesuré ne se soulève pas à l'échauffement. Le §12 finissait à
     // 130 pour un deadlift annoncé à 130, soit 100 % : c'était une compensation
     // d'un chiffre que son auteur savait faux, pas un palier.
-    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+    for (const [lift, ramp] of recales) {
       const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
       const dernier = [...ramp].reverse().find((r) => !r.attempt)!;
       expect(dernier.kg / max, `${lift} — dernier échauffement`).toBeLessThanOrEqual(0.95);
@@ -387,7 +410,7 @@ describe('§12 — paliers du test final', () => {
 
   it('chaque premier essai dépasse le maximum mesuré', () => {
     // Un test de 1RM qui n'ouvre pas au-dessus du record ne peut rien prouver.
-    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+    for (const [lift, ramp] of recales) {
       const max = MESURES_COMBINE[lift as keyof typeof MESURES_COMBINE];
       const premier = ramp.find((r) => r.attempt)!;
       expect(premier.kg, `${lift} — premier essai`).toBeGreaterThan(max);
@@ -403,7 +426,7 @@ describe('§12 — paliers du test final', () => {
       deadlift: 162.5,
       'weighted-pullup': 50,
     };
-    for (const [lift, ramp] of Object.entries(RAMPS_S12)) {
+    for (const [lift, ramp] of recales) {
       const essais = ramp.filter((r) => r.attempt).map((r) => r.kg);
       expect(
         Math.max(...essais),
@@ -428,6 +451,8 @@ describe('§12 — paliers du test final', () => {
     }
     expect(md).toContain('47,5×5 / 62,5×3 / 77,5×2 / 90×1 / 102,5×1');
     expect(md).toContain('65×5 / 85×3 / 107,5×2 / 125×1 / 130×1');
+    // Le push press n'a qu'un seul jeu : il sert au test initial ET à la S12.
+    expect(md).toContain('40×5 / 50×3 / 57,5×2 / 65×1 / 72,5×1, puis essais 77,5 / 82,5 / 85');
   });
 });
 
@@ -628,12 +653,13 @@ describe('§13 — cibles à 12 semaines', () => {
  * ces deux mouvements ne s'affichaient nulle part, sans aucune erreur.
  */
 describe('chaque test de 1RM trouve ses paliers', () => {
-  it('les quatre mesures en -1rm ont un jeu de paliers, initial et final', () => {
+  it('les cinq mesures en -1rm ont un jeu de paliers, initial et final', () => {
     const CLE: Record<string, keyof typeof RAMPS> = {
       'test-squat-1rm': 'back-squat',
       'test-bench-1rm': 'bench-press',
       'test-deadlift-1rm': 'deadlift',
       'test-weighted-pullup-1rm': 'weighted-pullup',
+      'test-push-press-1rm': 'push-press',
     };
     const mesures1RM = COMBINE_METRICS.filter((m) => m.endsWith('-1rm'));
     expect([...mesures1RM].sort()).toEqual(Object.keys(CLE).sort());

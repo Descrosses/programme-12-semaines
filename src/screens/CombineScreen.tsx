@@ -50,6 +50,7 @@ const RAMP_KEY: Record<string, keyof typeof RAMPS | undefined> = {
   'test-bench-1rm': 'bench-press',
   'test-deadlift-1rm': 'deadlift',
   'test-weighted-pullup-1rm': 'weighted-pullup',
+  'test-push-press-1rm': 'push-press',
 };
 
 /** Un temps de sprint plus bas est meilleur : la flèche doit s'inverser. */

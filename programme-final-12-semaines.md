@@ -370,7 +370,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 - **Lundi** : Box Jump 3 × 2, Squat 3 × 2 à 70 % RPE 5-6, Bulgarian 2 × 5 léger, **Ab Wheel 2 × 6 en alternance avec Roman Side Bench 2 × 6/côté** (45 s entre les stations). Terminé.
 - **Mercredi** : échauffement, puis **TEST Deadlift 1RM**. Rien d'autre.
 - **Vendredi** : **TESTS Broad Jump, Vertical Jump, sprint 10/20 m, tractions strictes max, Hanging Leg Raise max.** Durée 45 min max.
-- **Samedi** : **TEST Back Squat 1RM + Farmer Carry.**
+- **Samedi** : **TEST Back Squat 1RM, puis TEST Push Press 1RM.**
 - **Dimanche** : **TEST Bench 1RM + tractions lestées 1RM + Ab Wheel max.**
 
 ---
@@ -381,18 +381,18 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 | Sem | Back Squat (lun) | Bench (mer) | Deadlift (sam) | Tractions lestées (mer) | Push Press (ven) | Front Squat (sam) | Speed Squat (ven) |
 |---|---|---|---|---|---|---|---|
-| 1 | 5×5×70 % – RPE 7 | 5×5×74 % – RPE 7 | 4×5×70 % – RPE 7 | 4×5×44 % | 5×3×50 | 3×6×55 % | 6×2×55 % |
-| 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 5×3×52,5 | 3×6×55 % | 6×2×55 % |
-| 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 6×2×55 | 3×6×57 % | 6×2×55 % |
-| 4 | 3×3×64 % – RPE 5 | 3×3×67 % – RPE 5 | 3×3×64 % – RPE 5 | 3×3×22 % | 3×3×45 | 2×5×45 % | 4×2×50 % |
-| 5 | 5×3×82 % – RPE 8 | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×55 | 4×5×59 % | 6×2×60 % |
-| 6 | 4×3×86 % – RPE 8,5 | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×57,5 | 4×4×64 % | 6×2×60 % |
-| 7 | 4×2×89 % – RPE 9 | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×60 | 4×4×64 % | 6×2×60 % |
-| 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×45 | 2×4×50 % | 4×2×50 % |
-| 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 6×2×57,5 | 3×3×64 % | 8×2×60 % |
-| 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 6×2×60 | 3×3×66 % | 8×2×60 % |
-| 11 | 4×1-2×89 % + contraste | 4×1-2×89 % + contraste | 3×1-2×89 % + contraste | 3×2×78 % | 6×2×62,5 | 3×3×68 % | 8×2×60 % |
-| 12 | 3×2×70 % puis TEST sam | 3×2×72 % puis TEST dim | TEST mer | TEST dim | 3×2×50 | — | 2×2×50 % |
+| 1 | 5×5×70 % – RPE 7 | 5×5×74 % – RPE 7 | 4×5×70 % – RPE 7 | 4×5×44 % | 5×3×65 % | 3×6×55 % | 6×2×55 % |
+| 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 5×3×68 % | 3×6×55 % | 6×2×55 % |
+| 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 6×2×71 % | 3×6×57 % | 6×2×55 % |
+| 4 | 3×3×64 % – RPE 5 | 3×3×67 % – RPE 5 | 3×3×64 % – RPE 5 | 3×3×22 % | 3×3×58 % | 2×5×45 % | 4×2×50 % |
+| 5 | 5×3×82 % – RPE 8 | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×71 % | 4×5×59 % | 6×2×60 % |
+| 6 | 4×3×86 % – RPE 8,5 | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×74 % | 4×4×64 % | 6×2×60 % |
+| 7 | 4×2×89 % – RPE 9 | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×77 % | 4×4×64 % | 6×2×60 % |
+| 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×58 % | 2×4×50 % | 4×2×50 % |
+| 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 6×2×74 % | 3×3×64 % | 8×2×60 % |
+| 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 6×2×77 % | 3×3×66 % | 8×2×60 % |
+| 11 | 4×1-2×89 % + contraste | 4×1-2×89 % + contraste | 3×1-2×89 % + contraste | 3×2×78 % | 6×2×81 % | 3×3×68 % | 8×2×60 % |
+| 12 | 3×2×70 % puis TEST sam | 3×2×72 % puis TEST dim | TEST mer | TEST dim | 3×2×65 % | — | 2×2×50 % |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.
 
@@ -402,7 +402,9 @@ Le tableau est un plan initial. Le RPE prime sur le chiffre.
 
 **Le deadlift est la seule colonne corrigée.** Elle sortait des bandes du §2 — 93 % en semaine 7 pour un bloc qui plafonne à 90 %, 91 % et 93 % en semaines 10-11 pour un bloc qui plafonne à 89 %. Ce n'était pas un arrondi : la colonne avait été écrite au-dessus des bandes parce que son auteur compensait un deadlift qu'il annonçait lui-même sous-estimé à 130 kg. Le combine en a mesuré 140 : la compensation n'a plus d'objet. La colonne reprend donc les intensités du back squat, qui sont dans les bandes et déjà dans le programme.
 
-**Push Press et RDL ne sont pas indexés** : kilos absolus, plafond de RPE, règle de progression propre. Aucune de leurs cases ne tombe sur un pourcentage d'un maximum testé, et le programme n'en écrit aucun pour eux — leur donner un pourcentage serait en inventer un.
+**Le RDL n'est pas indexé** : kilos absolus, plafond de RPE, règle de progression propre. Aucune de ses cases ne tombe sur un pourcentage d'un maximum testé, et le programme n'en écrit aucun — lui en donner un serait l'inventer.
+
+**Le Push Press l'est depuis que la section 12 le mesure.** C'était la dernière colonne à servir les kilos de l'auteur à tout le monde, et c'est un polyarticulaire chargé : qu'il se travaille en vitesse ne le dispense pas d'une charge juste. La forme de la colonne n'a pas bougé — ce sont les mêmes rapports de semaine à semaine. La base, elle, est lue dans le programme lui-même : la semaine 11 est écrite « 6 × 2, RPE 6-7 », soit 81 % d'un maximum, et 62,5 kg à 81 % font 77,5 kg. Appliqués à ces 77,5 kg, les douze pourcentages redonnent les douze kilos d'origine au 2,5 kg près — un test le vérifie case par case. Et 77,5 kg, c'est 67 % du bench mesuré à 115, soit pile le rapport push press / bench habituel : la colonne supposait ce maximum depuis le début, personne ne l'avait écrit.
 
 **Les installations qui tournaient déjà sur le tableau en kilos le gardent.** Elles suivent un plan commencé, et une mise à jour de l'application n'a pas à le réécrire au milieu des douze semaines : leurs charges restent celles qu'elles affichaient, colonne deadlift comprise. Seules les installations neuves reçoivent le tableau en pourcentages.
 
@@ -456,16 +458,23 @@ Règle générale : un exercice progresse quand la dernière série sort au RPE 
 Même lieu, mêmes chaussures, même protocole, idéalement même heure.
 
 ### Test initial (avant la semaine 1)
-- **Samedi** : poids (moyenne de 3 matins), Broad Jump 3 essais (repos 3 min, orteils au départ → talon arrière), Vertical Jump 5 essais (repos 90 s, marque murale), sprint 10 m et 20 m si surface adaptée (3-4 essais, repos 3-4 min, chrono vidéo, jamais sur tapis), puis **Back Squat 1RM** : 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 142,5 / 147,5 si rapide. Repos 4-5 min. Puis Farmer Carry 2 × 40 kg, distance max.
+- **Samedi** : poids (moyenne de 3 matins), Broad Jump 3 essais (repos 3 min, orteils au départ → talon arrière), Vertical Jump 5 essais (repos 90 s, marque murale), sprint 10 m et 20 m si surface adaptée (3-4 essais, repos 3-4 min, chrono vidéo, jamais sur tapis), puis **Back Squat 1RM** : 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 142,5 / 147,5 si rapide. Repos 4-5 min.
 - **Dimanche** : **Bench 1RM** : 60×5 / 80×3 / 95×1 / 107,5×1 / 117,5 / 122,5 / 125. Puis **tractions lestées 1RM** : +20×3 / +30×1 / +36×1 / +40 / +42,5, repos 4 min. Puis Ab Wheel max strict.
+- **Push Press 1RM**, derrière les tractions lestées : 40×5 / 50×3 / 57,5×2 / 65×1 / 72,5×1, puis essais 77,5 / 82,5 / 85 si le verrouillage est franc. Repos 4 min. C'est ce test qui fixe la colonne Push Press de la section 9 pour les douze semaines.
 - **Lundi** : **Deadlift 1RM** : 60×5 / 80×3 / 100×2 / 115×1 / 130×1 / 137,5 / 142,5 / 147,5 selon vitesse. Puis tractions strictes max (1 série) et Hanging Leg Raise max.
 - La semaine 1 commence le mercredi suivant par la séance Upper.
 
+**Pourquoi le Push Press se teste le jour des tractions lestées.** Ce qui limite un push press maximal, c'est le verrouillage au-dessus de la tête. Il lui fallait donc un jour où rien ne fatigue d'avance le triceps et l'épaule : pas la veille ni le lendemain du bench, pas à la place du repos qui protège le deadlift, pas avant le squat. Reste le jour des tractions lestées, qui chargent le dos et les biceps et laissent le verrou intact — et le push press passe après, pour ne pas abîmer le test prioritaire de la journée. Les jambes sortent du squat de la veille : c'est assumé, le dip est un quart de squat à 77,5 kg pour quelqu'un qui en squatte 110.
+
+**Le Push Press n'a pas de paliers recalés en semaine 12**, parce qu'aucun maximum n'a encore été mesuré : il n'y a rien sur quoi recaler. La semaine 12 réutilise donc les paliers du test initial, ses deux derniers essais sont facultatifs, et au-delà on monte à la sensation. Le premier cycle qui passera ce combine donnera le chiffre.
+
+**Le Farmer Carry n'est plus testé.** Sa distance ne décidait de rien : aucune charge de la section 9 n'en dépendait, aucune séance ne s'y recalait, et le mouvement lui-même sort du programme à partir de la semaine 5. On mesurait tous les trois mois un chiffre que personne ne lisait, au prix d'une préhension cramée en fin de combine. L'exercice reste au vendredi des semaines 1-4 : c'est le test qui part, pas le mouvement.
+
 ### Combine intermédiaire (semaine 8, samedi + dimanche, sans 1RM)
-Poids, Broad Jump, Vertical Jump, sprint, tractions strictes max, Farmer Carry, Ab Wheel max, Leg Raise max.
+Poids, Broad Jump, Vertical Jump, sprint, tractions strictes max, Ab Wheel max, Leg Raise max.
 
 ### Combine final (semaine 12)
-Voir section 8 : deadlift mercredi, athlétique vendredi, squat + farmer samedi, bench + tractions + tronc dimanche.
+Voir section 8 : deadlift mercredi, athlétique vendredi, squat samedi, bench + tractions + tronc dimanche.
 
 Les paliers du test initial ne sont PAS réutilisables : ils avaient été écrits sur des maxima estimés avant le combine, et le combine a donné autre chose. Monter au squat par 100 / 115 / 130 quand le 1RM mesuré vaut 110 fait passer trois séries au-dessus du maximum avant même le premier essai.
 
@@ -488,11 +497,11 @@ Le 162,5 du deadlift est la borne basse de la cible de la section 13, et déjà 
 | Bench 1RM | +3 à 6 % |
 | Deadlift 1RM | +4 à 7 % |
 | Tractions lestées 1RM | +3 à 5 % |
+| Push Press 1RM | +5 à 8 % |
 | Tractions strictes | +11 à 28 % |
 | Broad Jump | +5 à 8 % |
 | Vertical Jump | +4 à 6 cm |
 | Sprint 10 m | −2 à 4 % |
-| Farmer Carry 2 × 40 | +20 % distance |
 | Ab Wheel | +20-30 % reps |
 
 **Les cibles sont des progressions, pas des kilos.** Elles s'appliquent au 1RM mesuré au **combine initial de chacun** : deux pratiquants qui démarrent à 100 et à 180 kg de squat ne visent pas le même nombre. Tant qu'une mesure initiale manque, l'objectif correspondant reste à définir — il ne s'invente pas.

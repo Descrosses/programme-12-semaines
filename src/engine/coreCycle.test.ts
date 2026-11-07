@@ -599,13 +599,22 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
   });
 
   /*
-   * Le Farmer Carry reste une métrique du combine : §12 le mesure en distance
-   * max à 2 × 40 kg, en semaine 0, 8 et 12. Le retirer de l'entraînement ne
-   * le retire pas des tests — ce sont deux exercices distincts au catalogue.
+   * Le Farmer Carry n'est plus TESTÉ (décision de Guillaume) : sa distance ne
+   * décidait d'aucune charge et il sort du programme dès la semaine 5. Le
+   * mouvement, lui, reste au vendredi des semaines 1-4 — ce sont deux
+   * exercices distincts au catalogue, et seul celui du combine part.
    */
-  it('le Farmer Carry reste testé au combine, même s’il n’est plus entraîné', () => {
-    expect(ids(session(8, 5).exercises)).toContain('test-farmer-carry');
-    expect(ids(session(12, 5).exercises)).toContain('test-farmer-carry');
+  it('le Farmer Carry n’est plus testé à aucun combine', () => {
+    for (const [w, d] of [
+      [0, 5],
+      [8, 5],
+      [12, 5],
+    ] as const) {
+      expect(ids(session(w, d).exercises)).not.toContain('test-farmer-carry');
+    }
+    expect(EXERCISES['test-farmer-carry']).toBeUndefined();
+    // Le mouvement, lui, est toujours là.
+    expect(EXERCISES['farmer-carry']).toBeDefined();
   });
 
   it('aucun doublon : le Woodchop est l’ancien chop, pas une seconde fiche', () => {

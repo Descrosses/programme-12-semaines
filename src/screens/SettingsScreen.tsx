@@ -60,6 +60,7 @@ const ONE_RM_FIELDS = [
   { id: 'bench-press', label: 'Bench Press' },
   { id: 'deadlift', label: 'Deadlift' },
   { id: 'weighted-pullup', label: 'Tractions lestées' },
+  { id: 'push-press', label: 'Push Press' },
 ] as const;
 
 export function SettingsScreen({

@@ -5,17 +5,17 @@ S0J0 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","a
 S0J0 | test-sprint-10m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-squat-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S0J1 | séance | Combine initial — tractions lestées 1RM | bloc=Combine initial | intensité=TEST | durée=41min | échauffement=oui | test=non | notes=2 | suspendus=—
+S0J1 | séance | Combine initial — tractions lestées 1RM + push press 1RM | bloc=Combine initial | intensité=TEST | durée=89min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J1 | test-weighted-pullup-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
+S0J1 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J3 | séance | Combine initial — deadlift 1RM | bloc=Combine initial | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J3 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | séance | Combine initial — bench 1RM + ab wheel | bloc=Combine initial | intensité=TEST | durée=56min | échauffement=oui | test=non | notes=1 | suspendus=—
 S0J4 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | test-ab-wheel-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | séance | Combine initial — tractions max, leg raise, farmer | bloc=Combine initial | intensité=TEST | durée=21min | échauffement=oui | test=non | notes=3 | suspendus=—
+S0J5 | séance | Combine initial — tractions max, leg raise | bloc=Combine initial | intensité=TEST | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S0J5 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S1J0 | séance | Lower Strength — squat | bloc=Accumulation | intensité=DUR | durée=66min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S1J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S1J0 | box-jump | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
@@ -354,13 +354,12 @@ S8J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"rep
 S8J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S8J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S8J4 | copenhagen-plank | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=49min | échauffement=oui | test=non | notes=2 | suspendus=—
+S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=45min | échauffement=oui | test=non | notes=2 | suspendus=—
 S8J5 | test-broad-jump | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=180s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","attempts":5} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-10m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-20m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S8J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S8J5 | deadlift | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=180s | rpe=5-5 | superset=— | contraste=—
 S8J5 | front-squat | 2 × 4 | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J6 | séance | Combine intermédiaire (suite) + haut du corps | bloc=Deload | intensité=TEST | durée=30min | échauffement=oui | test=non | notes=1 | suspendus=—
@@ -512,9 +511,9 @@ S12J4 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","att
 S12J4 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | speed-squat | 2 × 2 | séries=2 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S12J5 | séance | TEST Back Squat 1RM + Farmer | bloc=Taper + combine final | intensité=TEST | durée=66min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S12J5 | séance | TEST Back Squat 1RM + Push Press 1RM | bloc=Taper + combine final | intensité=TEST | durée=100min | échauffement=oui | test=oui | notes=2 | suspendus=—
 S12J5 | test-squat-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S12J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
+S12J5 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | séance | TEST Bench + tractions + tronc | bloc=Taper + combine final | intensité=TEST | durée=94min | échauffement=oui | test=non | notes=1 | suspendus=—
 S12J6 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | test-weighted-pullup-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
@@ -527,17 +526,17 @@ S0J0 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","a
 S0J0 | test-sprint-10m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-squat-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S0J1 | séance | Combine initial — tractions lestées 1RM | bloc=Combine initial | intensité=TEST | durée=41min | échauffement=oui | test=non | notes=2 | suspendus=—
+S0J1 | séance | Combine initial — tractions lestées 1RM + push press 1RM | bloc=Combine initial | intensité=TEST | durée=89min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J1 | test-weighted-pullup-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
+S0J1 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J3 | séance | Combine initial — deadlift 1RM | bloc=Combine initial | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J3 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | séance | Combine initial — bench 1RM + ab wheel | bloc=Combine initial | intensité=TEST | durée=56min | échauffement=oui | test=non | notes=1 | suspendus=—
 S0J4 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | test-ab-wheel-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | séance | Combine initial — tractions max, leg raise, farmer | bloc=Combine initial | intensité=TEST | durée=21min | échauffement=oui | test=non | notes=3 | suspendus=—
+S0J5 | séance | Combine initial — tractions max, leg raise | bloc=Combine initial | intensité=TEST | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S0J5 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S1J0 | séance | Lower Strength — squat | bloc=Accumulation | intensité=DUR | durée=66min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S1J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S1J0 | box-jump | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
@@ -558,7 +557,7 @@ S1J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S1J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S1J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S1J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S1J4 | push-press | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S1J4 | push-press | 5 × 3 × 40 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=40 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S1J4 | speed-squat | 6 × 2 × 55 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S1J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S1J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -602,7 +601,7 @@ S2J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S2J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S2J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S2J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S2J4 | push-press | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S2J4 | push-press | 5 × 3 × 40 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=40 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S2J4 | speed-squat | 6 × 2 × 55 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S2J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S2J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -646,7 +645,7 @@ S3J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S3J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S3J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S3J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S3J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S3J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S3J4 | speed-squat | 6 × 2 × 55 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S3J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S3J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -690,7 +689,7 @@ S4J4 | séance | Total Body Power | bloc=Deload | intensité=RAPIDE | durée=56m
 S4J4 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S4J4 | hang-high-pull | 2 × 3 | séries=2 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S4J4 | lateral-bound | 2 × 3 / côté | séries=2 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S4J4 | push-press | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S4J4 | push-press | 3 × 3 × 35 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=35 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S4J4 | speed-squat | 4 × 2 × 50 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=50 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S4J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S4J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -735,7 +734,7 @@ S5J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S5J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S5J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S5J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S5J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S5J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S5J4 | speed-squat | 6 × 2 × 60 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -780,7 +779,7 @@ S6J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S6J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S6J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S6J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S6J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S6J4 | push-press | 6 × 2 × 45 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=45 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S6J4 | speed-squat | 6 × 2 × 60 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -825,7 +824,7 @@ S7J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S7J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S7J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S7J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S7J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S7J4 | push-press | 6 × 2 × 45 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=45 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S7J4 | speed-squat | 6 × 2 × 60 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -870,19 +869,18 @@ S8J4 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSid
 S8J4 | hang-high-pull | 2 × 3 | séries=2 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J4 | lateral-bound | 2 × 3 / côté | séries=2 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S8J4 | landmine-rotation | 2 × 4 / côté | séries=2 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S8J4 | push-press | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S8J4 | push-press | 3 × 2 × 35 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=35 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J4 | speed-squat | 4 × 2 × 50 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=50 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S8J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S8J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S8J4 | copenhagen-plank | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=49min | échauffement=oui | test=non | notes=2 | suspendus=—
+S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=45min | échauffement=oui | test=non | notes=2 | suspendus=—
 S8J5 | test-broad-jump | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=180s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","attempts":5} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-10m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-20m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S8J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S8J5 | deadlift | 3 × 3 × 85 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=85 | kgMax=— | source=1rm | repos=180s | rpe=5-5 | superset=— | contraste=—
 S8J5 | front-squat | 2 × 4 × 50 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=50 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J6 | séance | Combine intermédiaire (suite) + haut du corps | bloc=Deload | intensité=TEST | durée=30min | échauffement=oui | test=non | notes=1 | suspendus=—
@@ -912,7 +910,7 @@ S9J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"pe
 S9J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S9J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S9J4 | push-press | 6 × 2 × 45 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=45 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S9J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -954,7 +952,7 @@ S10J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"p
 S10J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S10J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S10J4 | push-press | 6 × 2 × 45 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=45 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S10J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -996,7 +994,7 @@ S11J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"p
 S11J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S11J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S11J4 | push-press | 6 × 2 × 47,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=47.5 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S11J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -1023,7 +1021,7 @@ S12J0 | back-squat | 3 × 2 × 70 kg | séries=3 | travail={"kind":"reps","reps"
 S12J0 | bulgarian-split-squat | 2 × 5 / jambe — 2 × 12 kg | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=12 | kgMax=— | source=programme | repos=60s | rpe=5-5 | superset=— | contraste=—
 S12J0 | ab-wheel | 2 × 6 — poids du corps | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=5-5 | superset=— | contraste=—
 S12J0 | bench-press | 3 × 2 × 57,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
-S12J0 | push-press | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S12J0 | push-press | 3 × 2 × 40 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=40 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S12J2 | séance | TEST Deadlift 1RM | bloc=Taper + combine final | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=2 | suspendus=—
 S12J2 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J4 | séance | Tests athlétiques | bloc=Taper + combine final | intensité=TEST | durée=39min | échauffement=oui | test=non | notes=2 | suspendus=—
@@ -1034,9 +1032,9 @@ S12J4 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","att
 S12J4 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | speed-squat | 2 × 2 × 50 kg | séries=2 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=50 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
-S12J5 | séance | TEST Back Squat 1RM + Farmer | bloc=Taper + combine final | intensité=TEST | durée=66min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S12J5 | séance | TEST Back Squat 1RM + Push Press 1RM | bloc=Taper + combine final | intensité=TEST | durée=100min | échauffement=oui | test=oui | notes=2 | suspendus=—
 S12J5 | test-squat-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S12J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
+S12J5 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | séance | TEST Bench + tractions + tronc | bloc=Taper + combine final | intensité=TEST | durée=94min | échauffement=oui | test=non | notes=1 | suspendus=—
 S12J6 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | test-weighted-pullup-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
@@ -1049,17 +1047,17 @@ S0J0 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","a
 S0J0 | test-sprint-10m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-squat-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S0J1 | séance | Combine initial — tractions lestées 1RM | bloc=Combine initial | intensité=TEST | durée=41min | échauffement=oui | test=non | notes=2 | suspendus=—
+S0J1 | séance | Combine initial — tractions lestées 1RM + push press 1RM | bloc=Combine initial | intensité=TEST | durée=89min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J1 | test-weighted-pullup-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
+S0J1 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J3 | séance | Combine initial — deadlift 1RM | bloc=Combine initial | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J3 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | séance | Combine initial — bench 1RM + ab wheel | bloc=Combine initial | intensité=TEST | durée=56min | échauffement=oui | test=non | notes=1 | suspendus=—
 S0J4 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | test-ab-wheel-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | séance | Combine initial — tractions max, leg raise, farmer | bloc=Combine initial | intensité=TEST | durée=21min | échauffement=oui | test=non | notes=3 | suspendus=—
+S0J5 | séance | Combine initial — tractions max, leg raise | bloc=Combine initial | intensité=TEST | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S0J5 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S1J0 | séance | Lower Strength — squat | bloc=Accumulation | intensité=DUR | durée=66min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S1J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S1J0 | box-jump | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
@@ -1398,13 +1396,12 @@ S8J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"rep
 S8J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S8J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S8J4 | copenhagen-plank | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=49min | échauffement=oui | test=non | notes=2 | suspendus=—
+S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=45min | échauffement=oui | test=non | notes=2 | suspendus=—
 S8J5 | test-broad-jump | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=180s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","attempts":5} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-10m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-20m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S8J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S8J5 | deadlift | 3 × 3 × 97,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=97.5 | kgMax=— | source=programme | repos=180s | rpe=5-5 | superset=— | contraste=—
 S8J5 | front-squat | 2 × 4 × 55 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=programme | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J6 | séance | Combine intermédiaire (suite) + haut du corps | bloc=Deload | intensité=TEST | durée=30min | échauffement=oui | test=non | notes=1 | suspendus=—
@@ -1556,9 +1553,9 @@ S12J4 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","att
 S12J4 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | speed-squat | 2 × 2 × 55 kg | séries=2 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
-S12J5 | séance | TEST Back Squat 1RM + Farmer | bloc=Taper + combine final | intensité=TEST | durée=66min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S12J5 | séance | TEST Back Squat 1RM + Push Press 1RM | bloc=Taper + combine final | intensité=TEST | durée=100min | échauffement=oui | test=oui | notes=2 | suspendus=—
 S12J5 | test-squat-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S12J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
+S12J5 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | séance | TEST Bench + tractions + tronc | bloc=Taper + combine final | intensité=TEST | durée=94min | échauffement=oui | test=non | notes=1 | suspendus=—
 S12J6 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | test-weighted-pullup-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
@@ -1571,17 +1568,17 @@ S0J0 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","a
 S0J0 | test-sprint-10m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","attempts":4} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S0J0 | test-squat-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S0J1 | séance | Combine initial — tractions lestées 1RM | bloc=Combine initial | intensité=TEST | durée=41min | échauffement=oui | test=non | notes=2 | suspendus=—
+S0J1 | séance | Combine initial — tractions lestées 1RM + push press 1RM | bloc=Combine initial | intensité=TEST | durée=89min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J1 | test-weighted-pullup-1rm | 2 essais | séries=1 | travail={"kind":"attempts","attempts":2} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
+S0J1 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J3 | séance | Combine initial — deadlift 1RM | bloc=Combine initial | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J3 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | séance | Combine initial — bench 1RM + ab wheel | bloc=Combine initial | intensité=TEST | durée=56min | échauffement=oui | test=non | notes=1 | suspendus=—
 S0J4 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S0J4 | test-ab-wheel-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | séance | Combine initial — tractions max, leg raise, farmer | bloc=Combine initial | intensité=TEST | durée=21min | échauffement=oui | test=non | notes=3 | suspendus=—
+S0J5 | séance | Combine initial — tractions max, leg raise | bloc=Combine initial | intensité=TEST | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S0J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S0J5 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S0J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S1J0 | séance | Lower Strength — squat | bloc=Accumulation | intensité=DUR | durée=60min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S1J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S1J0 | box-jump | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
@@ -1602,7 +1599,7 @@ S1J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S1J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S1J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S1J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S1J4 | push-press | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S1J4 | push-press | 5 × 3 × 37,5 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=37.5 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S1J4 | speed-squat | 6 × 2 × 52,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=52.5 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S1J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S1J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1646,7 +1643,7 @@ S2J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S2J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S2J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S2J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S2J4 | push-press | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S2J4 | push-press | 5 × 3 × 37,5 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=37.5 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S2J4 | speed-squat | 6 × 2 × 52,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=52.5 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S2J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S2J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1690,7 +1687,7 @@ S3J4 | séance | Total Body Power | bloc=Accumulation | intensité=RAPIDE | dur�
 S3J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S3J4 | hang-high-pull | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S3J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S3J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-7 | superset=— | contraste=—
+S3J4 | push-press | 6 × 2 × 40 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=40 | kgMax=— | source=1rm | repos=120s | rpe=0-7 | superset=— | contraste=—
 S3J4 | speed-squat | 6 × 2 × 52,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=52.5 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S3J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S3J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1734,7 +1731,7 @@ S4J4 | séance | Total Body Power | bloc=Deload | intensité=RAPIDE | durée=54m
 S4J4 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S4J4 | hang-high-pull | 2 × 3 | séries=2 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S4J4 | lateral-bound | 2 × 3 / côté | séries=2 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S4J4 | push-press | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S4J4 | push-press | 3 × 3 × 32,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=32.5 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S4J4 | speed-squat | 4 × 2 × 47,5 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=47.5 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S4J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S4J4 | explosive-cable-row | 1 × 5 | séries=1 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1779,7 +1776,7 @@ S5J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S5J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S5J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S5J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S5J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S5J4 | push-press | 6 × 2 × 40 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=40 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S5J4 | speed-squat | 6 × 2 × 57,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1824,7 +1821,7 @@ S6J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S6J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S6J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S6J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S6J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S6J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S6J4 | speed-squat | 6 × 2 × 57,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1869,7 +1866,7 @@ S7J4 | broad-jump | 5 × 2 | séries=5 | travail={"kind":"reps","reps":2,"perSid
 S7J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
 S7J4 | lateral-bound | 3 × 3 / côté | séries=3 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S7J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S7J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=6-7 | superset=— | contraste=—
+S7J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=150s | rpe=6-7 | superset=— | contraste=—
 S7J4 | speed-squat | 6 × 2 × 57,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=75s | rpe=—-— | superset=— | contraste=—
 S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
@@ -1914,19 +1911,18 @@ S8J4 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSid
 S8J4 | hang-high-pull | 2 × 3 | séries=2 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J4 | lateral-bound | 2 × 3 / côté | séries=2 | travail={"kind":"reps","reps":3,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S8J4 | landmine-rotation | 2 × 4 / côté | séries=2 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
-S8J4 | push-press | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S8J4 | push-press | 3 × 2 × 32,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=32.5 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J4 | speed-squat | 4 × 2 × 47,5 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=47.5 | kgMax=— | source=1rm | repos=60s | rpe=—-— | superset=— | contraste=—
 S8J4 | jump-squat-db | 2 × 4 — 2 × 6-8 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J4 | explosive-cable-row | 1 × 5 | séries=1 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S8J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S8J4 | copenhagen-plank | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=49min | échauffement=oui | test=non | notes=2 | suspendus=—
+S8J5 | séance | Combine intermédiaire | bloc=Deload | intensité=TEST | durée=45min | échauffement=oui | test=non | notes=2 | suspendus=—
 S8J5 | test-broad-jump | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=180s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-vertical-jump | 5 essais | séries=1 | travail={"kind":"attempts","attempts":5} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-10m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-sprint-20m | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=—-— | superset=— | contraste=—
 S8J5 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
-S8J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S8J5 | deadlift | 3 × 3 × 80 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=80 | kgMax=— | source=1rm | repos=180s | rpe=5-5 | superset=— | contraste=—
 S8J5 | front-squat | 2 × 4 × 47,5 kg | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=47.5 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S8J6 | séance | Combine intermédiaire (suite) + haut du corps | bloc=Deload | intensité=TEST | durée=25min | échauffement=oui | test=non | notes=1 | suspendus=—
@@ -1956,7 +1952,7 @@ S9J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"pe
 S9J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S9J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S9J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S9J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -1998,7 +1994,7 @@ S10J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"p
 S10J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S10J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S10J4 | push-press | 6 × 2 × 42,5 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=42.5 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S10J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -2040,7 +2036,7 @@ S11J4 | hang-high-pull | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"p
 S11J4 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | lateral-bound | 4 × 2 / côté | séries=4 | travail={"kind":"reps","reps":2,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S11J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J4 | push-press | 6 × 2 | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=6-7 | superset=— | contraste=—
+S11J4 | push-press | 6 × 2 × 45 kg | séries=6 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=45 | kgMax=— | source=1rm | repos=120s | rpe=6-7 | superset=— | contraste=—
 S11J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
@@ -2067,7 +2063,7 @@ S12J0 | back-squat | 3 × 2 × 67,5 kg | séries=3 | travail={"kind":"reps","rep
 S12J0 | bulgarian-split-squat | 1 × 5 / jambe — 2 × 12 kg | séries=1 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=12 | kgMax=— | source=programme | repos=60s | rpe=5-5 | superset=— | contraste=—
 S12J0 | ab-wheel | 2 × 6 — poids du corps | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=5-5 | superset=— | contraste=—
 S12J0 | bench-press | 3 × 2 × 55 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=55 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
-S12J0 | push-press | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=0-6 | superset=— | contraste=—
+S12J0 | push-press | 3 × 2 × 37,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=37.5 | kgMax=— | source=1rm | repos=120s | rpe=0-6 | superset=— | contraste=—
 S12J2 | séance | TEST Deadlift 1RM | bloc=Taper + combine final | intensité=TEST | durée=58min | échauffement=oui | test=non | notes=2 | suspendus=—
 S12J2 | test-deadlift-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J4 | séance | Tests athlétiques | bloc=Taper + combine final | intensité=TEST | durée=39min | échauffement=oui | test=non | notes=2 | suspendus=—
@@ -2078,9 +2074,9 @@ S12J4 | test-sprint-20m | 4 essais | séries=1 | travail={"kind":"attempts","att
 S12J4 | test-strict-pullup-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | test-leg-raise-max | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
 S12J4 | speed-squat | 2 × 2 × 47,5 kg | séries=2 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=47.5 | kgMax=— | source=1rm | repos=90s | rpe=—-— | superset=— | contraste=—
-S12J5 | séance | TEST Back Squat 1RM + Farmer | bloc=Taper + combine final | intensité=TEST | durée=66min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S12J5 | séance | TEST Back Squat 1RM + Push Press 1RM | bloc=Taper + combine final | intensité=TEST | durée=100min | échauffement=oui | test=oui | notes=2 | suspendus=—
 S12J5 | test-squat-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
-S12J5 | test-farmer-carry | 1 série max | séries=1 | travail={"kind":"maxSet"} | kg=— | kgMax=— | source=aucune | repos=0s | rpe=—-— | superset=— | contraste=—
+S12J5 | test-push-press-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | séance | TEST Bench + tractions + tronc | bloc=Taper + combine final | intensité=TEST | durée=94min | échauffement=oui | test=non | notes=1 | suspendus=—
 S12J6 | test-bench-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—
 S12J6 | test-weighted-pullup-1rm | 3 essais | séries=1 | travail={"kind":"attempts","attempts":3} | kg=— | kgMax=— | source=aucune | repos=300s | rpe=—-— | superset=— | contraste=—

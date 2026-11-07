@@ -17,7 +17,13 @@ const SETTINGS = {
   startDate: '2026-08-24',
   broadJumpBaselineCm: 232,
   tableauOrigine: false,
-  oneRM: { 'back-squat': 140, 'bench-press': 115, deadlift: 180, 'weighted-pullup': 45 },
+  oneRM: {
+    'back-squat': 140,
+    'bench-press': 115,
+    deadlift: 180,
+    'weighted-pullup': 45,
+    'push-press': 77.5,
+  },
 };
 
 /** Une occurrence de RDL : charge réelle, et le plan que le tableau annonçait. */
@@ -306,6 +312,8 @@ describe('le deload sur le réel ne vaut QUE là où le programme l’écrit', (
   });
 
   it('le Push Press non plus — un deload ne doit pas alourdir la barre', () => {
+    // 58 % de 77,5 = 45. La case du deload reste celle du tableau, même si
+    // la semaine 7 a été tenue à la charge prévue.
     const ex = chargeDe('push-press', 8, 4, histoireDe('push-press', 7, 60, 60));
     expect(ex.load.kg).toBe(45);
   });
