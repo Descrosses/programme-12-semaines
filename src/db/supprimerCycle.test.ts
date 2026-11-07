@@ -111,7 +111,7 @@ describe('suppression securisee des cycles prevus', () => {
       oneRMCalibratedAt: '',
       soundEnabled: true,
       vibrationEnabled: true,
-      legacyNutritionPlan: false,
+      legacyNutritionPlan: false, ciblesNutrition: null,
     });
     expect(await supprimerCycleNonCommence(id)).toBe(true);
     expect((await db.settings.get(1))?.cycleActifId).toBe(autre);
@@ -134,7 +134,7 @@ describe('suppression securisee des cycles prevus', () => {
       oneRMCalibratedAt: '',
       soundEnabled: true,
       vibrationEnabled: true,
-      legacyNutritionPlan: false,
+      legacyNutritionPlan: false, ciblesNutrition: null,
     });
     expect(await supprimerCycleNonCommence(id)).toBe(false);
     expect(await db.cycles.get(id)).toBeDefined();

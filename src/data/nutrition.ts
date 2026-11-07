@@ -24,8 +24,13 @@
  *    Le « corriger » ici inventerait une précision que le plan ne revendique pas.
  */
 
-/** Jour d'entraînement ou jour de repos — les deux seuls paliers du plan. */
-export type DayKind = 'train' | 'rest';
+/*
+ * `DayKind` vit maintenant dans `types.ts` : les cibles nutritionnelles en ont
+ * besoin sans vouloir de ce fichier-ci, qui porte les menus. On le ré-exporte
+ * pour ne rien casser chez les dizaines d'appelants existants.
+ */
+export type { DayKind } from './types';
+import type { DayKind } from './types';
 
 /**
  * Comment se pèse un aliment. `unité` sert à ce qui ne se pèse pas en pratique
@@ -163,7 +168,15 @@ export interface NutritionTarget {
 export type ReferenceState = 'cru' | 'cuit' | 'na';
 
 /** Famille d'aliment, pour ranger la bibliothèque de remplacement. */
-export type FoodCategory = 'proteine' | 'feculent' | 'legumineuse' | 'legume' | 'fruit' | 'laitier' | 'gras' | 'autre';
+export type FoodCategory =
+  | 'proteine'
+  | 'feculent'
+  | 'legumineuse'
+  | 'legume'
+  | 'fruit'
+  | 'laitier'
+  | 'gras'
+  | 'autre';
 
 export interface FoodProduct {
   label: string;
@@ -182,7 +195,18 @@ export interface FoodProduct {
 }
 
 export const PRODUITS = {
-  oeuf: { label: 'Œuf entier', unit: 'unité', per: 1, kcal: 71.5, proteinG: 6.3, carbsG: 0.35, fatG: 4.95, referenceState: 'na', category: 'proteine', hint: 'Un œuf moyen, environ 50 g.' },
+  oeuf: {
+    label: 'Œuf entier',
+    unit: 'unité',
+    per: 1,
+    kcal: 71.5,
+    proteinG: 6.3,
+    carbsG: 0.35,
+    fatG: 4.95,
+    referenceState: 'na',
+    category: 'proteine',
+    hint: 'Un œuf moyen, environ 50 g.',
+  },
   /*
    * Flocons CROUSTILLANTS, pas des flocons d'avoine nature : ce sont deux
    * produits différents, l'un à 380 kcal/100 g, l'autre autour de 460 à cause
@@ -193,22 +217,191 @@ export const PRODUITS = {
    * lue sur un paquet : c'est la ligne la moins fiable du plan, à recopier
    * depuis l'étiquette réelle dans l'écran Nutrition.
    */
-  floconsCroustillants: { label: 'Flocons croustillants', unit: 'g', per: 100, kcal: 460, proteinG: 9, carbsG: 62, fatG: 19, referenceState: 'na', category: 'feculent', hint: 'Type Bjorg. Valeur approchée — recopie ton étiquette.' },
-  fruitsRouges: { label: 'Fruits rouges', unit: 'g', per: 100, kcal: 45, proteinG: 0.9, carbsG: 8, fatG: 0.4, referenceState: 'na', category: 'fruit', hint: 'Surgelés ou frais, mélange standard.' },
-  lait: { label: 'Lait demi-écrémé', unit: 'ml', per: 100, kcal: 46, proteinG: 3.3, carbsG: 4.8, fatG: 1.6, referenceState: 'na', category: 'laitier' },
-  pomme: { label: 'Pomme', unit: 'unité', per: 1, kcal: 80, proteinG: 0.5, carbsG: 21.5, fatG: 0.3, referenceState: 'na', category: 'fruit', hint: 'Une pomme moyenne, environ 155 g.' },
-  amandes: { label: 'Amandes', unit: 'g', per: 100, kcal: 580, proteinG: 21, carbsG: 10, fatG: 50, referenceState: 'na', category: 'gras' },
-  skyr: { label: 'Skyr nature', unit: 'g', per: 100, kcal: 63, proteinG: 9.8, carbsG: 4, fatG: 0.2, referenceState: 'na', category: 'laitier' },
-  confiture: { label: 'Miel ou confiture', unit: 'g', per: 100, kcal: 300, proteinG: 0.3, carbsG: 82, fatG: 0, referenceState: 'na', category: 'autre' },
-  poulet: { label: 'Poulet cuit', unit: 'g', per: 100, kcal: 165, proteinG: 31, carbsG: 0, fatG: 3.6, referenceState: 'cuit', category: 'proteine', hint: 'Blanc de poulet.' },
-  riz: { label: 'Riz cuit', unit: 'g', per: 100, kcal: 130, proteinG: 2.7, carbsG: 28, fatG: 0.3, referenceState: 'cuit', category: 'feculent' },
-  petitsPois: { label: 'Petits pois', unit: 'g', per: 100, kcal: 81, proteinG: 5.4, carbsG: 14.5, fatG: 0.4, referenceState: 'cuit', category: 'legume', hint: 'Riches en fibres.' },
-  pain: { label: 'Pain complet', unit: 'g', per: 100, kcal: 250, proteinG: 9, carbsG: 43, fatG: 3.3, referenceState: 'na', category: 'feculent', hint: 'Une tranche pèse environ 35 g.' },
-  banane: { label: 'Banane', unit: 'unité', per: 1, kcal: 107, proteinG: 1.3, carbsG: 27.6, fatG: 0.4, referenceState: 'na', category: 'fruit', hint: 'Une banane moyenne, environ 120 g épluchée.' },
-  saumon: { label: 'Saumon', unit: 'g', per: 100, kcal: 208, proteinG: 20, carbsG: 0, fatG: 13, referenceState: 'cuit', category: 'proteine', hint: 'Pavé.' },
-  pates: { label: 'Pâtes cuites', unit: 'g', per: 100, kcal: 158, proteinG: 5.8, carbsG: 31, fatG: 0.9, referenceState: 'cuit', category: 'feculent' },
-  brocolis: { label: 'Purée de brocolis', unit: 'g', per: 100, kcal: 35, proteinG: 2.8, carbsG: 4, fatG: 0.4, referenceState: 'cuit', category: 'legume' },
-  huile: { label: 'Huile d’olive', unit: 'g', per: 100, kcal: 900, proteinG: 0, carbsG: 0, fatG: 100, referenceState: 'na', category: 'gras', hint: '10 g ≈ une cuillère à soupe.' },
+  floconsCroustillants: {
+    label: 'Flocons croustillants',
+    unit: 'g',
+    per: 100,
+    kcal: 460,
+    proteinG: 9,
+    carbsG: 62,
+    fatG: 19,
+    referenceState: 'na',
+    category: 'feculent',
+    hint: 'Type Bjorg. Valeur approchée — recopie ton étiquette.',
+  },
+  fruitsRouges: {
+    label: 'Fruits rouges',
+    unit: 'g',
+    per: 100,
+    kcal: 45,
+    proteinG: 0.9,
+    carbsG: 8,
+    fatG: 0.4,
+    referenceState: 'na',
+    category: 'fruit',
+    hint: 'Surgelés ou frais, mélange standard.',
+  },
+  lait: {
+    label: 'Lait demi-écrémé',
+    unit: 'ml',
+    per: 100,
+    kcal: 46,
+    proteinG: 3.3,
+    carbsG: 4.8,
+    fatG: 1.6,
+    referenceState: 'na',
+    category: 'laitier',
+  },
+  pomme: {
+    label: 'Pomme',
+    unit: 'unité',
+    per: 1,
+    kcal: 80,
+    proteinG: 0.5,
+    carbsG: 21.5,
+    fatG: 0.3,
+    referenceState: 'na',
+    category: 'fruit',
+    hint: 'Une pomme moyenne, environ 155 g.',
+  },
+  amandes: {
+    label: 'Amandes',
+    unit: 'g',
+    per: 100,
+    kcal: 580,
+    proteinG: 21,
+    carbsG: 10,
+    fatG: 50,
+    referenceState: 'na',
+    category: 'gras',
+  },
+  skyr: {
+    label: 'Skyr nature',
+    unit: 'g',
+    per: 100,
+    kcal: 63,
+    proteinG: 9.8,
+    carbsG: 4,
+    fatG: 0.2,
+    referenceState: 'na',
+    category: 'laitier',
+  },
+  confiture: {
+    label: 'Miel ou confiture',
+    unit: 'g',
+    per: 100,
+    kcal: 300,
+    proteinG: 0.3,
+    carbsG: 82,
+    fatG: 0,
+    referenceState: 'na',
+    category: 'autre',
+  },
+  poulet: {
+    label: 'Poulet cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 165,
+    proteinG: 31,
+    carbsG: 0,
+    fatG: 3.6,
+    referenceState: 'cuit',
+    category: 'proteine',
+    hint: 'Blanc de poulet.',
+  },
+  riz: {
+    label: 'Riz cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 130,
+    proteinG: 2.7,
+    carbsG: 28,
+    fatG: 0.3,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
+  petitsPois: {
+    label: 'Petits pois',
+    unit: 'g',
+    per: 100,
+    kcal: 81,
+    proteinG: 5.4,
+    carbsG: 14.5,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legume',
+    hint: 'Riches en fibres.',
+  },
+  pain: {
+    label: 'Pain complet',
+    unit: 'g',
+    per: 100,
+    kcal: 250,
+    proteinG: 9,
+    carbsG: 43,
+    fatG: 3.3,
+    referenceState: 'na',
+    category: 'feculent',
+    hint: 'Une tranche pèse environ 35 g.',
+  },
+  banane: {
+    label: 'Banane',
+    unit: 'unité',
+    per: 1,
+    kcal: 107,
+    proteinG: 1.3,
+    carbsG: 27.6,
+    fatG: 0.4,
+    referenceState: 'na',
+    category: 'fruit',
+    hint: 'Une banane moyenne, environ 120 g épluchée.',
+  },
+  saumon: {
+    label: 'Saumon',
+    unit: 'g',
+    per: 100,
+    kcal: 208,
+    proteinG: 20,
+    carbsG: 0,
+    fatG: 13,
+    referenceState: 'cuit',
+    category: 'proteine',
+    hint: 'Pavé.',
+  },
+  pates: {
+    label: 'Pâtes cuites',
+    unit: 'g',
+    per: 100,
+    kcal: 158,
+    proteinG: 5.8,
+    carbsG: 31,
+    fatG: 0.9,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
+  brocolis: {
+    label: 'Purée de brocolis',
+    unit: 'g',
+    per: 100,
+    kcal: 35,
+    proteinG: 2.8,
+    carbsG: 4,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
+  huile: {
+    label: 'Huile d’olive',
+    unit: 'g',
+    per: 100,
+    kcal: 900,
+    proteinG: 0,
+    carbsG: 0,
+    fatG: 100,
+    referenceState: 'na',
+    category: 'gras',
+    hint: '10 g ≈ une cuillère à soupe.',
+  },
 } as const satisfies Record<string, FoodProduct>;
 
 export type ProductId = keyof typeof PRODUITS;
@@ -472,7 +665,8 @@ export const SHOPPING_LIST: ShoppingGroup[] = [
   { title: 'Lipides', items: 'Huile d’olive, amandes ou noix, avocat (optionnel)' },
   {
     title: 'Légumes',
-    items: 'En grande quantité, ce qui te plaît — haricots verts, brocolis, carottes, salade, courgettes',
+    items:
+      'En grande quantité, ce qui te plaît — haricots verts, brocolis, carottes, salade, courgettes',
   },
 ];
 
@@ -680,6 +874,5 @@ export const DELOAD_QUANTITIES: Readonly<Record<string, number>> = {
 /** Le bandeau affiché dans l'écran Nutrition pendant une semaine de deload. */
 export const DELOAD_BANNER = {
   title: 'SEMAINE DE DELOAD',
-  text:
-    'Volume d’entraînement réduit : apports légèrement ajustés pour correspondre à la dépense énergétique tout en favorisant la récupération. Protéines et lipides inchangés — seuls les féculents baissent.',
+  text: 'Volume d’entraînement réduit : apports légèrement ajustés pour correspondre à la dépense énergétique tout en favorisant la récupération. Protéines et lipides inchangés — seuls les féculents baissent.',
 } as const;

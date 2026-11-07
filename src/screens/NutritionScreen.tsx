@@ -35,6 +35,7 @@ import {
   weeklyAverages,
   weightTrend,
   type Measurement,
+  extrasTotal,
 } from '../engine/nutrition';
 import {
   allCustomFoods,
@@ -55,6 +56,16 @@ import {
   getSettingsRow,
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
+import { cibleDuJour } from '../engine/cibleDuJour';
+/*
+ * Le « repas » auquel s'accrochent les aliments notés sans menu.
+ *
+ * `ExtraFoodRow.mealId` est une chaîne libre : lui donner une valeur à part
+ * plutôt que de la laisser vide garde les lignes reconnaissables, et permet
+ * de les distinguer un jour des ajouts faits à un vrai repas.
+ */
+const MEAL_LIBRE = 'libre';
+import type { CiblesNutrition } from '../data/ciblesNutrition';
 import { MacroBar } from '../components/MacroBar';
 import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
@@ -94,6 +105,7 @@ export function NutritionScreen({
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
+  const [cibles, setCibles] = useState<CiblesNutrition | null>(null);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
   const [customs, setCustoms] = useState<LibraryFood[]>([]);
@@ -120,6 +132,7 @@ export function NutritionScreen({
   async function reload() {
     const settings = await getSettingsRow();
     setLegacyPlan(settings.legacyNutritionPlan);
+    setCibles(settings.ciblesNutrition);
     const all = await allMeasurements();
     setRows(
       all.map((r) => ({
@@ -160,25 +173,171 @@ export function NutritionScreen({
 
   if (!rows || legacyPlan === null) return <div className={styles.loading}>Chargement…</div>;
 
-  // Une installation neuve ne reçoit pas les calories, menus ou conseils
-  // personnels de l'auteur. Les mesures restent utilisables.
+  /*
+   * SANS MENUS — et ce n'est plus un écran vide.
+   *
+   * Les menus sont du contenu de coach : neuf prises nommées, avec leurs
+   * horaires et leurs aliments. Personne ne peut les inventer à la place de
+   * la personne, et les lui prêter reviendrait à lui prescrire la diète de
+   * quelqu'un d'autre. Ils restent donc absents.
+   *
+   * Les CIBLES, elles, sont quatre nombres par journée. Posées dans les
+   * Réglages, elles suffisent à tout ce qui compte au quotidien : la cible du
+   * jour, la composition visée, ce qui a été mangé, et l'écart entre les deux.
+   */
   if (!legacyPlan) {
+    const resolue = cibleDuJour(kind, { menus: false, cibles });
+    const mange = extrasTotal(extras);
+    const cibleJour = resolue?.cible ?? null;
+    const reste =
+      cibleJour === null
+        ? null
+        : {
+            kcal: Math.round(cibleJour.kcal - mange.kcal),
+            proteinG: Math.round(cibleJour.proteinG - mange.proteinG),
+            carbsG: Math.round(cibleJour.carbsG - mange.carbsG),
+            fatG: Math.round(cibleJour.fatG - mange.fatG),
+          };
     return (
       <div className={styles.screen}>
         <ScreenHeader
           eyebrow="Suivi personnel"
           title="Nutrition"
-          subtitle="Plan masqué dans les Réglages"
+          subtitle={cibleJour === null ? 'Tes cibles restent à poser' : cibleJour.label}
           visuel="ballon"
         />
+
+        {cibleJour === null ? (
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Aucune cible posée</h2>
+            <p className={styles.cardSub}>
+              MAJK ne décide pas combien tu dois manger. Pose tes calories et tes macros dans
+              Réglages → Mes cibles nutritionnelles, et cet écran affichera ta cible du jour, ce que
+              tu as mangé et l’écart entre les deux.
+            </p>
+            <p className={styles.fieldHint}>
+              Tu peux déjà noter ce que tu manges et te peser ci-dessous : rien n’attend les cibles.
+            </p>
+          </section>
+        ) : (
+          <section className={styles.card}>
+            <div className={styles.keyStat}>
+              <div className={styles.keyStatLabel}>Ta cible aujourd’hui · {cibleJour.label}</div>
+              <div className={`${styles.keyStatValue} tnum`}>
+                {cibleJour.kcal.toLocaleString('fr-FR')} <span>kcal</span>
+              </div>
+            </div>
+            <MacroBar
+              macros={{
+                kcal: cibleJour.kcal,
+                proteinG: cibleJour.proteinG,
+                carbsG: cibleJour.carbsG,
+                fatG: cibleJour.fatG,
+              }}
+            />
+          </section>
+        )}
+
+        {/*
+          Le même sélecteur que dans le chemin avec menus, et pour la même
+          raison : une séance faite un jour que le programme donne en repos se
+          mange comme une séance. Il s'affiche même sans cible posée — déclarer
+          sa journée ne dépend pas d'avoir des chiffres.
+        */}
+        <div className={styles.segment} role="group" aria-label="Palier alimentaire">
+          {(['train', 'rest'] as const).map((k) => (
+            <button
+              key={k}
+              type="button"
+              className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ''}`}
+              onClick={() =>
+                void (async () => {
+                  setKind(k);
+                  await setDayKindOverride(todayIso, k === todayKind ? null : k);
+                  onDayKindChange();
+                })()
+              }
+              aria-pressed={kind === k}
+            >
+              {k === 'train' ? 'Jour d’entraînement' : 'Jour de repos'}
+            </button>
+          ))}
+        </div>
+
+        {/*
+          Ce qui a été mangé, et ce qu'il reste.
+          Une seule liste, sans repas : il n'y en a pas à remplir.
+        */}
         <section className={styles.card}>
-          <h2 className={styles.cardTitle}>Plan nutritionnel masqué</h2>
-          <p className={styles.cardSub}>
-            Rien n’est perdu : tes pesées, tes repas cochés et tes aliments sont toujours en base.
-            Pour retrouver calories, macros et menus, va dans Réglages → Plan nutritionnel et remets
-            « Afficher mon plan ».
-          </p>
+          <h2 className={styles.cardTitle}>Ce que j’ai mangé</h2>
+          {extras.length === 0 ? (
+            <p className={styles.cardSub}>Rien de noté aujourd’hui.</p>
+          ) : (
+            <>
+              <div className={styles.keyStat}>
+                <div className={styles.keyStatLabel}>Total du jour</div>
+                <div className={`${styles.keyStatValue} tnum`}>
+                  {Math.round(mange.kcal).toLocaleString('fr-FR')} <span>kcal</span>
+                </div>
+              </div>
+              <MacroBar macros={mange} />
+              <ExtrasDuRepas
+                extras={extras}
+                onRemove={async (id: number) => {
+                  await removeExtra(id);
+                  setExtras(await extrasOn(todayIso));
+                }}
+              />
+            </>
+          )}
+          {reste !== null && (
+            <p className={styles.fieldHint}>
+              {reste.kcal > 0
+                ? `Il reste ${reste.kcal.toLocaleString('fr-FR')} kcal, ${String(reste.proteinG)} g de protéines, ${String(reste.carbsG)} g de glucides et ${String(reste.fatG)} g de lipides pour atteindre ta cible.`
+                : `Tu dépasses ta cible de ${Math.abs(reste.kcal).toLocaleString('fr-FR')} kcal.`}
+            </p>
+          )}
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '12px 0 0' }}
+            onClick={() => setAjoutPour({ id: MEAL_LIBRE, name: 'Ce que j’ai mangé' })}
+          >
+            + Ajouter un aliment
+          </button>
         </section>
+
+        {ajoutPour && (
+          <AddFoodSheet
+            mealName={ajoutPour.name}
+            customs={customs}
+            onAdd={(food, qty) =>
+              void (async () => {
+                await addExtra(todayIso, MEAL_LIBRE, qty, food);
+                setExtras(await extrasOn(todayIso));
+              })()
+            }
+            onCreateCustom={(food) =>
+              void (async () => {
+                await saveCustomFood({
+                  foodId: food.id,
+                  label: food.label,
+                  unit: food.unit,
+                  per: food.per,
+                  kcal: food.kcal,
+                  proteinG: food.proteinG,
+                  carbsG: food.carbsG,
+                  fatG: food.fatG,
+                  referenceState: food.referenceState,
+                  category: food.category,
+                  addedAt: new Date().toISOString().slice(0, 10),
+                });
+                setCustoms(await chargerCustoms());
+              })()
+            }
+            onClose={() => setAjoutPour(null)}
+          />
+        )}
         <section className={styles.card}>
           <h2 className={styles.cardTitle}>Pesée du matin</h2>
           <div className={styles.field}>
