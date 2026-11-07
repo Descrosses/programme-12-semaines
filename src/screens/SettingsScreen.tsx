@@ -11,6 +11,8 @@ import {
   type CiblesNutrition,
 } from '../data/ciblesNutrition';
 import type { DayKind } from '../data/types';
+import { genererFiche, lireFiche, type LectureFiche } from '../engine/fiche';
+import { FOOD_LIBRARY } from '../data/foodLibrary';
 import { bandePoids } from '../engine/ciblePoids';
 import { poseMaximum } from '../engine/maxima';
 import { dateFor, humanDate, isMonday, nearestMonday } from '../engine/calendar';
@@ -652,6 +654,9 @@ export function SettingsScreen({
         )}
       </section>
 
+      {/* ----------------------------------------------------- la fiche -- */}
+      <CarteFiche row={row} patch={patch} />
+
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Gestion des données</h2>
         <p className={styles.cardSub}>
@@ -732,5 +737,160 @@ function CiblesDuJour({
         </p>
       )}
     </>
+  );
+}
+
+/**
+ * La fiche : ce qu'on envoie, et ce qu'on reçoit.
+ *
+ * Deux gestes opposés dans une seule carte, parce que c'est la même chose vue
+ * des deux bouts : un coach génère, une personne colle.
+ *
+ * Coller ne change RIEN tant qu'on n'a pas vu ce qui va changer. L'aperçu
+ * n'est pas une politesse : des cibles écrasées en silence, c'est exactement
+ * la perte qu'on a déjà payée une fois dans ce dépôt.
+ */
+function CarteFiche({
+  row,
+  patch,
+}: {
+  row: SettingsRow;
+  patch: (p: Partial<SettingsRow>) => Promise<void>;
+}) {
+  const [colle, setColle] = useState('');
+  const [lecture, setLecture] = useState<LectureFiche | null>(null);
+  const [copie, setCopie] = useState(false);
+
+  const aEnvoyer = genererFiche({
+    cibles: row.ciblesNutrition,
+    aliments: row.alimentsPreferes ?? [],
+  });
+  // Le marqueur seul ne porte rien : il n'y a rien à envoyer.
+  const quelqueChoseAEnvoyer = aEnvoyer.includes('=');
+
+  return (
+    <section className={styles.card}>
+      <h2 className={styles.cardTitle}>Partager une fiche</h2>
+      <p className={styles.cardSub}>
+        Un texte court qui porte des cibles et des aliments. Il se colle dans un message — WhatsApp,
+        SMS, mail — et se relit ici. Ce qu’il évite, ce n’est pas le temps de saisie : c’est de
+        retaper 240 au lieu de 2 400 sans que personne ne le voie.
+      </p>
+
+      {quelqueChoseAEnvoyer ? (
+        <>
+          <pre className={styles.fichePre}>{aEnvoyer}</pre>
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '10px 0 0' }}
+            onClick={() =>
+              void (async () => {
+                try {
+                  await navigator.clipboard.writeText(aEnvoyer);
+                  setCopie(true);
+                } catch {
+                  // Presse-papier refusé : le texte reste sélectionnable au doigt.
+                  setCopie(false);
+                }
+              })()
+            }
+          >
+            {copie ? 'Copié ✓' : 'Copier ma fiche'}
+          </button>
+        </>
+      ) : (
+        <p className={styles.fieldHint}>
+          Rien à envoyer pour l’instant : pose des cibles ci-dessus, ou colle une fiche reçue.
+        </p>
+      )}
+
+      <h3 className={styles.sectionTitle}>Coller une fiche reçue</h3>
+      <textarea
+        className={styles.ficheZone}
+        value={colle}
+        onChange={(e) => {
+          setColle(e.target.value);
+          setLecture(null);
+        }}
+        placeholder="Colle ici le message entier, le bonjour et la signature compris."
+        rows={3}
+      />
+      <button
+        type="button"
+        className={styles.secondary}
+        style={{ width: '100%', margin: '10px 0 0' }}
+        disabled={colle.trim() === ''}
+        onClick={() => setLecture(lireFiche(colle))}
+      >
+        Lire la fiche
+      </button>
+
+      {lecture !== null && !lecture.trouvee && (
+        <p className={styles.fieldHint} style={{ color: 'var(--accent-ink)' }}>
+          Aucune fiche trouvée dans ce texte. Une fiche commence par <b>MAJK1</b> — vérifie que le
+          message a bien été collé en entier.
+        </p>
+      )}
+
+      {lecture?.trouvee === true && (
+        <div className={styles.fichePreview}>
+          {/*
+            L'aperçu dit ce qui va changer, et seulement ça. Les aliments
+            inconnus et les erreurs sont montrés AVANT, pas après : une fois
+            appliqué, il est trop tard pour s'en apercevoir.
+          */}
+          {lecture.cibles !== null && (
+            <p>
+              <b>Cibles</b> — entraînement {lecture.cibles.train.kcal} kcal, repos{' '}
+              {lecture.cibles.rest.kcal} kcal.
+              {row.ciblesNutrition !== null && ' Elles remplaceront les tiennes.'}
+            </p>
+          )}
+          {lecture.aliments.length > 0 && (
+            <p>
+              <b>{lecture.aliments.length} aliments</b> —{' '}
+              {lecture.aliments
+                .map((id) => FOOD_LIBRARY[id]?.label ?? id)
+                .slice(0, 4)
+                .join(', ')}
+              {lecture.aliments.length > 4 ? '…' : ''}
+            </p>
+          )}
+          {lecture.inconnus.length > 0 && (
+            <p style={{ color: 'var(--accent-ink)' }}>
+              <b>Non reconnus</b> — {lecture.inconnus.join(', ')}. Ils seront ignorés. Tu peux les
+              créer à la main depuis l’onglet Nutrition.
+            </p>
+          )}
+          {lecture.problemes.map((pb) => (
+            <p key={pb} style={{ color: 'var(--accent-ink)' }}>
+              {pb}
+            </p>
+          ))}
+          {lecture.cibles === null && lecture.aliments.length === 0 ? (
+            <p className={styles.fieldHint}>Rien d’utilisable dans cette fiche.</p>
+          ) : (
+            <button
+              type="button"
+              className={styles.secondary}
+              style={{ width: '100%', margin: '10px 0 0' }}
+              onClick={() =>
+                void (async () => {
+                  await patch({
+                    ...(lecture.cibles !== null ? { ciblesNutrition: lecture.cibles } : {}),
+                    ...(lecture.aliments.length > 0 ? { alimentsPreferes: lecture.aliments } : {}),
+                  });
+                  setColle('');
+                  setLecture(null);
+                })()
+              }
+            >
+              Appliquer cette fiche
+            </button>
+          )}
+        </div>
+      )}
+    </section>
   );
 }
