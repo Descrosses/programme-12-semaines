@@ -172,6 +172,34 @@ export function locateToday(
   return { kind: 'rest', next, daysUntil: daysBetween(todayIso, next.date) };
 }
 
+/**
+ * La prochaine séance À FAIRE — pas simplement la prochaine au calendrier.
+ *
+ * Le défaut corrigé : l'accueil annonçait « prochaine séance » en pointant
+ * la case du jour, sans jamais regarder si elle était déjà terminée. Qui
+ * finit sa séance du vendredi le jeudi soir se voyait proposer, le vendredi,
+ * d'ouvrir celle qu'il venait de faire — et le bouton ne basculait jamais
+ * sur la suivante.
+ *
+ * La règle tient en une phrase : la première séance datée d'aujourd'hui ou
+ * plus tard qui n'est pas terminée. Une séance commencée mais pas finie en
+ * fait partie, et c'est voulu — c'est précisément celle qu'on veut rouvrir.
+ *
+ * Les séances MANQUÉES, elles, restent en arrière : une case non faite d'il y
+ * a trois semaines ne doit pas devenir « la prochaine », sinon le bouton
+ * resterait bloqué sur un passé qu'on a décidé de laisser derrière.
+ *
+ * `planifiees` est attendu dans l'ordre des dates — c'est ce que rend
+ * `schedule`.
+ */
+export function prochaineSeance(
+  planifiees: readonly ScheduledSession[],
+  todayIso: string,
+  estFaite: (s: ScheduledSession) => boolean,
+): ScheduledSession | null {
+  return planifiees.find((s) => s.date >= todayIso && !estFaite(s)) ?? null;
+}
+
 /** Séance précédant immédiatement une case donnée, pour la navigation manuelle. */
 export function previousSession(
   startDate: string,

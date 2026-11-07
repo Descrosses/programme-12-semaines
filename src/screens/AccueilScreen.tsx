@@ -27,7 +27,7 @@ import { Visuel } from '../components/Visuel';
 import { FAMILLES, programmeParId, type ProgrammeDefinition } from '../data/catalogue';
 import { HABILLAGE } from '../data/famillesVisuel';
 import type { DayIndex, WeekIndex } from '../data/types';
-import { locateToday, schedule } from '../engine/calendar';
+import { prochaineSeance, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
 import { allSessions, cycleActif, getSettingsRow } from '../db/repo';
 import type { CycleRow } from '../db/db';
@@ -42,6 +42,13 @@ interface Etat {
   semaine: WeekIndex | null;
   semaines: number;
   prochaine: { week: WeekIndex; day: DayIndex; titre: string; date: string; duree: string } | null;
+  /**
+   * Y a-t-il un calendrier ? Sans date de début, non — et `prochaine` vaut
+   * `null` faute de pouvoir dater quoi que ce soit. Avec un calendrier,
+   * `prochaine` à `null` veut dire tout autre chose : il ne reste plus rien
+   * à faire. Les deux méritent un message différent.
+   */
+  calendrier: boolean;
 }
 
 const VIDE: Etat = {
@@ -52,6 +59,7 @@ const VIDE: Etat = {
   semaine: null,
   semaines: 0,
   prochaine: null,
+  calendrier: false,
 };
 
 export function AccueilScreen({
@@ -85,18 +93,23 @@ export function AccueilScreen({
       const faites = seances.filter((s) => s.status === 'done').length;
 
       /*
-       * La prochaine séance est celle d'aujourd'hui quand il y en a une, sinon
-       * la suivante au calendrier. On ne l'invente pas : sans date de début,
-       * il n'y a pas de calendrier, donc pas de prochaine séance.
+       * La prochaine séance À FAIRE, et pas la prochaine case du calendrier.
+       *
+       * Avant, on prenait la séance du jour sans regarder si elle était déjà
+       * terminée : finir sa séance du vendredi le jeudi soir faisait proposer,
+       * le vendredi, d'ouvrir celle qu'on venait de faire. `prochaineSeance`
+       * saute ce qui est fait. On ne l'invente pas non plus : sans date de
+       * début, il n'y a pas de calendrier, donc pas de prochaine séance.
        */
       let prochaine: Etat['prochaine'] = null;
       if (debut !== '') {
         const aujourdhui = new Date().toISOString().slice(0, 10);
-        const ici = locateToday(debut, aujourdhui, module);
-        const cible =
-          ici?.kind === 'session'
-            ? ici.session
-            : (planifiees.find((p) => p.date >= aujourdhui) ?? null);
+        const faitesParCase = new Set(
+          seances.filter((x) => x.status === 'done').map((x) => `${x.week}-${x.day}`),
+        );
+        const cible = prochaineSeance(planifiees, aujourdhui, (c) =>
+          faitesParCase.has(`${String(c.week)}-${String(c.day)}`),
+        );
         if (cible) {
           const resolue = module.getSession(cible.week, cible.day, EMPTY_CONTEXT);
           prochaine = {
@@ -117,6 +130,7 @@ export function AccueilScreen({
         semaine: prochaine?.week ?? null,
         semaines: module.dureeSemaines,
         prochaine,
+        calendrier: debut !== '',
       });
       setPret(true);
     })();
@@ -217,15 +231,23 @@ export function AccueilScreen({
           </button>
         )}
 
+        {/*
+          Deux raisons de n'avoir aucune prochaine séance, et deux phrases.
+          Dire « pose ta date de début » à quelqu'un qui vient de finir ses
+          douze semaines serait absurde, et le renverrait chercher un réglage
+          qui n'a aucun rapport.
+        */}
         {pret && etat.cycle !== null && etat.prochaine === null && (
           <button type="button" className={styles.prochaine} onClick={onReprendre}>
             <span className={styles.prochaineIcone} aria-hidden="true">
               <Icon name="calendar" size="20px" />
             </span>
             <span className={styles.prochaineTexte}>
-              <b>Reprendre le programme</b>
+              <b>{etat.calendrier ? 'Toutes tes séances sont faites' : 'Reprendre le programme'}</b>
               <span className={styles.prochaineMeta}>
-                Pose ta date de début pour voir ton calendrier
+                {etat.calendrier
+                  ? 'Clôture ce cycle dans Mon parcours, ou ouvre une séance pour corriger une saisie'
+                  : 'Pose ta date de début pour voir ton calendrier'}
               </span>
             </span>
             <span className={styles.lecture} aria-hidden="true">

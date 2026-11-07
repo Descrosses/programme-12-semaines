@@ -11,6 +11,7 @@ import {
   nearestMonday,
   nextSession,
   previousSession,
+  prochaineSeance,
   schedule,
 } from './calendar';
 
@@ -324,5 +325,57 @@ describe('un autre programme, une autre structure', () => {
       kind: 'finished',
       last: dernier,
     });
+  });
+});
+
+/*
+ * « Ouvrir la prochaine séance » pointait une séance déjà faite.
+ *
+ * Le cas réel : la séance du vendredi terminée le jeudi soir. Le vendredi,
+ * l'accueil proposait toujours de l'ouvrir, et ne basculait jamais sur la
+ * suivante. Ces tests tiennent la règle qui corrige ça.
+ */
+describe('prochaineSeance', () => {
+  const PLAN = schedule('2026-11-02').slice(0, 6);
+  const aucune = () => false;
+
+  it('rend la séance du jour quand elle n’est pas faite', () => {
+    const cible = PLAN[2]!;
+    expect(prochaineSeance(PLAN, cible.date, aucune)).toEqual(cible);
+  });
+
+  it('saute la séance du jour quand elle est DÉJÀ terminée', () => {
+    const faite = PLAN[2]!;
+    const suivante = PLAN[3]!;
+    const resultat = prochaineSeance(PLAN, faite.date, (s) => s.date === faite.date);
+    expect(resultat).toEqual(suivante);
+  });
+
+  it('saute plusieurs séances faites d’avance, pas seulement une', () => {
+    const faites = new Set([PLAN[0]!.date, PLAN[1]!.date, PLAN[2]!.date]);
+    const resultat = prochaineSeance(PLAN, PLAN[0]!.date, (s) => faites.has(s.date));
+    expect(resultat).toEqual(PLAN[3]);
+  });
+
+  it('rend null quand tout ce qui reste est fait', () => {
+    expect(prochaineSeance(PLAN, PLAN[0]!.date, () => true)).toBeNull();
+  });
+
+  it('un jour de repos pointe la séance suivante', () => {
+    // Une date postérieure à la 1re séance et antérieure à la 2e.
+    const veille = PLAN[1]!.date;
+    expect(prochaineSeance(PLAN, veille, aucune)).toEqual(PLAN[1]);
+  });
+
+  it('ne revient PAS sur une séance manquée dans le passé', () => {
+    // La première n'a pas été faite, mais on est déjà au jour de la troisième.
+    const resultat = prochaineSeance(PLAN, PLAN[2]!.date, aucune);
+    expect(resultat).toEqual(PLAN[2]);
+  });
+
+  it('rouvre une séance commencée mais non terminée', () => {
+    // « Commencée » n'est pas « faite » : c'est justement celle qu'on veut.
+    const cible = PLAN[1]!;
+    expect(prochaineSeance(PLAN, cible.date, () => false)).toEqual(cible);
   });
 });
