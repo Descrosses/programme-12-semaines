@@ -191,6 +191,22 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
     referenceState: 'cuit',
     category: 'feculent',
   },
+  /*
+   * Du questionnaire. 88,6 kcal calculées au 4/4/9 pour 83 annoncées :
+   * l'écart tient aux fibres, comptées dans les glucides et pas dans les
+   * calories.
+   */
+  boulgour: {
+    label: 'Boulgour cuit',
+    unit: 'g',
+    per: 100,
+    kcal: 83,
+    proteinG: 3.1,
+    carbsG: 18.6,
+    fatG: 0.2,
+    referenceState: 'cuit',
+    category: 'feculent',
+  },
 
   // ----------------------------------------------------------- LÉGUMINEUSES --
   lentilles: {
@@ -290,6 +306,28 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
    * 21 pour 18, l'écart tenant aux fibres comptées dans les glucides, soit
    * 3 kcal sur un aliment qui en pèse 18.
    */
+  concombre: {
+    label: 'Concombre cru',
+    unit: 'g',
+    per: 100,
+    kcal: 15,
+    proteinG: 0.7,
+    carbsG: 3.6,
+    fatG: 0.1,
+    referenceState: 'cru',
+    category: 'legume',
+  },
+  champignons: {
+    label: 'Champignons crus',
+    unit: 'g',
+    per: 100,
+    kcal: 22,
+    proteinG: 3.1,
+    carbsG: 3.3,
+    fatG: 0.3,
+    referenceState: 'cru',
+    category: 'legume',
+  },
   poivrons: {
     label: 'Poivrons crus',
     unit: 'g',
