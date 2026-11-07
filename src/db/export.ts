@@ -659,42 +659,19 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
   );
 }
 
-/** Efface tout l'historique. Les réglages sont conservés. */
-export async function resetHistory(): Promise<void> {
-  await db.transaction(
-    'rw',
-    [
-      db.sessions,
-      db.sets,
-      db.readiness,
-      db.combines,
-      db.measurements,
-      db.exerciseVideoLog,
-      db.painLog,
-      db.extraFoods,
-      db.notes,
-      db.noteDrafts,
-      db.sessionExercises,
-      db.exerciseNotes,
-    ],
-    async () => {
-      await Promise.all([
-        db.sessions.clear(),
-        db.sets.clear(),
-        db.readiness.clear(),
-        db.combines.clear(),
-        db.measurements.clear(),
-        db.exerciseVideoLog.clear(),
-        db.painLog.clear(),
-        db.extraFoods.clear(),
-        db.notes.clear(),
-        db.noteDrafts.clear(),
-        db.sessionExercises.clear(),
-        db.exerciseNotes.clear(),
-      ]);
-    },
-  );
-}
+/*
+ * `resetHistory` a été RETIRÉE, et pas seulement débranchée de l'écran.
+ *
+ * Elle vidait les douze tables d'un coup, sans filtre de cycle : lancée pour
+ * nettoyer MASS, elle a emporté l'historique POWER avec lui, et les pesées,
+ * et les repas. Une fonction qui ne sait pas distinguer deux programmes n'a
+ * pas sa place dans une appli qui en fait tourner plusieurs.
+ *
+ * Pour retirer un programme, « Mon parcours » supprime UN cycle, et refuse
+ * dès qu'il porte la moindre ligne. Pour repartir de zéro volontairement,
+ * l'export puis la réinstallation restent le chemin — explicite, et avec une
+ * sauvegarde en main.
+ */
 
 /**
  * Efface uniquement les photos.

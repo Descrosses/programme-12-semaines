@@ -573,12 +573,32 @@ export function SettingsScreen({
         )}
       </section>
 
+      {/* ------------------------------------------- plan nutritionnel -- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Plan nutritionnel</h2>
+        <button
+          type="button"
+          className={styles.toggle}
+          onClick={() => void patch({ legacyNutritionPlan: !row.legacyNutritionPlan })}
+          aria-pressed={row.legacyNutritionPlan}
+        >
+          Afficher mon plan
+          <span className={`${styles.switch} ${row.legacyNutritionPlan ? styles.switchOn : ''}`}>
+            {row.legacyNutritionPlan ? 'affiché' : 'masqué'}
+          </span>
+        </button>
+        <p className={styles.fieldHint}>
+          Coupé, l’onglet Nutrition ne garde que la pesée du matin : ni calories, ni macros, ni
+          menus. Rien n’est effacé — tes pesées, tes repas cochés et tes aliments restent en base et
+          reviennent tels quels en le rallumant.
+        </p>
+      </section>
+
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Gestion des données</h2>
         <p className={styles.cardSub}>
-          La suppression globale de l’historique est désactivée pour protéger
-          les séances et les performances de tous tes programmes.
-          Pour retirer un cycle, utilise la rubrique Parcours.
+          La suppression globale de l’historique est désactivée pour protéger les séances et les
+          performances de tous tes programmes. Pour retirer un cycle, utilise la rubrique Parcours.
         </p>
       </section>
     </div>

@@ -1444,7 +1444,7 @@
   padding: 0 0 4px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  border-left: 3px solid var(--line-strong);
+  border-left: 3px solid var(--accent);
   background: var(--surface);
 }
 

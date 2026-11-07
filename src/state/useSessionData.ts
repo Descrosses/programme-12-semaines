@@ -21,6 +21,7 @@ import {
   allSets,
   allSessions,
   ensureSession,
+  getSession,
   getReadiness,
   getSettingsRow,
   toEngineSettings,
@@ -62,11 +63,22 @@ export interface SessionData {
   customRows: SessionExerciseRow[];
   /** Ce que le programme prévoyait et qu'un remplacement a mis de côté. */
   replaced: Replaced[];
+  /**
+   * L'identifiant de la ligne de séance, créée MAINTENANT si elle n'existe
+   * pas encore — et avec elle le cycle, s'il n'y en avait aucun.
+   *
+   * À n'appeler que depuis un geste qui écrit : valider une série, cocher un
+   * échauffement, démarrer le chrono. Jamais à l'affichage.
+   *
+   * `null` quand le jour ne porte aucune séance ou que la date de début n'est
+   * pas posée : il n'y a alors rien à créer.
+   */
+  ensureRow: () => Promise<number | null>;
   reload: () => Promise<void>;
 }
 
 export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
-  const [state, setState] = useState<Omit<SessionData, 'reload'>>(() => empty());
+  const [state, setState] = useState<Omit<SessionData, 'reload' | 'ensureRow'>>(() => empty());
 
   const reload = useCallback(async () => {
     const settingsRow = await getSettingsRow();
@@ -109,8 +121,21 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       explosiveDecline: trend.declining,
     });
 
-    // La ligne de séance n'est créée que si la case porte une séance.
-    const row = prescrite && date ? await ensureSession(week, day, date) : null;
+    /*
+     * CONSULTER N'EST PAS COMMENCER — et ça allait plus loin que le chrono.
+     *
+     * La ligne de séance était CRÉÉE ici, au simple affichage de l'écran. Et
+     * `ensureSession` a besoin d'un cycle pour y rattacher sa ligne : ouvrir
+     * la séance d'un jour pour y jeter un œil démarrait donc un cycle en
+     * base. Deux conséquences, vues toutes les deux : « Mon parcours »
+     * affichait un cycle que Guillaume n'avait jamais lancé, et ce cycle
+     * portait aussitôt une séance — donc une trace — ce qui faisait refuser sa
+     * suppression.
+     *
+     * Ici on ne fait plus que LIRE. La ligne naît au premier geste qui écrit,
+     * par `ensureRow` ci-dessous.
+     */
+    const row = prescrite && date ? ((await getSession(week, day)) ?? null) : null;
 
     /*
      * Les remplacements et ajouts s'appliquent APRÈS la séance prescrite, et
@@ -134,14 +159,22 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       for (const list of Object.values(savedSets)) list.sort((a, b) => a.setIndex - b.setIndex);
     }
 
-    const previousSession = sessions.find(s => s.cycleId === cycle?.id && s.week === week - 1 && s.day === day) ?? null;
-    const previousSets = previousSession?.id === undefined ? [] : sets.filter(s => s.sessionId === previousSession.id);
+    const previousSession =
+      sessions.find((s) => s.cycleId === cycle?.id && s.week === week - 1 && s.day === day) ?? null;
+    const previousSets =
+      previousSession?.id === undefined
+        ? []
+        : sets.filter((s) => s.sessionId === previousSession.id);
     // Le programme du cycle fait autorité, y compris pour MASS (jamais WEEK_BLOCKS de POWER).
-    const previousPrescribed = previousSession && (previousSession.startedAt !== undefined || previousSets.length > 0)
-      ? programme.getSession(previousSession.week, previousSession.day, {
-          settings, history, readiness: null, explosiveDecline: false,
-        })
-      : null;
+    const previousPrescribed =
+      previousSession && (previousSession.startedAt !== undefined || previousSets.length > 0)
+        ? programme.getSession(previousSession.week, previousSession.day, {
+            settings,
+            history,
+            readiness: null,
+            explosiveDecline: false,
+          })
+        : null;
     const previousSaved: Record<string, SetRow[]> = {};
     for (const set of previousSets) (previousSaved[set.exerciseId] ??= []).push(set);
     const previousIncompleteExerciseIds = previousPrescribed
@@ -167,15 +200,28 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     });
   }, [week, day]);
 
+  /*
+   * La création à la demande. Elle relit la date par les mêmes règles que
+   * `reload` — l'ancre des Réglages et le programme du cycle — pour que la
+   * ligne naisse avec la bonne date même si Guillaume vient de corriger sa
+   * date de début.
+   */
+  const ensureRow = useCallback(async (): Promise<number | null> => {
+    if (state.row?.id !== undefined) return state.row.id;
+    if (state.session === null || state.date === '') return null;
+    const cree = await ensureSession(week, day, state.date);
+    return cree.id ?? null;
+  }, [state.row, state.session, state.date, week, day]);
+
   useEffect(() => {
     setState(empty());
     void reload();
   }, [reload]);
 
-  return { ...state, reload };
+  return { ...state, ensureRow, reload };
 }
 
-function empty(): Omit<SessionData, 'reload'> {
+function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
   return {
     loading: true,
     session: null,

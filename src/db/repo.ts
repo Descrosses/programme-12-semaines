@@ -142,6 +142,16 @@ export interface ResumeCycle {
   cycle: CycleRow;
   /** Séances marquées faites dans CE cycle. */
   faites: number;
+  /**
+   * Aucune trace dans les onze tables rattachées au cycle.
+   *
+   * C'est EXACTEMENT le prédicat que `supprimerCycleNonCommence` applique.
+   * L'écran Parcours s'en sert pour n'afficher « Supprimer » que là où la
+   * suppression aboutira : afficher le bouton sur « zéro séance faite »
+   * menait dans une impasse, puisqu'une séance ouverte sans rien y saisir
+   * laisse une ligne — donc une trace — et la suppression était refusée.
+   */
+  vierge: boolean;
 }
 
 /**
@@ -165,8 +175,39 @@ export async function resumesDesCycles(): Promise<ResumeCycle[]> {
               .equals(cycle.id)
               .filter((s) => s.status === 'done')
               .count(),
+      vierge: cycle.id === undefined ? false : await cycleEstVierge(cycle.id),
     })),
   );
+}
+
+/** Les onze tables rattachées à un cycle, dans l'ordre de `TABLES_PAR_CYCLE`. */
+const TABLES_DU_CYCLE = [
+  db.sessions,
+  db.sets,
+  db.readiness,
+  db.combines,
+  db.progressPhotos,
+  db.exerciseMedia,
+  db.exerciseVideoLog,
+  db.exerciseNotes,
+  db.notes,
+  db.noteDrafts,
+  db.sessionExercises,
+];
+
+/**
+ * Le cycle ne porte AUCUNE ligne — pas une séance, pas une série, pas une
+ * remarque. Une seule trace suffit à répondre non.
+ *
+ * Lu aussi hors transaction par `resumesDesCycles` : la réponse n'est alors
+ * qu'un indice d'affichage. La décision, elle, se reprend dans la
+ * transaction de `supprimerCycleNonCommence`, qui seule fait foi.
+ */
+async function cycleEstVierge(id: number): Promise<boolean> {
+  for (const table of TABLES_DU_CYCLE) {
+    if ((await table.where('cycleId').equals(id).count()) > 0) return false;
+  }
+  return true;
 }
 
 /**
@@ -177,22 +218,27 @@ export async function resumesDesCycles(): Promise<ResumeCycle[]> {
 export async function supprimerCycleNonCommence(id: number): Promise<boolean> {
   return db.transaction(
     'rw',
-    [db.cycles, db.settings, db.sessions, db.sets, db.readiness, db.combines,
-      db.progressPhotos, db.exerciseMedia, db.exerciseVideoLog,
-      db.exerciseNotes, db.notes, db.noteDrafts, db.sessionExercises],
+    [
+      db.cycles,
+      db.settings,
+      db.sessions,
+      db.sets,
+      db.readiness,
+      db.combines,
+      db.progressPhotos,
+      db.exerciseMedia,
+      db.exerciseVideoLog,
+      db.exerciseNotes,
+      db.notes,
+      db.noteDrafts,
+      db.sessionExercises,
+    ],
     async () => {
       const cycle = await db.cycles.get(id);
       if (!cycle || cycle.statut === 'termine') return false;
       const settings = await db.settings.get(1);
 
-      const tables = [
-        db.sessions, db.sets, db.readiness, db.combines,
-        db.progressPhotos, db.exerciseMedia, db.exerciseVideoLog,
-        db.exerciseNotes, db.notes, db.noteDrafts, db.sessionExercises,
-      ];
-      for (const table of tables) {
-        if (await table.where('cycleId').equals(id).count() > 0) return false;
-      }
+      if (!(await cycleEstVierge(id))) return false;
       if (settings?.cycleActifId === id) {
         const autres = await db.cycles.where('statut').equals('en-cours').toArray();
         const repli = autres.find((autre) => autre.id !== id);

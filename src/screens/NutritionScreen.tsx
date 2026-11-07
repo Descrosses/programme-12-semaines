@@ -165,29 +165,49 @@ export function NutritionScreen({
   if (!legacyPlan) {
     return (
       <div className={styles.screen}>
-        <ScreenHeader eyebrow="Suivi personnel" title="Nutrition"
-          subtitle="Tes objectifs restent à définir" visuel="ballon" />
+        <ScreenHeader
+          eyebrow="Suivi personnel"
+          title="Nutrition"
+          subtitle="Plan masqué dans les Réglages"
+          visuel="ballon"
+        />
         <section className={styles.card}>
-          <h2 className={styles.cardTitle}>Aucun objectif nutritionnel configuré</h2>
+          <h2 className={styles.cardTitle}>Plan nutritionnel masqué</h2>
           <p className={styles.cardSub}>
-            MAJK ne définit pas tes calories ni tes macronutriments à ta place.
-            La configuration des objectifs personnels sera ajoutée séparément.
+            Rien n’est perdu : tes pesées, tes repas cochés et tes aliments sont toujours en base.
+            Pour retrouver calories, macros et menus, va dans Réglages → Plan nutritionnel et remets
+            « Afficher mon plan ».
           </p>
         </section>
         <section className={styles.card}>
           <h2 className={styles.cardTitle}>Pesée du matin</h2>
           <div className={styles.field}>
-            <Stepper label={`Poids — ${humanDate(todayIso)}`}
-              value={todayRow.weightKg} step={0.1} min={40} max={160} unit="kg"
+            <Stepper
+              label={`Poids — ${humanDate(todayIso)}`}
+              value={todayRow.weightKg}
+              step={0.1}
+              min={40}
+              max={160}
+              unit="kg"
               tone="accent"
-              onStep={(d) => void patchToday({ weightKg: stepValue(todayRow.weightKg, d, 40, 160) })}
-              onCommit={(v) => void patchToday({ weightKg: v })} />
+              onStep={(d) =>
+                void patchToday({ weightKg: stepValue(todayRow.weightKg, d, 40, 160) })
+              }
+              onCommit={(v) => void patchToday({ weightKg: v })}
+            />
           </div>
           <div className={styles.field}>
-            <Stepper label="Tour de taille" value={todayRow.waistCm}
-              step={0.5} min={60} max={150} unit="cm" tone="accent"
+            <Stepper
+              label="Tour de taille"
+              value={todayRow.waistCm}
+              step={0.5}
+              min={60}
+              max={150}
+              unit="cm"
+              tone="accent"
               onStep={(d) => void patchToday({ waistCm: stepValue(todayRow.waistCm, d, 60, 150) })}
-              onCommit={(v) => void patchToday({ waistCm: v })} />
+              onCommit={(v) => void patchToday({ waistCm: v })}
+            />
           </div>
         </section>
       </div>
