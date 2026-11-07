@@ -266,6 +266,26 @@ export function CombineScreen() {
           Tests athlétiques et séries max seulement ; les 1RM reviennent en semaine 12.
         </p>
       )}
+      {phase === 's8' && (
+        /*
+         * CE QUI MANQUAIT : où mettre un maximum qu'on a fait quand même.
+         *
+         * Fermer le champ sans dire où aller, c'est une impasse — et un
+         * chiffre réellement soulevé qui finit nulle part. Il a pourtant une
+         * place : les Réglages, d'où il sert les jours de readiness rouge.
+         *
+         * Ce qu'on n'ouvre PAS pour autant, c'est la colonne S8 du tableau.
+         * Elle ne compare que des mesures prises dans les mêmes conditions
+         * aux trois combines ; un maximum tiré en pleine semaine de deload
+         * n'en est pas une, et l'y ranger ferait mentir la ligne entière.
+         */
+        <p className={styles.hint}>
+          Tu en as fait un quand même ? Note-le dans <b>Réglages → 1RM testés</b>. Il n’entrera pas
+          dans la comparaison des trois combines — un maximum tiré en deload n’est pas comparable
+          aux deux autres — mais il sera gardé et servira tes jours de readiness rouge. Tes charges,
+          elles, suivent déjà ce que tu soulèves vraiment (§11) : tu n’as rien à faire pour ça.
+        </p>
+      )}
 
       {metrics.map((id) => {
         const def = EXERCISES[id];
