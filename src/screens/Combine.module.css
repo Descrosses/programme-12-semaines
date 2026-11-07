@@ -312,3 +312,54 @@
 .secondary:active {
   background: var(--surface-2);
 }
+
+/* ------------------------------------------- rappel des combines passés -- */
+
+/*
+ * Ce qu'on avait fait, posé juste au-dessus du champ où l'on tape.
+ *
+ * Le tableau de comparaison est en haut de l'écran ; on saisit en bas, un
+ * champ à la fois, debout dans la salle. Remonter pour comparer, c'est perdre
+ * sa place — donc ne pas comparer.
+ *
+ * Fond légèrement creusé plutôt qu'une simple ligne de texte : il faut que
+ * l'œil le distingue de la consigne d'exercice juste au-dessus, sans qu'il
+ * prenne le pas sur le chiffre à saisir, qui reste la seule chose en gros.
+ */
+.reference {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+}
+
+.referenceLigne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.referenceLigne b {
+  color: var(--ink-1);
+  font-weight: 700;
+}
+
+.referenceEcart {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.ecartUp {
+  color: var(--vert);
+}
+
+.ecartDown {
+  color: var(--rouge);
+}

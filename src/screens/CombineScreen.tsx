@@ -9,6 +9,7 @@ import {
   cibleFor,
 } from '../data/testSessions';
 import { fr } from '../engine/format';
+import { LOWER_IS_BETTER, SANS_JUGEMENT, ecartCombine } from '../engine/combineEcart';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
 import type { CombinePhase, CombineRow } from '../db/db';
 import { Icon } from '../components/Icon';
@@ -53,8 +54,21 @@ const RAMP_KEY: Record<string, keyof typeof RAMPS | undefined> = {
   'test-push-press-1rm': 'push-press',
 };
 
-/** Un temps de sprint plus bas est meilleur : la flèche doit s'inverser. */
-const LOWER_IS_BETTER = new Set(['test-sprint-10m', 'test-sprint-20m']);
+/**
+ * Ce qu'on a déjà mesuré quand on saisit une phase.
+ *
+ * Le tableau de comparaison est en haut de l'écran, et c'est bien — mais on
+ * saisit en bas, un champ à la fois, souvent debout dans la salle avec le
+ * téléphone dans une main. Remonter pour savoir ce qu'on avait fait en
+ * semaine 0, c'est perdre sa place et, en pratique, ne pas comparer du tout.
+ *
+ * Chaque champ porte donc son propre rappel.
+ */
+const ANTERIEURES: Record<CombinePhase, readonly CombinePhase[]> = {
+  initial: [],
+  s8: ['initial'],
+  final: ['initial', 's8'],
+};
 
 export function CombineScreen() {
   const [rows, setRows] = useState<CombineRow[] | null>(null);
@@ -180,7 +194,7 @@ export function CombineScreen() {
                 const s = byPhase('s8')[id];
                 const f = byPhase('final')[id];
                 const better =
-                  typeof i === 'number' && typeof f === 'number'
+                  typeof i === 'number' && typeof f === 'number' && !SANS_JUGEMENT.has(id)
                     ? LOWER_IS_BETTER.has(id)
                       ? f < i
                       : f > i
@@ -240,7 +254,17 @@ export function CombineScreen() {
         <span className={styles.sectionRule} aria-hidden="true" />
       </h2>
       {phase === 's8' && (
-        <p className={styles.hint}>Pas de 1RM cette semaine : tests athlétiques seulement.</p>
+        <p className={styles.hint}>
+          {/*
+            Dire CE QUI MANQUE, et pas seulement qu'il manque quelque chose.
+            « Pas de 1RM » laissait chercher : les tractions lestées
+            disparaissent de l'écran et les tractions strictes restent, ce qui
+            se lit comme un remplacement alors que c'est une absence voulue.
+          */}
+          <b>Pas de 1RM cette semaine</b> (§12) : ni squat, ni bench, ni deadlift, ni tractions
+          lestées, ni push press. La semaine 8 est un deload — un maximum au milieu l’annulerait.
+          Tests athlétiques et séries max seulement ; les 1RM reviennent en semaine 12.
+        </p>
       )}
 
       {metrics.map((id) => {
@@ -277,6 +301,15 @@ export function CombineScreen() {
                 dans Réglages, à n’importe quel moment.
               </p>
             )}
+            <Reference
+              id={id}
+              unit={cfg.unit}
+              anterieures={ANTERIEURES[phase].map((ph) => ({
+                label: PHASES.find((x) => x.id === ph)!.label,
+                valeur: byPhase(ph)[id],
+              }))}
+              saisi={draft[id] ?? null}
+            />
             <div className={styles.stepperZone}>
               <Stepper
                 label={def.name}
@@ -314,6 +347,60 @@ export function CombineScreen() {
         <Icon name="check" size="22px" />
         Enregistrer le combine
       </button>
+    </div>
+  );
+}
+
+/**
+ * Le rappel posé au-dessus d'un champ de saisie : ce qu'on avait fait avant,
+ * et de combien on s'en écarte.
+ *
+ * L'ÉCART SE COMPTE TOUJOURS DEPUIS L'INITIAL, jamais depuis la mesure
+ * précédente. C'est le repère du §13 : les cibles sont des progressions sur
+ * douze semaines, pas sur quatre. Un écart lu depuis la semaine 8 dirait
+ * autre chose que l'objectif affiché deux écrans plus haut.
+ *
+ * Il s'affiche aussi en pourcentage, parce que c'est l'unité du §13 — « +5 à
+ * 8 % », « −2 à 4 % » — et que personne ne fait cette division de tête entre
+ * deux séries.
+ */
+function Reference({
+  id,
+  unit,
+  anterieures,
+  saisi,
+}: {
+  id: string;
+  unit: string;
+  anterieures: ReadonlyArray<{ label: string; valeur: number | null | undefined }>;
+  saisi: number | null;
+}) {
+  const connues = anterieures.filter(
+    (a): a is { label: string; valeur: number } => typeof a.valeur === 'number' && a.valeur > 0,
+  );
+  if (connues.length === 0) return null;
+
+  const e = ecartCombine(id, connues[0]!.valeur, saisi);
+  return (
+    <div className={styles.reference}>
+      <p className={styles.referenceLigne}>
+        {connues.map((a) => (
+          <span key={a.label}>
+            {a.label} <b>{`${fr(a.valeur)} ${unit}`}</b>
+          </span>
+        ))}
+      </p>
+      {e !== null && (
+        <p
+          className={`${styles.referenceEcart} ${
+            e.mieux === null ? '' : e.mieux ? styles.ecartUp : styles.ecartDown
+          }`}
+        >
+          {e.ecart === 0
+            ? `Identique à ${connues[0]!.label.toLowerCase()}`
+            : `${signe(e.ecart)} ${unit} · ${signe(Math.round(e.pct * 10) / 10)} % depuis ${connues[0]!.label.toLowerCase()}`}
+        </p>
+      )}
     </div>
   );
 }
