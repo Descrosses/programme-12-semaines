@@ -550,3 +550,33 @@ export function foodsByCategory(
     .filter((f) => f.category === category)
     .sort((a, b) => a.label.localeCompare(b.label));
 }
+
+/**
+ * Les aliments qu'une personne a déclaré aimer, dans l'ordre où ils ont été
+ * reçus.
+ *
+ * L'ordre n'est pas alphabétique, et c'est voulu : il vient du questionnaire,
+ * qui range par famille — glucides, fruits, protéines, lipides, légumes.
+ * C'est l'ordre dans lequel elle a pensé ses aliments, et c'est celui où elle
+ * les retrouvera le plus vite.
+ *
+ * Un identifiant inconnu est simplement sauté. Ça n'arrive que si un aliment
+ * disparaît du catalogue entre l'import et l'affichage, mais afficher une
+ * ligne vide serait pire que de ne rien montrer.
+ */
+export function foodsPreferes(ids: readonly string[], customs: LibraryFood[] = []): LibraryFood[] {
+  const catalogue: Record<string, LibraryFood> = {
+    ...FOOD_LIBRARY,
+    ...Object.fromEntries(customs.map((f) => [f.id, f])),
+  };
+  const vus = new Set<string>();
+  const sortie: LibraryFood[] = [];
+  for (const id of ids) {
+    const f = catalogue[id];
+    if (f !== undefined && !vus.has(id)) {
+      vus.add(id);
+      sortie.push(f);
+    }
+  }
+  return sortie;
+}
