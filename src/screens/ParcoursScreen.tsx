@@ -34,7 +34,13 @@ import { programmeParId } from '../data/catalogue';
 import { EXERCISES } from '../data/exercises';
 import { COMBINE_METRICS } from '../data/testSessions';
 import type { CombineRow, CycleRow } from '../db/db';
-import { activerCycle, combinesDuCycle, resumesDesCycles, supprimerCycleNonCommence, type ResumeCycle } from '../db/repo';
+import {
+  activerCycle,
+  combinesDuCycle,
+  resumesDesCycles,
+  supprimerCycleNonCommence,
+  type ResumeCycle,
+} from '../db/repo';
 import { currentWeek, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
 import { fr } from '../engine/format';
@@ -149,13 +155,20 @@ export function ParcoursScreen({
   async function supprimer(cycle: CycleRow) {
     if (cycle.id === undefined || suppressionEnCours !== null) return;
     const nom = programmeParId(cycle.programmeId)?.nom ?? cycle.programmeId;
-    if (!window.confirm(`Supprimer « ${nom} » ?\\n\\nCette action est définitive. La suppression est refusée si des données sont enregistrées.`)) return;
+    if (
+      !window.confirm(
+        `Supprimer « ${nom} » ?\\n\\nCette action est définitive. La suppression est refusée si des données sont enregistrées.`,
+      )
+    )
+      return;
     setSuppressionEnCours(cycle.id);
     setErreurSuppression('');
     try {
       const supprime = await supprimerCycleNonCommence(cycle.id);
       if (!supprime) {
-        setErreurSuppression('Suppression refusée : ce programme contient des données ou ne peut pas être retiré sans perdre le cycle actif.');
+        setErreurSuppression(
+          'Suppression refusée : ce programme contient des données ou ne peut pas être retiré sans perdre le cycle actif.',
+        );
         return;
       }
       setVues((prev) => prev?.filter((v) => v.cycle.id !== cycle.id) ?? null);
@@ -212,47 +225,47 @@ export function ParcoursScreen({
             const pourcent = v.total === 0 ? 0 : Math.round((v.faites / v.total) * 100);
             return (
               <div key={v.cycle.id} className={local.cycleAvecAction}>
-              <button
-                type="button"
-                className={local.carteCycle}
-                style={{ '--teinte': habillage?.teinte ?? 'var(--accent)' } as CSSProperties}
-                onClick={() => void ouvrir(v.cycle)}
-              >
-                {habillage?.photo !== undefined && (
-                  <span className={local.cyclePhoto} aria-hidden="true">
-                    <Visuel nom={habillage.photo} sizes="100vw" />
-                  </span>
-                )}
-                <span className={local.cycleVoile} aria-hidden="true" />
-                <span className={local.cycleCorps}>
-                  <span className={local.cycleNom}>{programme?.nom ?? v.cycle.programmeId}</span>
-                  <span className={local.cycleSemaine}>
-                    Semaine <b>{v.semaine ?? 0}</b> / {v.semaines}
-                  </span>
-                  <span className={local.jauge} aria-hidden="true">
-                    <i style={{ width: `${pourcent}%` }} />
-                  </span>
-                  <span className={local.cycleChiffres}>
-                    {v.total === 0
-                      ? 'Date de début à poser.'
-                      : `${v.faites} séance${v.faites > 1 ? 's' : ''} sur ${v.total} · ${pourcent} %`}
-                  </span>
-                </span>
-                <span className={local.cycleChevron} aria-hidden="true">
-                  <Icon name="arrow-right" size="18px" />
-                </span>
-              </button>
-              {v.faites === 0 && v.cycle.id !== undefined && (
                 <button
                   type="button"
-                  className={local.supprimerDansCarte}
-                  aria-label={`Supprimer le programme ${programme?.nom ?? v.cycle.programmeId}`}
-                  disabled={suppressionEnCours !== null}
-                  onClick={() => void supprimer(v.cycle)}
+                  className={local.carteCycle}
+                  style={{ '--teinte': habillage?.teinte ?? 'var(--accent)' } as CSSProperties}
+                  onClick={() => void ouvrir(v.cycle)}
                 >
-                  {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer'}
+                  {habillage?.photo !== undefined && (
+                    <span className={local.cyclePhoto} aria-hidden="true">
+                      <Visuel nom={habillage.photo} sizes="100vw" />
+                    </span>
+                  )}
+                  <span className={local.cycleVoile} aria-hidden="true" />
+                  <span className={local.cycleCorps}>
+                    <span className={local.cycleNom}>{programme?.nom ?? v.cycle.programmeId}</span>
+                    <span className={local.cycleSemaine}>
+                      Semaine <b>{v.semaine ?? 0}</b> / {v.semaines}
+                    </span>
+                    <span className={local.jauge} aria-hidden="true">
+                      <i style={{ width: `${pourcent}%` }} />
+                    </span>
+                    <span className={local.cycleChiffres}>
+                      {v.total === 0
+                        ? 'Date de début à poser.'
+                        : `${v.faites} séance${v.faites > 1 ? 's' : ''} sur ${v.total} · ${pourcent} %`}
+                    </span>
+                  </span>
+                  <span className={local.cycleChevron} aria-hidden="true">
+                    <Icon name="arrow-right" size="18px" />
+                  </span>
                 </button>
-              )}
+                {v.vierge && v.cycle.id !== undefined && (
+                  <button
+                    type="button"
+                    className={local.supprimerDansCarte}
+                    aria-label={`Supprimer le programme ${programme?.nom ?? v.cycle.programmeId}`}
+                    disabled={suppressionEnCours !== null}
+                    onClick={() => void supprimer(v.cycle)}
+                  >
+                    {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer'}
+                  </button>
+                )}
               </div>
             );
           })}
@@ -328,7 +341,11 @@ export function ParcoursScreen({
                   </article>
                 );
               })}
-              {erreurSuppression && <p role="alert" className={styles.hint}>{erreurSuppression}</p>}
+              {erreurSuppression && (
+                <p role="alert" className={styles.hint}>
+                  {erreurSuppression}
+                </p>
+              )}
               {prevus.length > 0 && (
                 <>
                   <h3 className={styles.sectionTitle}>Prévus</h3>
@@ -347,14 +364,18 @@ export function ParcoursScreen({
                       >
                         Ouvrir ce cycle
                       </button>
-                      <button
-                        type="button"
-                        className={local.supprimerCycle}
-                        disabled={suppressionEnCours !== null}
-                        onClick={() => void supprimer(v.cycle)}
-                      >
-                        {suppressionEnCours === v.cycle.id ? 'Suppression…' : 'Supprimer ce programme'}
-                      </button>
+                      {v.vierge && (
+                        <button
+                          type="button"
+                          className={local.supprimerCycle}
+                          disabled={suppressionEnCours !== null}
+                          onClick={() => void supprimer(v.cycle)}
+                        >
+                          {suppressionEnCours === v.cycle.id
+                            ? 'Suppression…'
+                            : 'Supprimer ce programme'}
+                        </button>
+                      )}
                     </article>
                   ))}
                 </>

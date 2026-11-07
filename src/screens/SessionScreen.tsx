@@ -1,5 +1,11 @@
 import { useState, type CSSProperties } from 'react';
-import { shouldRemindSession, missingPrescribedSets, previousUniformLoad, hasRecordedEffort, canResumePreviousLoad } from '../engine/partialSession';
+import {
+  shouldRemindSession,
+  missingPrescribedSets,
+  previousUniformLoad,
+  hasRecordedEffort,
+  canResumePreviousLoad,
+} from '../engine/partialSession';
 import { ExerciseCard, type SetPayload } from '../components/ExerciseCard';
 import { Icon } from '../components/Icon';
 import { ExerciseNote } from '../components/ExerciseNote';
@@ -139,13 +145,17 @@ export function SessionScreen({
   const reel = row ? elapsedMin(row, now) : null;
   const verdict = reel === null ? null : durationVerdict(reel, session.plannedMin);
   const reminder = shouldRemindSession({
-    startedAt: row?.startedAt, finishedAt: row?.finishedAt, now,
+    startedAt: row?.startedAt,
+    finishedAt: row?.finishedAt,
+    now,
     plannedMin: session.plannedMin,
-    addedExercise: duJour.some(r => r.kind === 'add'),
+    addedExercise: duJour.some((r) => r.kind === 'add'),
     dismissed: reminderHidden || !!row?.overrunReminderDismissed,
   });
   const previous = data.previousSession;
-  const previousIncomplete = !!previous && previous.cycleId === row?.cycleId &&
+  const previousIncomplete =
+    !!previous &&
+    previous.cycleId === row?.cycleId &&
     row?.partialFollowupChoice === undefined &&
     data.previousIncompleteExerciseIds.length > 0;
   const affected = data.previousIncompleteExerciseIds;
@@ -155,14 +165,19 @@ export function SessionScreen({
       const next = { ...overrides };
       for (const ex of session.exercises) {
         if (!affected.includes(ex.id) || ex.load.kg === null) continue;
-        const past = data.previousSets.filter(s => s.exerciseId === ex.id);
+        const past = data.previousSets.filter((s) => s.exerciseId === ex.id);
         const kg = previousUniformLoad(past);
-        if (canResumePreviousLoad({
-          previousBlock: data.previousBlock ?? 'unknown',
-          currentBlock: session.block, currentKg: ex.load.kg, previousKg: kg,
-          previousFailed: past.some(s => s.failed),
-          hasVariablePrescriptions: !!ex.ramp,
-        })) next[ex.id] = kg!;
+        if (
+          canResumePreviousLoad({
+            previousBlock: data.previousBlock ?? 'unknown',
+            currentBlock: session.block,
+            currentKg: ex.load.kg,
+            previousKg: kg,
+            previousFailed: past.some((s) => s.failed),
+            hasVariablePrescriptions: !!ex.ramp,
+          })
+        )
+          next[ex.id] = kg!;
       }
       await updateSession(row.id, { loadOverrides: next, partialFollowupChoice: choice });
     } else {
@@ -176,16 +191,18 @@ export function SessionScreen({
   }
 
   async function handleSaveSet(ex: ResolvedExercise, payload: SetPayload) {
-    if (!row?.id) return;
     /*
-     * Valider une série, c'est s'entraîner : si le bouton « Démarrer » a été
-     * oublié, le chrono part ici. `startSession` est idempotent — une séance
-     * déjà commencée garde son heure de début, et la série qui suit ne la
-     * repousse pas.
+     * Valider une série, c'est s'entraîner : la ligne de séance naît ICI si
+     * l'écran n'a fait que l'afficher jusque-là. Et si le bouton « Démarrer »
+     * a été oublié, le chrono part ici aussi. `startSession` est idempotent —
+     * une séance déjà commencée garde son heure de début, et la série qui
+     * suit ne la repousse pas.
      */
-    await startSession(row.id);
+    const id = await data.ensureRow();
+    if (id === null) return;
+    await startSession(id);
     await saveSet({
-      sessionId: row.id,
+      sessionId: id,
       exerciseId: ex.id,
       week,
       day,
@@ -218,23 +235,26 @@ export function SessionScreen({
   }
 
   async function handleStart() {
-    if (!row?.id) return;
-    await startSession(row.id);
+    const id = await data.ensureRow();
+    if (id === null) return;
+    await startSession(id);
     await data.reload();
   }
 
   async function handleOverride(exId: string, kg: number | null) {
-    if (!row?.id) return;
+    const id = await data.ensureRow();
+    if (id === null) return;
     const next = { ...overrides };
     if (kg === null) delete next[exId];
     else next[exId] = kg;
-    await updateSession(row.id, { loadOverrides: next });
+    await updateSession(id, { loadOverrides: next });
     await data.reload();
   }
 
   async function handleWarmup(itemId: string) {
-    if (!row?.id) return;
-    await toggleWarmupItem(row.id, itemId);
+    const id = await data.ensureRow();
+    if (id === null) return;
+    await toggleWarmupItem(id, itemId);
     await data.reload();
   }
 
@@ -262,10 +282,11 @@ export function SessionScreen({
    * et sert tout de suite à saisir des séries.
    */
   async function handleSaveCustom(spec: CustomSpec) {
-    if (!row?.id) return;
+    const id = await data.ensureRow();
+    if (id === null) return;
     const remplace = panneau?.remplace ?? null;
     await addSessionExercise({
-      sessionId: row.id,
+      sessionId: id,
       week,
       day,
       date: data.date ?? '',
@@ -319,8 +340,14 @@ export function SessionScreen({
    * corriger une saisie : on reste alors sur place.
    */
   async function handleFinish() {
-    if (!row?.id) return;
-    const finishing = row.status !== 'done';
+    /*
+     * Cocher « Séance terminée » est un geste d'entraînement comme un autre :
+     * la ligne naît ici si Guillaume n'a rien saisi — une séance faite sans
+     * noter ses charges reste une séance faite.
+     */
+    const id = await data.ensureRow();
+    if (id === null) return;
+    const finishing = row?.status !== 'done';
     /*
      * `finishedAt` n'est posé qu'en TERMINANT. Avant, il était réécrit aussi
      * en décochant — donc une correction de saisie faite le lendemain
@@ -333,8 +360,10 @@ export function SessionScreen({
      * faire perdre. En terminant la séance, on ajoute ce qui restait.
      */
     if (finishing) await commitAllDrafts(week, day);
-    const incompleteExerciseIds = finishing ? missingPrescribedSets(session.exercises, data.savedSets) : [];
-    await updateSession(row.id, {
+    const incompleteExerciseIds = finishing
+      ? missingPrescribedSets(session.exercises, data.savedSets)
+      : [];
+    await updateSession(id, {
       status: finishing ? 'done' : 'planned',
       finishedAt: finishing ? Date.now() : undefined,
       incompleteExerciseIds,
@@ -470,7 +499,8 @@ export function SessionScreen({
         série validée. L'échauffement compte donc dans la durée, ce qui est
         le but : c'est du temps de séance.
       */}
-      {row?.id !== undefined && row.startedAt === undefined && row.status !== 'done' && (
+      {/* Avant toute écriture `row` est `null` : le bouton reste offert. */}
+      {(row === null || (row.startedAt === undefined && row.status !== 'done')) && (
         <button type="button" className={styles.demarrer} onClick={() => void handleStart()}>
           <Icon name="play" size="20px" />
           Démarrer la séance
@@ -667,18 +697,31 @@ export function SessionScreen({
           <strong>Tout va bien ? 😊</strong>
           <p>Ta séance dépasse de 50 % sa durée prévue. Tu es toujours à l’entraînement ?</p>
           <div className={styles.guidanceActions}>
-            <button type="button" onClick={() => void dismissReminder()}>Je continue</button>
-            <button type="button" onClick={() => void handleFinish()}>Terminer ma séance</button>
+            <button type="button" onClick={() => void dismissReminder()}>
+              Je continue
+            </button>
+            <button type="button" onClick={() => void handleFinish()}>
+              Terminer ma séance
+            </button>
           </div>
         </section>
       )}
       {previousIncomplete && row?.status !== 'done' && (
         <section className={styles.guidance}>
           <strong>Un point sur ta dernière séance 💪</strong>
-          <p>Certaines séries de la semaine précédente n’ont pas été terminées. Tu peux suivre les charges de cette semaine ou reprendre une charge réellement utilisée, seulement si elle est compatible. Les exercices non compatibles conservent leur programmation. Les prochaines progressions continueront à utiliser tes performances réelles.</p>
+          <p>
+            Certaines séries de la semaine précédente n’ont pas été terminées. Tu peux suivre les
+            charges de cette semaine ou reprendre une charge réellement utilisée, seulement si elle
+            est compatible. Les exercices non compatibles conservent leur programmation. Les
+            prochaines progressions continueront à utiliser tes performances réelles.
+          </p>
           <div className={styles.guidanceActions}>
-            <button type="button" onClick={() => void chooseFollowup('programme')}>Suivre le programme</button>
-            <button type="button" onClick={() => void chooseFollowup('previous')}>Reprendre les charges compatibles</button>
+            <button type="button" onClick={() => void chooseFollowup('programme')}>
+              Suivre le programme
+            </button>
+            <button type="button" onClick={() => void chooseFollowup('previous')}>
+              Reprendre les charges compatibles
+            </button>
           </div>
         </section>
       )}
