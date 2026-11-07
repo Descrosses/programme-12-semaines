@@ -24,6 +24,28 @@
   font-weight: 700;
 }
 
+/*
+ * La pastille d'en-tête : accentuée, parce qu'elle doit se voir d'un coup
+ * d'œil au milieu d'un nom en capitales. Bordure et texte prennent l'accent
+ * du thème ; le fond reste lavé pour ne pas rivaliser avec les boutons
+ * « Valider la série », qui sont le rouge plein auquel on obéit.
+ */
+.ouvrirEntete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .overlay {
   position: fixed;
   inset: 0;

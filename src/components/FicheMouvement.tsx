@@ -26,7 +26,21 @@ import { Icon } from './Icon';
 import type { ExerciseDef } from '../data/types';
 import styles from './FicheMouvement.module.css';
 
-export function FicheMouvement({ def }: { def: ExerciseDef }) {
+/**
+ * `variante` dit OÙ le bouton est posé, pas à quoi il ressemble en soi.
+ *
+ * - `bandeau` : la barre pleine largeur, telle qu'elle était.
+ * - `entete`  : la pastille compacte, sur la ligne du nom du mouvement.
+ *
+ * La planche affichée, elle, est exactement la même dans les deux cas.
+ */
+export function FicheMouvement({
+  def,
+  variante = 'bandeau',
+}: {
+  def: ExerciseDef;
+  variante?: 'bandeau' | 'entete';
+}) {
   const [ouverte, setOuverte] = useState(false);
   const [zoom, setZoom] = useState(false);
 
@@ -39,14 +53,14 @@ export function FicheMouvement({ def }: { def: ExerciseDef }) {
     <>
       <button
         type="button"
-        className={styles.ouvrir}
+        className={variante === 'entete' ? styles.ouvrirEntete : styles.ouvrir}
         onClick={() => {
           setZoom(false);
           setOuverte(true);
         }}
       >
-        <Icon name="image" size="18px" />
-        Fiche du mouvement
+        <Icon name="image" size={variante === 'entete' ? '16px' : '18px'} />
+        {variante === 'entete' ? 'Fiche' : 'Fiche du mouvement'}
       </button>
 
       {ouverte && (
