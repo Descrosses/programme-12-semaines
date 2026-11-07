@@ -280,7 +280,20 @@ export function AccueilScreen({
                 <span className={styles.familleVoile} aria-hidden="true" />
                 {aVenir && <span className={styles.familleBadge}>À venir</span>}
                 <span className={styles.familleTexte}>
-                  <span className={styles.familleNom}>{famille.nom}</span>
+                  {/*
+                    « PERSONNALISÉ » ne tient pas sur un tiers d'écran à la
+                    taille des trois autres : il sortait de la tuile, coupé à
+                    « PERSONNALIS ». Un nom long passe donc au corps réduit
+                    plutôt que d'être rogné — la règle vaut pour celui-là
+                    comme pour le prochain.
+                  */}
+                  <span
+                    className={`${styles.familleNom} ${
+                      famille.nom.length > 8 ? styles.familleNomLong : ''
+                    }`}
+                  >
+                    {famille.nom}
+                  </span>
                   <span className={styles.familleSous}>{famille.sousTitre}</span>
                   <span className={styles.barres} aria-hidden="true">
                     <i />

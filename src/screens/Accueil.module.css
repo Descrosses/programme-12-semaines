@@ -436,6 +436,12 @@
   text-transform: uppercase;
 }
 
+/* Un nom long tient dans la tuile au lieu d'en sortir. Voir AccueilScreen. */
+.familleNomLong {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
 .familleSous {
   font-size: 0.72rem;
   line-height: 1.2;

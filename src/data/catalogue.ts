@@ -27,7 +27,7 @@
  */
 
 /** Les trois familles prévues. Aucune autre n'est au catalogue de lancement. */
-export type FamilleId = 'power' | 'mass' | 'femmes';
+export type FamilleId = 'power' | 'mass' | 'femmes' | 'perso';
 
 /**
  * `disponible` = jouable de bout en bout, maintenant, dans cette application.
@@ -168,6 +168,28 @@ export const FAMILLES: readonly Famille[] = [
      * soit prête, pas pour remplir le catalogue.
      */
     resume: 'Contenu en préparation. Les programmes de cette famille restent à définir.',
+    programmes: [],
+  },
+  {
+    id: 'perso',
+    nom: 'PERSONNALISÉ',
+    sousTitre: 'Ton programme dans MAJK',
+    /*
+     * Une famille qui n'aura JAMAIS de programme écrit ici.
+     *
+     * Les trois autres portent des programmes conçus d'avance : leur contenu
+     * est dans le code, et le catalogue ne fait que l'annoncer. Celle-ci est
+     * l'inverse — elle accueille le programme que la personne apporte, et
+     * reste vide tant qu'elle n'a rien apporté. `programmes: []` n'est donc
+     * pas un contenu « à venir » qu'on finira par écrire : c'est l'état
+     * normal de cette famille, et il le restera.
+     *
+     * Elle existe dès maintenant pour que la place soit prise, et surtout
+     * pour que le reste du code apprenne tout de suite qu'un programme peut
+     * ne venir de nulle part.
+     */
+    resume:
+      'Ton propre programme, suivi avec le chrono, l’historique et les courbes de MAJK. Rien n’est prescrit ici : le contenu vient de toi.',
     programmes: [],
   },
 ];

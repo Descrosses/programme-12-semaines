@@ -1555,6 +1555,83 @@
   font-size: 0.8rem;
 }
 
+/* --- Le bloc minuté ------------------------------------------------------- */
+
+/*
+ * Un compte à rebours, pas un repos.
+ *
+ * Il vit dans l'en-tête du circuit et non dans la barre du bas : la barre du
+ * bas porte le repos entre deux séries, et les deux tournent EN MÊME TEMPS
+ * sur un circuit minuté — 20 s de récupération à l'intérieur des 10 minutes.
+ * Les mettre au même endroit aurait obligé l'un des deux à disparaître.
+ */
+.blocMinute {
+  margin-top: 12px;
+}
+
+.blocJauge {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  overflow: hidden;
+}
+
+.blocJauge i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s linear;
+}
+
+.blocJaugeFinie i {
+  background: var(--vert);
+}
+
+.blocLigne {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.blocTemps {
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.blocTempsFini {
+  color: var(--vert);
+}
+
+.blocLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: 0.78rem;
+}
+
+.blocBouton {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-ink-fort);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.blocBouton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* --- Un tour -------------------------------------------------------------- */
 
 .tour {

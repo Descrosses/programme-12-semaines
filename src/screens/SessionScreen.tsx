@@ -535,6 +535,8 @@ export function SessionScreen({
           <SupersetCard
             key={`superset-${bloc.id}`}
             circuit={bloc}
+            week={week}
+            day={day}
             savedSets={data.savedSets}
             overrides={overrides}
             timer={timer}

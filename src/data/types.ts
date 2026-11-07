@@ -553,6 +553,20 @@ export interface Slot {
    * elles se seraient contredites.
    */
   superset?: string;
+  /**
+   * Le bloc est MINUTÉ : tant de minutes pour le mener en entier.
+   *
+   * « Circuit 1 — total : 10 minutes, minuté » : le compte à rebours couvre
+   * le circuit complet, séries et récupérations comprises. Ce n'est pas un
+   * repos, et ce n'est pas la durée prévue de la séance — c'est une consigne
+   * de rythme portée par le bloc.
+   *
+   * À poser sur le PREMIER créneau du groupe ; les suivants peuvent l'omettre.
+   * Aucun programme écrit en code ne s'en sert aujourd'hui : POWER 12 et
+   * MASS 4 ne minutent pas leurs blocs. Le champ existe pour les programmes
+   * apportés, qui, eux, le font presque toujours.
+   */
+  blocMinutes?: number;
 }
 
 /** Une séance entièrement résolue pour une semaine donnée (sortie de l'engine). */
