@@ -55,6 +55,27 @@ const RAMP_KEY: Record<string, keyof typeof RAMPS | undefined> = {
 };
 
 /**
+ * Les mesures que le §12 ne demande PAS en semaine 8 : les cinq 1RM.
+ *
+ * ── Pourquoi elles sont quand même saisissables ───────────────────────────
+ *
+ * Le programme a raison de ne pas les demander : la semaine 8 est un deload,
+ * et un maximum au milieu annule le deload qu'elle sert à produire. L'écran
+ * le dit, et continue de le dire.
+ *
+ * Mais une appli de suivi n'est pas un surveillant. Quand quelqu'un a tiré
+ * un maximum, le chiffre existe ; refuser de l'écrire ne l'efface pas, ça
+ * l'envoie dans un carnet que l'application ne lira jamais. Entre « noter un
+ * maximum pris en deload » et « perdre une mesure réelle », le second est
+ * pire : il rend l'historique faux par omission.
+ *
+ * ELLES SONT DONC SÉPARÉES, pas mélangées. Leur propre section, en bas, sous
+ * un titre qui dit ce qu'elles sont. Le protocole reste le protocole ; ce qui
+ * s'est passé reste ce qui s'est passé.
+ */
+const HORS_PROTOCOLE_S8 = COMBINE_METRICS.filter((m) => !COMBINE_S8_METRICS.includes(m));
+
+/**
  * Ce qu'on a déjà mesuré quand on saisit une phase.
  *
  * Le tableau de comparaison est en haut de l'écran, et c'est bien — mais on
@@ -109,6 +130,93 @@ export function CombineScreen() {
   const gapInitial = gap('initial');
   const gapFinal = gap('final');
   const gapNow = gapFinal ?? gapInitial;
+
+  /*
+   * Une carte de saisie. Extraite de la boucle parce qu'elle sert
+   * maintenant à DEUX listes en semaine 8 : les mesures du protocole, et
+   * celles qu'on a faites en dehors.
+   */
+  const carte = (id: string, horsProtocole = false) => {
+    const def = EXERCISES[id];
+    if (!def) return null;
+    const cfg = MEASURE[def.measure ?? 'reps'];
+    /*
+     * Les paliers du test final ne sont pas ceux du test initial : ils sont
+     * calculés sur les maxima mesurés ce jour-là. Montrer ceux du §12 en
+     * semaine 12 ferait monter le squat à 130 pour un 1RM de 110.
+     */
+    /*
+     * Aucun palier sur une mesure hors protocole : ceux du test initial ont
+     * été écrits pour la semaine 0, sur les maxima estimés d'alors. Les
+     * afficher en semaine 8, sur un corps en deload, proposerait une montée
+     * que personne n'a calculée pour ce jour-là.
+     */
+    const cle = horsProtocole ? undefined : RAMP_KEY[id];
+    const ramp = cle ? (phase === 'final' ? RAMPS_S12 : RAMPS)[cle] : undefined;
+    return (
+      <section key={id} className={styles.card}>
+        <h3 className={styles.cardTitle}>{def.name}</h3>
+        <p className={styles.cardSub}>{def.intent}</p>
+        {ramp && (
+          <p className={styles.fieldHint}>
+            <b>Paliers :</b>{' '}
+            {ramp
+              .map(
+                (r) =>
+                  `${r.added ? '+' : ''}${fr(r.kg)}${r.reps > 1 ? `×${r.reps}` : ''}${
+                    r.optional ? ' ?' : ''
+                  }`,
+              )
+              .join(' / ')}
+          </p>
+        )}
+        {id === 'test-bodyweight' && (
+          <p className={styles.fieldHint}>
+            Relevé à la maison, pas en salle : moyenne de 3 matins à jeun. Il se saisit aussi dans
+            Réglages, à n’importe quel moment.
+          </p>
+        )}
+        <Reference
+          id={id}
+          unit={cfg.unit}
+          anterieures={ANTERIEURES[phase].map((ph) => ({
+            label: PHASES.find((x) => x.id === ph)!.label,
+            valeur: byPhase(ph)[id],
+          }))}
+          saisi={draft[id] ?? null}
+        />
+        <div className={styles.stepperZone}>
+          <Stepper
+            label={def.name}
+            value={draft[id] ?? null}
+            step={cfg.step}
+            min={cfg.min}
+            max={cfg.max}
+            unit={cfg.unit}
+            tone="accent"
+            onStep={(d) =>
+              setDraft((prev) => ({
+                ...prev,
+                [id]: stepValue(prev[id] ?? null, d, cfg.min, cfg.max),
+              }))
+            }
+            onCommit={(v) => setDraft((prev) => ({ ...prev, [id]: v }))}
+          />
+        </div>
+        {id === 'test-bodyweight' &&
+          settingsBodyweight !== null &&
+          draft[id] !== settingsBodyweight && (
+            <button
+              type="button"
+              className={styles.secondary}
+              onClick={() => setDraft((prev) => ({ ...prev, [id]: settingsBodyweight }))}
+            >
+              Reprendre {fr(settingsBodyweight)} kg des Réglages
+            </button>
+          )}
+      </section>
+    );
+  };
 
   return (
     <div className={styles.screen}>
@@ -263,105 +371,31 @@ export function CombineScreen() {
           */}
           <b>Pas de 1RM cette semaine</b> (§12) : ni squat, ni bench, ni deadlift, ni tractions
           lestées, ni push press. La semaine 8 est un deload — un maximum au milieu l’annulerait.
-          Tests athlétiques et séries max seulement ; les 1RM reviennent en semaine 12.
-        </p>
-      )}
-      {phase === 's8' && (
-        /*
-         * CE QUI MANQUAIT : où mettre un maximum qu'on a fait quand même.
-         *
-         * Fermer le champ sans dire où aller, c'est une impasse — et un
-         * chiffre réellement soulevé qui finit nulle part. Il a pourtant une
-         * place : les Réglages, d'où il sert les jours de readiness rouge.
-         *
-         * Ce qu'on n'ouvre PAS pour autant, c'est la colonne S8 du tableau.
-         * Elle ne compare que des mesures prises dans les mêmes conditions
-         * aux trois combines ; un maximum tiré en pleine semaine de deload
-         * n'en est pas une, et l'y ranger ferait mentir la ligne entière.
-         */
-        <p className={styles.hint}>
-          Tu en as fait un quand même ? Note-le dans <b>Réglages → 1RM testés</b>. Il n’entrera pas
-          dans la comparaison des trois combines — un maximum tiré en deload n’est pas comparable
-          aux deux autres — mais il sera gardé et servira tes jours de readiness rouge. Tes charges,
-          elles, suivent déjà ce que tu soulèves vraiment (§11) : tu n’as rien à faire pour ça.
+          Tests athlétiques et séries max ; les 1RM reviennent en semaine 12. Si tu en as fait un
+          quand même, il se note plus bas, dans <b>Hors protocole</b>.
         </p>
       )}
 
-      {metrics.map((id) => {
-        const def = EXERCISES[id];
-        if (!def) return null;
-        const cfg = MEASURE[def.measure ?? 'reps'];
-        /*
-         * Les paliers du test final ne sont pas ceux du test initial : ils sont
-         * calculés sur les maxima mesurés ce jour-là. Montrer ceux du §12 en
-         * semaine 12 ferait monter le squat à 130 pour un 1RM de 110.
-         */
-        const cle = RAMP_KEY[id];
-        const ramp = cle ? (phase === 'final' ? RAMPS_S12 : RAMPS)[cle] : undefined;
-        return (
-          <section key={id} className={styles.card}>
-            <h3 className={styles.cardTitle}>{def.name}</h3>
-            <p className={styles.cardSub}>{def.intent}</p>
-            {ramp && (
-              <p className={styles.fieldHint}>
-                <b>Paliers :</b>{' '}
-                {ramp
-                  .map(
-                    (r) =>
-                      `${r.added ? '+' : ''}${fr(r.kg)}${r.reps > 1 ? `×${r.reps}` : ''}${
-                        r.optional ? ' ?' : ''
-                      }`,
-                  )
-                  .join(' / ')}
-              </p>
-            )}
-            {id === 'test-bodyweight' && (
-              <p className={styles.fieldHint}>
-                Relevé à la maison, pas en salle : moyenne de 3 matins à jeun. Il se saisit aussi
-                dans Réglages, à n’importe quel moment.
-              </p>
-            )}
-            <Reference
-              id={id}
-              unit={cfg.unit}
-              anterieures={ANTERIEURES[phase].map((ph) => ({
-                label: PHASES.find((x) => x.id === ph)!.label,
-                valeur: byPhase(ph)[id],
-              }))}
-              saisi={draft[id] ?? null}
-            />
-            <div className={styles.stepperZone}>
-              <Stepper
-                label={def.name}
-                value={draft[id] ?? null}
-                step={cfg.step}
-                min={cfg.min}
-                max={cfg.max}
-                unit={cfg.unit}
-                tone="accent"
-                onStep={(d) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    [id]: stepValue(prev[id] ?? null, d, cfg.min, cfg.max),
-                  }))
-                }
-                onCommit={(v) => setDraft((prev) => ({ ...prev, [id]: v }))}
-              />
-            </div>
-            {id === 'test-bodyweight' &&
-              settingsBodyweight !== null &&
-              draft[id] !== settingsBodyweight && (
-                <button
-                  type="button"
-                  className={styles.secondary}
-                  onClick={() => setDraft((prev) => ({ ...prev, [id]: settingsBodyweight }))}
-                >
-                  Reprendre {fr(settingsBodyweight)} kg des Réglages
-                </button>
-              )}
-          </section>
-        );
-      })}
+      {metrics.map((id) => carte(id))}
+
+      {/*
+        LES MESURES FAITES EN DEHORS DU PROTOCOLE.
+        Voir le commentaire au-dessus de HORS_PROTOCOLE_S8.
+      */}
+      {phase === 's8' && (
+        <>
+          <h2 className={styles.sectionTitle}>
+            Hors protocole
+            <span className={styles.sectionRule} aria-hidden="true" />
+          </h2>
+          <p className={styles.hint}>
+            Le §12 ne demande aucun de ces tests en semaine 8, et c’est toujours vrai. Mais si tu en
+            as fait un, il se note <b>ici</b> plutôt que nulle part. Il apparaîtra dans la colonne
+            S8 du tableau, avec le reste.
+          </p>
+          {HORS_PROTOCOLE_S8.map((id) => carte(id, true))}
+        </>
+      )}
 
       <button type="button" className={styles.primary} onClick={() => void save()}>
         <Icon name="check" size="22px" />
