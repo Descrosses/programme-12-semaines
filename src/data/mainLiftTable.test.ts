@@ -26,7 +26,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '5×5×74 % – RPE 7',
     '4×5×70 % – RPE 7',
     '4×5×44 %',
-    '5×3×50',
+    '5×3×65 %',
     '3×6×55 %',
     '6×2×55 %',
   ],
@@ -36,7 +36,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '5×5×76 % – RPE 7,5',
     '4×5×75 % – RPE 7,5',
     '4×5×50 %',
-    '5×3×52,5',
+    '5×3×68 %',
     '3×6×55 %',
     '6×2×55 %',
   ],
@@ -46,7 +46,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '5×4×78 % – RPE 8',
     '4×4×80 % – RPE 8',
     '4×4×56 %',
-    '6×2×55',
+    '6×2×71 %',
     '3×6×57 %',
     '6×2×55 %',
   ],
@@ -56,7 +56,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '3×3×67 % – RPE 5',
     '3×3×64 % – RPE 5',
     '3×3×22 %',
-    '3×3×45',
+    '3×3×58 %',
     '2×5×45 %',
     '4×2×50 %',
   ],
@@ -66,7 +66,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '5×3×83 % – RPE 8',
     '4×3×82 % – RPE 8',
     '4×3×67 %',
-    '6×2×55',
+    '6×2×71 %',
     '4×5×59 %',
     '6×2×60 %',
   ],
@@ -76,7 +76,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '4×3×85 % – RPE 8,5',
     '3×3×86 % – RPE 8,5',
     '4×3×72 %',
-    '6×2×57,5',
+    '6×2×74 %',
     '4×4×64 %',
     '6×2×60 %',
   ],
@@ -86,7 +86,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '4×2×89 % – RPE 9',
     '3×2×89 % – RPE 9',
     '4×2×78 %',
-    '6×2×60',
+    '6×2×77 %',
     '4×4×64 %',
     '6×2×60 %',
   ],
@@ -96,7 +96,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '3×3×72 % – RPE 5',
     '3×3×70 % – RPE 5',
     '3×2×33 %',
-    '3×2×45',
+    '3×2×58 %',
     '2×4×50 %',
     '4×2×50 %',
   ],
@@ -106,7 +106,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '4×2×83 % + contraste',
     '3×2×84 % + contraste',
     '3×3×67 %',
-    '6×2×57,5',
+    '6×2×74 %',
     '3×3×64 %',
     '8×2×60 %',
   ],
@@ -116,7 +116,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '4×2×85 % + contraste',
     '3×2×86 % + contraste',
     '3×3×72 %',
-    '6×2×60',
+    '6×2×77 %',
     '3×3×66 %',
     '8×2×60 %',
   ],
@@ -126,7 +126,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '4×1-2×89 % + contraste',
     '3×1-2×89 % + contraste',
     '3×2×78 %',
-    '6×2×62,5',
+    '6×2×81 %',
     '3×3×68 %',
     '8×2×60 %',
   ],
@@ -136,7 +136,7 @@ const RECOPIE_MANUELLE: string[][] = [
     '3×2×72 % puis TEST dim',
     'TEST mer',
     'TEST dim',
-    '3×2×50',
+    '3×2×65 %',
     '—',
     '2×2×50 %',
   ],
@@ -341,6 +341,57 @@ describe('structure du tableau', () => {
         expect(p?.unscheduled, `${lift} S${i + 1}`).not.toBe(true);
       }
     }
+  });
+
+  /*
+   * LA PREUVE QUE LA COLONNE PUSH PRESS N'A PAS CHANGÉ DE CONTENU.
+   *
+   * Elle est passée des kilos aux pourcentages sur une base lue dans le
+   * programme : la semaine 11, « 6 × 2 à RPE 6-7 », vaut 81 % d'un maximum,
+   * et 62,5 kg à 81 % donnent 77,5. Si ce raisonnement est juste, alors les
+   * douze pourcentages appliqués à 77,5 kg doivent redonner les douze kilos
+   * que le programme écrivait — sinon la conversion a inventé quelque chose.
+   *
+   * Ce test échouera si quelqu'un retouche un pourcentage sans retoucher le
+   * kilo d'origine à côté, ou l'inverse.
+   */
+  it('la colonne Push Press rend les kilos d’origine sur une base de 77,5 kg', () => {
+    const BASE = 77.5;
+    const ORIGINE = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
+
+    MAIN_LIFT_TABLE['push-press'].forEach((p, i) => {
+      const load = p!.load!;
+      expect(load.kind, `S${i + 1}`).toBe('pct1RM');
+      if (load.kind !== 'pct1RM') return;
+
+      expect(load.lift, `S${i + 1}`).toBe('push-press');
+      // Le kilo d'origine écrit à côté du pourcentage.
+      expect(load.kgOrigine, `S${i + 1} — kgOrigine`).toBe(ORIGINE[i]);
+      // Et le pourcentage le reproduit, au pas de 2,5 kg.
+      const calcule = Math.round((BASE * load.pct) / 100 / 2.5) * 2.5;
+      expect(calcule, `S${i + 1} — ${String(load.pct)} % de ${String(BASE)}`).toBe(ORIGINE[i]);
+    });
+  });
+
+  /*
+   * La forme de la colonne, elle non plus, n'a pas bougé : les rapports de
+   * semaine à semaine sont ceux que le programme écrivait en kilos.
+   */
+  it('la colonne Push Press garde sa progression relative d’origine', () => {
+    const FORME = [1, 1.05, 1.1, 0.9, 1.1, 1.15, 1.2, 0.9, 1.15, 1.2, 1.25, 1];
+    const s1 = (MAIN_LIFT_TABLE['push-press'][0]!.load as { pct: number }).pct;
+
+    MAIN_LIFT_TABLE['push-press'].forEach((p, i) => {
+      const pct = (p!.load as { pct: number }).pct;
+      /*
+       * Tolérance de 2 %. Les douze pourcentages sont arrondis à l'entier, et
+       * un demi-point sur 65 fait déjà 0,8 % sur le rapport — la semaine 7
+       * tombe à 1,54 %. Plus serré, ce test échouerait sur l'arrondi et non
+       * sur une vraie déformation de la colonne ; plus large, il laisserait
+       * passer un 2,5 kg d'écart, que l'autre test attrape de toute façon.
+       */
+      expect(Math.abs(pct / s1 - FORME[i]!), `S${i + 1}`).toBeLessThan(0.02);
+    });
   });
 
   it('les tractions lestées suivent la cible de RPE du bench de la semaine', () => {

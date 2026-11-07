@@ -17,8 +17,13 @@
  * exact, cinq fois quatre répétitions. Ce n'étaient pas des séances dures,
  * c'étaient des séances qui ne pouvaient pas exister.
  *
- * Push press et RDL ne sont PAS indexés : kilos absolus, plafond de RPE, règle
- * de progression propre. Ils ne bougent pas.
+ * LE RDL n'est PAS indexé : kilos absolus, plafond de RPE, règle de
+ * progression propre. Il ne bouge pas, parce que rien ne le mesure.
+ *
+ * LE PUSH PRESS l'est depuis que le §12 le teste. C'était la dernière colonne
+ * à servir les kilos de l'auteur à tout le monde ; le raisonnement complet,
+ * et la preuve que la colonne n'a pas changé de contenu, sont au-dessus de
+ * `pushPress`.
  *
  * Rappel de la règle décidée avec Guillaume : ce tableau n'est qu'un plan par
  * défaut. Dès qu'une séance dévie, la charge réelle devient la nouvelle base
@@ -153,23 +158,62 @@ const weightedPullup: LiftSchedule = [
 ];
 
 /**
- * Colonne « Push Press (ven) ».
+ * Colonne « Push Press (ven) » — indexée depuis que le §12 la mesure.
+ *
  * RPE : §7 « ≤ 7 » pour S1-3, §8 « RPE 6-7 » pour S5-7 et S9-11,
  * §8 deload « zéro série au-dessus de RPE 6 » pour S4 et S8.
+ *
+ * ── Pourquoi elle n'est plus en kilos ─────────────────────────────────────
+ *
+ * Elle l'était pour une raison honnête : aucun maximum de push press n'avait
+ * jamais été mesuré, et le §9 écrivait noir sur blanc qu'« aucune de ses
+ * cases ne tombe sur un pourcentage d'un maximum testé — leur donner un
+ * pourcentage serait en inventer un ».
+ *
+ * Le combine le teste maintenant (décision de Guillaume : un polyarticulaire
+ * chargé mérite une charge mesurée, même travaillé en vitesse). Le
+ * pourcentage n'est donc plus une invention, c'est une lecture.
+ *
+ * ── D'où sortent ces douze pourcentages ───────────────────────────────────
+ *
+ * LA FORME DE LA COLONNE N'A PAS BOUGÉ D'UN GRAMME. Ce sont les mêmes
+ * rapports de semaine à semaine que le programme écrivait : 1 — 1,05 — 1,10 —
+ * 0,90 — 1,10 — 1,15 — 1,20 — 0,90 — 1,15 — 1,20 — 1,25 — 1.
+ *
+ * Il fallait une base. Le programme en donne UNE, et une seule : la semaine
+ * 11 est écrite « 6 × 2, RPE 6-7 ». Six séries de doubles à deux répétitions
+ * en réserve, c'est 81 % d'un maximum — ce n'est pas un avis, c'est ce que
+ * dit n'importe quelle table de RPE. 62,5 kg à 81 % donnent 77,5.
+ *
+ * Deux vérifications indépendantes, et c'est ce qui emporte la décision :
+ *
+ *   1. Appliqués à 77,5 kg, les douze pourcentages redonnent EXACTEMENT les
+ *      douze kilos d'origine au 2,5 kg près. Un test le prouve case par case.
+ *      Même méthode et même preuve que pour les quatre colonnes déjà
+ *      indexées.
+ *   2. 77,5 kg, c'est 67 % du bench mesuré à 115. Le rapport push press /
+ *      bench vaut 0,65 à 0,75 chez à peu près tout le monde. La colonne était
+ *      donc cohérente depuis le début avec un push press d'environ 77,5 kg —
+ *      personne ne l'avait écrit, mais elle le supposait.
+ *
+ * La semaine 1 tombe alors à 65 % pour un 5 × 3 annoncé « RPE ≤ 7 ». C'est
+ * largement sous le plafond, et c'est voulu : les trois premières semaines
+ * sont techniques sur un mouvement que Guillaume découvre, exactement comme
+ * pour le Hang High Pull du même jour.
  */
 const pushPress: LiftSchedule = [
-  p(5, 3, forme(50), rpeAtMost(7)),
-  p(5, 3, forme(52.5), rpeAtMost(7)),
-  p(6, 2, forme(55), rpeAtMost(7)),
-  p(3, 3, forme(45), rpeAtMost(6)),
-  p(6, 2, forme(55), rpeRange(6, 7)),
-  p(6, 2, forme(57.5), rpeRange(6, 7)),
-  p(6, 2, forme(60), rpeRange(6, 7)),
-  p(3, 2, forme(45), rpeAtMost(6)),
-  p(6, 2, forme(57.5), rpeRange(6, 7)),
-  p(6, 2, forme(60), rpeRange(6, 7)),
-  p(6, 2, forme(62.5), rpeRange(6, 7)),
-  p(3, 2, forme(50), rpeAtMost(6), {
+  p(5, 3, pct(65, 'push-press', 50), rpeAtMost(7)),
+  p(5, 3, pct(68, 'push-press', 52.5), rpeAtMost(7)),
+  p(6, 2, pct(71, 'push-press', 55), rpeAtMost(7)),
+  p(3, 3, pct(58, 'push-press', 45), rpeAtMost(6)),
+  p(6, 2, pct(71, 'push-press', 55), rpeRange(6, 7)),
+  p(6, 2, pct(74, 'push-press', 57.5), rpeRange(6, 7)),
+  p(6, 2, pct(77, 'push-press', 60), rpeRange(6, 7)),
+  p(3, 2, pct(58, 'push-press', 45), rpeAtMost(6)),
+  p(6, 2, pct(74, 'push-press', 57.5), rpeRange(6, 7)),
+  p(6, 2, pct(77, 'push-press', 60), rpeRange(6, 7)),
+  p(6, 2, pct(81, 'push-press', 62.5), rpeRange(6, 7)),
+  p(3, 2, pct(65, 'push-press', 50), rpeAtMost(6), {
     note: 'Placé le lundi, après le squat (décision de Guillaume).',
   }),
 ];

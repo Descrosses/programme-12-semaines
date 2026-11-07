@@ -38,12 +38,20 @@ import type { DayIndex, MainLiftId } from '../data/types';
 const LIFTS = Object.keys(MAIN_LIFT_TABLE) as MainLiftId[];
 const SEMAINES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-/** Les 1RM mesurés au combine initial de l'auteur — le jeu de référence. */
+/**
+ * Les 1RM mesurés au combine initial de l'auteur — le jeu de référence.
+ *
+ * Le push press à 77,5 n'a PAS été mesuré : c'est la base que sa colonne
+ * supposait quand elle était écrite en kilos (voir `mainLiftTable.ts`). Il
+ * figure ici pour que les tests de conversion aient une valeur à appliquer ;
+ * `MESURES_COMBINE`, qui ne contient que du mesuré, ne le porte pas.
+ */
 const TESTES: Record<string, number> = {
   'back-squat': 110,
   'bench-press': 115,
   deadlift: 140,
   'weighted-pullup': 45,
+  'push-press': 77.5,
 };
 
 function contexte(oneRM: Settings['oneRM'], tableauOrigine = false): SessionContext {
@@ -80,7 +88,13 @@ describe('le tableau §9 donne des intensités, pas des kilos', () => {
      * colonne indexée, c'est le maximum de l'auteur réservé à tout le monde —
      * le défaut qu'on vient de retirer.
      */
-    for (const lift of ['back-squat', 'bench-press', 'deadlift', 'weighted-pullup'] as const) {
+    for (const lift of [
+      'back-squat',
+      'bench-press',
+      'deadlift',
+      'weighted-pullup',
+      'push-press',
+    ] as const) {
       for (const week of SEMAINES) {
         const load = prescriptionFor(lift, week)?.load;
         if (load === null || load === undefined) continue; // semaine de test 1RM
@@ -127,7 +141,13 @@ describe('le tableau §9 donne des intensités, pas des kilos', () => {
 describe('sans 1RM mesuré, aucune charge n’est inventée', () => {
   it('les colonnes indexées n’affichent rien du tout', () => {
     const vierge = contexte({});
-    for (const lift of ['back-squat', 'bench-press', 'deadlift', 'weighted-pullup'] as const) {
+    for (const lift of [
+      'back-squat',
+      'bench-press',
+      'deadlift',
+      'weighted-pullup',
+      'push-press',
+    ] as const) {
       for (const week of SEMAINES) {
         const kg = kgResolu(lift, week, vierge);
         // `undefined` = le mouvement n'est pas dans cette séance ; `null` = il
@@ -170,22 +190,30 @@ describe('sans 1RM mesuré, aucune charge n’est inventée', () => {
     expect(squat.notes.find((n) => /non calculée/.test(n))).toBeUndefined();
   });
 
-  it('le push press ne suit aucun maximum — mais son kilo n’est qu’une forme', () => {
-    // Kilos absolus, plafond de RPE, règle de progression propre (§7, §8).
-    const attendu = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
-    const vierge = contexte({});
-    for (let w = 1; w <= 12; w++) {
-      const load = prescriptionFor('push-press', w)?.load;
-      // Une FORME : le kilo donne la progression, pas la charge à charger.
-      expect(load?.kind, `push press S${w}`).toBe('forme');
-      if (load?.kind === 'forme') expect(load.kg, `push press S${w}`).toBe(attendu[w - 1]);
-    }
+  it('le push press suit maintenant un maximum, comme les quatre autres', () => {
     /*
-     * Et il ne s'affiche pas non plus tant que rien n'a été soulevé : ces
-     * 50 kg sont ceux de l'auteur. Dès la première série enregistrée, le
-     * décalage déplace la forme entière au niveau de l'utilisateur.
+     * Il était la dernière colonne en kilos absolus — ceux de l'auteur. Le
+     * §12 le teste désormais, donc elle est indexée.
+     *
+     * Deux vérifications dans un seul test, parce que c'est ensemble qu'elles
+     * veulent dire quelque chose : sur la base de 77,5 kg que la colonne
+     * supposait, on retrouve exactement les douze kilos d'origine (la
+     * conversion n'a rien inventé) ; sur un autre maximum, on retrouve autre
+     * chose (elle sert bien l'utilisateur, et pas l'auteur).
      */
-    expect(kgResolu('push-press', 1, vierge) ?? null).toBeNull();
+    const ORIGINE = [50, 52.5, 55, 45, 55, 57.5, 60, 45, 57.5, 60, 62.5, 50];
+    for (let w = 1; w <= 12; w++) {
+      expect(prescriptionFor('push-press', w)?.load?.kind, `S${w}`).toBe('pct1RM');
+      expect(kgResolu('push-press', w, contexte(TESTES)), `S${w} sur 77,5`).toBe(ORIGINE[w - 1]);
+    }
+
+    // Quelqu'un qui pousse 60 kg ne reçoit pas les 50 kg de Guillaume.
+    const leger = contexte({ 'push-press': 60 });
+    expect(kgResolu('push-press', 1, leger)).toBe(40); // 65 % de 60 = 39 → 40
+    expect(kgResolu('push-press', 11, leger)).toBe(47.5); // 81 % de 60 = 48,6 → 47,5
+
+    // Et sans maximum, rien : surtout pas un repli sur les kilos de l'auteur.
+    expect(kgResolu('push-press', 1, contexte({})) ?? null).toBeNull();
   });
 });
 

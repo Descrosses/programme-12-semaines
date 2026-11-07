@@ -696,6 +696,19 @@ const LIST: ExerciseDef[] = [
     intent: 'Dead hang, zéro kipping, menton franchement au-dessus. Repos 4 min.',
   }),
   def({
+    id: 'test-push-press-1rm',
+    name: 'Push Press 1RM',
+    fn: 'test',
+    role: 'test',
+    measure: 'kg',
+    intent:
+      'Dip court (10-15 cm), drive explosif, verrouillage franc. Repos 4 min entre les essais.',
+    cues: [
+      'Si le coude ne verrouille pas, c’est le max : on repose la barre DEVANT, on ne lutte pas au-dessus de la tête.',
+      'Un push press, pas un jerk : les jambes ne se replient pas sous la barre.',
+    ],
+  }),
+  def({
     id: 'test-strict-pullup-max',
     name: 'Tractions strictes max',
     fn: 'test',
@@ -718,15 +731,6 @@ const LIST: ExerciseDef[] = [
     role: 'test',
     measure: 'reps',
     intent: '1 série stricte.',
-  }),
-  def({
-    id: 'test-farmer-carry',
-    name: 'Farmer Carry — test',
-    fn: 'test',
-    role: 'test',
-    measure: 'm',
-    intent: 'Distance max sans poser, haltères 2 × 40 kg.',
-    cues: ['Arrêt : haltère posé, grip perdu ou posture dégradée.'],
   }),
   def({
     id: 'ramp-up',

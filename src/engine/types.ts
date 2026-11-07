@@ -6,8 +6,15 @@
 import type { DayIndex, MainLiftId, RPETarget, WeekIndex } from '../data/types';
 import type { PerformedSet } from './setFormat';
 
-/** Les 1RM réellement testés. Mis à jour par le combine initial et le final. */
-export type OneRMKey = 'back-squat' | 'bench-press' | 'deadlift' | 'weighted-pullup';
+/**
+ * Les 1RM réellement testés. Mis à jour par le combine initial et le final.
+ *
+ * Le push press est le cinquième depuis que le §12 le teste. Il est entré
+ * pour une raison précise : sa colonne du §9 était la seule, avec le RDL, à
+ * servir les kilos de l'auteur à tout le monde. Un mouvement polyarticulaire
+ * chargé mérite une charge mesurée, même quand on le travaille en vitesse.
+ */
+export type OneRMKey = 'back-squat' | 'bench-press' | 'deadlift' | 'weighted-pullup' | 'push-press';
 
 export interface Settings {
   /**

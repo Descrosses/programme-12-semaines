@@ -11,6 +11,7 @@ import { getSession, hasSession, type ResolvedExercise } from './getSession';
 import { readiness } from './readiness';
 import { EMPTY_CONTEXT, type Occurrence, type SessionContext } from './types';
 import type { DayIndex, WeekIndex } from '../data/types';
+import { specialSession } from '../data/testSessions';
 
 /** Les 1RM réellement mesurés au combine initial. */
 const ONE_RM = {
@@ -18,6 +19,9 @@ const ONE_RM = {
   'bench-press': 115,
   deadlift: 140,
   'weighted-pullup': 45,
+  // Jamais mesuré : c'est la base que la colonne §9 supposait quand elle
+  // était écrite en kilos. Elle redonne donc les kilos d'origine.
+  'push-press': 77.5,
 } as const;
 
 /*
@@ -174,16 +178,34 @@ describe('calendrier des séances', () => {
     expect(find(s, 'test-deadlift-1rm').ramp?.length).toBe(8);
   });
 
-  it('les tractions lestées du mardi sont seules aussi', () => {
-    expect(ids(session(0, 1).exercises)).toEqual(['test-weighted-pullup-1rm']);
+  it('le mardi teste les tractions lestées, puis le push press', () => {
+    /*
+     * L'ORDRE EST LA MOITIÉ DU TEST. Les tractions d'abord, parce qu'elles
+     * sont prioritaires et qu'une barre poussée au-dessus de la tête avant
+     * elles les abîmerait. Le push press ensuite, sur un verrouillage que
+     * rien n'a fatigué — c'est tout l'intérêt de ce jour-là.
+     */
+    expect(ids(session(0, 1).exercises)).toEqual([
+      'test-weighted-pullup-1rm',
+      'test-push-press-1rm',
+    ]);
   });
 
-  it('le samedi regroupe les trois tests à l’épuisement, dans un ordre fixe', () => {
-    expect(ids(session(0, 5).exercises)).toEqual([
-      'test-strict-pullup-max',
-      'test-leg-raise-max',
-      'test-farmer-carry',
-    ]);
+  it('le push press ne se teste jamais la veille ni le lendemain du bench', () => {
+    // Ce qui limite un push press maximal, c'est le verrouillage. Le bench
+    // est le seul autre test qui le charge.
+    const jour = (id: string) =>
+      [0, 1, 2, 3, 4, 5, 6].find((d) => {
+        const bp = specialSession(0, d as DayIndex);
+        return bp?.slots.some((x) => x.exId === id) ?? false;
+      });
+    const pp = jour('test-push-press-1rm')!;
+    const bench = jour('test-bench-1rm')!;
+    expect(Math.abs(pp - bench), 'push press et bench à moins de 48 h').toBeGreaterThanOrEqual(2);
+  });
+
+  it('le samedi regroupe les deux tests à l’épuisement, dans un ordre fixe', () => {
+    expect(ids(session(0, 5).exercises)).toEqual(['test-strict-pullup-max', 'test-leg-raise-max']);
   });
 });
 
@@ -383,7 +405,6 @@ describe('semaine 8 — combine intermédiaire', () => {
       'test-sprint-10m',
       'test-sprint-20m',
       'test-strict-pullup-max',
-      'test-farmer-carry',
       'deadlift',
       'front-squat',
     ]);
@@ -400,6 +421,7 @@ describe('semaine 12 — taper', () => {
   it('lundi accueille le bench et le push press du tableau', () => {
     const s = session(12, 0);
     expect(find(s, 'bench-press').loadLine).toBe('3 × 2 × 82,5 kg');
+    // 65 % de 77,5 : la même charge qu'avant, par un autre chemin.
     expect(find(s, 'push-press').loadLine).toBe('3 × 2 × 50 kg');
     expect(find(s, 'back-squat').loadLine).toBe('3 × 2 × 77,5 kg');
   });

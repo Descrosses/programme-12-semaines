@@ -44,7 +44,13 @@ import type { DayIndex } from '../data/types';
 const SETTINGS = {
   ...DEFAULT_SETTINGS,
   startDate: '2026-08-24',
-  oneRM: { 'back-squat': 110, 'bench-press': 115, deadlift: 140, 'weighted-pullup': 45 },
+  oneRM: {
+    'back-squat': 110,
+    'bench-press': 115,
+    deadlift: 140,
+    'weighted-pullup': 45,
+    'push-press': 77.5,
+  },
   tableauOrigine: false,
 };
 
@@ -241,11 +247,45 @@ describe('ce qui NE se recale pas en proportion', () => {
     expect(s8.load.kg).toBe(s8.planKg! + 10);
   });
 
-  it('une case écrite en kilos garde ses paliers de 2,5 kg', () => {
-    // Le Push Press : aucune intensité à mettre à l'échelle, sa règle est
-    // « +2,5 kg quand les reps sont rapides ».
-    const pp = ctx({ 'push-press': [occ('push-press', 1, 4, 40, 50)] });
-    const s3 = charge('push-press', 3, 4, pp);
+  it('le RDL garde ses paliers en kilos : rien ne le mesure', () => {
+    /*
+     * Le dernier mouvement du tableau dont la charge n'est pas indexée. Aucun
+     * maximum de RDL n'est testé, donc il n'y a aucune intensité à mettre à
+     * l'échelle : sa règle est « +2,5 kg quand la forme tient ». Un écart s'y
+     * reporte en kilos, pas en proportion.
+     */
+    const rdl = ctx({ rdl: [occ('rdl', 1, 0, 70, 80)] });
+    const s3 = charge('rdl', 3, 0, rdl);
     expect(s3.load.kg).toBe(s3.planKg! - 10);
+  });
+});
+
+/*
+ * LE PUSH PRESS A CHANGÉ DE CAMP. Il vivait dans le paragraphe du dessus
+ * — une case en kilos, un écart en kilos — parce qu'aucun maximum ne le
+ * mesurait. Le §12 le teste maintenant, sa colonne est indexée, et un écart
+ * s'y lit donc en proportion comme sur les quatre autres.
+ *
+ * Ce n'est pas un détail d'implémentation : 40 kg là où le plan disait 50, ce
+ * n'est pas « 10 kg de moins » sur douze semaines, c'est « 80 % du plan ». La
+ * semaine 11 ne doit pas se retrouver à 52,5 kg pour quelqu'un qui en poussait
+ * 40 en semaine 1.
+ */
+describe('le push press se recale en proportion, comme les colonnes indexées', () => {
+  it('un écart de 20 % déplace toute la colonne de 20 %', () => {
+    const pp = ctx({ 'push-press': [occ('push-press', 1, 4, 40, 50)] });
+    for (const week of [2, 3, 5, 6, 7, 9, 10, 11]) {
+      const s = charge('push-press', week, 4, pp);
+      expect(s.load.kg, `S${week}`).toBe(Math.round((s.planKg! * 0.8) / 2.5) * 2.5);
+    }
+  });
+
+  it('et l’ancien comportement — un écart en kilos — ne revient pas', () => {
+    // S11 vaut 62,5 au plan. En proportion : 50. En kilos : 52,5.
+    const pp = ctx({ 'push-press': [occ('push-press', 1, 4, 40, 50)] });
+    const s11 = charge('push-press', 11, 4, pp);
+    expect(s11.planKg).toBe(62.5);
+    expect(s11.load.kg).toBe(50);
+    expect(s11.load.kg).not.toBe(52.5);
   });
 });

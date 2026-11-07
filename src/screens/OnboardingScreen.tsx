@@ -42,10 +42,11 @@ import local from './Onboarding.module.css';
  * fois, à la sortie.
  */
 
-/** Les quatre maxima que le combine mesure, dans l'ordre où il les teste. */
+/** Les cinq maxima que le combine mesure, dans l'ordre où il les teste. */
 const MAXIMA = [
   { id: 'back-squat', label: 'Back Squat', jour: 'lundi' },
   { id: 'weighted-pullup', label: 'Tractions lestées', jour: 'mardi' },
+  { id: 'push-press', label: 'Push Press', jour: 'mardi' },
   { id: 'deadlift', label: 'Deadlift', jour: 'jeudi' },
   { id: 'bench-press', label: 'Bench Press', jour: 'vendredi' },
 ] as const;

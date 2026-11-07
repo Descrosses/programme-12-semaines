@@ -15,24 +15,30 @@
  * tirage ou de préhension à moins de 48 h.
  *
  *   lundi    sauts, sprints, SQUAT 1RM
- *   mardi    TRACTIONS LESTÉES 1RM, seule
+ *   mardi    TRACTIONS LESTÉES 1RM, puis PUSH PRESS 1RM
  *   mercredi repos
  *   jeudi    DEADLIFT 1RM, seul            ← 48 h après les tractions lestées
  *   vendredi BENCH 1RM, ab wheel max
- *   samedi   tractions strictes max, leg raise max, farmer carry  ← 48 h après
+ *   samedi   tractions strictes max, leg raise max  ← 48 h après le deadlift
  *   dimanche repos complet
  *   lundi    début de la semaine 1, à froid
+ *
+ * Le push press est venu se poser au mardi, derrière les tractions : c'est le
+ * seul jour qui ne fatigue pas d'avance son verrouillage. Le raisonnement
+ * complet est au-dessus de `COMBINE_MARDI`.
  *
  * Le deadlift est le mieux protégé des quatre : un jour de repos complet la
  * veille. C'est voulu — son 1RM alimente tout le tableau de charges du §9, et
  * l'écart deadlift − squat est le critère central du §13. Le tester bas
  * fausserait douze semaines.
  *
- * Le Farmer Carry a quitté le lundi pour le samedi : sa préhension chargée
- * empêchait les tractions lestées du mardi. Il est donc mesuré en fin de
- * séance, préhension déjà fatiguée — mais à l'identique aux semaines 8 et 12,
- * donc les trois combines restent comparables. C'est ce qu'exige le §12 : même
- * protocole, pas protocole parfait.
+ * LE FARMER CARRY N'EST PLUS TESTÉ (décision de Guillaume). Il mesurait une
+ * distance parcourue avec 2 × 40 kg, et cette distance ne décidait de rien :
+ * aucune charge du §9 n'en dépendait, aucune séance ne s'y recalait, et le
+ * Farmer Carry lui-même sort du programme à partir de la semaine 5. On
+ * mesurait donc tous les trois mois un chiffre que personne ne lisait, au
+ * prix d'une préhension cramée en fin de combine. L'exercice reste au
+ * vendredi des semaines 1-4 : c'est le TEST qui part, pas le mouvement.
  *
  * Le poids de corps ne figure dans AUCUNE de ces séances : §12 demande « une
  * moyenne de 3 matins, à jeun », un relevé fait à la maison sur plusieurs
@@ -125,11 +131,39 @@ export const RAMP_PULLUP: RampStep[] = [
   { kg: 42.5, reps: 1, added: true, attempt: true, optional: true },
 ];
 
+/**
+ * « 40×5 / 50×3 / 57,5×2 / 65×1 / 72,5×1 / 77,5 / 82,5 / 85 selon le verrou »
+ *
+ * LE SEUL DES SIX DONT LE MAXIMUM N'A JAMAIS ÉTÉ ESTIMÉ PAR LE PROGRAMME. Le
+ * §12 ne testait pas le push press ; la colonne §9 était écrite en kilos
+ * absolus, sans jamais dire de quel maximum ils venaient.
+ *
+ * Point de départ : le rapport push press / bench, qui vaut 0,65 à 0,75 chez
+ * à peu près tout le monde. Bench mesuré à 115 → push press autour de 77,5.
+ * C'est ce que la colonne §9 supposait sans le dire, et on le vérifie plus
+ * loin (voir `mainLiftTable.ts`) : ses douze cases retombent au 2,5 kg près
+ * sur les kilos d'origine quand on les applique à 77,5.
+ *
+ * Le dernier palier d'échauffement est à 93 % du maximum supposé, comme celui
+ * du deadlift recalé : un maximum ne se soulève pas à l'échauffement.
+ */
+export const RAMP_PUSH_PRESS: RampStep[] = [
+  w(40, 5),
+  w(50, 3),
+  w(57.5, 2),
+  w(65, 1),
+  w(72.5, 1),
+  a(77.5),
+  a(82.5, true),
+  a(85, true),
+];
+
 export const RAMPS = {
   'back-squat': RAMP_SQUAT,
   'bench-press': RAMP_BENCH,
   deadlift: RAMP_DEADLIFT,
   'weighted-pullup': RAMP_PULLUP,
+  'push-press': RAMP_PUSH_PRESS,
 } as const;
 
 // --- Test final (semaine 12) — maxima mesurés au combine ---------------------
@@ -198,11 +232,48 @@ export const RAMP_PULLUP_S12: RampStep[] = [
   { kg: 52.5, reps: 1, added: true, attempt: true, optional: true },
 ];
 
+/**
+ * Les mêmes essais que le test initial, trois paliers d'échauffement au lieu
+ * de cinq.
+ *
+ * CE N'EST PAS UN RECALAGE, c'est une mise en route plus courte. Les trois
+ * essais — 77,5 / 82,5 / 85 — sont identiques à ceux du test initial : c'est
+ * ce qui rend les deux mesures comparables, et on n'y touche pas. Seule
+ * l'approche change, parce qu'en semaine 12 le push press suit un back squat
+ * 1RM : le corps est chaud, seul le geste au-dessus de la tête a besoin
+ * d'être réveillé.
+ *
+ * Accessoirement, ça retire dix minutes à une séance qui en fait déjà cent.
+ */
+export const RAMP_PUSH_PRESS_S12: RampStep[] = [
+  w(40, 5),
+  w(57.5, 2),
+  w(72.5, 1),
+  a(77.5),
+  a(82.5, true),
+  a(85, true),
+];
+
+/*
+ * Le push press n'a PAS de paliers recalés, et c'est volontaire.
+ *
+ * Les quatre autres se recalculent sur `MESURES_COMBINE`, les maxima que le
+ * combine initial a réellement donnés. Le push press n'y figure pas : il n'a
+ * jamais été testé, donc il n'y a rien sur quoi recaler. Inventer une colonne
+ * S12 reviendrait à faire exactement ce que ce fichier reproche à l'ancienne
+ * version — monter sur des paliers qui ne décrivent la force de personne.
+ *
+ * Le premier cycle qui passera le nouveau combine produira le chiffre, et
+ * cette ligne pourra alors être écrite. D'ici là, la semaine 12 réutilise les
+ * paliers du test initial, ses deux derniers essais sont facultatifs, et la
+ * séance le dit : au-delà, on monte à la sensation.
+ */
 export const RAMPS_S12 = {
   'back-squat': RAMP_SQUAT_S12,
   'bench-press': RAMP_BENCH_S12,
   deadlift: RAMP_DEADLIFT_S12,
   'weighted-pullup': RAMP_PULLUP_S12,
+  'push-press': RAMP_PUSH_PRESS_S12,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -266,19 +337,54 @@ const COMBINE_LUNDI: SessionBlueprint = {
   ],
 };
 
-/** Mardi — seule, pour arriver frais sur la préhension. */
+/**
+ * Mardi — tractions lestées, puis push press.
+ *
+ * ── Pourquoi le push press est ici, et pas ailleurs ───────────────────────
+ *
+ * Il fallait un jour où rien ne fatigue d'abord le VERROUILLAGE, qui est ce
+ * qui limite un push press maximal. Les six jours du combine se lisent alors
+ * tout seuls :
+ *
+ *   lundi    squat 1RM → le passer avant coûterait le squat
+ *   mercredi repos, et ce repos protège le deadlift de jeudi (§12)
+ *   jeudi    deadlift 1RM, rien d'autre, c'est la règle
+ *   vendredi bench 1RM → 24 h avant ou après, le triceps est cuit
+ *   samedi   lendemain du bench, même problème
+ *
+ * Reste le mardi. Une traction lestée maximale charge le dos et les biceps,
+ * pas le verrou au-dessus de la tête : le push press passe APRÈS, donc il ne
+ * peut pas abîmer le test prioritaire de la journée, et il n'arrive pas
+ * lui-même sur des épaules déjà travaillées.
+ *
+ * Les jambes, elles, sortent du squat 1RM de la veille. C'est assumé : le dip
+ * d'un push press est un quart de squat à 77,5 kg pour quelqu'un qui en
+ * squatte 110 — la jambe n'est pas ce qui décide, et 24 h suffisent largement
+ * pour ça.
+ *
+ * Conséquence sur la règle des 48 h : le mardi reste un seul jour de
+ * préhension. Le push press se tient en front rack, pas dans les doigts.
+ */
 const COMBINE_MARDI: SessionBlueprint = {
   day: 1,
-  title: 'Combine initial — tractions lestées 1RM',
-  durationLabel: '35-45 min',
+  title: 'Combine initial — tractions lestées 1RM + push press 1RM',
+  durationLabel: '70-90 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
   notes: [
-    'Séance volontairement courte : rien d’autre aujourd’hui.',
+    'Deux tests, dans cet ordre : les tractions d’abord, c’est le prioritaire.',
     'Repos 4 min entre les tentatives. Dead hang, menton franchement au-dessus.',
+    'Le push press fixe ta colonne du vendredi pour les douze semaines : ne le bâcle pas.',
   ],
-  slots: [oneRM('test-weighted-pullup-1rm', RAMP_PULLUP)],
+  slots: [
+    oneRM('test-weighted-pullup-1rm', RAMP_PULLUP),
+    oneRM(
+      'test-push-press-1rm',
+      RAMP_PUSH_PRESS,
+      '82,5 et 85 seulement si le 77,5 verrouille vite.',
+    ),
+  ],
 };
 
 /** Jeudi — le lift prioritaire du programme, précédé d'un repos complet. */
@@ -312,29 +418,26 @@ const COMBINE_VENDREDI: SessionBlueprint = {
 };
 
 /**
- * Samedi — les trois tests « jusqu'à l'épuisement », aucun 1RM.
+ * Samedi — les deux tests « jusqu'à l'épuisement », aucun 1RM.
  *
- * Les grouper est assumé : ils sollicitent tous la préhension, donc les deux
- * derniers seront sous-estimés. Mais ils le seront de la même façon aux
- * semaines 8 et 12, et c'est la comparaison qui compte. L'ordre est fixe :
- * tractions d'abord, c'est le test prioritaire.
+ * L'ordre est fixe et le même aux trois combines : tractions d'abord, c'est le
+ * test prioritaire.
  */
 const COMBINE_SAMEDI: SessionBlueprint = {
   day: 5,
-  title: 'Combine initial — tractions max, leg raise, farmer',
-  durationLabel: '20-30 min',
+  title: 'Combine initial — tractions max, leg raise',
+  durationLabel: '15-25 min',
   intensity: 'TEST',
   warmup: 'upper',
   readinessTest: false,
   notes: [
     '48 h après le deadlift : ta préhension et ton dos sont récupérés.',
-    'Ordre imposé, et le même aux trois combines : tractions, puis leg raise, puis farmer.',
+    'Ordre imposé, et le même aux trois combines : tractions, puis leg raise.',
     'Demain, repos complet. La semaine 1 démarre lundi, à froid.',
   ],
   slots: [
     t('test-strict-pullup-max', maxSet(), 0, 'Poitrine à la barre.'),
     t('test-leg-raise-max', maxSet(), 0),
-    t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max sans poser.'),
   ],
 };
 
@@ -350,7 +453,7 @@ const COMBINE_SAMEDI: SessionBlueprint = {
 const COMBINE_S8_SAMEDI: SessionBlueprint = {
   day: 5,
   title: 'Combine intermédiaire',
-  durationLabel: '45-55 min',
+  durationLabel: '40-50 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: false,
@@ -364,7 +467,6 @@ const COMBINE_S8_SAMEDI: SessionBlueprint = {
     t('test-sprint-10m', attempts(3), 240),
     t('test-sprint-20m', attempts(3), 240),
     t('test-strict-pullup-max', maxSet(), 0),
-    t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max.'),
     fromTable('deadlift', 'deadlift', 180, 'Deload : RPE 5, vitesse de barre.'),
     fromTable('front-squat', 'front-squat', 120, 'Deload : RPE 5.'),
   ],
@@ -521,17 +623,33 @@ const S12_VENDREDI: SessionBlueprint = {
   ],
 };
 
+/**
+ * Samedi — squat 1RM, puis push press 1RM.
+ *
+ * Le push press ne peut pas retrouver son mardi : la semaine 12 n'a pas de
+ * jour libre, et le dimanche commence par un bench 1RM — exactement ce qu'on
+ * a écarté au combine initial.
+ *
+ * Il passe donc APRÈS le squat, pour la même raison qu'il passait après les
+ * tractions : ni l'un ni l'autre ne touche le verrouillage. Le coût réel est
+ * sur le squat, qui prend six singles de push press derrière lui ; c'est la
+ * moins mauvaise des places, et le §12 l'a déjà tranché une fois — « même
+ * protocole, pas protocole parfait ».
+ */
 const S12_SAMEDI: SessionBlueprint = {
   day: 5,
-  title: 'TEST Back Squat 1RM + Farmer',
-  durationLabel: '60-70 min',
+  title: 'TEST Back Squat 1RM + Push Press 1RM',
+  durationLabel: '85-100 min',
   intensity: 'TEST',
   warmup: 'lower',
   readinessTest: true,
-  notes: ['Un squat propre à 152,5 vaut plus qu’un grinder hideux à 160.'],
+  notes: [
+    'Un squat propre à 152,5 vaut plus qu’un grinder hideux à 160.',
+    'Les paliers du push press sont ceux du test initial : au-delà, monte à la sensation et au verrouillage.',
+  ],
   slots: [
     oneRM('test-squat-1rm', RAMP_SQUAT_S12),
-    t('test-farmer-carry', maxSet(), 0, 'Haltères 2 × 40 kg, distance max sans poser.'),
+    oneRM('test-push-press-1rm', RAMP_PUSH_PRESS_S12),
   ],
 };
 
@@ -601,8 +719,8 @@ export const COMBINE_METRICS = [
   'test-bench-1rm',
   'test-deadlift-1rm',
   'test-weighted-pullup-1rm',
+  'test-push-press-1rm',
   'test-strict-pullup-max',
-  'test-farmer-carry',
   'test-ab-wheel-max',
   'test-leg-raise-max',
 ] as const;
@@ -692,6 +810,15 @@ export const TARGETS_12_WEEKS: Record<string, Cible> = {
   /* Le gain porte sur le LEST, pas sur poids de corps + lest. */
   'test-weighted-pullup-1rm': { kind: 'gain', minPct: 3, maxPct: 5, unite: 'kg', lest: true },
   /*
+   * Le push press est le seul des six à être mesuré deux fois dans des états
+   * différents : frais derrière des tractions au combine initial, derrière un
+   * squat 1RM en semaine 12. Le second sera donc un peu bas, et la fourchette
+   * en tient compte — 5 à 8 %, soit moins que le squat alors que c'est un
+   * mouvement que Guillaume découvre et où les premiers kilos viennent de la
+   * technique. C'est une mesure prudente, pas une mesure pessimiste.
+   */
+  'test-push-press-1rm': { kind: 'gain', minPct: 5, maxPct: 8, unite: 'kg' },
+  /*
    * Seul gain encore hérité du §13 : Guillaume n'a pas eu à le revoir, il
    * porte sur un nombre de répétitions et non sur une barre chargée.
    */
@@ -699,8 +826,7 @@ export const TARGETS_12_WEEKS: Record<string, Cible> = {
   'test-broad-jump': { kind: 'relatif', label: '+5 à 8 %' },
   'test-vertical-jump': { kind: 'relatif', label: '+4 à 6 cm' },
   'test-sprint-10m': { kind: 'relatif', label: '−2 à 4 %' },
-  /* Libellés recopiés mot pour mot du §13 : « distance », pas « de distance ». */
-  'test-farmer-carry': { kind: 'relatif', label: '+20 % distance' },
+  /* Libellé recopié mot pour mot du §13 : « reps », pas « de reps ». */
   'test-ab-wheel-max': { kind: 'relatif', label: '+20-30 % reps' },
   /* Le §13 n'en donne pas. Ne pas confondre avec « pas encore mesuré ». */
   'test-sprint-20m': { kind: 'aucune' },

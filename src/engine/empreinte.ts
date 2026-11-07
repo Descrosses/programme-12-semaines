@@ -41,6 +41,14 @@ const MAXIMA: Settings['oneRM'] = {
   'bench-press': 80,
   deadlift: 120,
   'weighted-pullup': 20,
+  /*
+   * Le push press est entré ici le jour où sa colonne est passée aux
+   * pourcentages. Sans lui, l'empreinte photographiait douze cases vides et
+   * n'aurait rien vu bouger si la conversion avait été fausse — et le
+   * contexte « tableau d'origine » n'aurait pas prouvé ce qu'il doit
+   * prouver : qu'une installation en cours garde ses kilos écrits.
+   */
+  'push-press': 60,
 };
 
 const REFERENCE_SAUT_CM = 225;

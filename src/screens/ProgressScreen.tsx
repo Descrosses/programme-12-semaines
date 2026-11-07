@@ -26,12 +26,13 @@ import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
 import styles from './Progress.module.css';
 
-/** Les quatre lifts que le programme suit vraiment (§13). */
+/** Les cinq lifts que le programme teste et suit (§13). */
 const LIFTS: Array<{ id: MainLiftId; label: string }> = [
   { id: 'back-squat', label: 'Squat' },
   { id: 'bench-press', label: 'Bench' },
   { id: 'deadlift', label: 'Deadlift' },
   { id: 'weighted-pullup', label: 'Tractions' },
+  { id: 'push-press', label: 'Push Press' },
 ];
 
 /**
