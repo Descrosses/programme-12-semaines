@@ -45,4 +45,12 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
    * fausse de ce qu'elle sera.
    */
   femmes: { teinte: '#d4578f' },
+  /*
+   * Pas de photo non plus, et pour une raison différente : il n'y a rien à
+   * photographier. Cette famille ne représente pas un style d'entraînement,
+   * elle représente CELUI DE LA PERSONNE. L'ambre la distingue du bleu, du
+   * rouge et du rose sans prétendre dire ce qu'elle contient. Provisoire,
+   * comme les trois autres.
+   */
+  perso: { teinte: '#c08b2c' },
 };

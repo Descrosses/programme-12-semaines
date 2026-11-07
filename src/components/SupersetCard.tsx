@@ -12,6 +12,8 @@ import {
   type Circuit,
 } from '../engine/superset';
 import { restLabel } from '../engine/format';
+import { cleBloc, minutesSecondes } from '../timer/blocMinute';
+import { useBlocMinute } from '../state/useBlocMinute';
 import type { RestTimer } from '../state/useRestTimer';
 import { SetEntry, type SetPayload } from './ExerciseCard';
 import styles from '../screens/Session.module.css';
@@ -47,6 +49,8 @@ import styles from '../screens/Session.module.css';
  */
 export function SupersetCard({
   circuit,
+  week,
+  day,
   savedSets,
   overrides,
   timer,
@@ -54,6 +58,9 @@ export function SupersetCard({
   fiches,
 }: {
   circuit: Circuit;
+  /** La séance : deux circuits homonymes de deux jours ont chacun leur chrono. */
+  week: number;
+  day: number;
   savedSets: Record<string, SetRow[]>;
   overrides: Record<string, number>;
   timer: RestTimer;
@@ -70,6 +77,7 @@ export function SupersetCard({
 }) {
   const { exs, tours, rythme } = circuit;
   const titre = titreRythme(rythme, exs.length);
+  const minuteur = useBlocMinute(cleBloc(week, day, circuit.id), circuit.minutesBloc);
 
   const serie = (ex: ResolvedExercise, i: number) =>
     (savedSets[ex.id] ?? []).find((s) => s.setIndex === i) ?? null;
@@ -105,6 +113,54 @@ export function SupersetCard({
         <div className={`${styles.supersetCount} tnum`}>
           {faites} / {total} séries
         </div>
+
+        {/*
+          LE BLOC MINUTÉ.
+
+          Rien ne s'affiche quand le programme n'en impose pas — POWER 12 et
+          MASS 4 ne minutent aucun bloc, et leur en-tête reste identique.
+
+          Le compte à rebours ne part pas tout seul à l'ouverture de l'écran :
+          consulter n'est pas commencer, ici comme ailleurs. Il part au doigt,
+          quand on se met au travail.
+        */}
+        {circuit.minutesBloc !== null && (
+          <div className={styles.blocMinute}>
+            <div
+              className={`${styles.blocJauge} ${minuteur.fini ? styles.blocJaugeFinie : ''}`}
+              aria-hidden="true"
+            >
+              <i style={{ width: `${Math.round(minuteur.ratio * 100)}%` }} />
+            </div>
+            <div className={styles.blocLigne}>
+              <span
+                className={`${styles.blocTemps} tnum ${minuteur.fini ? styles.blocTempsFini : ''}`}
+                role="timer"
+                aria-live="off"
+              >
+                {minuteur.fini
+                  ? `+ ${minutesSecondes(minuteur.depassement)}`
+                  : minutesSecondes(minuteur.restant)}
+              </span>
+              <span className={styles.blocLabel}>
+                {minuteur.actif
+                  ? minuteur.fini
+                    ? 'temps dépassé'
+                    : 'restant sur le circuit'
+                  : `${circuit.minutesBloc} min pour le circuit entier`}
+              </span>
+              {minuteur.actif ? (
+                <button type="button" className={styles.blocBouton} onClick={minuteur.arreter}>
+                  Réinitialiser
+                </button>
+              ) : (
+                <button type="button" className={styles.blocBouton} onClick={minuteur.demarrer}>
+                  Lancer
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {Array.from({ length: tours }, (_, i) => {

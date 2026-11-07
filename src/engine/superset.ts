@@ -64,6 +64,15 @@ export interface Circuit {
    * lui qui suit le circuit. En alterné, le repos entre deux stations.
    */
   restSec: number;
+  /**
+   * Minutes allouées au circuit entier, ou `null` s'il n'est pas minuté.
+   *
+   * Lue sur la PREMIÈRE station qui en déclare une : un programme pose la
+   * consigne une fois, en tête de bloc, et n'a pas à la répéter sur chaque
+   * mouvement. Deux stations qui se contrediraient donneraient deux vérités —
+   * la première gagne, et c'est celle qu'on lit sur la feuille.
+   */
+  minutesBloc: number | null;
 }
 
 export interface Solo {
@@ -122,6 +131,7 @@ export function groupSupersets(exercises: ResolvedExercise[]): Bloc[] {
           rythme,
           tours: Math.max(...exs.map((e) => e.sets)),
           restSec: rythme === 'enchaine' ? exs[exs.length - 1]!.restSec : ex.restSec,
+          minutesBloc: exs.find((e) => e.blocMinutes !== undefined)?.blocMinutes ?? null,
         });
         i = fin - 1; // les stations suivantes sont déjà consommées
         continue;

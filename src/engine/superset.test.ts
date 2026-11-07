@@ -419,3 +419,73 @@ describe('un circuit de trois stations et plus', () => {
     expect((blocs[1] as Circuit).exs).toHaveLength(3);
   });
 });
+
+/*
+ * LE BLOC MINUTÉ.
+ *
+ * Aucun programme écrit en code n'en pose : POWER 12 et MASS 4 ne minutent
+ * pas leurs blocs, et `minutesBloc` y vaut toujours `null`. Ces tests sont
+ * donc le seul endroit où cette forme existe, et le seul filet si quelqu'un
+ * la débranche en croyant qu'elle ne sert à rien.
+ */
+describe('la minuterie du bloc', () => {
+  it('vaut null quand le programme n’impose aucun temps', () => {
+    const c = groupSupersets([
+      ex('a', { superset: 'x' }),
+      ex('b', { superset: 'x' }),
+    ])[0] as Circuit;
+    expect(c.minutesBloc).toBeNull();
+  });
+
+  it('se lit sur la première station qui en déclare une', () => {
+    const c = groupSupersets([
+      ex('a', { superset: 'x', blocMinutes: 10 }),
+      ex('b', { superset: 'x' }),
+      ex('c', { superset: 'x' }),
+    ])[0] as Circuit;
+    expect(c.minutesBloc).toBe(10);
+  });
+
+  it('la trouve même posée sur une station qui n’est pas la première', () => {
+    // Un programme peut l'écrire au milieu : on ne la rate pas pour autant.
+    const c = groupSupersets([
+      ex('a', { superset: 'x' }),
+      ex('b', { superset: 'x', blocMinutes: 8 }),
+    ])[0] as Circuit;
+    expect(c.minutesBloc).toBe(8);
+  });
+
+  it('deux stations qui se contredisent : la première gagne', () => {
+    // Deux vérités valent moins qu'une seule, même imparfaite. La feuille
+    // pose la consigne en tête de bloc, c'est elle qu'on lit.
+    const c = groupSupersets([
+      ex('a', { superset: 'x', blocMinutes: 10 }),
+      ex('b', { superset: 'x', blocMinutes: 4 }),
+    ])[0] as Circuit;
+    expect(c.minutesBloc).toBe(10);
+  });
+
+  it('un exercice seul ne fabrique pas de bloc minuté', () => {
+    const blocs = groupSupersets([ex('a', { blocMinutes: 10 })]);
+    expect(blocs[0]!.kind).toBe('solo');
+  });
+});
+
+/*
+ * Le garde-fou qui compte pour les deux programmes existants : aucun de leurs
+ * blocs n'est minuté. Le jour où l'un le devient, c'est une décision, pas un
+ * effet de bord — et ce test oblige à l'assumer.
+ */
+describe('POWER 12 et MASS 4 ne minutent aucun bloc', () => {
+  it('ne pose minutesBloc nulle part dans les douze semaines', () => {
+    for (let w = 1; w <= 12; w++) {
+      for (let d = 0; d < 7; d++) {
+        const s = getSession(w as WeekIndex, d as DayIndex, EMPTY_CONTEXT as SessionContext);
+        if (s === null) continue;
+        for (const bloc of groupSupersets(s.exercises)) {
+          if (bloc.kind === 'circuit') expect(bloc.minutesBloc, `S${w}J${d}`).toBeNull();
+        }
+      }
+    }
+  });
+});

@@ -35,12 +35,21 @@ describe('catalogue Dcross-fit', () => {
     expect(defaut?.dureeSemaines).toBe(DUREE_SEMAINES);
   });
 
-  it('couvre les trois familles prévues, et aucune autre', () => {
-    expect(FAMILLES.map((f) => f.id)).toEqual(['power', 'mass', 'femmes']);
+  it('couvre les quatre familles prévues, et aucune autre', () => {
+    expect(FAMILLES.map((f) => f.id)).toEqual(['power', 'mass', 'femmes', 'perso']);
   });
 
   it('n’invente aucun programme pour la famille Femmes', () => {
     expect(familleParId('femmes')?.programmes).toEqual([]);
+  });
+
+  /*
+   * PERSONNALISÉ reste vide par nature, pas en attendant mieux : son contenu
+   * vient de la personne. Écrire un programme dedans serait un contresens, et
+   * ce test est là pour que personne ne le fasse « pour meubler ».
+   */
+  it('n’écrit aucun programme dans la famille Personnalisé', () => {
+    expect(familleParId('perso')?.programmes).toEqual([]);
   });
 
   it('ne donne ni objectifs ni prérequis à un programme qui n’existe pas', () => {

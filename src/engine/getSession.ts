@@ -84,6 +84,8 @@ export interface ResolvedExercise {
    * un seul encadré. Voir `Slot.superset` et `src/engine/superset.ts`.
    */
   superset?: string;
+  /** Minutes allouées au bloc entier, quand le programme en impose. */
+  blocMinutes?: number;
   /**
    * Dernière charge réellement enregistrée sur cet exercice, ou `null`.
    *
@@ -364,6 +366,9 @@ function patchSlot(slot: Slot, p: SlotPatch): Slot {
     ...(p.load !== undefined ? { load: p.load } : {}),
     ...(p.note !== undefined ? { note: p.note } : {}),
     ...(p.superset !== undefined ? { superset: p.superset } : {}),
+    /* `blocMinutes` n'est pas corrigeable par un patch : un deload allège les
+     * charges et les séries, il ne raccourcit pas le temps imparti au bloc.
+     * La valeur du créneau passe telle quelle par l'étalement ci-dessus. */
     // `loadFactor` et `contrastWith` sont consommés plus tard, on les mémorise.
     ...(p.loadFactor !== undefined ? { __loadFactor: p.loadFactor } : {}),
     ...(p.loadFactorAtBlockEntry !== undefined
@@ -740,6 +745,7 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
     ...(contrastWith && o.contrast ? { contrast: o.contrast } : {}),
     ...(slot.ramp ? { ramp: slot.ramp } : {}),
     ...(slot.superset ? { superset: slot.superset } : {}),
+    ...(slot.blocMinutes !== undefined ? { blocMinutes: slot.blocMinutes } : {}),
     suggestion,
     adjustments,
   };

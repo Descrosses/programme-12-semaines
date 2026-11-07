@@ -345,3 +345,13 @@
 [data-theme='femmes'] {
   /* À définir avec Guillaume. */
 }
+
+/*
+ * PERSONNALISÉ — volontairement vide, comme FEMMES, mais pas pour la même
+ * raison : un programme apporté par quelqu'un d'autre n'a pas d'identité
+ * visuelle à lui. Hériter du thème de la plateforme est le bon défaut, et
+ * ce bloc existe pour qu'on sache où poser autre chose si on change d'avis.
+ */
+[data-theme='perso'] {
+  /* Hérite du thème de base. */
+}
