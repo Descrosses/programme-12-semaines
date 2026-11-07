@@ -11,39 +11,67 @@ import { describe, expect, it } from 'vitest';
 import { ALIMENTS_QUESTIONNAIRE, alimentPour, alimentsInconnus } from './questionnaireAliments';
 import { FOOD_LIBRARY } from './foodLibrary';
 
-/** Les vingt-sept identifiants, recopiés du questionnaire tels quels. */
+/** Les quarante-trois identifiants, recopiés du questionnaire tels quels. */
 const DU_QUESTIONNAIRE = [
+  // GLUCIDES (9)
   'riz',
   'pates',
   'pomme-de-terre',
   'patate',
   'flocons',
   'pain',
+  'semoule',
+  'boulgour',
+  'quinoa',
+  // FRUITS (5)
   'banane',
   'pomme',
   'fruits-rouges',
+  'orange',
   'kiwi',
+  // PROTÉINES (12)
   'poulet',
   'dinde',
   'boeuf',
   'oeufs',
   'saumon',
+  'thon',
+  'poisson-blanc',
+  'lentilles',
   'haricots-rouges',
   'skyr',
   'fromage-blanc',
   'whey',
+  // LIPIDES (6)
   'amandes',
+  'noix',
   'chocolat-noir',
   'cacahuete',
+  'huile',
+  'avocat',
+  // LÉGUMES (11)
+  'brocolis',
   'haricots-verts',
   'courgettes',
+  'concombre',
   'poivrons',
+  'epinards',
+  'carottes',
   'tomates',
+  'champignons',
   'petits-pois',
+  'salade',
 ];
 
 describe('la table des aliments du questionnaire', () => {
-  it('couvre les vingt-sept, et aucun de plus', () => {
+  it('en compte bien quarante-trois', () => {
+    // Le questionnaire annonce 9 + 5 + 12 + 6 + 11. Le jour où il en ajoute
+    // un, ce test tombe et dit lequel n'a pas de traduction.
+    expect(DU_QUESTIONNAIRE).toHaveLength(43);
+    expect(new Set(DU_QUESTIONNAIRE).size).toBe(43);
+  });
+
+  it('couvre les quarante-trois, et aucun de plus', () => {
     expect(Object.keys(ALIMENTS_QUESTIONNAIRE).sort()).toEqual([...DU_QUESTIONNAIRE].sort());
   });
 
@@ -69,15 +97,22 @@ describe('la table des aliments du questionnaire', () => {
 });
 
 /*
- * Les trois aliments ajoutés au catalogue pour ce questionnaire. Leurs valeurs
+ * Les six aliments ajoutés au catalogue pour ce questionnaire. Leurs valeurs
  * viennent de lui ; la règle 4/4/9 est ce qui permet de dire qu'elles tiennent.
  */
-describe('les trois aliments ajoutés', () => {
+describe('les six aliments ajoutés', () => {
   const kcalDesMacros = (f: { proteinG: number; carbsG: number; fatG: number }) =>
     f.proteinG * 4 + f.carbsG * 4 + f.fatG * 9;
 
-  it('chocolat noir, poivrons et tomates existent', () => {
-    for (const id of ['chocolatNoir', 'poivrons', 'tomates']) {
+  it('les six aliments ajoutés au catalogue existent', () => {
+    for (const id of [
+      'chocolatNoir',
+      'poivrons',
+      'tomates',
+      'boulgour',
+      'concombre',
+      'champignons',
+    ]) {
       expect({ id, present: id in FOOD_LIBRARY }).toEqual({ id, present: true });
     }
   });
@@ -102,6 +137,12 @@ describe('les trois aliments ajoutés', () => {
     // première chose qu'une ligne de catalogue doit dire.
     expect(FOOD_LIBRARY.poivrons?.referenceState).toBe('cru');
     expect(FOOD_LIBRARY.tomates?.referenceState).toBe('cru');
+    expect(FOOD_LIBRARY.concombre?.referenceState).toBe('cru');
+    expect(FOOD_LIBRARY.champignons?.referenceState).toBe('cru');
+    // Le boulgour, lui, est donné CUIT : 83 kcal, contre environ 340 crus.
+    // Confondre les deux quadruplerait l'apport compté.
+    expect(FOOD_LIBRARY.boulgour?.referenceState).toBe('cuit');
+    expect(FOOD_LIBRARY.boulgour!.kcal).toBeLessThan(150);
   });
 });
 

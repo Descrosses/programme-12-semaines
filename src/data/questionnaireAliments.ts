@@ -5,8 +5,8 @@
  *
  * Les deux catalogues nomment les mêmes aliments autrement : le questionnaire
  * écrit `pomme-de-terre`, MAJK écrit `pommesDeTerre` ; `haricots-rouges`
- * contre `haricotsRouges`. Sur les vingt-sept identifiants, PAS UN ne tombe
- * juste, alors que vingt-quatre des aliments existaient déjà.
+ * contre `haricotsRouges`. Sur les quarante-trois identifiants, PAS UN ne tombe
+ * juste, alors que quarante des aliments existaient déjà.
  *
  * Une règle de transformation automatique — tirets vers casse chameau —
  * marcherait sur vingt et un et échouerait en silence sur les six autres :
@@ -43,45 +43,66 @@ import { FOOD_LIBRARY } from './foodLibrary';
 /**
  * Identifiant du questionnaire → identifiant du catalogue MAJK.
  *
- * Vingt-sept entrées, dans l'ordre des cinq étapes du questionnaire.
+ * Quarante-trois entrées, dans l'ordre des cinq étapes du questionnaire.
  */
 export const ALIMENTS_QUESTIONNAIRE: Readonly<Record<string, string>> = {
-  // --------------------------------------------------------- GLUCIDES (6) --
+  // --------------------------------------------------------- GLUCIDES (9) --
   riz: 'riz', // Riz CUIT
   pates: 'pates', // Pâtes CUITES
   'pomme-de-terre': 'pommesDeTerre',
   patate: 'pataeDouce', // la coquille de l'identifiant est d'origine : la corriger effacerait l'historique
   flocons: 'avoine', // flocons NATURE
   pain: 'pain',
+  semoule: 'semoule',
+  boulgour: 'boulgour',
+  quinoa: 'quinoa',
 
-  // ----------------------------------------------------------- FRUITS (4) --
+  // ----------------------------------------------------------- FRUITS (5) --
   banane: 'banane',
   pomme: 'pomme',
   'fruits-rouges': 'fruitsRouges',
+  orange: 'orange',
   kiwi: 'kiwi',
 
-  // -------------------------------------------------------- PROTÉINES (9) --
+  // -------------------------------------------------------- PROTÉINES (12) --
   poulet: 'poulet',
   dinde: 'dinde',
   boeuf: 'boeuf',
   oeufs: 'oeuf', // pluriel côté questionnaire, singulier côté catalogue
   saumon: 'saumon',
+  thon: 'thon',
+  'poisson-blanc': 'poissonBlanc',
+  lentilles: 'lentilles',
   'haricots-rouges': 'haricotsRouges',
   skyr: 'skyr',
   'fromage-blanc': 'fromageBlanc',
   whey: 'whey',
 
-  // ---------------------------------------------------------- LIPIDES (3) --
+  // ---------------------------------------------------------- LIPIDES (6) --
   amandes: 'amandes',
+  noix: 'noix',
   'chocolat-noir': 'chocolatNoir',
   cacahuete: 'beurreCacahuete',
+  huile: 'huile',
+  avocat: 'avocat',
 
-  // ---------------------------------------------------------- LÉGUMES (5) --
+  // ---------------------------------------------------------- LÉGUMES (11) --
+  /*
+   * `brocolis` pointe vers « Purée de brocolis » : c'est le seul brocoli du
+   * catalogue, hérité du plan de Guillaume. Même légume, libellé plus
+   * précis — à renommer le jour où quelqu'un le mange autrement.
+   */
+  brocolis: 'brocolis',
   'haricots-verts': 'haricotsVerts',
   courgettes: 'courgettes',
+  concombre: 'concombre',
   poivrons: 'poivrons',
+  epinards: 'epinards',
+  carottes: 'carottes',
   tomates: 'tomates',
+  champignons: 'champignons',
   'petits-pois': 'petitsPois',
+  salade: 'salade',
 };
 
 /**
