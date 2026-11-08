@@ -18,8 +18,8 @@ import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 describe('la bibliothèque', () => {
-  it('compte dix-neuf repas, un par photographie', () => {
-    expect(BIBLIOTHEQUE_REPAS).toHaveLength(19);
+  it('compte vingt-sept repas, un par photographie', () => {
+    expect(BIBLIOTHEQUE_REPAS).toHaveLength(27);
   });
 
   it('aucun identifiant en double', () => {
@@ -87,9 +87,21 @@ describe('les assiettes de référence', () => {
         expect(q, `${r.id} → ${ligne.foodId}`).toBeGreaterThan(0);
         if (f.unit === 'unité') expect(q, `${r.id} → ${ligne.foodId}`).toBeLessThanOrEqual(6);
         else expect(q, `${r.id} → ${ligne.foodId}`).toBeLessThanOrEqual(400);
-        // Les matières grasses se comptent en cuillères, pas en portions.
-        if (f.category === 'gras' && f.unit === 'g') {
-          expect(q, `${r.id} → ${ligne.foodId}`).toBeLessThanOrEqual(40);
+        /*
+         * LES MATIÈRES GRASSES SE BORNENT EN CALORIES, PAS EN GRAMMES.
+         *
+         * La première version plafonnait la famille `gras` à 40 g, au motif
+         * qu'on la compte en cuillères. C'était vrai de l'huile et du
+         * beurre de cacahuète, faux de l'avocat : 80 g, c'est la moitié
+         * d'un fruit, une portion parfaitement ordinaire.
+         *
+         * Ce qui compte vraiment est qu'aucune ligne de gras n'écrase le
+         * repas. 80 g d'avocat font 128 kcal ; 80 g d'huile en font 720.
+         * La borne porte donc sur ce que la ligne pèse, pas sur sa masse.
+         */
+        if (f.category === 'gras') {
+          const kcal = macrosDeLigne(ligne, FOOD_LIBRARY).kcal;
+          expect(Math.round(kcal), `${r.id} → ${ligne.foodId}`).toBeLessThanOrEqual(200);
         }
       }
     }

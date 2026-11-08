@@ -1,5 +1,5 @@
 /**
- * LA BIBLIOTHÈQUE DE REPAS — dix-neuf assiettes, photographiées.
+ * LA BIBLIOTHÈQUE DE REPAS — vingt-sept assiettes, photographiées.
  *
  * ── Ce qu'elle résout ─────────────────────────────────────────────────────
  *
@@ -14,16 +14,17 @@
  * personne doit manger. Elle ajuste, elle remplace, elle retire.
  *
  * C'est aussi ce qui rend la bibliothèque bien plus large qu'elle n'en a
- * l'air : dinde à la place du poulet, thon à la place du saumon, et dix-neuf
- * cartes couvrent des dizaines de repas sans une photo de plus.
+ * l'air : dinde à la place du poulet, quinoa à la place de la semoule, et
+ * vingt-sept cartes couvrent des centaines de repas sans une photo de plus.
  *
  * ── Les photos décrivent ce qu'elles montrent ─────────────────────────────
  *
- * Chaque composition a été relue sur la photo, pas sur l'intention. Trois
+ * Chaque composition a été relue sur la photo, pas sur l'intention. Quatre
  * repas ont été RENOMMÉS pour coller à l'image : le saumon est servi avec
  * des haricots verts et non des courgettes, le skyr avec de la confiture et
- * non une pomme. Mentir d'un légume sur une vignette, c'est apprendre au
- * lecteur à ne plus croire les autres.
+ * non une pomme, et le bol de yaourt-banane-amandes porte un filet de miel
+ * que personne n'avait demandé. Mentir d'un ingrédient sur une vignette,
+ * c'est apprendre au lecteur à ne plus croire les autres.
  *
  * ── Les quantités ─────────────────────────────────────────────────────────
  *
@@ -207,6 +208,59 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('poivrons', 60),
       l('brocolis', 80),
     ],
+  },
+  {
+    id: 'skyr-banane-cacahuete',
+    nom: 'Skyr, banane, beurre de cacahuète',
+    creneaux: EN_CAS,
+    lignes: [l('skyr', 200), l('banane', 1), l('beurreCacahuete', 20)],
+  },
+  {
+    /* RENOMMÉ : la photo porte un filet de miel que la demande ne
+       mentionnait pas. On décrit l'assiette, pas la commande. */
+    id: 'yaourt-banane-amandes-miel',
+    nom: 'Yaourt, banane, amandes, miel',
+    creneaux: EN_CAS,
+    lignes: [l('yaourtGrec', 200), l('banane', 1), l('amandes', 20), l('confiture', 15)],
+  },
+  {
+    id: 'pain-oeufs-pomme',
+    nom: 'Œufs brouillés, pain complet, pomme',
+    creneaux: MATIN,
+    lignes: [l('oeuf', 3), l('pain', 60), l('pomme', 1)],
+  },
+  {
+    /* Le seul repas de la bibliothèque qui met l'avocat au travail. */
+    id: 'avocat-oeufs-pain',
+    nom: 'Avocat, œufs brouillés, pain complet',
+    creneaux: MATIN,
+    lignes: [l('avocat', 80), l('oeuf', 3), l('pain', 60)],
+  },
+  {
+    id: 'poulet-pdt-carottes',
+    nom: 'Poulet, pommes de terre, carottes',
+    creneaux: PLAT,
+    lignes: [l('poulet', 150), l('pommesDeTerre', 250), l('carottes', 150)],
+  },
+  {
+    id: 'dinde-pates-brocolis',
+    nom: 'Dinde, pâtes, brocolis',
+    creneaux: PLAT,
+    lignes: [l('dinde', 150), l('pates', 250), l('brocolis', 150), l('huile', 10)],
+  },
+  {
+    id: 'thon-pates-tomates',
+    nom: 'Thon au naturel, pâtes, tomates',
+    creneaux: PLAT,
+    lignes: [l('thon', 150), l('pates', 250), l('tomates', 100), l('huile', 10)],
+  },
+  {
+    /* Le seul qui sert de la semoule. Boulgour et quinoa s'obtiennent
+       ensuite par remplacement : même famille, même geste. */
+    id: 'boeuf-semoule-poivrons',
+    nom: 'Bœuf maigre, semoule, poivrons',
+    creneaux: PLAT,
+    lignes: [l('boeuf', 150), l('semoule', 250), l('poivrons', 120), l('huile', 10)],
   },
   {
     id: 'omelette-pdt-salade',
