@@ -8,7 +8,7 @@
  * se signale, une valeur absurde se refuse, une journée manquante se dit.
  */
 import { describe, expect, it } from 'vitest';
-import { genererFiche, lireFiche, MARQUEUR } from './fiche';
+import { genererFiche, lireFiche, patchDeFiche, MARQUEUR } from './fiche';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
 
 const CIBLES: CiblesNutrition = {
@@ -135,5 +135,45 @@ describe('ce qu’elle refuse de deviner', () => {
     const lu = lireFiche('MAJK1 C=2400,150,260,80 X=42 R=2100,150,200,70');
     expect(lu.cibles).toEqual(CIBLES);
     expect(lu.problemes.join(' ')).toContain('inconnue');
+  });
+});
+
+describe('appliquer une fiche', () => {
+  const lu = (texte: string) => patchDeFiche(lireFiche(texte));
+
+  /*
+   * LE TEST QUI JUSTIFIE LA RÈGLE.
+   *
+   * Sans le masquage, appliquer une fiche n'avait aucun effet visible :
+   * `cibleDuJour` tranche en faveur des menus quand ils sont affichés, donc
+   * l'onglet Nutrition continuait d'annoncer la somme du plan au-dessus de
+   * cibles qu'on venait de poser. Trois allers-retours pour s'en apercevoir.
+   */
+  it('masque le plan historique : sinon les cibles posées restent invisibles', () => {
+    const p = lu('MAJK1 C=2800,160,360,80 R=2500,160,285,80');
+    expect(p.legacyNutritionPlan).toBe(false);
+    expect(p.ciblesNutrition?.train.kcal).toBe(2800);
+  });
+
+  it('une fiche qui ne porte que des aliments ne masque rien', () => {
+    // Elle ne dit rien des calories : elle n'a pas à décider de ce qui les
+    // affiche.
+    const p = lu('MAJK1 A=poulet,riz');
+    expect(p.legacyNutritionPlan).toBeUndefined();
+    expect(p.alimentsPreferes).toEqual(['poulet', 'riz']);
+    expect(p.ciblesNutrition).toBeUndefined();
+  });
+
+  it('une fiche illisible n’écrit rien du tout', () => {
+    expect(lu('Bonjour, ça va ?')).toEqual({});
+  });
+
+  it('les deux à la fois s’écrivent ensemble', () => {
+    const p = lu('MAJK1 C=2800,160,360,80 R=2500,160,285,80 A=poulet,riz');
+    expect(Object.keys(p).sort()).toEqual([
+      'alimentsPreferes',
+      'ciblesNutrition',
+      'legacyNutritionPlan',
+    ]);
   });
 });

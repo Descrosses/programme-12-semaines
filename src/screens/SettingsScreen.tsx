@@ -11,7 +11,13 @@ import {
   type CiblesNutrition,
 } from '../data/ciblesNutrition';
 import type { DayKind } from '../data/types';
-import { genererFiche, lireFiche, MARQUEUR, type LectureFiche } from '../engine/fiche';
+import {
+  genererFiche,
+  lireFiche,
+  patchDeFiche,
+  MARQUEUR,
+  type LectureFiche,
+} from '../engine/fiche';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
 import { bandePoids } from '../engine/ciblePoids';
 import { poseMaximum } from '../engine/maxima';
@@ -870,6 +876,17 @@ function CarteFiche({
               {pb}
             </p>
           ))}
+          {lecture.cibles !== null && row.legacyNutritionPlan && (
+            /*
+              Prévenir, parce que c'est le seul effet de bord du bouton qui
+              ne se lit pas dans la fiche elle-même.
+            */
+            <p className={styles.fieldHint}>
+              <b>Ton plan nutritionnel sera masqué</b> : ce sont ces cibles qui piloteront l’onglet
+              Nutrition. Rien n’est effacé — tes repas, tes pesées et tes aliments restent en base
+              et reviennent en rallumant le plan dans la carte au-dessus.
+            </p>
+          )}
           {lecture.cibles === null && lecture.aliments.length === 0 ? (
             <p className={styles.fieldHint}>Rien d’utilisable dans cette fiche.</p>
           ) : (
@@ -879,10 +896,7 @@ function CarteFiche({
               style={{ width: '100%', margin: '10px 0 0' }}
               onClick={() =>
                 void (async () => {
-                  await patch({
-                    ...(lecture.cibles !== null ? { ciblesNutrition: lecture.cibles } : {}),
-                    ...(lecture.aliments.length > 0 ? { alimentsPreferes: lecture.aliments } : {}),
-                  });
+                  await patch(patchDeFiche(lecture));
                   setColle('');
                   setLecture(null);
                 })()
