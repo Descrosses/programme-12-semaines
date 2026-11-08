@@ -1,0 +1,203 @@
+/*
+ * « Mon plan » — cinq repas qu'on remplit soi-même.
+ *
+ * L'écran se tient debout dans une cuisine, une main sur le téléphone et
+ * l'autre sur une balance. Deux conséquences sur toute cette feuille : un
+ * seul repas ouvert à la fois, et le compteur du jour collé en haut de la
+ * carte, pour qu'il reste sous les yeux pendant qu'on règle les grammes.
+ */
+
+/*
+ * Marge et rembourrage repris de `.card` de Screens.module.css, et pas
+ * seulement `composes: carte`.
+ *
+ * La base partagée ne porte que l'apparence — bordure, fond, ombre. Les
+ * écarts appartiennent à l'écran, et sans eux la carte sortait à gauche du
+ * cadre : son titre était coupé par le bord de l'iPhone.
+ */
+.carte {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad);
+  padding: 16px var(--pad);
+}
+
+.entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titre {
+  composes: carteTitre from '../styles/cartes.module.css';
+}
+
+.sousTitre {
+  composes: carteSousTitre from '../styles/cartes.module.css';
+}
+
+.copier {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------- le compteur ----- */
+
+.compteur {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.compteurValeur {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink-1);
+}
+
+.compteurValeur span {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.compteurCible {
+  color: var(--ink-3);
+}
+
+.macroLigne {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.ecart {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* Dépasser n'est pas une faute, mais ça se voit : c'est le seul cas où la
+   personne a besoin de redescendre une quantité. */
+.ecartHaut {
+  color: var(--accent-ink);
+}
+
+/* ---------------------------------------------------------- un repas ----- */
+
+.repas {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.repasTete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-1);
+  text-align: left;
+}
+
+.repasNom {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.repasKcal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.vide {
+  color: var(--ink-3);
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Replié, le repas dit quand même ce qu'il contient : sans ça il faudrait
+   ouvrir les cinq pour retrouver où on avait mis le riz. */
+.resume {
+  margin: 0;
+  padding: 0 12px 10px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.corps {
+  padding: 0 12px 12px;
+}
+
+/* --------------------------------------------------------- un groupe ----- */
+
+.groupe {
+  margin-top: 14px;
+}
+
+.groupeNom {
+  margin: 0 0 8px;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ligne {
+  margin-bottom: 8px;
+}
+
+/*
+ * Les aliments pas encore posés : des pastilles, pas des champs.
+ *
+ * Trente-six champs ouverts dans un repas, c'est deux mille pixels de
+ * défilement pour en remplir trois. La pastille coûte une ligne, et le champ
+ * n'apparaît que quand on l'a demandé.
+ */
+.pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pastille {
+  padding: 6px 10px;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.note {
+  margin: 12px 0 0;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
