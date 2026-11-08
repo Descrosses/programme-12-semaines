@@ -65,7 +65,7 @@ import { cibleDuJour } from '../engine/cibleDuJour';
  * de les distinguer un jour des ajouts faits à un vrai repas.
  */
 const MEAL_LIBRE = 'libre';
-import type { CiblesNutrition } from '../data/ciblesNutrition';
+import { macrosValides, type CiblesNutrition } from '../data/ciblesNutrition';
 import { MacroBar } from '../components/MacroBar';
 import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
@@ -455,6 +455,16 @@ export function NutritionScreen({
     await reload();
   }
 
+  /*
+   * Les cibles saisies, quand elles existent ET que le plan les couvre.
+   *
+   * `cibleDuJour` tranche en faveur des menus — c'est la bonne règle, leurs
+   * repas sont affichés juste en dessous et leur somme est ce qui sera
+   * mangé. Mais quelqu'un qui vient de poser 2 800 kcal dans les Réglages et
+   * qui lit 3 226 ici croit que son geste n'a servi à rien. On lui dit.
+   */
+  const ciblesEnAttente = macrosValides(cibles?.[kind]) ? cibles![kind] : null;
+
   return (
     <div className={styles.screen}>
       <ScreenHeader
@@ -520,6 +530,28 @@ export function NutritionScreen({
             pas l'un de l'autre. */}
         <MacroBar macros={totalRepas} labels="parts" />
         <p className={styles.fieldHint}>{target.note}</p>
+        {ciblesEnAttente !== null && (
+          /*
+           * DIRE SUR PLACE POURQUOI LES CHIFFRES SAISIS NE SONT PAS LÀ.
+           *
+           * La règle d'arbitrage n'était écrite que dans les Réglages, deux
+           * écrans plus loin : « ce que tu poses ici ne sera utilisé que si
+           * tu masques le plan ». Celui qui regarde l'onglet Nutrition ne la
+           * voit pas — il lit 3 226 là où il vient de poser 2 800, et il
+           * croit que son geste n'a servi à rien.
+           *
+           * Ce n'est pas une alerte : rien n'est cassé, et le plan a raison
+           * de gagner — ses repas sont affichés juste en dessous, et leur
+           * somme est ce qui sera réellement mangé. C'est un repère, et il
+           * dit où aller.
+           */
+          <p className={styles.fieldHint}>
+            <b>Tes cibles saisies sont en attente</b> —{' '}
+            {ciblesEnAttente.kcal.toLocaleString('fr-FR')} kcal pour cette journée. Les chiffres
+            ci-dessus viennent de ton plan, et ce sont ses repas qui font foi. Pour passer sur tes
+            cibles : Réglages → Plan nutritionnel → masquer.
+          </p>
+        )}
       </section>
 
       {/* --- 2. Où en est la journée ---------------------------------------- */}
