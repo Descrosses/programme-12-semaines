@@ -31,11 +31,14 @@ import { fr } from '../engine/format';
 import type { LibraryFood } from '../data/foodLibrary';
 import type { DayKind } from '../data/nutrition';
 import type { Macros } from '../engine/nutrition';
+import { ChoixRepas } from './ChoixRepas';
 import {
   GROUPES_REPAS,
   REPAS_PERSO,
   choisirAliment,
+  groupeDeFamille,
   poserQuantite,
+  poserRepas,
   quantiteDe,
   retirerAliment,
   type GroupeId,
@@ -95,6 +98,8 @@ export function PlanPerso({
 }) {
   /** Le repas déplié. Un seul à la fois : l'écran tient dans un pouce. */
   const [ouvert, setOuvert] = useState<RepasId | null>(null);
+  /** Le repas dont la bibliothèque est dépliée. */
+  const [biblio, setBiblio] = useState<RepasId | null>(null);
   /*
    * Il n'y a plus d'état local « aliment ouvert ». Depuis le lot 0, choisir
    * un aliment s'écrit en base : c'est une décision, elle survit au
@@ -219,24 +224,74 @@ export function PlanPerso({
 
             {estOuvert && (
               <div className={styles.corps}>
+                {/*
+                  LA BIBLIOTHÈQUE D'ABORD, les groupes ensuite. C'est
+                  l'ordre des gestes : on part d'une assiette proposée, et
+                  on ne compose à la main que si aucune ne convient.
+                */}
+                {biblio === repas.id ? (
+                  <ChoixRepas
+                    creneau={repas.id}
+                    nomCreneau={repas.nom}
+                    preferes={preferes}
+                    catalogue={catalogue}
+                    onChoisir={(r) => {
+                      onChange(poserRepas(journee, repas.id, r.lignes));
+                      setBiblio(null);
+                    }}
+                    onFermer={() => setBiblio(null)}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.biblio}
+                    onClick={() => setBiblio(repas.id)}
+                  >
+                    {lignes.length === 0 ? 'Choisir un repas' : 'Choisir un autre repas'}
+                  </button>
+                )}
                 {GROUPES_REPAS.map((groupe) => {
-                  const aliments = parGroupe[groupe.id as GroupeId];
-                  if (aliments.length === 0) return null;
-                  const choisis = new Set((journee[repas.id] ?? []).map((l) => l.foodId));
-                  const poses = aliments.filter((f) => choisis.has(f.id));
-                  const restants = aliments.filter((f) => !choisis.has(f.id));
+                  /*
+                   * CE QUI EST DANS LE REPAS S'AFFICHE, DÉCLARÉ OU NON.
+                   *
+                   * L'écran ne montrait que les aliments du questionnaire.
+                   * Un repas posé par la bibliothèque apporte les siens — le
+                   * brocolis de « Poulet, riz, brocolis » n'est pas dans
+                   * toutes les listes — et ceux-là disparaissaient de la vue
+                   * tout en comptant dans le total. Trois lignes affichées,
+                   * quatre dans l'addition : exactement les deux vérités que
+                   * ce dépôt refuse.
+                   *
+                   * La liste du questionnaire décide des PASTILLES, c'est-à-
+                   * dire de ce qu'on peut ajouter. Elle ne décide pas de ce
+                   * qui s'affiche.
+                   */
+                  const posesIds = lignes
+                    .filter(
+                      (x) =>
+                        groupeDeFamille(catalogue[x.foodId]?.category ?? 'autre') === groupe.id,
+                    )
+                    .map((x) => x.foodId);
+                  const declares = parGroupe[groupe.id as GroupeId];
+                  const restants = declares.filter((f) => !posesIds.includes(f.id));
+                  if (posesIds.length === 0 && restants.length === 0) return null;
                   return (
                     <div key={groupe.id} className={styles.groupe}>
                       <h3 className={styles.groupeNom}>{groupe.nom}</h3>
-                      {poses.map((f) => (
-                        <LigneAliment
-                          key={f.id}
-                          food={f}
-                          qty={quantiteDe(journee, repas.id, f.id)}
-                          onQty={(v) => onChange(poserQuantite(journee, repas.id, f.id, v))}
-                          onRetirer={() => onChange(retirerAliment(journee, repas.id, f.id))}
-                        />
-                      ))}
+                      {posesIds.map((id) => {
+                        const f = catalogue[id];
+                        if (!f) return null;
+                        return (
+                          <LigneAliment
+                            key={id}
+                            food={f}
+                            qty={quantiteDe(journee, repas.id, id)}
+                            horsListe={preferes.length > 0 && !preferes.includes(id)}
+                            onQty={(v) => onChange(poserQuantite(journee, repas.id, id, v))}
+                            onRetirer={() => onChange(retirerAliment(journee, repas.id, id))}
+                          />
+                        );
+                      })}
                       {restants.length > 0 && (
                         <div className={styles.pastilles}>
                           {restants.map((f) => (
@@ -254,6 +309,38 @@ export function PlanPerso({
                     </div>
                   );
                 })}
+
+                {/*
+                  Les condiments et les hors-catégories n'ont pas de groupe,
+                  mais s'ils sont dans le repas ils doivent se voir : une
+                  ligne qui compte et qu'on ne peut pas corriger est pire
+                  qu'une ligne de trop.
+                */}
+                {(() => {
+                  const orphelins = lignes.filter(
+                    (x) => groupeDeFamille(catalogue[x.foodId]?.category ?? 'autre') === null,
+                  );
+                  if (orphelins.length === 0) return null;
+                  return (
+                    <div className={styles.groupe}>
+                      <h3 className={styles.groupeNom}>Autres</h3>
+                      {orphelins.map((x) => {
+                        const f = catalogue[x.foodId];
+                        if (!f) return null;
+                        return (
+                          <LigneAliment
+                            key={x.foodId}
+                            food={f}
+                            qty={x.qty}
+                            horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
+                            onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
+                            onRetirer={() => onChange(retirerAliment(journee, repas.id, x.foodId))}
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -273,17 +360,28 @@ export function PlanPerso({
 function LigneAliment({
   food,
   qty,
+  horsListe,
   onQty,
   onRetirer,
 }: {
   food: LibraryFood;
   qty: number | null;
+  /** L'aliment vient d'un repas de la bibliothèque, pas du questionnaire. */
+  horsListe: boolean;
   onQty: (v: number | null) => void;
   onRetirer: () => void;
 }) {
   const cfg = PAS[food.unit] ?? PAS['g']!;
   return (
     <div className={styles.ligne}>
+      {horsListe && (
+        /*
+          Le dire sans l'enlever. Il est dans l'assiette qu'on vient de
+          choisir, il compte, et c'est à la personne de décider si elle le
+          garde — pas à l'application.
+        */
+        <p className={styles.horsListe}>Pas dans tes aliments déclarés</p>
+      )}
       <Stepper
         label={`${food.label} · ${food.unit}`}
         value={qty}

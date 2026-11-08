@@ -234,3 +234,42 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/*
+ * « Choisir un repas » : l'entrée de la bibliothèque, en tête du repas
+ * ouvert.
+ *
+ * En plein, et pas en contour comme « Retirer » : c'est le geste qu'on
+ * attend de quelqu'un devant un repas vide, et il doit se voir avant les
+ * quatre groupes d'aliments qui suivent.
+ */
+.biblio {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink-1);
+  font-family: var(--font-cond);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/*
+ * « Pas dans tes aliments déclarés » — posé au-dessus de la ligne.
+ *
+ * Un repas de la bibliothèque apporte ses propres ingrédients, et tous ne
+ * sont pas dans le questionnaire de chacun. On le dit, on ne l'enlève pas :
+ * il est dans l'assiette qu'on vient de choisir, il compte, et c'est à la
+ * personne de décider si elle le garde.
+ */
+.horsListe {
+  margin: 0 0 3px;
+  color: var(--orange);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
