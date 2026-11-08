@@ -295,6 +295,25 @@ export function NutritionScreen({
           journee={journeeCourante}
           preferes={preferes}
           catalogue={catalogue}
+          customs={customs}
+          onCreateCustom={(food) =>
+            void (async () => {
+              await saveCustomFood({
+                foodId: food.id,
+                label: food.label,
+                unit: food.unit,
+                per: food.per,
+                kcal: food.kcal,
+                proteinG: food.proteinG,
+                carbsG: food.carbsG,
+                fatG: food.fatG,
+                referenceState: food.referenceState,
+                category: food.category,
+                addedAt: new Date().toISOString().slice(0, 10),
+              });
+              setCustoms(await chargerCustoms());
+            })()
+          }
           cible={
             cibleJour === null
               ? null

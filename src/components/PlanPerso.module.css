@@ -201,3 +201,99 @@
   font-size: 0.8125rem;
   line-height: 1.45;
 }
+
+/*
+ * Ce qui reste à poser, annoncé une seule fois en haut.
+ *
+ * C'est la seule chose qui sépare un plan posé par la bibliothèque d'un
+ * plan fini. Le répéter dans chaque repas obligerait à les ouvrir tous
+ * pour savoir où on en est.
+ */
+.aPoser {
+  margin: 6px 0 0;
+  color: var(--orange);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+/*
+ * Retirer : un geste à part, et discret.
+ *
+ * Il le fallait, puisque vider le champ ne jette plus l'aliment. Mais il
+ * reste secondaire — on règle des grammes vingt fois pour un aliment qu'on
+ * enlève une.
+ */
+.retirer {
+  margin-top: 4px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/*
+ * « Choisir un repas » : l'entrée de la bibliothèque, en tête du repas
+ * ouvert.
+ *
+ * En plein, et pas en contour comme « Retirer » : c'est le geste qu'on
+ * attend de quelqu'un devant un repas vide, et il doit se voir avant les
+ * quatre groupes d'aliments qui suivent.
+ */
+.biblio {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink-1);
+  font-family: var(--font-cond);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/*
+ * « Pas dans tes aliments déclarés » — posé au-dessus de la ligne.
+ *
+ * Un repas de la bibliothèque apporte ses propres ingrédients, et tous ne
+ * sont pas dans le questionnaire de chacun. On le dit, on ne l'enlève pas :
+ * il est dans l'assiette qu'on vient de choisir, il compte, et c'est à la
+ * personne de décider si elle le garde.
+ */
+.horsListe {
+  margin: 0 0 3px;
+  color: var(--orange);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/*
+ * « Remplacer » et « Retirer », côte à côte sous la ligne.
+ *
+ * Tous deux discrets, et c'est délibéré : on règle des grammes vingt fois
+ * pour un aliment qu'on échange une et qu'on enlève encore moins. Le
+ * chiffre reste la seule chose en gros.
+ */
+.actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.remplacer {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

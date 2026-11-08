@@ -31,11 +31,18 @@ import { fr } from '../engine/format';
 import type { LibraryFood } from '../data/foodLibrary';
 import type { DayKind } from '../data/nutrition';
 import type { Macros } from '../engine/nutrition';
+import { ChoixRepas } from './ChoixRepas';
+import { FoodSwapSheet } from './FoodSwapSheet';
 import {
   GROUPES_REPAS,
   REPAS_PERSO,
+  choisirAliment,
+  groupeDeFamille,
   poserQuantite,
+  poserRepas,
   quantiteDe,
+  remplacerAliment,
+  retirerAliment,
   type GroupeId,
   type JourneePerso,
   type RepasId,
@@ -45,6 +52,7 @@ import {
   arrondirMacros,
   macrosDeJournee,
   macrosDeRepas,
+  quantitesAPoser,
   type Catalogue,
 } from '../engine/planPersoTotaux';
 import styles from './PlanPerso.module.css';
@@ -76,6 +84,8 @@ export function PlanPerso({
   journee,
   preferes,
   catalogue,
+  customs,
+  onCreateCustom,
   cible,
   onChange,
   onCopier,
@@ -85,6 +95,9 @@ export function PlanPerso({
   /** Les aliments de la personne, dans l'ordre de son questionnaire. */
   preferes: readonly string[];
   catalogue: Catalogue;
+  /** Les aliments saisis à la main, proposés au remplacement. */
+  customs: LibraryFood[];
+  onCreateCustom: (food: LibraryFood) => void;
   cible: Macros | null;
   onChange: (suivante: JourneePerso) => void;
   /** Recopier l'autre journée ici. `null` quand il n'y a rien à copier. */
@@ -92,18 +105,20 @@ export function PlanPerso({
 }) {
   /** Le repas déplié. Un seul à la fois : l'écran tient dans un pouce. */
   const [ouvert, setOuvert] = useState<RepasId | null>(null);
-  /**
-   * Les aliments qu'on a fait apparaître sans leur donner de quantité.
-   *
-   * Local au composant, et c'est voulu : « j'ai touché la pastille » n'est
-   * pas une information à garder en base. Elle disparaît au changement
-   * d'écran, et l'aliment avec — tant qu'aucune quantité n'a été posée, il
-   * n'y a rien à retenir.
+  /** Le repas dont la bibliothèque est dépliée. */
+  const [biblio, setBiblio] = useState<RepasId | null>(null);
+  /** La ligne dont le sélecteur de remplacement est ouvert, « repas|aliment ». */
+  const [remplace, setRemplace] = useState<string | null>(null);
+  /*
+   * Il n'y a plus d'état local « aliment ouvert ». Depuis le lot 0, choisir
+   * un aliment s'écrit en base : c'est une décision, elle survit au
+   * changement d'écran, et c'est ce qui permet à la bibliothèque de poser
+   * un repas entier sans quantités.
    */
-  const [ouverts, setOuverts] = useState<ReadonlySet<string>>(new Set());
 
   const parGroupe = alimentsParGroupe(preferes, catalogue);
   const total = macrosDeJournee(journee, catalogue);
+  const aPoser = quantitesAPoser(journee);
   const reste =
     cible === null
       ? null
@@ -155,6 +170,18 @@ export function PlanPerso({
           )}
         </div>
         <Macro m={total} />
+        {aPoser > 0 && (
+          /*
+           * Le dire UNE fois en haut plutôt que cinq fois dans les repas.
+           * C'est la seule chose qui sépare un plan posé par la
+           * bibliothèque d'un plan fini, et elle doit se lire d'un coup.
+           */
+          <p className={styles.aPoser}>
+            {aPoser === 1
+              ? '1 quantité reste à poser.'
+              : `${String(aPoser)} quantités restent à poser.`}
+          </p>
+        )}
         {reste !== null && (
           /*
            * « IL MANQUE », PAS « IL RESTE ». Le journal du jour, plus bas,
@@ -206,26 +233,91 @@ export function PlanPerso({
 
             {estOuvert && (
               <div className={styles.corps}>
+                {/*
+                  LA BIBLIOTHÈQUE D'ABORD, les groupes ensuite. C'est
+                  l'ordre des gestes : on part d'une assiette proposée, et
+                  on ne compose à la main que si aucune ne convient.
+                */}
+                {biblio === repas.id ? (
+                  <ChoixRepas
+                    creneau={repas.id}
+                    nomCreneau={repas.nom}
+                    preferes={preferes}
+                    catalogue={catalogue}
+                    onChoisir={(r) => {
+                      onChange(poserRepas(journee, repas.id, r.lignes));
+                      setBiblio(null);
+                    }}
+                    onFermer={() => setBiblio(null)}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.biblio}
+                    onClick={() => setBiblio(repas.id)}
+                  >
+                    {lignes.length === 0 ? 'Choisir un repas' : 'Choisir un autre repas'}
+                  </button>
+                )}
                 {GROUPES_REPAS.map((groupe) => {
-                  const aliments = parGroupe[groupe.id as GroupeId];
-                  if (aliments.length === 0) return null;
-                  const poses = aliments.filter(
-                    (f) =>
-                      quantiteDe(journee, repas.id, f.id) !== null ||
-                      ouverts.has(`${repas.id}|${f.id}`),
-                  );
-                  const restants = aliments.filter((f) => !poses.includes(f));
+                  /*
+                   * CE QUI EST DANS LE REPAS S'AFFICHE, DÉCLARÉ OU NON.
+                   *
+                   * L'écran ne montrait que les aliments du questionnaire.
+                   * Un repas posé par la bibliothèque apporte les siens — le
+                   * brocolis de « Poulet, riz, brocolis » n'est pas dans
+                   * toutes les listes — et ceux-là disparaissaient de la vue
+                   * tout en comptant dans le total. Trois lignes affichées,
+                   * quatre dans l'addition : exactement les deux vérités que
+                   * ce dépôt refuse.
+                   *
+                   * La liste du questionnaire décide des PASTILLES, c'est-à-
+                   * dire de ce qu'on peut ajouter. Elle ne décide pas de ce
+                   * qui s'affiche.
+                   */
+                  const posesIds = lignes
+                    .filter(
+                      (x) =>
+                        groupeDeFamille(catalogue[x.foodId]?.category ?? 'autre') === groupe.id,
+                    )
+                    .map((x) => x.foodId);
+                  const declares = parGroupe[groupe.id as GroupeId];
+                  const restants = declares.filter((f) => !posesIds.includes(f.id));
+                  if (posesIds.length === 0 && restants.length === 0) return null;
                   return (
                     <div key={groupe.id} className={styles.groupe}>
                       <h3 className={styles.groupeNom}>{groupe.nom}</h3>
-                      {poses.map((f) => (
-                        <LigneAliment
-                          key={f.id}
-                          food={f}
-                          qty={quantiteDe(journee, repas.id, f.id)}
-                          onQty={(v) => onChange(poserQuantite(journee, repas.id, f.id, v))}
-                        />
-                      ))}
+                      {posesIds.map((id) => {
+                        const f = catalogue[id];
+                        if (!f) return null;
+                        return (
+                          <LigneAliment
+                            key={id}
+                            food={f}
+                            qty={quantiteDe(journee, repas.id, id)}
+                            horsListe={preferes.length > 0 && !preferes.includes(id)}
+                            onQty={(v) => onChange(poserQuantite(journee, repas.id, id, v))}
+                            onRetirer={() => onChange(retirerAliment(journee, repas.id, id))}
+                            ouvertEnRemplacement={remplace === `${repas.id}|${id}`}
+                            onRemplacer={() => setRemplace(`${repas.id}|${id}`)}
+                            customs={customs}
+                            onCreateCustom={onCreateCustom}
+                            onChoisi={(nouveau) => {
+                              onChange(
+                                remplacerAliment(
+                                  journee,
+                                  repas.id,
+                                  id,
+                                  nouveau,
+                                  catalogue[id]?.unit === catalogue[nouveau]?.unit,
+                                ),
+                              );
+                              setRemplace(null);
+                            }}
+                            onFermerRemplacement={() => setRemplace(null)}
+                          />
+                        );
+                      })}
                       {restants.length > 0 && (
                         <div className={styles.pastilles}>
                           {restants.map((f) => (
@@ -233,9 +325,7 @@ export function PlanPerso({
                               key={f.id}
                               type="button"
                               className={styles.pastille}
-                              onClick={() =>
-                                setOuverts((p) => new Set(p).add(`${repas.id}|${f.id}`))
-                              }
+                              onClick={() => onChange(choisirAliment(journee, repas.id, f.id))}
                             >
                               + {f.label}
                             </button>
@@ -245,6 +335,55 @@ export function PlanPerso({
                     </div>
                   );
                 })}
+
+                {/*
+                  Les condiments et les hors-catégories n'ont pas de groupe,
+                  mais s'ils sont dans le repas ils doivent se voir : une
+                  ligne qui compte et qu'on ne peut pas corriger est pire
+                  qu'une ligne de trop.
+                */}
+                {(() => {
+                  const orphelins = lignes.filter(
+                    (x) => groupeDeFamille(catalogue[x.foodId]?.category ?? 'autre') === null,
+                  );
+                  if (orphelins.length === 0) return null;
+                  return (
+                    <div className={styles.groupe}>
+                      <h3 className={styles.groupeNom}>Autres</h3>
+                      {orphelins.map((x) => {
+                        const f = catalogue[x.foodId];
+                        if (!f) return null;
+                        return (
+                          <LigneAliment
+                            key={x.foodId}
+                            food={f}
+                            qty={x.qty}
+                            horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
+                            onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
+                            onRetirer={() => onChange(retirerAliment(journee, repas.id, x.foodId))}
+                            ouvertEnRemplacement={remplace === `${repas.id}|${x.foodId}`}
+                            onRemplacer={() => setRemplace(`${repas.id}|${x.foodId}`)}
+                            customs={customs}
+                            onCreateCustom={onCreateCustom}
+                            onChoisi={(nouveau) => {
+                              onChange(
+                                remplacerAliment(
+                                  journee,
+                                  repas.id,
+                                  x.foodId,
+                                  nouveau,
+                                  catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
+                                ),
+                              );
+                              setRemplace(null);
+                            }}
+                            onFermerRemplacement={() => setRemplace(null)}
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -264,15 +403,40 @@ export function PlanPerso({
 function LigneAliment({
   food,
   qty,
+  horsListe,
+  ouvertEnRemplacement,
+  customs,
   onQty,
+  onRetirer,
+  onRemplacer,
+  onChoisi,
+  onCreateCustom,
+  onFermerRemplacement,
 }: {
   food: LibraryFood;
   qty: number | null;
+  /** L'aliment vient d'un repas de la bibliothèque, pas du questionnaire. */
+  horsListe: boolean;
+  ouvertEnRemplacement: boolean;
+  customs: LibraryFood[];
   onQty: (v: number | null) => void;
+  onRetirer: () => void;
+  onRemplacer: () => void;
+  onChoisi: (foodId: string) => void;
+  onCreateCustom: (food: LibraryFood) => void;
+  onFermerRemplacement: () => void;
 }) {
   const cfg = PAS[food.unit] ?? PAS['g']!;
   return (
     <div className={styles.ligne}>
+      {horsListe && (
+        /*
+          Le dire sans l'enlever. Il est dans l'assiette qu'on vient de
+          choisir, il compte, et c'est à la personne de décider si elle le
+          garde — pas à l'application.
+        */
+        <p className={styles.horsListe}>Pas dans tes aliments déclarés</p>
+      )}
       <Stepper
         label={`${food.label} · ${food.unit}`}
         value={qty}
@@ -283,6 +447,45 @@ function LigneAliment({
         onStep={(d) => onQty(stepValue(qty, d, 0, cfg.max))}
         onCommit={(v) => onQty(v)}
       />
+      {/*
+        Retirer est maintenant un geste à part, et il le fallait : vider le
+        champ ne jette plus l'aliment, donc il faut bien un endroit pour
+        dire « celui-là, je n'en veux pas ».
+      */}
+      <div className={styles.actions}>
+        {/*
+          LA MÊME FEUILLE QUE LE PLAN HISTORIQUE, à deux chaînes près. Elle
+          prenait une ligne du plan historique et n'en lisait que le nom et
+          la famille ; elle prend maintenant ces deux-là, et sert les deux
+          plans sans qu'un second catalogue existe.
+        */}
+        <button
+          type="button"
+          className={styles.remplacer}
+          onClick={onRemplacer}
+          aria-label={`Remplacer ${food.label}`}
+        >
+          Remplacer
+        </button>
+        <button
+          type="button"
+          className={styles.retirer}
+          onClick={onRetirer}
+          aria-label={`Retirer ${food.label} de ce repas`}
+        >
+          Retirer
+        </button>
+      </div>
+      {ouvertEnRemplacement && (
+        <FoodSwapSheet
+          label={food.label}
+          category={food.category}
+          customs={customs}
+          onPick={onChoisi}
+          onCreate={onCreateCustom}
+          onClose={onFermerRemplacement}
+        />
+      )}
     </div>
   );
 }

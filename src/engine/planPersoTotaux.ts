@@ -54,7 +54,12 @@ export type Catalogue = Readonly<Record<string, LibraryFood>>;
 export function macrosDeLigne(ligne: LignePerso, catalogue: Catalogue): Macros {
   const f = catalogue[ligne.foodId];
   if (!f || !Number.isFinite(f.per) || f.per <= 0) return ZERO;
-  if (!Number.isFinite(ligne.qty) || ligne.qty <= 0) return ZERO;
+  /*
+   * Une quantité absente pèse zéro, elle n'est pas une erreur : depuis le
+   * lot 0, un aliment peut être CHOISI sans que sa quantité soit posée. La
+   * ligne existe, elle s'affiche, et elle ne compte pas encore.
+   */
+  if (ligne.qty === null || !Number.isFinite(ligne.qty) || ligne.qty <= 0) return ZERO;
   const k = ligne.qty / f.per;
   return { kcal: f.kcal * k, proteinG: f.proteinG * k, carbsG: f.carbsG * k, fatG: f.fatG * k };
 }
@@ -115,4 +120,18 @@ export function ecartACible(total: Macros, cible: Macros | null): Macros | null 
     carbsG: cible.carbsG - total.carbsG,
     fatG: cible.fatG - total.fatG,
   });
+}
+
+/**
+ * Les aliments choisis dont la quantité reste à poser, dans toute la journée.
+ *
+ * L'écran s'en sert pour le dire une fois en haut plutôt que cinq fois dans
+ * les repas : « 4 quantités à poser » se lit d'un coup d'œil, et c'est la
+ * seule chose qui sépare un plan posé par la bibliothèque d'un plan fini.
+ */
+export function quantitesAPoser(journee: JourneePerso): number {
+  return REPAS_PERSO.reduce(
+    (n, r) => n + (journee[r.id] ?? []).filter((l) => l.qty === null).length,
+    0,
+  );
 }

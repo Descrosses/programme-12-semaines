@@ -1,0 +1,169 @@
+/*
+ * La bibliothèque de repas, ouverte sur un créneau.
+ *
+ * Elle s'ouvre DANS le repas plutôt qu'en plein écran : on vient de toucher
+ * « Déjeuner », on choisit son déjeuner, on reste où on était. Un écran
+ * complet aurait fait perdre le fil à chaque essai.
+ */
+
+.feuille {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.titre {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.fermer {
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink-1);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.sous {
+  margin: 6px 0 12px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+/*
+ * Photo et texte sur une rangée, bouton en barre pleine largeur dessous.
+ *
+ * Les trois en colonnes ne tenaient pas à 402 px : la colonne de texte
+ * tombait à 190 px, le nom du repas se brisait sur trois lignes, et le
+ * bouton devenait une plaque rouge de 62 × 133. Les cartes faisaient 153 à
+ * 188 px chacune, sans jamais la même hauteur.
+ */
+.carte {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.rangee {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.photo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  background: var(--surface-3);
+}
+
+.texte {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Deux lignes au plus : au-delà, c'est la hauteur de la carte qui part, et
+   la liste n'est plus parcourable d'un pouce. */
+.nom {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 0;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pastille {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ok {
+  background: rgba(61, 220, 132, 0.14);
+  color: var(--vert);
+}
+
+/* « À remplacer » n'est pas une erreur, c'est une invitation. Orange et pas
+   rouge : la carte reste parfaitement utilisable. */
+.swap {
+  background: rgba(255, 159, 28, 0.14);
+  color: var(--orange);
+}
+
+/* Une seule ligne : la composition complète est dans le repas une fois
+   choisi. Ici elle sert à reconnaître l'assiette, pas à la lire. */
+.ingredients {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.choisir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 9px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

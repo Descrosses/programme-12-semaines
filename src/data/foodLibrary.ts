@@ -328,6 +328,22 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
     referenceState: 'cru',
     category: 'legume',
   },
+  /*
+   * Entrée du lot 1 : la ratatouille d'un repas de la bibliothèque la
+   * contient, et la photo la montre. Sans elle, il aurait fallu décrire le
+   * plat autrement que ce qu'on voit dans l'assiette.
+   */
+  aubergine: {
+    label: 'Aubergine cuite',
+    unit: 'g',
+    per: 100,
+    kcal: 32,
+    proteinG: 1,
+    carbsG: 4.5,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
   poivrons: {
     label: 'Poivrons crus',
     unit: 'g',
@@ -398,6 +414,23 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
   },
 
   // --------------------------------------------------------------- LAITIERS --
+  /*
+   * Fromage frais À TARTINER, et pas le fromage blanc du dessous : ce n'est
+   * ni la même texture ni la même composition — 160 kcal contre 75, et six
+   * fois plus de lipides. Les confondre doublerait les calories du petit
+   * déjeuner qui l'utilise.
+   */
+  fromageFrais: {
+    label: 'Fromage frais à tartiner',
+    unit: 'g',
+    per: 100,
+    kcal: 160,
+    proteinG: 7,
+    carbsG: 4,
+    fatG: 13,
+    referenceState: 'na',
+    category: 'laitier',
+  },
   fromageBlanc: {
     label: 'Fromage blanc 3 %',
     unit: 'g',
