@@ -276,11 +276,12 @@ const MAXFORCE: BlockRuleSet[] = [
        * lit, et la faire dépendre d'une valeur située dans un autre fichier
        * est exactement ce qui l'a laissée se désaccorder.
        */
+      /* §11 cas 9 — le cran de levier du bloc. Ni les séries ni les reps ne bougent : c'est la contrainte qui monte, pas le volume. */
       patch('ab-wheel', {
         sets: 3,
         work: reps(8),
         restSec: 45,
-        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations. Amplitude COMPLÈTE maintenant — bras tendus, ventre près du sol, hanches qui ne plient pas.',
         superset: TRONC_LUNDI,
       }),
       { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8, TRONC_LUNDI) },
@@ -333,6 +334,15 @@ const MAXFORCE: BlockRuleSet[] = [
     block: 'maxforce',
     day: 4,
     rules: [
+      /*
+       * Le Copenhagen n'avait AUCUNE règle dans ce bloc : il traversait
+       * les semaines 5 à 8 exactement comme la semaine 1, genou fléchi,
+       * 3 × 8. C'est le trou que le §11 cas 9 vient combler — le levier
+       * s'allonge ici, le volume ne bouge pas d'une rep.
+       */
+      patch('copenhagen-plank', {
+        note: 'Jambe haute TENDUE, appui sur le pied, si les 3 × 8 en levier court sont passés sans douleur. Sinon tu restes au genou fléchi : ce mouvement-là ne se force pas (§14).',
+      }),
       // « Hang High Pull 4 × 3, repos 2 min » (§8).
       patch('hang-high-pull', { sets: 4, restSec: 120 }),
       patch('push-press', { restSec: 150 }),
@@ -491,7 +501,16 @@ const MAXFORCE: BlockRuleSet[] = [
       patch('neutral-grip-pullup', { sets: 3, work: reps(6) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 3, work: reps(6, true) }),
-      patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
+      /*
+       * 8-12 → 8 : ce n'est PAS une baisse de volume, c'est le levier qui
+       * s'allonge. Une rep jambes tendues vaut deux reps genoux fléchis.
+       * La prescription semblait régresser faute d'avoir été écrite.
+       */
+      patch('hanging-leg-raise', {
+        sets: 3,
+        work: reps(8),
+        note: 'JAMBES TENDUES jusqu’à l’horizontale. Les reps descendent de 12 à 8 parce que le levier a doublé — ce n’est pas un allègement.',
+      }),
       patch('conditioning', {
         work: { kind: 'intervals', rounds: 6, workSec: 20, easySec: 100 },
         note: 'Et pas davantage.',
@@ -560,12 +579,16 @@ const POWER: BlockRuleSet[] = [
         work: reps(5, true, 'jambe'),
         targetRPE: rpe(7.5),
       }),
-      // Même alternance qu'en force max, et même volume des deux côtés.
+      /*
+       * Même alternance qu'en force max, et même volume des deux côtés.
+       * Dernier cran de levier : les pieds quittent le sol ou le départ se
+       * fait debout. §11 cas 9 — le cran de levier du bloc. Ni les séries ni les reps ne bougent : c'est la contrainte qui monte, pas le volume.
+       */
       patch('ab-wheel', {
         sets: 3,
         work: reps(8),
         restSec: 45,
-        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations.',
+        note: 'En alternance avec le Roman Side Bench : une série de chaque, 45 s entre les stations. Pieds surélevés sur un step, ou départ debout en amplitude partielle si les 3 × 8 à genoux sortent propres.',
         superset: TRONC_LUNDI,
       }),
       { op: 'insert', after: 'ab-wheel', slot: romanSideBench(3, 8, TRONC_LUNDI) },
@@ -652,7 +675,16 @@ const POWER: BlockRuleSet[] = [
        * jour ne plante pas — elle ne fait rien, en silence. Un test de
        * `program.test.ts` l'interdit précisément pour cette raison.
        */
-      patch('copenhagen-plank', { sets: 3, work: reps(5, true) }),
+      /*
+       * 8 → 5 reps, et c'est encore le levier : la jambe est tendue depuis
+       * le bloc force max. Moins de reps sur un bras de levier plus long,
+       * c'est une progression, pas un deload.
+       */
+      patch('copenhagen-plank', {
+        sets: 3,
+        work: reps(5, true),
+        note: 'Jambe haute tendue, appui sur le pied. 5 reps et pas 8 : le levier est long. Toujours arrêt à la gêne (§14).',
+      }),
       {
         op: 'insert',
         after: 'lateral-bound',
@@ -698,7 +730,12 @@ const POWER: BlockRuleSet[] = [
       patch('neutral-grip-pullup', { sets: 3, work: reps({ min: 5, max: 6 }) }),
       patch('one-arm-cable-row', { sets: 3, work: reps(8, true) }),
       patch('landmine-press-standing', { sets: 2, work: reps(8, true) }),
-      patch('hanging-leg-raise', { sets: 3, work: reps(8) }),
+      /* Dernier cran : on va chercher la barre. Même volume. */
+      patch('hanging-leg-raise', {
+        sets: 3,
+        work: reps(8),
+        note: 'Jambes tendues jusqu’à toucher la barre, si l’horizontale sort sans balancier. Sinon on reste à l’horizontale — une rep lancée ne compte pas.',
+      }),
       remove('conditioning'),
       {
         op: 'insert',
