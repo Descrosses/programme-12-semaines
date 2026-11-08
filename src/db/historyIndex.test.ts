@@ -121,13 +121,18 @@ describe('rien ne change pour les autres mouvements', () => {
       .map(([id]) => id)
       .sort();
     /*
-     * Le Roman Side Bench a rejoint le Broad Jump dans ce cas de figure :
-     * il est programmé le lundi ET le samedi depuis la semaine 5.
+     * Le Roman Side Bench est dans ce cas de figure, et c'est une décision :
+     * Guillaume a préféré déprogrammer le Zercher March plutôt que lui, en
+     * sachant que ça le remettait au lundi ET au samedi à partir de la S5.
      *
      * Ce que §11 en fait a été vérifié : `referenceOccurrences` ne retient
      * que ce qui précède STRICTEMENT la séance affichée, donc le samedi lit
      * le lundi et le lundi suivant lit le samedi. Les deux prescriptions
-     * sont identiques et au poids du corps : aucune charge ne dérive.
+     * sont identiques et au poids du corps — coreCycle le verrouille — donc
+     * aucune charge ne dérive.
+     *
+     * C'est ce test qui dit si un TROISIÈME exercice tombe un jour dans ce
+     * cas sans qu'on l'ait décidé : la liste est close.
      */
     expect(deuxFois).toEqual(['broad-jump', 'roman-side-bench']);
   });

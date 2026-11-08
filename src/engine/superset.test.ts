@@ -233,13 +233,15 @@ describe('la paire du lundi, dans le vrai programme', () => {
     expect(avancement(p, () => 0).total).toBe(6);
   });
 
-  it('aucune paire le samedi — le Roman Side Bench y ferme la séance tout seul', () => {
+  it('aucune paire le samedi — le Suitcase Carry y ferme la séance tout seul', () => {
+    // Il a remplacé le Roman Side Bench, qui était déjà au lundi. Pas de
+    // superset pour autant : le samedi porte déjà le deadlift.
     for (const w of [5, 6, 7, 9, 10, 11]) {
       expect(paires(w, 5), `S${w}`).toHaveLength(0);
       expect(
         seance(w, 5).map((e) => e.id),
         `S${w}`,
-      ).toContain('roman-side-bench');
+      ).toContain('suitcase-carry');
     }
   });
 

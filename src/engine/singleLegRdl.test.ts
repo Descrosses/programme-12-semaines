@@ -74,7 +74,7 @@ describe('Single-Leg RDL — retiré par le bloc, pas par un numéro de semaine'
       'front-squat',
       'hip-thrust',
       'nordic-curl',
-      'zercher-march',
+      'suitcase-carry',
       'roman-side-bench',
     ]);
   });
