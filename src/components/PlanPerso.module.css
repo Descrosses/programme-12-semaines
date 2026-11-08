@@ -201,3 +201,36 @@
   font-size: 0.8125rem;
   line-height: 1.45;
 }
+
+/*
+ * Ce qui reste à poser, annoncé une seule fois en haut.
+ *
+ * C'est la seule chose qui sépare un plan posé par la bibliothèque d'un
+ * plan fini. Le répéter dans chaque repas obligerait à les ouvrir tous
+ * pour savoir où on en est.
+ */
+.aPoser {
+  margin: 6px 0 0;
+  color: var(--orange);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+/*
+ * Retirer : un geste à part, et discret.
+ *
+ * Il le fallait, puisque vider le champ ne jette plus l'aliment. Mais il
+ * reste secondaire — on règle des grammes vingt fois pour un aliment qu'on
+ * enlève une.
+ */
+.retirer {
+  margin-top: 4px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

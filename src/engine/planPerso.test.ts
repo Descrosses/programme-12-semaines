@@ -12,11 +12,14 @@ import {
   GROUPES_REPAS,
   PLAN_PERSO_VIDE,
   REPAS_PERSO,
+  choisirAliment,
   copierJournee,
   groupeDeFamille,
   journeeVide,
   poserQuantite,
+  poserRepas,
   quantiteDe,
+  retirerAliment,
   type JourneePerso,
 } from '../data/planPerso';
 import {
@@ -25,6 +28,7 @@ import {
   macrosDeJournee,
   macrosDeLigne,
   macrosDeRepas,
+  quantitesAPoser,
 } from './planPersoTotaux';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
 
@@ -80,21 +84,50 @@ describe('poser une quantité', () => {
   });
 
   /*
-   * Zéro n'est pas une quantité, c'est l'absence de l'aliment. Garder une
-   * ligne à 0 g laisserait traîner dans le plan des aliments qu'on a
-   * retirés, et l'écran les afficherait comme s'ils comptaient.
+   * LE CHANGEMENT DU LOT 0, ET LA RAISON D'ÊTRE DE TOUT LE RESTE.
+   *
+   * Avant, vider un champ retirait l'aliment. C'était défendable tant que
+   * la personne posait elle-même chaque ligne. Ça ne l'est plus : la
+   * bibliothèque pose un repas entier d'un geste, et ces aliments-là ont
+   * été DÉCIDÉS. Corriger une quantité ne doit pas pouvoir en jeter un.
    */
-  it('zéro retire la ligne, et le repas vide disparaît', () => {
+  it('vider une quantité ne retire pas l’aliment choisi', () => {
     let j = poserQuantite({}, 'dejeuner', 'riz', 200);
-    j = poserQuantite(j, 'dejeuner', 'riz', 0);
+    j = poserQuantite(j, 'dejeuner', 'riz', null);
+    expect(j.dejeuner).toHaveLength(1);
+    expect(quantiteDe(j, 'dejeuner', 'riz')).toBeNull();
+    expect(journeeVide(j)).toBe(false);
+  });
+
+  it('zéro vaut « pas de quantité », pas « pas d’aliment »', () => {
+    const j = poserQuantite(poserQuantite({}, 'dejeuner', 'riz', 200), 'dejeuner', 'riz', 0);
+    expect(j.dejeuner).toHaveLength(1);
+    expect(quantiteDe(j, 'dejeuner', 'riz')).toBeNull();
+  });
+
+  it('retirer un aliment est le seul geste qui jette quelque chose', () => {
+    let j = poserQuantite({}, 'dejeuner', 'riz', 200);
+    j = retirerAliment(j, 'dejeuner', 'riz');
     expect(j.dejeuner).toBeUndefined();
     expect(journeeVide(j)).toBe(true);
   });
 
-  it('vider un champ fait la même chose que zéro', () => {
+  it('choisir un aliment l’ajoute sans quantité', () => {
+    const j = choisirAliment({}, 'pdej', 'avoine');
+    expect(j.pdej).toEqual([{ foodId: 'avoine', qty: null }]);
+  });
+
+  /* Toucher deux fois la même pastille ne doit pas effacer ce qu'on a posé. */
+  it('choisir deux fois le même aliment ne double rien et n’efface rien', () => {
     let j = poserQuantite({}, 'pdej', 'avoine', 70);
-    j = poserQuantite(j, 'pdej', 'avoine', null);
-    expect(journeeVide(j)).toBe(true);
+    j = choisirAliment(j, 'pdej', 'avoine');
+    expect(j.pdej).toHaveLength(1);
+    expect(quantiteDe(j, 'pdej', 'avoine')).toBe(70);
+  });
+
+  it('poser une quantité sur un aliment non choisi le choisit au passage', () => {
+    const j = poserQuantite({}, 'diner', 'poulet', 150);
+    expect(quantiteDe(j, 'diner', 'poulet')).toBe(150);
   });
 
   it('les autres repas ne bougent pas', () => {
@@ -105,6 +138,51 @@ describe('poser une quantité', () => {
   });
 });
 
+describe('poser un repas entier', () => {
+  /*
+   * « Choisir ce repas » REMPLACE le créneau au lieu de s'y ajouter :
+   * choisir un déjeuner quand on en avait déjà un veut dire changer de
+   * déjeuner, pas manger les deux.
+   */
+  it('remplace le contenu du créneau', () => {
+    let j = poserQuantite({}, 'dejeuner', 'riz', 999);
+    j = poserRepas(j, 'dejeuner', [
+      { foodId: 'poulet', qty: 150 },
+      { foodId: 'riz', qty: 250 },
+    ]);
+    expect(j.dejeuner).toHaveLength(2);
+    expect(quantiteDe(j, 'dejeuner', 'riz')).toBe(250);
+  });
+
+  it('ne touche pas aux autres repas', () => {
+    let j = poserQuantite({}, 'pdej', 'avoine', 70);
+    j = poserRepas(j, 'dejeuner', [{ foodId: 'poulet', qty: 150 }]);
+    expect(quantiteDe(j, 'pdej', 'avoine')).toBe(70);
+  });
+
+  it('un repas vide efface le créneau', () => {
+    const j = poserRepas(poserQuantite({}, 'dejeuner', 'riz', 200), 'dejeuner', []);
+    expect(j.dejeuner).toBeUndefined();
+  });
+});
+
+describe('les quantités qui restent à poser', () => {
+  it('se comptent sur toute la journée', () => {
+    let j = poserRepas({}, 'dejeuner', [
+      { foodId: 'poulet', qty: 150 },
+      { foodId: 'riz', qty: null },
+      { foodId: 'brocolis', qty: null },
+    ]);
+    j = choisirAliment(j, 'pdej', 'avoine');
+    expect(quantitesAPoser(j)).toBe(3);
+  });
+
+  it('tombent à zéro une fois tout posé', () => {
+    const j = poserRepas({}, 'dejeuner', [{ foodId: 'poulet', qty: 150 }]);
+    expect(quantitesAPoser(j)).toBe(0);
+  });
+});
+
 describe('les totaux', () => {
   // 100 g de riz cuit, tel que le catalogue l'écrit.
   const riz = FOOD_LIBRARY['riz']!;
@@ -112,6 +190,12 @@ describe('les totaux', () => {
   it('une ligne vaut sa quantité rapportée à la base de la composition', () => {
     const m = macrosDeLigne({ foodId: 'riz', qty: 200 }, FOOD_LIBRARY);
     expect(m.kcal).toBeCloseTo((riz.kcal * 200) / riz.per, 6);
+  });
+
+  it('un aliment choisi sans quantité pèse zéro, et ce n’est pas une erreur', () => {
+    expect(macrosDeLigne({ foodId: 'riz', qty: null }, FOOD_LIBRARY).kcal).toBe(0);
+    const j = choisirAliment({}, 'dejeuner', 'riz');
+    expect(macrosDeJournee(j, FOOD_LIBRARY).kcal).toBe(0);
   });
 
   it('un aliment que le catalogue ne connaît pas vaut zéro, pas NaN', () => {

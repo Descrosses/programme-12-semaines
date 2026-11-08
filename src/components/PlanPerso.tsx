@@ -34,8 +34,10 @@ import type { Macros } from '../engine/nutrition';
 import {
   GROUPES_REPAS,
   REPAS_PERSO,
+  choisirAliment,
   poserQuantite,
   quantiteDe,
+  retirerAliment,
   type GroupeId,
   type JourneePerso,
   type RepasId,
@@ -45,6 +47,7 @@ import {
   arrondirMacros,
   macrosDeJournee,
   macrosDeRepas,
+  quantitesAPoser,
   type Catalogue,
 } from '../engine/planPersoTotaux';
 import styles from './PlanPerso.module.css';
@@ -92,18 +95,16 @@ export function PlanPerso({
 }) {
   /** Le repas déplié. Un seul à la fois : l'écran tient dans un pouce. */
   const [ouvert, setOuvert] = useState<RepasId | null>(null);
-  /**
-   * Les aliments qu'on a fait apparaître sans leur donner de quantité.
-   *
-   * Local au composant, et c'est voulu : « j'ai touché la pastille » n'est
-   * pas une information à garder en base. Elle disparaît au changement
-   * d'écran, et l'aliment avec — tant qu'aucune quantité n'a été posée, il
-   * n'y a rien à retenir.
+  /*
+   * Il n'y a plus d'état local « aliment ouvert ». Depuis le lot 0, choisir
+   * un aliment s'écrit en base : c'est une décision, elle survit au
+   * changement d'écran, et c'est ce qui permet à la bibliothèque de poser
+   * un repas entier sans quantités.
    */
-  const [ouverts, setOuverts] = useState<ReadonlySet<string>>(new Set());
 
   const parGroupe = alimentsParGroupe(preferes, catalogue);
   const total = macrosDeJournee(journee, catalogue);
+  const aPoser = quantitesAPoser(journee);
   const reste =
     cible === null
       ? null
@@ -155,6 +156,18 @@ export function PlanPerso({
           )}
         </div>
         <Macro m={total} />
+        {aPoser > 0 && (
+          /*
+           * Le dire UNE fois en haut plutôt que cinq fois dans les repas.
+           * C'est la seule chose qui sépare un plan posé par la
+           * bibliothèque d'un plan fini, et elle doit se lire d'un coup.
+           */
+          <p className={styles.aPoser}>
+            {aPoser === 1
+              ? '1 quantité reste à poser.'
+              : `${String(aPoser)} quantités restent à poser.`}
+          </p>
+        )}
         {reste !== null && (
           /*
            * « IL MANQUE », PAS « IL RESTE ». Le journal du jour, plus bas,
@@ -209,12 +222,9 @@ export function PlanPerso({
                 {GROUPES_REPAS.map((groupe) => {
                   const aliments = parGroupe[groupe.id as GroupeId];
                   if (aliments.length === 0) return null;
-                  const poses = aliments.filter(
-                    (f) =>
-                      quantiteDe(journee, repas.id, f.id) !== null ||
-                      ouverts.has(`${repas.id}|${f.id}`),
-                  );
-                  const restants = aliments.filter((f) => !poses.includes(f));
+                  const choisis = new Set((journee[repas.id] ?? []).map((l) => l.foodId));
+                  const poses = aliments.filter((f) => choisis.has(f.id));
+                  const restants = aliments.filter((f) => !choisis.has(f.id));
                   return (
                     <div key={groupe.id} className={styles.groupe}>
                       <h3 className={styles.groupeNom}>{groupe.nom}</h3>
@@ -224,6 +234,7 @@ export function PlanPerso({
                           food={f}
                           qty={quantiteDe(journee, repas.id, f.id)}
                           onQty={(v) => onChange(poserQuantite(journee, repas.id, f.id, v))}
+                          onRetirer={() => onChange(retirerAliment(journee, repas.id, f.id))}
                         />
                       ))}
                       {restants.length > 0 && (
@@ -233,9 +244,7 @@ export function PlanPerso({
                               key={f.id}
                               type="button"
                               className={styles.pastille}
-                              onClick={() =>
-                                setOuverts((p) => new Set(p).add(`${repas.id}|${f.id}`))
-                              }
+                              onClick={() => onChange(choisirAliment(journee, repas.id, f.id))}
                             >
                               + {f.label}
                             </button>
@@ -265,10 +274,12 @@ function LigneAliment({
   food,
   qty,
   onQty,
+  onRetirer,
 }: {
   food: LibraryFood;
   qty: number | null;
   onQty: (v: number | null) => void;
+  onRetirer: () => void;
 }) {
   const cfg = PAS[food.unit] ?? PAS['g']!;
   return (
@@ -283,6 +294,19 @@ function LigneAliment({
         onStep={(d) => onQty(stepValue(qty, d, 0, cfg.max))}
         onCommit={(v) => onQty(v)}
       />
+      {/*
+        Retirer est maintenant un geste à part, et il le fallait : vider le
+        champ ne jette plus l'aliment, donc il faut bien un endroit pour
+        dire « celui-là, je n'en veux pas ».
+      */}
+      <button
+        type="button"
+        className={styles.retirer}
+        onClick={onRetirer}
+        aria-label={`Retirer ${food.label} de ce repas`}
+      >
+        Retirer
+      </button>
     </div>
   );
 }

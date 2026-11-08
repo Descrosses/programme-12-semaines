@@ -82,12 +82,24 @@ export function groupeDeFamille(famille: FoodCategory): GroupeId | null {
   );
 }
 
-/** Une quantité d'un aliment, dans un repas. */
+/** Un aliment dans un repas, avec ou sans quantité. */
 export interface LignePerso {
   /** Identifiant du catalogue ou d'un aliment personnalisé. */
   foodId: string;
-  /** Dans l'unité de l'aliment : grammes, millilitres ou unités. */
-  qty: number;
+  /**
+   * Dans l'unité de l'aliment : grammes, millilitres ou unités.
+   *
+   * `null` = L'ALIMENT EST CHOISI, SA QUANTITÉ RESTE À POSER. Ce n'est pas
+   * la même chose que son absence, et il a fallu les distinguer : la
+   * bibliothèque pose un repas entier d'un geste, et quelqu'un doit pouvoir
+   * ouvrir un aliment avant de savoir combien il en mettra. Tant que les
+   * deux états se confondaient, le choix disparaissait au premier rendu.
+   *
+   * Une ligne à `null` pèse zéro et le dit. Elle ne s'efface qu'avec
+   * `retirerAliment`, un geste explicite — vider un champ ne jette plus ce
+   * qu'on avait choisi.
+   */
+  qty: number | null;
 }
 
 /** Le contenu d'une journée : ce qu'il y a dans chacun des cinq repas. */
@@ -108,12 +120,46 @@ export type PlanPerso = Record<DayKind, JourneePerso>;
 
 export const PLAN_PERSO_VIDE: PlanPerso = { train: {}, rest: {} };
 
+/** Range une liste de lignes dans un repas, en retirant le repas s'il se vide. */
+function ecrire(
+  journee: JourneePerso,
+  repas: RepasId,
+  lignes: readonly LignePerso[],
+): JourneePerso {
+  if (lignes.length === 0) {
+    const { [repas]: _retire, ...reste } = journee;
+    return reste;
+  }
+  return { ...journee, [repas]: lignes };
+}
+
 /**
- * Pose une quantité, ou retire la ligne quand elle tombe à zéro.
+ * Ajoute un aliment au repas, sans quantité.
  *
- * Zéro n'est pas une quantité : c'est l'absence de l'aliment. Garder une
- * ligne à 0 g laisserait traîner dans le plan des aliments qu'on a retirés,
- * et l'écran les afficherait comme s'ils comptaient.
+ * Deux fois le même aliment ne font pas deux lignes : on garde celle qui est
+ * là, avec la quantité qu'elle portait. Toucher deux fois la même pastille
+ * ne doit pas effacer les 250 g qu'on venait de poser.
+ */
+export function choisirAliment(
+  journee: JourneePerso,
+  repas: RepasId,
+  foodId: string,
+): JourneePerso {
+  const lignes = journee[repas] ?? [];
+  if (lignes.some((l) => l.foodId === foodId)) return journee;
+  return ecrire(journee, repas, [...lignes, { foodId, qty: null }]);
+}
+
+/**
+ * Pose, change ou efface la quantité d'un aliment déjà choisi.
+ *
+ * VIDER LE CHAMP NE RETIRE PLUS L'ALIMENT — il reste là, sans quantité.
+ * C'est le changement du lot 0 : un plan posé par la bibliothèque contient
+ * des aliments décidés, et une correction de quantité ne doit pas pouvoir
+ * en jeter un par accident. Pour l'enlever, il y a `retirerAliment`.
+ *
+ * Un aliment qu'on n'avait pas choisi est ajouté au passage : poser une
+ * quantité, c'est aussi le choisir.
  */
 export function poserQuantite(
   journee: JourneePerso,
@@ -122,14 +168,41 @@ export function poserQuantite(
   qty: number | null,
 ): JourneePerso {
   const lignes = journee[repas] ?? [];
-  const sans = lignes.filter((l) => l.foodId !== foodId);
-  const valide = qty !== null && Number.isFinite(qty) && qty > 0;
-  const suivantes = valide ? [...sans, { foodId, qty }] : sans;
-  if (suivantes.length === 0) {
-    const { [repas]: _retire, ...reste } = journee;
-    return reste;
-  }
-  return { ...journee, [repas]: suivantes };
+  const valide = qty !== null && Number.isFinite(qty) && qty > 0 ? qty : null;
+  const existe = lignes.some((l) => l.foodId === foodId);
+  const suivantes = existe
+    ? lignes.map((l) => (l.foodId === foodId ? { foodId, qty: valide } : l))
+    : [...lignes, { foodId, qty: valide }];
+  return ecrire(journee, repas, suivantes);
+}
+
+/** Retire un aliment du repas. Le seul geste qui jette quelque chose. */
+export function retirerAliment(
+  journee: JourneePerso,
+  repas: RepasId,
+  foodId: string,
+): JourneePerso {
+  const lignes = journee[repas] ?? [];
+  return ecrire(
+    journee,
+    repas,
+    lignes.filter((l) => l.foodId !== foodId),
+  );
+}
+
+/**
+ * Pose un repas entier d'un coup — ce que fait « Choisir ce repas ».
+ *
+ * Il REMPLACE le contenu du créneau au lieu de s'y ajouter : choisir un
+ * déjeuner quand on en avait déjà un veut dire changer de déjeuner, pas
+ * manger les deux.
+ */
+export function poserRepas(
+  journee: JourneePerso,
+  repas: RepasId,
+  lignes: readonly LignePerso[],
+): JourneePerso {
+  return ecrire(journee, repas, [...lignes]);
 }
 
 /** La quantité posée pour un aliment dans un repas, ou `null`. */
