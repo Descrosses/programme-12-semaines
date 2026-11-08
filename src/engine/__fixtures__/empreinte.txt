@@ -219,14 +219,14 @@ S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S5J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S5J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=73min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S5J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J5 | deadlift | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J5 | front-squat | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S5J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S5J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S5J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S5J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S5J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -264,14 +264,14 @@ S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S6J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S6J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S6J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J5 | deadlift | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J5 | front-squat | 4 × 4 | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S6J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S6J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S6J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S6J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S6J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -309,14 +309,14 @@ S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S7J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S7J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S7J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J5 | deadlift | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J5 | front-squat | 4 × 4 | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S7J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S7J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S7J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S7J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S7J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -394,14 +394,14 @@ S9J4 | speed-squat | 8 × 2 | séries=8 | travail={"kind":"reps","reps":2,"perSi
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S9J5 | deadlift | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S9J5 | front-squat | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=7-7 | superset=— | contraste=—
 S9J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S9J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S9J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S9J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -436,14 +436,14 @@ S10J4 | speed-squat | 8 × 2 | séries=8 | travail={"kind":"reps","reps":2,"perS
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S10J5 | deadlift | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S10J5 | front-squat | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=7-7 | superset=— | contraste=—
 S10J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S10J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S10J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S10J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -478,14 +478,14 @@ S11J4 | speed-squat | 8 × 2 | séries=8 | travail={"kind":"reps","reps":2,"perS
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S11J5 | deadlift | 3 × 1-2 | séries=3 | travail={"kind":"reps","reps":{"min":1,"max":2},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S11J5 | front-squat | 3 × 3 | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=7-7 | superset=— | contraste=—
 S11J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S11J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S11J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S11J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -740,14 +740,14 @@ S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S5J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S5J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=73min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S5J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J5 | deadlift | 4 × 3 × 97,5 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=97.5 | kgMax=— | source=1rm | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J5 | front-squat | 4 × 5 × 60 kg | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=60 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S5J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S5J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S5J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S5J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S5J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -785,14 +785,14 @@ S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S6J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S6J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S6J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J5 | deadlift | 3 × 3 × 102,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=102.5 | kgMax=— | source=1rm | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J5 | front-squat | 4 × 4 × 65 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S6J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S6J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S6J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S6J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S6J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -830,14 +830,14 @@ S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S7J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S7J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S7J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J5 | deadlift | 3 × 2 × 107,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=107.5 | kgMax=— | source=1rm | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J5 | front-squat | 4 × 4 × 65 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S7J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S7J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S7J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S7J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S7J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -915,14 +915,14 @@ S9J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps"
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S9J5 | deadlift | 3 × 2 × 100 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=100 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S9J5 | front-squat | 3 × 3 × 65 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S9J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S9J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S9J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S9J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -957,14 +957,14 @@ S10J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S10J5 | deadlift | 3 × 2 × 102,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=102.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S10J5 | front-squat | 3 × 3 × 65 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S10J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S10J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S10J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S10J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -999,14 +999,14 @@ S11J4 | speed-squat | 8 × 2 × 60 kg | séries=8 | travail={"kind":"reps","reps
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S11J5 | deadlift | 3 × 1-2 × 107,5 kg | séries=3 | travail={"kind":"reps","reps":{"min":1,"max":2},"perSide":false,"sideLabel":"côté"} | kg=107.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S11J5 | front-squat | 3 × 3 × 67,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=67.5 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S11J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S11J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S11J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S11J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1261,14 +1261,14 @@ S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S5J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S5J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=73min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S5J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J5 | deadlift | 4 × 3 × 117,5 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=117.5 | kgMax=— | source=programme | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J5 | front-squat | 4 × 5 × 65 kg | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S5J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S5J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S5J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S5J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S5J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1306,14 +1306,14 @@ S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S6J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S6J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S6J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J5 | deadlift | 3 × 3 × 125 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=125 | kgMax=— | source=programme | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J5 | front-squat | 4 × 4 × 70 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=70 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S6J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S6J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S6J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S6J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S6J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1351,14 +1351,14 @@ S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S7J4 | explosive-cable-row | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S7J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S7J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J5 | deadlift | 3 × 2 × 130 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=130 | kgMax=— | source=programme | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J5 | front-squat | 4 × 4 × 70 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=70 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J5 | hip-thrust | 4 × 6 | séries=4 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J5 | nordic-curl | 3 × 4-5 — poids du corps | séries=3 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S7J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S7J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S7J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=54min | échauffement=oui | test=non | notes=3 | suspendus=—
 S7J6 | incline-db-press | 3 × 8 | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S7J6 | neutral-grip-pullup | 3 × 6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1436,14 +1436,14 @@ S9J4 | speed-squat | 8 × 2 × 65 kg | séries=8 | travail={"kind":"reps","reps"
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S9J5 | deadlift | 3 × 2 × 120 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=120 | kgMax=— | source=programme | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S9J5 | front-squat | 3 × 3 × 70 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=70 | kgMax=— | source=programme | repos=120s | rpe=7-7 | superset=— | contraste=—
 S9J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S9J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S9J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S9J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1478,14 +1478,14 @@ S10J4 | speed-squat | 8 × 2 × 65 kg | séries=8 | travail={"kind":"reps","reps
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S10J5 | deadlift | 3 × 2 × 127,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=127.5 | kgMax=— | source=programme | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S10J5 | front-squat | 3 × 3 × 72,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=72.5 | kgMax=— | source=programme | repos=120s | rpe=7-7 | superset=— | contraste=—
 S10J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S10J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S10J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S10J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1520,14 +1520,14 @@ S11J4 | speed-squat | 8 × 2 × 65 kg | séries=8 | travail={"kind":"reps","reps
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=59min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=61min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S11J5 | deadlift | 3 × 1-2 × 130 kg | séries=3 | travail={"kind":"reps","reps":{"min":1,"max":2},"perSide":false,"sideLabel":"côté"} | kg=130 | kgMax=— | source=programme | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S11J5 | front-squat | 3 × 3 × 75 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=75 | kgMax=— | source=programme | repos=120s | rpe=7-7 | superset=— | contraste=—
 S11J5 | hip-thrust | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J5 | nordic-curl | 2 × 4 — poids du corps | séries=2 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J5 | single-leg-rdl | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S11J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S11J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=56min | échauffement=oui | test=non | notes=2 | suspendus=—
 S11J6 | incline-db-press | 3 × 6-8 | séries=3 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J6 | neutral-grip-pullup | 3 × 5-6 — +5 à +10 kg | séries=3 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1782,14 +1782,14 @@ S5J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S5J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S5J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=68min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S5J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S5J5 | deadlift | 4 × 3 × 92,5 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=92.5 | kgMax=— | source=1rm | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J5 | front-squat | 4 × 5 × 57,5 kg | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=57.5 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J5 | hip-thrust | 3 × 6 | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J5 | nordic-curl | 2 × 4-5 — poids du corps | séries=2 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S5J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S5J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S5J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=46min | échauffement=oui | test=non | notes=3 | suspendus=—
 S5J6 | incline-db-press | 2 × 8 | séries=2 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S5J6 | neutral-grip-pullup | 2 × 6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1827,14 +1827,14 @@ S6J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S6J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S6J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=64min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=66min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S6J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S6J5 | deadlift | 3 × 3 × 97,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=97.5 | kgMax=— | source=1rm | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J5 | front-squat | 4 × 4 × 62,5 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=62.5 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J5 | hip-thrust | 3 × 6 | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J5 | nordic-curl | 2 × 4-5 — poids du corps | séries=2 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S6J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S6J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S6J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=46min | échauffement=oui | test=non | notes=3 | suspendus=—
 S6J6 | incline-db-press | 2 × 8 | séries=2 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S6J6 | neutral-grip-pullup | 2 × 6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1872,14 +1872,14 @@ S7J4 | jump-squat-db | 4 × 4 — 2 × 6-8 kg | séries=4 | travail={"kind":"rep
 S7J4 | explosive-cable-row | 2 × 5 | séries=2 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=6-6 | superset=— | contraste=—
 S7J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=64min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=66min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S7J5 | broad-jump | 3 × 2 | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S7J5 | deadlift | 3 × 2 × 102,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=102.5 | kgMax=— | source=1rm | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J5 | front-squat | 4 × 4 × 62,5 kg | séries=4 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=62.5 | kgMax=— | source=1rm | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J5 | hip-thrust | 3 × 6 | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J5 | nordic-curl | 2 × 4-5 — poids du corps | séries=2 | travail={"kind":"reps","reps":{"min":4,"max":5},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
+S7J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S7J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S7J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=46min | échauffement=oui | test=non | notes=3 | suspendus=—
 S7J6 | incline-db-press | 2 × 8 | séries=2 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S7J6 | neutral-grip-pullup | 2 × 6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1957,14 +1957,14 @@ S9J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","rep
 S9J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=53min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=55min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S9J5 | deadlift | 3 × 2 × 95 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=95 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S9J5 | front-squat | 3 × 3 × 62,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=62.5 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S9J5 | hip-thrust | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J5 | nordic-curl | 1 × 4 — poids du corps | séries=1 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S9J5 | single-leg-rdl | 2 × 8 / côté | séries=2 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S9J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S9J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S9J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=47min | échauffement=oui | test=non | notes=2 | suspendus=—
 S9J6 | incline-db-press | 2 × 6-8 | séries=2 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S9J6 | neutral-grip-pullup | 2 × 5-6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -1999,14 +1999,14 @@ S10J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","re
 S10J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=53min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=55min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S10J5 | deadlift | 3 × 2 × 97,5 kg | séries=3 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=97.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S10J5 | front-squat | 3 × 3 × 62,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=62.5 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S10J5 | hip-thrust | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J5 | nordic-curl | 1 × 4 — poids du corps | séries=1 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S10J5 | single-leg-rdl | 2 × 8 / côté | séries=2 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S10J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S10J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S10J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=47min | échauffement=oui | test=non | notes=2 | suspendus=—
 S10J6 | incline-db-press | 2 × 6-8 | séries=2 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S10J6 | neutral-grip-pullup | 2 × 5-6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -2041,14 +2041,14 @@ S11J4 | speed-squat | 8 × 2 × 57,5 kg | séries=8 | travail={"kind":"reps","re
 S11J4 | jump-squat-db | 5 × 3 — 2 × 6-8 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=53min | échauffement=oui | test=oui | notes=0 | suspendus=—
+S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=55min | échauffement=oui | test=oui | notes=0 | suspendus=—
 S11J5 | deadlift | 3 × 1-2 × 102,5 kg | séries=3 | travail={"kind":"reps","reps":{"min":1,"max":2},"perSide":false,"sideLabel":"côté"} | kg=102.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
 S11J5 | front-squat | 3 × 3 × 65 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=65 | kgMax=— | source=1rm | repos=120s | rpe=7-7 | superset=— | contraste=—
 S11J5 | hip-thrust | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J5 | nordic-curl | 1 × 4 — poids du corps | séries=1 | travail={"kind":"reps","reps":4,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=120s | rpe=—-— | superset=— | contraste=—
 S11J5 | single-leg-rdl | 2 × 8 / côté | séries=2 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
+S11J5 | suitcase-carry | 3 × 30 m / côté | séries=3 | travail={"kind":"distance","meters":30,"perSide":true} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S11J5 | zercher-march | 2 × 12 m | séries=2 | travail={"kind":"distance","meters":12,"perSide":false} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
-S11J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=47min | échauffement=oui | test=non | notes=2 | suspendus=—
 S11J6 | incline-db-press | 2 × 6-8 | séries=2 | travail={"kind":"reps","reps":{"min":6,"max":8},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=7-8 | superset=— | contraste=—
 S11J6 | neutral-grip-pullup | 2 × 5-6 — +5 à +10 kg | séries=2 | travail={"kind":"reps","reps":{"min":5,"max":6},"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=90s | rpe=7-7 | superset=— | contraste=—
@@ -2160,9 +2160,8 @@ S5J4 | séance | Total Body Power | bloc=Force maximale | intensité=RAPIDE | du
 S5J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S5J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=32min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S5J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=27min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S5J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=240s | rpe=—-— | superset=— | contraste=—
-S5J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=4 | suspendus=—
 S5J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S5J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—
@@ -2179,9 +2178,8 @@ S6J4 | séance | Total Body Power | bloc=Force maximale | intensité=RAPIDE | du
 S6J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S6J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=32min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S6J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=27min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S6J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=240s | rpe=—-— | superset=— | contraste=—
-S6J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=4 | suspendus=—
 S6J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S6J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—
@@ -2198,9 +2196,8 @@ S7J4 | séance | Total Body Power | bloc=Force maximale | intensité=RAPIDE | du
 S7J4 | landmine-rotation | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=75s | rpe=—-— | superset=— | contraste=—
 S7J4 | dead-bug-cable | 3 × 6 / côté | séries=3 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J4 | copenhagen-plank | 3 × 8 / côté | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=32min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S7J5 | séance | Posterior Chain — deadlift | bloc=Force maximale | intensité=DUR | durée=27min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S7J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=240s | rpe=—-— | superset=— | contraste=—
-S7J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J6 | séance | Upper Athletic + tronc | bloc=Force maximale | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=4 | suspendus=—
 S7J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S7J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—
@@ -2234,9 +2231,8 @@ S9J4 | séance | Total Body Power | bloc=Puissance | intensité=RAPIDE | durée=
 S9J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S9J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=31min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S9J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=25min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S9J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
-S9J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S9J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S9J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S9J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—
@@ -2253,9 +2249,8 @@ S10J4 | séance | Total Body Power | bloc=Puissance | intensité=RAPIDE | durée
 S10J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S10J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=31min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S10J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=25min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S10J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
-S10J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S10J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S10J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S10J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—
@@ -2272,9 +2267,8 @@ S11J4 | séance | Total Body Power | bloc=Puissance | intensité=RAPIDE | durée
 S11J4 | landmine-rotation | 3 × 4 / côté | séries=3 | travail={"kind":"reps","reps":4,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=90s | rpe=—-— | superset=— | contraste=—
 S11J4 | dead-bug-cable | 2 × 5 / côté | séries=2 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J4 | copenhagen-plank | 3 × 5 / côté | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
-S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=31min | échauffement=oui | test=oui | notes=1 | suspendus=—
+S11J5 | séance | Posterior Chain — deadlift | bloc=Puissance | intensité=DUR | durée=25min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S11J5 | deadlift | 3 × 3 × 77,5 kg | séries=3 | travail={"kind":"reps","reps":3,"perSide":false} | kg=77.5 | kgMax=— | source=1rm | repos=210s | rpe=—-— | superset=— | contraste=broad-jump×2
-S11J5 | roman-side-bench | 3 × 8 / côté — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=— | contraste=—
 S11J6 | séance | Upper Athletic + tronc | bloc=Puissance | intensité=MODÉRÉ | durée=17min | échauffement=oui | test=non | notes=3 | suspendus=—
 S11J6 | cable-chop | 2 × 6 / côté | séries=2 | travail={"kind":"reps","reps":6,"perSide":true,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=60s | rpe=—-— | superset=— | contraste=—
 S11J6 | hanging-leg-raise | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=60s | rpe=—-— | superset=— | contraste=—

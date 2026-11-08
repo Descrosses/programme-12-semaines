@@ -507,15 +507,34 @@ describe('Barbell Offset Hold', () => {
     expect(ex.suspended).toBeUndefined();
   });
 
-  it('l’anti-flexion latérale couvre trois jours écartés', () => {
-    // Lundi (Roman Side Bench), mercredi (Offset Hold), samedi (Roman Side
-    // Bench). Le Suitcase Carry a quitté le programme à partir de la S5.
-    const jours = [0, 2, 4, 5, 6].filter((d) =>
-      session(5, d).exercises.some((e) =>
-        ['barbell-offset-hold', 'roman-side-bench'].includes(e.id),
-      ),
-    );
-    expect(jours).toEqual([0, 2, 5]);
+  it('l’anti-flexion latérale couvre quatre jours, les mêmes qu’en S1-4', () => {
+    /*
+     * Lundi (Roman Side Bench), mercredi (Offset Hold), vendredi
+     * (Copenhagen), samedi (Suitcase Carry).
+     *
+     * Le vendredi et le samedi se suivent, et c'est assumé : c'est
+     * exactement la forme qu'ont déjà les semaines 1 à 4 depuis le retour du
+     * Copenhagen. Les deux moitiés du programme ont désormais la même
+     * répartition — ce qui n'était pas le cas quand le Suitcase Carry
+     * s'arrêtait en semaine 4 et que le Roman Side Bench passait deux fois
+     * par semaine.
+     *
+     * Les tissus sollicités ne sont pas les mêmes : le Copenhagen met
+     * l'adducteur en tension maximale à l'arrêt, le Suitcase Carry freine
+     * une inclinaison en marchant, charge dans une main.
+     */
+    const familleLaterale = [
+      'barbell-offset-hold',
+      'roman-side-bench',
+      'copenhagen-plank',
+      'suitcase-carry',
+    ];
+    const jours = (w: number) =>
+      [0, 2, 4, 5, 6].filter((d) =>
+        session(w, d).exercises.some((e) => familleLaterale.includes(e.id)),
+      );
+    expect(jours(5)).toEqual([0, 2, 4, 5]);
+    expect(jours(3), 'les semaines 1-4 ont la même forme').toEqual([4, 5]);
   });
 });
 
@@ -548,7 +567,9 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
       0: ['ab-wheel', 'roman-side-bench'],
       2: ['pallof-press', 'barbell-offset-hold'],
       4: ['landmine-rotation', 'dead-bug-cable', 'copenhagen-plank'],
-      5: ['zercher-march', 'roman-side-bench'],
+      /* Le Suitcase Carry a repris la place du Roman Side Bench, qui était
+         déjà au lundi : voir la règle du bloc force max. */
+      5: ['zercher-march', 'suitcase-carry'],
       6: ['hanging-leg-raise', 'cable-chop'],
     };
     for (const w of [5, 6, 7, 9, 10, 11]) {
@@ -578,7 +599,13 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
 });
 
 describe('ce qui sort du programme à partir de la semaine 5', () => {
-  const PARTIS = ['farmer-carry', 'suitcase-carry', 'bear-crawl'];
+  /*
+   * Le Suitcase Carry n'en fait plus partie : il reste sur les douze
+   * semaines. C'était la seule marche chargée d'un seul côté du programme,
+   * et elle disparaissait au profit d'un Roman Side Bench déjà présent au
+   * lundi. Le Farmer Carry et le Bear Crawl, eux, sortent toujours.
+   */
+  const PARTIS = ['farmer-carry', 'bear-crawl'];
 
   it('ils ne réapparaissent dans aucun bloc après la semaine 4', () => {
     for (let w = 5; w <= 12; w++) {
@@ -591,9 +618,17 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
     }
   });
 
-  it('mais les semaines 1 à 4 les gardent — leur historique ne se réécrit pas', () => {
+  it('le Suitcase Carry, lui, traverse les douze semaines', () => {
+    // Les semaines 8 et 12 sont sautées : leur samedi est un combine, pas
+    // une séance ordinaire. Aucun porté n'y figure, et c'est voulu.
+    for (const w of [3, 5, 6, 10, 11]) {
+      const s = getSession(w as WeekIndex, 5 as DayIndex, ctx());
+      expect(ids(s?.exercises ?? []), `S${w}`).toContain('suitcase-carry');
+    }
+  });
+
+  it('mais les semaines 1 à 4 gardent le reste — leur historique ne se réécrit pas', () => {
     expect(ids(session(3, 4).exercises)).toContain('farmer-carry');
-    expect(ids(session(3, 5).exercises)).toContain('suitcase-carry');
     expect(ids(session(3, 6).exercises)).toContain('bear-crawl');
     expect(ids(session(4, 4).exercises)).toContain('farmer-carry');
   });
@@ -624,10 +659,19 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
 });
 
 describe('Roman Side Bench et Zercher March', () => {
-  it('le Roman Side Bench tient le lundi et le samedi, à 3 × 8/côté', () => {
+  it('le Roman Side Bench tient le lundi, et le lundi SEULEMENT', () => {
+    /*
+     * Il tenait aussi le samedi. Deux fois le même exercice dans la semaine,
+     * c'est la redondance que la règle du tronc cherche à éviter — et elle
+     * ne la voyait pas, parce qu'elle ne regarde qu'à l'intérieur d'une
+     * journée. Le samedi a récupéré le Suitcase Carry, même famille.
+     */
     for (const w of [5, 6, 7, 9, 10, 11]) {
       expect(trouve(w, 0, 'roman-side-bench').loadLine).toBe('3 × 8 / côté — poids du corps');
-      expect(trouve(w, 5, 'roman-side-bench').loadLine).toBe('3 × 8 / côté — poids du corps');
+      expect(
+        ids(session(w, 5).exercises),
+        `S${w} — le Roman Side Bench ne doit plus être au samedi`,
+      ).not.toContain('roman-side-bench');
     }
   });
 

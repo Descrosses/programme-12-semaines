@@ -248,7 +248,7 @@ Pas de gros travail excentrique jambes.
 | Zercher March | 2 × 12 m | 2 × 10 m, −20 % |
 | Copenhagen Plank dynamique | 3 × 8/côté | 2 × 6/côté |
 
-Le Copenhagen Plank est repris et déplacé au **vendredi** : il doublonnait avec le Suitcase Carry du samedi, les deux résistant à la flexion latérale. Les quatre lignes qui le précèdent n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry et le Suitcase Carry, eux, ne figurent plus au programme à partir de la semaine 5 — leurs lignes ne valent plus que pour la semaine 4.
+Le Copenhagen Plank est repris et déplacé au **vendredi** : il doublonnait avec le Suitcase Carry du samedi, les deux résistant à la flexion latérale. Les quatre lignes qui le précèdent n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry, lui, ne figure plus au programme à partir de la semaine 5 — sa ligne ne vaut plus que pour la semaine 4. Celle du Suitcase Carry, en revanche, vaut pour les douze semaines : le porté valise est resté au samedi (§8, encadré).
 
 Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
 Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
@@ -278,10 +278,17 @@ Le +10 % est celui que le programme applique déjà aux accessoires du haut pour
 | Lundi | Ab Wheel 3 × 8 | **Roman Side Bench 3 × 8/côté** (en alternance, 45 s) |
 | Mercredi | Pallof Press 3 × 6/côté | Barbell Offset Hold 3 × 25 s/côté |
 | Vendredi | Dead Bug câble 3 × 6/côté | **Landmine Rotation 3 × 5/côté**, repos 75 s |
-| Samedi | **Zercher March 2 × 12 m**, repos 90 s | **Roman Side Bench 3 × 8/côté** |
+| Samedi | **Zercher March 2 × 12 m**, repos 90 s | **Suitcase Carry 3 × 30 m/côté**, repos 60 s |
 | Dimanche | Hanging Leg Raise 3 × 8 | **Woodchop 2 × 6/côté** |
 
-Ce qui sort à partir de la semaine 5 : **Farmer Carry**, **Suitcase Carry**, **Bear Crawl**. Leurs fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
+Ce qui sort à partir de la semaine 5 : **Farmer Carry** et **Bear Crawl**. Leurs fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
+
+**Le Suitcase Carry, lui, reste — révision de la décision initiale.** Il devait sortir avec les deux autres, remplacé au samedi par un Roman Side Bench. C'était une erreur, pour deux raisons mesurées sur le programme complet :
+
+1. **Le Roman Side Bench tombait alors deux fois dans la même semaine**, le lundi et le samedi. C'est le seul exercice du programme dans ce cas en dehors du Broad Jump, et le seul qui le soit sans raison : il lisait son propre historique à deux endroits dans la semaine.
+2. **Le programme perdait sa seule marche chargée d'un seul côté.** Le Barbell Offset Hold tient l'asymétrie, mais à l'arrêt ; le Zercher March se déplace, mais charge devant. Aucun des deux ne remplace une charge latérale en déplacement — et le §8 lui-même dit que ce n'est pas un doublon du Barbell Offset Hold, puisque le facteur limitant n'est pas le même (la main d'un côté, le tronc de l'autre).
+
+Le samedi garde donc Zercher March **et** Suitcase Carry, et le Roman Side Bench retrouve son unique jour, le lundi. Coût : +2 à 3 minutes sur le samedi.
 
 La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
 
@@ -292,9 +299,9 @@ La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qu
 
 ### Roman Side Bench et Zercher March — ce qu'ils remplacent
 
-**Roman Side Bench — lundi et samedi, 3 × 8/côté, repos 45-60 s, poids du corps.**
+**Roman Side Bench — lundi, 3 × 8/côté, repos 45 s, poids du corps.**
 
-Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les plus lourds du bas du corps, en toute fin de séance, au poids du corps : c'est un exercice de qualité, pas de volume. Le lundi il s'enchaîne en alternance avec l'Ab Wheel — anti-extension et flexion latérale ne se concurrencent pas, et l'alternance rend l'ajout presque gratuit sur la séance la plus serrée de la semaine. **Les deux à volume égal, 3 × 8 des deux côtés** : « une série de chaque » n'a de sens que si les deux en comptent autant, sinon il reste une série d'Ab Wheel toute seule au troisième tour.
+Force latérale du tronc à travers l'amplitude. Il occupe le jour le plus lourd du bas du corps, en toute fin de séance, au poids du corps : c'est un exercice de qualité, pas de volume. Il s'enchaîne en alternance avec l'Ab Wheel — anti-extension et flexion latérale ne se concurrencent pas, et l'alternance rend l'ajout presque gratuit sur la séance la plus serrée de la semaine. **Les deux à volume égal, 3 × 8 des deux côtés** : « une série de chaque » n'a de sens que si les deux en comptent autant, sinon il reste une série d'Ab Wheel toute seule au troisième tour.
 
 *Progression* : amplitude d'abord, répétitions ensuite, charge en dernier. Aucun disque tant que 3 × 8/côté ne sortent pas propres et sans douleur.
 
@@ -302,7 +309,7 @@ Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les pl
 
 **Zercher March — samedi, 2 × 12 m (≈ 18 pas), repos 90 s, barre nue au départ.**
 
-Il remplace le Suitcase Carry et apporte ce que le programme n'avait pas : la stabilité dynamique sous charge **antérieure**. Le Front Squat charge l'avant mais ne se déplace pas ; les portés se déplaçaient mais chargeaient sur le côté.
+Il s'ajoute au Suitcase Carry et apporte ce que le programme n'avait pas : la stabilité dynamique sous charge **antérieure**. Le Front Squat charge l'avant mais ne se déplace pas ; les portés se déplaçaient mais chargeaient sur le côté.
 
 *Progression* : la distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s'arrondisse et sans gêne le lendemain. La montée est volontairement lente — ce n'est pas un exercice de force maximale, et il vit dans la séance du deadlift.
 
@@ -363,7 +370,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
-**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Zercher March 2 × 12 m**, **Roman Side Bench 3 × 8/côté**. Copenhagen suspendu (§14), plus de Suitcase Carry.
+**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Zercher March 2 × 12 m**, **Suitcase Carry 3 × 30 m/côté**. Copenhagen suspendu (§14).
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. Plus de Bear Crawl, et la Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests

@@ -121,15 +121,17 @@ describe('rien ne change pour les autres mouvements', () => {
       .map(([id]) => id)
       .sort();
     /*
-     * Le Roman Side Bench a rejoint le Broad Jump dans ce cas de figure :
-     * il est programmé le lundi ET le samedi depuis la semaine 5.
+     * Le Broad Jump est seul, de nouveau. Le Roman Side Bench avait rejoint
+     * ce cas de figure quand il remplaçait le Suitcase Carry au samedi : il
+     * tombait alors le lundi ET le samedi à partir de la semaine 5. Le porté
+     * valise étant rendu au samedi, il retrouve son unique jour, le lundi.
      *
-     * Ce que §11 en fait a été vérifié : `referenceOccurrences` ne retient
-     * que ce qui précède STRICTEMENT la séance affichée, donc le samedi lit
-     * le lundi et le lundi suivant lit le samedi. Les deux prescriptions
-     * sont identiques et au poids du corps : aucune charge ne dérive.
+     * C'est le garde-fou qui dit si une telle redondance revient : un
+     * exercice programmé deux fois dans la même semaine lit son propre
+     * historique à deux endroits, et ce n'est acceptable que pour le Broad
+     * Jump, dont la prescription ne dépend d'aucune charge.
      */
-    expect(deuxFois).toEqual(['broad-jump', 'roman-side-bench']);
+    expect(deuxFois).toEqual(['broad-jump']);
   });
 
   it('les autres multi-jours ne se croisent jamais dans la même semaine', () => {

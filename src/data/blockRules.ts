@@ -407,15 +407,29 @@ const MAXFORCE: BlockRuleSet[] = [
       }),
       patch('nordic-curl', { sets: 3, work: reps({ min: 4, max: 5 }) }),
       /*
-       * Le Suitcase Carry sort, le Zercher March prend sa place, et le Roman
-       * Side Bench ferme la séance.
+       * LE SUITCASE CARRY RESTE. C'est un retour en arrière assumé, et voici
+       * ce qui l'a motivé.
        *
-       * Le samedi porte déjà le deadlift, le front squat et le hip thrust :
-       * les deux ajouts sont volontairement courts et légers. Le Zercher
-       * March démarre barre nue — sa progression se fait en distance avant de
-       * se faire en charge.
+       * Il sortait en semaine 5, remplacé par le Zercher March et le Roman
+       * Side Bench. Mais le Roman Side Bench est DÉJÀ au lundi de ce même
+       * bloc : le programmer encore au samedi le servait deux fois par
+       * semaine, pendant que la seule marche chargée d'un côté disparaissait
+       * des huit dernières semaines.
+       *
+       * Deux fois le même exercice dans la semaine, c'est la redondance que
+       * la règle du tronc cherche à éviter — elle ne la voyait pas, parce
+       * qu'elle ne regarde qu'à l'intérieur d'une journée.
+       *
+       * Le Suitcase Carry reprend donc sa place de fin de séance. Même
+       * famille que le Roman Side Bench qu'il remplace — flexion latérale —
+       * donc la règle du jour tient, et la séance ne s'allonge pas d'une
+       * station. Il apporte en plus ce que le banc n'a pas : la préhension
+       * et la marche.
+       *
+       * Le Zercher March, lui, ne bouge pas : c'est le seul porté antérieur
+       * du programme, et il démarre barre nue — sa progression se fait en
+       * distance avant de se faire en charge.
        */
-      remove('suitcase-carry'),
       /*
        * Le Single-Leg RDL sort du samedi — pour le bloc force max, et pour
        * lui seul.
@@ -425,7 +439,7 @@ const MAXFORCE: BlockRuleSet[] = [
        * fait qu'on soit en semaine 5, 6 ou 7. Le samedi de force max porte le
        * deadlift à 4 min de repos, le front squat, et un Hip Thrust à +10 % —
        * trois mouvements de chaîne postérieure lourds, suivis du Zercher
-       * March et du Roman Side Bench. Le Single-Leg RDL à 3 × 8/côté y est
+       * March et du Suitcase Carry. Le Single-Leg RDL à 3 × 8/côté y est
        * la septième station et la moins décisive : son intention, le hinge
        * unilatéral lent, est déjà payée six fois dans la séance.
        *
@@ -435,8 +449,6 @@ const MAXFORCE: BlockRuleSet[] = [
        */
       remove('single-leg-rdl'),
       { op: 'insert', slot: zercherMarch(2, 12) },
-      // Pas d'Ab Wheel le samedi : il est seul, et sa note le dit.
-      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {
@@ -649,10 +661,10 @@ const POWER: BlockRuleSet[] = [
       patch('deadlift', { contrastWith: 'broad-jump' }),
       patch('hip-thrust', { sets: 4, work: reps(5), targetRPE: rpeRange(7, 8), note: 'Explosif.' }),
       patch('nordic-curl', { sets: 2, work: reps(4) }),
-      remove('suitcase-carry'),
+      /* Le Suitcase Carry reste, pour la raison écrite au bloc force max :
+         le Roman Side Bench est déjà au lundi, et la marche chargée d'un
+         seul côté n'avait plus sa place nulle part. */
       { op: 'insert', slot: zercherMarch(2, 12) },
-      // Pas d'Ab Wheel le samedi : il est seul, et sa note le dit.
-      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {
