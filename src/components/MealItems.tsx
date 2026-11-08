@@ -318,7 +318,8 @@ function FoodLine({
 
       {remplacement && (
         <FoodSwapSheet
-          item={courant}
+          label={courant.label}
+          category={courant.category}
           customs={customs}
           onPick={(id) => void remplacer(id)}
           onCreate={(f) => void onCreateCustom(f)}

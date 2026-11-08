@@ -176,6 +176,55 @@ export function poserQuantite(
   return ecrire(journee, repas, suivantes);
 }
 
+/**
+ * Échange un aliment contre un autre, dans un repas.
+ *
+ * ── La quantité suit, mais seulement si l'unité suit ──────────────────────
+ *
+ * Remplacer 150 g de poulet par de la dinde garde les 150 g : c'est tout
+ * l'intérêt du geste, et retaper le chiffre à chaque essai le rendrait
+ * inutilisable.
+ *
+ * Mais remplacer 250 g de riz par des œufs, qui se comptent à l'unité,
+ * donnerait 250 ŒUFS. L'appelant compare donc les deux unités au catalogue
+ * et dit par `memeUnite` si le nombre a encore un sens. Quand il n'en a
+ * plus, la ligne garde l'aliment et perd la quantité — c'est exactement ce
+ * que le lot 0 a rendu possible.
+ *
+ * ── Si le nouvel aliment est déjà là ──────────────────────────────────────
+ *
+ * On ne crée pas de doublon : l'ancien disparaît, et c'est la ligne
+ * existante qui reste, avec SA quantité. Remplacer le riz par des pâtes
+ * dans un repas qui contient déjà des pâtes veut dire « retire le riz »,
+ * pas « mets deux fois des pâtes ».
+ */
+export function remplacerAliment(
+  journee: JourneePerso,
+  repas: RepasId,
+  ancien: string,
+  nouveau: string,
+  memeUnite: boolean,
+): JourneePerso {
+  const lignes = journee[repas] ?? [];
+  const source = lignes.find((l) => l.foodId === ancien);
+  if (source === undefined || ancien === nouveau) return journee;
+
+  if (lignes.some((l) => l.foodId === nouveau)) {
+    return ecrire(
+      journee,
+      repas,
+      lignes.filter((l) => l.foodId !== ancien),
+    );
+  }
+  return ecrire(
+    journee,
+    repas,
+    lignes.map((l) =>
+      l.foodId === ancien ? { foodId: nouveau, qty: memeUnite ? l.qty : null } : l,
+    ),
+  );
+}
+
 /** Retire un aliment du repas. Le seul geste qui jette quelque chose. */
 export function retirerAliment(
   journee: JourneePerso,

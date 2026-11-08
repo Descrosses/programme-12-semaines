@@ -32,6 +32,7 @@ import type { LibraryFood } from '../data/foodLibrary';
 import type { DayKind } from '../data/nutrition';
 import type { Macros } from '../engine/nutrition';
 import { ChoixRepas } from './ChoixRepas';
+import { FoodSwapSheet } from './FoodSwapSheet';
 import {
   GROUPES_REPAS,
   REPAS_PERSO,
@@ -40,6 +41,7 @@ import {
   poserQuantite,
   poserRepas,
   quantiteDe,
+  remplacerAliment,
   retirerAliment,
   type GroupeId,
   type JourneePerso,
@@ -82,6 +84,8 @@ export function PlanPerso({
   journee,
   preferes,
   catalogue,
+  customs,
+  onCreateCustom,
   cible,
   onChange,
   onCopier,
@@ -91,6 +95,9 @@ export function PlanPerso({
   /** Les aliments de la personne, dans l'ordre de son questionnaire. */
   preferes: readonly string[];
   catalogue: Catalogue;
+  /** Les aliments saisis à la main, proposés au remplacement. */
+  customs: LibraryFood[];
+  onCreateCustom: (food: LibraryFood) => void;
   cible: Macros | null;
   onChange: (suivante: JourneePerso) => void;
   /** Recopier l'autre journée ici. `null` quand il n'y a rien à copier. */
@@ -100,6 +107,8 @@ export function PlanPerso({
   const [ouvert, setOuvert] = useState<RepasId | null>(null);
   /** Le repas dont la bibliothèque est dépliée. */
   const [biblio, setBiblio] = useState<RepasId | null>(null);
+  /** La ligne dont le sélecteur de remplacement est ouvert, « repas|aliment ». */
+  const [remplace, setRemplace] = useState<string | null>(null);
   /*
    * Il n'y a plus d'état local « aliment ouvert ». Depuis le lot 0, choisir
    * un aliment s'écrit en base : c'est une décision, elle survit au
@@ -289,6 +298,23 @@ export function PlanPerso({
                             horsListe={preferes.length > 0 && !preferes.includes(id)}
                             onQty={(v) => onChange(poserQuantite(journee, repas.id, id, v))}
                             onRetirer={() => onChange(retirerAliment(journee, repas.id, id))}
+                            ouvertEnRemplacement={remplace === `${repas.id}|${id}`}
+                            onRemplacer={() => setRemplace(`${repas.id}|${id}`)}
+                            customs={customs}
+                            onCreateCustom={onCreateCustom}
+                            onChoisi={(nouveau) => {
+                              onChange(
+                                remplacerAliment(
+                                  journee,
+                                  repas.id,
+                                  id,
+                                  nouveau,
+                                  catalogue[id]?.unit === catalogue[nouveau]?.unit,
+                                ),
+                              );
+                              setRemplace(null);
+                            }}
+                            onFermerRemplacement={() => setRemplace(null)}
                           />
                         );
                       })}
@@ -335,6 +361,23 @@ export function PlanPerso({
                             horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
                             onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
                             onRetirer={() => onChange(retirerAliment(journee, repas.id, x.foodId))}
+                            ouvertEnRemplacement={remplace === `${repas.id}|${x.foodId}`}
+                            onRemplacer={() => setRemplace(`${repas.id}|${x.foodId}`)}
+                            customs={customs}
+                            onCreateCustom={onCreateCustom}
+                            onChoisi={(nouveau) => {
+                              onChange(
+                                remplacerAliment(
+                                  journee,
+                                  repas.id,
+                                  x.foodId,
+                                  nouveau,
+                                  catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
+                                ),
+                              );
+                              setRemplace(null);
+                            }}
+                            onFermerRemplacement={() => setRemplace(null)}
                           />
                         );
                       })}
@@ -361,15 +404,27 @@ function LigneAliment({
   food,
   qty,
   horsListe,
+  ouvertEnRemplacement,
+  customs,
   onQty,
   onRetirer,
+  onRemplacer,
+  onChoisi,
+  onCreateCustom,
+  onFermerRemplacement,
 }: {
   food: LibraryFood;
   qty: number | null;
   /** L'aliment vient d'un repas de la bibliothèque, pas du questionnaire. */
   horsListe: boolean;
+  ouvertEnRemplacement: boolean;
+  customs: LibraryFood[];
   onQty: (v: number | null) => void;
   onRetirer: () => void;
+  onRemplacer: () => void;
+  onChoisi: (foodId: string) => void;
+  onCreateCustom: (food: LibraryFood) => void;
+  onFermerRemplacement: () => void;
 }) {
   const cfg = PAS[food.unit] ?? PAS['g']!;
   return (
@@ -397,14 +452,40 @@ function LigneAliment({
         champ ne jette plus l'aliment, donc il faut bien un endroit pour
         dire « celui-là, je n'en veux pas ».
       */}
-      <button
-        type="button"
-        className={styles.retirer}
-        onClick={onRetirer}
-        aria-label={`Retirer ${food.label} de ce repas`}
-      >
-        Retirer
-      </button>
+      <div className={styles.actions}>
+        {/*
+          LA MÊME FEUILLE QUE LE PLAN HISTORIQUE, à deux chaînes près. Elle
+          prenait une ligne du plan historique et n'en lisait que le nom et
+          la famille ; elle prend maintenant ces deux-là, et sert les deux
+          plans sans qu'un second catalogue existe.
+        */}
+        <button
+          type="button"
+          className={styles.remplacer}
+          onClick={onRemplacer}
+          aria-label={`Remplacer ${food.label}`}
+        >
+          Remplacer
+        </button>
+        <button
+          type="button"
+          className={styles.retirer}
+          onClick={onRetirer}
+          aria-label={`Retirer ${food.label} de ce repas`}
+        >
+          Retirer
+        </button>
+      </div>
+      {ouvertEnRemplacement && (
+        <FoodSwapSheet
+          label={food.label}
+          category={food.category}
+          customs={customs}
+          onPick={onChoisi}
+          onCreate={onCreateCustom}
+          onClose={onFermerRemplacement}
+        />
+      )}
     </div>
   );
 }

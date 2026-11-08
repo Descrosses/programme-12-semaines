@@ -273,3 +273,27 @@
   font-weight: 700;
   letter-spacing: 0.02em;
 }
+
+/*
+ * « Remplacer » et « Retirer », côte à côte sous la ligne.
+ *
+ * Tous deux discrets, et c'est délibéré : on règle des grammes vingt fois
+ * pour un aliment qu'on échange une et qu'on enlève encore moins. Le
+ * chiffre reste la seule chose en gros.
+ */
+.actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.remplacer {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

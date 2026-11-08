@@ -7,7 +7,7 @@ import {
   stateLabel,
   type LibraryFood,
 } from '../data/foodLibrary';
-import type { FoodCategory, FoodItem } from '../data/nutrition';
+import type { FoodCategory } from '../data/nutrition';
 import { kcalFromMacros, macroCoherence, MACRO_COHERENCE_TOLERANCE_PCT } from '../engine/nutrition';
 import { lireDecimal } from './MealItems';
 import styles from '../screens/Screens.module.css';
@@ -26,22 +26,37 @@ import styles from '../screens/Screens.module.css';
  * derrière, et le remplacement la conserve. Un écran de moins à traverser.
  */
 export function FoodSwapSheet({
-  item,
+  label,
+  category,
   customs,
   onPick,
   onCreate,
   onClose,
 }: {
-  item: FoodItem;
+  /*
+   * LE LIBELLÉ ET LA FAMILLE, PAS LA LIGNE.
+   *
+   * Cette feuille prenait un `FoodItem`, le type des lignes du plan
+   * historique. Elle n'en lisait pourtant que deux champs — le nom affiché
+   * et la famille d'ouverture du sélecteur. Ce couplage la réservait au
+   * plan historique, alors que le plan composé par la personne a
+   * exactement le même besoin.
+   *
+   * Deux chaînes suffisent. Le plan historique passe `item.label` et
+   * `item.category`, le plan composé passe ceux de son aliment, et le
+   * sélecteur en dessous n'a pas changé d'une ligne.
+   */
+  label: string;
+  category: FoodCategory;
   customs: LibraryFood[];
   onPick: (foodId: string) => void;
   onCreate: (food: LibraryFood) => void;
   onClose: () => void;
 }) {
   return (
-    <div className={styles.sheet} role="dialog" aria-label={`Remplacer ${item.label}`}>
+    <div className={styles.sheet} role="dialog" aria-label={`Remplacer ${label}`}>
       <div className={styles.sheetHead}>
-        <h3 className={styles.sheetTitle}>Remplacer {item.label}</h3>
+        <h3 className={styles.sheetTitle}>Remplacer {label}</h3>
         <button type="button" className={styles.sheetClose} onClick={onClose} aria-label="Fermer">
           ×
         </button>
@@ -49,8 +64,8 @@ export function FoodSwapSheet({
 
       <FoodPicker
         customs={customs}
-        categorieParDefaut={item.category}
-        suggestion={item.label}
+        categorieParDefaut={category}
+        suggestion={label}
         onPick={onPick}
         onCreate={(f) => {
           onCreate(f);

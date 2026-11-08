@@ -19,6 +19,7 @@ import {
   poserQuantite,
   poserRepas,
   quantiteDe,
+  remplacerAliment,
   retirerAliment,
   type JourneePerso,
 } from '../data/planPerso';
@@ -135,6 +136,65 @@ describe('poser une quantité', () => {
     j = poserQuantite(j, 'diner', 'poulet', 150);
     j = poserQuantite(j, 'pdej', 'avoine', null);
     expect(quantiteDe(j, 'diner', 'poulet')).toBe(150);
+  });
+});
+
+describe('remplacer un aliment', () => {
+  const repas = () =>
+    poserRepas({}, 'dejeuner', [
+      { foodId: 'poulet', qty: 150 },
+      { foodId: 'riz', qty: 250 },
+    ]);
+
+  it('garde la quantité quand l’unité est la même', () => {
+    const j = remplacerAliment(repas(), 'dejeuner', 'poulet', 'dinde', true);
+    expect(quantiteDe(j, 'dejeuner', 'dinde')).toBe(150);
+    expect(quantiteDe(j, 'dejeuner', 'poulet')).toBeNull();
+    expect(j.dejeuner).toHaveLength(2);
+  });
+
+  /*
+   * LE TEST QUI ÉVITE 250 ŒUFS. Le riz se pèse en grammes, l'œuf se compte
+   * à l'unité : reporter le nombre d'un vers l'autre donnerait une ligne
+   * absurde qui compterait dans le total du jour.
+   */
+  it('abandonne la quantité quand l’unité change', () => {
+    const j = remplacerAliment(repas(), 'dejeuner', 'riz', 'oeuf', false);
+    expect(quantiteDe(j, 'dejeuner', 'oeuf')).toBeNull();
+    expect(j.dejeuner).toHaveLength(2);
+  });
+
+  it('garde la place de l’aliment dans le repas', () => {
+    const j = remplacerAliment(repas(), 'dejeuner', 'poulet', 'dinde', true);
+    expect(j.dejeuner!.map((l) => l.foodId)).toEqual(['dinde', 'riz']);
+  });
+
+  /* Remplacer le riz par des pâtes dans un repas qui en contient déjà veut
+     dire « retire le riz », pas « mets deux fois des pâtes ». */
+  it('ne crée pas de doublon si le nouvel aliment est déjà là', () => {
+    const j0 = poserRepas({}, 'dejeuner', [
+      { foodId: 'riz', qty: 250 },
+      { foodId: 'pates', qty: 100 },
+    ]);
+    const j = remplacerAliment(j0, 'dejeuner', 'riz', 'pates', true);
+    expect(j.dejeuner).toHaveLength(1);
+    expect(quantiteDe(j, 'dejeuner', 'pates')).toBe(100);
+  });
+
+  it('un aliment absent du repas ne change rien', () => {
+    const avant = repas();
+    expect(remplacerAliment(avant, 'dejeuner', 'saumon', 'thon', true)).toBe(avant);
+  });
+
+  it('se remplacer par soi-même ne change rien', () => {
+    const avant = repas();
+    expect(remplacerAliment(avant, 'dejeuner', 'riz', 'riz', true)).toBe(avant);
+  });
+
+  it('les autres repas ne bougent pas', () => {
+    let j = poserQuantite(repas(), 'pdej', 'avoine', 70);
+    j = remplacerAliment(j, 'dejeuner', 'poulet', 'dinde', true);
+    expect(quantiteDe(j, 'pdej', 'avoine')).toBe(70);
   });
 });
 
