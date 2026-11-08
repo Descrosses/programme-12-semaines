@@ -539,20 +539,22 @@ describe('readiness ROUGE', () => {
       'roman-side-bench',
     ]);
     /*
-     * LE SAMEDI ROUGE NE GARDE QUE LE DEADLIFT, depuis que le Suitcase Carry
-     * a repris la place du Roman Side Bench.
+     * LE SAMEDI ROUGE GARDE LE DEADLIFT ET LE ROMAN SIDE BENCH.
      *
-     * Un porté est un porté : le feu tricolore garde « le lift principal, le
-     * tronc et la mobilité », et fait tomber les marches chargées. Le
-     * Zercher March tombait déjà pour cette raison ; le Suitcase Carry tombe
-     * avec lui.
+     * Le feu tricolore garde « le lift principal, le tronc et la mobilité »
+     * et fait tomber les MARCHES CHARGÉES. Le Suitcase Carry tombe donc, et
+     * le Zercher March tombait déjà pour la même raison avant d'être
+     * déprogrammé. Le Roman Side Bench, lui, reste : il est au poids du
+     * corps, à l'arrêt, et c'est précisément du tronc.
      *
-     * C'est exactement ce que font déjà les semaines 1 à 4, dont le samedi
-     * n'a pour tout tronc que ce même Suitcase Carry. Les deux moitiés du
-     * programme se comportent donc pareil un jour rouge — ce qui n'était pas
-     * le cas avant.
+     * C'est cohérent avec le lundi rouge juste au-dessus, qui garde lui
+     * aussi son Ab Wheel et son Roman Side Bench. En revanche les semaines
+     * 1 à 4, dont le samedi n'a pour tout tronc qu'un porté, se retrouvent
+     * bien au deadlift seul — c'est la ligne suivante, et la différence est
+     * voulue : elle vient de ce que ces semaines-là programment, pas d'une
+     * exception du feu tricolore.
      */
-    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift']);
+    expect(ids(session(5, 5, rouge).exercises)).toEqual(['deadlift', 'roman-side-bench']);
     expect(ids(session(3, 5, rouge).exercises)).toEqual(['deadlift']);
     // Plus aucun exercice suspendu : le Copenhagen a été repris et déplacé
     // au vendredi. La mécanique de suspension, elle, reste en place.

@@ -150,7 +150,6 @@ export const DELOAD_CORE: Readonly<Record<string, { sets: number; work: Work }>>
   'roman-side-bench': { sets: 2, work: reps(6, true) },
   'landmine-rotation': { sets: 2, work: reps(4, true) },
   'barbell-offset-hold': { sets: 2, work: hold(15, true) },
-  'zercher-march': { sets: 2, work: meters(10) },
   /*
    * Repris en semaine… ce que décide Guillaume, donc présent dès la S1 et
    * concerné par le deload comme les autres. Il manquait à cette table tant
@@ -222,16 +221,6 @@ const romanSideBench = (sets: number, r: number, superset: string | null) => ({
   ...slot('roman-side-bench', sets, reps(r, true), bodyweight(), 45, superset ? ALTERNANCE : SEUL),
   ...(superset === null ? {} : { superset }),
 });
-
-const zercherMarch = (sets: number, m: number) =>
-  slot(
-    'zercher-march',
-    sets,
-    meters(m),
-    autoreg(undefined, 2.5, 'barbell'),
-    90,
-    `≈ ${Math.round(m / 0.65)} pas chargés. Buste vertical, pas courts. La série s’arrête si le dos s’arrondit, pas quand la distance est faite.`,
-  );
 
 const landmineRotation = (sets: number, r: number, restSec: number, note: string) =>
   slot('landmine-rotation', sets, reps(r, true), autoreg(undefined, 2.5, 'barbell'), restSec, note);
@@ -438,8 +427,8 @@ const MAXFORCE: BlockRuleSet[] = [
        * ce qui motive le retrait est ce que le bloc fait au samedi, pas le
        * fait qu'on soit en semaine 5, 6 ou 7. Le samedi de force max porte le
        * deadlift à 4 min de repos, le front squat, et un Hip Thrust à +10 % —
-       * trois mouvements de chaîne postérieure lourds, suivis du Zercher
-       * March et du Suitcase Carry. Le Single-Leg RDL à 3 × 8/côté y est
+       * trois mouvements de chaîne postérieure lourds, suivis du Suitcase
+       * Carry et du Roman Side Bench. Le Single-Leg RDL à 3 × 8/côté y est
        * la septième station et la moins décisive : son intention, le hinge
        * unilatéral lent, est déjà payée six fois dans la séance.
        *
@@ -448,7 +437,30 @@ const MAXFORCE: BlockRuleSet[] = [
        * aucun risque qu'il disparaisse d'un bloc où personne ne l'a retiré.
        */
       remove('single-leg-rdl'),
-      { op: 'insert', slot: zercherMarch(2, 12) },
+      /*
+       * Le samedi ferme sur le Suitcase Carry puis le Roman Side Bench.
+       *
+       * C'est une DÉROGATION ASSUMÉE à la règle « jamais deux exercices du
+       * tronc de la même famille le même jour » : les deux résistent à la
+       * flexion latérale. Elle est écrite ici, et nulle part ailleurs, pour
+       * deux raisons que Guillaume a tranchées en connaissance de cause :
+       *
+       * 1. Le FACTEUR LIMITANT diffère. Le Suitcase Carry à 32 kg sur 30 m
+       *    lâche par la MAIN avant les obliques ; le Roman Side Bench, au
+       *    poids du corps et sans préhension, va au bout de l'amplitude.
+       *    C'est exactement l'argument que le §8 tient déjà pour le Barbell
+       *    Offset Hold : même fonction, autre limite, pas un doublon.
+       * 2. Le Zercher March a été retiré des séances — marche chargée sur
+       *    des appuis unilatéraux encore symptomatiques (§14). Il reste au
+       *    catalogue avec sa raison, comme le Copenhagen Plank : rien n'est
+       *    supprimé du programme, seulement déprogrammé.
+       *
+       * Conséquence acceptée : le Roman Side Bench revient à deux séances
+       * par semaine (lundi et samedi). Les deux prescriptions sont
+       * identiques et au poids du corps, donc aucune charge ne dérive —
+       * c'est ce que le garde-fou de historyIndex vérifie.
+       */
+      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {
@@ -661,10 +673,11 @@ const POWER: BlockRuleSet[] = [
       patch('deadlift', { contrastWith: 'broad-jump' }),
       patch('hip-thrust', { sets: 4, work: reps(5), targetRPE: rpeRange(7, 8), note: 'Explosif.' }),
       patch('nordic-curl', { sets: 2, work: reps(4) }),
-      /* Le Suitcase Carry reste, pour la raison écrite au bloc force max :
-         le Roman Side Bench est déjà au lundi, et la marche chargée d'un
-         seul côté n'avait plus sa place nulle part. */
-      { op: 'insert', slot: zercherMarch(2, 12) },
+      /* Même clôture qu'au bloc force max, et pour les mêmes raisons :
+         Suitcase Carry puis Roman Side Bench, dérogation assumée à la règle
+         de famille, Zercher March déprogrammé. Voir le commentaire long au
+         bloc force max, jour 5. */
+      { op: 'insert', slot: romanSideBench(3, 8, null) },
     ],
   },
   {

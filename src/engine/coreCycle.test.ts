@@ -314,17 +314,76 @@ const FAMILLE: Readonly<Record<string, string>> = {
   'bear-crawl': 'stabilité globale',
 };
 
+/*
+ * L'UNIQUE dérogation à la règle ci-dessus, et elle est nominative.
+ *
+ * Le samedi des blocs force max et puissance ferme sur le Suitcase Carry
+ * puis le Roman Side Bench — deux « flexion latérale ». Guillaume l'a
+ * tranché en connaissance de cause, après qu'on lui a montré le conflit :
+ * le facteur limitant diffère (la main d'un côté, les obliques de l'autre),
+ * exactement l'argument que le §8 tient déjà pour le Barbell Offset Hold.
+ *
+ * Elle est écrite comme une PAIRE NOMMÉE, pas comme un assouplissement de
+ * la règle : n'importe quel autre doublon de famille, y compris une
+ * troisième « flexion latérale » glissée dans ce même samedi, fait toujours
+ * tomber le test. C'est ce que vérifie « la dérogation ne couvre que cette
+ * paire-là », plus bas.
+ */
+const DEROGATION = {
+  jour: 5,
+  paire: ['suitcase-carry', 'roman-side-bench'] as const,
+  famille: 'flexion latérale',
+};
+
+/** Les familles du jour, la paire dérogatoire comptée pour une seule. */
+function famillesDuJour(ids: readonly string[], jour: number): string[] {
+  const couverte = jour === DEROGATION.jour && DEROGATION.paire.every((x) => ids.includes(x));
+  return ids
+    .filter((id) => !(couverte && id === DEROGATION.paire[1]))
+    .map((id) => FAMILLE[id] ?? `INCONNUE:${id}`);
+}
+
 describe('jamais deux exercices du tronc de la même famille le même jour', () => {
   it('sur les douze semaines, les cinq jours', () => {
     for (let w = 1; w <= 12; w++) {
       for (const d of [0, 2, 4, 5, 6]) {
         const s = session(w, d);
-        const familles = s.exercises
+        const tronc = s.exercises
           .filter((e) => e.def.role === 'core' || e.def.role === 'carry')
-          .map((e) => FAMILLE[e.id] ?? `INCONNUE:${e.id}`);
-        expect(new Set(familles).size, `S${w} j${d} — ${familles.join(', ')}`).toBe(
-          familles.length,
-        );
+          .map((e) => e.id);
+        const familles = famillesDuJour(tronc, d);
+        expect(new Set(familles).size, `S${w} j${d} — ${tronc.join(', ')}`).toBe(familles.length);
+      }
+    }
+  });
+
+  it('la dérogation ne couvre que cette paire-là', () => {
+    /*
+     * Si un troisième exercice de flexion latérale entrait dans ce samedi,
+     * la dérogation ne le couvrirait pas — elle ne neutralise qu'un seul
+     * identifiant, nommément le Roman Side Bench. On le prouve en le
+     * simulant : la règle doit redevenir rouge.
+     */
+    const troisAuSamedi = ['suitcase-carry', 'roman-side-bench', 'copenhagen-plank'];
+    const familles = famillesDuJour(troisAuSamedi, 5);
+    expect(new Set(familles).size).not.toBe(familles.length);
+
+    // Et la même paire un AUTRE jour n'est pas couverte non plus.
+    const auLundi = famillesDuJour(['suitcase-carry', 'roman-side-bench'], 0);
+    expect(new Set(auLundi).size).not.toBe(auLundi.length);
+  });
+
+  it('la paire dérogatoire est bien celle que le programme produit', () => {
+    // La dérogation décrit le réel : si le samedi cessait de porter ces
+    // deux-là, elle deviendrait une permission dormante sur un jour qui
+    // n'en a plus besoin. Ce test la périme le jour où ça arrive.
+    for (const w of [5, 6, 7, 9, 10, 11]) {
+      const tronc = session(w, 5)
+        .exercises.filter((e) => e.def.role === 'core' || e.def.role === 'carry')
+        .map((e) => e.id);
+      expect(tronc, `S${w}`).toEqual([...DEROGATION.paire]);
+      for (const id of DEROGATION.paire) {
+        expect(FAMILLE[id], id).toBe(DEROGATION.famille);
       }
     }
   });
@@ -567,9 +626,11 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
       0: ['ab-wheel', 'roman-side-bench'],
       2: ['pallof-press', 'barbell-offset-hold'],
       4: ['landmine-rotation', 'dead-bug-cable', 'copenhagen-plank'],
-      /* Le Suitcase Carry a repris la place du Roman Side Bench, qui était
-         déjà au lundi : voir la règle du bloc force max. */
-      5: ['zercher-march', 'suitcase-carry'],
+      /* Suitcase Carry puis Roman Side Bench. Deux « flexion latérale » le
+         même jour : dérogation nommée, assumée par Guillaume, et vérifiée
+         comme telle par le describe de la règle de famille. Le Zercher
+         March est déprogrammé — il reste au catalogue avec sa raison. */
+      5: ['suitcase-carry', 'roman-side-bench'],
       6: ['hanging-leg-raise', 'cable-chop'],
     };
     for (const w of [5, 6, 7, 9, 10, 11]) {
@@ -659,19 +720,33 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
 });
 
 describe('Roman Side Bench et Zercher March', () => {
-  it('le Roman Side Bench tient le lundi, et le lundi SEULEMENT', () => {
+  it('le Roman Side Bench tient le lundi ET le samedi, à prescription identique', () => {
     /*
-     * Il tenait aussi le samedi. Deux fois le même exercice dans la semaine,
-     * c'est la redondance que la règle du tronc cherche à éviter — et elle
-     * ne la voyait pas, parce qu'elle ne regarde qu'à l'intérieur d'une
-     * journée. Le samedi a récupéré le Suitcase Carry, même famille.
+     * Deux séances par semaine, c'est une redondance assumée : Guillaume a
+     * préféré déprogrammer le Zercher March plutôt que ce mouvement-là.
+     *
+     * Ce qui est verrouillé ici, c'est la condition qui rend la redondance
+     * inoffensive : les DEUX jours portent exactement la même prescription,
+     * au poids du corps. C'est ce qui fait qu'aucune charge ne dérive quand
+     * l'exercice lit son propre historique à deux endroits dans la semaine
+     * (le garde-fou de historyIndex s'appuie sur ce fait). Si l'un des deux
+     * jours prenait une charge ou un volume propre, ce test tomberait, et
+     * il faudrait alors les séparer pour de bon.
      */
     for (const w of [5, 6, 7, 9, 10, 11]) {
-      expect(trouve(w, 0, 'roman-side-bench').loadLine).toBe('3 × 8 / côté — poids du corps');
-      expect(
-        ids(session(w, 5).exercises),
-        `S${w} — le Roman Side Bench ne doit plus être au samedi`,
-      ).not.toContain('roman-side-bench');
+      const lundi = trouve(w, 0, 'roman-side-bench');
+      const samedi = trouve(w, 5, 'roman-side-bench');
+      expect(lundi.loadLine, `S${w} lundi`).toBe('3 × 8 / côté — poids du corps');
+      expect(samedi.loadLine, `S${w} samedi`).toBe(lundi.loadLine);
+      expect(samedi.sets, `S${w}`).toBe(lundi.sets);
+    }
+  });
+
+  it('il n’apparaît aucun autre jour que ces deux-là', () => {
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [2, 4, 6]) {
+        expect(ids(session(w, d).exercises), `S${w} j${d}`).not.toContain('roman-side-bench');
+      }
     }
   });
 
@@ -704,11 +779,19 @@ describe('Roman Side Bench et Zercher March', () => {
     }
   });
 
-  it('le Zercher March démarre barre nue et se mesure en mètres', () => {
-    const ex = trouve(5, 5, 'zercher-march');
-    expect(ex.loadLine).toBe('2 × 12 m × 20 kg');
-    expect(ex.restSec).toBe(90);
-    expect(ex.notes.join(' ')).toMatch(/pas chargés/);
+  it('le Zercher March est déprogrammé — mais pas supprimé', () => {
+    /*
+     * Il n'apparaît dans aucune séance, des douze semaines. Il reste au
+     * CATALOGUE avec sa fiche complète, comme le Copenhagen Plank pendant
+     * sa suspension : « on ne supprime pas d'exercices existants ». Le jour
+     * où l'adducteur le permet, il se reprogramme sans rien réécrire.
+     */
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        expect(ids(session(w, d).exercises), `S${w} j${d}`).not.toContain('zercher-march');
+      }
+    }
+    expect(EXERCISES['zercher-march'], 'la fiche reste au catalogue').toBeDefined();
   });
 
   it('les deux portent un suivi de douleur — leur tolérance n’est pas établie', () => {
