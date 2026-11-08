@@ -54,6 +54,7 @@ import {
   saveFoodOverride,
   saveMeasurement,
   getSettingsRow,
+  saveSettings,
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
 import { cibleDuJour } from '../engine/cibleDuJour';
@@ -66,6 +67,8 @@ import { cibleDuJour } from '../engine/cibleDuJour';
  */
 const MEAL_LIBRE = 'libre';
 import { macrosValides, type CiblesNutrition } from '../data/ciblesNutrition';
+import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
+import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { MacroBar } from '../components/MacroBar';
 import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
@@ -106,6 +109,7 @@ export function NutritionScreen({
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
   const [cibles, setCibles] = useState<CiblesNutrition | null>(null);
+  const [plan, setPlan] = useState<PlanPerso | null>(null);
   const [preferes, setPreferes] = useState<readonly string[]>([]);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
@@ -134,6 +138,7 @@ export function NutritionScreen({
     const settings = await getSettingsRow();
     setLegacyPlan(settings.legacyNutritionPlan);
     setCibles(settings.ciblesNutrition);
+    setPlan(settings.planPerso);
     setPreferes(settings.alimentsPreferes ?? []);
     const all = await allMeasurements();
     setRows(
@@ -200,6 +205,19 @@ export function NutritionScreen({
             carbsG: Math.round(cibleJour.carbsG - mange.carbsG),
             fatG: Math.round(cibleJour.fatG - mange.fatG),
           };
+    /*
+     * `null` en base veut dire « rien de composé ». On travaille sur un plan
+     * vide, mais on ne l'ÉCRIT pas : poser `{train:{},rest:{}}` en base ferait
+     * passer une installation neuve pour une installation qui a commencé.
+     */
+    const planCourant = plan ?? PLAN_PERSO_VIDE;
+    const journeeCourante = planCourant[kind];
+
+    async function enregistrePlan(suivant: PlanPerso) {
+      setPlan(suivant);
+      await saveSettings({ planPerso: suivant });
+    }
+
     return (
       <div className={styles.screen}>
         <ScreenHeader
@@ -265,6 +283,38 @@ export function NutritionScreen({
             </button>
           ))}
         </div>
+
+        {/*
+          MON PLAN — cinq repas composés par la personne elle-même.
+          Il vient APRÈS la cible et le sélecteur de journée, et avant le
+          journal : on compose son plan, puis on note ce qu'on a vraiment
+          mangé. L'ordre de l'écran suit l'ordre des gestes.
+        */}
+        <PlanPersoSection
+          kind={kind}
+          journee={journeeCourante}
+          preferes={preferes}
+          catalogue={catalogue}
+          cible={
+            cibleJour === null
+              ? null
+              : {
+                  kcal: cibleJour.kcal,
+                  proteinG: cibleJour.proteinG,
+                  carbsG: cibleJour.carbsG,
+                  fatG: cibleJour.fatG,
+                }
+          }
+          onChange={(suivante) => void enregistrePlan({ ...planCourant, [kind]: suivante })}
+          onCopier={
+            journeeVide(planCourant[kind === 'train' ? 'rest' : 'train'])
+              ? null
+              : () =>
+                  void enregistrePlan(
+                    copierJournee(planCourant, kind === 'train' ? 'rest' : 'train', kind),
+                  )
+          }
+        />
 
         {/*
           Ce qui a été mangé, et ce qu'il reste.

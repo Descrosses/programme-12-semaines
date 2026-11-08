@@ -7,6 +7,7 @@
 
 import Dexie, { type Table } from 'dexie';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
+import type { PlanPerso } from '../data/planPerso';
 import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
 
 export type SessionStatus = 'planned' | 'done' | 'skipped';
@@ -420,6 +421,15 @@ export interface SettingsRow {
    * saisie. Tout le catalogue reste accessible.
    */
   alimentsPreferes: string[] | null;
+  /**
+   * Le plan composé par la personne : cinq repas, ses aliments, ses
+   * quantités, pour le jour d'entraînement et pour le jour de repos.
+   *
+   * `null` = rien de composé. Ce n'est pas la même chose qu'un plan vide :
+   * l'écran propose de le commencer dans un cas, et affiche ses repas
+   * encore vides dans l'autre.
+   */
+  planPerso: PlanPerso | null;
 }
 
 /**
@@ -985,6 +995,18 @@ export class ProgrammeDB extends Dexie {
      * posée, aucune ligne écrite. */
     this.version(21).stores({});
 
+    /*
+     * v22 — la place du plan composé par la personne : cinq repas, les
+     * aliments qu'elle a choisis, ses quantités.
+     *
+     * Comme les deux précédentes, aucune valeur posée. `null` veut dire
+     * « elle n'a rien composé », et c'est l'état de tout le monde au moment
+     * de la montée — y compris de celui qui a le plan historique, dont les
+     * neuf prises vivent ailleurs et ne se convertissent pas : elles ont des
+     * horaires et des libellés que ce modèle-ci n'a pas.
+     */
+    this.version(22).stores({});
+
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
       if (existing && existing.legacyNutritionPlan === undefined) {
@@ -1111,6 +1133,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   legacyNutritionPlan: false,
   ciblesNutrition: null,
   alimentsPreferes: null,
+  planPerso: null,
 };
 
 /**
