@@ -169,3 +169,48 @@ export function lireFiche(texte: string): LectureFiche {
 
   return { trouvee: true, cibles, aliments, inconnus, problemes };
 }
+
+/**
+ * Ce qu'« Appliquer cette fiche » écrit dans les réglages.
+ *
+ * ── Pourquoi c'est une fonction et pas trois lignes dans le bouton ────────
+ *
+ * Parce que la troisième ligne est une RÈGLE, pas un détail de formulaire :
+ * appliquer une fiche masque le plan nutritionnel historique. Une règle se
+ * teste ; un `onClick` ne se teste pas.
+ *
+ * ── Pourquoi elle masque le plan ──────────────────────────────────────────
+ *
+ * Sans ça, le geste n'avait aucun effet visible. `cibleDuJour` tranche en
+ * faveur des menus quand ils sont affichés — à raison, ce sont eux qui
+ * seront mangés — donc l'onglet Nutrition continuait d'annoncer les 3 226
+ * kcal du plan au-dessus de cibles qu'on venait de poser à 2 800.
+ * Techniquement juste, pratiquement inutilisable.
+ *
+ * Ce n'est pas un contournement de l'arbitrage, c'est son application. La
+ * règle dit « les menus affichés font foi » ; coller une fiche dit « voici
+ * mes chiffres maintenant ». Le plan s'efface donc devant eux, et l'écran
+ * garde ce qu'on lui demande depuis le début : UNE seule vérité à la fois.
+ *
+ * RIEN N'EST EFFACÉ. `legacyNutritionPlan` est un interrupteur : les neuf
+ * repas, les pesées et les aliments restent en base et reviennent tels quels
+ * en le rallumant.
+ *
+ * ── Ce qu'elle ne touche pas ──────────────────────────────────────────────
+ *
+ * Une fiche qui ne porte QUE des aliments ne masque rien : elle ne dit rien
+ * des calories, donc elle n'a pas à décider de ce qui les affiche.
+ */
+export interface PatchFiche {
+  ciblesNutrition?: CiblesNutrition;
+  alimentsPreferes?: string[];
+  legacyNutritionPlan?: false;
+}
+
+export function patchDeFiche(lecture: LectureFiche): PatchFiche {
+  return {
+    ...(lecture.cibles !== null ? { ciblesNutrition: lecture.cibles } : {}),
+    ...(lecture.aliments.length > 0 ? { alimentsPreferes: lecture.aliments } : {}),
+    ...(lecture.cibles !== null ? { legacyNutritionPlan: false as const } : {}),
+  };
+}
