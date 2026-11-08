@@ -625,7 +625,7 @@ export function SettingsScreen({
             */}
             Ton plan nutritionnel est affiché : ce sont ses repas qui font foi, et la cible du jour
             vient de leur somme. Ce que tu poses ici est conservé, mais ne sera utilisé que si tu
-            masques le plan.
+            masques le plan — carte <b>Plan nutritionnel</b>, juste au-dessus.
           </p>
         )}
         {(['train', 'rest'] as const).map((kind) => (
