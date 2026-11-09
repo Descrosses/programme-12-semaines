@@ -17,7 +17,7 @@ import styles from '../screens/Session.module.css';
  *
  * 1. la fiche DÉPOSÉE par la personne (« + Documenter » → « Ajouter la
  *    fiche »), rangée en base et propre à l'exercice ;
- * 2. la planche livrée avec le programme (`def.fiche`, MASS aujourd'hui) ;
+ * 2. la planche livrée avec le programme (`def.fiche`, MASS 4 et une partie de POWER 12) ;
  * 3. aucune : le bloc montre la photo d'ambiance du programme, et le bouton
  *    ouvre le panneau où l'on dépose la fiche.
  *

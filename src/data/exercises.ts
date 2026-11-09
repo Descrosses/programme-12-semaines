@@ -9,6 +9,7 @@
  * dépendent de la semaine et vivent dans `baseSessions.ts` / `mainLiftTable.ts`.
  */
 
+import { fichePower12 } from './fichesPower12';
 import type { ExerciseDef } from './types';
 
 /** Rappel §5, ajouté à chaque mouvement explosif. */
@@ -29,8 +30,15 @@ const REGLE_EXPLOSIF =
 const SURVEILLANCE_ADDUCTEUR =
   'Non douloureux à ce jour : programmation inchangée. Surveille l’adducteur gauche pendant la séance et le lendemain — si une gêne apparaît, réduis la charge ou l’amplitude avant de supprimer l’exercice.';
 
+/**
+ * Ajoute la règle §5 aux mouvements explosifs, et la planche d'exécution aux
+ * mouvements qui en ont une (`fichesPower12.ts`). Ni l'une ni l'autre ne
+ * touche à la prescription : séries, charges et repos vivent ailleurs.
+ */
 function def(e: ExerciseDef): ExerciseDef {
-  return e.explosive ? { ...e, cues: [...(e.cues ?? []), REGLE_EXPLOSIF] } : e;
+  const fiche = fichePower12(e.id);
+  const avecRegle = e.explosive ? { ...e, cues: [...(e.cues ?? []), REGLE_EXPLOSIF] } : e;
+  return fiche === undefined ? avecRegle : { ...avecRegle, fiche };
 }
 
 const LIST: ExerciseDef[] = [

@@ -384,9 +384,10 @@ export interface ExerciseDef {
   /**
    * Planche d'exécution livrée avec l'application, ex. `fiches/db-curl.webp`.
    *
-   * Absente pour les mouvements de POWER 12, qui n'en ont pas : son programme
-   * décrit l'exécution par l'intention et les consignes, pas par l'image. Les
-   * trente mouvements de MASS 4 en ont une chacun.
+   * Les trente mouvements de MASS 4 en ont une chacun (`mass4/fiches.ts`).
+   * Trente-cinq mouvements de POWER 12 en ont une (`fichesPower12.ts`), sans texte :
+   * elle montre la posture, les consignes restent celles de la carte. Absente
+   * pour les autres.
    */
   fiche?: string;
   /** Règle §5 : chaque rep est une tentative de performance, on arrête si ça ralentit. */
