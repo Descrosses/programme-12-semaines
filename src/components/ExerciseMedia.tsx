@@ -55,12 +55,26 @@ export function ExerciseMediaButton({
   exerciseId,
   exerciseName,
   context,
+  ouvert,
+  sansBouton = false,
+  onFicheChange,
 }: {
   exerciseId: string;
   exerciseName: string;
   context: MediaContext;
+  /**
+   * Ouverture pilotée de l'extérieur — par le bouton « Documenter » de la
+   * carte, ou par le bloc « Fiche technique » quand il n'y a pas encore de
+   * fiche. Absent : le composant garde son propre bouton et son état.
+   */
+  ouvert?: boolean;
+  /** Masque le bouton « + Documenter » : la carte en porte un ailleurs. */
+  sansBouton?: boolean;
+  /** Prévient quand la fiche technique est déposée, remplacée ou retirée. */
+  onFicheChange?: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [openLocal, setOpen] = useState(false);
+  const open = ouvert ?? openLocal;
   const [reference, setReference] = useState<ExerciseReferenceRow | null>(null);
   const [photos, setPhotos] = useState<ExerciseMediaRow[]>([]);
   const [videos, setVideos] = useState<ExerciseVideoLogRow[]>([]);
@@ -102,6 +116,7 @@ export function ExerciseMediaButton({
       addedAt: context.date,
     });
     await reload();
+    onFicheChange?.();
   }
 
   async function capture(b: { blob: Blob; bytes: number; width: number; height: number }) {
@@ -120,18 +135,21 @@ export function ExerciseMediaButton({
 
   return (
     <>
+      {(!sansBouton || photos.length > 0 || lastVideo) && (
       <div className={styles.mediaRow}>
-        <button
-          type="button"
-          className={styles.mediaToggle}
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-        >
-          {open ? '× Fermer' : '+ Documenter'}
-        </button>
+        {!sansBouton && (
+          <button
+            type="button"
+            className={styles.mediaToggle}
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+          >
+            {open ? '× Fermer' : '+ Documenter'}
+          </button>
+        )}
 
         {/* Badges : ce qui existe déjà, sans rien charger. */}
-        {reference && <span className={styles.mediaBadge}>📘 fiche</span>}
+        {reference && !sansBouton && <span className={styles.mediaBadge}>📘 fiche</span>}
         {photos.length > 0 && (
           <span className={styles.mediaBadge}>
             📷 {photos.length} photo{photos.length > 1 ? 's' : ''}
@@ -141,6 +159,7 @@ export function ExerciseMediaButton({
           <span className={styles.mediaBadge}>🎥 filmé le {humanDate(lastVideo.date)}</span>
         )}
       </div>
+      )}
 
       {open && (
         <div className={styles.mediaPanel}>
@@ -173,6 +192,7 @@ export function ExerciseMediaButton({
                     void (async () => {
                       if (reference.id !== undefined) await deleteExerciseReference(reference.id);
                       await reload();
+                      onFicheChange?.();
                     })()
                   }
                 >

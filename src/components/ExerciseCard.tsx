@@ -4,7 +4,7 @@ import { fr, gripHint, loadLine, restLabel } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
-import { FicheMouvement } from './FicheMouvement';
+import { FicheTechnique } from './FicheTechnique';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { PainWatch } from './PainWatch';
 import { Icon } from './Icon';
@@ -23,6 +23,7 @@ import {
 } from '../engine/measureUnit';
 import type { Occurrence } from '../engine/types';
 import type { DayIndex } from '../data/types';
+import type { VisuelNom } from '../data/visuels';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -79,6 +80,8 @@ export function ExerciseCard({
   note,
   hideSets = false,
   repere = null,
+  ambiance,
+  ensuite = null,
   custom = null,
   prevReplacement = null,
   onReplace,
@@ -122,6 +125,10 @@ export function ExerciseCard({
    * carte reste alors exactement ce qu'elle était.
    */
   repere?: string | null;
+  /** La photo d'ambiance du programme, pour le bloc fiche technique sans fiche. */
+  ambiance?: VisuelNom;
+  /** Le mouvement suivant de la séance, quand il y en a un. */
+  ensuite?: { id: string; nom: string; prescription: string } | null;
   /**
    * La ligne qui a mis cet exercice là, quand il n'est pas au programme :
    * un remplacement ou un ajout. `null` pour un exercice prescrit.
@@ -140,6 +147,11 @@ export function ExerciseCard({
   onOverride: (exId: string, kg: number | null) => void;
 }) {
   const [openCues, setOpenCues] = useState(false);
+  const [openNote, setOpenNote] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
+  const [ficheVersion, setFicheVersion] = useState(0);
+  /* Les séries « à venir » que la personne a choisi d'ouvrir à l'avance. */
+  const [ouvertes, setOuvertes] = useState<ReadonlySet<number>>(() => new Set());
   const [refusing, setRefusing] = useState(false);
   const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
   /*
@@ -162,23 +174,37 @@ export function ExerciseCard({
     overrideKg === null &&
     savedSets.length === 0;
 
+  /*
+   * La série à faire : la première qui n'a rien d'enregistré. Elle seule est
+   * ouverte ; les validées tiennent sur une ligne, les suivantes se lisent
+   * « à venir » et s'ouvrent au toucher — pour noter une série dans le
+   * désordre, rien n'est verrouillé.
+   */
+  const courante = Array.from({ length: ex.sets }, (_, i) => i).find(
+    (i) => !savedSets.some((s) => s.setIndex === i),
+  );
+
+  /*
+   * Tout ce qui EXPLIQUE, rangé sous « Consignes » : le pourquoi des
+   * ajustements, le détail du contraste, les notes du programme, puis les
+   * consignes du mouvement. Ce qui CHANGE la séance reste visible au-dessus —
+   * le « quoi » de chaque ajustement, le rappel du contraste, l'alerte rouge
+   * en entier.
+   */
+  const aDesConsignes =
+    ex.adjustments.some((a) => a.source !== 'rouge') ||
+    ex.contrast !== undefined ||
+    ex.notes.length > 0 ||
+    !!(ex.def.intent || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule);
+
   return (
-    <article className={`${styles.exercise} ${allDone ? styles.exerciseDone : ''}`}>
+    <article
+      id={`exercice-${ex.id}`}
+      className={`${styles.exercise} ${allDone ? styles.exerciseDone : ''}`}
+    >
       <div className={styles.exHead}>
         {repere !== null && <p className={styles.exRepere}>{repere}</p>}
-        <div className={styles.exTitreLigne}>
-          <div className={styles.exName}>{ex.name}</div>
-          {/*
-            La planche d'exécution, au plus près du nom du mouvement.
-
-            Elle était tout en bas de la carte, après les séries : « comment
-            on se place, déjà ? » se pose les mains sur la barre, et la
-            réponse demandait deux écrans de défilement. Un mouvement sans
-            planche — ceux de POWER 12 — ne rend rien, et la ligne reste
-            celle du nom seul.
-          */}
-          <FicheMouvement def={ex.def} variante="entete" />
-        </div>
+        <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
 
         <div className={styles.exSub}>
@@ -201,29 +227,26 @@ export function ExerciseCard({
         */}
         {gripHint(ex.load) && <div className={styles.gripHint}>{gripHint(ex.load)}</div>}
 
+        {/* Le contraste change la façon d'enchaîner : son rappel reste visible. */}
         {ex.contrast && (
           <div className={styles.adjust}>
-            <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{' '}
-            {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
-            {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
-            suivante. Ce n’est pas un superset.
+            <b>Contraste</b> — {ex.contrast.explosive} × {ex.contrast.explosiveReps} entre les
+            séries
           </div>
         )}
 
-        {ex.adjustments.map((a, i) => (
-          <div
-            key={i}
-            className={`${styles.adjust} ${a.source === 'rouge' ? styles.adjustRouge : ''}`}
-          >
-            <b>{a.what}</b> — {a.why}
-          </div>
-        ))}
-
-        {ex.notes.map((n, i) => (
-          <div key={i} className={styles.exSub} style={{ color: 'var(--ink-2)' }}>
-            {n}
-          </div>
-        ))}
+        {ex.adjustments.map((a, i) =>
+          a.source === 'rouge' ? (
+            /* Le rouge reste entier : c'est une consigne de sécurité. */
+            <div key={i} className={`${styles.adjust} ${styles.adjustRouge}`}>
+              <b>{a.what}</b> — {a.why}
+            </div>
+          ) : (
+            <div key={i} className={styles.adjust}>
+              <b>{a.what}</b>
+            </div>
+          ),
+        )}
       </div>
 
       {/*
@@ -264,8 +287,6 @@ export function ExerciseCard({
         seance={{ week: note.week, day: note.day }}
         plannedKg={plannedKg}
       />
-
-      {media && <ExerciseMediaButton exerciseId={ex.id} exerciseName={ex.name} context={media} />}
 
       {showSuggestion && (
         <div className={styles.suggestion}>
@@ -324,6 +345,13 @@ export function ExerciseCard({
         </div>
       )}
 
+      <FicheTechnique
+        def={ex.def}
+        {...(ambiance === undefined ? {} : { ambiance })}
+        version={ficheVersion}
+        onAjouter={() => setOpenMedia(true)}
+      />
+
       {ex.ramp && (
         <div className={styles.adjust} style={{ margin: '0 var(--pad) 12px' }}>
           <b>Paliers</b> —{' '}
@@ -363,19 +391,37 @@ export function ExerciseCard({
 
       {!hideSets && ex.sets > 0 && (
         <div className={styles.sets}>
-          {Array.from({ length: ex.sets }, (_, i) => (
-            <SetEntry
-              key={i}
-              ex={ex}
-              index={i}
-              plannedKg={plannedKg}
-              saved={savedSets.find((s) => s.setIndex === i) ?? null}
-              unite={choixUnite ? unite : null}
-              lastInUnit={choixUnite ? lastMeasureIn(history, unite) : null}
-              timer={timer}
-              onSave={onSaveSet}
-            />
-          ))}
+          {Array.from({ length: ex.sets }, (_, i) => {
+            const saved = savedSets.find((s) => s.setIndex === i) ?? null;
+            if (saved === null && i !== courante && !ouvertes.has(i)) {
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={`${styles.setRow} ${styles.setAVenir}`}
+                  onClick={() => setOuvertes((o) => new Set(o).add(i))}
+                  aria-label={`Série ${i + 1} à venir — ouvrir pour la saisir maintenant`}
+                >
+                  <span className={styles.setIndex}>{i + 1}</span>
+                  <span className={styles.setAVenirTexte}>à venir</span>
+                </button>
+              );
+            }
+            return (
+              <SetEntry
+                key={i}
+                ex={ex}
+                index={i}
+                plannedKg={plannedKg}
+                saved={saved}
+                courante={i === courante}
+                unite={choixUnite ? unite : null}
+                lastInUnit={choixUnite ? lastMeasureIn(history, unite) : null}
+                timer={timer}
+                onSave={onSaveSet}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -383,37 +429,14 @@ export function ExerciseCard({
         <div className={styles.setsAilleurs}>Séries saisies dans l’alternance, au-dessus.</div>
       )}
 
-      {onReplace && (
-        <button type="button" className={styles.replaceButton} onClick={onReplace}>
-          <Icon name="swap" size="18px" />
-          Remplacer cet exercice
-        </button>
-      )}
-
-      {/* Remarque libre sur ce mouvement, sous les séries. Toujours là. */}
-      <ExerciseNote exerciseId={ex.id} context={note} />
-
-      {/*
-        Suivi de douleur — seulement sur les mouvements dont la fiche en
-        demande un. Il n'apparaît pas ailleurs : un curseur de douleur sous
-        chaque exercice ferait du programme un questionnaire.
-      */}
-      {ex.def.painWatch && (
-        <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
-      )}
-
       {/*
         L'alternance une jambe / deux jambes, quand le mouvement alterne.
 
-        Posée AVANT la planche et les consignes : c'est la première chose à
-        savoir devant la machine, parce qu'elle change le nombre de séries à
-        faire et pas seulement la manière.
-
-        Deux couleurs, et la frise des quatre semaines. La frise répond à la
-        question que le bandeau seul laisse ouverte — « et la semaine
-        prochaine ? » — et surtout elle rend visible que les deux exercices de
-        jambes alternent EN OPPOSITION, ce que le document dit et qu'on ne
-        croit pas tant qu'on ne le voit pas.
+        Elle change le nombre de séries à faire et pas seulement la manière :
+        elle reste donc visible, hors des consignes. La frise des quatre
+        semaines rend visible que les deux exercices de jambes alternent EN
+        OPPOSITION, ce que le document dit et qu'on ne croit pas tant qu'on ne
+        le voit pas.
       */}
       {ex.def.alternance && (
         <div
@@ -443,49 +466,129 @@ export function ExerciseCard({
       )}
 
       {/*
-        L'intention suffit à ouvrir le bloc. Avant, il fallait une consigne, une
-        alternative ou une règle de progression : un exercice qui n'avait que
-        son intention — Explosive Cable Row, One-Arm Cable Row, Cable Chop… —
-        ne montrait donc RIEN, alors que le .md écrit bien quelque chose sur lui.
+        Suivi de douleur — seulement sur les mouvements dont la fiche en
+        demande un. Visible d'office : il ne se range pas derrière un bouton.
       */}
-      {(ex.def.intent || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule) && (
-        <>
+      {ex.def.painWatch && (
+        <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
+      )}
+
+      {/*
+        Les trois tiroirs de la carte, côte à côte : ce qu'il faut savoir, ce
+        qu'on veut noter, ce qu'on veut garder en image. Un seul ouvert à la
+        fois n'est pas imposé — on peut relire les consignes en écrivant.
+      */}
+      <div className={styles.tiroirs}>
+        {aDesConsignes && (
           <button
             type="button"
-            className={styles.disclosure}
+            className={`${styles.tiroir} ${openCues ? styles.tiroirOuvert : ''}`}
             onClick={() => setOpenCues((v) => !v)}
             aria-expanded={openCues}
           >
-            <Icon name={openCues ? 'chevron-up' : 'chevron-down'} size="18px" />
-            {openCues
-              ? 'Masquer les consignes'
-              : ex.def.altBasicFit
-                ? 'Consignes et alternative Basic-Fit'
-                : 'Consignes'}
+            Consignes
           </button>
-          {openCues && (
-            <div className={styles.cues}>
-              {ex.def.intent && (
-                <p>
-                  <b>Intention :</b> {ex.def.intent}
-                </p>
-              )}
-              {ex.def.cues?.map((c, i) => (
-                <p key={i}>{c}</p>
-              ))}
-              {ex.def.progressionRule && (
-                <p>
-                  <b>Progression :</b> {ex.def.progressionRule}
-                </p>
-              )}
-              {ex.def.altBasicFit && (
-                <p>
-                  <b>Alternative Basic-Fit :</b> {ex.def.altBasicFit}
-                </p>
-              )}
-            </div>
+        )}
+        <button
+          type="button"
+          className={`${styles.tiroir} ${openNote ? styles.tiroirOuvert : ''}`}
+          onClick={() => setOpenNote((v) => !v)}
+          aria-expanded={openNote}
+        >
+          Remarque
+        </button>
+        {media && (
+          <button
+            type="button"
+            className={`${styles.tiroir} ${openMedia ? styles.tiroirOuvert : ''}`}
+            onClick={() => setOpenMedia((v) => !v)}
+            aria-expanded={openMedia}
+          >
+            Documenter
+          </button>
+        )}
+      </div>
+
+      {openCues && (
+        <div className={styles.cues}>
+          {ex.contrast && (
+            <p>
+              <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{' '}
+              {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
+              {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} →
+              série suivante. Ce n’est pas un superset.
+            </p>
           )}
-        </>
+          {ex.adjustments
+            .filter((a) => a.source !== 'rouge')
+            .map((a, i) => (
+              <p key={i}>
+                <b>{a.what}</b> — {a.why}
+              </p>
+            ))}
+          {ex.notes.map((n, i) => (
+            <p key={`n${i}`}>{n}</p>
+          ))}
+          {ex.def.intent && (
+            <p>
+              <b>Intention :</b> {ex.def.intent}
+            </p>
+          )}
+          {ex.def.cues?.map((c, i) => (
+            <p key={`c${i}`}>{c}</p>
+          ))}
+          {ex.def.progressionRule && (
+            <p>
+              <b>Progression :</b> {ex.def.progressionRule}
+            </p>
+          )}
+          {ex.def.altBasicFit && (
+            <p>
+              <b>Alternative Basic-Fit :</b> {ex.def.altBasicFit}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Remarque libre sur ce mouvement — derrière son bouton, jamais perdue :
+          le brouillon est enregistré à chaque frappe et repris à la réouverture. */}
+      {openNote && <ExerciseNote exerciseId={ex.id} context={note} />}
+
+      {media && (
+        <ExerciseMediaButton
+          exerciseId={ex.id}
+          exerciseName={ex.name}
+          context={media}
+          ouvert={openMedia}
+          sansBouton
+          onFicheChange={() => setFicheVersion((v) => v + 1)}
+        />
+      )}
+
+      {onReplace && (
+        <button type="button" className={styles.replaceButton} onClick={onReplace}>
+          <Icon name="swap" size="18px" />
+          Remplacer cet exercice
+        </button>
+      )}
+
+      {/* Le mouvement suivant : un appui y descend, sans chercher sa carte. */}
+      {ensuite && (
+        <button
+          type="button"
+          className={styles.ensuite}
+          onClick={() =>
+            document
+              .getElementById(`exercice-${ensuite.id}`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        >
+          <span className={styles.ensuiteLabel}>Ensuite</span>
+          <span className={styles.ensuiteNom}>
+            {ensuite.nom} · <span className="tnum">{ensuite.prescription}</span>
+          </span>
+          <Icon name="arrow-right" size="18px" />
+        </button>
       )}
     </article>
   );
@@ -523,6 +626,7 @@ function LastTime({
     measureUnit: measureOf(ex)?.unit ?? null,
     before: seance,
   });
+  const [detail, setDetail] = useState(false);
   if (perf === null) return null;
 
   /*
@@ -542,31 +646,48 @@ function LastTime({
    */
   const prevu = buildLoadLine(ex, plannedKg);
 
+  /*
+   * Une ligne, et le détail au toucher. La comparaison « Fait / Prévu » reste
+   * à un appui : c'est elle qui dit si monter la charge a du sens, mais elle
+   * n'a pas à repousser la saisie hors de l'écran à chaque série.
+   */
   return (
     <div className={styles.lastTime}>
-      <div className={styles.lastTimeRow}>
-        <span className={styles.lastTimeWhen}>📊 Semaine {perf.week}</span>
-        <span className={`${styles.lastTimeValue} tnum`}>{perf.value}</span>
-        {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
-        {(perf.delta || fleche) && (
-          <span
-            className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
-          >
-            {fleche}
-            {fleche && perf.delta ? ' ' : ''}
-            {perf.delta}
-          </span>
-        )}
-      </div>
+      <button
+        type="button"
+        className={styles.lastTimeRow}
+        onClick={() => setDetail((v) => !v)}
+        aria-expanded={detail}
+      >
+        <span className={styles.lastTimeWhen}>Dernière fois · S{perf.week}</span>
+        <span className={styles.lastTimeDroite}>
+          <span className={`${styles.lastTimeValue} tnum`}>{perf.value}</span>
+          {perf.rpe && <span className={styles.lastTimeRpe}>{perf.rpe}</span>}
+          {(perf.delta || fleche) && (
+            <span
+              className={`${styles.lastTimeDelta} ${perf.trend === 'up' ? styles.lastTimeUp : ''} tnum`}
+            >
+              {fleche}
+              {fleche && perf.delta ? ' ' : ''}
+              {perf.delta}
+            </span>
+          )}
+          <Icon name={detail ? 'chevron-up' : 'chevron-down'} size="16px" />
+        </span>
+      </button>
 
-      {perf.format && (
-        <div className={`${styles.lastTimeFormat} tnum`}>
-          Fait : <b>{perf.format}</b>
-        </div>
+      {detail && (
+        <>
+          {perf.format && (
+            <div className={`${styles.lastTimeFormat} tnum`}>
+              Fait : <b>{perf.format}</b>
+            </div>
+          )}
+          <div className={`${styles.lastTimePlan} tnum`}>
+            Prévu : <b>{prevu}</b>
+          </div>
+        </>
       )}
-      <div className={`${styles.lastTimePlan} tnum`}>
-        Prévu : <b>{prevu}</b>
-      </div>
     </div>
   );
 }
@@ -587,6 +708,7 @@ export function SetEntry({
   index,
   plannedKg,
   saved,
+  courante = false,
   unite,
   lastInUnit,
   timer,
@@ -596,6 +718,8 @@ export function SetEntry({
   index: number;
   plannedKg: number | null;
   saved: SetRow | null;
+  /** La série à faire maintenant : elle seule est mise en avant. */
+  courante?: boolean;
   /** L'unité choisie pour l'exercice, ou `null` quand il n'y a pas de choix. */
   unite: MeasureUnitId | null;
   /** Dernière mesure enregistrée DANS cette unité, pour pré-remplir le champ. */
@@ -725,42 +849,54 @@ export function SetEntry({
     return (
       <div className={`${styles.setRow} ${styles.setDone}`}>
         <div className={styles.setIndex}>{index + 1}</div>
-        <button type="button" className={styles.setSummary} onClick={() => setEditing(true)}>
-          {saved.actualReps !== null && (
-            <span className={`${styles.setSummaryValue} tnum`}>
-              {saved.actualReps} <span className={styles.setSummaryUnit}>reps</span>
-            </span>
-          )}
-          {saved.measureValue !== null && measure && (
-            <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.measureValue)}{' '}
-              {/*
-                L'unité de la SÉRIE, pas celle du sélecteur. Changer le
-                sélecteur après avoir validé en mètres ne doit pas relabelliser
-                une série en pas — le chiffre, lui, n'a pas bougé.
-              */}
-              <span className={styles.setSummaryUnit}>{saved.measureUnit ?? measure.unit}</span>
-            </span>
-          )}
-          {saved.actualKg !== null && (
-            <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.actualKg)} <span className={styles.setSummaryUnit}>kg</span>
-            </span>
-          )}
+        <button
+          type="button"
+          className={styles.setSummary}
+          onClick={() => setEditing(true)}
+          aria-label={`Série ${index + 1} validée — toucher pour corriger`}
+        >
+          {/*
+            Une ligne : « 57,5 kg × 2 · RPE 6 ». La charge et les reps en grand,
+            ce qui se compare d'une série à l'autre ; le RPE en petit. Seuls
+            les champs réellement saisis apparaissent — jamais un zéro inventé.
+          */}
+          <span className={`${styles.setSummaryValue} tnum`}>
+            {saved.actualKg !== null && (
+              <>
+                {fr(saved.actualKg)} <span className={styles.setSummaryUnit}>kg</span>
+              </>
+            )}
+            {saved.actualKg !== null && saved.actualReps !== null && ' × '}
+            {saved.actualReps !== null &&
+              (saved.actualKg !== null ? (
+                saved.actualReps
+              ) : (
+                <>
+                  {saved.actualReps} <span className={styles.setSummaryUnit}>reps</span>
+                </>
+              ))}
+            {saved.measureValue !== null && measure && (
+              <>
+                {saved.actualKg !== null ? ' · ' : ''}
+                {fr(saved.measureValue)}{' '}
+                {/*
+                  L'unité de la SÉRIE, pas celle du sélecteur. Changer le
+                  sélecteur après avoir validé en mètres ne doit pas
+                  relabelliser une série en pas — le chiffre, lui, n'a pas bougé.
+                */}
+                <span className={styles.setSummaryUnit}>{saved.measureUnit ?? measure.unit}</span>
+              </>
+            )}
+          </span>
           {saved.actualRpe !== null && (
-            <span className={`${styles.setSummaryValue} tnum`}>
-              {fr(saved.actualRpe)} <span className={styles.setSummaryUnit}>RPE</span>
-            </span>
+            <span className={`${styles.setSummaryUnit} tnum`}>· RPE {fr(saved.actualRpe)}</span>
           )}
           {saved.secondReps !== null && saved.secondReps !== undefined && (
-            <span className={`${styles.setSummaryValue} tnum`}>
-              <span className={styles.setSummaryUnit}>puis</span> {saved.secondReps}{' '}
-              <span className={styles.setSummaryUnit}>
-                reps
-                {saved.secondKg !== null && saved.secondKg !== undefined
-                  ? ` à ${fr(saved.secondKg)} kg`
-                  : ''}
-              </span>
+            <span className={`${styles.setSummaryUnit} tnum`}>
+              puis {saved.secondReps} reps
+              {saved.secondKg !== null && saved.secondKg !== undefined
+                ? ` à ${fr(saved.secondKg)} kg`
+                : ''}
             </span>
           )}
           {saved.failed && <span className={styles.failFlag}>Rep ratée</span>}
@@ -769,78 +905,83 @@ export function SetEntry({
     );
   }
 
-  // Trois champs au maximum — reps/mesure, charge, RPE. Dès qu'il y en a un
-  // nombre impair, le dernier prend toute la largeur pour que les boutons
-  // gardent leurs 48 px.
+  /*
+   * Trois champs au maximum, sur UNE ligne — charge, reps (ou mesure), RPE —
+   * en sélecteurs compacts. La charge d'abord : c'est ce qu'on règle sur la
+   * barre avant de soulever.
+   */
   const hasRpe = ex.targetRPE !== null;
   const count = (showLoad ? 2 : 1) + (hasRpe ? 1 : 0);
-  const wide = (position: number) =>
-    count % 2 === 1 && position === count ? styles.stepperWide : '';
+
+  const champCharge = showLoad && (
+    <Stepper
+      compact
+      label={ex.load.shape === 'added' ? 'Lest kg' : 'Charge kg'}
+      value={kg}
+      emptyLabel={entry.emptyLabel}
+      step={entry.step}
+      min={KG_MIN}
+      max={KG_MAX}
+      onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
+      /*
+       * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper rend la
+       * chaîne brute : c'est `parseKg` qui décide, et sa règle est « en cas de
+       * doute, on garde ce qu'il y avait ». Une faute de frappe ne doit jamais
+       * écrire un NaN ni un 0 dans l'historique — un 0 passerait pour une
+       * série faite à vide.
+       */
+      onCommitText={(brut: string) => setKg((v) => parseKg(brut, v))}
+    />
+  );
 
   return (
-    <div className={styles.setRow}>
+    <div className={`${styles.setRow} ${courante ? styles.setCourante : ''}`}>
       <div className={styles.setIndex}>{index + 1}</div>
       <div className={styles.fields}>
-        <div className={styles.steppers}>
-          <div className={wide(1)}>
-            {measure ? (
-              <Stepper
-                label={measure.label}
-                value={value}
-                step={measure.step}
-                min={measure.min}
-                max={measure.max}
-                unit={measure.unit}
-                tone="accent"
-                onStep={(d) => setValue((v) => stepValue(v, d, measure.min, measure.max))}
-                onCommit={(v) => setValue(v ?? measure.min)}
-              />
-            ) : (
-              <Stepper
-                label="Reps"
-                value={reps}
-                step={1}
-                min={0}
-                max={60}
-                onStep={(d) => setReps((v) => stepValue(v, d, 0, 60))}
-              />
-            )}
-          </div>
-
-          {showLoad && (
-            <div className={wide(2)}>
-              <Stepper
-                label={ex.load.shape === 'added' ? 'Lest' : 'Charge'}
-                value={kg}
-                emptyLabel={entry.emptyLabel}
-                step={entry.step}
-                min={KG_MIN}
-                max={KG_MAX}
-                unit="kg"
-                onStep={(d) => setKg((v) => stepValue(v ?? 0, d, KG_MIN, KG_MAX))}
-                /*
-                 * `onCommit` ouvre le pavé numérique sur la valeur. Le Stepper
-                 * rend la chaîne brute : c'est `parseKg` qui décide, et sa règle
-                 * est « en cas de doute, on garde ce qu'il y avait ». Une faute
-                 * de frappe ne doit jamais écrire un NaN ni un 0 dans
-                 * l'historique — un 0 passerait pour une série faite à vide.
-                 */
-                onCommitText={(brut: string) => setKg((v) => parseKg(brut, v))}
-              />
-            </div>
+        <div
+          className={styles.steppersLigne}
+          /*
+           * Colonnes `auto` et non égales : chacune prend la place de son
+           * chiffre, puis le reste se partage. « 142,5 » a besoin de plus que
+           * « 2 » — en colonnes égales, la charge débordait à 390 px.
+           */
+          style={{ gridTemplateColumns: `repeat(${count}, auto)` }}
+        >
+          {champCharge}
+          {measure ? (
+            <Stepper
+              compact
+              label={measure.label}
+              value={value}
+              step={measure.step}
+              min={measure.min}
+              max={measure.max}
+              unit={measure.unit}
+              tone="accent"
+              onStep={(d) => setValue((v) => stepValue(v, d, measure.min, measure.max))}
+              onCommit={(v) => setValue(v ?? measure.min)}
+            />
+          ) : (
+            <Stepper
+              compact
+              label="Reps"
+              value={reps}
+              step={1}
+              min={0}
+              max={60}
+              onStep={(d) => setReps((v) => stepValue(v, d, 0, 60))}
+            />
           )}
-
           {hasRpe && (
-            <div className={wide(count)}>
-              <Stepper
-                label="RPE"
-                value={rpeValue}
-                step={0.5}
-                min={4}
-                max={10}
-                onStep={(d) => setRpe((v) => stepValue(v, d, 4, 10))}
-              />
-            </div>
+            <Stepper
+              compact
+              label="RPE"
+              value={rpeValue}
+              step={0.5}
+              min={4}
+              max={10}
+              onStep={(d) => setRpe((v) => stepValue(v, d, 4, 10))}
+            />
           )}
         </div>
 

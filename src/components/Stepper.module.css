@@ -114,3 +114,54 @@
 .unit {
   color: var(--ink-2);
 }
+
+/*
+ * Variante compacte : trois sélecteurs côte à côte sur un écran de 390 px.
+ * Les boutons perdent de la largeur (32 px) mais gardent toute leur hauteur ;
+ * le crayon de saisie au clavier disparaît faute de place, la valeur reste
+ * touchable pour ouvrir le clavier.
+ */
+.compact .button {
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  font-size: 1.25rem;
+}
+
+.compact .value,
+.compact .input {
+  font-size: 1.25rem;
+}
+
+.compact .valueEditable {
+  padding: 0 2px;
+  min-width: 0;
+}
+
+/* La valeur garde au moins la largeur de son chiffre : elle ne déborde pas. */
+.compact .value {
+  min-width: max-content;
+  padding: 0 6px;
+}
+
+/*
+ * Une valeur vide (« — ») est plus étroite qu'un chiffre : sans plancher, sa
+ * zone de saisie au clavier tombait sous les 32 px.
+ */
+.compact .valueEditable {
+  min-width: max-content;
+}
+
+.compact .valueEditable::before,
+.compact .valueEditable::after {
+  content: '';
+  flex: 0 0 4px;
+}
+
+.compact .pencil {
+  display: none;
+}
+
+.compact .label {
+  letter-spacing: 0.02em;
+}

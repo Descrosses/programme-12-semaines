@@ -9,6 +9,9 @@ import { dateFor } from '../engine/calendar';
 import { missingPrescribedSets } from '../engine/partialSession';
 import { type ResolvedSession } from '../engine/getSession';
 import { modulePourCycle } from '../programmes/registre';
+import { programmeParId } from '../data/catalogue';
+import { HABILLAGE } from '../data/famillesVisuel';
+import type { VisuelNom } from '../data/visuels';
 import { readiness as computeReadiness } from '../engine/readiness';
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import type { HistoryIndex, ReadinessResult } from '../engine/types';
@@ -63,6 +66,13 @@ export interface SessionData {
   customRows: SessionExerciseRow[];
   /** Ce que le programme prévoyait et qu'un remplacement a mis de côté. */
   replaced: Replaced[];
+  /**
+   * La photo de la FAMILLE du programme (sprint pour POWER, force pour MASS),
+   * la même que sur sa vignette du catalogue. Sert de fond au bloc fiche
+   * technique tant qu'aucune fiche n'a été déposée. `null` quand la famille
+   * n'en a pas : le bloc reste alors sur fond uni, sans image empruntée.
+   */
+  ambiance: VisuelNom | null;
   /**
    * L'identifiant de la ligne de séance, créée MAINTENANT si elle n'existe
    * pas encore — et avec elle le cycle, s'il n'y en avait aucun.
@@ -197,6 +207,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       history,
       customRows,
       replaced: applique.replaced,
+      ambiance: ambianceDe(programme.id),
     });
   }, [week, day]);
 
@@ -221,8 +232,14 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
   return { ...state, ensureRow, reload };
 }
 
+function ambianceDe(programmeId: string): VisuelNom | null {
+  const def = programmeParId(programmeId);
+  return def === null ? null : (HABILLAGE[def.familleId]?.photo ?? null);
+}
+
 function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
   return {
+    ambiance: null,
     loading: true,
     session: null,
     row: null,

@@ -1072,8 +1072,11 @@
 .lastTimeRow {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
 }
 
 .lastTimeFormat,
@@ -1963,9 +1966,29 @@
   border-bottom: 1px solid var(--line);
 }
 
+.avancementLigne {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .avancementTexte {
   color: var(--ink-2);
   font-size: var(--fs-small);
+}
+
+/* Le niveau dit aussi par le MOT : la couleur ne porte jamais seule le statut. */
+.readiness_vert {
+  color: var(--vert);
+}
+
+.readiness_orange {
+  color: var(--orange);
+}
+
+.readiness_rouge {
+  color: var(--rouge);
 }
 
 .avancementTexte b {
@@ -1991,4 +2014,169 @@
 
 .avancementEnCours {
   background: var(--accent);
+}
+
+/* ---------------------------------------------------- carte compacte -- */
+
+/*
+ * La série à faire, mise en avant par un fond légèrement teinté — pas par une
+ * couleur nouvelle : le rouge d'action à 6 %, celui du bouton « Valider ».
+ */
+.setCourante {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.setCourante .setIndex {
+  color: var(--accent-ink-fort);
+}
+
+/* Une série pas encore faite : une ligne, touchable pour l'ouvrir d'avance. */
+.setAVenir {
+  width: 100%;
+  min-height: var(--tap);
+  align-items: center;
+  text-align: left;
+  color: var(--ink-3);
+}
+
+.setAVenirTexte {
+  font-size: var(--fs-small);
+}
+
+/* Charge, reps, RPE sur une seule ligne (colonnes posées par le composant). */
+.steppersLigne {
+  display: grid;
+  gap: 6px;
+}
+
+/*
+ * Dans la série en cours, l'index prend moins de place : les trois sélecteurs
+ * ont besoin de chaque pixel à 390 px de large.
+ */
+.setCourante,
+.setAVenir {
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/*
+ * Le bloc « Fiche technique » : image en fond, bouton rouge au centre.
+ * Hauteur fixe pour que la carte ne saute pas quand l'image arrive.
+ */
+.fiche {
+  position: relative;
+  overflow: hidden;
+  height: 132px;
+  margin: 10px var(--pad) 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+}
+
+.ficheImage,
+.ficheAmbiance {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Une fiche déposée est un document : on la montre entière, pas recadrée. */
+.ficheImage {
+  object-fit: contain;
+  background: var(--surface-3);
+}
+
+.ficheVoile {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--voile) / 45%);
+  pointer-events: none;
+}
+
+.ficheBouton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-action);
+}
+
+.ficheBouton:active {
+  background: var(--accent-deep);
+}
+
+/* Consignes · Remarque · Documenter, côte à côte. */
+.tiroirs {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 8px;
+  margin: 12px var(--pad) 12px;
+}
+
+.tiroir {
+  min-height: var(--tap);
+  padding: 0 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.tiroirOuvert {
+  background: var(--surface-3);
+}
+
+/* « Ensuite » : le mouvement suivant, en pied de carte. */
+.ensuite {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px var(--pad);
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  text-align: left;
+}
+
+.ensuiteLabel {
+  flex: none;
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ensuiteNom {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* « Dernière fois » tient sur une ligne ; le détail s'ouvre au toucher. */
+.lastTimeDroite {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-left: auto;
 }
