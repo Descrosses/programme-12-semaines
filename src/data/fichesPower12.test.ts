@@ -9,7 +9,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { EXERCISES } from './exercises';
+import { EXERCISES, exercise } from './exercises';
 import { FICHES_POWER12, fichePower12 } from './fichesPower12';
 import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 
@@ -81,20 +81,20 @@ describe('fiches de mouvement de POWER 12', () => {
   });
 
   it('pose la planche sur la définition servie à la carte', () => {
-    expect(EXERCISES.deadlift.fiche).toBe('fiches/power12-deadlift.webp');
-    expect(EXERCISES['broad-jump'].fiche).toBe('fiches/power12-broad-jump.webp');
+    expect(exercise('deadlift').fiche).toBe('fiches/power12-deadlift.webp');
+    expect(exercise('broad-jump').fiche).toBe('fiches/power12-broad-jump.webp');
   });
 
   it('laisse sans planche les mouvements qui n’en ont pas', () => {
-    expect(EXERCISES['back-squat'].fiche).toBeUndefined();
-    expect(EXERCISES['test-deadlift-1rm'].fiche).toBeUndefined();
+    expect(exercise('back-squat').fiche).toBeUndefined();
+    expect(exercise('test-deadlift-1rm').fiche).toBeUndefined();
     expect(fichePower12('mouvement-inconnu')).toBeUndefined();
   });
 
   it('garde la règle §5 des explosifs en plus de la planche', () => {
     // `def()` pose les deux : l'ajout de la fiche ne doit pas faire perdre
     // la consigne d'arrêt sur baisse de performance.
-    const box = EXERCISES['box-jump'];
+    const box = exercise('box-jump');
     expect(box.fiche).toBe('fiches/power12-box-jump.webp');
     expect(box.cues?.some((c) => c.startsWith('Chaque répétition est une tentative'))).toBe(true);
   });
