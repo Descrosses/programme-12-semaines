@@ -102,3 +102,36 @@ export function recapAjustements(
   }
   return lignes;
 }
+
+export type EtatExercice = 'fait' | 'en-cours' | 'a-venir';
+
+export interface ProgressionSeance {
+  /** Exercices dont toutes les séries prescrites sont validées. */
+  faits: number;
+  total: number;
+  /** Un état par exercice, dans l'ordre de la séance. */
+  etats: EtatExercice[];
+}
+
+/**
+ * Où en est la séance, exercice par exercice.
+ *
+ * « Fait » suit EXACTEMENT la règle de la carte d'exercice — autant de séries
+ * validées que de séries prescrites, et au moins une prescrite — pour que la
+ * barre et la carte grisée ne se contredisent jamais. « En cours » : au moins
+ * une série validée, pas toutes. Le reste est à venir.
+ *
+ * Les séries comptées sont celles enregistrées, telles quelles : la barre ne
+ * devine rien sur ce qui n'a pas été saisi.
+ */
+export function progressionSeance(
+  exercises: readonly ResolvedExercise[],
+  savedSets: Readonly<Record<string, readonly unknown[]>>,
+): ProgressionSeance {
+  const etats = exercises.map((ex): EtatExercice => {
+    const n = savedSets[ex.id]?.length ?? 0;
+    if (ex.sets > 0 && n >= ex.sets) return 'fait';
+    return n > 0 ? 'en-cours' : 'a-venir';
+  });
+  return { faits: etats.filter((e) => e === 'fait').length, total: etats.length, etats };
+}

@@ -78,6 +78,7 @@ export function ExerciseCard({
   media,
   note,
   hideSets = false,
+  repere = null,
   custom = null,
   prevReplacement = null,
   onReplace,
@@ -115,6 +116,12 @@ export function ExerciseCard({
    * entière : c'est seulement la saisie qui a déménagé.
    */
   hideSets?: boolean;
+  /**
+   * « Exercice 06 · Explosif » — la place du mouvement dans la séance, et son
+   * étiquette quand il en a une. `null` quand l'écran n'en donne pas : la
+   * carte reste alors exactement ce qu'elle était.
+   */
+  repere?: string | null;
   /**
    * La ligne qui a mis cet exercice là, quand il n'est pas au programme :
    * un remplacement ou un ajout. `null` pour un exercice prescrit.
@@ -158,6 +165,7 @@ export function ExerciseCard({
   return (
     <article className={`${styles.exercise} ${allDone ? styles.exerciseDone : ''}`}>
       <div className={styles.exHead}>
+        {repere !== null && <p className={styles.exRepere}>{repere}</p>}
         <div className={styles.exTitreLigne}>
           <div className={styles.exName}>{ex.name}</div>
           {/*

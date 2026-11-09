@@ -304,6 +304,20 @@
  * passer dessous quand le nom prend toute la largeur — « Développé militaire
  * Smith » ne doit pas être écrasé pour lui faire de la place.
  */
+/*
+ * « Exercice 06 · Explosif », au-dessus du nom. Petites capitales pistées,
+ * comme le sur-titre des en-têtes : un repère, pas un titre.
+ */
+.exRepere {
+  margin: 0 0 2px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .exTitreLigne {
   display: flex;
   flex-wrap: wrap;
@@ -1929,3 +1943,52 @@
 .guidance p { margin: 0 0 12px; line-height: 1.5; }
 .guidanceActions { display: flex; flex-wrap: wrap; gap: 8px; }
 .guidanceActions button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; }
+
+/* ------------------------------------------------- avancement de séance -- */
+
+/*
+ * Collé sous la barre d'état pendant le défilement. Fond plein : le texte
+ * qui passe dessous ne doit jamais se lire à travers.
+ *
+ * Trois états, et pas seulement par la couleur : « fait » est plein et vert,
+ * « en cours » plein dans le rouge d'action, « à venir » un simple fond de
+ * piste. Le compte écrit au-dessus dit la même chose en chiffres.
+ */
+.avancement {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  padding: 8px var(--pad) 10px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.avancementTexte {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.avancementTexte b {
+  color: var(--ink);
+}
+
+.avancementBarre {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.avancementPas {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-3);
+}
+
+.avancementFait {
+  background: var(--vert);
+}
+
+.avancementEnCours {
+  background: var(--accent);
+}
