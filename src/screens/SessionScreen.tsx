@@ -50,6 +50,7 @@ import { groupSupersets } from '../engine/superset';
 import { useNow } from '../state/useNow';
 import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
+import { recapAjustements } from '../engine/apercuSeance';
 import styles from './Session.module.css';
 
 /**
@@ -112,6 +113,7 @@ export function SessionScreen({
   const overrides = row?.loadOverrides ?? {};
   const doneSets = Object.values(data.savedSets).flat().filter(hasRecordedEffort).length;
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
+  const recap = recapAjustements(session.exercises, overrides);
   /*
    * `SessionExerciseRow` satisfait `CustomRow` — elle porte en plus le
    * `sessionId`, dont le moteur n'a pas besoin et qu'il ne regarde pas. Pas de
@@ -767,6 +769,30 @@ export function SessionScreen({
             </>
           )}
         </dl>
+
+        {/*
+          Ce qui a bougé dans la séance, au même endroit. Chaque ajustement est
+          déjà affiché sur la carte de son exercice ; ici on les relit d'un coup,
+          sans remonter la page. Rien n'est recalculé : c'est le libellé du
+          moteur, et le choix réellement fait sur la suggestion de charge.
+        */}
+        {recap.length > 0 && (
+          <>
+            <h3 className={styles.recapTitre}>Ajustements de la séance</h3>
+            <ul className={styles.recap}>
+              {recap.map((r, n) => (
+                <li key={`${n}-${r.nom}`} className={styles.recapLigne}>
+                  <span className={styles.recapNom}>{r.nom}</span>
+                  {r.details.map((d, i) => (
+                    <span key={i} className={styles.recapDetail}>
+                      {d}
+                    </span>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         {/*
           Un constat, pas un reproche. L'appli ne sait pas si la séance a

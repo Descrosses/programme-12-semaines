@@ -1,0 +1,126 @@
+import { describe, expect, it } from 'vitest';
+import { reps, rpe } from '../data/types';
+import { MODULES } from '../programmes/registre';
+import { apercuSeance, etiquetteRole, recapAjustements } from './apercuSeance';
+import type { ResolvedExercise } from './getSession';
+import type { ProgressionResult } from './progression';
+import { EMPTY_CONTEXT } from './types';
+
+const ex = (over: Partial<ResolvedExercise> = {}): ResolvedExercise => ({
+  def: { id: 'back-squat', name: 'Back Squat', fn: 'squat', role: 'main' },
+  id: 'back-squat',
+  name: 'Back Squat',
+  sets: 4,
+  work: reps(6),
+  load: { kg: 120, shape: 'barbell', step: 2.5, source: 'programme' },
+  targetRPE: rpe(8),
+  restSec: 240,
+  loadLine: '4 × 6 × 120 kg',
+  notes: [],
+  planKg: 120,
+  lastKg: 115,
+  lastMeasure: null,
+  suggestion: null,
+  adjustments: [],
+  ...over,
+});
+
+const suggestion = (over: Partial<ProgressionResult> = {}): ProgressionResult => ({
+  case: null,
+  suggestedKg: 125,
+  plannedKg: 120,
+  offsetKg: 5,
+  source: 'historique',
+  reason: 'Trop facile la semaine dernière.',
+  requiresConfirm: true,
+  capped: false,
+  ...over,
+});
+
+describe('étiquette d’un exercice', () => {
+  it('traduit les rôles qui disent quelque chose', () => {
+    expect(etiquetteRole('power')).toBe('Explosif');
+    expect(etiquetteRole('main')).toBe('Principal');
+    expect(etiquetteRole('core')).toBe('Tronc');
+  });
+
+  it('n’étiquette pas un accessoire — MASS y range tout, l’étiquette mentirait', () => {
+    expect(etiquetteRole('accessory')).toBeNull();
+  });
+});
+
+describe('aperçu de la séance', () => {
+  it('numérote dans l’ordre prescrit et reprend la ligne de charge telle quelle', () => {
+    const lignes = apercuSeance([
+      ex({
+        id: 'broad-jump',
+        name: 'Broad Jump',
+        loadLine: '5 × 2',
+        def: { id: 'broad-jump', name: 'Broad Jump', fn: 'jump', role: 'power' },
+      }),
+      ex(),
+    ]);
+    expect(lignes).toEqual([
+      { numero: '01', nom: 'Broad Jump', etiquette: 'Explosif', prescription: '5 × 2' },
+      { numero: '02', nom: 'Back Squat', etiquette: 'Principal', prescription: '4 × 6 × 120 kg' },
+    ]);
+  });
+
+  it('une séance vide donne une liste vide', () => {
+    expect(apercuSeance([])).toEqual([]);
+  });
+
+  it('fonctionne pour chaque programme enregistré, sans rien lui demander de plus', () => {
+    for (const module of MODULES) {
+      const semaine = module.semaines.find((w) => module.joursDeLaSemaine(w).length > 0);
+      expect(semaine).toBeDefined();
+      const jour = module.joursDeLaSemaine(semaine!)[0]!;
+      const session = module.getSession(semaine!, jour, EMPTY_CONTEXT);
+      if (session === null) continue;
+      const lignes = apercuSeance(session.exercises);
+      expect(lignes).toHaveLength(session.exercises.length);
+      for (const l of lignes) {
+        expect(l.nom).not.toBe('');
+        expect(l.prescription).toBe(session.exercises[Number(l.numero) - 1]!.loadLine);
+      }
+    }
+  });
+});
+
+describe('récap des ajustements', () => {
+  it('ne liste que les exercices où quelque chose a bougé', () => {
+    expect(recapAjustements([ex()], {})).toEqual([]);
+  });
+
+  it('reprend les ajustements du moteur par leur libellé', () => {
+    const r = recapAjustements(
+      [
+        ex({
+          adjustments: [{ source: 'orange', what: '−5 % sur la charge', why: 'Readiness ORANGE.' }],
+        }),
+      ],
+      {},
+    );
+    expect(r).toEqual([{ nom: 'Back Squat', details: ['−5 % sur la charge'] }]);
+  });
+
+  it('suggestion acceptée', () => {
+    const r = recapAjustements([ex({ suggestion: suggestion() })], { 'back-squat': 125 });
+    expect(r[0]!.details).toEqual(['Suggestion acceptée : 125 kg']);
+  });
+
+  it('suggestion remplacée par une autre charge', () => {
+    const r = recapAjustements([ex({ suggestion: suggestion() })], { 'back-squat': 122.5 });
+    expect(r[0]!.details).toEqual(['Suggestion 125 kg remplacée par 122,5 kg']);
+  });
+
+  it('suggestion sans réponse : jamais présentée comme refusée', () => {
+    const r = recapAjustements([ex({ suggestion: suggestion() })], {});
+    expect(r[0]!.details).toEqual(['Suggestion 125 kg sans réponse — charge du plan gardée']);
+  });
+
+  it('ignore une suggestion qui ne demandait pas de réponse', () => {
+    const r = recapAjustements([ex({ suggestion: suggestion({ requiresConfirm: false }) })], {});
+    expect(r).toEqual([]);
+  });
+});

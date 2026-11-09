@@ -618,6 +618,49 @@
   font-weight: 600;
 }
 
+/*
+ * Le récap des ajustements, sous les chiffres du résumé. Même typographie
+ * que le reste de la carte : un sous-titre condensé, puis une ligne par
+ * exercice — le nom en encre, le détail en texte secondaire.
+ */
+.recapTitre {
+  margin: 14px 0 0;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.recap {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recapLigne {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.recapLigne:last-child {
+  border-bottom: 0;
+}
+
+.recapNom {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.recapDetail {
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+
 /* --------------------------------------------------- chrono de séance -- */
 
 /*
