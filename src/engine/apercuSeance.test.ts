@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { reps, rpe } from '../data/types';
 import { MODULES } from '../programmes/registre';
-import { apercuSeance, etiquetteRole, recapAjustements } from './apercuSeance';
+import {
+  apercuSeance,
+  etiquetteRole,
+  progressionSeance,
+  recapAjustements,
+} from './apercuSeance';
 import type { ResolvedExercise } from './getSession';
 import type { ProgressionResult } from './progression';
 import { EMPTY_CONTEXT } from './types';
@@ -122,5 +127,32 @@ describe('récap des ajustements', () => {
   it('ignore une suggestion qui ne demandait pas de réponse', () => {
     const r = recapAjustements([ex({ suggestion: suggestion({ requiresConfirm: false }) })], {});
     expect(r).toEqual([]);
+  });
+});
+
+describe('progression de la séance', () => {
+  const a = ex({ id: 'a', sets: 3 });
+  const b = ex({ id: 'b', sets: 2 });
+  const c = ex({ id: 'c', sets: 4 });
+
+  it('compte un exercice fait quand toutes ses séries prescrites sont validées', () => {
+    const p = progressionSeance([a, b, c], { a: [1, 2, 3], b: [1] });
+    expect(p).toEqual({ faits: 1, total: 3, etats: ['fait', 'en-cours', 'a-venir'] });
+  });
+
+  it('une série en plus du prescrit reste « fait »', () => {
+    expect(progressionSeance([b], { b: [1, 2, 3] }).etats).toEqual(['fait']);
+  });
+
+  it('un exercice sans série prescrite n’est jamais compté fait d’office', () => {
+    expect(progressionSeance([ex({ id: 'z', sets: 0 })], {}).etats).toEqual(['a-venir']);
+  });
+
+  it('séance vierge : rien de fait', () => {
+    expect(progressionSeance([a, b], {})).toEqual({
+      faits: 0,
+      total: 2,
+      etats: ['a-venir', 'a-venir'],
+    });
   });
 });

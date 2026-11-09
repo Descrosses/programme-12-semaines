@@ -50,7 +50,7 @@ import { groupSupersets } from '../engine/superset';
 import { useNow } from '../state/useNow';
 import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
-import { recapAjustements } from '../engine/apercuSeance';
+import { etiquetteRole, progressionSeance, recapAjustements } from '../engine/apercuSeance';
 import styles from './Session.module.css';
 
 /**
@@ -114,6 +114,15 @@ export function SessionScreen({
   const doneSets = Object.values(data.savedSets).flat().filter(hasRecordedEffort).length;
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
   const recap = recapAjustements(session.exercises, overrides);
+  const avancement = progressionSeance(session.exercises, data.savedSets);
+  /** La place d'un exercice dans la séance, comme l'annonce l'écran Aujourd'hui. */
+  const repereDe = (ex: ResolvedExercise): string | null => {
+    const i = session.exercises.findIndex((e) => e.id === ex.id);
+    if (i < 0) return null;
+    const etiquette = etiquetteRole(ex.def.role);
+    const numero = `Exercice ${String(i + 1).padStart(2, '0')}`;
+    return etiquette === null ? numero : `${numero} · ${etiquette}`;
+  };
   /*
    * `SessionExerciseRow` satisfait `CustomRow` — elle porte en plus le
    * `sessionId`, dont le moteur n'a pas besoin et qu'il ne regarde pas. Pas de
@@ -400,6 +409,7 @@ export function SessionScreen({
           media={data.date ? { week, day, date: data.date } : null}
           note={{ week, day, date: data.date ?? '' }}
           hideSets={sansSeries}
+          repere={repereDe(ex)}
           custom={
             custom
               ? {
@@ -492,6 +502,39 @@ export function SessionScreen({
           </p>
         ))}
       </header>
+
+      {/*
+        Où en est la séance — collé en haut pendant le défilement, parce que
+        c'est entre deux séries, en bas de la page, qu'on se demande combien
+        il en reste. Même règle que la carte grisée : un exercice est fait
+        quand toutes ses séries prescrites sont validées.
+      */}
+      {avancement.total > 0 && (
+        <div className={styles.avancement}>
+          <p className={styles.avancementTexte}>
+            <b className="tnum">{avancement.faits}</b> / {avancement.total} exercice
+            {avancement.total > 1 ? 's' : ''} terminé{avancement.faits > 1 ? 's' : ''}
+          </p>
+          <div
+            className={styles.avancementBarre}
+            style={{ '--n': avancement.total } as CSSProperties}
+            aria-hidden="true"
+          >
+            {avancement.etats.map((e, i) => (
+              <span
+                key={i}
+                className={`${styles.avancementPas} ${
+                  e === 'fait'
+                    ? styles.avancementFait
+                    : e === 'en-cours'
+                      ? styles.avancementEnCours
+                      : ''
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/*
         Démarrer — explicite, parce qu'ouvrir n'est pas commencer.
