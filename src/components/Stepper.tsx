@@ -39,6 +39,7 @@ export function Stepper({
   onCommit,
   onCommitText,
   tone = 'normal',
+  compact = false,
 }: {
   label: string;
   value: number | null;
@@ -65,6 +66,13 @@ export function Stepper({
    */
   onCommitText?: (raw: string) => void;
   tone?: 'normal' | 'accent';
+  /**
+   * Trois sélecteurs sur une ligne (charge, reps, RPE) : boutons − / + de
+   * 32 px de large au lieu de 48, même hauteur. Choix assumé par Guillaume le
+   * 9 novembre 2026 pour la carte de séance — la hauteur, elle, reste celle
+   * d'une cible tactile complète.
+   */
+  compact?: boolean;
 }) {
   const current = value ?? min;
   const [editing, setEditing] = useState(false);
@@ -94,7 +102,11 @@ export function Stepper({
   const saisissable = onCommit !== undefined || onCommitText !== undefined;
 
   return (
-    <div className={`${styles.stepper} ${tone === 'accent' ? styles.accent : ''}`}>
+    <div
+      className={`${styles.stepper} ${tone === 'accent' ? styles.accent : ''} ${
+        compact ? styles.compact : ''
+      }`}
+    >
       {/* L'unité vit dans le libellé, pas à côté du nombre : ça laisse toute la
           largeur au chiffre, qui est ce qu'on lit d'un coup d'œil. */}
       <div className={styles.label} id={`lbl-${label}`}>

@@ -115,6 +115,14 @@ export function SessionScreen({
   const plannedSets = session.exercises.reduce((n, e) => n + e.sets, 0);
   const recap = recapAjustements(session.exercises, overrides);
   const avancement = progressionSeance(session.exercises, data.savedSets);
+  /** Le mouvement qui suit, pour l'encart « Ensuite » en bas de la carte. */
+  const ensuiteDe = (ex: ResolvedExercise) => {
+    const i = session.exercises.findIndex((e) => e.id === ex.id);
+    const suivant = i < 0 ? undefined : session.exercises[i + 1];
+    return suivant === undefined
+      ? null
+      : { id: suivant.id, nom: suivant.name, prescription: suivant.loadLine };
+  };
   /** La place d'un exercice dans la séance, comme l'annonce l'écran Aujourd'hui. */
   const repereDe = (ex: ResolvedExercise): string | null => {
     const i = session.exercises.findIndex((e) => e.id === ex.id);
@@ -410,6 +418,8 @@ export function SessionScreen({
           note={{ week, day, date: data.date ?? '' }}
           hideSets={sansSeries}
           repere={repereDe(ex)}
+          {...(data.ambiance === null ? {} : { ambiance: data.ambiance })}
+          ensuite={ensuiteDe(ex)}
           custom={
             custom
               ? {
@@ -511,10 +521,21 @@ export function SessionScreen({
       */}
       {avancement.total > 0 && (
         <div className={styles.avancement}>
-          <p className={styles.avancementTexte}>
-            <b className="tnum">{avancement.faits}</b> / {avancement.total} exercice
-            {avancement.total > 1 ? 's' : ''} terminé{avancement.faits > 1 ? 's' : ''}
-          </p>
+          <div className={styles.avancementLigne}>
+            <p className={styles.avancementTexte}>
+              {/* Le participe s'accorde avec « exercices », pas avec le compte. */}
+              <b className="tnum">{avancement.faits}</b> / {avancement.total}{' '}
+              {avancement.total > 1 ? 'exercices terminés' : 'exercice terminé'}
+            </p>
+            {data.readiness && (
+              <p className={styles.avancementTexte}>
+                Readiness{' '}
+                <b className={styles[`readiness_${data.readiness.level}`]}>
+                  {data.readiness.level.toUpperCase()}
+                </b>
+              </p>
+            )}
+          </div>
           <div
             className={styles.avancementBarre}
             style={{ '--n': avancement.total } as CSSProperties}
