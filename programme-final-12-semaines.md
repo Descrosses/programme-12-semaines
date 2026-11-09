@@ -289,6 +289,18 @@ Ce qui sort à partir de la semaine 5 : **Farmer Carry** et **Bear Crawl**. Leur
 
 Le samedi garde donc le Suitcase Carry. **C'est le Zercher March qui est déprogrammé à sa place** (voir juste en dessous), et le Roman Side Bench qui vient fermer la séance.
 
+**Le tronc progresse enfin, et par le levier.** Jusqu'ici il ne progressait pas du tout : 3 × 8 d'Ab Wheel en semaine 1, 3 × 8 en semaine 11. Le §11 cas 9 donne la règle, voici son application concrète — **aucune série, aucune répétition ajoutée nulle part**, donc pas une minute de plus en séance :
+
+| Exercice | Accumulation (S1-4) | Force max (S5-8) | Puissance (S9-12) |
+|---|---|---|---|
+| Ab Wheel | À genoux, amplitude confortable | À genoux, **amplitude complète** | **Pieds surélevés** ou départ debout partiel |
+| Hanging Leg Raise | Genoux à la poitrine, 8-12 | **Jambes tendues** à l'horizontale, 8 | Jambes tendues **jusqu'à la barre** |
+| Copenhagen Plank | **Genou fléchi** — levier court | **Jambe tendue**, si le cran précédent passe sans douleur | Jambe tendue, 5 reps |
+
+**Le Hanging Leg Raise passe de 12 à 8 reps, et ce n'est pas un allègement** : une répétition jambes tendues vaut deux répétitions genoux fléchis. Même remarque pour le Copenhagen à 5 reps en puissance. Ces deux baisses existaient déjà dans le programme — elles n'étaient simplement **expliquées nulle part**, ce qui les faisait lire comme des régressions.
+
+**Le Copenhagen est le seul à avoir une condition écrite** : il ne passe en jambe tendue que si le levier court est passé sans douleur ni lendemain douloureux. C'est le mouvement qui avait été suspendu (§14) ; y rester un bloc de plus est une décision valable, pas un échec.
+
 La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
 
 - Hang High Pull 4 × 3, repos 2 min
@@ -467,6 +479,22 @@ Chronomètre. Un repos raccourci sur un lift lourd transforme la force en fatigu
 
 **Cas 8 — douleur localisée sur un mouvement** (aujourd'hui : adducteur gauche, §14) → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
 
+**Cas 9 — un exercice de tronc, ou tout exercice au poids du corps.** Les huit cas ci-dessus sont écrits en kilos : « +5 kg bas du corps, +2,5 kg haut du corps ». Aucun ne s'applique à l'Ab Wheel, au Hanging Leg Raise, au Roman Side Bench ni au Copenhagen Plank — il n'y a pas de barre à charger. Faute de règle, ces mouvements sont restés **figés douze semaines durant** : 3 × 8 d'Ab Wheel en semaine 1, 3 × 8 en semaine 11.
+
+Ils progressent, mais dans cet ordre, et jamais dans un autre :
+
+**1. Le levier. 2. L'amplitude. 3. Les répétitions. 4. La charge.**
+
+**Le levier d'abord, parce que c'est lui qui commande.** Sur le tronc, la difficulté vient du bras de levier bien avant la charge : passer le Hanging Leg Raise des genoux fléchis aux jambes tendues double la contrainte sans ajouter un gramme ni une seconde de séance. Un disque de 5 kg tenu contre la poitrine en fait beaucoup moins.
+
+**Jamais par l'ajout de séries.** Une quatrième série d'Ab Wheel allonge la séance sans rien rendre : le tronc répond à la contrainte, pas au volume. C'est la seule progression explicitement interdite ici.
+
+**Le déclencheur.** On passe au cran suivant quand la dernière série sort au volume prescrit, **propre, sans compensation lombaire, deux séances d'affilée.** Une seule bonne séance ne suffit pas — c'est la répétabilité qu'on cherche, pas le record.
+
+**Pour les exercices à la poulie** (Pallof, Dead Bug câble, Woodchop, Landmine Rotation), la charge existe et c'est le cran 4 qui s'applique : **+1 kg**, jamais davantage, et seulement une fois le mouvement maîtrisé en amplitude complète. Un Pallof trop lourd devient une rotation du bassin, c'est-à-dire l'inverse de l'exercice.
+
+**Et si la gêne à l'adducteur parle** (§14), elle passe avant tout ce qui précède, comme au cas 8.
+
 Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement surveillé, la tolérance passe avant le RPE.
 
 ---
@@ -519,8 +547,12 @@ Le 162,5 du deadlift est la borne basse de la cible de la section 13, et déjà 
 | Tractions strictes | +11 à 28 % |
 | Broad Jump | +5 à 8 % |
 | Vertical Jump | +4 à 6 cm |
-| Sprint 10 m | −2 à 4 % |
+| Sprint 10 m | *indicateur, pas objectif — voir ci-dessous* |
 | Ab Wheel | +20-30 % reps |
+
+**Le sprint n'est pas un objectif de ce programme, c'est un indicateur.** Il figurait ici à −2 à 4 %, et c'était une promesse que le programme ne pouvait pas tenir : **aucune séance ne fait sprinter.** On ne progresse pas sur une qualité qu'on n'entraîne jamais, et afficher une cible chiffrée revenait à faire porter à l'athlète l'échec d'un trou de programmation.
+
+Le chrono reste mesuré aux trois combines, parce qu'il dit quelque chose d'utile : **si le squat, le deadlift et les sauts progressent et que le sprint ne bouge pas du tout, c'est que le transfert ne se fait pas.** C'est une information, pas une note. Attendre un gain spécifique supposerait des séances de sprint — elles ont été étudiées puis écartées : le seul jour aux jambes fraîches est le mercredi, et elles l'auraient porté de 71 à 97 minutes, pour une qualité qu'on ne peut de toute façon pas travailler en salle.
 
 **Les cibles sont des progressions, pas des kilos.** Elles s'appliquent au 1RM mesuré au **combine initial de chacun** : deux pratiquants qui démarrent à 100 et à 180 kg de squat ne visent pas le même nombre. Tant qu'une mesure initiale manque, l'objectif correspondant reste à définir — il ne s'invente pas.
 

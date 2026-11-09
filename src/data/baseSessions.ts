@@ -77,7 +77,21 @@ const LUNDI: SessionBlueprint = {
       90,
     ),
     fromTable('rdl', 'rdl', 150),
-    s('ab-wheel', 3, reps(8), bodyweight(), null, 60),
+    /*
+     * §11 cas 9 — le levier porte la progression, pas le volume.
+     * Les 3 × 8 ne bougeront pas des douze semaines : c'est la CONSIGNE
+     * qui change de bloc en bloc. Une quatrième série allongerait la
+     * séance sans rien rendre.
+     */
+    s(
+      'ab-wheel',
+      3,
+      reps(8),
+      bodyweight(),
+      null,
+      60,
+      'À genoux. Descends aussi loin que tu peux remonter sans que le bas du dos se creuse — l’amplitude du jour, pas celle d’après.',
+    ),
   ],
 };
 
@@ -168,7 +182,20 @@ const VENDREDI: SessionBlueprint = {
      * après le travail chargé — un exercice qui met l'adducteur en tension
      * maximale n'a rien à faire avant le Push Press ou le Speed Squat.
      */
-    s('copenhagen-plank', 3, reps(8, true), noLoad(), null, 60),
+    /*
+     * Levier COURT au départ, et ce n'est pas négociable : c'est le
+     * mouvement qui avait fait mal, repris après suspension (§14). La
+     * jambe tendue vient au bloc suivant, si les 3 × 8 passent sans gêne.
+     */
+    s(
+      'copenhagen-plank',
+      3,
+      reps(8, true),
+      noLoad(),
+      null,
+      60,
+      'Genou de la jambe haute FLÉCHI, appui sur le genou — levier court. Arrête à la gêne, pas à la douleur.',
+    ),
   ],
 };
 
@@ -215,7 +242,20 @@ const DIMANCHE: SessionBlueprint = {
     s('one-arm-cable-row', 3, reps(10, true), autoreg(undefined, 1, 'cable'), null, 75),
     s('landmine-press-standing', 3, reps(8, true), autoreg(undefined, 2.5, 'barbell'), null, 75),
     s('cable-chop', 3, reps(8, true), autoreg(undefined, 1, 'cable'), null, 60),
-    s('hanging-leg-raise', 3, reps({ min: 8, max: 12 }), bodyweight(), null, 60),
+    /*
+     * 8-12 ici, 8 à partir du bloc force max : ce n'est pas une baisse,
+     * c'est le levier qui s'allonge. Les jambes passent tendues, et une
+     * rep tendue vaut deux reps genoux fléchis.
+     */
+    s(
+      'hanging-leg-raise',
+      3,
+      reps({ min: 8, max: 12 }),
+      bodyweight(),
+      null,
+      60,
+      'Genoux à la poitrine, sans balancier. Les 12 reps propres avant de penser aux jambes tendues.',
+    ),
     s('bear-crawl', 3, meters(20), noLoad(), null, 60),
     s(
       'conditioning',

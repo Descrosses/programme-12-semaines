@@ -106,7 +106,12 @@ const LIST: ExerciseDef[] = [
     role: 'core',
     measure: 'reps',
     intent: 'Bassin en rétroversion, jamais d’extension lombaire.',
-    cues: ['Augmente l’amplitude avant d’augmenter les reps.'],
+    progressionRule:
+      'Par le LEVIER, jamais par les séries (§11 cas 9). Trois crans, dans cet ordre : à genoux amplitude confortable → à genoux amplitude complète, bras tendus et ventre près du sol → pieds surélevés sur un step, ou départ debout en amplitude partielle. On change de cran quand les 3 × 8 sortent propres, sans creuser le bas du dos, deux séances d’affilée. Les 3 × 8 ne bougent jamais.',
+    cues: [
+      'Augmente l’amplitude avant d’augmenter les reps — et le levier avant l’amplitude.',
+      'Le signal d’arrêt n’est pas la fatigue des bras : c’est le bas du dos qui commence à se creuser. À ce moment-là la série est finie, même s’il reste des reps.',
+    ],
     altBasicFit: 'Rollout avec une barre chargée de deux disques.',
   }),
   def({
@@ -450,8 +455,11 @@ const LIST: ExerciseDef[] = [
      * Le vendredi est aussi le meilleur jour pour l'adducteur : deux jours
      * après le squat du lundi, un avant le deadlift du samedi.
      */
+    progressionRule:
+      'Par le LEVIER (§11 cas 9), et plus prudemment que les autres — c’est ce mouvement-là qui avait fait mal. Genou de la jambe haute FLÉCHI, appui sur le genou, pendant tout le bloc d’accumulation. Jambe tendue à partir du bloc force max, SEULEMENT si les 3 × 8 en levier court sont passés sans douleur ni lendemain douloureux. Au moindre doute, on reste au cran précédent : ici, rester est une décision valable, pas un échec.',
     cues: [
       'Sécurité : à la moindre gêne à l’aine, arrête la série. Une douleur articulaire qui dure plus de 48 h veut dire que l’exercice ressort du programme.',
+      'Le levier court n’est pas une version au rabais : c’est le même exercice avec un bras de levier plus court, et c’est exactement ce qu’il faut pour une reprise.',
     ],
   }),
   def({
@@ -593,6 +601,12 @@ const LIST: ExerciseDef[] = [
     role: 'core',
     measure: 'reps',
     intent: 'Rétroversion du bassin.',
+    progressionRule:
+      'Par le LEVIER (§11 cas 9) : genoux à la poitrine → jambes tendues à l’horizontale → jambes tendues jusqu’à toucher la barre. Le passage aux jambes tendues fait descendre les reps de 12 à 8, et c’est une PROGRESSION : une rep tendue vaut deux reps genoux fléchis. Aucune série ajoutée à aucun cran.',
+    cues: [
+      'Sans balancier. Une rep lancée n’est pas une rep : si le corps oscille, c’est que le cran est trop dur.',
+      'Descente contrôlée, au moins aussi lente que la montée. C’est elle qui fait le travail.',
+    ],
     altBasicFit: 'Genoux fléchis si trop dur.',
   }),
   def({
