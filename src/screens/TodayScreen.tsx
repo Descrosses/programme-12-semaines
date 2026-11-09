@@ -15,6 +15,7 @@ import {
 import { fr } from '../engine/format';
 
 import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
+import { apercuSeance, type LigneApercu } from '../engine/apercuSeance';
 import {
   cycleActif,
   allReadiness,
@@ -100,6 +101,10 @@ export function TodayScreen({
     title: string;
     intensity: string;
     duration: string;
+    /** La séance annoncée, exercice par exercice — vide quand il n'y en a pas. */
+    apercu: LigneApercu[];
+    /** Vrai si les charges annoncées bougeront encore après le readiness test. */
+    apercuAvantReadiness: boolean;
     rows: SessionRow[];
     trend: ExplosiveTrend;
     /** Ancre du calendrier, telle qu'elle est en base. */
@@ -116,6 +121,8 @@ export function TodayScreen({
     title: '',
     intensity: '',
     duration: '',
+    apercu: [],
+    apercuAvantReadiness: false,
     rows: [],
     trend: {
       declining: false,
@@ -156,6 +163,8 @@ export function TodayScreen({
       let title = '';
       let intensity = '';
       let duration = '';
+      let apercu: LigneApercu[] = [];
+      let apercuAvantReadiness = false;
       // « before » compte aussi : c'est le meilleur moment pour rappeler le
       // relevé de poids, quelques jours avant le premier test.
       const target =
@@ -176,6 +185,8 @@ export function TodayScreen({
         title = s?.title ?? '';
         intensity = s?.intensity ?? '';
         duration = s?.durationLabel ?? '';
+        apercu = s ? apercuSeance(s.exercises) : [];
+        apercuAvantReadiness = s?.readinessTest ?? false;
       }
 
       setState({
@@ -184,6 +195,8 @@ export function TodayScreen({
         title,
         intensity,
         duration,
+        apercu,
+        apercuAvantReadiness,
         rows,
         trend,
         startDate: settings.startDate,
@@ -453,6 +466,46 @@ export function TodayScreen({
             Voir la semaine · changer de jour
           </button>
         </>
+      )}
+
+      {/*
+        La séance annoncée, avant d'y entrer. Commune à tous les programmes :
+        elle ne lit que ce que `getSession` rend. Les charges sont celles du
+        plan — le readiness test, quand la séance en a un, peut encore les
+        changer, et la carte le dit plutôt que de laisser croire le contraire.
+      */}
+      {today.kind !== 'finished' && state.apercu.length > 0 && (
+        <section className={styles.apercu} aria-labelledby="apercu-titre">
+          <div className={styles.apercuTete}>
+            <h2 id="apercu-titre" className={styles.apercuTitre}>
+              Au programme
+            </h2>
+            <span className={styles.apercuCompte}>
+              {state.apercu.length} exercice{state.apercu.length > 1 ? 's' : ''}
+            </span>
+          </div>
+          <ol className={styles.apercuListe}>
+            {state.apercu.map((l) => (
+              <li key={l.numero} className={styles.apercuLigne}>
+                <span className={`${styles.apercuNumero} tnum`} aria-hidden="true">
+                  {l.numero}
+                </span>
+                <span className={styles.apercuNom}>
+                  {l.nom}
+                  {l.etiquette !== null && (
+                    <span className={styles.apercuEtiquette}>{l.etiquette}</span>
+                  )}
+                </span>
+                <span className={`${styles.apercuPrescription} tnum`}>{l.prescription}</span>
+              </li>
+            ))}
+          </ol>
+          {state.apercuAvantReadiness && (
+            <p className={styles.apercuNote}>
+              Charges du plan : le readiness test du début de séance peut encore les ajuster.
+            </p>
+          )}
+        </section>
       )}
     </div>
   );

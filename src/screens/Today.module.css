@@ -288,3 +288,105 @@
  * sobre : il ne doit pas concurrencer l'action du jour, qui est juste en
  * dessous et qui est la vraie raison d'ouvrir l'application.
  */
+
+/* --------------------------------------------------------- au programme -- */
+
+/*
+ * La séance annoncée avant d'y entrer, exercice par exercice.
+ *
+ * Aucune couleur nouvelle : la carte est la carte commune, les numéros sont
+ * en --accent-ink (le rouge éclairci prévu pour écrire en accent), les
+ * étiquettes en --ink-3. Chaque programme la reprend dans son thème sans rien
+ * déclarer.
+ *
+ * Ce n'est pas un bouton : rien ici ne se touche, la séance s'ouvre avec le
+ * bouton rouge au-dessus. Une liste qui aurait l'air cliquable sans l'être
+ * coûterait des appuis pour rien, en salle.
+ */
+.apercu {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad) 0;
+  padding: 14px var(--pad) 10px;
+}
+
+.apercuTete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.apercuTitre {
+  composes: carteTitre from '../styles/cartes.module.css';
+}
+
+.apercuCompte {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  white-space: nowrap;
+}
+
+.apercuListe {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.apercuLigne {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.apercuLigne:last-child {
+  border-bottom: 0;
+}
+
+.apercuNumero {
+  color: var(--accent-ink-fort);
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.apercuNom {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.apercuEtiquette {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/*
+ * La prescription ne se coupe pas au milieu (« 4 × 6 × » puis « 120 kg ») ;
+ * quand elle est longue, c'est le nom qui cède de la place, pas elle.
+ */
+.apercuPrescription {
+  max-width: 48vw;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.apercuNote {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
