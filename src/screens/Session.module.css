@@ -378,6 +378,14 @@
   border-left-color: var(--rouge);
 }
 
+/* La séquence du contraste, sous son titre : une ligne qu'on suit des yeux. */
+.adjustSuite {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
 /* ----------------------------------------------------------- suggestion -- */
 
 .suggestion {

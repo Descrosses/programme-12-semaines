@@ -4,6 +4,7 @@ import { MODULES } from '../programmes/registre';
 import {
   apercuSeance,
   etiquetteRole,
+  premierePhrase,
   progressionSeance,
   recapAjustements,
 } from './apercuSeance';
@@ -154,5 +155,32 @@ describe('progression de la séance', () => {
       total: 2,
       etats: ['a-venir', 'a-venir'],
     });
+  });
+});
+
+describe('première phrase d’une explication', () => {
+  it('garde la phrase du constat et laisse le détail pour les consignes', () => {
+    expect(
+      premierePhrase(
+        'Recalé sur ce que tu soulèves vraiment : en semaine 7 tu as fait 110 kg là où le plan ' +
+          'annonçait 97,5 kg. Le programme demande un POURCENTAGE de ton maximum, donc ton écart ' +
+          'le suit en proportion — 112,8 % du plan, cette semaine comme les autres.',
+      ),
+    ).toBe(
+      'Recalé sur ce que tu soulèves vraiment : en semaine 7 tu as fait 110 kg là où le plan ' +
+        'annonçait 97,5 kg.',
+    );
+  });
+
+  it('ne coupe ni une décimale ni un renvoi de paragraphe', () => {
+    expect(
+      premierePhrase('Entrée en bloc force : 4 % de charge en plus (§8). Le RPE cible reste le juge.'),
+    ).toBe('Entrée en bloc force : 4 % de charge en plus (§8).');
+  });
+
+  it('une seule phrase reste entière', () => {
+    expect(premierePhrase('Readiness orange : −5 % sur les gros mouvements (§4).')).toBe(
+      'Readiness orange : −5 % sur les gros mouvements (§4).',
+    );
   });
 });

@@ -11,6 +11,7 @@ import { Icon } from './Icon';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
+import { premierePhrase } from '../engine/apercuSeance';
 import { replacementChip, type CustomRow } from '../engine/customExercise';
 import {
   hasUnitChoice,
@@ -227,26 +228,37 @@ export function ExerciseCard({
         */}
         {gripHint(ex.load) && <div className={styles.gripHint}>{gripHint(ex.load)}</div>}
 
-        {/* Le contraste change la façon d'enchaîner : son rappel reste visible. */}
+        {/*
+          Le contraste change la façon d'enchaîner : la séquence reste écrite
+          en entier sur la carte, en une ligne qu'on suit des yeux entre deux
+          séries. Seule la mise en garde « ce n'est pas un superset » passe
+          sous Consignes.
+        */}
         {ex.contrast && (
           <div className={styles.adjust}>
-            <b>Contraste</b> — {ex.contrast.explosive} × {ex.contrast.explosiveReps} entre les
-            séries
+            <b>Contraste</b> — {ex.contrast.cycleLabel}
+            <span className={styles.adjustSuite}>
+              Série lourde → {restLabel(ex.contrast.restAfterHeavySec)} →{' '}
+              {ex.contrast.explosive} × {ex.contrast.explosiveReps} →{' '}
+              {restLabel(ex.contrast.restAfterExplosiveSec)} → série suivante
+            </span>
           </div>
         )}
 
-        {ex.adjustments.map((a, i) =>
-          a.source === 'rouge' ? (
-            /* Le rouge reste entier : c'est une consigne de sécurité. */
-            <div key={i} className={`${styles.adjust} ${styles.adjustRouge}`}>
-              <b>{a.what}</b> — {a.why}
-            </div>
-          ) : (
-            <div key={i} className={styles.adjust}>
-              <b>{a.what}</b>
-            </div>
-          ),
-        )}
+        {/*
+          Chaque ajustement de charge garde son pourquoi visible — sa première
+          phrase, celle qui dit d'où vient le chiffre. La suite de
+          l'explication est sous Consignes. Le rouge reste entier : c'est une
+          consigne de sécurité.
+        */}
+        {ex.adjustments.map((a, i) => (
+          <div
+            key={i}
+            className={`${styles.adjust} ${a.source === 'rouge' ? styles.adjustRouge : ''}`}
+          >
+            <b>{a.what}</b> — {a.source === 'rouge' ? a.why : premierePhrase(a.why)}
+          </div>
+        ))}
       </div>
 
       {/*

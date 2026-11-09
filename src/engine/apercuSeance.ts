@@ -135,3 +135,18 @@ export function progressionSeance(
   });
   return { faits: etats.filter((e) => e === 'fait').length, total: etats.length, etats };
 }
+
+/**
+ * La première phrase d'une explication, pour l'afficher sur la carte sans
+ * repousser la saisie hors de l'écran. Le texte entier reste sous
+ * « Consignes » : on raccourcit l'affichage, jamais l'explication.
+ *
+ * Une phrase s'arrête à un point suivi d'une majuscule (ou à la fin). Les
+ * décimales françaises (« 97,5 kg ») et les renvois (« (§8). ») ne coupent
+ * donc rien qu'il ne faut pas.
+ */
+export function premierePhrase(texte: string): string {
+  const t = texte.trim();
+  const m = /^(.*?[.!?])\s+(?=[A-ZÀ-ÖØ-Ý«])/su.exec(t);
+  return m ? m[1]! : t;
+}
