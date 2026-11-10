@@ -3,7 +3,7 @@
  *
  * ── Ce que sont ces fiches ────────────────────────────────────────────────
  *
- * Trente-cinq planches produites par Guillaume, un athlète dans un même décor,
+ * Trente-six planches produites par Guillaume, un athlète dans un même décor,
  * chacune en trois temps : position de départ, contraction ou étirement,
  * position finale (le Broad Jump montre quatre phases sur une image, le
  * Suitcase Carry deux).
@@ -33,6 +33,7 @@
 
 export const FICHES_POWER12: Readonly<Record<string, string>> = {
   // ------------------------------------------------------------ lundi ---
+  'back-squat': 'power12-back-squat.webp',
   'pogo-jumps': 'power12-pogo-jumps.webp',
   'box-jump': 'power12-box-jump.webp',
   'bulgarian-split-squat': 'power12-bulgarian-split-squat.webp',
