@@ -385,7 +385,7 @@ export interface ExerciseDef {
    * Planche d'exécution livrée avec l'application, ex. `fiches/db-curl.webp`.
    *
    * Les trente mouvements de MASS 4 en ont une chacun (`mass4/fiches.ts`).
-   * Trente-cinq mouvements de POWER 12 en ont une (`fichesPower12.ts`), sans texte :
+   * Trente-six mouvements de POWER 12 en ont une (`fichesPower12.ts`), sans texte :
    * elle montre la posture, les consignes restent celles de la carte. Absente
    * pour les autres.
    */

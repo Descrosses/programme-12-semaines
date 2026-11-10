@@ -59,13 +59,13 @@ export default defineConfig({
          * celui où le réseau n'est pas là.
          *
          * Le prix est assumé : l'installation passe d'environ 760 Ko à 4,9 Mo
-         * (7,6 Mo avec les planches de POWER 12).
+         * (7,7 Mo avec les planches de POWER 12).
          * C'est un téléchargement unique, et les planches portent du texte —
          * les recompresser plus petit coûterait la lisibilité des points clés,
          * c'est-à-dire la seule chose qu'elles servent à montrer.
          *
-         * Les planches de POWER 12 (préfixe `power12-`, environ 2,7 Mo pour
-         * trente-cinq) passent par le même motif, pour la même raison. Celles des
+         * Les planches de POWER 12 (préfixe `power12-`, environ 2,8 Mo pour
+         * trente-six) passent par le même motif, pour la même raison. Celles des
          * deux programmes sont téléchargées quel que soit le programme suivi :
          * les séparer demanderait deux services workers ou un pré-cache
          * conditionnel, pour économiser un téléchargement unique.

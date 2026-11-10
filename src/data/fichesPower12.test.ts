@@ -16,10 +16,11 @@ import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 const DOSSIER = join(process.cwd(), 'public', 'fiches');
 
 describe('fiches de mouvement de POWER 12', () => {
-  it('couvre exactement les trente-cinq mouvements livrés, ni plus ni moins', () => {
+  it('couvre exactement les trente-six mouvements livrés, ni plus ni moins', () => {
     expect(Object.keys(FICHES_POWER12).sort()).toEqual(
       [
         'ab-wheel',
+        'back-squat',
         'bench-press',
         'box-jump',
         'broad-jump',
@@ -86,7 +87,8 @@ describe('fiches de mouvement de POWER 12', () => {
   });
 
   it('laisse sans planche les mouvements qui n’en ont pas', () => {
-    expect(exercise('back-squat').fiche).toBeUndefined();
+    expect(exercise('back-squat').fiche).toBe('fiches/power12-back-squat.webp');
+    expect(exercise('speed-squat').fiche).toBeUndefined();
     expect(exercise('test-deadlift-1rm').fiche).toBeUndefined();
     expect(fichePower12('mouvement-inconnu')).toBeUndefined();
   });
