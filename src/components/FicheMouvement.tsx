@@ -44,8 +44,7 @@ export function FicheMouvement({
   const [ouverte, setOuverte] = useState(false);
   const [zoom, setZoom] = useState(false);
 
-  // Un mouvement sans planche n'affiche pas de bouton : ceux de POWER 12 sont
-  // décrits par leur intention, pas par une image.
+  // Un mouvement sans planche n'affiche pas de bouton.
   if (def.fiche === undefined) return null;
   const src = `${import.meta.env.BASE_URL}${def.fiche}`;
 
