@@ -19,6 +19,8 @@
  * Les deux versions de chaque séance (§2). Elle choisit au moment de
  * s'entraîner ; les deux comptent comme la même séance dans le suivi.
  */
+import type { Niveau } from './niveaux';
+
 export type Version = 'maison' | 'salle';
 
 export const VERSIONS: readonly Version[] = ['maison', 'salle'] as const;
@@ -319,5 +321,7 @@ export interface Session {
   restSec: number;
   intro: IntroItem[];
   slots: ResolvedSlot[];
+  /** Le niveau qui a produit cette séance : il change les tours et le circuit. */
+  niveau: Niveau;
   notes: string[];
 }

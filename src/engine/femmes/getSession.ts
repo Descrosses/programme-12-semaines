@@ -8,6 +8,7 @@
  * Fonction pure : pas de base, pas de React, pas de `Date.now()`.
  */
 
+import { NIVEAU_PAR_DEFAUT, niveauDef, type Niveau } from '../../data/femmes/niveaux';
 import { ECHAUFFEMENT, phaseOf } from '../../data/femmes/phases';
 import type { DayIndex, ResolvedSlot, Session, Version, WeekIndex } from '../../data/femmes/types';
 import { restForWeek, suggestLoad, toursForWeek } from './progression';
@@ -19,10 +20,27 @@ export function getSession(
   day: DayIndex,
   version: Version,
   ctx: SessionContext,
+  niveau: Niveau = NIVEAU_PAR_DEFAUT,
 ): Session {
   const phase = phaseOf(week);
+  const def = niveauDef(niveau);
 
-  const slots: ResolvedSlot[] = phase.circuit.map((slot) => {
+  /*
+   * Le niveau RETIRE une ligne, il n'en réécrit aucune.
+   *
+   * Le circuit reste celui de `phases.ts` : même ordre, mêmes exercices,
+   * mêmes répétitions. Une débutante et une confirmée font le même
+   * programme — l'une en fait une ligne de moins.
+   *
+   * On filtre sur le `slotId` et non sur la position : si quelqu'un
+   * réordonne un jour le circuit, on continue de retirer le bon exercice,
+   * et si l'identifiant disparaît, le test de `niveaux.test.ts` le dit.
+   */
+  const retire = def.retire[phase.id];
+  const circuit =
+    retire === null ? phase.circuit : phase.circuit.filter((s) => s.slotId !== retire);
+
+  const slots: ResolvedSlot[] = circuit.map((slot) => {
     const requestedId = version === 'maison' ? slot.maison : slot.salle;
     const { exercise, substitutedFor } = resolveExercise(requestedId, ctx.settings.safety);
     const load = slot.load[version];
@@ -51,7 +69,12 @@ export function getSession(
     phaseName: phase.name,
     title: `Semaine ${week} · Séance ${indexInWeek(week, day) + 1}`,
     durationLabel: phase.durationLabel,
-    tours: toursForWeek(week),
+    /*
+     * Les tours du niveau priment sur ceux de la phase. `null` rend la main
+     * à la rampe d'origine — c'est le cas de l'intermédiaire, dont la phase
+     * 2 monte de 3 à 4 tours au fil des semaines.
+     */
+    tours: def.tours[phase.id] ?? toursForWeek(week),
     restSec: restForWeek(week),
     /*
      * L'échauffement est servi à TOUTES les phases. La base d'origine le
@@ -61,7 +84,13 @@ export function getSession(
      */
     intro: ECHAUFFEMENT,
     slots,
-    notes: phase.notes,
+    niveau,
+    /*
+     * L'intention du niveau est posée EN TÊTE des notes : c'est la première
+     * chose à lire avant d'attaquer, et c'est le seul endroit où le niveau
+     * se dit en toutes lettres pendant la séance.
+     */
+    notes: [def.intention, ...phase.notes],
   };
 }
 
