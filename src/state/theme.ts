@@ -50,7 +50,21 @@ export const THEME_PLATEFORME: ThemeId = 'dcross';
  * au catalogue — retombe sur le thème de la plateforme plutôt que de laisser
  * l'écran sans couleurs.
  */
-export function themePour(programmeId: string | null, dansPlateforme: boolean): ThemeId {
+export function themePour(
+  programmeId: string | null,
+  dansPlateforme: boolean,
+  /*
+   * La famille que l'ÉCRAN impose, quel que soit le cycle actif.
+   *
+   * Les écrans FEMMES 8 n'ont pas de cycle : ils s'ouvrent en aperçu, depuis
+   * le catalogue, pendant qu'un cycle POWER tourne. Sans ce paramètre, le
+   * thème suivait le cycle et FEMMES s'affichait en bleu nuit et rouge —
+   * bug vu en production le 12 novembre, invisible en test parce que les
+   * captures forçaient le thème à la main.
+   */
+  familleDeLEcran?: FamilleId,
+): ThemeId {
+  if (familleDeLEcran !== undefined) return familleDeLEcran;
   if (dansPlateforme) return THEME_PLATEFORME;
   if (programmeId === null) return THEME_PLATEFORME;
   return programmeParId(programmeId)?.familleId ?? THEME_PLATEFORME;
