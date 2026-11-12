@@ -49,6 +49,7 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
     ),
     retour: <path d="M19 12H5M11 6l-6 6 6 6" {...trait} />,
     chevron: <path d="M9 6l6 6-6 6" {...trait} />,
+    chevronGauche: <path d="M15 6l-6 6 6 6" {...trait} />,
     maison: <path d="M4 11l8-7 8 7M6 10v9h12v-9" {...trait} />,
     halteres: <path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12" {...trait} />,
     chrono: (
@@ -85,15 +86,35 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
  * `alt=""` : le décor n'apporte aucune information que le titre ne dise
  * déjà. Le décrire ferait lire deux fois la même chose à une synthèse vocale.
  */
-export function Bandeau({ surTitre, titre }: { surTitre?: string; titre: string }) {
+export function Bandeau({
+  surTitre,
+  titre,
+  retour,
+  onRetour,
+}: {
+  surTitre?: string;
+  titre: string;
+  /* Le fil d'Ariane de la référence : « ‹ Séance 1 » au-dessus du titre. */
+  retour?: string;
+  onRetour?: () => void;
+}) {
   const src = visuelUrl('horizonFemmes');
   const srcSet = visuelSrcSet('horizonFemmes');
+  /* Trois lignes de texte ne tiennent pas dans le ciel : la référence les
+     pose sous la photo. Voir `.heroEmpile` dans la feuille de styles. */
+  const empile = retour !== undefined;
   return (
-    <div className={s.hero}>
+    <div className={`${s.hero} ${empile ? s.heroEmpile : ''}`}>
       {src !== null && (
         <img src={src} {...(srcSet !== null ? { srcSet } : {})} sizes="100vw" alt="" />
       )}
       <div className={s.heroTexte}>
+        {retour !== undefined && (
+          <button type="button" className={s.retourLien} onClick={onRetour}>
+            <Ico nom="chevronGauche" taille={17} />
+            {retour}
+          </button>
+        )}
         {surTitre !== undefined && <span className={s.surTitre}>{surTitre}</span>}
         <h1 className={s.titre}>{titre}</h1>
       </div>

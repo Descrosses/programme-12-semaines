@@ -174,7 +174,14 @@ export function App() {
 
   // Pendant une séance, la barre de navigation disparaît : l'écran est long,
   // le pouce navigue dedans, et une barre de plus multiplierait les appuis ratés.
-  const inSession = route.name === 'session';
+  /*
+   * FEMMES 8 porte SA barre de navigation, dans ses propres écrans.
+   *
+   * Sans cette ligne, les deux se superposaient : on lisait « Combine » —
+   * un onglet de POWER 12 — sous un écran FEMMES. Chacun garde la sienne,
+   * et on ne voit jamais les deux à la fois, comme pour la plateforme.
+   */
+  const inSession = route.name === 'session' || route.name === 'femmes';
   // Deux niveaux : la plateforme choisit un programme, le programme mène une
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
   const dansPlateforme =

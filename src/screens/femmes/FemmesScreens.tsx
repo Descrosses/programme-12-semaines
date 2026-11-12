@@ -245,7 +245,11 @@ export function FemmesSeance({
 
   return (
     <div className={s.page}>
+      {/* « ‹ Semaine N » : le fil d'Ariane de la référence. Il remonte d'un
+          cran, vers la semaine, et il fait sortir le titre de la photo. */}
       <Bandeau
+        retour={`Semaine ${etat.semaine}`}
+        onRetour={() => onAller('semaine')}
         surTitre={`Phase ${phase.id} · ${phase.name} · ${NOMS[rang]}`}
         titre={`Séance ${rang + 1}`}
       />
@@ -416,7 +420,9 @@ export function FemmesExercice({
   return (
     <div className={s.page}>
       <Bandeau
-        surTitre={`Séance ${rangJour + 1} · exercice ${index + 1} / ${seance.slots.length}`}
+        retour={`Séance ${rangJour + 1}`}
+        onRetour={onRetour}
+        surTitre={`Exercice ${index + 1} / ${seance.slots.length}`}
         titre={slot.exercise.name}
       />
 
@@ -488,6 +494,7 @@ export function FemmesExercice({
           ))}
         </div>
 
+        <p className={s.remarqueLabel}>Remarque (facultatif)</p>
         <textarea
           className={s.remarque}
           placeholder="Ce qui a tiré, gêné, mieux marché…"
@@ -499,8 +506,8 @@ export function FemmesExercice({
           className={s.cta}
           onClick={() => (dernier ? onRetour() : onIndex(index + 1))}
         >
-          <Ico nom="coche" />
           {dernier ? 'Terminer le circuit' : 'Valider l’exercice'}
+          <Ico nom="coche" />
         </button>
 
         <p className={s.notePetite}>

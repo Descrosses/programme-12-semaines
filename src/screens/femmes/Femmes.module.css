@@ -34,7 +34,9 @@
  */
 .hero {
   position: relative;
-  height: 150px;
+  /* 178 px et non 150 : sur la référence le décor occupe nettement plus de
+     hauteur, et le titre y tient sans écraser la ville. */
+  height: 178px;
 }
 
 .hero img {
@@ -53,6 +55,55 @@
   right: 92px;
   bottom: 8px;
   z-index: 1;
+}
+
+/*
+ * La variante « fil d'Ariane », transcrite de la référence.
+ *
+ * Sur les écrans 1 et 2 le titre vit DANS la photo : il n'y a qu'une ligne,
+ * elle tombe là où le masque a déjà dissous le décor, et elle se lit.
+ *
+ * Sur les écrans 3 et 4 il y a trois lignes — retour, sur-titre, titre. La
+ * pile remonte dans le ciel, et c'est là que ça casse : « ‹ Séance 1 » est
+ * rose (#ff79c8) sur un ciel rose (#d87d89), MESURÉ à 1,22:1 quand le seuil
+ * du grand texte est 3,0. Aucune ombre portée ne rattrape un écart pareil.
+ * Sur l'aplat de la page, le même rose remonte à 6,79:1.
+ *
+ * La référence ne le rattrape pas non plus : elle ARRÊTE la photo et pose le
+ * bloc de texte en dessous, sur l'aplat de la page. C'est ce que fait cette
+ * variante — pas une invention, une transcription.
+ */
+.heroEmpile {
+  height: auto;
+}
+
+.heroEmpile img {
+  height: 120px;
+}
+
+.heroEmpile .heroTexte {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  padding: 2px 16px 10px;
+}
+
+.retourLien {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 44 px : c'est une commande, elle doit se toucher au pouce. */
+  min-height: 44px;
+  padding: 0 8px 0 0;
+  margin: 0 0 -4px -2px;
+  background: none;
+  border: 0;
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--accent-ink);
+  cursor: pointer;
 }
 
 .surTitre {
@@ -96,7 +147,7 @@
   height: 36px;
   padding: 0 12px;
   border-radius: 999px;
-  background: rgb(27 8 52 / 62%);
+  background: rgb(105 45 147 / 50%);
   border: 1px solid var(--line-strong);
   font-size: 13.5px;
   font-weight: 500;
@@ -266,7 +317,7 @@
   height: 44px;
   border-radius: 12px;
   border: 1.5px solid var(--line-strong);
-  background: rgb(27 8 52 / 55%);
+  background: rgb(105 45 147 / 45%);
   font-family: var(--font-cond);
   font-weight: 800;
   font-size: 18px;
@@ -298,7 +349,7 @@
   min-height: 48px;
   border-radius: 14px;
   border: 2px solid var(--line-strong);
-  background: rgb(27 8 52 / 55%);
+  background: rgb(105 45 147 / 45%);
   font-size: 15.5px;
   font-weight: 600;
   color: var(--ink-2);
@@ -398,19 +449,24 @@
 }
 
 .consignes {
-  margin: 12px 0 0;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1.5px solid var(--line-strong);
-  background: rgb(27 8 52 / 45%);
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  /* Bordure rose lumineuse : c'est ce que montre la référence, et c'est elle
+     qui fait respirer la carte sur le fond violet. */
+  border: 2px solid var(--accent-bright);
+  box-shadow:
+    0 0 18px rgb(252 62 196 / 26%),
+    inset 0 0 22px rgb(252 62 196 / 6%);
+  background: var(--grad-surface, var(--surface));
 }
 
 .consignesTitre {
   font-family: var(--font-cond);
+  font-style: italic;
   font-weight: 800;
-  font-size: 17px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  font-size: 22px;
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
 
@@ -433,17 +489,17 @@
 }
 
 .coche {
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-  color: var(--accent-ink);
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--accent-bright);
 }
 
 .notePetite {
   margin-top: 10px;
-  padding: 9px 12px;
-  border-radius: 11px;
-  background: rgb(27 8 52 / 55%);
+  padding: 10px 13px;
+  border-radius: 12px;
+  background: rgb(120 60 165 / 38%);
   border: 1px solid var(--line);
   font-size: 13px;
   color: var(--ink-2);
@@ -468,7 +524,7 @@
   align-items: center;
   border-radius: 14px;
   border: 1.5px solid var(--line-strong);
-  background: rgb(27 8 52 / 55%);
+  background: rgb(105 45 147 / 45%);
   overflow: hidden;
 }
 
@@ -501,7 +557,7 @@
   min-height: 46px;
   border-radius: 13px;
   border: 1.5px solid var(--line-strong);
-  background: rgb(27 8 52 / 55%);
+  background: rgb(105 45 147 / 45%);
   font-size: 15px;
   font-weight: 600;
   color: var(--ink-2);
@@ -514,14 +570,20 @@
   color: var(--ink-on-accent);
 }
 
+.remarqueLabel {
+  margin: 14px 0 6px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
 .remarque {
   width: 100%;
-  margin-top: 11px;
+  margin-top: 0;
   padding: 11px 13px;
   min-height: 56px;
   border-radius: 13px;
   border: 1.5px solid var(--line);
-  background: rgb(27 8 52 / 55%);
+  background: rgb(105 45 147 / 45%);
   color: var(--ink);
   font-family: inherit;
   font-size: 14px;

@@ -376,13 +376,24 @@
    * profond mais SATURÉ, qui laisse les cartes se détacher sans les
    * éclaircir.
    */
-  --bg: #250c44;
-  --bg-2: #2e1062;
-  --surface: #2b0e58;
-  --surface-2: #351557;
-  --surface-3: #462271;
+  /*
+   * ── Les cartes sont plus CLAIRES que le fond, pas plus sombres ─────────
+   *
+   * C'était le défaut central de la version précédente, et il se mesure :
+   * son fond dominait à #2A0D51 et ses cartes à #1E073D — donc plus
+   * sombres que la page. La référence fait l'inverse, fond #2F0E50 et
+   * cartes #50206B. D'où l'impression, juste, d'une interface « terne » :
+   * les surfaces s'enfonçaient au lieu de se détacher.
+   *
+   * Valeurs relevées sur l'écran 4 de la planche fournie.
+   */
+  --bg: #2f0e50;
+  --bg-2: #3a1460;
+  --surface: #50206b;
+  --surface-2: #5c2a78;
+  --surface-3: #692d93;
 
-  --line: #4a1d70;
+  --line: #7a3fa0;
   /* 3,63:1 sur la carte : au-dessus des 3,0 exigés d'un contour de contrôle. */
   --line-strong: #9a5cc8;
 
@@ -416,14 +427,15 @@
    * repli et ne bougent pas — vérifié à 0 pixel près sur cinq écrans.
    */
   --grad-fond:
-    radial-gradient(90% 40% at 2% 4%, rgb(90 32 122 / 80%) 0%, rgb(90 32 122 / 0%) 70%),
-    radial-gradient(85% 42% at 99% 8%, rgb(70 34 113 / 80%) 0%, rgb(70 34 113 / 0%) 68%),
-    linear-gradient(170deg, #351557 0%, #2e1062 30%, #270851 62%, #250c44 100%);
+    radial-gradient(90% 40% at 2% 4%, rgb(105 45 147 / 70%) 0%, rgb(105 45 147 / 0%) 70%),
+    radial-gradient(85% 42% at 99% 8%, rgb(92 42 120 / 70%) 0%, rgb(92 42 120 / 0%) 68%),
+    linear-gradient(170deg, #3a1460 0%, #351459 32%, #2f0e50 68%, #2b0d4a 100%);
 
   /* Bouton d'action : dégradé VERTICAL, comme la référence. */
   --grad-accent: linear-gradient(to bottom, #fc3ec4 0%, #fa1691 45%, #f7017f 100%);
 
-  --grad-surface: linear-gradient(to bottom, #330f66 0%, #2d0f5c 55%, #2b0e58 100%);
+  /* Du violet franc, qui se détache du fond : c'est lui qui porte la couleur. */
+  --grad-surface: linear-gradient(to bottom, #5a2578 0%, #54226f 55%, #4c1e66 100%);
 
   /* Le fondu du bandeau : les 48 derniers pour cent se dissolvent dans la page. */
   --masque-fond: linear-gradient(
