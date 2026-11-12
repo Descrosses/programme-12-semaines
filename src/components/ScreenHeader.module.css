@@ -170,6 +170,19 @@
   height: 100%;
   z-index: -2;
   opacity: 1;
+  /*
+   * FEMMES dissout le bas de la photo dans le fond au lieu de la couper.
+   *
+   * `--masque-fond` n'existe que sur ce thème ; ailleurs le repli `none`
+   * laisse la photo entière, donc POWER et MASS sont inchangés.
+   *
+   * Pourquoi un masque et pas un voile de plus : un voile est un rectangle,
+   * et un rectangle a une arête basse. C'était le défaut que Guillaume avait
+   * vu — on la déplaçait sans la supprimer. Un masque, lui, rend la photo
+   * progressivement transparente et laisse le fond de page transparaître.
+   */
+  -webkit-mask-image: var(--masque-fond, none);
+  mask-image: var(--masque-fond, none);
 }
 
 /*

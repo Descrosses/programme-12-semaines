@@ -399,6 +399,47 @@
   --ink-fort: #fdf2ff;
   --voile: 22 10 38;
   --ombre-titre: 0 1px 8px rgb(22 10 38 / 85%);
+
+  /*
+   * ── Les DÉGRADÉS ────────────────────────────────────────────────────────
+   *
+   * Ces quatre variables n'existent QUE sur ce thème, et c'est ce qui rend
+   * l'ajout sans danger : partout où elles servent, elles sont écrites
+   * `var(--grad-x, <la valeur plate d'avant>)`. Sur POWER et MASS la
+   * variable n'est pas définie, le repli s'applique, et pas un pixel ne
+   * bouge. Prouvé en comparant deux captures de POWER.
+   *
+   * Les valeurs ne sont pas inventées : elles ont été ÉCHANTILLONNÉES pixel
+   * par pixel dans la maquette fournie par Guillaume. Le fond allait du
+   * violet #3a1a60 à gauche à l'indigo #1c255f en bas à droite, et le
+   * bouton d'action était un dégradé VERTICAL #f21aa8 → #da1685 — pas
+   * horizontal, c'est la première chose qu'il a vue de travers.
+   */
+
+  /* Fond d'écran : violet à gauche, indigo en bas à droite, deux halos. */
+  --grad-fond:
+    radial-gradient(85% 42% at 3% 6%, rgb(99 36 125 / 85%) 0%, rgb(99 36 125 / 0%) 72%),
+    radial-gradient(80% 45% at 98% 8%, rgb(65 34 143 / 85%) 0%, rgb(65 34 143 / 0%) 70%),
+    linear-gradient(168deg, #3a1a60 0%, #341a5e 28%, #2e2060 58%, #24245f 80%, #1c255f 100%);
+
+  /* Bouton d'action. Blanc dessus : 3,97 en haut, 4,74 en bas — mesurés. */
+  --grad-accent: linear-gradient(to bottom, #f21aa8 0%, #ee18a2 42%, #da1685 100%);
+
+  /* Cartes : le même basculement violet → indigo, en vertical. */
+  --grad-surface: linear-gradient(to bottom, #3c1b59 0%, #342063 55%, #2d2565 100%);
+
+  /*
+   * Le fondu du bandeau. Les 48 derniers pour cent de la photo se dissolvent
+   * dans le fond de la page, ce qui supprime l'arête basse.
+   */
+  --masque-fond: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 52%,
+    rgb(0 0 0 / 72%) 76%,
+    rgb(0 0 0 / 28%) 91%,
+    transparent 100%
+  );
 }
 
 /*

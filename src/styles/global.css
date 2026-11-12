@@ -9,13 +9,19 @@
 }
 
 html {
-  background: var(--bg);
+  /*
+   * `--grad-fond` n'existe que sur le thème FEMMES : ailleurs le repli
+   * `var(--bg)` s'applique et le fond reste exactement ce qu'il était.
+   */
+  background: var(--grad-fond, var(--bg));
+  background-attachment: fixed;
   color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* Transparent sur FEMMES : sans ça le body recouvrirait le dégradé de html. */
+  background: var(--grad-fond, var(--bg));
   color: var(--ink);
   font-family: var(--font);
   font-size: var(--fs-body);

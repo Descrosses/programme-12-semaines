@@ -92,6 +92,30 @@ export const VISUELS = {
     focus: 'center 62%',
     usage: 'Bandeau d’en-tête : Aujourd’hui, Combine.',
   },
+  /*
+   * Le seul visuel du pack FEMMES, et le seul qui ne vienne pas du pack NFL.
+   *
+   * Horizon de ville au coucher de soleil, registre synthwave. Il a été
+   * DÉRIVÉ de la maquette fournie par Guillaume : recadré sous la barre de
+   * statut, et le titre de séance qui y figurait effacé par clonage d'une
+   * colonne de ciel — c'est désormais du texte HTML, donc il change avec la
+   * séance.
+   *
+   * Le recadrage descend volontairement jusque dans la zone où la maquette
+   * éteignait déjà son décor vers le violet : une partie du fondu est donc
+   * dans l'image, le reste est fait par un masque CSS. C'est ce qui évite
+   * l'arête nette au bas du bandeau que Guillaume avait signalée.
+   */
+  horizonFemmes: {
+    display: '20_femmes_horizon_display.webp',
+    mobile: '20_femmes_horizon_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description:
+      'Horizon de ville au coucher du soleil, ciel orange et magenta, palmiers en silhouette, reflets sur l’eau.',
+    cadrage: 'cover',
+    focus: 'center 40%',
+    usage: 'Bandeau d’en-tête du programme FEMMES.',
+  },
   casque: {
     display: '03_casque_display.webp',
     mobile: '03_casque_mobile.webp',
