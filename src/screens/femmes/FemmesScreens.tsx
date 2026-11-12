@@ -49,32 +49,16 @@ export const ETAT_INITIAL: EtatFemmes = {
   niveau: NIVEAU_PAR_DEFAUT,
 };
 
-/**
- * « MARDI 10 NOVEMBRE », comme sur la maquette.
- *
- * C'est la date de l'appareil, lue à l'affichage. Elle ne vient pas du
- * programme et ne prétend pas en venir : FEMMES 8 n'a pas de cycle en base,
- * donc aucun jour 1 d'où compter. L'écran s'appelle « Aujourd'hui » et dit
- * quel jour on est, rien de plus.
- */
-export function dateDuJour(maintenant: Date = new Date()): string {
-  return maintenant
-    .toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
-    .toUpperCase();
-}
-
 /* ═══════════════════════════════════════════════ 1 — AUJOURD'HUI ═══════ */
 
 export function FemmesAujourdhui({
   etat,
   onAller,
   onCommencer,
-  onSortir,
 }: {
   etat: EtatFemmes;
   onAller: (o: OngletFemmes) => void;
   onCommencer: () => void;
-  onSortir: () => void;
 }) {
   const phase = phaseOf(etat.semaine);
   const seance = useMemo(
@@ -85,48 +69,42 @@ export function FemmesAujourdhui({
 
   return (
     <div className={s.page}>
-      <Bandeau titre="MAJK FEMMES" />
+      <Bandeau logo titre="MAJK FEMMES" />
 
-      {/*
-        L'en-tête daté de la maquette : la date du jour, le titre de la
-        semaine, l'objectif. Il remplace les quatre pastilles de la première
-        version, qui disaient la même chose en moins lisible.
-
-        La date est celle de l'APPAREIL, pas une date de programme : FEMMES 8
-        n'a pas de cycle en base, donc pas de jour 1. Écrire « Semaine 1,
-        10 novembre » laisserait croire à un calendrier qui n'existe pas.
-      */}
-      <header className={s.enTete}>
-        <button type="button" className={s.retourMajk} onClick={onSortir}>
-          <Ico nom="chevronGauche" taille={16} />
-          MAJK
-        </button>
-        <p className={s.enTeteDate}>{dateDuJour()}</p>
-        <h2 className={s.enTeteTitre}>
-          Semaine {etat.semaine} · {phase.name}
-        </h2>
-        <p className={s.enTeteTexte}>{phase.objective}</p>
-      </header>
+      {/* Les quatre pastilles de la planche : niveau, semaine, jour, durée. */}
+      <div className={s.chips}>
+        <span className={`${s.chip} ${s.chipCaps}`}>{niveauDef(etat.niveau).nom}</span>
+        <span className={s.chip}>Semaine {etat.semaine}</span>
+        <span className={s.chip}>{NOMS[etat.jour]}</span>
+        <span className={s.chip}>
+          <Ico nom="chrono" taille={14} />
+          {phase.durationLabel}
+        </span>
+      </div>
 
       <div className={s.corps}>
-        {/*
-          La carte d'action de la maquette : le jour et la durée en tête, le
-          lieu à droite, le volume en gros, et le bouton DANS la carte.
-        */}
+        <section className={s.carte}>
+          <h2 className={s.carteTitre}>
+            Semaine {etat.semaine} · {phase.name}
+          </h2>
+          <p className={s.carteTexte}>{phase.objective}</p>
+        </section>
+
+        {/* La carte d'action : jour et durée en tête, lieu en pastille à
+            droite, volume en gros, bouton DANS la carte. */}
         <section className={`${s.carte} ${s.carteRose}`}>
           <div className={s.carteBarre}>
             <span className={s.carteBarreGauche}>
               {NOMS[etat.jour]} · {phase.durationLabel}
             </span>
-            <span className={s.carteBarreDroite}>
-              <Ico nom={etat.version === 'maison' ? 'maison' : 'halteres'} taille={15} />
+            <span className={s.lieu}>
+              <Ico nom={etat.version === 'maison' ? 'maison' : 'boucle'} taille={15} />
               {etat.version === 'maison' ? 'Maison' : 'Salle'}
             </span>
           </div>
-          <p className={s.gros}>{sessionVolume(seance)}</p>
+          <p className={`${s.gros} ${s.grosCaps}`}>{sessionVolume(seance)}</p>
           <p className={s.carteTexte}>
-            Repos {restLabel(seance.restSec)} entre les tours. Phase {phase.id} — {phase.name} ·{' '}
-            {niveauDef(etat.niveau).nom}.
+            Repos {restLabel(seance.restSec)} entre les tours, Phase {phase.id} — {phase.name}.
           </p>
           <button type="button" className={`${s.cta} ${s.ctaDansCarte}`} onClick={onCommencer}>
             <Ico nom="play" />
@@ -179,14 +157,13 @@ export function FemmesSemaine({
 
   return (
     <div className={s.page}>
-      <Bandeau surTitre="Programme" titre={`SEMAINE ${etat.semaine}`} />
-
-      <div className={s.chips}>
-        <span className={s.chip}>
-          Phase <b>{phase.id}</b>
-        </span>
-        <span className={s.chip}>{phase.name}</span>
-      </div>
+      <Bandeau
+        surTitre="Programme"
+        surTitreRose
+        titre={`SEMAINE ${etat.semaine}`}
+        taille="xl"
+        sousTitre={`Phase ${phase.id} · ${phase.name}`}
+      />
 
       <div className={s.semaines}>
         {WEEKS.map((w) => (
@@ -204,14 +181,17 @@ export function FemmesSemaine({
 
       <div className={s.corps}>
         <section className={s.carte}>
-          <h2 className={s.carteTitre}>
-            <Ico nom="cible" taille={19} /> Objectif de la semaine
+          <h2 className={`${s.carteTitre} ${s.carteTitreIcone}`}>
+            <span className={s.icoRose}>
+              <Ico nom="cible" taille={34} />
+            </span>
+            Objectif de la semaine
           </h2>
           <p className={s.carteTexte}>{phase.objective}</p>
         </section>
 
-        <section className={`${s.carte} ${s.carteCyan}`}>
-          <p className={s.gros}>{sessionVolume(seance)}</p>
+        <section className={s.carte}>
+          <p className={`${s.gros} ${s.grosCaps}`}>{sessionVolume(seance)}</p>
           <p className={s.carteTexte}>
             {jours.length} séances de {phase.durationLabel} · repos {restLabel(seance.restSec)}{' '}
             entre les tours.
@@ -230,6 +210,9 @@ export function FemmesSemaine({
               </span>
               <span className={`${s.etat} ${d === etat.jour ? s.etatPrevu : ''}`}>
                 {d === etat.jour ? 'Prévue' : 'À faire'}
+              </span>
+              <span className={s.jourChevron}>
+                <Ico nom="chevron" taille={18} />
               </span>
             </button>
           ))}
@@ -272,7 +255,6 @@ export function FemmesSeance({
     [etat],
   );
   const [introOuverte, setIntroOuverte] = useState(false);
-  const [toursFaits, setToursFaits] = useState(0);
   const rang = WEEK_DAYS[etat.semaine].indexOf(etat.jour);
 
   return (
@@ -284,6 +266,7 @@ export function FemmesSeance({
         onRetour={() => onAller('semaine')}
         surTitre={`Phase ${phase.id} · ${phase.name} · ${NOMS[rang]}`}
         titre={`Séance ${rang + 1}`}
+        taille="l"
       />
 
       <div className={s.corps}>
@@ -299,7 +282,7 @@ export function FemmesSeance({
             onClick={() => onVersion('maison')}
             aria-pressed={etat.version === 'maison'}
           >
-            <Ico nom="maison" taille={18} />
+            <span aria-hidden="true">🏠</span>
             Maison
           </button>
           <button
@@ -308,68 +291,34 @@ export function FemmesSeance({
             onClick={() => onVersion('salle')}
             aria-pressed={etat.version === 'salle'}
           >
-            <Ico nom="halteres" taille={18} />
+            <span aria-hidden="true">🏋️</span>
             Salle de sport
           </button>
         </div>
 
-        {/*
-          Le compteur de tours de la maquette : « TOURS », le compte en
-          gros à gauche, le repos à droite, et le bouton qui avance d'un
-          tour. Il remplace le « Démarrer le circuit » du bas, qui ne
-          faisait rien.
-
-          Le compte vit en mémoire d'écran, comme le reste de FEMMES 8 : il
-          ne survit pas à un rechargement, et la ligne sous le bouton le
-          dit. Brancher une écriture sur un schéma de persistance que
-          personne n'a validé coûterait une migration pour rien.
-        */}
-        <section className={`${s.carte} ${s.carteRose}`}>
-          <div className={s.carteBarre}>
-            <span className={s.carteBarreGauche}>Tours</span>
-            <span className={s.compteurRepos}>
-              <b>Repos {restLabel(seance.restSec)}</b>
-              entre les tours · {phase.durationLabel}
-            </span>
+        <section className={`${s.carte} ${s.carteRose} ${s.carteIcone}`}>
+          <span className={s.icoRose}>
+            <Ico nom="boucle" taille={36} />
+          </span>
+          <div>
+            <h2 className={s.carteTitre}>Circuit · {seance.tours} tours</h2>
+            <p className={s.carteTexte}>
+              Repos {restLabel(seance.restSec)} entre les tours · ≈ {phase.durationLabel}
+            </p>
           </div>
-          <p className={s.gros}>
-            {toursFaits} / {seance.tours}
-          </p>
-          <button
-            type="button"
-            className={`${s.cta} ${s.ctaDansCarte}`}
-            onClick={() => setToursFaits((n) => Math.min(n + 1, seance.tours))}
-            disabled={toursFaits >= seance.tours}
-          >
-            {toursFaits >= seance.tours ? (
-              <>
-                <Ico nom="coche" />
-                Circuit terminé
-              </>
-            ) : (
-              <>
-                <Ico nom="boucle" />
-                Tour terminé → repos
-              </>
-            )}
-          </button>
-          <p className={s.carteNote}>Ce compte n’est pas encore enregistré.</p>
         </section>
 
-        <section className={s.ligne}>
+        <section className={`${s.ligne} ${s.ligneIntro}`}>
           <button
             type="button"
             className={s.ligneTete}
             onClick={() => setIntroOuverte((v) => !v)}
             aria-expanded={introOuverte}
           >
-            <span className={s.numero}>
-              <Ico nom="course" taille={15} />
+            <span className={s.icoRose}>
+              <Ico nom="course" taille={26} />
             </span>
-            <span>
-              <span className={s.ligneNom}>Échauffement</span>
-              <span className={s.ligneDose}>{seance.intro.length} mouvements · 5 min</span>
-            </span>
+            <span className={s.introNom}>Échauffement – 5 min</span>
             <span className={`${s.chevron} ${introOuverte ? s.chevronOuvert : ''}`}>
               <Ico nom="chevron" taille={18} />
             </span>
@@ -392,9 +341,9 @@ export function FemmesSeance({
           )}
         </section>
 
-        <p className={s.blocLabel}>Circuit · {seance.slots.length} exercices à enchaîner</p>
+        <h2 className={s.titreSection}>Circuit · {seance.slots.length} exercices à enchaîner</h2>
 
-        <div className={s.lignes}>
+        <div className={`${s.lignes} ${s.lignesSerrees}`}>
           {seance.slots.map((slot, i) => (
             <button
               key={slot.slotId}
@@ -416,6 +365,13 @@ export function FemmesSeance({
             </button>
           ))}
         </div>
+
+        {/* Le bouton de la planche. Il ouvre le premier exercice : c'est là
+            que le circuit commence. */}
+        <button type="button" className={`${s.cta} ${s.ctaSobre}`} onClick={() => onExercice(0)}>
+          <Ico nom="play" />
+          Démarrer le circuit
+        </button>
 
         {seance.notes.length > 0 && (
           <section className={s.carte}>
@@ -564,7 +520,7 @@ export function FemmesExercice({
 
         <button
           type="button"
-          className={s.cta}
+          className={`${s.cta} ${s.ctaSobre}`}
           onClick={() => (dernier ? onRetour() : onIndex(index + 1))}
         >
           {dernier ? 'Terminer le circuit' : 'Valider l’exercice'}
