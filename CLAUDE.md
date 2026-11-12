@@ -137,10 +137,19 @@ catalogue existe, le bloc de thème `[data-theme='femmes']` existe dans
 visuelle.
 
 **N'invente ni l'un ni l'autre.** Pas d'objectifs, pas d'exercices, pas de
-durées, pas de couleurs — et surtout pas de rose par défaut. Tant que le bloc
-de thème est vide, la famille hérite de POWER et aucun écran ne casse. Ces
-règles viennent de Guillaume ; le code les cite comme « §4 » (ne rien inventer)
-et « §15 » (identité visuelle à définir plus tard).
+durées. Ces règles viennent de Guillaume ; le code les cite comme « §4 » (ne
+rien inventer) et « §15 » (identité visuelle à définir plus tard).
+
+**L'identité visuelle, elle, est désormais POSÉE** — le §15 est honoré.
+Guillaume a fourni des maquettes, et `[data-theme='femmes']` les transcrit :
+registre synthwave, nuit violette (`--bg: #160a26`), néon magenta. Ce n'est
+pas le « rose par défaut » que la règle refusait, c'est un parti pris fourni.
+
+Un point à ne pas « corriger » : `--accent` vaut `#d1006e` et non le `#ff2d95`
+des maquettes. Le fluo ne porte que **3,46:1** sous du texte blanc, sous le
+seuil de 4,5 ; `#d1006e` remonte à **5,34**. Le néon n'est pas perdu, il vit
+dans `--accent-bright` pour les lueurs et les bordures, jamais sous du petit
+texte. Les contrastes du bloc ont tous été mesurés et sont écrits en commentaire.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 
