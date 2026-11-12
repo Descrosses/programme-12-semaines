@@ -186,6 +186,7 @@ export function App() {
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
   const dansPlateforme =
     route.name === 'accueil' || route.name === 'catalogue' || route.name === 'parcours';
+  const ecranFemmes = route.name === 'femmes';
 
   /*
    * L'univers graphique se pose sur la racine du document, et non sur un
@@ -201,12 +202,13 @@ export function App() {
       document.documentElement.dataset.theme = themePour(
         cycle?.programmeId ?? null,
         dansPlateforme,
+        ecranFemmes ? 'femmes' : undefined,
       );
     })();
     return () => {
       vivant = false;
     };
-  }, [dansPlateforme, dataVersion]);
+  }, [dansPlateforme, ecranFemmes, dataVersion]);
 
   /**
    * L'onglet du programme que la route désigne, `null` si elle n'en désigne

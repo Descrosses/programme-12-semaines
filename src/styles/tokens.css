@@ -387,13 +387,13 @@
    *
    * Valeurs relevées sur l'écran 4 de la planche fournie.
    */
-  --bg: #2f0e50;
+  --bg: #2e0b55;
   --bg-2: #3a1460;
-  --surface: #50206b;
+  --surface: #3b1763;
   --surface-2: #5c2a78;
   --surface-3: #692d93;
 
-  --line: #7a3fa0;
+  --line: #8b35a3;
   /* 3,63:1 sur la carte : au-dessus des 3,0 exigés d'un contour de contrôle. */
   --line-strong: #9a5cc8;
 
@@ -426,16 +426,14 @@
    * `var(--grad-x, <la valeur plate d'avant>)`. POWER et MASS prennent le
    * repli et ne bougent pas — vérifié à 0 pixel près sur cinq écrans.
    */
-  --grad-fond:
-    radial-gradient(90% 40% at 2% 4%, rgb(105 45 147 / 70%) 0%, rgb(105 45 147 / 0%) 70%),
-    radial-gradient(85% 42% at 99% 8%, rgb(92 42 120 / 70%) 0%, rgb(92 42 120 / 0%) 68%),
-    linear-gradient(170deg, #3a1460 0%, #351459 32%, #2f0e50 68%, #2b0d4a 100%);
+  /* Relevé sur la planche : #2e0b55 entre les cartes, #200842 en bas de page. */
+  --grad-fond: linear-gradient(to bottom, #2e0b55 0%, #2a0a4f 55%, #200842 100%);
 
   /* Bouton d'action : dégradé VERTICAL, comme la référence. */
   --grad-accent: linear-gradient(to bottom, #fc3ec4 0%, #fa1691 45%, #f7017f 100%);
 
-  /* Du violet franc, qui se détache du fond : c'est lui qui porte la couleur. */
-  --grad-surface: linear-gradient(to bottom, #5a2578 0%, #54226f 55%, #4c1e66 100%);
+  /* Relevé sur la planche : #4d1a6f en haut de carte, #33165e en bas. */
+  --grad-surface: linear-gradient(to bottom, #4d1a6f 0%, #3b1763 42%, #31145a 100%);
 
   /* Le fondu du bandeau : les 48 derniers pour cent se dissolvent dans la page. */
   --masque-fond: linear-gradient(

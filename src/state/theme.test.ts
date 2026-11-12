@@ -27,6 +27,17 @@ describe('choix du thème', () => {
     expect(themePour(null, false)).toBe(THEME_PLATEFORME);
   });
 
+  it('habille les écrans FEMMES en FEMMES, même pendant un cycle POWER', () => {
+    /*
+     * Le bug de production : l'aperçu FEMMES 8 s'ouvre pendant un cycle
+     * POWER, et le thème suivait le cycle. L'écran impose sa famille.
+     */
+    expect(themePour('power12', false, 'femmes')).toBe('femmes');
+    expect(themePour(null, false, 'femmes')).toBe('femmes');
+    // Sans écran imposé, rien ne change pour POWER.
+    expect(themePour('power12', false)).toBe('power');
+  });
+
   it('ne reste jamais sans couleurs devant un programme inconnu', () => {
     // Une vieille ligne, un identifiant qui ne figure plus au catalogue.
     expect(themePour('power99', false)).toBe(THEME_PLATEFORME);

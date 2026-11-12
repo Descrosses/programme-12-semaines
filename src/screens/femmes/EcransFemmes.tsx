@@ -35,10 +35,9 @@ export function EcransFemmes({
   /*
    * La sortie du programme, vers l'accueil MAJK.
    *
-   * Elle manquait. L'ancien bouton « MAJK » de la barre du bas appelait
-   * `onAller('aujourdhui')` : il revenait à l'écran Aujourd'hui de FEMMES,
-   * pas à MAJK. Une fois entrée dans le programme, on n'en sortait que par
-   * le bouton Retour du téléphone.
+   * C'est le bouton « MAJK » de la barre du bas qui l'appelle. Dans une
+   * version précédente il revenait à l'écran Aujourd'hui de FEMMES, pas à
+   * MAJK : on n'en sortait que par le bouton Retour du téléphone.
    */
   onSortir: () => void;
 }) {
@@ -49,7 +48,8 @@ export function EcransFemmes({
   /* Les onglets du bas ne mènent qu'aux écrans qui existent ; les autres
      ramènent à Aujourd'hui plutôt que d'ouvrir une page vide. */
   const aller = (o: OngletFemmes) => {
-    if (o === 'semaine') onNaviguer('semaine');
+    if (o === 'majk') onSortir();
+    else if (o === 'semaine') onNaviguer('semaine');
     else if (o === 'reglages') onNaviguer('securite');
     else onNaviguer('aujourdhui');
   };
@@ -93,12 +93,5 @@ export function EcransFemmes({
   }
   if (vue === 'securite') return <FemmesSecurite onAller={aller} />;
 
-  return (
-    <FemmesAujourdhui
-      etat={etat}
-      onAller={aller}
-      onCommencer={() => onNaviguer('seance')}
-      onSortir={onSortir}
-    />
-  );
+  return <FemmesAujourdhui etat={etat} onAller={aller} onCommencer={() => onNaviguer('seance')} />;
 }
