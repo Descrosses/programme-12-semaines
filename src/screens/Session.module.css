@@ -121,7 +121,7 @@
   margin-top: 10px;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   border-left: 3px solid var(--line);
   font-size: var(--fs-small);
   color: var(--ink-2);
@@ -131,7 +131,7 @@
 
 .section {
   margin: var(--gap) var(--pad);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -203,7 +203,7 @@
 .ready {
   margin: var(--gap) var(--pad);
   padding: 14px var(--pad);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   border-radius: var(--radius);
   border-left: 6px solid var(--ink-3);
 }
@@ -281,7 +281,7 @@
 
 .exercise {
   margin: var(--gap) var(--pad);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -943,7 +943,7 @@
   padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   color: var(--ink);
   font: inherit;
   font-size: 0.9rem;
@@ -1157,7 +1157,7 @@
   padding: 12px 14px;
   border-left: 3px solid var(--ink-3);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
 }
 
 .suspenduTitre {
@@ -1353,7 +1353,7 @@
   padding: 12px;
   border: 1px solid var(--accent);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
 }
 
 .panelHead {
@@ -1543,7 +1543,7 @@
  */
 .superset {
   margin: var(--gap) var(--pad);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   border: 2px solid var(--accent);
   border-radius: var(--radius);
   box-shadow:
@@ -1828,7 +1828,8 @@
   margin: var(--gap) var(--pad) 0;
   height: 60px;
   border-radius: var(--radius);
-  background: var(--accent);
+  /* FEMMES donne un dégradé vertical ; les autres thèmes gardent l'aplat. */
+  background: var(--grad-accent, var(--accent));
   color: var(--ink-on-accent);
   font-family: var(--font-cond);
   font-size: 1.25rem;
@@ -1949,11 +1950,33 @@
 }
 
 /* Accompagnement discret, adapté au tactile. */
-.guidance { margin: 16px var(--pad); padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); }
-.guidance strong { display: block; margin-bottom: 8px; }
-.guidance p { margin: 0 0 12px; line-height: 1.5; }
-.guidanceActions { display: flex; flex-wrap: wrap; gap: 8px; }
-.guidanceActions button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-weight: 700; }
+.guidance {
+  margin: 16px var(--pad);
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-2);
+}
+.guidance strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.guidance p {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+.guidanceActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.guidanceActions button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-weight: 700;
+}
 
 /* ------------------------------------------------- avancement de séance -- */
 
@@ -2142,7 +2165,7 @@
   padding: 0 6px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--grad-surface, var(--surface));
   color: var(--ink);
   font-size: var(--fs-small);
   font-weight: 700;

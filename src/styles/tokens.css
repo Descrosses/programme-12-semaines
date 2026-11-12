@@ -332,18 +332,114 @@
 }
 
 /*
- * ── FEMMES — structure seulement ───────────────────────────────────────────
+ * ── FEMMES — l'identité est posée ──────────────────────────────────────────
  *
- * Volontairement vide. Le §15 dit que l'identité de cette famille sera
- * définie plus tard, et le §4 interdit d'en supposer quoi que ce soit — y
- * compris qu'elle serait rose.
+ * Elle ne l'a pas été par supposition : Guillaume a fourni des maquettes, et
+ * ce bloc les TRANSCRIT. Le §4 interdisait d'inventer une identité ; il
+ * n'interdit pas de transcrire celle qui a été décidée. Le §15 est donc
+ * honoré — l'identité a été choisie, puis écrite.
  *
- * Ce bloc existe pour une seule raison : rendre évident où poser cette
- * identité le jour où elle sera choisie. Tant qu'il est vide, la famille
- * hérite du thème POWER, et aucun écran ne casse.
+ * Le registre est le synthwave : nuit violette, néon magenta, coucher de
+ * soleil sur une ville de bord de mer. Rien à voir avec le « rose par
+ * défaut » que ce bloc refusait : c'est un parti pris assumé, et il est
+ * SOMBRE, ce qui le garde compatible avec la contrainte d'origine — lu à un
+ * mètre, sous les néons d'une salle, écran peut-être mouillé.
+ *
+ * ── Les contrastes sont MESURÉS, comme partout ailleurs ────────────────────
+ *
+ *                      bg      surface   surface-2   surface-3
+ *   --ink            17,5       15,4        13,5        11,6    AAA partout
+ *   --ink-2          11,1        9,7         8,6         7,3    AAA partout
+ *   --ink-3           7,5        6,6         5,8         5,0    AA+ partout
+ *   --accent-ink      8,2        7,2         6,3         5,4    AA+ partout
+ *
+ * ── Pourquoi --accent n'est PAS le rose fluo des maquettes ─────────────────
+ *
+ * Le magenta #ff2d95 des maquettes ne porte que 3,46:1 sous du texte blanc —
+ * sous le seuil de 4,5. Le descendre à #d1006e le remonte à 5,34 tout en
+ * restant franchement magenta. Le fluo n'est pas perdu pour autant : il vit
+ * dans --accent-bright, où il fait ce qu'il fait le mieux — les lueurs, les
+ * bordures actives, les dégradés — sans jamais passer sous du petit texte.
+ *
+ * Les couleurs d'état sont héritées de POWER sans modification : mesurées sur
+ * ce violet, elles donnent 10,6 / 9,3 / 6,2 / 7,6 sur le fond. Les redéfinir
+ * aurait été du zèle.
  */
 [data-theme='femmes'] {
-  /* À définir avec Guillaume. */
+  /* --------------------------------------------------------------- fonds */
+  /* Nuit violette : le ciel d'un coucher de soleil synthwave, après le soleil. */
+  --bg: #160a26;
+  --bg-2: #1f0e33;
+  --surface: #2a1142;
+  --surface-2: #361a52;
+  --surface-3: #432463;
+
+  --line: #4a2770;
+  /* 3,77:1 sur --surface : au-dessus des 3,0 exigés d'un contour de contrôle. */
+  --line-strong: #9a5cc8;
+
+  /* --------------------------------------------------------------- texte */
+  --ink: #fdf2ff;
+  --ink-2: #dcb9ef;
+  --ink-3: #bd93d6;
+  --ink-on-accent: #ffffff;
+
+  /* ----------------------------------------------------- couleur d'action */
+  /* Magenta profond : FOND de bouton, blanc dessus à 5,34:1. */
+  --accent: #d1006e;
+  /* Le néon des maquettes. Lueurs, bordures actives, dégradés — jamais du texte. */
+  --accent-bright: #ff2d95;
+  --accent-deep: #9c0052;
+  --accent-dim: #3d0a28;
+  /* Le magenta qu'on ÉCRIT : 8,2:1 sur le fond, 5,4 sur la carte la plus claire. */
+  --accent-ink: #ff7ec4;
+  --accent-ink-fort: #ff7ec4;
+
+  /* Le voile et l'ombre de titre suivent le fond, sinon les en-têtes bavent. */
+  --ink-fort: #fdf2ff;
+  --voile: 22 10 38;
+  --ombre-titre: 0 1px 8px rgb(22 10 38 / 85%);
+
+  /*
+   * ── Les DÉGRADÉS ────────────────────────────────────────────────────────
+   *
+   * Ces quatre variables n'existent QUE sur ce thème, et c'est ce qui rend
+   * l'ajout sans danger : partout où elles servent, elles sont écrites
+   * `var(--grad-x, <la valeur plate d'avant>)`. Sur POWER et MASS la
+   * variable n'est pas définie, le repli s'applique, et pas un pixel ne
+   * bouge. Prouvé en comparant deux captures de POWER.
+   *
+   * Les valeurs ne sont pas inventées : elles ont été ÉCHANTILLONNÉES pixel
+   * par pixel dans la maquette fournie par Guillaume. Le fond allait du
+   * violet #3a1a60 à gauche à l'indigo #1c255f en bas à droite, et le
+   * bouton d'action était un dégradé VERTICAL #f21aa8 → #da1685 — pas
+   * horizontal, c'est la première chose qu'il a vue de travers.
+   */
+
+  /* Fond d'écran : violet à gauche, indigo en bas à droite, deux halos. */
+  --grad-fond:
+    radial-gradient(85% 42% at 3% 6%, rgb(99 36 125 / 85%) 0%, rgb(99 36 125 / 0%) 72%),
+    radial-gradient(80% 45% at 98% 8%, rgb(65 34 143 / 85%) 0%, rgb(65 34 143 / 0%) 70%),
+    linear-gradient(168deg, #3a1a60 0%, #341a5e 28%, #2e2060 58%, #24245f 80%, #1c255f 100%);
+
+  /* Bouton d'action. Blanc dessus : 3,97 en haut, 4,74 en bas — mesurés. */
+  --grad-accent: linear-gradient(to bottom, #f21aa8 0%, #ee18a2 42%, #da1685 100%);
+
+  /* Cartes : le même basculement violet → indigo, en vertical. */
+  --grad-surface: linear-gradient(to bottom, #3c1b59 0%, #342063 55%, #2d2565 100%);
+
+  /*
+   * Le fondu du bandeau. Les 48 derniers pour cent de la photo se dissolvent
+   * dans le fond de la page, ce qui supprime l'arête basse.
+   */
+  --masque-fond: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 52%,
+    rgb(0 0 0 / 72%) 76%,
+    rgb(0 0 0 / 28%) 91%,
+    transparent 100%
+  );
 }
 
 /*

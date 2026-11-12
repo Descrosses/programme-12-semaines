@@ -137,10 +137,19 @@ catalogue existe, le bloc de thème `[data-theme='femmes']` existe dans
 visuelle.
 
 **N'invente ni l'un ni l'autre.** Pas d'objectifs, pas d'exercices, pas de
-durées, pas de couleurs — et surtout pas de rose par défaut. Tant que le bloc
-de thème est vide, la famille hérite de POWER et aucun écran ne casse. Ces
-règles viennent de Guillaume ; le code les cite comme « §4 » (ne rien inventer)
-et « §15 » (identité visuelle à définir plus tard).
+durées. Ces règles viennent de Guillaume ; le code les cite comme « §4 » (ne
+rien inventer) et « §15 » (identité visuelle à définir plus tard).
+
+**L'identité visuelle, elle, est désormais POSÉE** — le §15 est honoré.
+Guillaume a fourni des maquettes, et `[data-theme='femmes']` les transcrit :
+registre synthwave, nuit violette (`--bg: #160a26`), néon magenta. Ce n'est
+pas le « rose par défaut » que la règle refusait, c'est un parti pris fourni.
+
+Un point à ne pas « corriger » : `--accent` vaut `#d1006e` et non le `#ff2d95`
+des maquettes. Le fluo ne porte que **3,46:1** sous du texte blanc, sous le
+seuil de 4,5 ; `#d1006e` remonte à **5,34**. Le néon n'est pas perdu, il vit
+dans `--accent-bright` pour les lueurs et les bordures, jamais sous du petit
+texte. Les contrastes du bloc ont tous été mesurés et sont écrits en commentaire.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 
@@ -170,13 +179,19 @@ charges, sans qu'une ligne de code change.
 3. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
 4. **Les objectifs du §13**, calculés sur ses 1RM à lui.
 
-**L'avertissement qui compte.** « Programme femme » n'est pas une catégorie
-physiologique : la force s'entraîne de la même façon. Ce qui justifie un
-programme distinct, c'est le **niveau de départ**, l'**objectif déclaré**, le
-**nombre de jours disponibles** et le **rapport au matériel** — pas le sexe. Un
-POWER 12 rebadgé n'apporterait rien, puisque les pourcentages du 1RM adaptent
-déjà les charges gratuitement. Si le programme ne se distingue pas par sa
-structure, il ne doit pas exister.
+**L'avertissement, corrigé.** Une première version de ces notes affirmait que
+« programme femme » n'est pas une catégorie physiologique. **C'est faux dans le
+cas qui nous occupe**, et la correction compte : le programme retenu pour le
+cycle 1 est un programme POST-PARTUM. Le diastasis des grands droits et la
+rééducation périnéale sont des réalités physiologiques précises, qui
+interdisent des exercices nommés et en imposent d'autres. Ce n'est pas du
+marketing, c'est de la sécurité.
+
+Ce qui reste vrai : un programme ne se justifie pas par le sexe seul. Il se
+justifie par sa **structure** — ici, des circuits en tours, du matériel léger à
+domicile, un questionnaire de sécurité bloquant et des substitutions
+automatiques. Rien de tout cela n'existe dans POWER 12, et c'est bien pour ça
+que le programme a lieu d'être.
 
 Demande à Guillaume le niveau visé, l'objectif, les jours disponibles, le
 matériel et la durée avant d'écrire la moindre séance.
@@ -197,3 +212,11 @@ matériel et la durée avant d'écrire la moindre séance.
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
   affiche l'écart. Proposer un gramme serait une prescription.
+- **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
+  La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
+  monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le
+  comportement a été montré à Guillaume avec son correctif (5 tours, comme la
+  phase 3) ; il a tranché pour 4. La phase 2 est une construction commune,
+  c'est la phase 3 qui sépare les niveaux — 3, 4 et 5 tours. Un test de
+  `niveaux.test.ts` fige cette décision : s'il tombe, c'est qu'un chiffre a
+  bougé par mégarde, pas qu'il faut « réparer » la grille.

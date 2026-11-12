@@ -39,8 +39,20 @@ describe('catalogue Dcross-fit', () => {
     expect(FAMILLES.map((f) => f.id)).toEqual(['power', 'mass', 'femmes', 'perso']);
   });
 
-  it('n’invente aucun programme pour la famille Femmes', () => {
-    expect(familleParId('femmes')?.programmes).toEqual([]);
+  /*
+   * Ce test interdisait tout programme dans la famille Femmes. Il avait
+   * raison tant qu'il n'y en avait aucun : la règle est de ne rien INVENTER.
+   *
+   * FEMMES 8 n'est pas inventé — il est porté depuis une base écrite hors de
+   * ce dépôt, phase par phase et exercice par exercice. Ce que le test
+   * vérifie désormais, c'est que le contenu est bien LÀ et complet : trois
+   * phases, trente séances. Un programme déclaré sans son contenu ferait
+   * tomber `femmes.test.ts`, qui compte les séances une à une.
+   */
+  it('porte FEMMES 8, et lui seul, dans la famille Femmes', () => {
+    const programmes = familleParId('femmes')?.programmes ?? [];
+    expect(programmes.map((p) => p.id)).toEqual(['femmes8']);
+    expect(programmes[0]?.dureeSemaines).toBe(8);
   });
 
   /*
@@ -52,11 +64,36 @@ describe('catalogue Dcross-fit', () => {
     expect(familleParId('perso')?.programmes).toEqual([]);
   });
 
+  /*
+   * La règle d'origine : un programme `a-venir` n'a ni objectifs ni
+   * prérequis, parce qu'on ne décrit pas ce qui n'est pas écrit.
+   *
+   * FEMMES 8 est l'exception, et elle est nommée. Son contenu EXISTE — les
+   * trois phases et les trente séances sont dans `src/data/femmes/` — ce
+   * qui manque, ce sont les écrans capables d'afficher un circuit en tours.
+   * Ses objectifs décrivent donc quelque chose de réel.
+   *
+   * Tout autre programme `a-venir` reste tenu à la règle : un seul
+   * identifiant est exempté, pas un statut.
+   */
+  const CONTENU_ECRIT_SANS_ECRAN = ['femmes8'];
+
   it('ne donne ni objectifs ni prérequis à un programme qui n’existe pas', () => {
     for (const p of tousLesProgrammes()) {
       if (p.statut === 'disponible') continue;
+      if (CONTENU_ECRIT_SANS_ECRAN.includes(p.id)) continue;
       expect({ id: p.id, objectifs: p.objectifs.length }).toEqual({ id: p.id, objectifs: 0 });
       expect({ id: p.id, prerequis: p.prerequis.length }).toEqual({ id: p.id, prerequis: 0 });
+    }
+  });
+
+  it('l’exemption ne couvre que les programmes dont le contenu est écrit', () => {
+    // Si quelqu'un ajoute un identifiant ici sans écrire le programme, ce
+    // test ne le verra pas — mais `femmes.test.ts` comptera ses séances.
+    for (const id of CONTENU_ECRIT_SANS_ECRAN) {
+      const p = tousLesProgrammes().find((x) => x.id === id);
+      expect(p, `${id} exempté mais absent du catalogue`).toBeDefined();
+      expect(p?.statut, `${id} exempté alors qu'il est disponible`).toBe('a-venir');
     }
   });
 

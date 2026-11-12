@@ -160,15 +160,46 @@ export const FAMILLES: readonly Famille[] = [
   {
     id: 'femmes',
     nom: 'FEMMES',
-    sousTitre: 'Programmes à venir',
+    sousTitre: '8 semaines en circuits',
     /*
      * Aucun programme, et c'est volontaire. Le §4 interdit d'en inventer les
      * objectifs, les exercices ou les durées, et le §15 dit que son identité
      * visuelle sera choisie plus tard. La famille existe pour que la place
      * soit prête, pas pour remplir le catalogue.
      */
-    resume: 'Contenu en préparation. Les programmes de cette famille restent à définir.',
-    programmes: [],
+    resume:
+      'Huit semaines en circuits, à la maison ou en salle, avec un échauffement et deux questions de sécurité qui adaptent la séance.',
+    programmes: [
+      {
+        id: 'femmes8',
+        familleId: 'femmes',
+        nom: 'FEMMES 8',
+        version: '0.1',
+        dureeSemaines: 8,
+        /*
+         * `a-venir`, et ce n'est pas une précaution de façade.
+         *
+         * La règle en tête de ce fichier est explicite : un programme n'est
+         * `disponible` que s'il est jouable de bout en bout. Les données
+         * sont là — 3 phases, 30 séances, 39 exercices — mais aucun écran ne
+         * sait encore afficher un circuit en tours, et le cycle ne se
+         * démarre pas. L'annoncer disponible serait le mensonge que le
+         * premier appui révélerait.
+         */
+        statut: 'a-venir',
+        resume:
+          'Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
+        objectifs: [
+          'Reprendre ou construire une base de force complète, sans matériel lourd',
+          'Progresser par le volume et la maîtrise avant la charge',
+          'Tenir huit semaines avec trois séances courtes plutôt que cinq longues',
+        ],
+        prerequis: [
+          'Un tapis, une paire d’haltères légers et un kettlebell — ou une salle de sport',
+          'Trois créneaux de 20 à 45 minutes par semaine',
+        ],
+      },
+    ],
   },
   {
     id: 'perso',
