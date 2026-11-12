@@ -212,3 +212,11 @@ matériel et la durée avant d'écrire la moindre séance.
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
   affiche l'écart. Proposer un gramme serait une prescription.
+- **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
+  La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
+  monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le
+  comportement a été montré à Guillaume avec son correctif (5 tours, comme la
+  phase 3) ; il a tranché pour 4. La phase 2 est une construction commune,
+  c'est la phase 3 qui sépare les niveaux — 3, 4 et 5 tours. Un test de
+  `niveaux.test.ts` fige cette décision : s'il tombe, c'est qu'un chiffre a
+  bougé par mégarde, pas qu'il faut « réparer » la grille.

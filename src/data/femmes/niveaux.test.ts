@@ -170,29 +170,36 @@ describe('les invariants, qui comptent plus que les chiffres', () => {
     }
   });
 
-  it('DÉFAUT CONNU : en fin de phase 2, confirmée n’apporte plus rien', () => {
+  it('en fin de phase 2, confirmée rejoint intermédiaire — ASSUMÉ, pas un oubli', () => {
     /*
-     * Ce test ne protège pas une qualité, il EXPOSE un défaut — et il est
-     * écrit comme tel pour que personne ne le découvre à l'usage.
+     * Ce test fige une DÉCISION, il ne signale plus un défaut.
      *
-     * La grille validée donne 4 tours à la confirmée en phase 2, tandis que
-     * l'intermédiaire y monte de 3 à 4 au fil des semaines. En semaine 5,
-     * les deux arrivent donc à 4 tours sur le même circuit : la séance est
-     * RIGOUREUSEMENT IDENTIQUE, et le niveau ne sert plus à rien.
+     * Les faits : la grille donne 4 tours fixes à la confirmée en phase 2,
+     * tandis que l'intermédiaire y monte de 3 à 4 au fil des semaines. En
+     * semaine 5, les deux arrivent donc à 4 tours sur le même circuit, et la
+     * séance est RIGOUREUSEMENT IDENTIQUE — le niveau n'y change plus rien.
      *
-     * Ce n'est pas corrigé ici : la grille a été validée par Guillaume le
-     * 12 novembre, et un niveau n'est pas un détail d'implémentation qu'on
-     * ajuste en silence. Le correctif tient en un chiffre — confirmée phase
-     * 2 à 5 tours, comme sa phase 3 — et c'est à lui de le trancher.
+     * Ce comportement a été montré à Guillaume, chiffres à l'appui, avec le
+     * correctif qui tenait en un chiffre (confirmée phase 2 à 5 tours, comme
+     * sa phase 3). Il a tranché le 12 novembre : ON RESTE SUR 4 TOURS.
      *
-     * Le jour où il le fait, ce test tombe. C'est voulu : il doit mourir
-     * avec le défaut qu'il décrit.
+     * Ce n'est donc PAS à corriger. Une phase 2 qui converge n'est pas une
+     * anomalie si on considère que la phase 2 est une phase de construction
+     * commune, et que c'est la phase 3 qui sépare les niveaux — ce qu'elle
+     * fait bien : 3, 4 et 5 tours.
+     *
+     * Le test reste parce qu'un chiffre changé par mégarde le ferait tomber,
+     * et qu'on relirait alors cette décision au lieu de la deviner.
      */
     const s5i = seance('intermediaire', 5);
     const s5c = seance('confirmee', 5);
     expect(s5i.tours).toBe(s5c.tours);
     expect(s5i.slots.length).toBe(s5c.slots.length);
     expect(volume('intermediaire', 5)).toBe(volume('confirmee', 5));
+
+    // Et la phase 3, elle, sépare bien les trois niveaux.
+    expect(volume('debutante', 7)).toBeLessThan(volume('intermediaire', 7));
+    expect(volume('intermediaire', 7)).toBeLessThan(volume('confirmee', 7));
   });
 
   it('aucun niveau ne touche aux répétitions ni aux exercices eux-mêmes', () => {
