@@ -179,13 +179,19 @@ charges, sans qu'une ligne de code change.
 3. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
 4. **Les objectifs du §13**, calculés sur ses 1RM à lui.
 
-**L'avertissement qui compte.** « Programme femme » n'est pas une catégorie
-physiologique : la force s'entraîne de la même façon. Ce qui justifie un
-programme distinct, c'est le **niveau de départ**, l'**objectif déclaré**, le
-**nombre de jours disponibles** et le **rapport au matériel** — pas le sexe. Un
-POWER 12 rebadgé n'apporterait rien, puisque les pourcentages du 1RM adaptent
-déjà les charges gratuitement. Si le programme ne se distingue pas par sa
-structure, il ne doit pas exister.
+**L'avertissement, corrigé.** Une première version de ces notes affirmait que
+« programme femme » n'est pas une catégorie physiologique. **C'est faux dans le
+cas qui nous occupe**, et la correction compte : le programme retenu pour le
+cycle 1 est un programme POST-PARTUM. Le diastasis des grands droits et la
+rééducation périnéale sont des réalités physiologiques précises, qui
+interdisent des exercices nommés et en imposent d'autres. Ce n'est pas du
+marketing, c'est de la sécurité.
+
+Ce qui reste vrai : un programme ne se justifie pas par le sexe seul. Il se
+justifie par sa **structure** — ici, des circuits en tours, du matériel léger à
+domicile, un questionnaire de sécurité bloquant et des substitutions
+automatiques. Rien de tout cela n'existe dans POWER 12, et c'est bien pour ça
+que le programme a lieu d'être.
 
 Demande à Guillaume le niveau visé, l'objectif, les jours disponibles, le
 matériel et la durée avant d'écrire la moindre séance.
