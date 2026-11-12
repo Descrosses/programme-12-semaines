@@ -238,9 +238,9 @@ export function ExerciseCard({
           <div className={styles.adjust}>
             <b>Contraste</b> — {ex.contrast.cycleLabel}
             <span className={styles.adjustSuite}>
-              Série lourde → {restLabel(ex.contrast.restAfterHeavySec)} →{' '}
-              {ex.contrast.explosive} × {ex.contrast.explosiveReps} →{' '}
-              {restLabel(ex.contrast.restAfterExplosiveSec)} → série suivante
+              Série lourde → {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
+              {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
+              suivante
             </span>
           </div>
         )}
@@ -527,8 +527,8 @@ export function ExerciseCard({
             <p>
               <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{' '}
               {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
-              {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} →
-              série suivante. Ce n’est pas un superset.
+              {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
+              suivante. Ce n’est pas un superset.
             </p>
           )}
           {ex.adjustments
@@ -556,7 +556,7 @@ export function ExerciseCard({
           )}
           {ex.def.altBasicFit && (
             <p>
-              <b>Alternative Basic-Fit :</b> {ex.def.altBasicFit}
+              <b>Alternative en salle :</b> {ex.def.altBasicFit}
             </p>
           )}
         </div>
