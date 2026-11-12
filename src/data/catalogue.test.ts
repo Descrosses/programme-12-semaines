@@ -97,6 +97,20 @@ describe('catalogue Dcross-fit', () => {
     }
   });
 
+  /*
+   * L'aperçu ouvre des écrans réels, donc il n'a de sens que pour un
+   * programme dont ces écrans existent. Et il ne doit JAMAIS être un
+   * démarrage : seule une ancre de lecture est acceptée, pas une action.
+   */
+  it('n’ouvre un aperçu que pour un programme dont les écrans existent', () => {
+    for (const p of tousLesProgrammes()) {
+      if (p.apercu === undefined) continue;
+      expect(CONTENU_ECRIT_SANS_ECRAN, `${p.id} : aperçu sans écran`).toContain(p.id);
+      expect(p.apercu.startsWith('#/femmes/'), `${p.id} : aperçu hors FEMMES`).toBe(true);
+    }
+    expect(tousLesProgrammes().find((p) => p.id === 'femmes8')?.apercu).toBeDefined();
+  });
+
   it('donne un identifiant unique à chaque programme', () => {
     const ids = tousLesProgrammes().map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);

@@ -249,7 +249,30 @@ export function CatalogueScreen({
                             </div>
                           )}
 
-                          {action === 'aucune' && (
+                          {action === 'aucune' && p.apercu !== undefined && (
+                            /*
+                              L'aperçu ouvre les écrans en lecture seule. Il ne
+                              crée aucun cycle : c'est pour regarder, pas pour
+                              démarrer, et la phrase le dit.
+                            */
+                            <>
+                              <button
+                                type="button"
+                                className={local.action}
+                                onClick={() => {
+                                  window.location.hash = p.apercu!;
+                                }}
+                              >
+                                Voir l’aperçu
+                              </button>
+                              <p className={local.rien}>
+                                Aperçu : rien n’est encore enregistré. Ce programme n’est pas encore
+                                jouable dans l’application.
+                              </p>
+                            </>
+                          )}
+
+                          {action === 'aucune' && p.apercu === undefined && (
                             <p className={local.rien}>
                               Ce programme n’est pas encore jouable dans l’application.
                             </p>
