@@ -28,9 +28,19 @@ export type VueFemmes = 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'secu
 export function EcransFemmes({
   vue,
   onNaviguer,
+  onSortir,
 }: {
   vue: VueFemmes;
   onNaviguer: (v: VueFemmes) => void;
+  /*
+   * La sortie du programme, vers l'accueil MAJK.
+   *
+   * Elle manquait. L'ancien bouton « MAJK » de la barre du bas appelait
+   * `onAller('aujourdhui')` : il revenait à l'écran Aujourd'hui de FEMMES,
+   * pas à MAJK. Une fois entrée dans le programme, on n'en sortait que par
+   * le bouton Retour du téléphone.
+   */
+  onSortir: () => void;
 }) {
   const [etat, setEtat] = useState<EtatFemmes>(ETAT_INITIAL);
   /* Quel exercice du circuit est ouvert en plein écran. */
@@ -83,5 +93,12 @@ export function EcransFemmes({
   }
   if (vue === 'securite') return <FemmesSecurite onAller={aller} />;
 
-  return <FemmesAujourdhui etat={etat} onAller={aller} onCommencer={() => onNaviguer('seance')} />;
+  return (
+    <FemmesAujourdhui
+      etat={etat}
+      onAller={aller}
+      onCommencer={() => onNaviguer('seance')}
+      onSortir={onSortir}
+    />
+  );
 }

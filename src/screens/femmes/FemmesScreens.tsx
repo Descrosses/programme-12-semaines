@@ -49,16 +49,32 @@ export const ETAT_INITIAL: EtatFemmes = {
   niveau: NIVEAU_PAR_DEFAUT,
 };
 
+/**
+ * « MARDI 10 NOVEMBRE », comme sur la maquette.
+ *
+ * C'est la date de l'appareil, lue à l'affichage. Elle ne vient pas du
+ * programme et ne prétend pas en venir : FEMMES 8 n'a pas de cycle en base,
+ * donc aucun jour 1 d'où compter. L'écran s'appelle « Aujourd'hui » et dit
+ * quel jour on est, rien de plus.
+ */
+export function dateDuJour(maintenant: Date = new Date()): string {
+  return maintenant
+    .toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+    .toUpperCase();
+}
+
 /* ═══════════════════════════════════════════════ 1 — AUJOURD'HUI ═══════ */
 
 export function FemmesAujourdhui({
   etat,
   onAller,
   onCommencer,
+  onSortir,
 }: {
   etat: EtatFemmes;
   onAller: (o: OngletFemmes) => void;
   onCommencer: () => void;
+  onSortir: () => void;
 }) {
   const phase = phaseOf(etat.semaine);
   const seance = useMemo(
@@ -71,37 +87,52 @@ export function FemmesAujourdhui({
     <div className={s.page}>
       <Bandeau titre="MAJK FEMMES" />
 
-      <div className={s.chips}>
-        <span className={s.chip}>{niveauDef(etat.niveau).nom}</span>
-        <span className={s.chip}>
-          Semaine <b>{etat.semaine}</b>
-        </span>
-        <span className={s.chip}>{NOMS[etat.jour]}</span>
-        <span className={s.chip}>
-          <Ico nom="chrono" taille={14} />
-          <b>{phase.durationLabel}</b>
-        </span>
-      </div>
+      {/*
+        L'en-tête daté de la maquette : la date du jour, le titre de la
+        semaine, l'objectif. Il remplace les quatre pastilles de la première
+        version, qui disaient la même chose en moins lisible.
+
+        La date est celle de l'APPAREIL, pas une date de programme : FEMMES 8
+        n'a pas de cycle en base, donc pas de jour 1. Écrire « Semaine 1,
+        10 novembre » laisserait croire à un calendrier qui n'existe pas.
+      */}
+      <header className={s.enTete}>
+        <button type="button" className={s.retourMajk} onClick={onSortir}>
+          <Ico nom="chevronGauche" taille={16} />
+          MAJK
+        </button>
+        <p className={s.enTeteDate}>{dateDuJour()}</p>
+        <h2 className={s.enTeteTitre}>
+          Semaine {etat.semaine} · {phase.name}
+        </h2>
+        <p className={s.enTeteTexte}>{phase.objective}</p>
+      </header>
 
       <div className={s.corps}>
-        <section className={s.carte}>
-          <h2 className={s.carteTitre}>
-            Semaine {etat.semaine} · {phase.name}
-          </h2>
-          <p className={s.carteTexte}>{phase.objective}</p>
-        </section>
-
+        {/*
+          La carte d'action de la maquette : le jour et la durée en tête, le
+          lieu à droite, le volume en gros, et le bouton DANS la carte.
+        */}
         <section className={`${s.carte} ${s.carteRose}`}>
+          <div className={s.carteBarre}>
+            <span className={s.carteBarreGauche}>
+              {NOMS[etat.jour]} · {phase.durationLabel}
+            </span>
+            <span className={s.carteBarreDroite}>
+              <Ico nom={etat.version === 'maison' ? 'maison' : 'halteres'} taille={15} />
+              {etat.version === 'maison' ? 'Maison' : 'Salle'}
+            </span>
+          </div>
           <p className={s.gros}>{sessionVolume(seance)}</p>
           <p className={s.carteTexte}>
-            Repos {restLabel(seance.restSec)} entre les tours · Phase {phase.id} — {phase.name}.
+            Repos {restLabel(seance.restSec)} entre les tours. Phase {phase.id} — {phase.name} ·{' '}
+            {niveauDef(etat.niveau).nom}.
           </p>
+          <button type="button" className={`${s.cta} ${s.ctaDansCarte}`} onClick={onCommencer}>
+            <Ico nom="play" />
+            Commencer la séance
+          </button>
         </section>
-
-        <button type="button" className={s.cta} onClick={onCommencer}>
-          <Ico nom="play" />
-          Commencer la séance
-        </button>
 
         <div className={s.duo}>
           <div className={s.tuile}>
@@ -241,6 +272,7 @@ export function FemmesSeance({
     [etat],
   );
   const [introOuverte, setIntroOuverte] = useState(false);
+  const [toursFaits, setToursFaits] = useState(0);
   const rang = WEEK_DAYS[etat.semaine].indexOf(etat.jour);
 
   return (
@@ -281,13 +313,47 @@ export function FemmesSeance({
           </button>
         </div>
 
+        {/*
+          Le compteur de tours de la maquette : « TOURS », le compte en
+          gros à gauche, le repos à droite, et le bouton qui avance d'un
+          tour. Il remplace le « Démarrer le circuit » du bas, qui ne
+          faisait rien.
+
+          Le compte vit en mémoire d'écran, comme le reste de FEMMES 8 : il
+          ne survit pas à un rechargement, et la ligne sous le bouton le
+          dit. Brancher une écriture sur un schéma de persistance que
+          personne n'a validé coûterait une migration pour rien.
+        */}
         <section className={`${s.carte} ${s.carteRose}`}>
-          <h2 className={s.carteTitre}>
-            <Ico nom="boucle" taille={19} /> Circuit · {seance.tours} tours
-          </h2>
-          <p className={s.carteTexte}>
-            Repos {restLabel(seance.restSec)} entre les tours · {phase.durationLabel}
+          <div className={s.carteBarre}>
+            <span className={s.carteBarreGauche}>Tours</span>
+            <span className={s.compteurRepos}>
+              <b>Repos {restLabel(seance.restSec)}</b>
+              entre les tours · {phase.durationLabel}
+            </span>
+          </div>
+          <p className={s.gros}>
+            {toursFaits} / {seance.tours}
           </p>
+          <button
+            type="button"
+            className={`${s.cta} ${s.ctaDansCarte}`}
+            onClick={() => setToursFaits((n) => Math.min(n + 1, seance.tours))}
+            disabled={toursFaits >= seance.tours}
+          >
+            {toursFaits >= seance.tours ? (
+              <>
+                <Ico nom="coche" />
+                Circuit terminé
+              </>
+            ) : (
+              <>
+                <Ico nom="boucle" />
+                Tour terminé → repos
+              </>
+            )}
+          </button>
+          <p className={s.carteNote}>Ce compte n’est pas encore enregistré.</p>
         </section>
 
         <section className={s.ligne}>
@@ -350,11 +416,6 @@ export function FemmesSeance({
             </button>
           ))}
         </div>
-
-        <button type="button" className={s.cta}>
-          <Ico nom="play" />
-          Démarrer le circuit
-        </button>
 
         {seance.notes.length > 0 && (
           <section className={s.carte}>

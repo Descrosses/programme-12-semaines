@@ -388,7 +388,11 @@ function renderScreen(
      */
     case 'femmes':
       return (
-        <EcransFemmes vue={route.vue} onNaviguer={(v) => navigate({ name: 'femmes', vue: v })} />
+        <EcransFemmes
+          vue={route.vue}
+          onNaviguer={(v) => navigate({ name: 'femmes', vue: v })}
+          onSortir={() => navigate({ name: 'accueil' })}
+        />
       );
 
     case 'accueil':
