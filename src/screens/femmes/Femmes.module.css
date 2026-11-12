@@ -3,20 +3,40 @@
  *
  * ── La règle de ce fichier ────────────────────────────────────────────────
  *
- * C'est une COPIE de la planche à quatre écrans fournie par Guillaume. Les
- * hauteurs, rayons, tailles de texte et couleurs ont été relevés sur l'image
- * (1 px de planche ≈ 1 px d'écran à 390 de large), pas choisis.
+ * C'est une COPIE de la planche à quatre écrans fournie par Guillaume.
+ * Chaque cote vient d'un relevé : la planche a été agrandie trois fois sous
+ * une grille graduée, et les positions lues au pixel (1 px de planche =
+ * 1,018 px d'écran à 390 de large). Les tailles de texte sont réglées pour
+ * que la LARGEUR des titres égale celle de la planche.
  *
  * Avant de « corriger » une valeur : rouvrir la planche et mesurer.
  *
  * Rien ici ne peut atteindre POWER ni MASS : les classes sont locales au
- * module, et les jetons `--grad-*` n'existent que sous le thème FEMMES.
+ * module, la police « Barlow Femmes » n'est demandée qu'ici, et les jetons
+ * `--grad-*` n'existent que sous le thème FEMMES.
  */
 
 .page {
+  --f: 'Barlow Femmes', var(--font-cond);
+  --t: 'Barlow Femmes Texte', var(--font);
+  --texte: #f6effc;
+  --filet: rgb(176 110 220 / 60%);
+
   min-height: 100vh;
-  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
   color: var(--ink);
+  font-family: var(--t);
+}
+
+/* Les boutons et les champs n'héritent pas de la police : on la leur donne.
+   Et le plancher global de 48 px des commandes est levé ici — chaque pièce
+   porte sa propre hauteur, relevée sur la planche, jamais sous 44.
+   `:where()` garde la règle au poids d'UNE classe : placée ici, en tête,
+   toute classe plus bas la surcharge. */
+.page :where(button, textarea) {
+  font-family: var(--t);
+  min-width: 0;
+  min-height: 0;
 }
 
 /* ------------------------------------------------------------- le bandeau */
@@ -33,65 +53,71 @@
 .hero img {
   display: block;
   width: 100%;
-  height: calc(env(safe-area-inset-top) + 118px);
+  height: calc(env(safe-area-inset-top) + 106px);
   object-fit: cover;
   object-position: 50% 38%;
   -webkit-mask-image: var(--masque-fond, none);
   mask-image: var(--masque-fond, none);
 }
 
-/* Écran 1 : la photo est plus haute, le logo vit dedans. */
+/* Écran 1 : la photo descend jusqu'aux pastilles, le logo vit dedans. */
 .hero:has(.logo) img {
-  height: calc(env(safe-area-inset-top) + 130px);
+  height: calc(env(safe-area-inset-top) + 128px);
 }
 
-/* « MAJK FEMMES » : deux lignes penchées, blanc à tranche rose. */
+/* « MAJK FEMMES » : deux lignes penchées, blanc à tranche rose.
+   Relevé : « FEMMES » fait 163 px de large, capitales de 43 px. */
 .logo {
   position: absolute;
-  left: 22px;
-  top: calc(env(safe-area-inset-top) + 12px);
+  left: 19px;
+  top: calc(env(safe-area-inset-top) + 15px);
   margin: 0;
   display: flex;
   flex-direction: column;
-  transform: rotate(-7deg);
+  transform: rotate(-8deg);
   transform-origin: left center;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 54px;
-  line-height: 0.88;
-  letter-spacing: -0.005em;
+  font-size: 60px;
+  line-height: 0.83;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: #fff;
   text-shadow:
-    1px 1px 0 #ffb3e6,
-    2px 3px 0 #f04fb6,
-    3px 5px 0 rgb(150 20 120 / 90%),
-    0 10px 22px rgb(32 8 66 / 75%);
+    1px 2px 0 #f58bd0,
+    2px 3px 0 rgb(170 40 140 / 90%),
+    0 8px 18px rgb(32 8 66 / 80%);
 }
 
-/* Écrans 2, 3, 4 : le texte se pose au pied de la photo, dans son fondu. */
+/*
+ * Écrans 2, 3, 4 : le texte se pose au pied de la photo, dans son fondu.
+ * Cotes relevées sous la barre d'état : fil d'Ariane centré à 88, sur-titre
+ * à 118, capitales du titre centrées à 148.
+ */
 .heroTexte {
   position: relative;
   z-index: 1;
-  margin-top: -30px;
-  padding: 0 28px;
+  margin-top: -7px;
+  padding: 0 16px 0 27px;
+}
+
+.heroTexte:has(.retourLien) {
+  margin-top: -41px;
 }
 
 .retourLien {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  /* 44 px au toucher ; les marges négatives rendent l'interligne de la
-     planche (30 px) sans rétrécir la cible. */
-  min-height: 44px;
-  margin: -10px 0 -9px -6px;
-  padding: 0 10px 0 0;
+  gap: 8px;
+  height: 44px;
+  margin: 0 0 -1px -3px;
+  padding: 0 12px 0 0;
   background: none;
   border: 0;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-weight: 700;
-  font-size: 19.5px;
+  font-size: 21px;
   color: var(--accent-ink);
   cursor: pointer;
   text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
@@ -99,9 +125,11 @@
 
 .surTitre {
   display: block;
-  font-size: 13.5px;
+  margin-left: 4px;
+  font-size: 14.5px;
+  line-height: 18px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.125em;
   text-transform: uppercase;
   color: var(--ink);
   text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
@@ -109,47 +137,53 @@
 
 .surTitreRose {
   display: block;
-  font-family: var(--font-cond);
+  margin-left: 3px;
+  font-family: var(--f);
   font-style: italic;
-  font-weight: 700;
-  font-size: 21px;
-  line-height: 1.1;
+  font-weight: 600;
+  font-size: 23px;
+  line-height: 24px;
   color: var(--accent-ink);
   text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
 }
 
 .titre {
   margin: 0;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.005em;
+  line-height: 1;
   color: #fff;
   text-shadow:
     0 2px 0 rgb(32 8 66 / 80%),
     0 4px 16px rgb(32 8 66 / 85%);
 }
 
+/* « SEMAINE 1 » : 193 px de large sur la planche. */
 .titreXl {
-  font-size: 46px;
-  line-height: 0.98;
+  margin-top: -3px;
+  font-size: 54px;
 }
 
+/* « Séance 1 » : 134 px de large. */
 .titreL {
-  font-size: 37px;
+  margin: 4px 0 0 8px;
+  font-size: 43px;
 }
 
+/* « Squat au poids du corps » : 303 px de large. */
 .titreM {
-  font-size: 30px;
+  margin: 5px 0 2px -4px;
+  font-size: 35px;
 }
 
 .sousTitre {
   display: block;
-  margin-top: 4px;
-  font-family: var(--font-cond);
+  margin: 0 0 0 -1px;
+  font-family: var(--f);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 22px;
+  line-height: 24px;
   color: var(--ink);
 }
 
@@ -160,7 +194,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 6px 16px 0;
+  padding: 8px 16px 0;
 }
 
 .chip {
@@ -171,17 +205,23 @@
   padding: 0 11px;
   border-radius: 999px;
   background: rgb(30 8 60 / 55%);
-  border: 1.5px solid rgb(214 170 255 / 70%);
-  font-family: var(--font-cond);
-  font-size: 14px;
+  border: 1.5px solid rgb(226 200 255 / 80%);
+  box-shadow: 0 0 8px rgb(200 150 255 / 22%);
+  font-family: var(--f);
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--ink);
   white-space: nowrap;
 }
 
+/* Sur la planche, les deux dernières pastilles tirent sur le bleu. */
+.chip:nth-child(n + 3) {
+  border-color: rgb(130 200 240 / 80%);
+}
+
 .chipCaps {
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 /* ------------------------------------------------------------ mise en page */
@@ -189,36 +229,71 @@
 .corps {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 12px 16px 0;
+  gap: 14px;
+  padding: 10px 16px 0;
+}
+
+/* Pastilles → première carte, et cases de semaine → première carte : 22. */
+.chipsAccueil + .corps,
+.semaines + .corps {
+  padding-top: 22px;
 }
 
 .carte {
   border-radius: 14px;
-  border: 1.5px solid var(--line);
+  border: 2px solid rgb(205 80 220 / 78%);
   background: var(--grad-surface, var(--surface));
   box-shadow:
-    0 0 12px rgb(200 60 220 / 16%),
-    inset 0 1px 0 rgb(255 255 255 / 7%);
-  padding: 11px 16px 13px;
+    0 0 14px rgb(215 70 230 / 30%),
+    inset 0 0 16px rgb(215 70 230 / 8%),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
+  /* 17 à gauche, 14 à droite : c'est ce qui laisse tenir « …remettre le
+     corps » sur la première ligne, comme sur la planche. */
+  padding: 10px 11px 10px 17px;
+}
+
+/* « Objectif de la semaine » : 105 de haut sur la planche. */
+.carte:has(> .carteTitreIcone) {
+  padding-top: 7px;
+  padding-bottom: 8px;
+}
+
+/* La carte de volume de l'écran Semaine : 78 de haut sur la planche. */
+.carte:has(> .gros:first-child) {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.carte > .gros:first-child {
+  line-height: 36px;
 }
 
 /* La bordure rose : la carte qui appelle une action. */
 .carteRose {
-  border-color: var(--accent-bright);
+  border-color: rgb(252 62 196 / 92%);
   box-shadow:
-    0 0 14px rgb(252 62 196 / 32%),
-    inset 0 0 18px rgb(252 62 196 / 8%);
+    0 0 16px rgb(252 62 196 / 42%),
+    inset 0 0 18px rgb(252 62 196 / 10%);
 }
 
-/* Carte à pictogramme : l'icône rose à gauche, le texte à droite. */
+/* La carte d'action de l'accueil : 217 de haut, bouton à 9 px des bords. */
+.carteAction {
+  padding: 11px 9px 8px;
+}
+
+.carteAction > :not(.cta) {
+  margin-left: 9px;
+  margin-right: 9px;
+}
+
+/* Carte à pictogramme (« Circuit · 3 tours ») : 67 de haut. */
 .carteIcone {
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: 42px 1fr;
   align-items: center;
-  gap: 14px;
-  padding-top: 9px;
-  padding-bottom: 10px;
+  gap: 13px;
+  min-height: 67px;
+  padding: 6px 17px 7px 18px;
 }
 
 .icoRose {
@@ -227,37 +302,58 @@
   filter: drop-shadow(0 0 6px rgb(252 62 196 / 55%));
 }
 
+/* « Semaine 1 · Réactivation » : 287 px de large. */
 .carteTitre {
   margin: 0;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 26px;
-  line-height: 1.1;
+  font-size: 33px;
+  line-height: 34px;
   color: var(--ink);
 }
 
 .carteIcone .carteTitre {
-  font-size: 23px;
+  font-size: 25px;
+  line-height: 28px;
 }
 
+/* « Objectif de la semaine » : 189 px de large, pictogramme de 34. */
 .carteTitreIcone {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 23px;
+  gap: 17px;
+  min-height: 35px;
+  font-size: 24px;
+  line-height: 26px;
 }
 
 .carteTexte {
   margin-top: 4px;
-  font-size: 15px;
-  line-height: 1.38;
-  color: #f1e6fb;
+  font-size: 16.3px;
+  line-height: 21px;
+  color: var(--texte);
+}
+
+.carteTitreIcone + .carteTexte {
+  margin-top: 6px;
+  line-height: 22px;
 }
 
 .carteIcone .carteTexte {
-  margin-top: 1px;
-  font-size: 14px;
+  margin-top: 0;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.gros + .carteTexte {
+  margin-top: 2px;
+  font-size: 15.7px;
+}
+
+.carteAction .gros + .carteTexte {
+  margin-top: 6px;
+  font-size: 16.5px;
 }
 
 .carteBarre {
@@ -265,42 +361,49 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-height: 27px;
   margin-bottom: 6px;
 }
 
 .carteBarreGauche {
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
 }
 
-/* La pastille « Maison » : contour rose, texte rose. */
+/* La pastille « Maison » : contour rose, texte rose, 27 de haut. */
 .lieu {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   height: 27px;
-  padding: 0 12px;
+  padding: 0 13px;
   border-radius: 999px;
   border: 1.5px solid var(--accent-bright);
-  font-family: var(--font-cond);
-  font-size: 14.5px;
+  font-family: var(--f);
+  font-size: 17px;
   font-weight: 700;
   color: var(--accent-ink);
   white-space: nowrap;
 }
 
+/* « 3 TOURS × 5 » : 195 px de large à l'accueil. */
 .gros {
   margin: 0;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 35px;
-  line-height: 1.05;
+  font-size: 41px;
+  line-height: 40px;
   color: var(--ink);
   text-shadow: 0 0 16px rgb(252 62 196 / 40%);
+}
+
+.carteAction .gros {
+  font-size: 47px;
+  line-height: 42px;
 }
 
 .grosCaps {
@@ -309,68 +412,81 @@
 
 /* ----------------------------------------------------------------- boutons */
 
+/* Accueil : 61 de haut, italique en capitales, 218 px de texte. */
 .cta {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   width: 100%;
-  min-height: 58px;
+  min-height: 61px;
   border: 1.5px solid rgb(255 170 228 / 85%);
   border-radius: 14px;
   background: var(--grad-accent, var(--accent));
   box-shadow:
     0 0 18px rgb(247 1 127 / 40%),
     inset 0 2px 0 rgb(255 255 255 / 22%);
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
   font-size: 26px;
-  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--ink-on-accent);
   cursor: pointer;
 }
 
-/* Écrans 3 et 4 : le bouton de la planche est droit, en minuscules. */
+/* Écrans 3 et 4 : 50 de haut, droit, en minuscules, en retrait de 8. */
 .ctaSobre {
+  width: auto;
+  min-height: 50px;
+  margin: -2px 8px 0;
+  border-radius: 13px;
   font-style: normal;
   font-weight: 700;
   font-size: 26px;
   text-transform: none;
 }
 
+/* Écran 4 : 14 entre le champ et le bouton. */
+.remarque + .ctaSobre {
+  margin-top: 0;
+}
+
 .ctaDansCarte {
-  margin-top: 11px;
+  margin-top: 12px;
 }
 
 .cta svg {
-  width: 26px;
-  height: 26px;
+  width: 27px;
+  height: 27px;
   flex: 0 0 auto;
 }
 
+/* « Voir la semaine entière » : 49 de haut, 20 sous les tuiles. */
 .secondaire {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  min-height: 48px;
+  min-height: 49px;
+  margin-top: 6px;
   border-radius: 12px;
-  border: 1.5px solid var(--cyan-femmes);
+  border: 2px solid var(--cyan-femmes);
   background: #201d50;
-  box-shadow: 0 0 12px rgb(56 214 239 / 22%);
-  font-family: var(--font-cond);
-  font-size: 18px;
+  box-shadow:
+    0 0 14px rgb(56 214 239 / 38%),
+    inset 0 0 12px rgb(56 214 239 / 10%);
+  font-family: var(--f);
+  font-size: 20px;
   font-weight: 700;
   color: var(--ink);
   cursor: pointer;
 }
 
 .secondaire svg {
-  width: 22px;
-  height: 22px;
+  width: 27px;
+  height: 27px;
   flex: 0 0 auto;
 }
 
@@ -380,28 +496,34 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+  margin-top: 1px;
 }
 
+/* 81 de haut, texte à 20 du bord gauche. */
 .tuile {
   border-radius: 14px;
-  border: 1.5px solid var(--line);
+  border: 2px solid rgb(205 80 220 / 70%);
   background: linear-gradient(to bottom, #3a1a5c 0%, #2d124f 100%);
-  padding: 10px 18px 12px;
+  box-shadow: 0 0 12px rgb(215 70 230 / 24%);
+  padding: 8px 12px 10px 19px;
   text-align: left;
 }
 
 .tuileValeur {
-  font-family: var(--font-cond);
-  font-weight: 800;
-  font-size: 30px;
-  line-height: 1.1;
+  font-family: var(--f);
+  font-weight: 700;
+  font-size: 37px;
+  line-height: 38px;
+  letter-spacing: -0.01em;
+  word-spacing: -0.12em;
   color: var(--ink);
 }
 
 .tuileLabel {
-  margin-top: 1px;
-  font-size: 15px;
-  color: #f1e6fb;
+  margin-top: 2px;
+  font-size: 16.5px;
+  line-height: 20px;
+  color: var(--texte);
 }
 
 /* -------------------------------------------- sélecteur des huit semaines */
@@ -411,19 +533,19 @@
      refuse de descendre sous son contenu et la rangée déborde à 375 px. */
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 6px;
-  padding: 12px 16px 0;
+  gap: 4px;
+  padding: 14px 16px 0;
 }
 
 .sem {
   height: 44px;
   padding: 0;
   border-radius: 9px;
-  border: 1.5px solid rgb(96 160 240 / 80%);
+  border: 2px solid rgb(84 150 214 / 85%);
   background: #2e1051;
-  font-family: var(--font-cond);
-  font-weight: 800;
-  font-size: 21px;
+  font-family: var(--f);
+  font-weight: 700;
+  font-size: 25px;
   color: var(--ink);
   cursor: pointer;
 }
@@ -440,7 +562,8 @@
 .bascule {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 9px;
+  margin: 0 5px;
 }
 
 /* Inactif : sombre à contour bleu. Actif : le rose du bouton d'action. */
@@ -448,16 +571,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
   min-height: 44px;
   border-radius: 10px;
-  border: 1.5px solid rgb(96 170 240 / 85%);
+  border: 2px solid rgb(84 160 222 / 90%);
   background: #241055;
-  font-family: var(--font-cond);
-  font-size: 18px;
+  font-family: var(--f);
+  font-size: 22px;
   font-weight: 700;
   color: var(--ink);
   cursor: pointer;
+}
+
+.basculeBtn > span {
+  font-size: 20px;
 }
 
 .basculeOn,
@@ -472,46 +599,53 @@
 
 /* ------------------------------------------------------ lignes du circuit */
 
+/* « Circuit · 5 exercices à enchaîner » : 280 px de large. */
 .titreSection {
-  margin: 2px 4px -5px;
-  font-family: var(--font-cond);
+  margin: -3px 0 -9px 10px;
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 21px;
+  font-size: 24px;
+  line-height: 26px;
   color: var(--ink);
 }
 
 .lignes {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 13px;
+  margin-top: 1px;
 }
 
+/* Les exercices : 47 de haut, 4 d'écart. */
 .lignesSerrees {
-  gap: 5px;
+  gap: 4px;
+  margin-top: 0;
 }
 
 .ligne {
   border-radius: 10px;
-  border: 1.5px solid rgb(176 110 220 / 60%);
+  border: 1.5px solid var(--filet);
   background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
   overflow: hidden;
 }
 
+/* La ligne d'échauffement : 49 de haut, 8 sous la carte du circuit. */
 .ligneIntro {
+  margin-top: -6px;
   border-color: var(--line);
   border-radius: 12px;
 }
 
 .ligneTete {
   display: grid;
-  grid-template-columns: 40px 1fr 18px;
+  grid-template-columns: 34px 1fr 18px;
   align-items: center;
-  gap: 14px;
+  gap: 21px;
   width: 100%;
-  min-height: 46px;
-  padding: 3px 14px 3px 16px;
+  min-height: 47px;
+  padding: 2px 13px 2px 16px;
   background: none;
   border: 0;
   text-align: left;
@@ -519,48 +653,54 @@
   cursor: pointer;
 }
 
+.ligneIntro .ligneTete {
+  padding-left: 22px;
+  grid-template-columns: 28px 1fr 18px;
+}
+
+/* La ligne EST le bouton : `.ligneTete` remet bordure et fond à zéro. */
 .lignesSerrees .ligneTete {
-  border: 1.5px solid rgb(176 110 220 / 60%);
+  border: 1.5px solid var(--filet);
   border-radius: 10px;
   background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
 }
 
 .introNom {
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 24px;
   color: var(--ink);
 }
 
 .numero {
   display: grid;
   place-items: center;
-  width: 31px;
-  height: 31px;
+  width: 33px;
+  height: 33px;
   border-radius: 50%;
   border: 1.5px solid rgb(190 150 225 / 55%);
   background: #4a2a68;
-  font-family: var(--font-cond);
-  font-weight: 800;
-  font-size: 16px;
+  font-family: var(--f);
+  font-weight: 700;
+  font-size: 20px;
   color: var(--ink);
 }
 
 .ligneNom {
   /* `block` : sans ça le nom et la dose se collent sur une ligne. */
   display: block;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-weight: 700;
-  font-size: 17px;
-  line-height: 1.15;
+  font-size: 20px;
+  line-height: 21px;
   color: var(--ink);
 }
 
 .ligneDose {
   display: block;
-  font-size: 14.5px;
-  line-height: 1.2;
+  font-size: 17px;
+  line-height: 19px;
   font-weight: 500;
   color: var(--accent-ink);
 }
@@ -585,21 +725,23 @@
 
 .consignes {
   margin: 0;
-  padding: 10px 18px 14px;
+  padding: 11px 17px 15px 24px;
   border-radius: 14px;
-  border: 1.5px solid rgb(200 110 225 / 70%);
+  border: 2px solid rgb(215 90 225 / 80%);
   box-shadow:
-    0 0 12px rgb(200 60 220 / 16%),
-    inset 0 1px 0 rgb(255 255 255 / 7%);
+    0 0 14px rgb(215 70 230 / 30%),
+    inset 0 0 16px rgb(215 70 230 / 8%),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
   background: var(--grad-surface, var(--surface));
 }
 
 .consignesTitre {
   margin: 0;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 23px;
+  font-size: 24px;
+  line-height: 26px;
   color: var(--ink);
 }
 
@@ -609,60 +751,70 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .consignesListe li {
   display: grid;
   grid-template-columns: 20px 1fr;
-  gap: 10px;
-  font-size: 15px;
-  line-height: 1.3;
-  color: #f1e6fb;
+  gap: 11px;
+  font-size: 16.5px;
+  line-height: 20px;
+  color: var(--texte);
 }
 
 .coche {
   width: 20px;
   height: 20px;
+  margin-top: 0;
   color: var(--accent-bright);
 }
 
+/* « En salle : charge légère. » : 36 de haut. */
 .notePetite {
-  margin: 10px 0 0;
-  padding: 7px 14px;
+  margin: 10px 0 0 -6px;
+  padding: 7px 15px;
   border-radius: 9px;
   background: #432360;
-  border: 1.5px solid rgb(176 110 220 / 55%);
-  font-size: 15px;
-  color: #f1e6fb;
+  border: 1.5px solid var(--filet);
+  font-size: 16.5px;
+  line-height: 19px;
+  color: var(--texte);
+}
+
+.consignesListe + .notePetite {
+  margin-top: 12px;
 }
 
 .blocLabel {
-  margin: 4px 0 -4px;
-  font-size: 14px;
+  margin: -2px 0 -5px;
+  font-size: 15.5px;
+  line-height: 18px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.093em;
   text-transform: uppercase;
   color: var(--ink);
   text-align: center;
 }
 
+/* Compteur : 48 de haut, boutons de 65, en retrait de 9. */
 .compteur {
   display: grid;
-  grid-template-columns: 64px 1fr 64px;
+  grid-template-columns: 65px 1fr 65px;
   align-items: stretch;
-  min-height: 48px;
+  height: 48px;
+  margin: 0 9px;
   border-radius: 10px;
-  border: 1.5px solid rgb(176 110 220 / 55%);
+  border: 1.5px solid var(--filet);
   background: #2a0a4a;
   overflow: hidden;
 }
 
 .compteurBtn {
-  min-height: 48px;
+  min-height: 44px;
   background: #441969;
   border: 0;
-  font-size: 30px;
+  font-size: 36px;
   font-weight: 500;
   line-height: 1;
   color: var(--ink);
@@ -671,26 +823,28 @@
 
 .compteurValeur {
   align-self: center;
-  font-family: var(--font-cond);
-  font-weight: 800;
-  font-size: 27px;
+  font-family: var(--f);
+  font-weight: 700;
+  font-size: 29px;
   text-align: center;
   color: var(--ink);
 }
 
+/* Ressenti : 46 de haut, 11 sous le compteur. */
 .ressenti {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+  margin: -3px 9px 0 11px;
 }
 
 .ressentiBtn {
-  min-height: 44px;
-  border-radius: 10px;
-  border: 1.5px solid rgb(176 110 220 / 60%);
+  min-height: 46px;
+  border-radius: 11px;
+  border: 2px solid rgb(176 110 220 / 70%);
   background: #2b1248;
-  font-family: var(--font-cond);
-  font-size: 18px;
+  font-family: var(--f);
+  font-size: 21px;
   font-weight: 700;
   color: var(--ink);
   cursor: pointer;
@@ -706,24 +860,26 @@
 }
 
 .remarqueLabel {
-  margin: 2px 0 -6px;
-  font-size: 15px;
+  margin: 3px 0 -9px 9px;
+  font-size: 17px;
+  line-height: 20px;
   color: var(--ink);
 }
 
+/* Champ : 50 de haut, une ligne. */
 .remarque {
   width: 100%;
+  height: 50px;
+  min-height: 50px;
   margin: 0;
-  padding: 12px 14px;
-  height: 48px;
-  min-height: 48px;
-  border-radius: 10px;
-  border: 1.5px solid rgb(176 110 220 / 60%);
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--filet);
   background: #1e0839;
   color: var(--ink);
-  font-family: inherit;
-  font-size: 15px;
-  resize: vertical;
+  font-size: 16.5px;
+  line-height: 20px;
+  resize: none;
 }
 
 .remarque::placeholder {
@@ -732,14 +888,15 @@
 
 /* ------------------------------------------------------- liste des séances */
 
+/* Lignes de jour : 56 de haut, 13 d'écart, bord gauche rose appuyé. */
 .jour {
   display: grid;
-  grid-template-columns: 58px 1fr auto 14px;
+  grid-template-columns: 54px 1fr auto 12px;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   min-height: 56px;
-  padding: 6px 10px 6px 16px;
+  padding: 4px 9px 4px 17px;
   border-radius: 12px;
   border: 1.5px solid rgb(252 62 196 / 75%);
   background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
@@ -752,35 +909,40 @@
 }
 
 .jourCode {
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-style: italic;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 23px;
   color: var(--ink);
 }
 
 .jourNom {
   display: block;
-  font-family: var(--font-cond);
+  font-family: var(--f);
   font-weight: 700;
-  font-size: 18px;
-  line-height: 1.15;
+  font-size: 21px;
+  line-height: 21px;
   color: var(--ink);
 }
 
 .jourDetail {
   display: block;
-  font-size: 13px;
+  margin-top: 1px;
+  font-size: 15.5px;
+  line-height: 18px;
   color: #e3d3f3;
 }
 
-/* « À faire » : contour et texte roses. « Prévue » : verts. */
+/* « À faire » : contour et texte roses. « Prévue » : verts. 27 de haut. */
 .etat {
-  padding: 3px 11px;
+  display: inline-flex;
+  align-items: center;
+  height: 27px;
+  padding: 0 11px;
   border-radius: 999px;
   border: 1.5px solid var(--accent-bright);
-  font-family: var(--font-cond);
-  font-size: 15px;
+  font-family: var(--f);
+  font-size: 17px;
   font-weight: 700;
   color: var(--accent-ink);
   white-space: nowrap;
@@ -798,13 +960,14 @@
 
 /* ------------------------------------------------------------- navigation */
 
+/* 58 de haut sur la planche, sept pièces, trait rose à cheval sur le bord. */
 .nav {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
-  padding: 0 4px env(safe-area-inset-bottom);
+  padding: 0 6px env(safe-area-inset-bottom);
   background: rgb(36 10 70 / 97%);
   border-top: 1px solid rgb(176 110 220 / 45%);
   backdrop-filter: blur(10px);
@@ -814,33 +977,34 @@
 .navItem {
   flex: 1 1 0;
   min-width: 0;
-  min-height: 60px;
+  min-height: 57px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 0;
+  gap: 5px;
+  padding: 2px 0 0;
   background: none;
   border: 0;
-  font-family: var(--font-cond);
-  font-size: 12px;
+  font-family: var(--t);
+  /* 11 px : à 11,5 « Aujourd'hui » dépassait sa case de 2 px à 375. */
+  font-size: 11px;
   font-weight: 500;
-  color: #efe3fa;
+  letter-spacing: -0.02em;
+  color: #f3eafb;
   position: relative;
   cursor: pointer;
 }
 
 .navItem svg {
-  width: 21px;
-  height: 21px;
+  width: 20px;
+  height: 20px;
 }
 
 .navOn {
   color: var(--accent-bright);
 }
 
-/* Le trait rose à cheval sur le bord haut de la barre. */
 .navOn::before {
   content: '';
   position: absolute;

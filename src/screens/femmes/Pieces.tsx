@@ -52,7 +52,7 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
         <circle cx="10" cy="17" r="2" {...trait} />
       </>
     ),
-    chevron: <path d="M9 6l6 6-6 6" {...trait} />,
+    chevron: <path d="M9 5l7 7-7 7" {...trait} strokeWidth={2.4} />,
     chevronGauche: <path d="M15 5l-7 7 7 7" {...trait} strokeWidth={2.6} />,
     maison: <path d="M4 11l8-7 8 7M6 10v9h12v-9M10 19v-5h4v5" {...trait} />,
     chrono: (
@@ -144,7 +144,7 @@ export function Bandeau({
         <div className={s.heroTexte}>
           {retour !== undefined && (
             <button type="button" className={s.retourLien} onClick={onRetour}>
-              <Ico nom="chevronGauche" taille={18} />
+              <Ico nom="chevronGauche" taille={22} />
               {retour}
             </button>
           )}

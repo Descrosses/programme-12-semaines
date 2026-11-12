@@ -27,3 +27,73 @@
   font-display: swap;
   src: url('../assets/fonts/barlow-condensed-700-latin.woff2') format('woff2');
 }
+
+/*
+ * « Barlow Femmes » — les coupes que la planche FEMMES réclame.
+ *
+ * La planche est composée en VRAI italique extra-gras. L'application n'en
+ * embarquait pas : le navigateur penchait et engraissait le 700 droit
+ * lui-même, et les titres sortaient 3 à 5 % trop étroits, avec des formes
+ * de lettres fausses.
+ *
+ * Une famille À PART, et non de nouvelles coupes de « Barlow Condensed » :
+ * ajouter un 800 ou un italique à la famille partagée aurait changé le
+ * rendu de POWER et de MASS partout où ils demandent du gras ou de
+ * l'italique. Sous ce nom, seuls les écrans FEMMES la voient.
+ */
+@font-face {
+  font-family: 'Barlow Femmes';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-600-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Femmes';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-700-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Femmes';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-600-italic-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Femmes';
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-800-italic-latin.woff2') format('woff2');
+}
+
+/*
+ * « Barlow Femmes Texte » — le texte courant des écrans FEMMES.
+ *
+ * Le reste de l'application compose son texte dans la police du système,
+ * qui change d'un téléphone à l'autre : les retours à la ligne aussi. Une
+ * copie de planche ne peut pas dépendre de l'appareil. Mesuré sur sept
+ * phrases de la planche : Barlow à 16,5 px en égale la largeur à 3 % près,
+ * là où la police système en demandait 14,9.
+ */
+@font-face {
+  font-family: 'Barlow Femmes Texte';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-400-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Femmes Texte';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-500-latin.woff2') format('woff2');
+}

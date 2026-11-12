@@ -25,7 +25,7 @@ import { NIVEAU_PAR_DEFAUT, niveauDef, type Niveau } from '../../data/femmes/niv
 import { phaseOf } from '../../data/femmes/phases';
 import { SAFETY_CHECKS, WEEK_DAYS } from '../../data/femmes/programme';
 import { WEEKS, type DayIndex, type Version, type WeekIndex } from '../../data/femmes/types';
-import { getSession, sessionVolume } from '../../engine/femmes/getSession';
+import { getSession } from '../../engine/femmes/getSession';
 import { restLabel, workLabel } from '../../engine/femmes/format';
 import { EMPTY_CONTEXT } from '../../engine/femmes/types';
 import { Bandeau, Ico, NavFemmes, type OngletFemmes } from './Pieces';
@@ -72,7 +72,7 @@ export function FemmesAujourdhui({
       <Bandeau logo titre="MAJK FEMMES" />
 
       {/* Les quatre pastilles de la planche : niveau, semaine, jour, durée. */}
-      <div className={s.chips}>
+      <div className={`${s.chips} ${s.chipsAccueil}`}>
         <span className={`${s.chip} ${s.chipCaps}`}>{niveauDef(etat.niveau).nom}</span>
         <span className={s.chip}>Semaine {etat.semaine}</span>
         <span className={s.chip}>{NOMS[etat.jour]}</span>
@@ -92,17 +92,19 @@ export function FemmesAujourdhui({
 
         {/* La carte d'action : jour et durée en tête, lieu en pastille à
             droite, volume en gros, bouton DANS la carte. */}
-        <section className={`${s.carte} ${s.carteRose}`}>
+        <section className={`${s.carte} ${s.carteRose} ${s.carteAction}`}>
           <div className={s.carteBarre}>
             <span className={s.carteBarreGauche}>
               {NOMS[etat.jour]} · {phase.durationLabel}
             </span>
             <span className={s.lieu}>
-              <Ico nom={etat.version === 'maison' ? 'maison' : 'boucle'} taille={15} />
+              <Ico nom={etat.version === 'maison' ? 'maison' : 'boucle'} taille={19} />
               {etat.version === 'maison' ? 'Maison' : 'Salle'}
             </span>
           </div>
-          <p className={`${s.gros} ${s.grosCaps}`}>{sessionVolume(seance)}</p>
+          <p className={`${s.gros} ${s.grosCaps}`}>
+            {seance.tours} tours × {seance.slots.length}
+          </p>
           <p className={s.carteTexte}>
             Repos {restLabel(seance.restSec)} entre les tours, Phase {phase.id} — {phase.name}.
           </p>
@@ -183,7 +185,7 @@ export function FemmesSemaine({
         <section className={s.carte}>
           <h2 className={`${s.carteTitre} ${s.carteTitreIcone}`}>
             <span className={s.icoRose}>
-              <Ico nom="cible" taille={34} />
+              <Ico nom="cible" taille={37} />
             </span>
             Objectif de la semaine
           </h2>
@@ -191,10 +193,12 @@ export function FemmesSemaine({
         </section>
 
         <section className={s.carte}>
-          <p className={`${s.gros} ${s.grosCaps}`}>{sessionVolume(seance)}</p>
+          <p className={`${s.gros} ${s.grosCaps}`}>
+            {seance.tours} tours × {seance.slots.length}
+          </p>
           <p className={s.carteTexte}>
-            {jours.length} séances de {phase.durationLabel} · repos {restLabel(seance.restSec)}{' '}
-            entre les tours.
+            {jours.length} séances de {phase.durationLabel}, repos {restLabel(seance.restSec)} entre
+            les tours.
           </p>
         </section>
 
@@ -212,7 +216,7 @@ export function FemmesSemaine({
                 {d === etat.jour ? 'Prévue' : 'À faire'}
               </span>
               <span className={s.jourChevron}>
-                <Ico nom="chevron" taille={18} />
+                <Ico nom="chevron" taille={22} />
               </span>
             </button>
           ))}
@@ -298,7 +302,7 @@ export function FemmesSeance({
 
         <section className={`${s.carte} ${s.carteRose} ${s.carteIcone}`}>
           <span className={s.icoRose}>
-            <Ico nom="boucle" taille={36} />
+            <Ico nom="boucle" taille={42} />
           </span>
           <div>
             <h2 className={s.carteTitre}>Circuit · {seance.tours} tours</h2>
@@ -329,7 +333,7 @@ export function FemmesSeance({
                 {seance.intro.map((i) => (
                   <li key={i.id}>
                     <span className={s.coche}>
-                      <Ico nom="coche" taille={16} />
+                      <Ico nom="coche" taille={20} />
                     </span>
                     <span>
                       <b>{i.label}</b> — {i.detail}
@@ -449,14 +453,14 @@ export function FemmesExercice({
           <ul className={s.consignesListe}>
             <li>
               <span className={s.coche}>
-                <Ico nom="coche" taille={16} />
+                <Ico nom="coche" taille={20} />
               </span>
               <span>{slot.exercise.intent}</span>
             </li>
             {(slot.exercise.cues ?? []).map((c, i) => (
               <li key={i}>
                 <span className={s.coche}>
-                  <Ico nom="coche" taille={16} />
+                  <Ico nom="coche" taille={20} />
                 </span>
                 <span>{c}</span>
               </li>
