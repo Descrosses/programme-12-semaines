@@ -45,6 +45,13 @@ export interface ProgrammeDefinition {
   /** Semaines d'entraînement, hors combine initial. */
   dureeSemaines: number;
   statut: StatutProgramme;
+  /*
+   * Une ancre qui ouvre un APERÇU en lecture seule, pour un programme
+   * `a-venir` dont les écrans existent déjà. Ce n'est PAS un démarrage :
+   * l'aperçu ne crée aucun cycle et n'écrit rien. Absent par défaut ; le
+   * test du catalogue dit où il a le droit d'exister.
+   */
+  apercu?: string;
   resume: string;
   objectifs: readonly string[];
   prerequis: readonly string[];
@@ -187,6 +194,7 @@ export const FAMILLES: readonly Famille[] = [
          * premier appui révélerait.
          */
         statut: 'a-venir',
+        apercu: '#/femmes/aujourdhui',
         resume:
           'Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
         objectifs: [
