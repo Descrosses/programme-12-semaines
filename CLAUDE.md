@@ -142,9 +142,44 @@ de thème est vide, la famille hérite de POWER et aucun écran ne casse. Ces
 règles viennent de Guillaume ; le code les cite comme « §4 » (ne rien inventer)
 et « §15 » (identité visuelle à définir plus tard).
 
-Un programme femme n'est pas un programme homme avec moins de kilos. Demande à
-Guillaume le profil, l'objectif, les jours disponibles, le matériel et les
-contraintes médicales avant d'écrire la moindre séance.
+### Décision prise : le programme FEMMES sera GÉNÉRIQUE
+
+Pas calibré sur une personne. Plusieurs pratiquantes doivent pouvoir le suivre.
+
+**Ce qui est déjà générique, et qu'il ne faut surtout pas réécrire :**
+
+- Les charges des lifts principaux sont des **pourcentages du 1RM**
+  (`pct(82, 'back-squat', 95)` dans `mainLiftTable.ts`). Le troisième argument,
+  `kgOrigine`, n'est qu'une référence historique affichée : c'est le `%` qui
+  calcule la charge, à partir du 1RM saisi par la pratiquante.
+- Le **combine initial** (semaine 0) mesure ces 1RM : squat, bench, deadlift,
+  tractions. Le moteur en dérive tout le tableau.
+
+Autrement dit : une femme qui démarre à 40 kg de squat reçoit déjà les bonnes
+charges, sans qu'une ligne de code change.
+
+**Ce qui reste strictement personnel à Guillaume, et doit sortir :**
+
+1. **Le §14 — adducteur gauche.** Quatre exercices portent un `painWatch` qui
+   nomme sa blessure. Un programme générique ne peut pas transporter le suivi
+   de douleur de quelqu'un d'autre. Il faut un mécanisme de blessure déclarée
+   par la pratiquante, ou rien.
+2. **Les rampes d'échauffement du combine** (`RAMP_SQUAT` et consorts) portent
+   des kilos absolus (« 147,5 seulement si 142,5 passe proprement »). À dériver
+   du 1RM estimé, ou à redemander à chaque combine.
+3. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
+4. **Les objectifs du §13**, calculés sur ses 1RM à lui.
+
+**L'avertissement qui compte.** « Programme femme » n'est pas une catégorie
+physiologique : la force s'entraîne de la même façon. Ce qui justifie un
+programme distinct, c'est le **niveau de départ**, l'**objectif déclaré**, le
+**nombre de jours disponibles** et le **rapport au matériel** — pas le sexe. Un
+POWER 12 rebadgé n'apporterait rien, puisque les pourcentages du 1RM adaptent
+déjà les charges gratuitement. Si le programme ne se distingue pas par sa
+structure, il ne doit pas exister.
+
+Demande à Guillaume le niveau visé, l'objectif, les jours disponibles, le
+matériel et la durée avant d'écrire la moindre séance.
 
 ---
 
