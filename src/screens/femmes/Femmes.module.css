@@ -1,0 +1,825 @@
+/*
+ * Les écrans FEMMES — feuille unique.
+ *
+ * ── Pourquoi un module à part, et pas une surcharge de ceux de POWER ──────
+ *
+ * Les écrans de POWER 12 affichent des séries × reps, un RPE et un feu
+ * tricolore. FEMMES 8 affiche un circuit en TOURS, un ressenti en trois mots
+ * et un sélecteur maison / salle : ce ne sont pas les mêmes écrans habillés
+ * autrement, ce sont d'autres écrans.
+ *
+ * Les surcharger aurait voulu dire piquer des `:where([data-theme='femmes'])`
+ * dans une quinzaine de fichiers partagés, et faire porter à POWER le risque
+ * de chaque retouche. Ici, rien de ce fichier ne peut l'atteindre.
+ *
+ * ── Les couleurs ne sont pas écrites ici ──────────────────────────────────
+ *
+ * Tout passe par les jetons de `tokens.css`, eux-mêmes échantillonnés dans la
+ * planche de référence. Une couleur en dur dans ce fichier serait une couleur
+ * que personne ne retrouverait le jour d'un ajustement.
+ */
+
+.page {
+  min-height: 100vh;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+}
+
+/* ------------------------------------------------------------- le bandeau */
+
+/*
+ * Il se FOND, il ne se coupe pas. Deux mécanismes : l'image descend déjà
+ * dans sa propre zone d'extinction, et `--masque-fond` dissout ses 48
+ * derniers pour cent dans la page. Un voile rectangulaire aurait simplement
+ * déplacé l'arête plus bas.
+ */
+.hero {
+  position: relative;
+  /* 178 px et non 150 : sur la référence le décor occupe nettement plus de
+     hauteur, et le titre y tient sans écraser la ville. */
+  height: 178px;
+}
+
+.hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  -webkit-mask-image: var(--masque-fond, none);
+  mask-image: var(--masque-fond, none);
+}
+
+.heroTexte {
+  position: absolute;
+  left: 16px;
+  right: 92px;
+  bottom: 8px;
+  z-index: 1;
+}
+
+/*
+ * La variante « fil d'Ariane », transcrite de la référence.
+ *
+ * Sur les écrans 1 et 2 le titre vit DANS la photo : il n'y a qu'une ligne,
+ * elle tombe là où le masque a déjà dissous le décor, et elle se lit.
+ *
+ * Sur les écrans 3 et 4 il y a trois lignes — retour, sur-titre, titre. La
+ * pile remonte dans le ciel, et c'est là que ça casse : « ‹ Séance 1 » est
+ * rose (#ff79c8) sur un ciel rose (#d87d89), MESURÉ à 1,22:1 quand le seuil
+ * du grand texte est 3,0. Aucune ombre portée ne rattrape un écart pareil.
+ * Sur l'aplat de la page, le même rose remonte à 6,79:1.
+ *
+ * La référence ne le rattrape pas non plus : elle ARRÊTE la photo et pose le
+ * bloc de texte en dessous, sur l'aplat de la page. C'est ce que fait cette
+ * variante — pas une invention, une transcription.
+ */
+.heroEmpile {
+  height: auto;
+}
+
+.heroEmpile img {
+  height: 120px;
+}
+
+.heroEmpile .heroTexte {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  padding: 2px 16px 10px;
+}
+
+.retourLien {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 44 px : c'est une commande, elle doit se toucher au pouce. */
+  min-height: 44px;
+  padding: 0 8px 0 0;
+  margin: 0 0 -4px -2px;
+  background: none;
+  border: 0;
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.surTitre {
+  display: block;
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  text-shadow: 0 2px 10px rgb(37 12 68 / 90%);
+}
+
+.titre {
+  font-family: var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(30px, 8.4vw, 38px);
+  line-height: 0.94;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow:
+    0 3px 0 rgb(30 8 56 / 85%),
+    0 6px 20px rgb(37 12 68 / 90%);
+}
+
+/* --------------------------------------------------------------- pastilles */
+
+/* Badges d'information, pas des commandes : ils n'ont pas à faire 44 px. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 16px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgb(105 45 147 / 50%);
+  border: 1px solid var(--line-strong);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.chip b {
+  font-weight: 700;
+}
+
+/* --------------------------------------------- en-tête daté de l'accueil */
+
+/*
+ * Le bloc sous la photo, transcrit de la maquette : date, titre de semaine,
+ * objectif. Il remplace la rangée de pastilles.
+ */
+.enTete {
+  padding: 12px 16px 0;
+}
+
+.retourMajk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* Une commande : 44 px, comme le fil d'Ariane des écrans 3 et 4. */
+  min-height: 44px;
+  margin: -8px 0 -6px -2px;
+  padding: 0 8px 0 0;
+  background: none;
+  border: 0;
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.enTeteDate {
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.enTeteTitre {
+  margin-top: 2px;
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.08;
+  color: var(--ink);
+}
+
+.enTeteTexte {
+  margin-top: 6px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------ mise en page */
+
+.corps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 16px 0;
+}
+
+.carte {
+  border-radius: 18px;
+  border: 1.5px solid var(--line);
+  background: var(--grad-surface, var(--surface));
+  padding: 14px 16px;
+}
+
+/* La bordure rose : réservée à ce qui appelle une action. */
+.carteRose {
+  border: 2px solid var(--accent-bright);
+  box-shadow:
+    0 0 16px rgb(252 62 196 / 28%),
+    inset 0 0 20px rgb(252 62 196 / 7%);
+}
+
+.carteCyan {
+  border: 2px solid var(--cyan-femmes);
+  box-shadow: 0 0 14px rgb(56 214 239 / 18%);
+}
+
+.carteTitre {
+  font-family: var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 23px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.carteTexte {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+/* La ligne de tête d'une carte d'action : libellé à gauche, contexte à
+   droite. Elle sert à l'accueil (jour · durée / lieu) et à la séance
+   (TOURS / repos). */
+.carteBarre {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.carteBarreGauche {
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding-top: 2px;
+}
+
+.carteBarreDroite {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+
+.compteurRepos {
+  display: block;
+  text-align: right;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.compteurRepos b {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.carteNote {
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+
+.gros {
+  font-family: var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------- boutons */
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--grad-accent, var(--accent));
+  box-shadow: 0 6px 22px rgb(247 1 127 / 36%);
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 25px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-on-accent);
+  cursor: pointer;
+}
+
+.secondaire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 2px solid var(--cyan-femmes);
+  background: linear-gradient(118deg, #1e265a 0%, #1f2357 100%);
+  box-shadow: 0 0 14px rgb(56 214 239 / 18%);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Le bouton logé dans une carte : la maquette l'y met, à l'accueil comme
+   sur la séance. Un peu plus bas que le bouton pleine page, et sans
+   l'ombre, qui baverait sur la bordure rose de la carte. */
+.ctaDansCarte {
+  margin-top: 12px;
+  min-height: 54px;
+  font-size: 22px;
+  box-shadow: none;
+}
+
+.ctaDansCarte:disabled {
+  background: rgb(105 45 147 / 45%);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  cursor: default;
+}
+
+.cta svg,
+.secondaire svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------- deux tuiles côte à côte */
+
+.duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tuile {
+  border-radius: 16px;
+  border: 1.5px solid var(--line);
+  background: var(--grad-surface, var(--surface));
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.tuileValeur {
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.tuileLabel {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* -------------------------------------------- sélecteur des huit semaines */
+
+.semaines {
+  /*
+   * Une grille de huit, pas une bande qui défile.
+   *
+   * En défilement, la semaine 8 restait hors écran : on ne savait pas
+   * qu'elle existait. Huit colonnes égales tiennent dès 375 px et montrent
+   * le programme entier d'un coup d'œil, ce qui est tout l'intérêt d'un
+   * sélecteur de semaines.
+   */
+  display: grid;
+  /* minmax(0, 1fr) et non 1fr : sans le zéro, une piste de grille refuse de
+     descendre sous la largeur intrinsèque de son contenu, et les huit
+     boutons débordaient de 67 px à 375 px. */
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  padding: 2px 16px 4px;
+}
+
+.semaines::-webkit-scrollbar {
+  display: none;
+}
+
+.sem {
+  height: 44px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line-strong);
+  background: rgb(105 45 147 / 45%);
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink-2);
+  cursor: pointer;
+  padding: 0;
+}
+
+.semActive {
+  border-color: var(--accent-bright);
+  background: var(--grad-accent, var(--accent));
+  color: var(--ink-on-accent);
+  box-shadow: 0 0 14px rgb(252 62 196 / 40%);
+}
+
+/* ------------------------------------------------- bascule maison / salle */
+
+.bascule {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.basculeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border-radius: 14px;
+  border: 2px solid var(--line-strong);
+  background: rgb(105 45 147 / 45%);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.basculeOn {
+  border-color: var(--accent-bright);
+  background: var(--grad-accent, var(--accent));
+  color: var(--ink-on-accent);
+  box-shadow: 0 0 14px rgb(252 62 196 / 35%);
+}
+
+/* La version salle se distingue par le cyan, pas par une autre forme. */
+.basculeOnSalle {
+  border-color: var(--cyan-femmes);
+  background: linear-gradient(118deg, #1e265a 0%, #26407a 100%);
+  color: var(--ink);
+  box-shadow: 0 0 14px rgb(56 214 239 / 30%);
+}
+
+/* ------------------------------------------------------ lignes du circuit */
+
+.lignes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ligne {
+  border-radius: 16px;
+  border: 1.5px solid var(--line);
+  background: var(--grad-surface, var(--surface));
+  overflow: hidden;
+}
+
+.ligneTete {
+  display: grid;
+  grid-template-columns: 34px 1fr 18px;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 14px;
+  background: none;
+  border: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.numero {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.ligneNom {
+  /* `block` et non `inline` : sans ça le nom et la dose se collaient —
+     « Squat au poids du corps12 ». */
+  display: block;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.ligneDose {
+  display: block;
+  margin-top: 2px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  transition: transform 0.15s ease;
+}
+
+.chevronOuvert {
+  transform: rotate(90deg);
+}
+
+/* Le corps dépliable : fermé par défaut, ouvert au choix de l'utilisatrice. */
+.ligneCorps {
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.consignes {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  /* Bordure rose lumineuse : c'est ce que montre la référence, et c'est elle
+     qui fait respirer la carte sur le fond violet. */
+  border: 2px solid var(--accent-bright);
+  box-shadow:
+    0 0 18px rgb(252 62 196 / 26%),
+    inset 0 0 22px rgb(252 62 196 / 6%);
+  background: var(--grad-surface, var(--surface));
+}
+
+.consignesTitre {
+  font-family: var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.consignesListe {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.consignesListe li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 9px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.coche {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--accent-bright);
+}
+
+.notePetite {
+  margin-top: 10px;
+  padding: 10px 13px;
+  border-radius: 12px;
+  background: rgb(120 60 165 / 38%);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* --------------------------------------------------- saisie du réalisé */
+
+.blocLabel {
+  margin: 14px 0 6px;
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.compteur {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  align-items: center;
+  border-radius: 14px;
+  border: 1.5px solid var(--line-strong);
+  background: rgb(105 45 147 / 45%);
+  overflow: hidden;
+}
+
+.compteurBtn {
+  min-height: 52px;
+  background: none;
+  border: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.compteurValeur {
+  font-family: var(--font-cond);
+  font-weight: 800;
+  font-size: 27px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.ressenti {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 11px;
+}
+
+.ressentiBtn {
+  min-height: 46px;
+  border-radius: 13px;
+  border: 1.5px solid var(--line-strong);
+  background: rgb(105 45 147 / 45%);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.ressentiOn {
+  border-color: var(--accent-bright);
+  background: var(--grad-accent, var(--accent));
+  color: var(--ink-on-accent);
+}
+
+.remarqueLabel {
+  margin: 14px 0 6px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.remarque {
+  width: 100%;
+  margin-top: 0;
+  padding: 11px 13px;
+  min-height: 56px;
+  border-radius: 13px;
+  border: 1.5px solid var(--line);
+  background: rgb(105 45 147 / 45%);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.remarque::placeholder {
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------- liste des séances */
+
+.jour {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 62px;
+  padding: 11px 14px;
+  border-radius: 16px;
+  border: 1.5px solid var(--line);
+  background: var(--grad-surface, var(--surface));
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.jourCode {
+  font-family: var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--accent-ink);
+}
+
+.jourNom {
+  display: block;
+  font-size: 15.5px;
+  color: var(--ink);
+}
+
+.jourDetail {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.etat {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line-strong);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.etatPrevu {
+  border-color: var(--vert);
+  color: var(--vert);
+}
+
+/* ------------------------------------------------------------- navigation */
+
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: rgb(37 12 68 / 97%);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+}
+
+.navItem {
+  flex: 1;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: 0;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  position: relative;
+  cursor: pointer;
+}
+
+.navItem svg {
+  width: 20px;
+  height: 20px;
+}
+
+.navOn {
+  color: var(--ink);
+}
+
+.navOn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 22%;
+  right: 22%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--accent-bright);
+}

@@ -4,6 +4,7 @@ import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
 import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
+import { EcransFemmes } from './screens/femmes/EcransFemmes';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { MesuresScreen } from './screens/MesuresScreen';
@@ -173,7 +174,14 @@ export function App() {
 
   // Pendant une séance, la barre de navigation disparaît : l'écran est long,
   // le pouce navigue dedans, et une barre de plus multiplierait les appuis ratés.
-  const inSession = route.name === 'session';
+  /*
+   * FEMMES 8 porte SA barre de navigation, dans ses propres écrans.
+   *
+   * Sans cette ligne, les deux se superposaient : on lisait « Combine » —
+   * un onglet de POWER 12 — sous un écran FEMMES. Chacun garde la sienne,
+   * et on ne voit jamais les deux à la fois, comme pour la plateforme.
+   */
+  const inSession = route.name === 'session' || route.name === 'femmes';
   // Deux niveaux : la plateforme choisit un programme, le programme mène une
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
   const dansPlateforme =
@@ -370,6 +378,23 @@ function renderScreen(
   timer: ReturnType<typeof useRestTimer>,
 ) {
   switch (route.name) {
+    /*
+     * FEMMES 8 vit à part, et garde son propre état.
+     *
+     * Ses écrans n'ont pas de cycle en base — le programme est `a-venir` —
+     * donc ni `dataVersion` ni `refresh` ne les concernent. Les brancher sur
+     * le cycle actif de POWER 12 aurait fait afficher une séance de squat
+     * sous un bandeau FEMMES au premier rechargement.
+     */
+    case 'femmes':
+      return (
+        <EcransFemmes
+          vue={route.vue}
+          onNaviguer={(v) => navigate({ name: 'femmes', vue: v })}
+          onSortir={() => navigate({ name: 'accueil' })}
+        />
+      );
+
     case 'accueil':
       return (
         <AccueilScreen

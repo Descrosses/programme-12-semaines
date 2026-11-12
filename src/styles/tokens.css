@@ -367,71 +367,77 @@
  */
 [data-theme='femmes'] {
   /* --------------------------------------------------------------- fonds */
-  /* Nuit violette : le ciel d'un coucher de soleil synthwave, après le soleil. */
-  --bg: #160a26;
-  --bg-2: #1f0e33;
-  --surface: #2a1142;
-  --surface-2: #361a52;
-  --surface-3: #432463;
+  /*
+   * ÉCHANTILLONNÉS dans la planche de référence, pas choisis à l'œil.
+   *
+   * La version précédente descendait à #160a26, un violet presque noir.
+   * Guillaume l'a jugée « trop sombre, trop terne » : les relevés lui
+   * donnent raison, la référence vit entre #250c44 et #462271 — un violet
+   * profond mais SATURÉ, qui laisse les cartes se détacher sans les
+   * éclaircir.
+   */
+  /*
+   * ── Les cartes sont plus CLAIRES que le fond, pas plus sombres ─────────
+   *
+   * C'était le défaut central de la version précédente, et il se mesure :
+   * son fond dominait à #2A0D51 et ses cartes à #1E073D — donc plus
+   * sombres que la page. La référence fait l'inverse, fond #2F0E50 et
+   * cartes #50206B. D'où l'impression, juste, d'une interface « terne » :
+   * les surfaces s'enfonçaient au lieu de se détacher.
+   *
+   * Valeurs relevées sur l'écran 4 de la planche fournie.
+   */
+  --bg: #2f0e50;
+  --bg-2: #3a1460;
+  --surface: #50206b;
+  --surface-2: #5c2a78;
+  --surface-3: #692d93;
 
-  --line: #4a2770;
-  /* 3,77:1 sur --surface : au-dessus des 3,0 exigés d'un contour de contrôle. */
+  --line: #7a3fa0;
+  /* 3,63:1 sur la carte : au-dessus des 3,0 exigés d'un contour de contrôle. */
   --line-strong: #9a5cc8;
 
   /* --------------------------------------------------------------- texte */
-  --ink: #fdf2ff;
-  --ink-2: #dcb9ef;
-  --ink-3: #bd93d6;
+  --ink: #ffffff;
+  --ink-2: #d9c2ef;
+  --ink-3: #b795d8;
   --ink-on-accent: #ffffff;
 
   /* ----------------------------------------------------- couleur d'action */
-  /* Magenta profond : FOND de bouton, blanc dessus à 5,34:1. */
-  --accent: #d1006e;
-  /* Le néon des maquettes. Lueurs, bordures actives, dégradés — jamais du texte. */
-  --accent-bright: #ff2d95;
-  --accent-deep: #9c0052;
-  --accent-dim: #3d0a28;
-  /* Le magenta qu'on ÉCRIT : 8,2:1 sur le fond, 5,4 sur la carte la plus claire. */
-  --accent-ink: #ff7ec4;
-  --accent-ink-fort: #ff7ec4;
+  --accent: #f7017f;
+  --accent-bright: #fc3ec4;
+  --accent-deep: #c4006a;
+  --accent-dim: #3d0a33;
+  /* Le magenta qu'on ÉCRIT : 7,3:1 sur le fond, 5,1 sur la carte la plus claire. */
+  --accent-ink: #ff79c8;
+  --accent-ink-fort: #ff79c8;
 
-  /* Le voile et l'ombre de titre suivent le fond, sinon les en-têtes bavent. */
-  --ink-fort: #fdf2ff;
-  --voile: 22 10 38;
-  --ombre-titre: 0 1px 8px rgb(22 10 38 / 85%);
+  /* Le cyan des commandes secondaires : 9,2:1 sur la carte. */
+  --cyan-femmes: #38d6ef;
+
+  --ink-fort: #ffffff;
+  --voile: 37 12 68;
+  --ombre-titre: 0 1px 8px rgb(37 12 68 / 85%);
 
   /*
-   * ── Les DÉGRADÉS ────────────────────────────────────────────────────────
+   * ── Les DÉGRADÉS, relevés point par point ──────────────────────────────
    *
-   * Ces quatre variables n'existent QUE sur ce thème, et c'est ce qui rend
-   * l'ajout sans danger : partout où elles servent, elles sont écrites
-   * `var(--grad-x, <la valeur plate d'avant>)`. Sur POWER et MASS la
-   * variable n'est pas définie, le repli s'applique, et pas un pixel ne
-   * bouge. Prouvé en comparant deux captures de POWER.
-   *
-   * Les valeurs ne sont pas inventées : elles ont été ÉCHANTILLONNÉES pixel
-   * par pixel dans la maquette fournie par Guillaume. Le fond allait du
-   * violet #3a1a60 à gauche à l'indigo #1c255f en bas à droite, et le
-   * bouton d'action était un dégradé VERTICAL #f21aa8 → #da1685 — pas
-   * horizontal, c'est la première chose qu'il a vue de travers.
+   * Ils n'existent QUE sur ce thème : partout où ils servent, ils s'écrivent
+   * `var(--grad-x, <la valeur plate d'avant>)`. POWER et MASS prennent le
+   * repli et ne bougent pas — vérifié à 0 pixel près sur cinq écrans.
    */
-
-  /* Fond d'écran : violet à gauche, indigo en bas à droite, deux halos. */
   --grad-fond:
-    radial-gradient(85% 42% at 3% 6%, rgb(99 36 125 / 85%) 0%, rgb(99 36 125 / 0%) 72%),
-    radial-gradient(80% 45% at 98% 8%, rgb(65 34 143 / 85%) 0%, rgb(65 34 143 / 0%) 70%),
-    linear-gradient(168deg, #3a1a60 0%, #341a5e 28%, #2e2060 58%, #24245f 80%, #1c255f 100%);
+    radial-gradient(90% 40% at 2% 4%, rgb(105 45 147 / 70%) 0%, rgb(105 45 147 / 0%) 70%),
+    radial-gradient(85% 42% at 99% 8%, rgb(92 42 120 / 70%) 0%, rgb(92 42 120 / 0%) 68%),
+    linear-gradient(170deg, #3a1460 0%, #351459 32%, #2f0e50 68%, #2b0d4a 100%);
 
-  /* Bouton d'action. Blanc dessus : 3,97 en haut, 4,74 en bas — mesurés. */
-  --grad-accent: linear-gradient(to bottom, #f21aa8 0%, #ee18a2 42%, #da1685 100%);
+  /* Bouton d'action : dégradé VERTICAL, comme la référence. */
+  --grad-accent: linear-gradient(to bottom, #fc3ec4 0%, #fa1691 45%, #f7017f 100%);
 
-  /* Cartes : le même basculement violet → indigo, en vertical. */
-  --grad-surface: linear-gradient(to bottom, #3c1b59 0%, #342063 55%, #2d2565 100%);
+  /* Du violet franc, qui se détache du fond : c'est lui qui porte la couleur. */
+  --grad-surface: linear-gradient(to bottom, #5a2578 0%, #54226f 55%, #4c1e66 100%);
 
-  /*
-   * Le fondu du bandeau. Les 48 derniers pour cent de la photo se dissolvent
-   * dans le fond de la page, ce qui supprime l'arête basse.
-   */
+  /* Le fondu du bandeau : les 48 derniers pour cent se dissolvent dans la page. */
   --masque-fond: linear-gradient(
     to bottom,
     #000 0%,
