@@ -21,7 +21,20 @@ export type Route =
   | { name: 'nutrition' }
   | { name: 'combine' }
   | { name: 'mesures' }
-  | { name: 'settings' };
+  | { name: 'settings' }
+  /*
+   * Les écrans FEMMES 8, sous un préfixe à eux.
+   *
+   * `femmes` et non `today`/`week`/`session` : ces routes-là sont câblées
+   * sur POWER 12 et sur son cycle actif. FEMMES 8 n'a pas de cycle — le
+   * programme est `a-venir` — et ses écrans affichent un circuit en tours,
+   * pas des séries. Partager les routes aurait obligé chaque écran de POWER
+   * à se demander de quel programme il parle.
+   *
+   * `vue` dit lequel des écrans afficher ; le reste (semaine, jour, version,
+   * niveau) vit dans l'état de l'application, pas dans l'URL.
+   */
+  | { name: 'femmes'; vue: 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite' };
 
 export function parseRoute(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
@@ -46,6 +59,14 @@ export function parseRoute(hash: string): Route {
       return { name: 'combine' };
     case 'mesures':
       return { name: 'mesures' };
+    case 'femmes': {
+      const v = parts[1];
+      const vue =
+        v === 'semaine' || v === 'seance' || v === 'exercice' || v === 'securite'
+          ? v
+          : ('aujourdhui' as const);
+      return { name: 'femmes', vue };
+    }
     case 'settings':
       return { name: 'settings' };
     default:
@@ -71,6 +92,8 @@ export function routeToHash(route: Route): string {
       return '#/today';
     case 'accueil':
       return '#/accueil';
+    case 'femmes':
+      return `#/femmes/${route.vue}`;
     default:
       return `#/${route.name}`;
   }

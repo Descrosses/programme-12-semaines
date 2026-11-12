@@ -4,6 +4,7 @@ import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
 import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
+import { EcransFemmes } from './screens/femmes/EcransFemmes';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { MesuresScreen } from './screens/MesuresScreen';
@@ -370,6 +371,19 @@ function renderScreen(
   timer: ReturnType<typeof useRestTimer>,
 ) {
   switch (route.name) {
+    /*
+     * FEMMES 8 vit à part, et garde son propre état.
+     *
+     * Ses écrans n'ont pas de cycle en base — le programme est `a-venir` —
+     * donc ni `dataVersion` ni `refresh` ne les concernent. Les brancher sur
+     * le cycle actif de POWER 12 aurait fait afficher une séance de squat
+     * sous un bandeau FEMMES au premier rechargement.
+     */
+    case 'femmes':
+      return (
+        <EcransFemmes vue={route.vue} onNaviguer={(v) => navigate({ name: 'femmes', vue: v })} />
+      );
+
     case 'accueil':
       return (
         <AccueilScreen
