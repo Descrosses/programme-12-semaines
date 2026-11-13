@@ -105,6 +105,10 @@ describe('le Pin Squat remplace le Back Squat du lundi en S5-7, et seulement là
     }
   });
 
+  it('aucun suivi de douleur personnel : le programme est grand public', () => {
+    expect(EXERCISES['pin-squat']!.painWatch).toBeUndefined();
+  });
+
   it('jour ROUGE en S5-7 : le lundi revient au Back Squat 3 × 3 à 65 % du 1RM', () => {
     const rouge: SessionContext = {
       ...EMPTY_CONTEXT,

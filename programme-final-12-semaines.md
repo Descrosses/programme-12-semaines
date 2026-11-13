@@ -625,7 +625,7 @@ Gêne à l'intérieur de la cuisse gauche, près de l'aine, présente depuis env
 
 | Statut | Exercices | Ce que ça change |
 |---|---|---|
-| **Maintenu, adapté** | Back Squat (et le Pin Squat qui le remplace en S5-7), Bulgarian Split Squat | Charge et amplitude tolérées. Les valeurs du tableau §9 restent des références théoriques, pas des obligations. La tolérance passe avant le RPE. |
+| **Maintenu, adapté** | Back Squat, Bulgarian Split Squat | Charge et amplitude tolérées. Les valeurs du tableau §9 restent des références théoriques, pas des obligations. La tolérance passe avant le RPE. |
 | **Maintenu, surveillé** | Front Squat, Deadlift, Single-Leg RDL, Hip Thrust, Lateral Bound | Programmation inchangée — rien n'est supprimé préventivement. Surveiller l'apparition d'une gêne pendant la séance et le lendemain. |
 | **Nouveau, à tester** | Roman Side Bench, Zercher March | Introduits en semaine 5, tolérance non établie. Suivi de douleur actif sur les deux, comme sur le squat et le Bulgarian. Progression conditionnée à la tolérance, jamais automatique. |
 | **Suspendu** | Copenhagen Plank dynamique | Retiré des séances, conservé au catalogue avec sa raison. Aucun remplacement : l'anti-flexion latérale reste couverte par le Suitcase Carry. |

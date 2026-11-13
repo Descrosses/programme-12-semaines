@@ -88,10 +88,11 @@ const LIST: ExerciseDef[] = [
    * identifiant, donc son propre historique, ses propres courbes, et aucun
    * 1RM. Ses charges ne sont jamais déduites de celles du back squat.
    *
-   * Consignes : celles écrites par Guillaume, mot pour mot. Le suivi de
-   * l'adducteur gauche suit le squat qu'il remplace : le §14 situe la gêne
-   * « en bas du squat chargé, pendant la remontée » — c'est exactement la
-   * position de départ du pin squat.
+   * Consignes : celles écrites par Guillaume, mot pour mot.
+   *
+   * PAS de suivi de l'adducteur gauche (`painWatch`) : il est personnel à
+   * Guillaume, et ce programme s'adresse au grand public. Décision de
+   * Guillaume — ne pas l'étendre aux nouveaux exercices.
    */
   def({
     id: 'pin-squat',
@@ -115,8 +116,6 @@ const LIST: ExerciseDef[] = [
       'Ne relâche pas brutalement le gainage quand la barre repose sur les sécurités.',
       'Utilise un rack et des sécurités adaptés.',
     ],
-    painWatch:
-      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   def({
     id: 'bulgarian-split-squat',
