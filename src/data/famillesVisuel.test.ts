@@ -41,3 +41,22 @@ describe('carte FEMMES', () => {
     expect(femmes.sousTitre).toBe('Galbe & renforcement');
   });
 });
+
+describe('carte ME, MYSELF & I', () => {
+  it('porte sa propre photo, pas celle d’un autre programme', () => {
+    expect(HABILLAGE.perso.photo).toBe('cartePerso');
+    for (const autre of ['power', 'mass', 'femmes'] as const) {
+      expect(HABILLAGE.perso.photo).not.toBe(HABILLAGE[autre].photo);
+    }
+  });
+
+  it('les deux fichiers servis existent', () => {
+    for (const f of [VISUELS.cartePerso.display, VISUELS.cartePerso.mobile]) {
+      expect(existsSync(fichier(f)), f).toBe(true);
+    }
+  });
+
+  it('cadre en haut : la carte de 128 px coupait la tête en cadrage centré', () => {
+    expect(VISUELS.cartePerso.focus).toBe('center 10%');
+  });
+});
