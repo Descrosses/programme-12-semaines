@@ -1,12 +1,11 @@
 /**
- * La filière POWER : 1.0 ouvert à tous, TRANSITION 4 après 1.0, 2.0 en deux
- * temps. Et le matériel à prévoir, qui ne doit citer que des exercices
- * réellement programmés.
+ * Le parcours POWER de 52 semaines (schéma de Guillaume), et le matériel à
+ * prévoir, qui ne doit citer que des exercices réellement programmés.
  */
 
 import { describe, expect, it } from 'vitest';
-import { accesProgramme, semaineAccessible } from './acces';
-import { programmeParId, tousLesProgrammes } from '../data/catalogue';
+import { accesProgramme } from './acces';
+import { familleParId, programmeParId, tousLesProgrammes } from '../data/catalogue';
 import { EXERCISES } from '../data/exercises';
 import { getSession } from './getSession';
 import { EMPTY_CONTEXT } from './types';
@@ -16,45 +15,68 @@ const p = (id: string) => programmeParId(id)!;
 const fini = (id: string) => ({ programmeId: id, statut: 'termine' });
 const enCours = (id: string) => ({ programmeId: id, statut: 'en-cours' });
 
-describe('la filière POWER', () => {
-  it('POWER 28 a disparu du catalogue', () => {
-    expect(programmeParId('power28')).toBeNull();
+const PARCOURS = [
+  'power12',
+  'power-transition1',
+  'power-cycle2',
+  'power-transition2',
+  'power-cycle3',
+  'power-transition-finale',
+];
+
+describe('le parcours POWER', () => {
+  /*
+   * Le schéma annonce « 52 semaines », mais ses six étapes font 3 × 12 +
+   * 3 × 4 = 48. L'écart a été signalé à Guillaume ; l'application affiche ce
+   * que les étapes font vraiment, sans le chiffre de 52.
+   */
+  it('six étapes, dans l’ordre du schéma : 3 × 12 + 3 × 4 = 48 semaines d’entraînement', () => {
+    const ids = familleParId('power')!.programmes.map((x) => x.id);
+    expect(ids).toEqual(PARCOURS);
+    const total = familleParId('power')!.programmes.reduce((n, x) => n + x.dureeSemaines, 0);
+    expect(total).toBe(48);
   });
 
-  it('POWER 12 1.0 est ouvert à tous', () => {
-    expect(accesProgramme(p('power12'), []).niveau).toBe('ouvert');
+  it('les anciennes places ont disparu : POWER 28, TRANSITION 4, POWER 12 2.0', () => {
+    for (const id of ['power28', 'power-transition4', 'power12v2']) {
+      expect(programmeParId(id), id).toBeNull();
+    }
   });
 
-  it('TRANSITION 4 s’ouvre à la fin de 1.0 — pas pendant', () => {
-    expect(accesProgramme(p('power-transition4'), []).niveau).toBe('verrouille');
-    expect(accesProgramme(p('power-transition4'), [enCours('power12')]).niveau).toBe('verrouille');
-    expect(accesProgramme(p('power-transition4'), [fini('power12')]).niveau).toBe('ouvert');
+  it('le cycle 1 est disponible dès l’inscription', () => {
+    const a = accesProgramme(p('power12'), []);
+    expect(a.ouvert).toBe(true);
+    expect(a.badge).toBe('Disponible dès l’inscription');
   });
 
-  it('POWER 12 2.0 : semaine 1 après 1.0, le reste après TRANSITION 4', () => {
-    const v2 = p('power12v2');
-    const rien = accesProgramme(v2, []);
-    expect(rien.niveau).toBe('verrouille');
-    expect(semaineAccessible(rien, 1)).toBe(false);
-
-    const apres10 = accesProgramme(v2, [fini('power12')]);
-    expect(apres10.niveau).toBe('premiere-semaine');
-    expect(semaineAccessible(apres10, 1)).toBe(true);
-    expect(semaineAccessible(apres10, 2)).toBe(false);
-
-    const apresTransition = accesProgramme(v2, [fini('power12'), fini('power-transition4')]);
-    expect(apresTransition.niveau).toBe('ouvert');
-    expect(semaineAccessible(apresTransition, 12)).toBe(true);
+  it('chaque étape s’ouvre quand la précédente est TERMINÉE — pas commencée', () => {
+    for (let i = 1; i < PARCOURS.length; i++) {
+      const etape = p(PARCOURS[i]!);
+      const avant = PARCOURS[i - 1]!;
+      expect(accesProgramme(etape, []).ouvert, etape.id).toBe(false);
+      expect(accesProgramme(etape, [enCours(avant)]).ouvert, etape.id).toBe(false);
+      expect(accesProgramme(etape, [fini(avant)]).ouvert, etape.id).toBe(true);
+    }
   });
 
-  it('les deux suivants restent « à venir » : aucune séance n’est écrite', () => {
-    expect(p('power-transition4').statut).toBe('a-venir');
-    expect(p('power12v2').statut).toBe('a-venir');
+  it('pas de saut : finir le cycle 1 n’ouvre pas le cycle 2', () => {
+    expect(accesProgramme(p('power-cycle2'), [fini('power12')]).ouvert).toBe(false);
+  });
+
+  it('le badge reprend les mots du schéma', () => {
+    expect(accesProgramme(p('power-transition1'), []).badge).toBe('Se débloque après le cycle 1');
+    expect(accesProgramme(p('power-cycle2'), []).badge).toBe('Se débloque après la transition 1');
+    expect(accesProgramme(p('power-transition-finale'), []).badge).toBe(
+      'Se débloque après le cycle 3',
+    );
+  });
+
+  it('les cinq étapes suivantes restent « à venir » : aucune séance n’est écrite', () => {
+    for (const id of PARCOURS.slice(1)) expect(p(id).statut, id).toBe('a-venir');
   });
 });
 
 describe('le matériel à prévoir', () => {
-  // Tous les exercices programmés dans POWER 12, combines compris.
   const programmes = new Set<string>();
   for (let w = 0; w <= 12; w++) {
     for (let d = 0; d <= 6; d++) {
@@ -64,7 +86,7 @@ describe('le matériel à prévoir', () => {
     }
   }
 
-  it('POWER 12 annonce la ceinture de lest de ses tractions lestées', () => {
+  it('le cycle 1 annonce la ceinture de lest de ses tractions lestées', () => {
     expect(p('power12').materiel?.map((m) => m.objet)).toContain('Ceinture de lest');
   });
 

@@ -67,11 +67,10 @@ export interface ProgrammeDefinition {
   /**
    * Ce qu'il faut avoir TERMINÉ pour accéder au programme.
    *
-   * `complet` : le programme dont la fin débloque tout. `premiereSemaine` :
-   * celui dont la fin ouvre seulement la semaine 1, en avant-goût. Voir
-   * `engine/acces.ts`. Absent : accessible à tous.
+   * `apres` : le programme qu'il faut avoir TERMINÉ. Voir `engine/acces.ts`.
+   * Absent : accessible dès l'inscription.
    */
-  deblocage?: { complet: string; premiereSemaine?: string };
+  deblocage?: { apres: string };
 }
 
 export interface MaterielRequis {
@@ -99,18 +98,17 @@ export const FAMILLES: readonly Famille[] = [
     nom: 'POWER',
     sousTitre: 'Force & explosivité',
     resume:
-      'Force maximale, explosivité et puissance sur les mouvements fondamentaux. Pour pratiquants intermédiaires confirmés et avancés.',
+      'Un parcours sur un an : trois cycles de 12 semaines de force et d’explosivité, séparés par trois transitions de 4 semaines (points faibles, core, mobilité, unilatéral). Chaque étape s’ouvre quand la précédente est terminée.',
     programmes: [
       {
         id: 'power12',
         familleId: 'power',
         /*
-         * « 1.0 » est l'ÉDITION du programme — la première des deux POWER 12.
-         * `version` reste sa révision technique (1.2), celle que portent les
-         * cycles déjà commencés : la changer les ferait passer pour un autre
-         * programme.
+         * Le premier des six temps du parcours POWER (schéma de Guillaume).
+         * L'identifiant `power12` ne change pas : les cycles déjà commencés
+         * le portent. `version` reste sa révision technique (1.2).
          */
-        nom: 'POWER 12 1.0',
+        nom: 'POWER CYCLE 1',
         version: '1.2',
         dureeSemaines: 12,
         statut: 'disponible',
@@ -163,38 +161,74 @@ export const FAMILLES: readonly Famille[] = [
         ],
       },
       /*
-       * La suite de POWER 12 1.0 — décidée par Guillaume, contenu à écrire.
+       * Le reste du parcours POWER, d'après le schéma de Guillaume : trois
+       * cycles de 12 séparés par trois transitions de 4 (48 semaines — le
+       * schéma écrit 52, écart signalé).
        *
-       * Elle remplace POWER 28, qui n'était qu'une place. L'ordre est une
-       * filière : 1.0, puis quatre semaines pour travailler les points
-       * faibles, puis 2.0. Les deux suivants sont `a-venir` : aucune séance
-       * n'est écrite, le résumé reprend ses mots, rien n'est inventé.
+       * Linéaire et complet : chaque étape s'ouvre quand la précédente est
+       * TERMINÉE. Les cinq sont `a-venir` — aucune séance n'est écrite ; les
+       * résumés reprennent ses mots, rien n'est inventé.
        */
       {
-        id: 'power-transition4',
+        id: 'power-transition1',
         familleId: 'power',
-        nom: 'TRANSITION 4',
+        nom: 'POWER TRANSITION 1',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume: 'Travail des points faibles : renforcement, core, mobilité, unilatéral.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power12' },
+      },
+      {
+        id: 'power-cycle2',
+        familleId: 'power',
+        nom: 'POWER CYCLE 2',
+        version: '0.1',
+        dureeSemaines: 12,
+        statut: 'a-venir',
+        resume: 'Développement de la force et de la puissance.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-transition1' },
+      },
+      {
+        id: 'power-transition2',
+        familleId: 'power',
+        nom: 'POWER TRANSITION 2',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume: 'Travail des points faibles : renforcement, core, mobilité, unilatéral.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-cycle2' },
+      },
+      {
+        id: 'power-cycle3',
+        familleId: 'power',
+        nom: 'POWER CYCLE 3',
+        version: '0.1',
+        dureeSemaines: 12,
+        statut: 'a-venir',
+        resume: 'Phase finale de développement de la force, de la puissance et de l’explosivité.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-transition2' },
+      },
+      {
+        id: 'power-transition-finale',
+        familleId: 'power',
+        nom: 'POWER TRANSITION FINALE',
         version: '0.1',
         dureeSemaines: 4,
         statut: 'a-venir',
         resume:
-          'Quatre semaines entre les deux POWER 12, à la manière d’un long deload : travail unilatéral libre et à la machine, tronc intensifié, renforcement des tendons — chevilles, genoux, épaules — et apprentissage technique des exercices de POWER 12 2.0.',
+          'Bilan, consolidation et travail global des points faibles : core, mobilité, unilatéral.',
         objectifs: [],
         prerequis: [],
-        deblocage: { complet: 'power12' },
-      },
-      {
-        id: 'power12v2',
-        familleId: 'power',
-        nom: 'POWER 12 2.0',
-        version: '0.1',
-        dureeSemaines: 12,
-        statut: 'a-venir',
-        resume:
-          'La seconde édition de POWER 12. Sa première semaine s’ouvre à la fin de POWER 12 1.0 ; le reste, une fois TRANSITION 4 terminé.',
-        objectifs: [],
-        prerequis: [],
-        deblocage: { complet: 'power-transition4', premiereSemaine: 'power12' },
+        deblocage: { apres: 'power-cycle3' },
       },
     ],
   },

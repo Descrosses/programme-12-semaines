@@ -1,13 +1,12 @@
 /**
- * Qui a accès à quel programme.
+ * Qui a accès à quelle étape du parcours.
  *
- * ── La filière POWER, décidée par Guillaume ────────────────────────────────
+ * ── Le parcours POWER, d'après le schéma de Guillaume ──────────────────────
  *
- * POWER 12 1.0 est ouvert à tous. TRANSITION 4 s'ouvre quand 1.0 est
- * terminé. POWER 12 2.0 s'ouvre en deux temps : sa SEMAINE 1 dès la fin de
- * 1.0, en avant-goût, et tout le reste seulement après TRANSITION 4. Sauter
- * la transition, c'est arriver sur 2.0 sans les points faibles retravaillés
- * et sans la technique de ses nouveaux exercices.
+ * Six étapes : cycle 1, transition 1, cycle 2, transition 2, cycle 3,
+ * transition finale. Le cycle 1 est ouvert dès l'inscription ; chaque
+ * étape suivante s'ouvre quand la précédente est TERMINÉE. Linéaire et
+ * complet : pas de saut, pas d'avant-goût.
  *
  * « Terminé » veut dire un cycle au statut `termine`, pas un cycle commencé.
  *
@@ -16,12 +15,10 @@
 
 import { programmeParId, type ProgrammeDefinition } from '../data/catalogue';
 
-export type NiveauAcces = 'ouvert' | 'premiere-semaine' | 'verrouille';
-
 export interface Acces {
-  niveau: NiveauAcces;
-  /** La phrase à afficher, ou `null` quand tout est ouvert. */
-  raison: string | null;
+  ouvert: boolean;
+  /** La phrase du badge : « Disponible dès l'inscription », « Se débloque après… ». */
+  badge: string;
 }
 
 interface CycleMinimal {
@@ -29,10 +26,15 @@ interface CycleMinimal {
   statut: string;
 }
 
-const nomDe = (id: string) => programmeParId(id)?.nom ?? id;
-
-function termine(id: string, cycles: readonly CycleMinimal[]): boolean {
-  return cycles.some((c) => c.programmeId === id && c.statut === 'termine');
+/**
+ * « le cycle 1 », « la transition 2 » — les mots du schéma. Le préfixe
+ * POWER est retiré : on est déjà dans la famille.
+ */
+export function designation(id: string): string {
+  const nom = (programmeParId(id)?.nom ?? id).replace(/^POWER\s+/i, '').toLowerCase();
+  if (nom.startsWith('cycle')) return `le ${nom}`;
+  if (nom.startsWith('transition')) return `la ${nom}`;
+  return nom;
 }
 
 export function accesProgramme(
@@ -40,29 +42,9 @@ export function accesProgramme(
   cycles: readonly CycleMinimal[],
 ): Acces {
   const regle = programme.deblocage;
-  if (!regle) return { niveau: 'ouvert', raison: null };
-
-  if (termine(regle.complet, cycles)) return { niveau: 'ouvert', raison: null };
-
-  if (regle.premiereSemaine !== undefined && termine(regle.premiereSemaine, cycles)) {
-    return {
-      niveau: 'premiere-semaine',
-      raison: `Semaine 1 ouverte. La suite se débloque à la fin de ${nomDe(regle.complet)}.`,
-    };
-  }
-
-  return {
-    niveau: 'verrouille',
-    raison:
-      regle.premiereSemaine !== undefined
-        ? `Semaine 1 à la fin de ${nomDe(regle.premiereSemaine)}, la suite à la fin de ${nomDe(regle.complet)}.`
-        : `Se débloque à la fin de ${nomDe(regle.complet)}.`,
-  };
-}
-
-/** La semaine demandée est-elle jouable avec cet accès ? */
-export function semaineAccessible(acces: Acces, semaine: number): boolean {
-  if (acces.niveau === 'ouvert') return true;
-  if (acces.niveau === 'premiere-semaine') return semaine <= 1;
-  return false;
+  if (!regle) return { ouvert: true, badge: 'Disponible dès l’inscription' };
+  const fait = cycles.some((c) => c.programmeId === regle.apres && c.statut === 'termine');
+  return fait
+    ? { ouvert: true, badge: `Débloqué : ${designation(regle.apres)} est terminé` }
+    : { ouvert: false, badge: `Se débloque après ${designation(regle.apres)}` };
 }

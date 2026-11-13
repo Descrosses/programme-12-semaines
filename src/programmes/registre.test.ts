@@ -22,10 +22,17 @@ describe('registre des programmes', () => {
   });
 
   it('rend `null` pour un programme annoncé mais pas encore écrit', () => {
-    // TRANSITION 4 et POWER 12 2.0 figurent au catalogue en « à venir ».
+    // Les cinq étapes suivantes du parcours POWER sont « à venir ».
     // Aucune séance n'est écrite : pas de module.
-    expect(moduleParId('power-transition4')).toBeNull();
-    expect(moduleParId('power12v2')).toBeNull();
+    for (const id of [
+      'power-transition1',
+      'power-cycle2',
+      'power-transition2',
+      'power-cycle3',
+      'power-transition-finale',
+    ]) {
+      expect(moduleParId(id), id).toBeNull();
+    }
     expect(moduleParId('mass8')).toBeNull();
     expect(moduleParId(null)).toBeNull();
   });

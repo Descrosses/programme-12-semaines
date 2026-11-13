@@ -69,7 +69,7 @@ export type DayIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
  * C'était `0 | 1 | … | 12`, et ça disait deux choses à la fois : « c'est un
  * numéro de semaine » et « ce programme dure douze semaines ». La première est
  * vraie pour tous les programmes, la seconde n'est vraie que pour POWER 12 :
- * MASS 4 en dure quatre, et TRANSITION 4 en durera quatre.
+ * MASS 4 en dure quatre, et une transition POWER en durera quatre.
  *
  * Le type ne porte donc plus que la première. La durée appartient au
  * programme, qui la déclare dans `DUREE_SEMAINES`, et c'est `semaineValide`

@@ -168,9 +168,18 @@ export function CatalogueScreen({
               )}
 
               <ul className={local.liste}>
-                {famille.programmes.map((p) => {
+                {famille.programmes.map((p, rang) => {
                   const action = actionPour(p, cycles);
                   const ouvert = deplie === p.id;
+                  /*
+                   * Une famille en PARCOURS (POWER : six étapes sur 52
+                   * semaines) numérote ses étapes et montre, sur chaque
+                   * ligne, si elle est ouverte ou ce qui la débloque —
+                   * comme le schéma de Guillaume. Les autres familles
+                   * gardent leur liste simple.
+                   */
+                  const enParcours = famille.programmes.some((x) => x.deblocage);
+                  const acces = enParcours ? accesProgramme(p, cycles) : null;
                   return (
                     <li key={p.id} className={local.ligne}>
                       <button
@@ -179,7 +188,14 @@ export function CatalogueScreen({
                         onClick={() => setDeplie(ouvert ? null : p.id)}
                         aria-expanded={ouvert}
                       >
-                        <span className={local.nom}>{p.nom}</span>
+                        {enParcours && <span className={local.etape}>{rang + 1}</span>}
+                        {/* Dans la famille, son nom est déjà dit : « CYCLE 1 » plutôt
+                            que « POWER CYCLE 1 », qui passait sur deux lignes. */}
+                        <span className={local.nom}>
+                          {p.nom.startsWith(`${famille.nom} `)
+                            ? p.nom.slice(famille.nom.length + 1)
+                            : p.nom}
+                        </span>
                         <span className={local.duree}>{p.dureeSemaines} semaines</span>
                         <span
                           className={`${local.etat} ${p.statut === 'disponible' ? local.dispo : ''}`}
@@ -188,6 +204,12 @@ export function CatalogueScreen({
                         </span>
                         <Icon name={ouvert ? 'chevron-up' : 'chevron-down'} size="16px" />
                       </button>
+                      {acces && (
+                        <p className={`${local.badge} ${acces.ouvert ? local.badgeOuvert : ''}`}>
+                          <span aria-hidden="true">{acces.ouvert ? '✓' : '🔒'}</span>
+                          {acces.badge}
+                        </p>
+                      )}
 
                       {ouvert && (
                         <div className={local.details}>
@@ -224,10 +246,6 @@ export function CatalogueScreen({
                                 ))}
                               </ul>
                             </>
-                          )}
-
-                          {accesProgramme(p, cycles).raison !== null && (
-                            <p className={local.verrou}>🔒 {accesProgramme(p, cycles).raison}</p>
                           )}
 
                           {p.prerequis.length > 0 && (
