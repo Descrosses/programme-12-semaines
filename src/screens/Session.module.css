@@ -488,6 +488,20 @@
   width: 100%;
 }
 
+/* Contraste : le second bouton, sous la série lourde validée. Il occupe
+   toute la largeur de la ligne — c'est l'action attendue à ce moment-là. */
+.validateContraste {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+
+.contrasteAide {
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  text-align: center;
+}
+
 .validateDone {
   background: var(--surface-3);
   color: var(--ink-2);
@@ -1143,6 +1157,37 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--ink-2);
+}
+
+/* ------------------------------------- à quoi sert ce mouvement de tronc -- */
+
+/* Un vrai bandeau, pas une note : le nom de la fonction en capitales, puis
+   une phrase. Pleine largeur de la carte, sous la ligne de charge. */
+.fonctionTronc {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 10px var(--pad) 0;
+  padding: 9px 12px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--accent);
+  background: var(--surface-2);
+}
+
+.fonctionNom {
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.fonctionTexte {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--ink);
 }
 
 /* ------------------------------------------------- exercice suspendu -- */

@@ -73,7 +73,9 @@ describe('cibles transcrites du .md', () => {
     expect(MD).toContain('200 g de skyr');
     const c = NUTRITION_TARGETS.train.meals.find((m) => m.name.startsWith('Collation — 08 h'))!;
     expect(c.kcal).toBe(485);
-    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name.startsWith('Collation — 08 h'))).toEqual(c);
+    expect(NUTRITION_TARGETS.rest.meals.find((m) => m.name.startsWith('Collation — 08 h'))).toEqual(
+      c,
+    );
   });
 
   /*
@@ -140,9 +142,9 @@ describe('cibles transcrites du .md', () => {
     expect(NUTRITION_TARGETS.train.meals).toHaveLength(5);
     expect(NUTRITION_TARGETS.rest.meals).toHaveLength(5);
     const heures = (k: 'train' | 'rest') => NUTRITION_TARGETS[k].meals.map((m) => m.name);
-    expect(heures('rest')).toEqual(heures('train').map((n) =>
-      n === 'Pré-entraînement — 16 h' ? 'Collation — 16 h' : n,
-    ));
+    expect(heures('rest')).toEqual(
+      heures('train').map((n) => (n === 'Pré-entraînement — 16 h' ? 'Collation — 16 h' : n)),
+    );
   });
 
   it('une protéine à chaque repas, sur les deux paliers', () => {

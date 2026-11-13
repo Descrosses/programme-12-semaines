@@ -213,10 +213,9 @@ Pas de gros travail excentrique jambes.
 
 **F. Hanging Leg Raise strict — 3 × 8-12** — Repos 60 s — Rétroversion du bassin.
 
-**G. Bear Crawl — 3 × 20 m** — Repos 60 s — Genoux à 5 cm du sol, bassin stable.
-**Semaines 1 à 4 seulement.** Il sort du programme à partir de la semaine 5 : son anti-rotation est déjà couverte par le Pallof Press et le Landmine Press, tous deux au mercredi, et son créneau finance le Woodchop (§8).
+*Le Bear Crawl n'est plus programmé, dès la semaine 1 (décision de Guillaume). Son anti-rotation est couverte par le Pallof Press et le Landmine Press du mercredi. Sa fiche reste au catalogue.*
 
-**H. Conditioning — 8 × (20 s soutenu / 70 s facile) vélo ou rameur** — 12 min — 8/10 sur les 20 s, pas de sprint maximal. Coût musculaire faible.
+**G. Conditioning — 8 × (20 s soutenu / 70 s facile) vélo ou rameur** — 12 min — 8/10 sur les 20 s, pas de sprint maximal. Coût musculaire faible.
 
 ---
 
@@ -230,7 +229,7 @@ Pas de gros travail excentrique jambes.
 - Zéro série au-dessus de RPE 6
 - Semaine 8 : combine intermédiaire samedi + dimanche (section 11), les lifts restent à 70 %
 
-**Tronc et portés — ils déloadent eux aussi.** Ils gardaient jusqu'ici leur volume complet en semaine 4 et 8, ce qui vidait le deload d'une partie de son sens : un dimanche de deload sortait avec 3 × 8/côté de chop, 3 × 8-12 de leg raise et 3 × 20 m de bear crawl, exactement comme une semaine pleine. Réduction appliquée une seule fois, jamais cumulée avec une autre :
+**Tronc et portés — ils déloadent eux aussi.** Ils gardaient jusqu'ici leur volume complet en semaine 4 et 8, ce qui vidait le deload d'une partie de son sens : un dimanche de deload sortait avec 3 × 8/côté de chop et 3 × 8-12 de leg raise, exactement comme une semaine pleine. Réduction appliquée une seule fois, jamais cumulée avec une autre :
 
 | Exercice | Habituel | Deload |
 |---|---|---|
@@ -239,7 +238,6 @@ Pas de gros travail excentrique jambes.
 | Dead Bug câble | 3 × 6/côté | 2 × 5/côté |
 | Cable Chop | 3 × 8/côté | 2 × 6/côté |
 | Hanging Leg Raise | 3 × 8-12 | 2 × 6 |
-| Bear Crawl | 3 × 20 m | 2 × 15 m |
 | Farmer Carry | 4 × 25 m | 2 × 20 m, −20 % |
 | Suitcase Carry | 3 × 30 m/côté | 2 × 20 m/côté, −20 % |
 | Roman Side Bench | 3 × 8/côté | 2 × 6/côté |
@@ -251,6 +249,18 @@ Le Copenhagen Plank est repris et déplacé au **vendredi** : il doublonnait ave
 
 Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
 Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
+
+### À quoi sert chaque exercice de tronc
+
+L'application affiche ce bandeau sur la carte de chaque exercice de tronc ou de porté. Les familles sont celles de la règle « jamais deux exercices du tronc de la même famille le même jour ».
+
+| Famille | Ce que fait le tronc | À quoi ça sert | Exercices |
+|---|---|---|---|
+| Anti-extension | Empêcher le bas du dos de se creuser. | C'est ce qui garde le tronc rigide sous un squat ou un deadlift lourd. | Ab Wheel, Hanging Leg Raise, Dead Bug câble |
+| Anti-rotation | Empêcher le buste de tourner quand une charge le tire de côté. | C'est ce qui transmet la force sans fuite quand un seul côté pousse ou tire. | Pallof Press |
+| Rotation | Produire la rotation : elle part des hanches et traverse le tronc. | C'est le geste des frappes, des lancers et des changements de direction. | Woodchop, Landmine Rotation |
+| Flexion latérale | Rester droit contre une charge d'un seul côté, ou se redresser contre elle. | Ce sont les obliques : ils empêchent le buste de s'affaisser sur un appui. | Roman Side Bench, Suitcase Carry, Barbell Offset Hold, Copenhagen Plank |
+| Porté symétrique | Rester gainé en marchant, chargé des deux côtés. | Prise, épaules et tronc tiennent ensemble, sur la durée. | Farmer Carry |
 
 ### Semaines 5-7 — Force maximale
 - Squat, Bench, Deadlift, Tractions : 5 × 3 → 4 × 3 → 4 × 2 à 82-90 %
@@ -280,7 +290,7 @@ Le +10 % est celui que le programme applique déjà aux accessoires du haut pour
 | Samedi | **Suitcase Carry 3 × 30 m/côté**, repos 60 s | **Roman Side Bench 3 × 8/côté**, repos 45 s |
 | Dimanche | Hanging Leg Raise 3 × 8 | **Woodchop 2 × 6/côté** |
 
-Ce qui sort à partir de la semaine 5 : **Farmer Carry** et **Bear Crawl**. Leurs fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
+Ce qui sort à partir de la semaine 5 : **Farmer Carry** (le Bear Crawl, lui, n'est plus programmé dès la semaine 1). Ses fonctions sont reprises par le Barbell Offset Hold (stabilité asymétrique), le Zercher March (charge antérieure en déplacement) et les trois exercices d'anti-rotation déjà présents.
 
 **Le Suitcase Carry, lui, reste — révision de la décision initiale.** Il devait sortir avec les deux autres, remplacé au samedi par un Roman Side Bench. C'était une erreur, pour deux raisons mesurées sur le programme complet :
 
@@ -394,7 +404,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
 **Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**. Copenhagen suspendu (§14).
-**Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. Plus de Bear Crawl, et la Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
+**Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. La Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
 - **Lundi** : Box Jump 3 × 2, Squat 3 × 2 à 70 % RPE 5-6, Bulgarian 2 × 5 léger, **Ab Wheel 2 × 6 en alternance avec Roman Side Bench 2 × 6/côté** (45 s entre les stations). Terminé.

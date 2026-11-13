@@ -20,6 +20,7 @@ import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { PeseeDuJour } from '../components/PeseeDuJour';
 import { DiagonalStripes } from '../components/Decor';
 import styles from './Week.module.css';
 
@@ -146,6 +147,11 @@ export function WeekScreen({
         {...(programme.id === 'power12' ? ({ visuel: 'casque' } as const) : {})}
         prioritaire
       />
+
+      {/* La pesée du jour, en premier : c'est le geste du réveil. Elle
+          s'affiche quelle que soit la semaine consultée — on se pèse
+          aujourd'hui, pas « en semaine 3 ». */}
+      <PeseeDuJour />
 
       {/*
         Sélecteur de semaines, colorié par bloc — la périodisation se lit d'un

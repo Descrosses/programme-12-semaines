@@ -126,7 +126,7 @@ export const DELOAD_POLICY = {
  *
  * Le défaut corrigé ici : `role: 'core'` et `role: 'carry'` ne tombaient dans
  * aucune branche du deload. Un dimanche de semaine 4 gardait ses 3 × 8/côté de
- * chop, ses 3 × 8-12 de leg raise et ses 3 × 20 m de bear crawl — volume
+ * chop et ses 3 × 8-12 de leg raise — volume
  * complet, dans la semaine censée dissiper la fatigue.
  *
  * Une formule « −30 % de reps » aurait donné des chiffres impraticables
@@ -143,7 +143,6 @@ export const DELOAD_CORE: Readonly<Record<string, { sets: number; work: Work }>>
   'dead-bug-cable': { sets: 2, work: reps(5, true) },
   'cable-chop': { sets: 2, work: reps(6, true) },
   'hanging-leg-raise': { sets: 2, work: reps(6) },
-  'bear-crawl': { sets: 2, work: meters(15) },
   'farmer-carry': { sets: 2, work: meters(20) },
   'suitcase-carry': { sets: 2, work: meters(20, true) },
   // Introduits en semaine 5, donc concernés par le seul deload de la 8.
@@ -478,18 +477,17 @@ const MAXFORCE: BlockRuleSet[] = [
     day: 6,
     notes: [
       'Dimanche : tout à 3 séries.',
-      'Le tronc du dimanche tient en deux exercices : Hanging Leg Raise puis Woodchop. Le Bear Crawl sort, la Landmine Rotation est passée au vendredi.',
+      'Le tronc du dimanche tient en deux exercices : Hanging Leg Raise puis Woodchop. La Landmine Rotation est passée au vendredi.',
     ],
     rules: [
       /*
-       * Le Bear Crawl sort, le Woodchop reste et devient le second exercice
-       * de tronc du dimanche.
+       * Le Woodchop reste et devient le second exercice de tronc du
+       * dimanche. (Le Bear Crawl, lui, n'est plus programmé du tout.)
        *
        * Le Woodchop EST l'ancien Cable Chop : même identifiant, donc même
        * historique. Lui créer une fiche séparée aurait fabriqué le doublon
        * qu'il fallait éviter.
        */
-      remove('bear-crawl'),
       patch('cable-chop', {
         sets: 2,
         work: reps(6, true),
@@ -719,7 +717,6 @@ const POWER: BlockRuleSet[] = [
       'Tronc du dimanche : Hanging Leg Raise puis Woodchop. La Landmine Rotation est au vendredi, avec les autres mouvements de vitesse.',
     ],
     rules: [
-      remove('bear-crawl'),
       patch('cable-chop', {
         sets: 2,
         work: reps(6, true),
