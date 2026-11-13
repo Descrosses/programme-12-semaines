@@ -129,7 +129,7 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
 | MASS | Conçu, tourne dans sa propre application, **pas encore intégré ici** |
-| FEMMES | Parcours de 8 étapes, toutes `a-venir` ; seul FEMMES 8 (cycle 1) a son contenu écrit |
+| FEMMES | Parcours de 8 étapes. Le cycle 1 (FEMMES 8) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
 **La place de FEMMES est déjà faite** : l'identifiant existe, l'entrée du
@@ -220,6 +220,15 @@ matériel et la durée avant d'écrire la moindre séance.
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
   affiche l'écart. Proposer un gramme serait une prescription.
+- **FEMMES 8 n'est pas un module, il a ses propres écrans.** L'App aiguille
+  tout cycle `femmes8` vers `#/femmes/*` (et renvoie au catalogue un
+  `#/femmes/*` sans cycle FEMMES). Ses séances vivent dans `femmesSeances`
+  (v23), son niveau et ses deux réponses de sécurité sur la ligne du cycle
+  (`cycle.femmes`). **La séance du jour est la première non faite**, pas une
+  date : une séance manquée n'est jamais sautée (`avancement.test.ts`).
+  `femmesSeances` n'est PAS dans `TABLES_PAR_CYCLE` (la montée v17 tournerait
+  sans elle) mais DOIT rester dans `TABLES_DU_CYCLE` de `repo.ts`, sinon un
+  cycle FEMMES avec des séances passe pour vierge et peut être supprimé.
 - **Le parcours FEMMES ne s'ouvre PAS comme celui de POWER.** POWER est
   linéaire : chaque étape attend la précédente. FEMMES (4 cycles de 8
   semaines, 4 transitions de 4) suit l'exception de Guillaume : **terminer un

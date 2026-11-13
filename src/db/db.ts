@@ -6,6 +6,9 @@
  */
 
 import type { DecisionSauts } from '../engine/trends';
+import type { Niveau } from '../data/femmes/niveaux';
+import type { DayIndex as JourFemmes, Version as VersionFemmes } from '../data/femmes/types';
+import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
 import Dexie, { type Table } from 'dexie';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
@@ -507,6 +510,43 @@ export interface CycleRow {
   endedAt: string;
   /** `YYYY-MM-DD` de création de la ligne. */
   createdAt: string;
+  /**
+   * Le profil d'une pratiquante FEMMES, posé au démarrage : son niveau et ses
+   * deux réponses de sécurité. Absent sur les cycles POWER et MASS, et absent
+   * tant que le questionnaire de départ n'a pas été rempli — c'est ce qui le
+   * fait afficher.
+   *
+   * Sur la ligne du cycle plutôt que dans les réglages : deux cycles FEMMES
+   * successifs peuvent avoir deux niveaux différents, et l'historique doit
+   * dire avec lequel chaque séance a été faite.
+   */
+  femmes?: ProfilFemmes;
+}
+
+export interface ProfilFemmes {
+  niveau: Niveau;
+  safety: SafetyAnswers;
+}
+
+/**
+ * Une séance FEMMES (v23) : ce qui a été fait, exercice par exercice.
+ *
+ * Une ligne par séance et non par exercice : un circuit se joue en entier,
+ * et c'est la séance qu'on marque terminée. Les exercices y sont rangés au
+ * format que le moteur FEMMES lit déjà (`ExerciseRecord`) — aucune
+ * conversion entre la base et la progression des charges.
+ */
+export interface FemmesSeanceRow {
+  id?: number;
+  cycleId: number;
+  semaine: number;
+  jour: JourFemmes;
+  /** Maison ou salle : le choix de CE jour-là. */
+  version: VersionFemmes;
+  /** `YYYY-MM-DD` du dernier enregistrement. */
+  date: string;
+  terminee: boolean;
+  exercices: ExerciseRecord[];
 }
 
 export class ProgrammeDB extends Dexie {
@@ -525,6 +565,7 @@ export class ProgrammeDB extends Dexie {
   customFoods!: Table<CustomFoodRow, number>;
   mealLog!: Table<MealLogRow, number>;
   painLog!: Table<PainLogRow, number>;
+  femmesSeances!: Table<FemmesSeanceRow, number>;
   extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
   notes!: Table<NoteRow, number>;
@@ -1020,6 +1061,14 @@ export class ProgrammeDB extends Dexie {
      * horaires et des libellés que ce modèle-ci n'a pas.
      */
     this.version(22).stores({});
+
+    /*
+     * v23 — les séances FEMMES, le jour où le programme devient jouable.
+     *
+     * Une table neuve, rien d'autre : aucune ligne existante n'est lue,
+     * modifiée ni supprimée. Une séance par (cycle, semaine, jour).
+     */
+    this.version(23).stores({ femmesSeances: '++id, &[cycleId+semaine+jour], cycleId' });
 
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;

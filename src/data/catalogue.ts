@@ -340,17 +340,13 @@ export const FAMILLES: readonly Famille[] = [
         version: '0.1',
         dureeSemaines: 8,
         /*
-         * `a-venir`, et ce n'est pas une précaution de façade.
-         *
-         * La règle en tête de ce fichier est explicite : un programme n'est
-         * `disponible` que s'il est jouable de bout en bout. Les données
-         * sont là — 3 phases, 30 séances, 39 exercices — mais aucun écran ne
-         * sait encore afficher un circuit en tours, et le cycle ne se
-         * démarre pas. L'annoncer disponible serait le mensonge que le
-         * premier appui révélerait.
+         * `disponible` depuis qu'il se joue de bout en bout : un cycle FEMMES
+         * démarré ouvre les écrans FEMMES (pas ceux de POWER), le niveau et
+         * les deux questions de sécurité sont posés au départ, et chaque
+         * séance est enregistrée en base (`femmesSeances`, v23) et dans
+         * l'export. La dernière séance faite clôt le cycle.
          */
-        statut: 'a-venir',
-        apercu: '#/femmes/aujourdhui',
+        statut: 'disponible',
         resume:
           'Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
         objectifs: [

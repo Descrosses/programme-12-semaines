@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { PROGRAMME_PAR_DEFAUT, programmesDisponibles } from '../data/catalogue';
 import { EMPTY_CONTEXT } from '../engine/types';
 import { MODULES, moduleParId, modulePourCycle } from './registre';
+import { FEMMES_PROGRAMME_ID } from '../db/femmesRepo';
 
 describe('registre des programmes', () => {
   it('a un module pour chaque programme annoncé disponible', () => {
@@ -15,9 +16,15 @@ describe('registre des programmes', () => {
      * Le sens qui compte. L'inverse est permis : un module peut exister avant
      * d'être annoncé, le temps de le vérifier.
      */
+    /*
+     * FEMMES 8 est la seule exception, et elle est nommée : il n'est pas un
+     * module, il a ses PROPRES écrans, vers lesquels l'App aiguille tout cycle
+     * FEMMES (`FEMMES_PROGRAMME_ID`). Sans cet aiguillage, il retomberait sur
+     * POWER 12 — exactement la panne que ce test surveille.
+     */
     const sansModule = programmesDisponibles()
       .map((p) => p.id)
-      .filter((id) => moduleParId(id) === null);
+      .filter((id) => moduleParId(id) === null && id !== FEMMES_PROGRAMME_ID);
     expect(sansModule).toEqual([]);
   });
 

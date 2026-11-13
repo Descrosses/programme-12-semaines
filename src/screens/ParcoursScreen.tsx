@@ -43,6 +43,8 @@ import {
 } from '../db/repo';
 import { currentWeek, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
+import { FEMMES_PROGRAMME_ID, avancementFemmes } from '../db/femmesRepo';
+import { WEEKS as WEEKS_FEMMES } from '../data/femmes/types';
 import { fr } from '../engine/format';
 import { lowerIsBetter } from '../engine/lastPerformance';
 import styles from './Screens.module.css';
@@ -100,28 +102,44 @@ export function ParcoursScreen({
     void (async () => {
       const resumes = await resumesDesCycles();
       const completes = await Promise.all(
-        resumes.map(async (r) => ({
-          ...r,
-          total:
-            r.cycle.startDate === ''
-              ? 0
-              : schedule(r.cycle.startDate, modulePourCycle(r.cycle.programmeId)).length,
+        resumes.map(async (r) => {
           /*
-           * La semaine où en est ce cycle, et le nombre qu'il en compte.
-           * Calculés AVEC son propre programme : quatre semaines pour MASS 4,
-           * douze pour POWER 12.
+           * FEMMES n'a pas de calendrier : son total est son nombre de
+           * séances, sa semaine celle de la prochaine séance à faire.
            */
-          semaine:
-            r.cycle.startDate === ''
-              ? null
-              : currentWeek(
-                  r.cycle.startDate,
-                  new Date().toISOString().slice(0, 10),
-                  modulePourCycle(r.cycle.programmeId),
-                ),
-          semaines: modulePourCycle(r.cycle.programmeId).dureeSemaines,
-          combines: r.cycle.id === undefined ? [] : await combinesDuCycle(r.cycle.id),
-        })),
+          if (r.cycle.programmeId === FEMMES_PROGRAMME_ID && r.cycle.id !== undefined) {
+            const av = await avancementFemmes(r.cycle.id);
+            return {
+              ...r,
+              total: av.total,
+              semaine: av.semaine,
+              semaines: WEEKS_FEMMES.length,
+              combines: [],
+            };
+          }
+          return {
+            ...r,
+            total:
+              r.cycle.startDate === ''
+                ? 0
+                : schedule(r.cycle.startDate, modulePourCycle(r.cycle.programmeId)).length,
+            /*
+             * La semaine où en est ce cycle, et le nombre qu'il en compte.
+             * Calculés AVEC son propre programme : quatre semaines pour MASS 4,
+             * douze pour POWER 12.
+             */
+            semaine:
+              r.cycle.startDate === ''
+                ? null
+                : currentWeek(
+                    r.cycle.startDate,
+                    new Date().toISOString().slice(0, 10),
+                    modulePourCycle(r.cycle.programmeId),
+                  ),
+            semaines: modulePourCycle(r.cycle.programmeId).dureeSemaines,
+            combines: r.cycle.id === undefined ? [] : await combinesDuCycle(r.cycle.id),
+          };
+        }),
       );
       if (vivant) setVues(completes);
     })();

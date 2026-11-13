@@ -17,6 +17,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
 import { modulePourCycle } from './programmes/registre';
+import { FEMMES_PROGRAMME_ID } from './db/femmesRepo';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
 import { MARQUE_CAPITALES } from './data/marque';
 import { themePour } from './state/theme';
@@ -79,6 +80,14 @@ const ONGLETS_POSSIBLES = new Set<Route['name']>([
   'mesures',
   'settings',
 ]);
+
+/*
+ * Les routes qui appartiennent à un programme POWER ou MASS — ses onglets et
+ * ses séances. Sous un cycle FEMMES, aucune ne doit s'afficher : elles
+ * montreraient le squat de POWER sous un cycle FEMMES, parce qu'un programme
+ * sans module retombe sur POWER 12.
+ */
+const ROUTES_MODULE = new Set<Route['name']>([...ONGLETS_POSSIBLES, 'session']);
 
 export function App() {
   const [alerts, setAlerts] = useState({ sound: true, vibration: true });
@@ -159,6 +168,55 @@ export function App() {
   );
 
   const refresh = useCallback(() => setDataVersion((v) => v + 1), []);
+
+  /*
+   * « Ouvrir le programme » — depuis l'accueil, le catalogue ou le parcours.
+   *
+   * Le cycle est relu AU MOMENT de l'appui, pas pris dans l'état : le
+   * catalogue vient souvent de le créer ou de l'activer, et l'état de l'App
+   * n'a pas encore suivi.
+   */
+  const ouvrirProgramme = useCallback(() => {
+    void (async () => {
+      const cycle = await cycleActif();
+      if (cycle?.programmeId === FEMMES_PROGRAMME_ID) {
+        navigate({ name: 'femmes', vue: 'aujourdhui' });
+      } else navigate({ name: 'today' });
+    })();
+  }, [navigate]);
+
+  /*
+   * L'aiguillage FEMMES, dans les deux sens.
+   *
+   * - Cycle FEMMES actif + route d'un module (`#/today` gardé en favori, le
+   *   bouton Retour…) → les écrans FEMMES.
+   * - Écrans FEMMES sans cycle FEMMES actif → le catalogue, où l'on démarre.
+   *   Ils n'ont plus de mode « aperçu » : sans cycle, rien à enregistrer.
+   *
+   * `replace` : le bouton Retour ne doit pas rebondir sur l'écran écarté.
+   *
+   * Le cycle est RELU en base à chaque changement de route, pas pris dans un
+   * état de l'App : juste après « Commencer », l'état n'a pas encore suivi,
+   * et l'aiguillage renvoyait au catalogue un cycle FEMMES qui venait de
+   * naître (vu au test navigateur).
+   */
+  useEffect(() => {
+    const concerne = ROUTES_MODULE.has(route.name) || route.name === 'femmes';
+    if (!concerne) return;
+    let vivant = true;
+    void (async () => {
+      const femmesActif = (await cycleActif())?.programmeId === FEMMES_PROGRAMME_ID;
+      if (!vivant) return;
+      if (femmesActif && ROUTES_MODULE.has(route.name)) {
+        navigate({ name: 'femmes', vue: 'aujourdhui' }, true);
+      } else if (!femmesActif && route.name === 'femmes') {
+        navigate({ name: 'catalogue' }, true);
+      }
+    })();
+    return () => {
+      vivant = false;
+    };
+  }, [route, navigate, dataVersion]);
 
   /*
    * La semaine consultée se retient d'un onglet à l'autre.
@@ -276,6 +334,7 @@ export function App() {
           navigate,
           refresh,
           timer,
+          ouvrirProgramme,
         )}
       </main>
 
@@ -378,15 +437,12 @@ function renderScreen(
   navigate: (route: Route) => void,
   refresh: () => void,
   timer: ReturnType<typeof useRestTimer>,
+  ouvrirProgramme: () => void,
 ) {
   switch (route.name) {
     /*
-     * FEMMES 8 vit à part, et garde son propre état.
-     *
-     * Ses écrans n'ont pas de cycle en base — le programme est `a-venir` —
-     * donc ni `dataVersion` ni `refresh` ne les concernent. Les brancher sur
-     * le cycle actif de POWER 12 aurait fait afficher une séance de squat
-     * sous un bandeau FEMMES au premier rechargement.
+     * FEMMES 8 a ses propres écrans, branchés sur SON cycle : ils lisent et
+     * écrivent `femmesSeances`, jamais les séances de POWER.
      */
     case 'femmes':
       return (
@@ -394,6 +450,7 @@ function renderScreen(
           vue={route.vue}
           onNaviguer={(v) => navigate({ name: 'femmes', vue: v })}
           onSortir={() => navigate({ name: 'accueil' })}
+          onDataChanged={refresh}
         />
       );
 
@@ -401,7 +458,7 @@ function renderScreen(
       return (
         <AccueilScreen
           key={dataVersion}
-          onReprendre={() => navigate({ name: 'today' })}
+          onReprendre={ouvrirProgramme}
           onCatalogue={() => navigate({ name: 'catalogue' })}
           onParcours={() => navigate({ name: 'parcours' })}
         />
@@ -411,7 +468,7 @@ function renderScreen(
       return (
         <CatalogueScreen
           key={dataVersion}
-          onOuvrirProgramme={() => navigate({ name: 'today' })}
+          onOuvrirProgramme={ouvrirProgramme}
           onDataChanged={refresh}
         />
       );
@@ -420,7 +477,7 @@ function renderScreen(
       return (
         <ParcoursScreen
           key={dataVersion}
-          onOuvrirProgramme={() => navigate({ name: 'today' })}
+          onOuvrirProgramme={ouvrirProgramme}
           onDataChanged={refresh}
         />
       );
