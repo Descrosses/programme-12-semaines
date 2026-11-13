@@ -53,7 +53,7 @@ export const SAFETY_CHECKS: SafetyCheck[] = [
    */
   {
     key: 'plancherPelvienOk',
-    question: 'Tu t’entraînes sans gêne ni fuite urinaire à l’effort ?',
+    question: 'Tu t’entraînes sans gêne du périnée à l’effort ?',
     consequence:
       'Si non : pas de saut, pas de corde à sauter, pas de charge au-dessus de la tête. L’appli remplace ces exercices d’elle-même, elle ne les retire pas.',
     detail:

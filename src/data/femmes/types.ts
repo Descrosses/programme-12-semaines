@@ -174,7 +174,7 @@ export const noLoad = (): LoadSpec => ({ kind: 'none' });
  * sans supposer de grossesse.
  */
 export type SafetyKey =
-  /** Aucune gêne ni fuite urinaire à l'effort. */
+  /** Aucune gêne du périnée à l'effort. */
   | 'plancherPelvienOk'
   /** Aucune douleur qui empêche un mouvement. */
   | 'sansDouleurLimitante';
