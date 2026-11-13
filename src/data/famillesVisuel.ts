@@ -40,11 +40,11 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
   power: { photo: 'sprint', teinte: '#2f7fd0' },
   mass: { photo: 'force', teinte: '#da1d28' },
   /*
-   * Pas de photo : le manifeste n'en contient aucune qui représente cette
-   * famille, et lui prêter celle d'un autre programme donnerait une image
-   * fausse de ce qu'elle sera.
+   * Sa propre photo, fournie par Guillaume — jamais celle d'un autre
+   * programme, qui donnerait une image fausse de ce qu'elle sera. Même
+   * traitement que POWER et MASS : photo brute, voile en dégradé par le code.
    */
-  femmes: { teinte: '#d4578f' },
+  femmes: { photo: 'carteFemmes', teinte: '#d4578f' },
   /*
    * Pas de photo non plus, et pour une raison différente : il n'y a rien à
    * photographier. Cette famille ne représente pas un style d'entraînement,

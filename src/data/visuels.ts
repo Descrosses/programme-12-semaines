@@ -116,6 +116,24 @@ export const VISUELS = {
     focus: 'center 40%',
     usage: 'Bandeau d’en-tête du programme FEMMES.',
   },
+  /*
+   * La photo de la carte FEMMES, page Programmes. Fournie par Guillaume en
+   * deux versions : brute et déjà assombrie. C'est la BRUTE qui est servie,
+   * parce que POWER (`sprint`) et MASS (`force`) posent des photos brutes et
+   * font l'assombrissement dans le code — le voile en dégradé de
+   * `.banniereVoile`. La version assombrie aurait été noircie deux fois.
+   *
+   * 1218 px et non 1200 : c'est la largeur livrée, on ne l'agrandit pas.
+   */
+  carteFemmes: {
+    display: '21_femmes_carte_display.webp',
+    mobile: '21_femmes_carte_mobile.webp',
+    largeurs: { display: 1218, mobile: 640 },
+    description: 'Athlète en hip thrust à la barre, dos sur un banc, salle sombre.',
+    cadrage: 'cover',
+    focus: '70% center',
+    usage: 'Carte de la famille FEMMES, page Programmes.',
+  },
   casque: {
     display: '03_casque_display.webp',
     mobile: '03_casque_mobile.webp',

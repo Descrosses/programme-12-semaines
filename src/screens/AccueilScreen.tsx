@@ -316,7 +316,9 @@ export function AccueilScreen({
                   >
                     {famille.nom}
                   </span>
-                  <span className={styles.familleSous}>{famille.sousTitre}</span>
+                  {famille.sousTitre && (
+                    <span className={styles.familleSous}>{famille.sousTitre}</span>
+                  )}
                   <span className={styles.barres} aria-hidden="true">
                     <i />
                     <i />

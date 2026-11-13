@@ -87,7 +87,12 @@ export interface Famille {
   id: FamilleId;
   /** Le nom commercial court : POWER, MASS. */
   nom: string;
-  sousTitre: string;
+  /**
+   * Facultatif : une famille sans accroche juste n'en affiche aucune, plutôt
+   * qu'une accroche fausse. FEMMES n'en a plus — « 8 semaines en circuits »
+   * ne vaut pas pour une famille appelée à porter plusieurs programmes.
+   */
+  sousTitre?: string;
   resume: string;
   programmes: readonly ProgrammeDefinition[];
 }
@@ -286,7 +291,6 @@ export const FAMILLES: readonly Famille[] = [
   {
     id: 'femmes',
     nom: 'FEMMES',
-    sousTitre: '8 semaines en circuits',
     /*
      * Aucun programme, et c'est volontaire. Le §4 interdit d'en inventer les
      * objectifs, les exercices ou les durées, et le §15 dit que son identité

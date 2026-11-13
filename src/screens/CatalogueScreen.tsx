@@ -150,7 +150,7 @@ export function CatalogueScreen({
             )}
             <span className={local.banniereTexte}>
               <span className={local.nomFamille}>{famille.nom}</span>
-              <span className={local.sousTitre}>{famille.sousTitre}</span>
+              {famille.sousTitre && <span className={local.sousTitre}>{famille.sousTitre}</span>}
               <span className={local.barres} aria-hidden="true">
                 <i />
                 <i />
