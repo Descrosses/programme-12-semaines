@@ -57,6 +57,10 @@ describe('carte ME, MYSELF & I', () => {
   });
 
   it('cadre en haut : la carte de 128 px coupait la tête en cadrage centré', () => {
-    expect(VISUELS.cartePerso.focus).toBe('center 10%');
+    expect(VISUELS.cartePerso.focus.split(' ')[1]).toBe('10%');
+  });
+
+  it('cadre à droite : la tuile de l’accueil ne montrait qu’un bord de l’athlète', () => {
+    expect(VISUELS.cartePerso.focus.split(' ')[0]).toBe('95%');
   });
 });
