@@ -899,3 +899,49 @@ describe('le .md ne transporte plus la blessure de son auteur', () => {
     expect(MD).toMatch(/\*\*Cas 8 — douleur localisée sur un mouvement\*\* →/);
   });
 });
+
+/*
+ * §8 S9-11 — les repos du contraste, jour par jour.
+ *
+ * L'empreinte enregistre le contraste (« broad-jump×2 ») mais PAS ses deux
+ * repos : un repos changé dans le code sans le .md — ou l'inverse — passait
+ * inaperçu. Ce test relit la ligne de chaque jour du .md.
+ */
+describe('§8 S9-11 — les repos du contraste sont ceux du .md', () => {
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
+  const BLOC = MD.split('### Semaines 9-11')[1]!.split('\n### ')[0]!;
+  const JOURS: Record<number, string> = { 0: 'Lundi', 2: 'Mercredi', 5: 'Samedi' };
+
+  /** « 2 min » → 120, « 90 s » → 90, « 1 min 30 » → 90. */
+  const secondes = (t: string): number => {
+    const m = /^(?:(\d+) min)?\s*(\d+)?\s*(s)?$/.exec(t.trim());
+    if (!m) throw new Error(`durée illisible : ${t}`);
+    const [, min, reste, s] = m;
+    if (s && !min) return Number(reste);
+    return Number(min ?? 0) * 60 + Number(reste ?? 0);
+  };
+
+  for (const [dayStr, nom] of Object.entries(JOURS)) {
+    it(`${nom} : lourd → explosif, puis explosif → lourd`, () => {
+      const spec = CONTRAST_BY_DAY[Number(dayStr) as DayIndex]!;
+      const ligne = BLOC.split('\n').find((l) => l.startsWith(`**${nom}** : `));
+      expect(ligne, `ligne ${nom} du §8`).toBeDefined();
+      const m = /→ repos ([^→]+?) → [^→]+ → repos ([^→]+?) → /.exec(ligne!);
+      expect(m, `repos du contraste, ${nom}`).not.toBeNull();
+      expect(secondes(m![1]!), `${nom} : lourd → explosif`).toBe(spec.restAfterHeavySec);
+      expect(secondes(m![2]!), `${nom} : explosif → lourd`).toBe(spec.restAfterExplosiveSec);
+    });
+  }
+
+  it('le cycle annoncé est la somme des deux repos', () => {
+    for (const spec of Object.values(CONTRAST_BY_DAY)) {
+      const total = spec!.restAfterHeavySec + spec!.restAfterExplosiveSec;
+      const attendu = `Cycle ≈ ${Math.floor(total / 60)} min${total % 60 ? ` ${total % 60}` : ''}`;
+      expect(spec!.cycleLabel, spec!.heavy).toBe(attendu);
+    }
+  });
+
+  it('samedi : 1 min 30 après le deadlift, 2 min après les broad jumps (décision de Guillaume)', () => {
+    expect(CONTRAST_BY_DAY[5]).toMatchObject({ restAfterHeavySec: 90, restAfterExplosiveSec: 120 });
+  });
+});
