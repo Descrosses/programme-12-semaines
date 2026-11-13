@@ -23,6 +23,7 @@ import {
   type NoteRow,
   type PainLogRow,
   type FemmesSeanceRow,
+  type ReferenceForceRow,
   type SessionExerciseRow,
   type ReadinessRow,
   type SessionRow,
@@ -57,6 +58,7 @@ export const TABLES_SAUVEGARDEES = [
   'exerciseVideoLog',
   'painLog',
   'femmesSeances',
+  'referencesForce',
   'extraFoods',
   'notes',
   'noteDrafts',
@@ -88,6 +90,8 @@ export interface ExportFile {
   painLog?: PainLogRow[];
   /** Séances FEMMES (v23). Absent des exports antérieurs : toujours optionnel. */
   femmesSeances?: FemmesSeanceRow[];
+  /** Références de force (v24). Absent des exports antérieurs : toujours optionnel. */
+  referencesForce?: ReferenceForceRow[];
   /** Aliments mangés en plus du plan. Absent des exports antérieurs. */
   extraFoods?: ExtraFoodRow[];
   /**
@@ -207,6 +211,7 @@ export async function exportAll(): Promise<ExportFile> {
     videoLog,
     painLog,
     femmesSeances,
+    referencesForce,
     extraFoods,
     notes,
     noteDrafts,
@@ -227,6 +232,7 @@ export async function exportAll(): Promise<ExportFile> {
     db.exerciseVideoLog.toArray(),
     db.painLog.toArray(),
     db.femmesSeances.toArray(),
+    db.referencesForce.toArray(),
     db.extraFoods.toArray(),
     db.notes.toArray(),
     db.noteDrafts.toArray(),
@@ -252,6 +258,7 @@ export async function exportAll(): Promise<ExportFile> {
     videoLog,
     painLog,
     femmesSeances,
+    referencesForce,
     extraFoods,
     notes,
     noteDrafts,
@@ -361,6 +368,7 @@ export interface ImportReport {
   videoLog: number;
   painLog: number;
   femmesSeances: number;
+  referencesForce: number;
   extraFoods: number;
   notes: number;
   noteDrafts: number;
@@ -518,6 +526,7 @@ export function parseExport(text: string): ExportFile {
     videoLog: f.videoLog ?? [],
     painLog: f.painLog ?? [],
     femmesSeances: f.femmesSeances ?? [],
+    referencesForce: f.referencesForce ?? [],
     extraFoods: f.extraFoods ?? [],
     notes: f.notes ?? [],
     noteDrafts: f.noteDrafts ?? [],
@@ -573,6 +582,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.exerciseVideoLog,
       db.painLog,
       db.femmesSeances,
+      db.referencesForce,
       db.extraFoods,
       db.notes,
       db.noteDrafts,
@@ -589,6 +599,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       const videoLog = file.videoLog ?? [];
       const painLog = file.painLog ?? [];
       const femmesSeances = file.femmesSeances ?? [];
+      const referencesForce = file.referencesForce ?? [];
       const extraFoods = file.extraFoods ?? [];
       const notes = file.notes ?? [];
       const noteDrafts = file.noteDrafts ?? [];
@@ -608,6 +619,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.exerciseVideoLog.clear(),
         db.painLog.clear(),
         db.femmesSeances.clear(),
+        db.referencesForce.clear(),
         db.extraFoods.clear(),
         db.notes.clear(),
         db.noteDrafts.clear(),
@@ -640,6 +652,9 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       // Toujours rattachées à leur cycle : elles n'existent que dans des
       // fichiers qui portent aussi leurs cycles.
       await db.femmesSeances.bulkAdd(femmesSeances);
+      // Avec leurs identifiants et leurs dates : l'historique des évaluations
+      // se restaure tel quel, dans le même ordre.
+      await db.referencesForce.bulkAdd(referencesForce);
       await db.extraFoods.bulkAdd(extraFoods);
       await db.notes.bulkAdd(rattacher(notes));
       await db.noteDrafts.bulkAdd(rattacher(noteDrafts));
@@ -659,6 +674,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         videoLog: videoLog.length,
         painLog: painLog.length,
         femmesSeances: femmesSeances.length,
+        referencesForce: referencesForce.length,
         extraFoods: extraFoods.length,
         notes: notes.length,
         noteDrafts: noteDrafts.length,

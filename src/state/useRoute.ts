@@ -23,6 +23,8 @@ export type Route =
    */
   | { name: 'catalogue'; famille?: FamilleId }
   | { name: 'parcours' }
+  /* Le combiné d'évaluation de MASS FORCE : bench, tirage, squat, push press. */
+  | { name: 'evaluation' }
   | { name: 'today' }
   | { name: 'week'; week: WeekIndex }
   | { name: 'session'; week: WeekIndex; day: DayIndex }
@@ -56,6 +58,8 @@ export function parseRoute(hash: string): Route {
     }
     case 'parcours':
       return { name: 'parcours' };
+    case 'evaluation':
+      return { name: 'evaluation' };
     case 'today':
       return { name: 'today' };
     case 'week':

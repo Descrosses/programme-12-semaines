@@ -1,0 +1,89 @@
+/*
+ * Le combiné d'évaluation de MASS FORCE. Tout le reste vient de
+ * `Session.module.css` : ces quelques règles ne couvrent que ce que l'écran de
+ * séance n'a pas (choix de matériel, date, historique daté).
+ */
+
+.legende {
+  margin: 4px var(--pad) -4px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Le choix retenu (matériel, modalité) : il doit se voir d'un coup d'œil. */
+.choisi {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  color: var(--ink);
+}
+
+.etat {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.etat b {
+  color: var(--ink);
+}
+
+.avertissement {
+  margin: 0 var(--pad) 8px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--warn, #e0a030);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2, var(--surface));
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.date {
+  display: grid;
+  gap: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.date input {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.erreur {
+  margin: 0;
+  color: var(--rouge, #e5484d);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.historique {
+  margin: 0 var(--pad) 14px;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.historique li {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.histDate {
+  flex: none;
+  min-width: 92px;
+  color: var(--ink);
+  font-weight: 700;
+}

@@ -8,6 +8,7 @@
  * famille Femmes ». Un test les rend vérifiables.
  */
 
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   FAMILLES,
@@ -130,5 +131,58 @@ describe('catalogue Dcross-fit', () => {
   it('rend `null` pour un identifiant inconnu, sans rien inventer', () => {
     expect(programmeParId('power99')).toBeNull();
     expect(familleParId('crossfit' as never)).toBeNull();
+  });
+});
+
+/*
+ * La famille MASS — décisions de Guillaume (lot 1) :
+ * trois programmes indépendants, rangés dans l'ordre conseillé
+ * (hypertrophie → force → congestion), SANS verrou. MASS 12 est retiré.
+ * L'ancien « MASS 4 » devient MASS CONGESTION : seul son nom change.
+ */
+describe('famille MASS', () => {
+  const mass = familleParId('mass')!;
+
+  it('trois programmes, dans l’ordre conseillé', () => {
+    expect(mass.programmes.map((p) => [p.id, p.nom, p.dureeSemaines])).toEqual([
+      ['mass8', 'MASS HYPERTROPHIE', 8],
+      ['mass-force', 'MASS FORCE', 4],
+      ['mass4', 'MASS CONGESTION', 4],
+    ]);
+  });
+
+  it('MASS 12 n’existe plus', () => {
+    expect(programmeParId('mass12')).toBeNull();
+  });
+
+  it('l’ordre est un conseil : aucun verrou, aucun programme ne dépend d’un autre', () => {
+    expect(mass.ordreConseille).toBe(true);
+    for (const p of mass.programmes) expect(p.deblocage, p.id).toBeUndefined();
+  });
+
+  it('CONGESTION reste jouable sous son identifiant d’origine ; les deux autres sont à venir', () => {
+    expect(programmeParId('mass4')?.statut).toBe('disponible');
+    expect(programmeParId('mass8')?.statut).toBe('a-venir');
+    expect(programmeParId('mass-force')?.statut).toBe('a-venir');
+  });
+
+  it('seul MASS FORCE demande un combiné avant de démarrer', () => {
+    expect(
+      tousLesProgrammes()
+        .filter((p) => p.combineAvant)
+        .map((p) => p.id),
+    ).toEqual(['mass-force']);
+  });
+
+  it('plus aucun écran n’affiche « MASS 4 »', () => {
+    for (const f of ['MesuresScreen', 'ProgressVolumeScreen', 'NutritionPrincipesScreen']) {
+      const src = readFileSync(new URL(`../screens/${f}.tsx`, import.meta.url), 'utf8');
+      // Hors commentaires : on ne regarde que les chaînes et le texte JSX.
+      const visible = src
+        .split('\n')
+        .filter((l) => !/^\s*(\*|\/\*|\/\/)/.test(l))
+        .join('\n');
+      expect(visible, f).not.toMatch(/MASS 4/);
+    }
   });
 });

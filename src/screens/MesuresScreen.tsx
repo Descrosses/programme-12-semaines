@@ -71,7 +71,7 @@ export function MesuresScreen() {
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader eyebrow="MASS 4" title="Mesures" subtitle="Semaine 1 et semaine 4" />
+      <ScreenHeader eyebrow="MASS CONGESTION" title="Mesures" subtitle="Semaine 1 et semaine 4" />
 
       <p className={styles.lead}>
         Poids de corps et tour de bras, au début et à la fin du cycle. Mêmes conditions les deux

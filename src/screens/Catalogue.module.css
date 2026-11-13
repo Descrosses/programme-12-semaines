@@ -461,3 +461,13 @@
   margin-left: var(--pad);
   margin-right: var(--pad);
 }
+
+/* « Ordre conseillé, pas obligatoire » — au-dessus des programmes numérotés
+   d'une famille sans verrou (MASS). Discret : c'est un conseil. */
+.ordreConseille {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}

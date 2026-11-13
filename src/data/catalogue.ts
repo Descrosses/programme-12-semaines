@@ -71,6 +71,13 @@ export interface ProgrammeDefinition {
    * Absent : accessible dès l'inscription.
    */
   deblocage?: { apres: string };
+  /**
+   * Le programme demande un COMBINÉ D'ÉVALUATION avant de démarrer (MASS
+   * FORCE, décision de Guillaume). Le catalogue offre alors l'accès au
+   * combiné, même tant que le programme est « à venir » : les références
+   * appartiennent à la personne et restent datées.
+   */
+  combineAvant?: true;
 }
 
 export interface MaterielRequis {
@@ -93,6 +100,14 @@ export interface Famille {
    */
   sousTitre?: string;
   resume: string;
+  /**
+   * Les programmes sont rangés dans un ORDRE CONSEILLÉ, sans aucun verrou :
+   * le catalogue les numérote et le dit (« ordre conseillé, pas
+   * obligatoire »), mais chacun se démarre librement. C'est le cas de MASS,
+   * décision de Guillaume. À ne pas confondre avec un parcours à
+   * déverrouillage (`deblocage`), comme POWER ou FEMMES.
+   */
+  ordreConseille?: boolean;
   programmes: readonly ProgrammeDefinition[];
 }
 
@@ -265,13 +280,59 @@ export const FAMILLES: readonly Famille[] = [
     id: 'mass',
     nom: 'MASS',
     sousTitre: 'Prise de masse & congestion',
+    /*
+     * Trois programmes INDÉPENDANTS (décision de Guillaume) : HYPERTROPHIE 8,
+     * FORCE 4, CONGESTION 4. Rangés dans l'ordre conseillé — hypertrophie,
+     * puis force, puis congestion, et on recommence — mais sans aucun
+     * verrou : chacun se démarre quand on veut. MASS 12 est retiré.
+     */
     resume:
-      'Hypertrophie, volume d’entraînement et congestion. Les charges sont autorégulées : tu les choisis et tu les notes.',
+      'Trois programmes indépendants, à faire dans l’ordre que tu veux. Celui conseillé : hypertrophie, puis force, puis congestion, et on recommence.',
+    ordreConseille: true,
     programmes: [
       {
+        /*
+         * L'identifiant reste `mass8` : il était réservé à ce programme de
+         * huit semaines. Son contenu sportif est en cours de définition.
+         */
+        id: 'mass8',
+        familleId: 'mass',
+        nom: 'MASS HYPERTROPHIE',
+        version: '0.1',
+        dureeSemaines: 8,
+        statut: 'a-venir',
+        resume: 'Huit semaines. Programmation sportive en cours de définition.',
+        objectifs: [],
+        prerequis: [],
+      },
+      {
+        /*
+         * Quatre séances : pectoraux + triceps le lundi, dos + biceps le
+         * mardi, jambes le jeudi, épaules le vendredi. Il ne démarrera
+         * qu'après un combiné d'évaluation (développé couché, tirage
+         * vertical, squat, push press). Programmation en cours de validation.
+         */
+        id: 'mass-force',
+        familleId: 'mass',
+        nom: 'MASS FORCE',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        combineAvant: true,
+        resume:
+          'Quatre semaines, quatre séances : pectoraux et triceps, dos et biceps, jambes, épaules. Démarre après un combiné d’évaluation. Programmation sportive en cours de validation.',
+        objectifs: [],
+        prerequis: [],
+      },
+      {
+        /*
+         * L'ancien « MASS 4 ». Seul son NOM change : l'identifiant `mass4`
+         * reste, parce que les cycles déjà commencés le portent, et son
+         * contenu sportif est strictement inchangé.
+         */
         id: 'mass4',
         familleId: 'mass',
-        nom: 'MASS 4',
+        nom: 'MASS CONGESTION',
         version: '1.0',
         dureeSemaines: 4,
         statut: 'disponible',
@@ -287,28 +348,6 @@ export const FAMILLES: readonly Famille[] = [
           'Quatre séances par semaine, environ 60 minutes',
           'Une salle avec Smith machine, poulies, machines guidées et haltères',
         ],
-      },
-      {
-        id: 'mass8',
-        familleId: 'mass',
-        nom: 'MASS 8',
-        version: '0.1',
-        dureeSemaines: 8,
-        statut: 'a-venir',
-        resume: 'Huit semaines, avec une périodisation propre à cette durée. À écrire.',
-        objectifs: [],
-        prerequis: [],
-      },
-      {
-        id: 'mass12',
-        familleId: 'mass',
-        nom: 'MASS 12',
-        version: '0.1',
-        dureeSemaines: 12,
-        statut: 'a-venir',
-        resume: 'Douze semaines, avec une périodisation propre à cette durée. À écrire.',
-        objectifs: [],
-        prerequis: [],
       },
     ],
   },

@@ -39,7 +39,7 @@ describe('nutrition v19', () => {
 
     const upgraded = new ProgrammeDB(NAME);
     await upgraded.open();
-    expect(upgraded.verno).toBe(23);
+    expect(upgraded.verno).toBe(24);
     expect((await upgraded.settings.get(1))?.legacyNutritionPlan).toBe(true);
     expect((await upgraded.settings.get(1))?.bodyweightKg).toBe(78);
     expect(await upgraded.measurements.count()).toBe(1);
