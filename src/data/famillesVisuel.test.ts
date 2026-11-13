@@ -36,8 +36,8 @@ describe('carte FEMMES', () => {
     expect(readFileSync(fichier(VISUELS.carteFemmes.display)).length).toBe(26_798);
   });
 
-  it('n’annonce plus « 8 semaines en circuits »', () => {
+  it('annonce « Galbe & renforcement », plus « 8 semaines en circuits »', () => {
     const femmes = FAMILLES.find((f) => f.id === 'femmes')!;
-    expect(femmes.sousTitre).toBeUndefined();
+    expect(femmes.sousTitre).toBe('Galbe & renforcement');
   });
 });

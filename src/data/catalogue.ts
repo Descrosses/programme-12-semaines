@@ -89,8 +89,7 @@ export interface Famille {
   nom: string;
   /**
    * Facultatif : une famille sans accroche juste n'en affiche aucune, plutôt
-   * qu'une accroche fausse. FEMMES n'en a plus — « 8 semaines en circuits »
-   * ne vaut pas pour une famille appelée à porter plusieurs programmes.
+   * qu'une accroche fausse.
    */
   sousTitre?: string;
   resume: string;
@@ -291,6 +290,8 @@ export const FAMILLES: readonly Famille[] = [
   {
     id: 'femmes',
     nom: 'FEMMES',
+    /* Choisi par Guillaume, à la place de « 8 semaines en circuits ». */
+    sousTitre: 'Galbe & renforcement',
     /*
      * Aucun programme, et c'est volontaire. Le §4 interdit d'en inventer les
      * objectifs, les exercices ou les durées, et le §15 dit que son identité
