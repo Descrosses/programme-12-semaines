@@ -556,9 +556,14 @@ export const CONTRAST_BY_DAY: Partial<Record<DayIndex, ContrastSpec>> = {
     heavy: 'deadlift',
     explosive: 'broad-jump',
     explosiveReps: 2,
-    restAfterHeavySec: 120,
+    /*
+     * 1 min 30 après le deadlift, puis 2 min après les deux broad jumps :
+     * décision de Guillaume (cycle de 3 min 30 au lieu de 4). C'est le même
+     * rythme que le bench du mercredi.
+     */
+    restAfterHeavySec: 90,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 4 min',
+    cycleLabel: 'Cycle ≈ 3 min 30',
   },
 };
 
