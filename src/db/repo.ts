@@ -3,6 +3,12 @@
  * et transformer les lignes en structures que l'engine sait consommer.
  */
 
+import {
+  estMesureDuCombine,
+  meilleurResultat,
+  phaseDuCombine,
+  valeurDeSerie,
+} from '../engine/combineSync';
 import type { DayIndex, RPETarget } from '../data/types';
 import type { HistoryIndex, Occurrence, ReadinessRecord, Settings } from '../engine/types';
 import type { FoodOverride, FoodOverrides } from '../engine/nutrition';
@@ -422,7 +428,23 @@ export function toEngineSettings(row: SettingsRow): Settings {
     broadJumpBaselineCm: row.broadJumpBaselineCm,
     oneRM: row.oneRM as Settings['oneRM'],
     tableauOrigine: row.tableauOrigine,
+    repsAlignees: Object.fromEntries(
+      Object.entries(row.alignementReps ?? {})
+        .filter(([, d]) => d.accepte)
+        .map(([id, d]) => [id, d.reps]),
+    ),
   };
+}
+
+/** Enregistre la réponse à une proposition d'alignement des reps. */
+export async function deciderAlignement(
+  exerciseId: string,
+  decision: { reps: number; accepte: boolean },
+): Promise<void> {
+  const row = await getSettingsRow();
+  await saveSettings({
+    alignementReps: { ...(row.alignementReps ?? {}), [exerciseId]: decision },
+  });
 }
 
 // ---------------------------------------------------------------- séances --
@@ -698,6 +720,28 @@ export async function saveCombine(
   }
   const id = await db.combines.add(next);
   return { ...next, id };
+}
+
+/**
+ * Reporte dans la fiche Combine le meilleur résultat d'un test validé en
+ * séance. Sans effet hors des semaines de combine ou pour un exercice qui
+ * n'a pas de case dans la fiche. Voir `engine/combineSync.ts`.
+ */
+export async function reporterAuCombine(
+  sessionId: number,
+  week: number,
+  exerciseId: string,
+): Promise<void> {
+  const phase = phaseDuCombine(week);
+  if (phase === null || !estMesureDuCombine(exerciseId)) return;
+  const series = await db.sets
+    .where('[sessionId+exerciseId]')
+    .equals([sessionId, exerciseId])
+    .toArray();
+  const valeurs = series.map(valeurDeSerie).filter((v): v is number => v !== null);
+  const meilleur = meilleurResultat(exerciseId, valeurs);
+  if (meilleur === null) return;
+  await saveCombine(phase, { metrics: { [exerciseId]: meilleur } });
 }
 
 export async function allCombines(): Promise<CombineRow[]> {

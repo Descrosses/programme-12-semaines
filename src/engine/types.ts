@@ -39,6 +39,12 @@ export interface Settings {
    * installation neuve, qui n'a aucun plan en cours à préserver.
    */
   tableauOrigine: boolean;
+  /**
+   * Reps alignées par l'utilisateur, par exercice (voir `alignementReps.ts`).
+   * Seules les propositions ACCEPTÉES y figurent. Optionnel : absent, rien
+   * n'est aligné.
+   */
+  repsAlignees?: Readonly<Record<string, number>>;
 }
 
 export const DEFAULT_SETTINGS: Settings = {

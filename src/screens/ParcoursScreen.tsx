@@ -331,7 +331,7 @@ export function ParcoursScreen({
                   <article key={v.cycle.id} className={styles.card}>
                     <div className={local.entete}>
                       <h3 className={local.nom}>{programme?.nom ?? v.cycle.programmeId}</h3>
-                      <span className={local.version}>version {v.cycle.programmeVersion}</span>
+                      <span className={local.version}>révision {v.cycle.programmeVersion}</span>
                     </div>
                     <p className={styles.cardSub}>
                       {jour(v.cycle.startDate)}
@@ -462,7 +462,7 @@ function bilanDuCycle(v: Vue, ouvertId: number | null, setOuvert: (id: number | 
     <article key={v.cycle.id} className={styles.card}>
       <div className={local.entete}>
         <h3 className={local.nom}>{programme?.nom ?? v.cycle.programmeId}</h3>
-        <span className={local.version}>version {v.cycle.programmeVersion}</span>
+        <span className={local.version}>révision {v.cycle.programmeVersion}</span>
       </div>
       <p className={styles.cardSub}>
         {jour(v.cycle.startDate)}

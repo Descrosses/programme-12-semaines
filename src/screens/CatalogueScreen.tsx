@@ -20,6 +20,7 @@
  * tout, et une surprise pareille doit être demandée.
  */
 
+import { accesProgramme } from '../engine/acces';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Icon } from '../components/Icon';
 import { EnTetePlateforme } from '../components/EnTetePlateforme';
@@ -201,6 +202,32 @@ export function CatalogueScreen({
                                 ))}
                               </ul>
                             </>
+                          )}
+
+                          {p.materiel && p.materiel.length > 0 && (
+                            /*
+                             * Le matériel à prévoir, AVANT de démarrer : de
+                             * quoi acheter une ceinture de lest à temps plutôt
+                             * que de la découvrir en semaine 1.
+                             */
+                            <>
+                              <h3 className={local.sousSection}>Matériel à prévoir</h3>
+                              <ul className={local.materiel}>
+                                {p.materiel.map((m) => (
+                                  <li key={m.objet}>
+                                    <b>{m.objet}</b>
+                                    <span>{m.usage}</span>
+                                    {m.sinon && (
+                                      <span className={local.sinon}>Sinon : {m.sinon}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </>
+                          )}
+
+                          {accesProgramme(p, cycles).raison !== null && (
+                            <p className={local.verrou}>🔒 {accesProgramme(p, cycles).raison}</p>
                           )}
 
                           {p.prerequis.length > 0 && (

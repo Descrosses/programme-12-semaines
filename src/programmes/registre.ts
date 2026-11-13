@@ -3,7 +3,7 @@
  *
  * ── La règle, et pourquoi elle tient ici ───────────────────────────────────
  *
- * Le catalogue (`data/catalogue.ts`) dit ce qui EXISTE : POWER 12, POWER 28,
+ * Le catalogue (`data/catalogue.ts`) dit ce qui EXISTE : POWER 12, TRANSITION 4,
  * MASS 4, MASS 8, MASS 12. Le registre dit ce qui se JOUE. Les deux ne
  * coïncident pas, et c'est voulu : un programme peut figurer au catalogue
  * comme « à venir » longtemps avant d'avoir un module.

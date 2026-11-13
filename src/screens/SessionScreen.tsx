@@ -33,6 +33,8 @@ import {
   resetSessionClock,
   setsOnSessionExercise,
   saveReadiness,
+  deciderAlignement,
+  reporterAuCombine,
   saveSet,
   startSession,
   toggleWarmupItem,
@@ -250,6 +252,9 @@ export function SessionScreen({
       secondReps: payload.secondReps,
       secondKg: payload.secondKg,
     });
+    /* Un jour de combine, le résultat part aussi dans la fiche Combine :
+       plus besoin de le ressaisir en face du test. */
+    await reporterAuCombine(id, week, ex.id);
     await data.reload();
   }
 
@@ -413,6 +418,14 @@ export function SessionScreen({
           savedSets={data.savedSets[ex.id] ?? []}
           overrideKg={overrides[ex.id] ?? null}
           history={data.history[ex.id]}
+          alignement={{
+            decision: data.alignements[ex.id],
+            onDecider: (d) =>
+              void (async () => {
+                await deciderAlignement(ex.id, d);
+                await data.reload();
+              })(),
+          }}
           timer={timer}
           media={data.date ? { week, day, date: data.date } : null}
           note={{ week, day, date: data.date ?? '' }}

@@ -487,6 +487,8 @@ Chronomètre. Un repos raccourci sur un lift lourd transforme la force en fatigu
 
 **Cas 7 — performances explosives en baisse deux semaines de suite** (broad jump, box jump, vitesse de barre) → lifts principaux à 3 séries, suppression du conditioning. Si ça persiste 10 jours : deload anticipé.
 
+*Dans l'application, cet allègement est **proposé, jamais imposé** : la baisse peut venir de relevés de readiness incomplets. Tant que la question n'a pas reçu de réponse, la séance reste celle du programme. La réponse vaut pour l'épisode en cours ; une nouvelle baisse après un nouveau pic repose la question.*
+
 **Cas 8 — douleur localisée sur un mouvement** (aujourd'hui : adducteur gauche, §14) → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
 
 **Cas 9 — un exercice de tronc, ou tout exercice au poids du corps.** Les huit cas ci-dessus sont écrits en kilos : « +5 kg bas du corps, +2,5 kg haut du corps ». Aucun ne s'applique à l'Ab Wheel, au Hanging Leg Raise, au Roman Side Bench ni au Copenhagen Plank — il n'y a pas de barre à charger. Faute de règle, ces mouvements sont restés **figés douze semaines durant** : 3 × 8 d'Ab Wheel en semaine 1, 3 × 8 en semaine 11.

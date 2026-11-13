@@ -3,6 +3,7 @@
  * saisies. Tout vient de la base locale, rien du réseau.
  */
 
+import type { DecisionAlignement } from '../engine/alignementReps';
 import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { dateFor } from '../engine/calendar';
@@ -13,7 +14,7 @@ import { programmeParId } from '../data/catalogue';
 import { HABILLAGE } from '../data/famillesVisuel';
 import type { VisuelNom } from '../data/visuels';
 import { readiness as computeReadiness } from '../engine/readiness';
-import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
+import { allegementAccepte, explosiveTrend, type ExplosiveTrend } from '../engine/trends';
 import type { HistoryIndex, ReadinessResult } from '../engine/types';
 import type { ReadinessRow, SessionRow, SetRow } from '../db/db';
 import {
@@ -73,6 +74,8 @@ export interface SessionData {
    * n'en a pas : le bloc reste alors sur fond uni, sans image empruntée.
    */
   ambiance: VisuelNom | null;
+  /** Les réponses aux propositions d'alignement des reps, par exercice. */
+  alignements: Record<string, DecisionAlignement>;
   /**
    * L'identifiant de la ligne de séance, créée MAINTENANT si elle n'existe
    * pas encore — et avec elle le cycle, s'il n'y en avait aucun.
@@ -128,7 +131,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       settings,
       history,
       readiness: readinessResult,
-      explosiveDecline: trend.declining,
+      explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
     });
 
     /*
@@ -208,6 +211,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       customRows,
       replaced: applique.replaced,
       ambiance: ambianceDe(programme.id),
+      alignements: settingsRow.alignementReps ?? {},
     });
   }, [week, day]);
 
@@ -240,6 +244,7 @@ function ambianceDe(programmeId: string): VisuelNom | null {
 function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
   return {
     ambiance: null,
+    alignements: {},
     loading: true,
     session: null,
     row: null,
@@ -257,6 +262,7 @@ function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
       suggestEarlyDeload: false,
       weekly: [],
       message: '',
+      debut: null,
     },
     date: '',
     history: {},

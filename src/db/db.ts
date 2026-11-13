@@ -5,6 +5,8 @@
  * validée est écrite immédiatement — l'appli ne doit jamais perdre une saisie.
  */
 
+import type { DecisionSauts } from '../engine/trends';
+import type { DecisionAlignement } from '../engine/alignementReps';
 import Dexie, { type Table } from 'dexie';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
 import type { PlanPerso } from '../data/planPerso';
@@ -346,6 +348,18 @@ export interface SettingsRow {
   id: 1;
   startDate: string;
   broadJumpBaselineCm: number | null;
+  /**
+   * La réponse à l'alerte « sauts en baisse » (§11 cas 7) : alléger ou non.
+   * `null` tant que la question n'a pas été posée. Sans migration : la
+   * fusion avec les valeurs par défaut dans `getSettingsRow` le fournit.
+   */
+  decisionSauts?: DecisionSauts | null;
+  /**
+   * Les réponses aux propositions d'alignement des reps, par exercice :
+   * acceptées (l'attendu suit) ou refusées (la question ne revient que si
+   * l'utilisateur fait encore mieux). Voir `engine/alignementReps.ts`.
+   */
+  alignementReps?: Record<string, DecisionAlignement>;
   oneRM: Record<string, number>;
   /**
    * §12 — « moyenne de 3 matinées, à jeun ». Relevé à la maison sur plusieurs
@@ -1120,6 +1134,8 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   id: 1,
   startDate: '',
   broadJumpBaselineCm: null,
+  decisionSauts: null,
+  alignementReps: {},
   oneRM: {},
   bodyweightKg: null,
   bodyweightDate: '',

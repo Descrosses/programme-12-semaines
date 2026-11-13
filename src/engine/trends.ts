@@ -24,6 +24,44 @@ export interface ExplosiveTrend {
   suggestEarlyDeload: boolean;
   weekly: WeeklyBest[];
   message: string;
+  /**
+   * La date du dernier pic, d'où part le déclin. Elle IDENTIFIE l'épisode :
+   * tant que les sauts baissent depuis ce pic, c'est la même alerte, et la
+   * réponse déjà donnée vaut toujours. Un nouveau pic, puis une nouvelle
+   * baisse, reposent la question. `null` hors déclin.
+   */
+  debut: string | null;
+}
+
+/** Ce que l'utilisateur a répondu à l'alerte « sauts en baisse ». */
+export interface DecisionSauts {
+  /** Le `debut` de l'épisode auquel la réponse s'applique. */
+  debut: string;
+  accepte: boolean;
+}
+
+/**
+ * Le cas 7 s'applique-t-il à la séance ? Seulement si les sauts baissent ET
+ * que l'utilisateur a ACCEPTÉ d'alléger pour cet épisode.
+ *
+ * Avant, l'allègement tombait tout seul. Guillaume l'a vécu : ses relevés de
+ * readiness étaient incomplets, les sauts « baissaient », et il ne savait
+ * plus si la séance du jour était la vraie ou une version allégée. Un
+ * allègement qu'on n'a pas choisi est un allègement dont on doute.
+ */
+export function allegementAccepte(
+  trend: ExplosiveTrend,
+  decision: DecisionSauts | null | undefined,
+): boolean {
+  return trend.declining && decision != null && decision.debut === trend.debut && decision.accepte;
+}
+
+/** Une question est-elle en attente pour l'épisode en cours ? */
+export function decisionEnAttente(
+  trend: ExplosiveTrend,
+  decision: DecisionSauts | null | undefined,
+): boolean {
+  return trend.declining && (decision == null || decision.debut !== trend.debut);
 }
 
 const NO_TREND: ExplosiveTrend = {
@@ -32,6 +70,7 @@ const NO_TREND: ExplosiveTrend = {
   suggestEarlyDeload: false,
   weekly: [],
   message: '',
+  debut: null,
 };
 
 /** Meilleur saut de chaque semaine, dans l'ordre chronologique. */
@@ -81,9 +120,10 @@ export function explosiveTrend(records: ReadinessRecord[], todayIso?: string): E
     consecutiveDrops: drops,
     suggestEarlyDeload,
     weekly,
+    debut: peakDate,
     message: suggestEarlyDeload
       ? `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %), et ça dure depuis ${days} jours. Le programme dit : deload anticipé.`
-      : `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %). Cas 7 : lifts principaux à 3 séries, conditioning supprimé.`,
+      : `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %).`,
   };
 }
 

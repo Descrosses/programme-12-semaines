@@ -55,6 +55,33 @@ export interface ProgrammeDefinition {
   resume: string;
   objectifs: readonly string[];
   prerequis: readonly string[];
+  /**
+   * Le matériel à prévoir AVANT de démarrer, pour l'acheter à temps.
+   *
+   * Seulement ce que la salle ne fournit pas forcément : une ceinture de lest
+   * ne se trouve pas au rack. Chaque objet cite les exercices qui l'exigent ;
+   * un test vérifie qu'ils sont bien programmés, pour que la liste ne garde
+   * pas un objet dont plus aucune séance ne se sert.
+   */
+  materiel?: readonly MaterielRequis[];
+  /**
+   * Ce qu'il faut avoir TERMINÉ pour accéder au programme.
+   *
+   * `complet` : le programme dont la fin débloque tout. `premiereSemaine` :
+   * celui dont la fin ouvre seulement la semaine 1, en avant-goût. Voir
+   * `engine/acces.ts`. Absent : accessible à tous.
+   */
+  deblocage?: { complet: string; premiereSemaine?: string };
+}
+
+export interface MaterielRequis {
+  objet: string;
+  /** À quoi il sert, en une phrase. */
+  usage: string;
+  /** Les exercices qui l'exigent (identifiants de `exercises.ts`). */
+  exercices: readonly string[];
+  /** Ce qui le remplace si on ne l'a pas — écrit dans le programme. */
+  sinon?: string;
 }
 
 export interface Famille {
@@ -77,7 +104,13 @@ export const FAMILLES: readonly Famille[] = [
       {
         id: 'power12',
         familleId: 'power',
-        nom: 'POWER 12',
+        /*
+         * « 1.0 » est l'ÉDITION du programme — la première des deux POWER 12.
+         * `version` reste sa révision technique (1.2), celle que portent les
+         * cycles déjà commencés : la changer les ferait passer pour un autre
+         * programme.
+         */
+        nom: 'POWER 12 1.0',
         version: '1.2',
         dureeSemaines: 12,
         statut: 'disponible',
@@ -93,23 +126,75 @@ export const FAMILLES: readonly Famille[] = [
           'Quatre à cinq séances par semaine',
           'Un combine initial pour mesurer le point de départ',
         ],
-      },
-      {
-        id: 'power28',
-        familleId: 'power',
-        nom: 'POWER 28',
-        version: '0.1',
-        dureeSemaines: 28,
-        statut: 'a-venir',
         /*
-         * Structure envisagée : 12 semaines de force, 4 de transition, 12 de
-         * force. Elle n'a pas été testée. Le §4 est explicite — elle ne doit
-         * pas être présentée comme validée, et les 28 semaines ne sont pas
-         * créées. Seule la place existe.
+         * Tiré du programme, objet par objet — rien d'ajouté. Ce que la salle
+         * fournit (barres, câbles, landmine) n'y est pas.
          */
-        resume: 'Structure longue en trois blocs, encore à l’essai. Non testée, non disponible.',
+        materiel: [
+          {
+            objet: 'Ceinture de lest',
+            usage: 'Tractions lestées (de +20 à +45 kg) et tractions prise neutre à +5-10 kg.',
+            exercices: ['weighted-pullup', 'neutral-grip-pullup', 'test-weighted-pullup-1rm'],
+          },
+          {
+            objet: 'Roue abdominale',
+            usage: 'Ab Wheel en séance et Ab Wheel max aux combines.',
+            exercices: ['ab-wheel', 'test-ab-wheel-max'],
+            sinon: 'Rollout avec une barre chargée de deux disques.',
+          },
+          {
+            objet: 'Box de 60 à 75 cm',
+            usage: 'Box Jump, dont le contraste squat → box jump des semaines 9 à 11.',
+            exercices: ['box-jump'],
+            sinon: 'Box de la zone fonctionnelle Basic-Fit ; sinon Vertical Jump sur cible murale.',
+          },
+          {
+            objet: 'Mètre ruban',
+            usage:
+              'Broad Jump mesuré en cm : test de readiness avant chaque séance jambes, et combines.',
+            exercices: ['broad-jump', 'test-broad-jump', 'test-vertical-jump'],
+          },
+          {
+            objet: 'Téléphone pour filmer + 20 m de surface adaptée',
+            usage: 'Sprints 10 et 20 m des combines, chronométrés à la vidéo, jamais sur tapis.',
+            exercices: ['test-sprint-10m', 'test-sprint-20m'],
+            sinon: 'Sans surface adaptée, le sprint se saute : il est facultatif.',
+          },
+        ],
+      },
+      /*
+       * La suite de POWER 12 1.0 — décidée par Guillaume, contenu à écrire.
+       *
+       * Elle remplace POWER 28, qui n'était qu'une place. L'ordre est une
+       * filière : 1.0, puis quatre semaines pour travailler les points
+       * faibles, puis 2.0. Les deux suivants sont `a-venir` : aucune séance
+       * n'est écrite, le résumé reprend ses mots, rien n'est inventé.
+       */
+      {
+        id: 'power-transition4',
+        familleId: 'power',
+        nom: 'TRANSITION 4',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume:
+          'Quatre semaines entre les deux POWER 12, à la manière d’un long deload : travail unilatéral libre et à la machine, tronc intensifié, renforcement des tendons — chevilles, genoux, épaules — et apprentissage technique des exercices de POWER 12 2.0.',
         objectifs: [],
         prerequis: [],
+        deblocage: { complet: 'power12' },
+      },
+      {
+        id: 'power12v2',
+        familleId: 'power',
+        nom: 'POWER 12 2.0',
+        version: '0.1',
+        dureeSemaines: 12,
+        statut: 'a-venir',
+        resume:
+          'La seconde édition de POWER 12. Sa première semaine s’ouvre à la fin de POWER 12 1.0 ; le reste, une fois TRANSITION 4 terminé.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { complet: 'power-transition4', premiereSemaine: 'power12' },
       },
     ],
   },

@@ -238,6 +238,59 @@
   color: var(--rouge);
 }
 
+/* L'alerte qui pose une question : texte, puis deux réponses. */
+.alertQuestion {
+  align-items: flex-start;
+}
+
+.alertCorps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.alertCorps p {
+  margin: 0;
+}
+
+.alertBoutons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.alertOui,
+.alertNon {
+  min-height: var(--tap);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.alertOui {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.alertNon {
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+/* « Changer d'avis » : une commande, donc 44 px au toucher. */
+.alertLien {
+  min-height: 44px;
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .alertVert {
   border-left-color: var(--vert);
 }

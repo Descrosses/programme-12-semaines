@@ -109,6 +109,48 @@
   line-height: 1.55;
 }
 
+/* Le matériel à prévoir : l'objet en gras, son usage, l'alternative. */
+.materiel {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.materiel li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.materiel b {
+  color: var(--ink);
+}
+
+.sinon {
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+/* La condition de déblocage d'un programme de la filière. */
+.verrou {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--line-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
 .action {
   display: block;
   width: 100%;

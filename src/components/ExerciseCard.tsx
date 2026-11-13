@@ -27,6 +27,11 @@ import type { DayIndex } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
 import { EXERCISES } from '../data/exercises';
 import { fonctionTronc } from '../data/fonctionsTronc';
+import {
+  estAlignable,
+  propositionAlignement,
+  type DecisionAlignement,
+} from '../engine/alignementReps';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -91,6 +96,7 @@ export function ExerciseCard({
   onCancelCustom,
   onSaveSet,
   onOverride,
+  alignement,
 }: {
   ex: ResolvedExercise;
   savedSets: SetRow[];
@@ -148,6 +154,14 @@ export function ExerciseCard({
   onCancelCustom?: () => void;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   onOverride: (exId: string, kg: number | null) => void;
+  /**
+   * L'alignement des reps : la réponse déjà donnée pour cet exercice, et de
+   * quoi enregistrer la suivante. Absent, aucune proposition n'est faite.
+   */
+  alignement?: {
+    decision: DecisionAlignement | undefined;
+    onDecider: (d: DecisionAlignement) => void;
+  };
 }) {
   const [openCues, setOpenCues] = useState(false);
   const [openNote, setOpenNote] = useState(false);
@@ -195,6 +209,20 @@ export function ExerciseCard({
    * en entier.
    */
   const fonction = fonctionTronc(ex.id);
+
+  /*
+   * « Tu as fait 3 × 10 au lieu de 3 × 6 : aligner l'attendu ? » — seulement
+   * avant la première série du jour, et pour un accessoire ou un exercice de
+   * tronc compté en reps.
+   */
+  const proposition =
+    alignement &&
+    savedSets.length === 0 &&
+    ex.work.kind === 'reps' &&
+    typeof ex.work.reps === 'number' &&
+    estAlignable(ex.def.role, ex.work.kind, ex.work.reps)
+      ? propositionAlignement(ex.work.reps, history, note.week, alignement.decision)
+      : null;
 
   const aDesConsignes =
     ex.adjustments.some((a) => a.source !== 'rouge') ||
@@ -318,6 +346,32 @@ export function ExerciseCard({
         seance={{ week: note.week, day: note.day }}
         plannedKg={plannedKg}
       />
+
+      {proposition && alignement && (
+        <div className={styles.suggestion}>
+          <div className={styles.suggestionText}>
+            En semaine {proposition.semaine}, tu as tenu <b>{proposition.propose} reps</b> à chacun
+            de tes {proposition.nbTours} tours, au lieu de {proposition.prevu}. Aligner l’attendu
+            sur {proposition.propose} reps pour la suite du programme ?
+          </div>
+          <div className={styles.suggestionActions}>
+            <button
+              type="button"
+              className={styles.accept}
+              onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: true })}
+            >
+              Passer à {proposition.propose} reps
+            </button>
+            <button
+              type="button"
+              className={styles.refuse}
+              onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: false })}
+            >
+              Garder {proposition.prevu}
+            </button>
+          </div>
+        </div>
+      )}
 
       {showSuggestion && (
         <div className={styles.suggestion}>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { explosiveTrend, weeklyBests } from './trends';
+import { allegementAccepte, decisionEnAttente, explosiveTrend, weeklyBests } from './trends';
 import type { ReadinessRecord } from './types';
 
 const rec = (week: number, jumpCm: number, date: string): ReadinessRecord => ({
@@ -50,7 +50,10 @@ describe('§11 cas 7 — sauts en baisse deux semaines de suite', () => {
     expect(t.consecutiveDrops).toBe(2);
     expect(t.message).toContain('245');
     expect(t.message).toContain('238');
-    expect(t.message).toContain('Cas 7');
+    // Le message CONSTATE, il n'annonce plus un allègement déjà appliqué :
+    // c'est la carte qui pose la question.
+    expect(t.message).not.toMatch(/lifts principaux/i);
+    expect(t.debut).toBe('2026-01-12');
   });
 
   it('une remontée remet le compteur à zéro', () => {
@@ -66,11 +69,7 @@ describe('§11 cas 7 — sauts en baisse deux semaines de suite', () => {
 
   it('au-delà de 10 jours de déclin, propose un deload anticipé (§11)', () => {
     const t = explosiveTrend(
-      [
-        rec(1, 245, '2026-01-05'),
-        rec(2, 242, '2026-01-12'),
-        rec(3, 238, '2026-01-19'),
-      ],
+      [rec(1, 245, '2026-01-05'), rec(2, 242, '2026-01-12'), rec(3, 238, '2026-01-19')],
       '2026-01-20',
     );
     expect(t.declining).toBe(true);
@@ -80,11 +79,7 @@ describe('§11 cas 7 — sauts en baisse deux semaines de suite', () => {
 
   it('en dessous de 10 jours, cas 7 seulement', () => {
     const t = explosiveTrend(
-      [
-        rec(1, 245, '2026-01-12'),
-        rec(2, 242, '2026-01-15'),
-        rec(3, 238, '2026-01-19'),
-      ],
+      [rec(1, 245, '2026-01-12'), rec(2, 242, '2026-01-15'), rec(3, 238, '2026-01-19')],
       '2026-01-20',
     );
     expect(t.declining).toBe(true);
@@ -103,5 +98,37 @@ describe('§11 cas 7 — sauts en baisse deux semaines de suite', () => {
       rec(3, 240, '2026-01-19'),
     ]);
     expect(t.declining).toBe(false);
+  });
+});
+
+describe('§11 cas 7 — on demande avant d’alléger', () => {
+  const baisse = explosiveTrend([
+    rec(1, 240, '2026-01-05'),
+    rec(2, 245, '2026-01-12'),
+    rec(3, 242, '2026-01-19'),
+    rec(4, 238, '2026-01-26'),
+  ]);
+
+  it('sans réponse, la séance n’est PAS allégée et la question est posée', () => {
+    expect(allegementAccepte(baisse, null)).toBe(false);
+    expect(decisionEnAttente(baisse, null)).toBe(true);
+  });
+
+  it('« Alléger » applique le cas 7 ; « Garder » ne l’applique pas', () => {
+    expect(allegementAccepte(baisse, { debut: '2026-01-12', accepte: true })).toBe(true);
+    expect(allegementAccepte(baisse, { debut: '2026-01-12', accepte: false })).toBe(false);
+    expect(decisionEnAttente(baisse, { debut: '2026-01-12', accepte: false })).toBe(false);
+  });
+
+  it('une réponse donnée pour un AUTRE épisode ne vaut pas : la question revient', () => {
+    const ancienne = { debut: '2025-12-01', accepte: true };
+    expect(allegementAccepte(baisse, ancienne)).toBe(false);
+    expect(decisionEnAttente(baisse, ancienne)).toBe(true);
+  });
+
+  it('sans baisse, rien ne s’applique et rien n’est demandé', () => {
+    const stable = explosiveTrend([rec(1, 240, '2026-01-05'), rec(2, 245, '2026-01-12')]);
+    expect(allegementAccepte(stable, { debut: '2026-01-12', accepte: true })).toBe(false);
+    expect(decisionEnAttente(stable, null)).toBe(false);
   });
 });
