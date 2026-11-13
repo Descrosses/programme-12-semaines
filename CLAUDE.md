@@ -264,10 +264,15 @@ matériel et la durée avant d'écrire la moindre séance.
   1. **MASS FORCE ne démarre qu'après un combiné** (développé couché, tirage
      vertical, squat, push press). Le combiné n'est jamais imposé à
      CONGESTION.
-  2. **Ses références de force iront dans une table À PART**, jamais dans
-     `settings.oneRM` (qui pilote tout le tableau de POWER) : exercice,
-     variante de matériel, mesuré ou estimé, date ; ajout seul, rien
-     d'effacé. Aucune conversion d'une variante de matériel à une autre.
+  2. **Ses références de force sont dans une table À PART** — FAIT (lot 2,
+     base v24, `referencesForce`) —, jamais dans `settings.oneRM` (qui pilote
+     tout le tableau de POWER). Une ligne = exercice, variante de matériel,
+     `direct` (1RM, 1 rep) ou `sous-maximal` (charge × reps BRUTES), date.
+     Ajout seul : `db/references.ts` n'a volontairement ni modification ni
+     suppression. Pas rattachée à un cycle (hors `TABLES_DU_CYCLE`) : supprimer
+     un cycle ne l'emporte jamais. `referenceCourante` (moteur) ne cherche que
+     le MÊME exercice et la MÊME variante : aucune conversion de matériel.
+     Des tests (`references.test.ts`, moteur et base) figent tout cela.
   3. **Le sous-maximal enregistre ses données brutes** (charge × reps) sans
      estimation : aucune formule n'est validée. Ne pas en inventer.
   4. Les séries fractionnées ne s'implémentent pas avant validation, et

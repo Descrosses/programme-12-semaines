@@ -523,6 +523,57 @@ export interface CycleRow {
   femmes?: ProfilFemmes;
 }
 
+/**
+ * Une RÉFÉRENCE DE FORCE (v24) : ce qu'un test a mesuré sur un exercice, avec
+ * un matériel donné, un jour donné.
+ *
+ * ── Pourquoi une table à part, et pas `settings.oneRM` ─────────────────────
+ *
+ * `settings.oneRM` pilote TOUT le tableau de charges de POWER, une seule
+ * valeur par mouvement, écrasée à chaque test, sans date ni matériel. Y
+ * écrire une évaluation MASS réécrirait les séances de POWER. Ici, chaque
+ * test est une ligne de plus : rien ne s'efface, rien ne se remplace, et la
+ * date de chaque évaluation reste lisible.
+ *
+ * ── Ce qui est stocké, et ce qui ne l'est pas ──────────────────────────────
+ *
+ * Les données BRUTES seulement : la charge et le nombre de répétitions.
+ * - `modalite: 'direct'` : un vrai 1RM, donc `reps` vaut 1 et `chargeKg` EST
+ *   le maximum mesuré.
+ * - `modalite: 'sous-maximal'` : une série de plusieurs répétitions. AUCUNE
+ *   estimation n'est stockée : aucune formule n'est validée (décision de
+ *   Guillaume). Le jour où elle le sera, elle se calculera à la lecture, sur
+ *   ces mêmes données, sans refaire les tests.
+ *
+ * La VARIANTE de matériel fait partie de la référence : un développé couché
+ * à la Smith et un à la barre libre sont deux références distinctes. Rien ne
+ * convertit l'une en l'autre.
+ *
+ * Pas rattachée à un cycle : une référence appartient à la personne, pas à
+ * un programme. Supprimer un cycle ne l'emporte jamais. `cycleId` ne dit que
+ * d'où vient le test.
+ */
+export interface ReferenceForceRow {
+  id?: number;
+  /** L'exercice évalué, par son identifiant. */
+  exercice: string;
+  /** Le matériel utilisé : Smith, barre, haltères, poulie, machine… */
+  variante: string;
+  modalite: 'direct' | 'sous-maximal';
+  chargeKg: number;
+  /** 1 pour un test direct ; le nombre de répétitions faites sinon. */
+  reps: number;
+  /** `YYYY-MM-DD` du test. */
+  date: string;
+  /** Le programme pour lequel le test a été fait (`mass-force`…), ou `null`. */
+  programmeId: string | null;
+  /** Le cycle d'où vient le test — une provenance, pas un rattachement. */
+  cycleId: number | null;
+  note: string;
+  /** Horodatage d'écriture : départage deux tests du même jour. */
+  creeLe: number;
+}
+
 export interface ProfilFemmes {
   niveau: Niveau;
   safety: SafetyAnswers;
@@ -577,6 +628,7 @@ export class ProgrammeDB extends Dexie {
   mealLog!: Table<MealLogRow, number>;
   painLog!: Table<PainLogRow, number>;
   femmesSeances!: Table<FemmesSeanceRow, number>;
+  referencesForce!: Table<ReferenceForceRow, number>;
   extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
   notes!: Table<NoteRow, number>;
@@ -1080,6 +1132,14 @@ export class ProgrammeDB extends Dexie {
      * modifiée ni supprimée. Une séance par (cycle, semaine, jour).
      */
     this.version(23).stores({ femmesSeances: '++id, &[cycleId+semaine+jour], cycleId' });
+
+    /*
+     * v24 — les références de force (préparation de MASS FORCE).
+     *
+     * Une table neuve, rien d'autre : aucune ligne existante n'est lue,
+     * modifiée ni supprimée, et `settings.oneRM` n'est pas touché.
+     */
+    this.version(24).stores({ referencesForce: '++id, [exercice+variante], exercice, date' });
 
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
