@@ -352,7 +352,7 @@ export const FAMILLES: readonly Famille[] = [
         statut: 'a-venir',
         apercu: '#/femmes/aujourdhui',
         resume:
-          'Prise de masse : développement de la masse musculaire. Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
+          'Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
         objectifs: [
           'Reprendre ou construire une base de force complète, sans matériel lourd',
           'Progresser par le volume et la maîtrise avant la charge',

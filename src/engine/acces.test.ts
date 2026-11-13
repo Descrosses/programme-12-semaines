@@ -166,7 +166,10 @@ describe('le parcours FEMMES', () => {
   });
 
   it('les résumés reprennent l’organigramme', () => {
-    expect(p('femmes8').resume).toMatch(/^Prise de masse/);
+    // Le cycle 1 est le programme en circuits (décision de Guillaume), pas
+    // la « prise de masse » que l'organigramme lui donnait.
+    expect(p('femmes8').resume).toMatch(/^Trois phases/);
+    expect(p('femmes8').resume).not.toMatch(/prise de masse/i);
     expect(p('femmes-cycle2').resume).toMatch(/^Congestion/);
     expect(p('femmes-cycle3').resume).toMatch(/^Perte de poids/);
     expect(p('femmes-cycle4').resume).toMatch(/^Prise de masse/);
