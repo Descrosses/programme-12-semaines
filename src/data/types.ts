@@ -316,7 +316,10 @@ export type MainLiftId =
   | 'push-press'
   | 'front-squat'
   | 'speed-squat'
-  | 'rdl';
+  | 'rdl'
+  /* Remplace le Back Squat du lundi en semaines 5 à 7 (§8, décision de
+     Guillaume). Exercice distinct : son propre historique, aucun 1RM. */
+  | 'pin-squat';
 
 /** Les 7 colonnes du tableau §9, dans l'ordre du tableau. */
 export const TABLE_LIFTS = [

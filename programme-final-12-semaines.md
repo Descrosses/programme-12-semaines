@@ -263,7 +263,7 @@ L'application affiche ce bandeau sur la carte de chaque exercice de tronc ou de 
 | Porté symétrique | Rester gainé en marchant, chargé des deux côtés. | Prise, épaules et tronc tiennent ensemble, sur la durée. | Farmer Carry |
 
 ### Semaines 5-7 — Force maximale
-- Squat, Bench, Deadlift, Tractions : 5 × 3 → 4 × 3 → 4 × 2 à 82-90 %
+- Squat, Bench, Deadlift, Tractions : 5 × 3 → 4 × 3 → 4 × 2 à 82-90 % — **le squat du lundi est un Pin Squat** (voir encadré ci-dessous)
 - Repos : **4 min** squat/deadlift, **3 min 30** bench/tractions
 - Fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale
 - Box Jump 4 × 2, repos 2 min
@@ -329,6 +329,35 @@ Ce que le programme perd, et il faut le dire : **la seule charge antérieure en 
 **Conséquence : le samedi porte deux « flexion latérale », Suitcase Carry puis Roman Side Bench.** C'est une dérogation à la règle « jamais deux exercices du tronc de la même famille le même jour », et la seule du programme. Elle se justifie comme le §8 justifie déjà le Barbell Offset Hold : **le facteur limitant diffère.** Le Suitcase Carry à 32 kg sur 30 m lâche par la MAIN avant les obliques ; le Roman Side Bench, au poids du corps et sans préhension, va au bout de l'amplitude. Même fonction, autre limite.
 
 Second effet, assumé lui aussi : **le Roman Side Bench revient à deux séances par semaine**, lundi et samedi. Les deux prescriptions sont identiques et au poids du corps, donc aucune charge ne dérive quand l'application lit son historique à deux endroits — c'est verrouillé par un test.
+
+### Pin Squat — le squat du lundi en semaines 5 à 7
+
+**Objectif.** Développer la force de démarrage depuis la position basse, en supprimant l'assistance du rebond. Il remplace le Back Squat du lundi **uniquement** en semaines 5, 6 et 7 ; le reste du programme ne change pas.
+
+Mêmes séries, mêmes répétitions, même RPE que le back squat qu'il remplace. Repos 4 min.
+
+| Sem | Exercice | Séries × reps | RPE | Charge prévisionnelle |
+|---|---|---|---|---|
+| 5 | Pin Squat | 5 × 3 | RPE 8 | 95–100 kg |
+| 6 | Pin Squat | 4 × 3 | RPE 8,5 | 100–105 kg |
+| 7 | Pin Squat | 4 × 2 | RPE 9 | 110 kg |
+
+**Ces charges sont une référence individuelle, pas une prescription universelle.** Elles viennent d'une performance réelle : Pin Squat, 110 kg, 4 × 2, RPE 9, descente contrôlée, arrêt complet sur les sécurités, remontée sans rebond. Elles ne dérivent d'**aucun coefficient** back squat → pin squat, et ne servent **jamais** à recalculer le 1RM du back squat. Dans l'application, elles fonctionnent comme les kilos du RDL : un utilisateur qui n'a jamais fait de Pin Squat ne les voit pas, choisit sa charge au RPE en semaine 5, et la suite se cale sur ce qu'il a réellement soulevé ; les règles de progression de la section 11 s'appliquent ensuite.
+
+**Amplitude.** La même que le Back Squat habituel. Les sécurités se règlent à la hauteur de la position basse habituelle.
+
+**Exécution.**
+1. Départ debout, barre sur le dos.
+2. Descente contrôlée jusqu'aux sécurités.
+3. Arrêt complet de la barre sur les sécurités, sans rebond.
+4. Maintien du gainage et de la tension musculaire.
+5. Remontée avec une intention d'accélération maximale, sans dégrader la technique.
+
+**Points de vigilance.** Ne jamais réduire volontairement l'amplitude pour augmenter la charge. Conserver la même hauteur de sécurités pendant les trois semaines. Ne pas utiliser les sécurités pour rebondir. Ne pas relâcher brutalement le gainage quand la barre repose sur les sécurités. Utiliser un rack et des sécurités adaptés.
+
+**Readiness rouge en semaines 5 à 7.** Le Pin Squat n'a pas de 1RM : la règle « lift principal à 3 × 3 à 65 % du 1RM » (§4) se joue donc sur le **Back Squat**, le seul squat dont le maximum est mesuré.
+
+**Ce que ça change pour la suite.** Le back squat de la semaine 9 se cale sur la semaine 3, dernière semaine où il a été fait hors deload : les progrès du Pin Squat ne sont pas reportés sur le back squat, les deux mouvements restent distincts.
 
 ### Roman Side Bench et Zercher March — ce qu'ils remplacent
 
@@ -425,9 +454,9 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 | 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 5×3×68 % | 3×6×55 % | 6×2×55 % |
 | 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 6×2×71 % | 3×6×57 % | 6×2×55 % |
 | 4 | 3×3×64 % – RPE 5 | 3×3×67 % – RPE 5 | 3×3×64 % – RPE 5 | 3×3×22 % | 3×3×58 % | 2×5×45 % | 4×2×50 % |
-| 5 | 5×3×82 % – RPE 8 | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×71 % | 4×5×59 % | 6×2×60 % |
-| 6 | 4×3×86 % – RPE 8,5 | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×74 % | 4×4×64 % | 6×2×60 % |
-| 7 | 4×2×89 % – RPE 9 | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×77 % | 4×4×64 % | 6×2×60 % |
+| 5 | — | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×71 % | 4×5×59 % | 6×2×60 % |
+| 6 | — | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×74 % | 4×4×64 % | 6×2×60 % |
+| 7 | — | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×77 % | 4×4×64 % | 6×2×60 % |
 | 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×58 % | 2×4×50 % | 4×2×50 % |
 | 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 6×2×74 % | 3×3×64 % | 8×2×60 % |
 | 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 6×2×77 % | 3×3×66 % | 8×2×60 % |
@@ -435,6 +464,8 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 | 12 | 3×2×70 % puis TEST sam | 3×2×72 % puis TEST dim | TEST mer | TEST dim | 3×2×65 % | — | 2×2×50 % |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.
+
+**Back Squat, semaines 5 à 7 : « — ».** Le lundi du bloc force se fait au **Pin Squat** (§8, encadré « Pin Squat »). Le back squat revient en semaine 8 (deload), en semaines 9-11 (contraste) et au test de la semaine 12.
 
 **Tant qu'un maximum n'est pas mesuré, sa colonne n'affiche aucune charge.** L'application écrit « à mesurer » et laisse le champ libre : elle ne propose ni valeur par défaut, ni estimation. Les six premiers jours — le combine initial — sont là pour ça.
 

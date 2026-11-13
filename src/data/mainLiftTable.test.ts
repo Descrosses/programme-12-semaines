@@ -62,7 +62,7 @@ const RECOPIE_MANUELLE: string[][] = [
   ],
   [
     '5',
-    '5×3×82 % – RPE 8',
+    '—', // Pin Squat en S5-7 (§8)
     '5×3×83 % – RPE 8',
     '4×3×82 % – RPE 8',
     '4×3×67 %',
@@ -72,7 +72,7 @@ const RECOPIE_MANUELLE: string[][] = [
   ],
   [
     '6',
-    '4×3×86 % – RPE 8,5',
+    '—', // Pin Squat en S5-7 (§8)
     '4×3×85 % – RPE 8,5',
     '3×3×86 % – RPE 8,5',
     '4×3×72 %',
@@ -82,7 +82,7 @@ const RECOPIE_MANUELLE: string[][] = [
   ],
   [
     '7',
-    '4×2×89 % – RPE 9',
+    '—', // Pin Squat en S5-7 (§8)
     '4×2×89 % – RPE 9',
     '3×2×89 % – RPE 9',
     '4×2×78 %',

@@ -402,6 +402,8 @@ describe('suivi de douleur — seulement là où il a un sens', () => {
       .filter((e) => e.painWatch)
       .map((e) => e.id)
       .sort();
+    // Le Pin Squat n'y est PAS : le suivi de l'adducteur est personnel à
+    // Guillaume, il ne s'étend pas aux nouveaux exercices (décision).
     expect(avec).toEqual([
       'back-squat',
       'bulgarian-split-squat',

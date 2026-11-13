@@ -689,9 +689,15 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
    */
   if (loadSpec?.kind === 'forme' && load.source === 'aucune') {
     notes.push(
-      'Première fois sur ce mouvement : choisis ta charge toi-même, celle qui respecte la ' +
-        'consigne de vitesse. L’appli retient ton niveau et fait progresser le reste des douze ' +
-        'semaines à partir de là.',
+      slot.exId === 'pin-squat'
+        ? // Le Pin Squat se règle au RPE, pas à la vitesse : le message du
+          // RDL et du Push Press ne lui convient pas.
+          'Première fois sur le Pin Squat : choisis la charge qui donne le RPE cible, avec ' +
+            'l’arrêt complet sur les sécurités. L’appli retient ton niveau et fait progresser ' +
+            'les semaines suivantes à partir de là.'
+        : 'Première fois sur ce mouvement : choisis ta charge toi-même, celle qui respecte la ' +
+            'consigne de vitesse. L’appli retient ton niveau et fait progresser le reste des douze ' +
+            'semaines à partir de là.',
     );
   }
 
@@ -839,7 +845,40 @@ function applyOrange(exercises: ResolvedExercise[]): ResolvedExercise[] {
 function applyRed(exercises: ResolvedExercise[], ctx: SessionContext): ResolvedExercise[] {
   const out: ResolvedExercise[] = [];
 
-  for (const ex of exercises) {
+  for (const brut of exercises) {
+    /*
+     * Jour rouge en semaines 5 à 7 : le lundi revient au BACK SQUAT.
+     *
+     * Le Pin Squat n'a pas de 1RM — c'est voulu, ses charges ne dépendent
+     * d'aucun maximum. Sans ce retour, la règle « lift principal à 3 × 3 à
+     * 65 % du 1RM » (§4) n'avait rien sur quoi calculer, et le lift
+     * principal DISPARAISSAIT de la séance. Lui appliquer 65 % du 1RM du back
+     * squat aurait été le coefficient back squat → pin squat que Guillaume a
+     * exclu. Décision de Guillaume : back squat 3 × 3 à 65 %, la règle du §4
+     * mot pour mot, sur le seul mouvement dont le 1RM est connu.
+     */
+    const ex: ResolvedExercise =
+      brut.id === 'pin-squat'
+        ? {
+            ...brut,
+            def: EXERCISES['back-squat']!,
+            id: 'back-squat',
+            name: EXERCISES['back-squat']!.name,
+            // La charge de ce jour se calcule sur le 1RM du back squat : elle
+            // n'a plus rien à voir avec la forme de référence du Pin Squat.
+            load: { ...brut.load, source: '1rm' },
+            lastKg: null,
+            lastMeasure: null,
+            adjustments: [
+              ...brut.adjustments,
+              {
+                source: 'rouge',
+                what: 'Back Squat à la place du Pin Squat',
+                why: 'Readiness rouge : séance technique sur le back squat, le seul squat dont le 1RM est mesuré (§4).',
+              },
+            ],
+          }
+        : brut;
     const rmKey = ONE_RM_FOR[ex.id];
 
     if (ex.def.role === 'main' && rmKey) {
