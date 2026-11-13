@@ -137,8 +137,14 @@ export const VISUELS = {
   /*
    * La photo de la carte ME, MYSELF & I, page Programmes. Générée par
    * Guillaume (ChatGPT) : une silhouette de dos face au miroir, trois reflets
-   * — « me, myself and I ». Servie BRUTE comme les trois autres cartes, le
-   * voile en dégradé du code fait l'assombrissement.
+   * — « me, myself and I ». Le voile en dégradé du code fait
+   * l'assombrissement, comme pour les trois autres cartes.
+   *
+   * Une exception à « servie brute » : la générée était deux fois plus
+   * sombre que les autres (luminance moyenne de la moitié droite 22, contre
+   * 47 pour POWER, 49 pour MASS et 45 pour FEMMES). Sous le même voile, la
+   * silhouette disparaissait. Les ombres ont été relevées (gamma 0,66)
+   * jusqu'à 47 ; la lumière dorée, déjà claire, bouge peu.
    *
    * `center 10%` et non `center` : la carte fait 128 px de haut, on ne voit
    * qu'environ 60 % de la hauteur de l'image. Centré, le cadrage coupait la
