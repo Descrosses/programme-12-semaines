@@ -134,6 +134,25 @@ export const VISUELS = {
     focus: '70% center',
     usage: 'Carte de la famille FEMMES, page Programmes.',
   },
+  /*
+   * La photo de la carte ME, MYSELF & I, page Programmes. Générée par
+   * Guillaume (ChatGPT) : une silhouette de dos face au miroir, trois reflets
+   * — « me, myself and I ». Servie BRUTE comme les trois autres cartes, le
+   * voile en dégradé du code fait l'assombrissement.
+   *
+   * `center 10%` et non `center` : la carte fait 128 px de haut, on ne voit
+   * qu'environ 60 % de la hauteur de l'image. Centré, le cadrage coupait la
+   * tête ; à 10 %, la fenêtre part de la casquette et descend jusqu'au short.
+   */
+  cartePerso: {
+    display: '22_perso_carte_display.webp',
+    mobile: '22_perso_carte_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète de dos face au miroir d’une salle sombre, trois reflets, lumière dorée.',
+    cadrage: 'cover',
+    focus: 'center 10%',
+    usage: 'Carte de la famille ME, MYSELF & I, page Programmes.',
+  },
   casque: {
     display: '03_casque_display.webp',
     mobile: '03_casque_mobile.webp',
