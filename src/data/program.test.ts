@@ -536,8 +536,8 @@ describe('§13 — cibles à 12 semaines', () => {
     'utf8',
   )
     .split('## 13.')[1]!
-    // Borné à la section 13 : depuis l'ajout du §14, prendre « tout ce qui
-    // suit » ferait passer un test qui cherche une valeur écrite ailleurs.
+    // Borné à la section 13 : prendre « tout ce qui suit » ferait passer un
+    // test qui cherche une valeur écrite dans une section ajoutée plus tard.
     .split('\n## ')[0]!;
 
   it('chaque cible du code se retrouve mot pour mot dans le .md', () => {
@@ -671,7 +671,7 @@ describe('chaque test de 1RM trouve ses paliers', () => {
 });
 
 /**
- * §1, §8 et §14 — ce que le .md promet et ce que le code fait.
+ * §1 et §8 — ce que le .md promet et ce que le code fait.
  *
  * Ces tests existent parce que le §1 a menti pendant tout un cycle : il
  * affirmait « deadlift inférieur au squat » sur une estimation, alors que le
@@ -693,11 +693,9 @@ describe('§1 — le diagnostic est écrit sur les valeurs mesurées', () => {
   });
 
   it('il ne conclut pas à un déficit de quadriceps', () => {
-    // Le squat est le chiffre le plus bas, mais il est limité par une douleur.
     // En déduire un retard de quadriceps serait un diagnostic, et c'en est un
     // que ni le programme ni l'application n'ont le droit de poser.
     expect(MD_1).not.toMatch(/quadriceps[^.]{0,60}(retard|faible|point faible)/i);
-    expect(MD_1).toMatch(/adducteur gauche/i);
   });
 
   it('les valeurs du §1 sont celles du code', () => {
@@ -755,7 +753,7 @@ describe('§8 — la table de deload du tronc est celle du code', () => {
   });
 });
 
-describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
+describe('§8 — la Landmine Rotation', () => {
   const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
 
   it('la progression du §8 annonce les mêmes semaines que les règles de bloc', () => {
@@ -777,19 +775,6 @@ describe('§8 et §14 — la Landmine Rotation et la suspension', () => {
     // Objectif, muscles, exécution, intention, sécurité : cinq consignes au moins.
     expect(ex!.cues!.length).toBeGreaterThanOrEqual(5);
     expect(ex!.cues!.join(' ')).toMatch(/sécurité/i);
-  });
-
-  it('le §14 existe et distingue les trois statuts', () => {
-    const md14 = MD.split('## 14.')[1] ?? '';
-    expect(md14).toMatch(/Maintenu, adapté/);
-    expect(md14).toMatch(/Maintenu, surveillé/);
-    expect(md14).toMatch(/Suspendu/);
-    expect(md14).toMatch(/pas un diagnostic/i);
-  });
-
-  it('le §14 n’annonce aucune semaine de reprise', () => {
-    const md14 = MD.split('## 14.')[1] ?? '';
-    expect(md14).not.toMatch(/reprise (en )?(S|semaine )\d/i);
   });
 });
 
@@ -875,14 +860,6 @@ describe('§8 — Barbell Offset Hold', () => {
     expect(BLOC).toMatch(/UN SEUL côté/);
     expect(EXERCISES['barbell-offset-hold']!.cues!.join(' ')).toMatch(/UN SEUL côté/);
   });
-
-  it('le §14 explique pourquoi il ne touche pas l’adducteur', () => {
-    const md14 = MD.split('## 14.')[1] ?? '';
-    expect(md14).toMatch(/Barbell Offset Hold/);
-    expect(md14).toMatch(/aucune adduction de hanche/i);
-    // La marche reste une possibilité, jamais une programmation.
-    expect(md14).toMatch(/non programmée/i);
-  });
 });
 
 describe('le mouvement « libre » n’appartient pas au programme', () => {
@@ -895,5 +872,30 @@ describe('le mouvement « libre » n’appartient pas au programme', () => {
      * d'incrément du bas du corps ou pas selon le hasard.
      */
     for (const id of EXERCISE_IDS) expect(EXERCISES[id]!.fn, id).not.toBe('libre');
+  });
+});
+
+describe('le .md ne transporte plus la blessure de son auteur', () => {
+  /*
+   * Le §14 suivait l'adducteur gauche de Guillaume : statuts par exercice,
+   * reprise du Copenhagen, curseurs de douleur. Un programme grand public ne
+   * peut pas porter la blessure de quelqu'un d'autre. Décision de Guillaume :
+   * il disparaît, et ses renvois avec lui.
+   */
+  const MD = readFileSync(new URL('../../programme-final-12-semaines.md', import.meta.url), 'utf8');
+
+  it('le §14 n’existe plus', () => {
+    expect(MD).not.toMatch(/^## 14\./m);
+  });
+
+  it('aucun renvoi ne pointe vers lui, aucune mention de l’adducteur', () => {
+    expect(MD).not.toMatch(/§ ?14/);
+    expect(MD).not.toMatch(/adducteur/i);
+    expect(MD).not.toMatch(/symptomatique|kiné du sport/i);
+  });
+
+  it('la règle générale de la douleur reste, elle : le cas 8', () => {
+    // Le cas 8 vaut pour tout le monde. Seul son exemple personnel est parti.
+    expect(MD).toMatch(/\*\*Cas 8 — douleur localisée sur un mouvement\*\* →/);
   });
 });

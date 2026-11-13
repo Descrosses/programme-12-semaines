@@ -310,9 +310,8 @@ const MAXFORCE: BlockRuleSet[] = [
        * placer le samedi à côté du Suitcase Carry donnerait deux jours collés
        * puis cinq jours vides.
        *
-       * Pas le lundi : c'est la séance où l'adducteur travaille le plus
-       * (squat + Bulgarian), et on n'y ajoute rien tant que les symptômes
-       * durent.
+       * Pas le lundi : c'est la séance la plus serrée de la semaine (squat +
+       * Bulgarian), on n'y ajoute rien.
        *
        * Juste après le Pallof Press : les deux forment un bloc tronc debout
        * de six minutes, anti-rotation puis anti-flexion latérale.
@@ -340,7 +339,7 @@ const MAXFORCE: BlockRuleSet[] = [
        * s'allonge ici, le volume ne bouge pas d'une rep.
        */
       patch('copenhagen-plank', {
-        note: 'Jambe haute TENDUE, appui sur le pied, si les 3 × 8 en levier court sont passés sans douleur. Sinon tu restes au genou fléchi : ce mouvement-là ne se force pas (§14).',
+        note: 'Jambe haute TENDUE, appui sur le pied, si les 3 × 8 en levier court sont passés sans douleur. Sinon tu restes au genou fléchi : ce mouvement-là ne se force pas.',
       }),
       // « Hang High Pull 4 × 3, repos 2 min » (§8).
       patch('hang-high-pull', { sets: 4, restSec: 120 }),
@@ -460,9 +459,9 @@ const MAXFORCE: BlockRuleSet[] = [
        *    C'est exactement l'argument que le §8 tient déjà pour le Barbell
        *    Offset Hold : même fonction, autre limite, pas un doublon.
        * 2. Le Zercher March a été retiré des séances — marche chargée sur
-       *    des appuis unilatéraux encore symptomatiques (§14). Il reste au
-       *    catalogue avec sa raison, comme le Copenhagen Plank : rien n'est
-       *    supprimé du programme, seulement déprogrammé.
+       *    des appuis unilatéraux, en fin de séance lourde. Il reste au
+       *    catalogue : rien n'est supprimé du programme, seulement
+       *    déprogrammé.
        *
        * Conséquence acceptée : le Roman Side Bench revient à deux séances
        * par semaine (lundi et samedi). Les deux prescriptions sont
@@ -681,7 +680,7 @@ const POWER: BlockRuleSet[] = [
       patch('copenhagen-plank', {
         sets: 3,
         work: reps(5, true),
-        note: 'Jambe haute tendue, appui sur le pied. 5 reps et pas 8 : le levier est long. Toujours arrêt à la gêne (§14).',
+        note: 'Jambe haute tendue, appui sur le pied. 5 reps et pas 8 : le levier est long. Toujours arrêt à la gêne.',
       }),
       {
         op: 'insert',

@@ -130,12 +130,11 @@ describe('§11 cas 9 — la progression du tronc est écrite, bloc par bloc', ()
     expect(trouve(PUISSANCE, 0, 'ab-wheel').sets).toBe(trouve(ACCUMULATION, 0, 'ab-wheel').sets);
   });
 
-  it('le Copenhagen ne saute jamais le levier court — c’est lui qui avait fait mal', () => {
+  it('le Copenhagen ne saute jamais le levier court', () => {
     /*
-     * §14 : ce mouvement a été suspendu pour douleur, puis repris. Il entre
-     * genou fléchi, et la jambe tendue n'arrive qu'au bloc suivant, sous
-     * condition. Une reprise directe en levier long serait exactement la
-     * faute que la suspension devait éviter.
+     * Il entre genou fléchi, et la jambe tendue n'arrive qu'au bloc suivant,
+     * sous condition. Il met l'adduction de hanche en tension maximale : un
+     * départ direct en levier long serait la faute à éviter.
      */
     for (const w of [1, 2, 3, 4]) {
       expect(consigne(w, 4, 'copenhagen-plank'), `S${w}`).toMatch(/genou.*fléchi/i);

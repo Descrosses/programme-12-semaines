@@ -187,8 +187,7 @@ const VENDREDI: SessionBlueprint = {
      * maximale n'a rien à faire avant le Push Press ou le Speed Squat.
      */
     /*
-     * Levier COURT au départ, et ce n'est pas négociable : c'est le
-     * mouvement qui avait fait mal, repris après suspension (§14). La
+     * Levier COURT au départ, et ce n'est pas négociable (§11 cas 9). La
      * jambe tendue vient au bloc suivant, si les 3 × 8 passent sans gêne.
      */
     s(
@@ -223,10 +222,6 @@ const SAMEDI: SessionBlueprint = {
      * parti au vendredi, et ce n'est pas un détail de rangement : les deux
      * résistent à la FLEXION LATÉRALE, et les faire le même jour, c'est faire
      * deux fois le même travail en croyant en faire deux.
-     *
-     * Le vendredi est aussi le meilleur jour pour l'adducteur, qui l'avait
-     * fait suspendre : deux jours après le squat du lundi, un avant le
-     * deadlift d'aujourd'hui — la plus large fenêtre de la semaine.
      */
     s('suitcase-carry', 3, meters(30, true), autoreg(undefined, 2, 'dbSingle'), null, 60),
   ],

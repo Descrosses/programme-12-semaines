@@ -82,7 +82,7 @@ export interface ExportFile {
   measurements?: MeasurementRow[];
   /** Traces de vidéo — quelques octets chacune, elles restent ici. */
   videoLog?: ExerciseVideoLogRow[];
-  /** Suivi de douleur (§14). Absent des exports antérieurs : toujours optionnel. */
+  /** Suivi de douleur (écran retiré, données conservées). Absent des exports antérieurs : toujours optionnel. */
   painLog?: PainLogRow[];
   /** Aliments mangés en plus du plan. Absent des exports antérieurs. */
   extraFoods?: ExtraFoodRow[];
