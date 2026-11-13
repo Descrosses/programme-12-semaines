@@ -29,6 +29,7 @@ import {
 import type { SessionRow, SettingsRow } from '../db/db';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { PeseeDuJour } from '../components/PeseeDuJour';
 import { OnboardingScreen } from './OnboardingScreen';
 import type { VisuelNom } from '../data/visuels';
 import styles from './Today.module.css';
@@ -325,6 +326,14 @@ export function TodayScreen({
           </p>
         )}
       </ScreenHeader>
+
+      {/*
+        La pesée du jour, tout de suite sous l'en-tête : c'est le geste du
+        réveil, et « Aujourd'hui » est l'écran qui s'ouvre avec le programme.
+        Elle était d'abord sur l'écran Semaine, où il fallait un appui de plus
+        pour la trouver. C'est la même donnée que dans Nutrition.
+      */}
+      <PeseeDuJour />
 
       {/*
         Raccourci nutrition. Il vit ici et nulle part ailleurs : l'écran Semaine

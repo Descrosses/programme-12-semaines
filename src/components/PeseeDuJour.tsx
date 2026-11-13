@@ -1,5 +1,5 @@
 /**
- * La pesée du jour, en tête de l'écran Semaine.
+ * La pesée du jour, en tête de l'écran Aujourd'hui.
  *
  * ── Pourquoi ici ───────────────────────────────────────────────────────────
  *
