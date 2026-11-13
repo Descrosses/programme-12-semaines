@@ -19,6 +19,7 @@ import {
   FEMMES_PROGRAMME_ID,
   enregistrerExerciceFemmes,
   enregistrerProfilFemmes,
+  marquerSeanceFemmesNonFaite,
   seancesFemmes,
   terminerSeanceFemmes,
 } from '../../db/femmesRepo';
@@ -169,6 +170,27 @@ export function EcransFemmes({
     onNaviguer('aujourdhui');
   }
 
+  /*
+   * « Séance non faite » sur la séance ouverte. En la passant, on se place
+   * sur la prochaine à faire et on revient à Aujourd'hui ; en annulant, on
+   * reste sur la séance.
+   */
+  async function nonFaite(semaine: EtatFemmes['semaine'], jour: EtatFemmes['jour'], oui: boolean) {
+    const fin = await marquerSeanceFemmesNonFaite({
+      cycleId,
+      semaine,
+      jour,
+      version: etat.version,
+      nonFaite: oui,
+    });
+    const lu = await relire();
+    if (fin) onDataChanged();
+    if (!oui) return;
+    const p = lu ? avancement(lu.lignes).prochaine : null;
+    if (p) setEtat((e) => applique(e, { semaine: p.semaine, jour: p.jour }));
+    onNaviguer('aujourdhui');
+  }
+
   if (vue === 'semaine') {
     return (
       <FemmesSemaine
@@ -188,6 +210,7 @@ export function EcransFemmes({
       <FemmesSeance
         etat={etat}
         donnees={donnees}
+        onNonFaite={(oui) => void nonFaite(etat.semaine, etat.jour, oui)}
         onVersion={(v) => setEtat(applique(etat, { version: v }))}
         onAller={aller}
         onExercice={(i) => {
@@ -228,6 +251,7 @@ export function EcransFemmes({
       donnees={donnees}
       onAller={aller}
       onCommencer={() => onNaviguer('seance')}
+      onNonFaite={() => void nonFaite(etat.semaine, etat.jour, true)}
     />
   );
 }

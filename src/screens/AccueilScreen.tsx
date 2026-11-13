@@ -141,8 +141,12 @@ export function AccueilScreen({
       let prochaine: Etat['prochaine'] = null;
       if (debut !== '') {
         const aujourdhui = new Date().toISOString().slice(0, 10);
+        // Une séance marquée « non faite » est passée, comme une faite :
+        // la prochaine séance est celle d'après.
         const faitesParCase = new Set(
-          seances.filter((x) => x.status === 'done').map((x) => `${x.week}-${x.day}`),
+          seances
+            .filter((x) => x.status === 'done' || x.status === 'skipped')
+            .map((x) => `${x.week}-${x.day}`),
         );
         const cible = prochaineSeance(planifiees, aujourdhui, (c) =>
           faitesParCase.has(`${String(c.week)}-${String(c.day)}`),

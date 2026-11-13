@@ -30,6 +30,7 @@ describe('avancement FEMMES', () => {
     const a = avancement([]);
     expect(a).toEqual({
       faites: 0,
+      sautees: 0,
       total: TOTAL_SESSIONS,
       prochaine: { semaine: 1, jour: 0 },
       semaine: 1,
@@ -64,6 +65,32 @@ describe('avancement FEMMES', () => {
     expect(a.prochaine).toBeNull();
     expect(a.faites).toBe(TOTAL_SESSIONS);
     expect(a.semaine).toBe(8);
+  });
+
+  it('« non faite » : la séance est passée, mais ne compte pas comme faite', () => {
+    const a = avancement([{ semaine: 1, jour: 0, terminee: false, sautee: true }]);
+    expect(a.prochaine).toEqual({ semaine: 1, jour: 1 });
+    expect(a.faites).toBe(0);
+    expect(a.sautees).toBe(1);
+  });
+
+  it('une séance « non faite » puis faite quand même est faite', () => {
+    const a = avancement([{ semaine: 1, jour: 0, terminee: true, sautee: true }]);
+    expect(a.faites).toBe(1);
+    expect(a.sautees).toBe(0);
+  });
+
+  it('tout passé, même sans tout faire : le programme est terminé', () => {
+    const a = avancement(
+      ORDRE.map((c, i) => ({
+        semaine: c.semaine,
+        jour: c.jour,
+        terminee: i % 2 === 0,
+        sautee: i % 2 === 1,
+      })),
+    );
+    expect(a.termine).toBe(true);
+    expect(a.faites + a.sautees).toBe(TOTAL_SESSIONS);
   });
 
   it('estFaite ne répond oui qu’aux séances terminées', () => {

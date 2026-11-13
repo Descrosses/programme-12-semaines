@@ -75,6 +75,53 @@ export async function enregistrerExerciceFemmes(input: {
 }
 
 /**
+ * « Séance non faite » : passe la séance sans la faire, ou annule ce choix.
+ *
+ * Rien n'est effacé : un exercice déjà noté reste noté. Si c'était la
+ * dernière séance à passer, le cycle se clôt comme après une séance faite —
+ * sinon il resterait ouvert indéfiniment sur une séance qu'on a choisi de
+ * laisser. Renvoie `true` quand le cycle vient de se terminer.
+ */
+export async function marquerSeanceFemmesNonFaite(input: {
+  cycleId: number;
+  semaine: number;
+  jour: DayIndex;
+  version: Version;
+  nonFaite: boolean;
+}): Promise<boolean> {
+  await db.transaction('rw', db.femmesSeances, async () => {
+    const existante = await db.femmesSeances
+      .where('[cycleId+semaine+jour]')
+      .equals([input.cycleId, input.semaine, input.jour])
+      .first();
+    if (existante?.id !== undefined) {
+      await db.femmesSeances.update(existante.id, { sautee: input.nonFaite, date: aujourdhui() });
+    } else if (input.nonFaite) {
+      await db.femmesSeances.add({
+        cycleId: input.cycleId,
+        semaine: input.semaine,
+        jour: input.jour,
+        version: input.version,
+        date: aujourdhui(),
+        terminee: false,
+        sautee: true,
+        exercices: [],
+      });
+    }
+  });
+  return clotSiFini(input.cycleId);
+}
+
+/** Clôt le cycle quand plus aucune séance n'attend. `true` s'il vient de se clore. */
+async function clotSiFini(cycleId: number): Promise<boolean> {
+  if (!avancement(await seancesFemmes(cycleId)).termine) return false;
+  const cycle = await db.cycles.get(cycleId);
+  if (cycle?.statut === 'termine') return false;
+  await terminerCycle(cycleId);
+  return true;
+}
+
+/**
  * Marque une séance terminée. Si c'était la dernière du programme, le cycle
  * se clôt — c'est ce qui ouvre, au catalogue, la transition 1 ET le cycle 2.
  *
@@ -94,6 +141,7 @@ export async function terminerSeanceFemmes(input: {
     if (existante?.id !== undefined) {
       await db.femmesSeances.update(existante.id, {
         terminee: true,
+        sautee: false,
         version: input.version,
         date: aujourdhui(),
       });
@@ -111,9 +159,5 @@ export async function terminerSeanceFemmes(input: {
     }
   });
 
-  if (!avancement(await seancesFemmes(input.cycleId)).termine) return false;
-  const cycle = await db.cycles.get(input.cycleId);
-  if (cycle?.statut === 'termine') return false;
-  await terminerCycle(input.cycleId);
-  return true;
+  return clotSiFini(input.cycleId);
 }

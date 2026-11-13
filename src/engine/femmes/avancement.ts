@@ -10,6 +10,11 @@
  * est passée. On avance quand une séance est terminée, pas quand le
  * calendrier tourne.
  *
+ * Une séance qu'on préfère laisser se marque « non faite » (`sautee`) : elle
+ * est alors PASSÉE — la suivante devient la prochaine — mais ne compte pas
+ * parmi les séances faites. C'est un choix de la pratiquante, jamais un
+ * effet du calendrier.
+ *
  * Conséquence assumée : rien n'oblige à respecter lundi / mercredi /
  * vendredi. Les noms de jour restent ceux du programme — ils disent l'ordre
  * et l'espacement conseillé, pas un rendez-vous.
@@ -29,6 +34,7 @@ export interface SeanceFaite {
   semaine: number;
   jour: DayIndex;
   terminee: boolean;
+  sautee?: boolean;
   exercices?: readonly ExerciseRecord[];
 }
 
@@ -41,6 +47,8 @@ const cle = (semaine: number, jour: number) => `${semaine}-${jour}`;
 
 export interface Avancement {
   faites: number;
+  /** Séances marquées « non faite » (et pas faites depuis). */
+  sautees: number;
   total: number;
   /** La première séance non terminée, `null` quand tout est fait. */
   prochaine: CaseFemmes | null;
@@ -51,17 +59,32 @@ export interface Avancement {
 
 export function avancement(seances: readonly SeanceFaite[]): Avancement {
   const faites = new Set(seances.filter((s) => s.terminee).map((s) => cle(s.semaine, s.jour)));
+  // Faite l'emporte : une séance sautée puis faite quand même est faite.
+  const sautees = new Set(
+    seances.filter((s) => s.sautee === true && !s.terminee).map((s) => cle(s.semaine, s.jour)),
+  );
   // Ne compter que ce qui appartient au programme : une ligne égarée (semaine 9,
   // jour inexistant) ne doit pas gonfler le compteur.
   const nb = ORDRE.filter((c) => faites.has(cle(c.semaine, c.jour))).length;
-  const prochaine = ORDRE.find((c) => !faites.has(cle(c.semaine, c.jour))) ?? null;
+  const nbSautees = ORDRE.filter((c) => sautees.has(cle(c.semaine, c.jour))).length;
+  const passee = (c: CaseFemmes) =>
+    faites.has(cle(c.semaine, c.jour)) || sautees.has(cle(c.semaine, c.jour));
+  const prochaine = ORDRE.find((c) => !passee(c)) ?? null;
   return {
     faites: nb,
+    sautees: nbSautees,
     total: ORDRE.length,
     prochaine,
     semaine: prochaine?.semaine ?? WEEKS[WEEKS.length - 1]!,
     termine: prochaine === null,
   };
+}
+
+/** Cette séance est-elle marquée « non faite » (et pas faite depuis) ? */
+export function estSautee(seances: readonly SeanceFaite[], semaine: number, jour: number): boolean {
+  return seances.some(
+    (s) => s.sautee === true && !s.terminee && s.semaine === semaine && s.jour === jour,
+  );
 }
 
 /** Cette séance est-elle terminée ? */
