@@ -461,6 +461,7 @@ function renderScreen(
           key={dataVersion}
           onReprendre={ouvrirProgramme}
           onCatalogue={() => navigate({ name: 'catalogue' })}
+          onFamille={(famille) => navigate({ name: 'catalogue', famille })}
           onParcours={() => navigate({ name: 'parcours' })}
         />
       );
@@ -468,7 +469,8 @@ function renderScreen(
     case 'catalogue':
       return (
         <CatalogueScreen
-          key={dataVersion}
+          key={`${dataVersion}-${route.famille ?? ''}`}
+          familleOuverte={route.famille}
           onOuvrirProgramme={ouvrirProgramme}
           onDataChanged={refresh}
         />

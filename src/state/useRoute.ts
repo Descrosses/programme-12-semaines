@@ -9,10 +9,19 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
+import type { FamilleId } from '../data/catalogue';
+
+/** Les familles qu'une ancre `#/catalogue/<famille>` peut désigner. */
+const FAMILLES_ROUTE: readonly FamilleId[] = ['power', 'mass', 'femmes', 'perso'];
 
 export type Route =
   | { name: 'accueil' }
-  | { name: 'catalogue' }
+  /*
+   * `famille` : la famille à ouvrir directement. Depuis une tuile de
+   * l'accueil, on arrive sur SES cycles, pas sur les quatre bannières qu'on
+   * vient de voir.
+   */
+  | { name: 'catalogue'; famille?: FamilleId }
   | { name: 'parcours' }
   | { name: 'today' }
   | { name: 'week'; week: WeekIndex }
@@ -41,8 +50,10 @@ export function parseRoute(hash: string): Route {
   switch (parts[0]) {
     case 'accueil':
       return { name: 'accueil' };
-    case 'catalogue':
-      return { name: 'catalogue' };
+    case 'catalogue': {
+      const f = FAMILLES_ROUTE.find((x) => x === parts[1]);
+      return f ? { name: 'catalogue', famille: f } : { name: 'catalogue' };
+    }
     case 'parcours':
       return { name: 'parcours' };
     case 'today':
@@ -94,6 +105,8 @@ export function routeToHash(route: Route): string {
       return '#/accueil';
     case 'femmes':
       return `#/femmes/${route.vue}`;
+    case 'catalogue':
+      return route.famille ? `#/catalogue/${route.famille}` : '#/catalogue';
     default:
       return `#/${route.name}`;
   }

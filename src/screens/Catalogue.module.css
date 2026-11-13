@@ -320,6 +320,9 @@
 
 .famille {
   margin-bottom: 14px;
+  /* Ouverte depuis une tuile de l'accueil, la famille vient en haut de
+     l'écran : un peu d'air, et jamais sous la barre d'état de l'iPhone. */
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 14px);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg, 18px);

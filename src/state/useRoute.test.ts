@@ -44,5 +44,11 @@ describe('routage des séances', () => {
     expect(parseRoute('#/today')).toEqual({ name: 'today' });
     expect(parseRoute('#/accueil')).toEqual({ name: 'accueil' });
     expect(parseRoute('#/catalogue')).toEqual({ name: 'catalogue' });
+    // Une tuile de l'accueil ouvre le catalogue SUR sa famille.
+    expect(parseRoute('#/catalogue/femmes')).toEqual({ name: 'catalogue', famille: 'femmes' });
+    expect(routeToHash({ name: 'catalogue', famille: 'power' })).toBe('#/catalogue/power');
+    expect(routeToHash({ name: 'catalogue' })).toBe('#/catalogue');
+    // Une famille inconnue ne casse rien : le catalogue s'ouvre fermé.
+    expect(parseRoute('#/catalogue/inconnue')).toEqual({ name: 'catalogue' });
   });
 });

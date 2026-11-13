@@ -50,9 +50,12 @@ const LIBELLE: Record<Action, string> = {
 };
 
 export function CatalogueScreen({
+  familleOuverte: familleDemandee,
   onOuvrirProgramme,
   onDataChanged,
 }: {
+  /** La famille à ouvrir d'emblée — celle de la tuile touchée à l'accueil. */
+  familleOuverte?: FamilleId;
   onOuvrirProgramme: () => void;
   onDataChanged: () => void;
 }) {
@@ -71,7 +74,19 @@ export function CatalogueScreen({
    * coup d'œil, ce qui est la raison d'être de cet écran. Ouvrir POWER ferme
    * donc MASS.
    */
-  const [familleOuverte, setFamilleOuverte] = useState<FamilleId | null>(null);
+  const [familleOuverte, setFamilleOuverte] = useState<FamilleId | null>(familleDemandee ?? null);
+
+  /*
+   * Arrivé depuis une tuile de l'accueil : la famille est dépliée, et on la
+   * fait venir en haut de l'écran — sinon FEMMES, troisième bannière, ouvrait
+   * ses cycles sous le pli.
+   */
+  useEffect(() => {
+    if (familleDemandee === undefined) return;
+    document
+      .getElementById(`famille-${familleDemandee}`)
+      ?.scrollIntoView({ block: 'start', behavior: 'auto' });
+  }, [familleDemandee]);
   const [aConfirmer, setAConfirmer] = useState<ProgrammeDefinition | null>(null);
 
   useEffect(() => {
@@ -124,6 +139,7 @@ export function CatalogueScreen({
       {FAMILLES.map((famille) => (
         <section
           key={famille.id}
+          id={`famille-${famille.id}`}
           className={local.famille}
           style={{ '--teinte': HABILLAGE[famille.id].teinte } as CSSProperties}
         >
