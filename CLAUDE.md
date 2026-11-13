@@ -15,7 +15,8 @@ réinterprète pas.**
 
 - `programme-final-12-semaines.md` — le programme POWER 12, section par section
   (§3 semaine type, §8 modifications par bloc, §11 règles de progression,
-  §13 objectifs, §14 adducteur gauche).
+  §13 objectifs). Il n'y a plus de §14 : le suivi de l'adducteur gauche a
+  été retiré, voir plus bas.
 - `plan-alimentaire-12-semaines.md` — le plan alimentaire personnel de
   Guillaume.
 
@@ -167,17 +168,22 @@ Pas calibré sur une personne. Plusieurs pratiquantes doivent pouvoir le suivre.
 Autrement dit : une femme qui démarre à 40 kg de squat reçoit déjà les bonnes
 charges, sans qu'une ligne de code change.
 
+**Ce qui était personnel à Guillaume et EST SORTI :** le §14 (adducteur
+gauche). Plus de champ `painWatch`, plus d'écran de suivi de douleur, plus
+aucune consigne qui nomme sa blessure. Décision de Guillaume : « disparaît »,
+pas de mécanisme de blessure déclarée. La table `painLog` reste en base et
+dans l'export : on ne supprime pas des données saisies. Les décisions de
+programme qu'elle avait motivées (Zercher March déprogrammé, Copenhagen au
+vendredi en levier court) sont **gardées telles quelles**. Des tests
+(`coreCycle.test.ts`, `program.test.ts`) empêchent tout retour.
+
 **Ce qui reste strictement personnel à Guillaume, et doit sortir :**
 
-1. **Le §14 — adducteur gauche.** Quatre exercices portent un `painWatch` qui
-   nomme sa blessure. Un programme générique ne peut pas transporter le suivi
-   de douleur de quelqu'un d'autre. Il faut un mécanisme de blessure déclarée
-   par la pratiquante, ou rien.
-2. **Les rampes d'échauffement du combine** (`RAMP_SQUAT` et consorts) portent
+1. **Les rampes d'échauffement du combine** (`RAMP_SQUAT` et consorts) portent
    des kilos absolus (« 147,5 seulement si 142,5 passe proprement »). À dériver
    du 1RM estimé, ou à redemander à chaque combine.
-3. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
-4. **Les objectifs du §13**, calculés sur ses 1RM à lui.
+2. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
+3. **Les objectifs du §13**, calculés sur ses 1RM à lui.
 
 **L'avertissement, corrigé.** Une première version de ces notes affirmait que
 « programme femme » n'est pas une catégorie physiologique. **C'est faux dans le
@@ -201,9 +207,8 @@ matériel et la durée avant d'écrire la moindre séance.
 ## Ce qui est volontaire et n'est pas à « corriger »
 
 - Pas de comptes utilisateurs — tout est local, par choix.
-- Le Zercher March est **déprogrammé mais conservé au catalogue**, comme le
-  Copenhagen Plank pendant sa suspension : « on ne supprime pas d'exercices
-  existants ».
+- Le Zercher March est **déprogrammé mais conservé au catalogue** : « on ne
+  supprime pas d'exercices existants ».
 - Le Bear Crawl est **déprogrammé dès la semaine 1 mais conservé au catalogue**,
   pour la même raison. Le tronc du dimanche tient en deux exercices sur les
   douze semaines.

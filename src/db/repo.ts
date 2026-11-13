@@ -1616,7 +1616,12 @@ export async function setDayKindOverride(
   else await db.dayKind.add({ date, kind } as DayKindRow);
 }
 
-// --------------------------------------------------- suivi de douleur (§14) --
+// ---------------------------------------------------------- suivi de douleur --
+/*
+ * L'écran de suivi n'existe plus : il portait la blessure d'une seule
+ * personne, et le programme s'adresse à tous. La table, elle, reste — on ne
+ * supprime pas des données déjà saisies, et l'export les emporte toujours.
+ */
 
 /**
  * Les lignes de suivi d'une journée, par exercice.

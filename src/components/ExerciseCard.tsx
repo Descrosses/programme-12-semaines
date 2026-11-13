@@ -6,7 +6,6 @@ import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { FicheTechnique } from './FicheTechnique';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
-import { PainWatch } from './PainWatch';
 import { Icon } from './Icon';
 import { Stepper, stepValue } from './Stepper';
 import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
@@ -548,14 +547,6 @@ export function ExerciseCard({
             ))}
           </ol>
         </div>
-      )}
-
-      {/*
-        Suivi de douleur — seulement sur les mouvements dont la fiche en
-        demande un. Visible d'office : il ne se range pas derrière un bouton.
-      */}
-      {ex.def.painWatch && (
-        <PainWatch exerciseId={ex.id} consigne={ex.def.painWatch} date={note.date} />
       )}
 
       {/*

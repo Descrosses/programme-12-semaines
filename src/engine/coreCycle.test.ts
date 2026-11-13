@@ -1,5 +1,5 @@
 /**
- * Le cycle du tronc, l'adaptation à l'adducteur, et le deload qui n'en était
+ * Le cycle du tronc, le retrait d'un exercice, et le deload qui n'en était
  * pas un.
  *
  * Trois défauts sont verrouillés ici :
@@ -245,8 +245,8 @@ describe('le deload touche enfin le tronc et les portés', () => {
 
 describe('Copenhagen Plank — repris, et déplacé', () => {
   /*
-   * Il a été suspendu pour une douleur à l'adducteur gauche, puis repris sur
-   * décision de Guillaume. Il ne revient PAS à sa place d'origine.
+   * Il a été suspendu, puis repris sur décision de Guillaume. Il ne revient
+   * PAS à sa place d'origine.
    */
   it('n’est plus suspendu', () => {
     expect(EXERCISES['copenhagen-plank']!.suspended).toBeUndefined();
@@ -388,32 +388,52 @@ describe('jamais deux exercices du tronc de la même famille le même jour', () 
   });
 });
 
-describe('suivi de douleur — seulement là où il a un sens', () => {
-  it('les deux mouvements symptomatiques le portent', () => {
-    expect(EXERCISES['back-squat']!.painWatch).toMatch(/adducteur gauche/i);
-    expect(EXERCISES['bulgarian-split-squat']!.painWatch).toMatch(/adducteur gauche/i);
+describe('aucun suivi de blessure personnel — le programme est grand public', () => {
+  /*
+   * Le programme a porté le suivi de l'adducteur gauche de son auteur : un
+   * curseur de douleur sous quatre exercices, des rappels sous sept autres,
+   * une condition « adducteur bien toléré » dans une progression. C'était
+   * sa blessure, pas celle de la personne qui suit le programme. Décision de
+   * Guillaume : tout disparaît. Ces tests empêchent qu'il revienne par un
+   * copier-coller de fiche.
+   */
+  const BLESSURE = /adducteur|§ ?14|symptomatique/i;
+
+  it('aucune fiche ne porte de suivi de douleur', () => {
+    for (const e of Object.values(EXERCISES)) {
+      expect('painWatch' in e, e.id).toBe(false);
+    }
   });
 
-  it('et les deux nouveaux à tester — pas un de plus', () => {
-    // Les deux mouvements symptomatiques, plus les deux exercices introduits
-    // en semaine 5 dont la tolérance à l'aine reste à vérifier. Un curseur
-    // de douleur sous chaque exercice ferait un questionnaire, pas un suivi.
-    const avec = Object.values(EXERCISES)
-      .filter((e) => e.painWatch)
-      .map((e) => e.id)
-      .sort();
-    // Le Pin Squat n'y est PAS : le suivi de l'adducteur est personnel à
-    // Guillaume, il ne s'étend pas aux nouveaux exercices (décision).
-    expect(avec).toEqual([
+  it('aucune fiche ne parle de la blessure de l’auteur', () => {
+    for (const e of Object.values(EXERCISES)) {
+      const texte = [
+        e.intent,
+        e.progressionRule,
+        e.altBasicFit,
+        e.suspended?.reason,
+        ...(e.cues ?? []),
+      ]
+        .filter(Boolean)
+        .join(' ');
+      expect(texte, e.id).not.toMatch(BLESSURE);
+    }
+  });
+
+  it('aucune consigne de séance non plus, sur les douze semaines', () => {
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        for (const e of session(w, d).exercises) {
+          expect(e.notes.join(' '), `S${w} j${d} — ${e.id}`).not.toMatch(BLESSURE);
+        }
+      }
+    }
+  });
+
+  it('les mouvements qui étaient surveillés restent programmés', () => {
+    for (const id of [
       'back-squat',
       'bulgarian-split-squat',
-      'roman-side-bench',
-      'zercher-march',
-    ]);
-  });
-
-  it('les mouvements surveillés gardent leur programmation, avec un rappel', () => {
-    for (const id of [
       'front-squat',
       'deadlift',
       'single-leg-rdl',
@@ -421,14 +441,16 @@ describe('suivi de douleur — seulement là où il a un sens', () => {
       'farmer-carry',
       'suitcase-carry',
       'lateral-bound',
+      'roman-side-bench',
     ]) {
-      expect(EXERCISES[id]!.cues?.join(' '), id).toMatch(/adducteur gauche|aucune douleur/i);
       expect(EXERCISES[id]!.suspended, id).toBeUndefined();
     }
   });
 
-  it('le Bulgarian conditionne sa progression à la tolérance, pas au seul RPE', () => {
-    expect(EXERCISES['bulgarian-split-squat']!.progressionRule).toMatch(/tolérance passe avant/i);
+  it('le Bulgarian progresse sur le RPE, sans condition de tolérance', () => {
+    expect(EXERCISES['bulgarian-split-squat']!.progressionRule).toBe(
+      '8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.',
+    );
   });
 });
 
@@ -785,9 +807,8 @@ describe('Roman Side Bench et Zercher March', () => {
   it('le Zercher March est déprogrammé — mais pas supprimé', () => {
     /*
      * Il n'apparaît dans aucune séance, des douze semaines. Il reste au
-     * CATALOGUE avec sa fiche complète, comme le Copenhagen Plank pendant
-     * sa suspension : « on ne supprime pas d'exercices existants ». Le jour
-     * où l'adducteur le permet, il se reprogramme sans rien réécrire.
+     * CATALOGUE avec sa fiche complète : « on ne supprime pas d'exercices
+     * existants ». Il peut se reprogrammer sans rien réécrire.
      */
     for (let w = 1; w <= 12; w++) {
       for (const d of [0, 2, 4, 5, 6]) {
@@ -795,11 +816,6 @@ describe('Roman Side Bench et Zercher March', () => {
       }
     }
     expect(EXERCISES['zercher-march'], 'la fiche reste au catalogue').toBeDefined();
-  });
-
-  it('les deux portent un suivi de douleur — leur tolérance n’est pas établie', () => {
-    expect(EXERCISES['roman-side-bench']!.painWatch).toMatch(/adducteur gauche/i);
-    expect(EXERCISES['zercher-march']!.painWatch).toMatch(/adducteur gauche/i);
   });
 
   it('leurs fiches sont complètes', () => {

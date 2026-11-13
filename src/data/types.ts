@@ -410,13 +410,6 @@ export interface ExerciseDef {
    * symptômes et un avis professionnel, pas sur un numéro de semaine.
    */
   suspended?: { reason: string };
-  /**
-   * Suivi de douleur attaché à cet exercice (§14).
-   *
-   * Le texte dit QUOI surveiller. Il ne dit jamais ce qu'est la douleur : ce
-   * n'est pas un diagnostic, et l'application n'en pose aucun.
-   */
-  painWatch?: string;
 }
 
 /** Un exercice tel qu'il apparaît réellement dans une séance donnée. */

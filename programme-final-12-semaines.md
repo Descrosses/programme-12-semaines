@@ -18,7 +18,6 @@ Lundi, mercredi, vendredi : 60-70 min — Samedi, dimanche : 90 min — Mardi, j
 | Tractions lestées | +42 | **+45** | — |
 
 - **Le deadlift n'est pas en retard sur le squat : c'est l'inverse.** 140 contre 110, soit 30 kg d'écart en faveur du deadlift. La chaîne postérieure n'est pas le maillon faible, et la phrase du programme initial qui l'affirmait était fondée sur une estimation erronée. Le samedi Posterior Chain reste au programme : c'est le moteur du sprint et du saut, et il progresse. Mais il n'est plus présenté comme un rattrapage.
-- **Le squat est le chiffre le plus bas du tableau, et on n'en tire aucune conclusion hâtive.** Il est actuellement limité par une douleur à l'adducteur gauche (§14), pas par un déficit de force des quadriceps : le squat au poids du corps est indolore, la gêne apparaît en bas et à la remontée sous charge. Tant que ce symptôme n'est pas levé, le 110 mesuré ne dit pas ce que vaut le squat — il dit ce que l'adducteur a laissé passer ce jour-là. Aucune réorientation du programme vers un « rattrapage quadriceps » n'est justifiée par cette valeur.
 - Bench 115 kg et tractions +45 : haut du corps déjà fort → on l'entretient et on le fait progresser avec un volume raisonnable, pas 15 séries de dos par semaine.
 - Puissance jamais entraînée de façon structurée → sauts et travail de vitesse présents dès la semaine 1, faible volume, priorité qualité.
 - Tronc : les six fonctions de stabilisation sont couvertes cinq jours sur sept. La seule qui manquait était la **puissance rotatoire**, corrigée à partir de la semaine 5 (§8).
@@ -108,11 +107,9 @@ Tu arrêtes l'exercice quand : la distance ou la hauteur baisse d'environ 5 %, l
 
 **C. Back Squat — 5 × 5 × 77,5 kg** — RPE 7 — Repos 3 min 30
 Tempo 3-0-X : descente 3 s sur les semaines 1-3, remontée avec intention d'accélération maximale.
-**Adducteur gauche (§14)** : la charge du tableau est une référence, pas une obligation. Amplitude tolérée, aucune modification de technique pour contourner la gêne. Le RPE ne décide pas seul — une série peut être facile musculairement et mal tolérée.
 
 **D. Bulgarian Split Squat — 3 × 8/jambe, haltères 2 × 18 kg** — RPE 7-8 — Repos 90 s — Tempo 3-1-X-0.
-Progression : 8 reps propres à RPE ≤ 7,5 **et adducteur bien toléré** → +2 kg par haltère. La tolérance passe avant le RPE : pas de montée de charge sur une séance douloureuse, même facile.
-**Adducteur gauche (§14)** : amplitude confortable uniquement, bassin stable. Si la douleur redevient importante, réduire ou suspendre temporairement.
+Progression : 8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.
 
 **E. Romanian Deadlift — 3 × 8 × 80 kg** — RPE 7 — Repos 2 min 30 — Tempo 3-1-X-1
 Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lombaire. S2 : 85 kg, S3 : 90 kg si RPE conforme.
@@ -187,9 +184,7 @@ Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant déco
 **F. Single-Leg RDL haltère — 3 × 8/côté × 20 kg** — Repos 60 s — Lent, hanche carrée.
 **Il sort du samedi pendant le bloc force maximale (semaines 5 à 7)** et revient ensuite. Raison : ce samedi-là porte le deadlift à 4 min de repos, le front squat, un Hip Thrust à +10 %, puis le Zercher March et le Roman Side Bench. Le hinge unilatéral lent y est la septième station et la moins décisive — son intention est déjà payée six fois dans la séance. C'est une règle de bloc, pas une exception sur trois numéros de semaine : il réapparaît de lui-même en semaines 9 à 12 (§8).
 
-**G. Copenhagen Plank dynamique — SUSPENDU TEMPORAIREMENT** — douleur adducteur gauche (§14).
-Prescription d'origine, conservée pour mémoire : 3 × 8/côté, repos 60 s, pied supérieur sur banc, monte et descends le bassin.
-**Rien ne le remplace.** Le samedi garde le Suitcase Carry, et l'anti-flexion latérale reste couverte. Reprise non planifiée : elle dépendra de l'évolution des symptômes et de l'avis d'un kiné du sport, pas d'un numéro de semaine.
+**G. Copenhagen Plank dynamique — au vendredi, pas au samedi** (§8). 3 × 8/côté, repos 60 s, pied supérieur sur banc, monte et descends le bassin. Le samedi garde le Suitcase Carry.
 
 **H. Suitcase Carry — 3 × 30 m/côté, 32 kg** — Repos 60 s — **UNE SEULE haltère, comme une valise**, puis l'autre côté. Zéro inclinaison : c'est le déséquilibre qui fait travailler le tronc, le porter à deux mains supprime l'exercice. À ne pas confondre avec le Farmer Carry du vendredi, qui se porte à deux mains.
 **Semaines 1 à 4 seulement.** À partir de la semaine 5, le Zercher March prend sa place et le Roman Side Bench ferme la séance (§8).
@@ -248,7 +243,6 @@ Pas de gros travail excentrique jambes.
 Le Copenhagen Plank est repris et déplacé au **vendredi** : il doublonnait avec le Suitcase Carry du samedi, les deux résistant à la flexion latérale. Les quatre lignes qui le précèdent n'existent qu'à partir de la semaine 5 : elles ne concernent donc que le deload de la **semaine 8**. Celui de la semaine 4 est déjà fait et ne se réécrit pas. Le Farmer Carry, lui, ne figure plus au programme à partir de la semaine 5 — sa ligne ne vaut plus que pour la semaine 4. Celle du Suitcase Carry, en revanche, vaut pour les douze semaines : le porté valise est resté au samedi (§8, encadré).
 
 Reps propres, aucune série menée à l'échec, intensité d'effort modérée. Aucun exercice nouveau pendant un deload.
-Le Copenhagen Plank reste suspendu, indépendamment du deload (§14).
 
 ### À quoi sert chaque exercice de tronc
 
@@ -309,7 +303,7 @@ Le samedi garde donc le Suitcase Carry. **C'est le Zercher March qui est déprog
 
 **Le Hanging Leg Raise passe de 12 à 8 reps, et ce n'est pas un allègement** : une répétition jambes tendues vaut deux répétitions genoux fléchis. Même remarque pour le Copenhagen à 5 reps en puissance. Ces deux baisses existaient déjà dans le programme — elles n'étaient simplement **expliquées nulle part**, ce qui les faisait lire comme des régressions.
 
-**Le Copenhagen est le seul à avoir une condition écrite** : il ne passe en jambe tendue que si le levier court est passé sans douleur ni lendemain douloureux. C'est le mouvement qui avait été suspendu (§14) ; y rester un bloc de plus est une décision valable, pas un échec.
+**Le Copenhagen est le seul à avoir une condition écrite** : il ne passe en jambe tendue que si le levier court est passé sans douleur ni lendemain douloureux. Y rester un bloc de plus est une décision valable, pas un échec.
 
 La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
 
@@ -320,9 +314,9 @@ La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qu
 
 **Le Zercher March est déprogrammé — et c'est lui qui paie, pas le Roman Side Bench.**
 
-Le samedi ne peut pas porter trois exercices de tronc après Deadlift, Front Squat, Hip Thrust et Nordic Curl. Il fallait donc en sacrifier un entre le Zercher March et le Roman Side Bench. C'est le Zercher March qui sort, pour une raison qui tient au §14 : **c'est une marche chargée, et la marche chargée met les appuis unilatéraux en tension** sur un adducteur encore symptomatique. Sa tolérance n'était pas établie, elle ne le sera pas dans ce cycle.
+Le samedi ne peut pas porter trois exercices de tronc après Deadlift, Front Squat, Hip Thrust et Nordic Curl. Il fallait donc en sacrifier un entre le Zercher March et le Roman Side Bench. C'est le Zercher March qui sort : **c'est une marche chargée, et la marche chargée met les appuis unilatéraux en tension**, en fin d'une séance qui a déjà porté le deadlift et le front squat.
 
-Il n'est pas supprimé : **il reste au catalogue avec sa fiche complète**, comme le Copenhagen Plank pendant sa suspension. Le jour où l'adducteur le permet, il se reprogramme sans rien réécrire.
+Il n'est pas supprimé : **il reste au catalogue avec sa fiche complète**, et il peut se reprogrammer sans rien réécrire.
 
 Ce que le programme perd, et il faut le dire : **la seule charge antérieure en déplacement.** Le Front Squat charge l'avant mais ne se déplace pas. Personne ne reprend cette fonction. C'est un trou assumé, pas un trou comblé.
 
@@ -367,25 +361,25 @@ Force latérale du tronc à travers l'amplitude. Il occupe les deux jours les pl
 
 *Progression* : amplitude d'abord, répétitions ensuite, charge en dernier. Aucun disque tant que 3 × 8/côté ne sortent pas propres et sans douleur.
 
-*Vigilance* : la jambe du bas s'ancre contre le pad. Si l'installation tire à l'aine, on réduit l'amplitude ou on arrête — cet exercice n'est pas prioritaire au point de forcer dessus (§14).
+*Vigilance* : la jambe du bas s'ancre contre le pad. Si l'installation tire à l'aine, on réduit l'amplitude ou on arrête — cet exercice n'est pas prioritaire au point de forcer dessus.
 
 **Zercher March — déprogrammé, conservé au catalogue. Prescription de reprise : 2 × 12 m (≈ 18 pas), repos 90 s, barre nue au départ.**
 
-Il apportait ce que le programme n'avait pas : la stabilité dynamique sous charge **antérieure**. Le Front Squat charge l'avant mais ne se déplace pas ; les portés se déplaçaient mais chargeaient sur le côté. Cette fonction n'est aujourd'hui couverte par rien — c'est le prix de son retrait, et il est assumé le temps que l'adducteur se stabilise.
+Il apportait ce que le programme n'avait pas : la stabilité dynamique sous charge **antérieure**. Le Front Squat charge l'avant mais ne se déplace pas ; les portés se déplaçaient mais chargeaient sur le côté. Cette fonction n'est aujourd'hui couverte par rien — c'est le prix de son retrait, et il est assumé.
 
 *Progression* : la distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s'arrondisse et sans gêne le lendemain. La montée est volontairement lente — ce n'est pas un exercice de force maximale, et il vit dans la séance du deadlift.
 
-*Vigilance* : la marche chargée met les appuis unilatéraux en tension. Démarrage barre nue, suivi de douleur actif (§14).
+*Vigilance* : la marche chargée met les appuis unilatéraux en tension. Démarrage barre nue.
 
 ### Barbell Offset Hold — pourquoi il entre, et pourquoi là
 
 Premier des trois exercices de tronc introduits en semaine 5, et le seul du mercredi.
 
-**Le trou qu'il comble.** Depuis la suspension du Copenhagen Plank (§14), l'anti-flexion latérale ne repose plus que sur le Suitcase Carry du samedi. Une fonction, un jour, septième exercice d'une séance de 90 minutes.
+**Le trou qu'il comblait.** Au moment de son ajout, l'anti-flexion latérale ne reposait plus que sur le Suitcase Carry du samedi. Une fonction, un jour, septième exercice d'une séance de 90 minutes.
 
 **Pourquoi lui plutôt qu'un second porté.** Le Suitcase Carry à 32 kg sur 30 m est limité par la MAIN, pas par le tronc : la préhension lâche avant les obliques. Une barre de 2,20 m chargée d'un seul côté a un bras de levier sans commune mesure — contrainte bien supérieure sur le tronc pour une charge absolue bien moindre, et la préhension ne décide plus. Même fonction, autre facteur limitant : ce n'est pas un doublon.
 
-**Pourquoi le mercredi.** C'est le seul jour sans lift principal du bas du corps : rien en amont ne fatigue le tronc, rien en aval n'en souffre. Et la fréquence est tout l'objet de l'ajout — le placer le samedi à côté du Suitcase donnerait deux jours collés puis cinq jours vides. Pas le lundi : c'est la séance où l'adducteur travaille le plus, on n'y ajoute rien tant que les symptômes durent.
+**Pourquoi le mercredi.** C'est le seul jour sans lift principal du bas du corps : rien en amont ne fatigue le tronc, rien en aval n'en souffre. Et la fréquence est tout l'objet de l'ajout — le placer le samedi à côté du Suitcase donnerait deux jours collés puis cinq jours vides. Pas le lundi : c'est la séance la plus serrée de la semaine, on n'y ajoute rien.
 
 | Semaines | Prescription | Repos |
 |---|---|---|
@@ -432,7 +426,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
 **Vendredi** : Broad Jump 5 × 2 (2 min), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
-**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**. Copenhagen suspendu (§14).
+**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. La Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
@@ -522,7 +516,7 @@ Chronomètre. Un repos raccourci sur un lift lourd transforme la force en fatigu
 
 *Dans l'application, cet allègement est **proposé, jamais imposé** : la baisse peut venir de relevés de readiness incomplets. Tant que la question n'a pas reçu de réponse, la séance reste celle du programme. La réponse vaut pour l'épisode en cours ; une nouvelle baisse après un nouveau pic repose la question.*
 
-**Cas 8 — douleur localisée sur un mouvement** (aujourd'hui : adducteur gauche, §14) → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
+**Cas 8 — douleur localisée sur un mouvement** → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
 
 **Cas 9 — un exercice de tronc, ou tout exercice au poids du corps.** Les huit cas ci-dessus sont écrits en kilos : « +5 kg bas du corps, +2,5 kg haut du corps ». Aucun ne s'applique à l'Ab Wheel, au Hanging Leg Raise, au Roman Side Bench ni au Copenhagen Plank — il n'y a pas de barre à charger. Faute de règle, ces mouvements sont restés **figés douze semaines durant** : 3 × 8 d'Ab Wheel en semaine 1, 3 × 8 en semaine 11.
 
@@ -538,9 +532,9 @@ Ils progressent, mais dans cet ordre, et jamais dans un autre :
 
 **Pour les exercices à la poulie** (Pallof, Dead Bug câble, Woodchop, Landmine Rotation), la charge existe et c'est le cran 4 qui s'applique : **+1 kg**, jamais davantage, et seulement une fois le mouvement maîtrisé en amplitude complète. Un Pallof trop lourd devient une rotation du bassin, c'est-à-dire l'inverse de l'exercice.
 
-**Et si la gêne à l'adducteur parle** (§14), elle passe avant tout ce qui précède, comme au cas 8.
+**Et si une douleur apparaît**, elle passe avant tout ce qui précède, comme au cas 8.
 
-Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement surveillé, la tolérance passe avant le RPE.
+Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement douloureux, la tolérance passe avant le RPE (cas 8).
 
 ---
 
@@ -610,50 +604,3 @@ Appliquées au combine initial de l'auteur — squat 110, bench 115, deadlift 14
 **Le vrai critère** : l'écart deadlift − squat. S'il devient nul ou positif, la chaîne postérieure a rattrapé son retard. Si les 1RM montent mais que les sauts stagnent, le programme n'a produit que de la force : demi-échec, le bloc suivant sera orienté vitesse.
 
 **Signaux d'alerte** : sauts en baisse deux semaines de suite → section 11 cas 7. Douleur articulaire (pas musculaire) qui dure plus de 48 h → retire l'exercice, ne pousse pas à travers. Sommeil dégradé + motivation basse + charges qui stagnent → attendre le deload prévu, qui n'est jamais à plus de trois semaines.
-
----
-
-## 14. Adducteur gauche — adaptation et suivi
-
-**Ceci n'est pas un diagnostic.** Aucune structure blessée n'a été identifiée médicalement. Le programme ne nomme rien, ne conclut rien, et un bilan auprès d'un kiné du sport reste recommandé. La diminution progressive des symptômes n'est pas une guérison confirmée.
-
-### Ce qui est observé
-
-Gêne à l'intérieur de la cuisse gauche, près de l'aine, présente depuis environ cinq semaines et probablement antérieure au début du programme. Elle apparaît en bas du squat chargé, pendant la remontée, lors d'un effort important, et quand les genoux sont serrés fortement l'un contre l'autre. Le squat au poids du corps est indolore. La force produite augmente par rapport au début.
-
-### Trois statuts, pas un seul
-
-| Statut | Exercices | Ce que ça change |
-|---|---|---|
-| **Maintenu, adapté** | Back Squat, Bulgarian Split Squat | Charge et amplitude tolérées. Les valeurs du tableau §9 restent des références théoriques, pas des obligations. La tolérance passe avant le RPE. |
-| **Maintenu, surveillé** | Front Squat, Deadlift, Single-Leg RDL, Hip Thrust, Lateral Bound | Programmation inchangée — rien n'est supprimé préventivement. Surveiller l'apparition d'une gêne pendant la séance et le lendemain. |
-| **Nouveau, à tester** | Roman Side Bench, Zercher March | Introduits en semaine 5, tolérance non établie. Suivi de douleur actif sur les deux, comme sur le squat et le Bulgarian. Progression conditionnée à la tolérance, jamais automatique. |
-| **Suspendu** | Copenhagen Plank dynamique | Retiré des séances, conservé au catalogue avec sa raison. Aucun remplacement : l'anti-flexion latérale reste couverte par le Suitcase Carry. |
-
-Le Lateral Bound est explicitement maintenu sans modification : il ne provoque aucune douleur et la stabilité des réceptions s'est nettement améliorée.
-
-**Les deux nouveaux ne sont pas traités comme les anciens.** Le Roman Side Bench ancre la jambe du bas contre un pad, et le Zercher March met les appuis unilatéraux en tension sous charge : ni l'un ni l'autre n'a de tolérance établie sur cet adducteur. Les deux portent donc un suivi de douleur dans l'application, au même titre que le Back Squat et le Bulgarian Split Squat. Les deux démarrent au minimum : poids du corps pour le Roman Side Bench, barre nue pour le Zercher March. Et pour les deux, la règle du cas 8 s'applique sans discussion — une gêne qui augmente fait réduire, puis arrêter.
-
-La Landmine Rotation, elle, se teste progressivement sans suivi dédié : debout, pieds qui pivotent, aucune mise en tension de l'adducteur. Charge légère au départ, et on signale si quelque chose apparaît.
-
-**Le Barbell Offset Hold, ajouté en semaine 5, ne figure dans aucune de ces trois colonnes.** Debout, pieds fixes, aucune adduction de hanche, aucun appui unipodal : il ne s'approche pas du pattern douloureux. C'est d'ailleurs la raison pour laquelle il a été retenu plutôt que le Roman Side Bench, dont la jambe du bas s'ancre contre le pad. S'il devait malgré tout provoquer une gêne à l'aine, la consigne est la même que partout : réduire, puis arrêter, et le signaler.
-
-Une évolution possible, **non programmée** : à partir de la semaine 9, si l'adducteur est silencieux, la tenue peut devenir une marche de 15 à 20 m, ce qui couvrirait du même coup la stabilité dynamique sous charge antérieure. Elle n'est pas inscrite au programme et ne se déclenchera pas toute seule — elle dépend des symptômes, comme la reprise du Copenhagen.
-
-### Reprise du Copenhagen Plank
-
-Aucune semaine de reprise n'est écrite, et c'est volontaire. Une suspension pour douleur se lève sur des symptômes et un avis professionnel, pas sur un numéro de semaine. Fixer d'avance une semaine de retour reviendrait à promettre une évolution que personne ne peut prévoir.
-
-### Ce qui est noté, séance par séance
-
-Sur le Back Squat et le Bulgarian Split Squat, l'application ouvre un bloc de suivi :
-
-- douleur **pendant** l'exercice, de 0 à 10 ;
-- douleur **après** la séance, de 0 à 10 ;
-- douleur **le lendemain**, de 0 à 10 ;
-- **charge réellement tolérée** ;
-- **amplitude tolérée** : complète, partielle ou réduite.
-
-Les trois moments sont séparés parce qu'ils ne disent pas la même chose : une gêne qui disparaît en sortant de la salle n'est pas une gêne qu'on retrouve au réveil. Le champ du lendemain se remplit en rouvrant la séance de la veille depuis l'onglet Semaine.
-
-Ces notes sont de la matière à regarder, pas un pilote : aucune règle de l'application ne les lit pour modifier une charge automatiquement. La décision reste celle de Guillaume, et le cas 8 du §11 dit comment la prendre.

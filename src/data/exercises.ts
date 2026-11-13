@@ -20,17 +20,6 @@ const REGLE_EXPLOSIF =
   'reste des séries écrites.';
 
 /**
- * §14 — rappel de surveillance sur les mouvements qui chargent l'adducteur
- * sans être douloureux à ce jour.
- *
- * Il ne modifie RIEN à la prescription : le programme ne supprime pas
- * préventivement tout ce qui touche au bas du corps. Il dit seulement où
- * regarder si la gêne se déplace.
- */
-const SURVEILLANCE_ADDUCTEUR =
-  'Non douloureux à ce jour : programmation inchangée. Surveille l’adducteur gauche pendant la séance et le lendemain — si une gêne apparaît, réduis la charge ou l’amplitude avant de supprimer l’exercice.';
-
-/**
  * Ajoute la règle §5 aux mouvements explosifs, et la planche d'exécution aux
  * mouvements qui en ont une (`fichesPower12.ts`). Ni l'une ni l'autre ne
  * touche à la prescription : séries, charges et repos vivent ailleurs.
@@ -74,12 +63,7 @@ const LIST: ExerciseDef[] = [
     cues: [
       'Semaines 1-3 — tempo 3-0-X : descente 3 s.',
       'Semaines 5-7 — fini le tempo 3 s : descente contrôlée ~2 s, remontée intention maximale, repos 4 min entiers.',
-      'Adducteur gauche : la charge du tableau est une référence, pas une obligation. Descends à l’amplitude tolérée, sans modifier ta technique pour contourner la gêne.',
-      'Une série peut être facile musculairement et mal tolérée par l’adducteur. Le RPE ne décide pas seul.',
-      'Si la gêne augmente pendant la séance : réduis la charge, ou arrête l’exercice. Ne force pas à travers.',
     ],
-    painWatch:
-      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
   /*
    * Pin Squat — remplace le Back Squat du lundi en semaines 5 à 7 (§8).
@@ -89,10 +73,6 @@ const LIST: ExerciseDef[] = [
    * 1RM. Ses charges ne sont jamais déduites de celles du back squat.
    *
    * Consignes : celles écrites par Guillaume, mot pour mot.
-   *
-   * PAS de suivi de l'adducteur gauche (`painWatch`) : il est personnel à
-   * Guillaume, et ce programme s'adresse au grand public. Décision de
-   * Guillaume — ne pas l'étendre aux nouveaux exercices.
    */
   def({
     id: 'pin-squat',
@@ -124,14 +104,7 @@ const LIST: ExerciseDef[] = [
     role: 'accessory',
     measure: 'kg',
     intent: 'Tempo 3-1-X-0. Genou avant stable, buste légèrement penché.',
-    progressionRule:
-      '8 reps propres à RPE ≤ 7,5 ET adducteur bien toléré → +2 kg par haltère. La tolérance passe avant le RPE : pas de montée de charge sur une séance douloureuse, même facile.',
-    cues: [
-      'Adducteur gauche : reste dans l’amplitude confortable, surveille la stabilité du bassin.',
-      'Ne cherche pas la douleur. Si elle redevient importante, réduis la charge ou suspends l’exercice temporairement.',
-    ],
-    painWatch:
-      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
+    progressionRule: '8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.',
   }),
   def({
     id: 'rdl',
@@ -177,10 +150,8 @@ const LIST: ExerciseDef[] = [
       'Exécution : descends jusqu’à l’amplitude confortable, marque un temps d’arrêt, remonte jusqu’à l’alignement — pas au-delà.',
       'Intention : tempo contrôlé des deux côtés, jamais d’élan. La série se juge sur la qualité du dernier côté, pas du premier.',
       'Vigilance : poids du corps seulement au départ. Zéro rotation du bassin pendant le mouvement.',
-      'Vigilance adducteur : c’est la jambe du bas qui ancre contre le pad. Si l’installation tire à l’aine, réduis l’amplitude ou arrête — cet exercice n’est pas prioritaire au point de forcer dessus.',
+      'Vigilance : c’est la jambe du bas qui ancre contre le pad. Si l’installation tire à l’aine, réduis l’amplitude ou arrête — cet exercice n’est pas prioritaire au point de forcer dessus.',
     ],
-    painWatch:
-      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec l’amplitude tolérée.',
   }),
 
   // ------------------------------------------------------------- MERCREDI --
@@ -266,13 +237,6 @@ const LIST: ExerciseDef[] = [
    * contrainte sur le tronc est bien supérieure pour une charge absolue bien
    * moindre, et la préhension n'est plus le facteur limitant. C'est le même
    * plan de travail par un autre facteur limitant, donc pas un doublon.
-   *
-   * ── Pourquoi il ne touche pas l'adducteur ────────────────────────────────
-   *
-   * Debout, pieds fixes, aucune adduction de hanche. C'est le seul candidat
-   * examiné qui ne s'approche pas du pattern douloureux. Il peut passer en
-   * marche courte plus tard, mais seulement si les symptômes le permettent —
-   * jamais d'office.
    */
   def({
     id: 'barbell-offset-hold',
@@ -325,9 +289,6 @@ const LIST: ExerciseDef[] = [
     explosive: true,
     measure: 'cm',
     intent: 'Tiens la réception 2 s. Puissance dans le plan frontal.',
-    cues: [
-      'Aucune douleur signalée à l’adducteur sur ce mouvement, et la stabilité des réceptions s’est nettement améliorée : programmation inchangée. Surveille simplement l’apparition d’une gêne pendant ou après la séance.',
-    ],
   }),
   def({
     /*
@@ -409,10 +370,7 @@ const LIST: ExerciseDef[] = [
     measure: 'm',
     intent: 'DEUX haltères, une dans chaque main. Charge symétrique, buste haut, marche agressive.',
     progressionRule: '+2 kg quand les 25 m sont tenus sans ralentir.',
-    cues: [
-      'Ne pas confondre avec le Suitcase Carry du samedi : celui-là se porte d’un seul côté.',
-      SURVEILLANCE_ADDUCTEUR,
-    ],
+    cues: ['Ne pas confondre avec le Suitcase Carry du samedi : celui-là se porte d’un seul côté.'],
   }),
   def({
     id: 'dead-bug-cable',
@@ -434,7 +392,6 @@ const LIST: ExerciseDef[] = [
       'Chaque rep part du sol, pas de touch-and-go. Hanches hautes, tension avant décollage, barre contre les tibias, montée avec intention de vitesse maximale.',
     cues: [
       'Le 130 estimé l’était : le combine initial a mesuré 140. Le tableau §9 est recalé dessus — c’est ton lift le plus fort, pas ton retard.',
-      SURVEILLANCE_ADDUCTEUR,
     ],
   }),
   def({
@@ -446,7 +403,6 @@ const LIST: ExerciseDef[] = [
     measure: 'kg',
     intent: 'Coudes hauts, buste vertical.',
     progressionRule: '+2,5 kg par semaine si le RPE est conforme.',
-    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'hip-thrust',
@@ -457,7 +413,6 @@ const LIST: ExerciseDef[] = [
     intent: '2 s de contraction en haut, menton rentré.',
     progressionRule: '+10 kg quand le RPE est ≤ 7.',
     altBasicFit: 'Machine hip thrust si présente, sinon banc + barre avec pad.',
-    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'nordic-curl',
@@ -474,7 +429,6 @@ const LIST: ExerciseDef[] = [
     role: 'accessory',
     measure: 'kg',
     intent: 'Lent, hanche carrée.',
-    cues: [SURVEILLANCE_ADDUCTEUR],
   }),
   def({
     id: 'copenhagen-plank',
@@ -483,27 +437,19 @@ const LIST: ExerciseDef[] = [
     role: 'core',
     intent: 'Pied supérieur sur banc, monte et descends le bassin.',
     /*
-     * REPRIS après suspension, et déplacé du samedi au vendredi.
+     * Au vendredi, pas au samedi.
      *
-     * Il avait été suspendu pour une douleur à l'adducteur gauche : l'exercice
-     * met cet adducteur en tension maximale, c'est ce qu'il entraîne, et
-     * c'était ce qui faisait mal. La suspension est levée sur décision de
-     * Guillaume, douleur disparue.
-     *
-     * Il ne revient PAS à sa place d'origine. Le samedi porte déjà le Suitcase
+     * Il n'est PAS à sa place d'origine. Le samedi porte déjà le Suitcase
      * Carry, et les deux résistent à la flexion latérale : les faire le même
      * jour, c'est faire deux fois le même travail en croyant en faire deux.
      * Le vendredi n'en avait aucune — le Farmer Carry est bilatéral, le Dead
      * Bug résiste à l'extension.
-     *
-     * Le vendredi est aussi le meilleur jour pour l'adducteur : deux jours
-     * après le squat du lundi, un avant le deadlift du samedi.
      */
     progressionRule:
-      'Par le LEVIER (§11 cas 9), et plus prudemment que les autres — c’est ce mouvement-là qui avait fait mal. Genou de la jambe haute FLÉCHI, appui sur le genou, pendant tout le bloc d’accumulation. Jambe tendue à partir du bloc force max, SEULEMENT si les 3 × 8 en levier court sont passés sans douleur ni lendemain douloureux. Au moindre doute, on reste au cran précédent : ici, rester est une décision valable, pas un échec.',
+      'Par le LEVIER (§11 cas 9). Genou de la jambe haute FLÉCHI, appui sur le genou, pendant tout le bloc d’accumulation. Jambe tendue à partir du bloc force max, SEULEMENT si les 3 × 8 en levier court sont passés sans douleur ni lendemain douloureux. Au moindre doute, on reste au cran précédent : ici, rester est une décision valable, pas un échec.',
     cues: [
       'Sécurité : à la moindre gêne à l’aine, arrête la série. Une douleur articulaire qui dure plus de 48 h veut dire que l’exercice ressort du programme.',
-      'Le levier court n’est pas une version au rabais : c’est le même exercice avec un bras de levier plus court, et c’est exactement ce qu’il faut pour une reprise.',
+      'Le levier court n’est pas une version au rabais : c’est le même exercice avec un bras de levier plus court, et c’est exactement ce qu’il faut pour démarrer.',
     ],
   }),
   def({
@@ -515,7 +461,7 @@ const LIST: ExerciseDef[] = [
     intent:
       'Marche sous charge antérieure, buste vertical. Tu ne portes pas la barre : tu refuses qu’elle te plie.',
     progressionRule:
-      'La distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s’arrondisse et sans gêne à l’aine le lendemain. Montée volontairement lente : ce n’est pas un exercice de force maximale.',
+      'La distance avant la charge. +2,5 kg seulement quand les deux séries passent sans que le buste s’arrondisse et sans gêne le lendemain. Montée volontairement lente : ce n’est pas un exercice de force maximale.',
     altBasicFit:
       'Barre dans la saignée des coudes, prise depuis un rack à mi-cuisse — ne jamais la ramasser au sol en Zercher. À défaut : marche avec deux haltères en rack avant.',
     cues: [
@@ -525,10 +471,8 @@ const LIST: ExerciseDef[] = [
       'Exécution : pas courts et contrôlés, pied posé à plat, aucun balancement latéral. Demi-tour large, jamais pivoté sur place.',
       'Intention : gainage continu du premier au dernier pas. Respiration courte et haute, jamais d’apnée complète.',
       'Vigilance : la série s’arrête dès que le buste s’arrondit ou que les coudes s’ouvrent — pas quand la distance est atteinte.',
-      'Vigilance adducteur : la marche chargée met les appuis unilatéraux en tension. Démarre très léger, et au moindre tiraillement à l’aine, réduis la charge ou arrête.',
+      'Vigilance : la marche chargée met les appuis unilatéraux en tension. Démarre très léger, et au moindre tiraillement à l’aine, réduis la charge ou arrête.',
     ],
-    painWatch:
-      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et la distance tolérées.',
   }),
   def({
     id: 'suitcase-carry',
@@ -541,7 +485,6 @@ const LIST: ExerciseDef[] = [
     cues: [
       'C’est le déséquilibre qui fait travailler le tronc : le porter à deux mains supprime l’exercice.',
       'Ne pas confondre avec le Farmer Carry du vendredi : celui-là se porte à deux mains.',
-      SURVEILLANCE_ADDUCTEUR,
     ],
   }),
 
