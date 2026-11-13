@@ -211,7 +211,8 @@ export const FAMILLES: readonly Famille[] = [
   },
   {
     id: 'perso',
-    nom: 'PERSONNALISÉ',
+    /* Le nom choisi par Guillaume pour la rubrique personnalisée. */
+    nom: 'ME, MYSELF & I',
     sousTitre: 'Ton programme dans MAJK',
     /*
      * Une famille qui n'aura JAMAIS de programme écrit ici.

@@ -19,6 +19,7 @@ import { EMPTY_CONTEXT, type SessionContext } from './types';
 import { setSummary } from './format';
 import { EXERCISES } from '../data/exercises';
 import { DELOAD_CORE } from '../data/blockRules';
+import { FAMILLE_TRONC, FONCTIONS_TRONC, fonctionTronc } from '../data/fonctionsTronc';
 import type { DayIndex, WeekIndex } from '../data/types';
 import type { HistoryIndex } from './types';
 
@@ -193,7 +194,6 @@ describe('le deload touche enfin le tronc et les portés', () => {
       'ab-wheel': { jour: 0, ligne: '2 × 6 — poids du corps' },
       'pallof-press': { jour: 2, ligne: '2 × 5 / côté' },
       'dead-bug-cable': { jour: 4, ligne: '2 × 5 / côté' },
-      'bear-crawl': { jour: DIMANCHE, ligne: '2 × 15 m' },
       'hanging-leg-raise': { jour: DIMANCHE, ligne: '2 × 6 — poids du corps' },
       'cable-chop': { jour: DIMANCHE, ligne: '2 × 6 / côté' },
     };
@@ -298,21 +298,7 @@ describe('Copenhagen Plank — repris, et déplacé', () => {
  * dynamique » pour le Pallof, « résister à la flexion latérale » pour
  * l'Offset Hold. Rien n'est deviné ici.
  */
-const FAMILLE: Readonly<Record<string, string>> = {
-  'ab-wheel': 'anti-extension',
-  'hanging-leg-raise': 'anti-extension',
-  'dead-bug-cable': 'anti-extension',
-  'pallof-press': 'anti-rotation',
-  'cable-chop': 'rotation',
-  'landmine-rotation': 'rotation',
-  'roman-side-bench': 'flexion latérale',
-  'suitcase-carry': 'flexion latérale',
-  'barbell-offset-hold': 'flexion latérale',
-  'copenhagen-plank': 'flexion latérale',
-  'farmer-carry': 'porté symétrique',
-  'zercher-march': 'porté antérieur',
-  'bear-crawl': 'stabilité globale',
-};
+const FAMILLE: Readonly<Record<string, string>> = FAMILLE_TRONC;
 
 /*
  * L'UNIQUE dérogation à la règle ci-dessus, et elle est nominative.
@@ -655,7 +641,8 @@ describe('deux exercices de tronc par séance, à partir de la S5', () => {
     expect(tronc(3, 4)).toEqual(['farmer-carry', 'dead-bug-cable', 'copenhagen-plank']);
     // Et le samedi ne garde QUE le Suitcase Carry : c'est de là qu'il vient.
     expect(tronc(3, 5)).toEqual(['suitcase-carry']);
-    expect(tronc(3, 6)).toEqual(['cable-chop', 'hanging-leg-raise', 'bear-crawl']);
+    // Le Bear Crawl n'est plus programmé : deux exercices dès la semaine 1.
+    expect(tronc(3, 6)).toEqual(['cable-chop', 'hanging-leg-raise']);
   });
 });
 
@@ -664,9 +651,9 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
    * Le Suitcase Carry n'en fait plus partie : il reste sur les douze
    * semaines. C'était la seule marche chargée d'un seul côté du programme,
    * et elle disparaissait au profit d'un Roman Side Bench déjà présent au
-   * lundi. Le Farmer Carry et le Bear Crawl, eux, sortent toujours.
+   * lundi. Le Farmer Carry, lui, sort toujours.
    */
-  const PARTIS = ['farmer-carry', 'bear-crawl'];
+  const PARTIS = ['farmer-carry'];
 
   it('ils ne réapparaissent dans aucun bloc après la semaine 4', () => {
     for (let w = 5; w <= 12; w++) {
@@ -690,8 +677,22 @@ describe('ce qui sort du programme à partir de la semaine 5', () => {
 
   it('mais les semaines 1 à 4 gardent le reste — leur historique ne se réécrit pas', () => {
     expect(ids(session(3, 4).exercises)).toContain('farmer-carry');
-    expect(ids(session(3, 6).exercises)).toContain('bear-crawl');
     expect(ids(session(4, 4).exercises)).toContain('farmer-carry');
+  });
+
+  /*
+   * Le Bear Crawl est DÉPROGRAMMÉ dès la semaine 1 (décision de Guillaume),
+   * mais sa fiche reste au catalogue : « on ne supprime pas d'exercices
+   * existants ». Les séries déjà enregistrées gardent donc un nom.
+   */
+  it('le Bear Crawl n’est plus programmé nulle part, mais reste au catalogue', () => {
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        const s = getSession(w as WeekIndex, d as DayIndex, ctx());
+        expect(ids(s?.exercises ?? []), `S${w} j${d}`).not.toContain('bear-crawl');
+      }
+    }
+    expect(EXERCISES['bear-crawl']?.name).toBe('Bear Crawl');
   });
 
   /*
@@ -811,5 +812,39 @@ describe('Roman Side Bench et Zercher March', () => {
         /Objectif athlétique :|Objectif athlétique|Objectif :/,
       );
     }
+  });
+});
+
+describe('le bandeau « à quoi ça sert » des exercices de tronc', () => {
+  /*
+   * L'empreinte ne voit pas ce bandeau : elle compare séries, charge et
+   * repos. Sans ce test, on pourrait vider la table et tout resterait vert.
+   */
+  it('tout exercice de tronc ou de porté PROGRAMMÉ a une fonction affichable', () => {
+    for (let w = 1; w <= 12; w++) {
+      for (const d of [0, 2, 4, 5, 6]) {
+        const s = getSession(w as WeekIndex, d as DayIndex, ctx());
+        for (const e of s?.exercises ?? []) {
+          if (e.def.role !== 'core' && e.def.role !== 'carry') continue;
+          const f = fonctionTronc(e.id);
+          expect(f, `${e.id} S${w} j${d} : pas de fonction`).not.toBeNull();
+          expect(f!.role.length, e.id).toBeGreaterThan(20);
+          expect(f!.utilite.length, e.id).toBeGreaterThan(20);
+        }
+      }
+    }
+  });
+
+  it('chaque famille a son texte, et les textes diffèrent', () => {
+    const roles = Object.values(FONCTIONS_TRONC).map((f) => f.role);
+    expect(new Set(roles).size).toBe(roles.length);
+    for (const famille of new Set(Object.values(FAMILLE_TRONC))) {
+      expect(FONCTIONS_TRONC[famille], famille).toBeDefined();
+    }
+  });
+
+  it('un exercice qui n’est pas du tronc n’affiche rien', () => {
+    expect(fonctionTronc('back-squat')).toBeNull();
+    expect(fonctionTronc('bench-press')).toBeNull();
   });
 });

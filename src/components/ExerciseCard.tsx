@@ -25,6 +25,8 @@ import {
 import type { Occurrence } from '../engine/types';
 import type { DayIndex } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
+import { EXERCISES } from '../data/exercises';
+import { fonctionTronc } from '../data/fonctionsTronc';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -192,6 +194,8 @@ export function ExerciseCard({
    * le « quoi » de chaque ajustement, le rappel du contraste, l'alerte rouge
    * en entier.
    */
+  const fonction = fonctionTronc(ex.id);
+
   const aDesConsignes =
     ex.adjustments.some((a) => a.source !== 'rouge') ||
     ex.contrast !== undefined ||
@@ -229,6 +233,20 @@ export function ExerciseCard({
         {gripHint(ex.load) && <div className={styles.gripHint}>{gripHint(ex.load)}</div>}
 
         {/*
+          À quoi sert ce mouvement de tronc. Visible sur la carte, pas rangé
+          sous Consignes : c'est ce qui distingue un Pallof Press d'un Ab
+          Wheel, et on le lit AVANT de se placer.
+        */}
+        {fonction !== null && (
+          <div className={styles.fonctionTronc}>
+            <span className={styles.fonctionNom}>{fonction.nom}</span>
+            <span className={styles.fonctionTexte}>
+              {fonction.role} {fonction.utilite}
+            </span>
+          </div>
+        )}
+
+        {/*
           Le contraste change la façon d'enchaîner : la séquence reste écrite
           en entier sur la carte, en une ligne qu'on suit des yeux entre deux
           séries. Seule la mise en garde « ce n'est pas un superset » passe
@@ -238,7 +256,8 @@ export function ExerciseCard({
           <div className={styles.adjust}>
             <b>Contraste</b> — {ex.contrast.cycleLabel}
             <span className={styles.adjustSuite}>
-              Série lourde → {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
+              Série lourde → {restLabel(ex.contrast.restAfterHeavySec)} →{' '}
+              {EXERCISES[ex.contrast.explosive]?.name ?? ex.contrast.explosive} ×{' '}
               {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
               suivante
             </span>
@@ -526,7 +545,8 @@ export function ExerciseCard({
           {ex.contrast && (
             <p>
               <b>Contraste</b> — {ex.contrast.cycleLabel}. Série lourde →{' '}
-              {restLabel(ex.contrast.restAfterHeavySec)} → {ex.contrast.explosive} ×{' '}
+              {restLabel(ex.contrast.restAfterHeavySec)} →{' '}
+              {EXERCISES[ex.contrast.explosive]?.name ?? ex.contrast.explosive} ×{' '}
               {ex.contrast.explosiveReps} → {restLabel(ex.contrast.restAfterExplosiveSec)} → série
               suivante. Ce n’est pas un superset.
             </p>
@@ -764,6 +784,22 @@ export function SetEntry({
   const showLoad = showsLoadField(ex);
 
   const [editing, setEditing] = useState(false);
+  /*
+   * Contraste (S9-11) : la série lourde est validée, le mouvement explosif
+   * reste à faire. Tant que c'est vrai, la ligne validée porte un SECOND
+   * bouton — « Box Jump × 2 fait ».
+   *
+   * Avant, ce bouton vivait dans le formulaire de la série lourde, et
+   * disparaissait avec lui dès qu'on la validait : au moment précis où l'on
+   * venait de sauter, il n'y avait plus rien à toucher pour lancer le repos.
+   *
+   * État d'écran, pas de base : ce qui s'enregistre, c'est la série lourde.
+   * Le saut ne porte ni charge ni mesure, il ne fait que rythmer le repos.
+   */
+  const [attenteExplosif, setAttenteExplosif] = useState(false);
+  const nomExplosif = ex.contrast
+    ? (EXERCISES[ex.contrast.explosive]?.name ?? ex.contrast.explosive)
+    : null;
   const [reps, setReps] = useState<number>(saved?.actualReps ?? plannedReps ?? 1);
   /*
    * Le champ de charge existe sur TOUS les exercices, y compris au poids du
@@ -851,10 +887,11 @@ export function SetEntry({
     setEditing(false);
     if (ex.restSec > 0) {
       const label = ex.contrast
-        ? `→ ${ex.contrast.explosive} × ${ex.contrast.explosiveReps}`
+        ? `→ ${nomExplosif} × ${ex.contrast.explosiveReps}`
         : `${ex.name} — série ${index + 1}`;
       timer.start(ex.contrast?.restAfterHeavySec ?? ex.restSec, label);
     }
+    if (ex.contrast) setAttenteExplosif(true);
   }
 
   if (done) {
@@ -913,6 +950,23 @@ export function SetEntry({
           )}
           {saved.failed && <span className={styles.failFlag}>Rep ratée</span>}
         </button>
+        {ex.contrast && attenteExplosif && (
+          /* Le second bouton du contraste : il valide le saut et lance le
+             repos avant la série lourde suivante. */
+          <button
+            type="button"
+            className={`${styles.validate} ${styles.validateContraste}`}
+            onClick={() => {
+              timer.start(
+                ex.contrast!.restAfterExplosiveSec,
+                `${nomExplosif} fait → série suivante`,
+              );
+              setAttenteExplosif(false);
+            }}
+          >
+            {nomExplosif} × {ex.contrast.explosiveReps} fait — valider la série {index + 1}
+          </button>
+        )}
       </div>
     );
   }
@@ -1060,22 +1114,14 @@ export function SetEntry({
         )}
 
         <button type="button" className={styles.validate} onClick={() => void validate()}>
-          Valider la série {index + 1}
+          {ex.contrast
+            ? `Valider ${ex.name} — série ${index + 1}`
+            : `Valider la série ${index + 1}`}
         </button>
-
         {ex.contrast && (
-          <button
-            type="button"
-            className={styles.failToggle}
-            onClick={() =>
-              timer.start(
-                ex.contrast!.restAfterExplosiveSec,
-                `${ex.contrast!.explosive} fait → série suivante`,
-              )
-            }
-          >
-            {ex.contrast.explosive} × {ex.contrast.explosiveReps} fait
-          </button>
+          <p className={styles.contrasteAide}>
+            Ensuite : {nomExplosif} × {ex.contrast.explosiveReps}, avec son propre bouton.
+          </p>
         )}
       </div>
     </div>

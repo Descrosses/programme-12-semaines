@@ -256,7 +256,13 @@ const DIMANCHE: SessionBlueprint = {
       60,
       'Genoux à la poitrine, sans balancier. Les 12 reps propres avant de penser aux jambes tendues.',
     ),
-    s('bear-crawl', 3, meters(20), noLoad(), null, 60),
+    /*
+     * Le Bear Crawl n'est plus programmé, dès la semaine 1 — décision de
+     * Guillaume. Sa fiche reste au catalogue (« on ne supprime pas
+     * d'exercices existants »), comme le Zercher March : seul le créneau
+     * disparaît. Le tronc du dimanche tient en deux exercices sur les douze
+     * semaines, Woodchop et Hanging Leg Raise.
+     */
     s(
       'conditioning',
       1,

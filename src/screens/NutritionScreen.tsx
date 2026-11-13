@@ -16,6 +16,7 @@ import { fr } from '../engine/format';
 import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
 import { AddFoodSheet } from '../components/AddFoodSheet';
 import type { ExtraFoodRow } from '../db/db';
+import type { Macros } from '../engine/nutrition';
 import { DELOAD_BANNER, MEALS_GAP_TOLERANCE_PCT } from '../data/nutrition';
 import {
   consumedTotal,
@@ -88,6 +89,16 @@ import styles from './Screens.module.css';
  * métier et deux enfants. La seule saisie ici est la pesée du matin, qui prend
  * cinq secondes et qui est la seule donnée qui pilote réellement le plan.
  */
+/** Somme de deux jeux de macros, champ par champ. */
+function additionner(a: Macros, b: Macros): Macros {
+  return {
+    kcal: a.kcal + b.kcal,
+    proteinG: a.proteinG + b.proteinG,
+    carbsG: a.carbsG + b.carbsG,
+    fatG: a.fatG + b.fatG,
+  };
+}
+
 export function NutritionScreen({
   todayKind,
   kindProgramme,
@@ -455,6 +466,10 @@ export function NutritionScreen({
   const phase = phaseForDay(todayWeek, todayDay);
   const target = targetForPhase(NUTRITION_TARGETS[kind], phase);
   const totalRepas = mealsTotal(target, overrides, catalogue);
+  /* Le plan et ce qu'on y a ajouté aujourd'hui : c'est ce total-là que la
+     liste des repas affiche. La cible, elle, reste celle du plan. */
+  const ajoutsDuJour = extrasTotal(extras);
+  const totalAvecAjouts = additionner(totalRepas, ajoutsDuJour);
   const ecart = mealsGap(target, overrides, catalogue);
   const verdict = gapVerdict(target, overrides, MEALS_GAP_TOLERANCE_PCT, catalogue);
   /*
@@ -816,7 +831,18 @@ export function NutritionScreen({
           {target.meals.map((m) => {
             /* Calculé une fois : la ligne de kcal et la barre doivent parler du
                même repas, remplacements et étiquettes corrigées compris. */
-            const macros = mealMacros(m, overrides, catalogue);
+            const planDuRepas = mealMacros(m, overrides, catalogue);
+            /*
+             * Les ajouts COMPTENT dans le chiffre du repas.
+             *
+             * Ils entraient déjà dans « kcal restantes », en haut de l'écran,
+             * mais pas ici : on ajoutait un aliment à un repas, et le total
+             * affiché sur ce même repas ne bougeait pas. Le geste semblait
+             * n'avoir servi à rien. Le chiffre du repas et le total de la
+             * liste disent maintenant ce qui est réellement dans l'assiette.
+             */
+            const ajoutsDuRepas = extrasTotal(extras.filter((x) => x.mealId === m.id));
+            const macros = additionner(planDuRepas, ajoutsDuRepas);
             return (
               <div key={m.name} className={styles.meal}>
                 <div className={styles.mealRow}>
@@ -839,7 +865,7 @@ export function NutritionScreen({
                   <div className={`${styles.mealKcal} tnum`}>
                     <div>{macros.kcal} kcal</div>
                     <div className={styles.mealPart}>
-                      {shareOfDay(macros.kcal, totalRepas.kcal)} %
+                      {shareOfDay(macros.kcal, totalAvecAjouts.kcal)} %
                     </div>
                   </div>
                   {/*
@@ -967,11 +993,19 @@ export function NutritionScreen({
           </button>
         )}
         <div className={styles.mealTotal}>
-          <span>Total des repas listés</span>
+          <span>
+            {ajoutsDuJour.kcal > 0 ? 'Total des repas, ajouts compris' : 'Total des repas listés'}
+          </span>
           <span className="tnum">
-            ≈ {totalRepas.kcal.toLocaleString('fr-FR')} kcal · {totalRepas.proteinG} g
+            ≈ {totalAvecAjouts.kcal.toLocaleString('fr-FR')} kcal · {totalAvecAjouts.proteinG} g
           </span>
         </div>
+        {ajoutsDuJour.kcal > 0 && (
+          <p className={styles.fieldHint}>
+            Dont {ajoutsDuJour.kcal.toLocaleString('fr-FR')} kcal d’aliments ajoutés. Le plan seul
+            fait {totalRepas.kcal.toLocaleString('fr-FR')} kcal.
+          </p>
+        )}
         {/*
           Le SENS de l'écart décide du message, pas seulement sa taille. Avant,
           l'alerte disait « il manque N kcal » dans les deux cas, en prenant la

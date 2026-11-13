@@ -1,0 +1,32 @@
+/* La pesée du jour : une carte compacte, sous l'en-tête de la semaine. */
+.carte {
+  margin: 12px var(--pad) 0;
+  padding: 12px 14px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.tete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.titre {
+  margin: 0;
+  font-family: var(--font-cond);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.etat {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+}

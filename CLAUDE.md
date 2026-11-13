@@ -204,6 +204,9 @@ matériel et la durée avant d'écrire la moindre séance.
 - Le Zercher March est **déprogrammé mais conservé au catalogue**, comme le
   Copenhagen Plank pendant sa suspension : « on ne supprime pas d'exercices
   existants ».
+- Le Bear Crawl est **déprogrammé dès la semaine 1 mais conservé au catalogue**,
+  pour la même raison. Le tronc du dimanche tient en deux exercices sur les
+  douze semaines.
 - Le samedi porte deux exercices de « flexion latérale » (Suitcase Carry +
   Roman Side Bench). C'est l'**unique dérogation** à la règle « jamais deux
   exercices du tronc de la même famille le même jour », écrite comme une paire
