@@ -89,9 +89,10 @@ const backSquat: LiftSchedule = [
   p(5, 5, pct(75, 'back-squat', 82.5), rpe(7.5)),
   p(5, 4, pct(80, 'back-squat', 87.5), rpe(8)),
   p(3, 3, pct(64, 'back-squat', 70), rpe(5)),
-  p(5, 3, pct(82, 'back-squat', 90), rpe(8)),
-  p(4, 3, pct(86, 'back-squat', 95), rpe(8.5)),
-  p(4, 2, pct(89, 'back-squat', 97.5), rpe(9)),
+  // S5-7 : remplacé par le Pin Squat (§8). « — » au tableau §9.
+  null,
+  null,
+  null,
   p(3, 3, pct(70, 'back-squat', 77.5), rpe(5)),
   p(4, 2, pct(84, 'back-squat', 92.5), null, { contrast: true, note: CONTRASTE }),
   p(4, 2, pct(86, 'back-squat', 95), null, { contrast: true, note: CONTRASTE }),
@@ -329,6 +330,36 @@ const romanianDeadlift: LiftSchedule = [
   null, // absent du taper
 ];
 
+/**
+ * Pin Squat — lundi des semaines 5 à 7 seulement (§8, hors tableau §9).
+ *
+ * Mêmes séries, reps et RPE que le Back Squat qu'il remplace. Les kilos
+ * sont une FORME (comme le RDL) : la référence individuelle de Guillaume,
+ * établie sur une performance réelle (110 kg, 4 × 2, RPE 9, sans rebond).
+ *
+ * - Une installation déjà en cours les voit tels quels.
+ * - Un nouvel utilisateur ne les voit pas : il choisit sa charge au RPE en
+ *   semaine 5, et la forme se cale sur ce qu'il a vraiment soulevé.
+ * - Ensuite, le recalage sur le réel et le §11 s'appliquent comme partout.
+ *
+ * Aucun coefficient back squat → pin squat : ces kilos ne dépendent d'aucun
+ * 1RM, et aucun 1RM n'est recalculé à partir d'eux.
+ */
+const pinSquat: LiftSchedule = [
+  null,
+  null,
+  null,
+  null,
+  p(5, 3, forme(95, 100), rpe(8)),
+  p(4, 3, forme(100, 105), rpe(8.5)),
+  p(4, 2, forme(110), rpe(9)),
+  null,
+  null,
+  null,
+  null,
+  null,
+];
+
 // ---------------------------------------------------------------------------
 
 export const MAIN_LIFT_TABLE: MainLiftTable = {
@@ -340,6 +371,7 @@ export const MAIN_LIFT_TABLE: MainLiftTable = {
   'front-squat': frontSquat,
   'speed-squat': speedSquat,
   rdl: romanianDeadlift,
+  'pin-squat': pinSquat,
 };
 
 /**

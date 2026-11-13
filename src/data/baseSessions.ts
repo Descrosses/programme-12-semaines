@@ -68,6 +68,10 @@ const LUNDI: SessionBlueprint = {
     s('pogo-jumps', 3, reps(10), noLoad(), null, 45),
     s('box-jump', 4, reps(3), noLoad(), null, 90),
     fromTable('back-squat', 'back-squat', 210),
+    /* Semaines 5 à 7 seulement : le tableau ne le programme nulle part
+       ailleurs, et le Back Squat n'y est pas programmé ces semaines-là. Même
+       place, même repos que le squat du bloc force (4 min). */
+    fromTable('pin-squat', 'pin-squat', 240),
     s(
       'bulgarian-split-squat',
       3,

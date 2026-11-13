@@ -81,6 +81,43 @@ const LIST: ExerciseDef[] = [
     painWatch:
       'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
   }),
+  /*
+   * Pin Squat — remplace le Back Squat du lundi en semaines 5 à 7 (§8).
+   *
+   * Un exercice DISTINCT, pas une variante du back squat : son propre
+   * identifiant, donc son propre historique, ses propres courbes, et aucun
+   * 1RM. Ses charges ne sont jamais déduites de celles du back squat.
+   *
+   * Consignes : celles écrites par Guillaume, mot pour mot. Le suivi de
+   * l'adducteur gauche suit le squat qu'il remplace : le §14 situe la gêne
+   * « en bas du squat chargé, pendant la remontée » — c'est exactement la
+   * position de départ du pin squat.
+   */
+  def({
+    id: 'pin-squat',
+    name: 'Pin Squat',
+    fn: 'squat',
+    role: 'main',
+    liftId: 'pin-squat',
+    measure: 'kg',
+    intent:
+      'Arrêt complet sur les sécurités, sans rebond, puis remontée avec une intention d’accélération maximale.',
+    cues: [
+      'Amplitude : la même que ton Back Squat habituel. Règle les sécurités à la hauteur de ta position basse habituelle.',
+      '1. Départ debout, barre sur le dos.',
+      '2. Descente contrôlée jusqu’aux sécurités.',
+      '3. Arrêt complet de la barre sur les sécurités, sans rebond.',
+      '4. Maintien du gainage et de la tension musculaire.',
+      '5. Remontée avec une intention d’accélération maximale, sans dégrader la technique.',
+      'Ne réduis jamais volontairement l’amplitude pour soulever plus lourd.',
+      'Garde la même hauteur de sécurités pendant les trois semaines.',
+      'N’utilise pas les sécurités pour rebondir.',
+      'Ne relâche pas brutalement le gainage quand la barre repose sur les sécurités.',
+      'Utilise un rack et des sécurités adaptés.',
+    ],
+    painWatch:
+      'Adducteur gauche — note la douleur pendant, après la séance et le lendemain, avec la charge et l’amplitude tolérées.',
+  }),
   def({
     id: 'bulgarian-split-squat',
     name: 'Bulgarian Split Squat',

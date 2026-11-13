@@ -189,7 +189,7 @@ S4J6 | hanging-leg-raise | 2 × 6 — poids du corps | séries=2 | travail={"kin
 S5J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=77min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S5J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S5J0 | back-squat | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8-8 | superset=— | contraste=—
+S5J0 | pin-squat | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J0 | rdl | 3 × 6 | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -234,7 +234,7 @@ S5J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S6J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S6J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S6J0 | back-squat | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
+S6J0 | pin-squat | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J0 | rdl | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -279,7 +279,7 @@ S6J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S7J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S7J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S7J0 | back-squat | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=9-9 | superset=— | contraste=—
+S7J0 | pin-squat | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J0 | rdl | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -706,7 +706,7 @@ S4J6 | hanging-leg-raise | 2 × 6 — poids du corps | séries=2 | travail={"kin
 S5J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=77min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S5J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S5J0 | back-squat | 5 × 3 × 82,5 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=82.5 | kgMax=— | source=1rm | repos=240s | rpe=8-8 | superset=— | contraste=—
+S5J0 | pin-squat | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J0 | rdl | 3 × 6 | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -751,7 +751,7 @@ S5J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S6J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S6J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S6J0 | back-squat | 4 × 3 × 85 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=85 | kgMax=— | source=1rm | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
+S6J0 | pin-squat | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J0 | rdl | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -796,7 +796,7 @@ S6J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S7J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S7J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S7J0 | back-squat | 4 × 2 × 90 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=90 | kgMax=— | source=1rm | repos=240s | rpe=9-9 | superset=— | contraste=—
+S7J0 | pin-squat | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J0 | rdl | 4 × 5 | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1223,7 +1223,7 @@ S4J6 | hanging-leg-raise | 2 × 6 — poids du corps | séries=2 | travail={"kin
 S5J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=77min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S5J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S5J0 | back-squat | 5 × 3 × 90 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=90 | kgMax=— | source=programme | repos=240s | rpe=8-8 | superset=— | contraste=—
+S5J0 | pin-squat | 5 × 3 × 95 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=95 | kgMax=100 | source=programme | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J0 | rdl | 3 × 6 × 90 kg | séries=3 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=90 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1268,7 +1268,7 @@ S5J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S6J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S6J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S6J0 | back-squat | 4 × 3 × 95 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=95 | kgMax=— | source=programme | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
+S6J0 | pin-squat | 4 × 3 × 100 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=100 | kgMax=105 | source=programme | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J0 | rdl | 4 × 5 × 92,5 kg | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=92.5 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1313,7 +1313,7 @@ S6J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S7J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=75min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S7J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S7J0 | back-squat | 4 × 2 × 97,5 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=97.5 | kgMax=— | source=programme | repos=240s | rpe=9-9 | superset=— | contraste=—
+S7J0 | pin-squat | 4 × 2 × 110 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=110 | kgMax=— | source=programme | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J0 | bulgarian-split-squat | 4 × 5 / jambe | séries=4 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J0 | rdl | 4 × 5 × 95 kg | séries=4 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=95 | kgMax=— | source=programme | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1740,7 +1740,7 @@ S4J6 | hanging-leg-raise | 2 × 6 — poids du corps | séries=2 | travail={"kin
 S5J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=71min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S5J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S5J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S5J0 | back-squat | 5 × 3 × 77,5 kg | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=77.5 | kgMax=— | source=1rm | repos=240s | rpe=8-8 | superset=— | contraste=—
+S5J0 | pin-squat | 5 × 3 | séries=5 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8-8 | superset=— | contraste=—
 S5J0 | bulgarian-split-squat | 3 × 5 / jambe | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S5J0 | rdl | 2 × 6 | séries=2 | travail={"kind":"reps","reps":6,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S5J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1785,7 +1785,7 @@ S5J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S6J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=70min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S6J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S6J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S6J0 | back-squat | 4 × 3 × 80 kg | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=80 | kgMax=— | source=1rm | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
+S6J0 | pin-squat | 4 × 3 | séries=4 | travail={"kind":"reps","reps":3,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=8.5-8.5 | superset=— | contraste=—
 S6J0 | bulgarian-split-squat | 3 × 5 / jambe | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S6J0 | rdl | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S6J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—
@@ -1830,7 +1830,7 @@ S6J6 | conditioning | 6 × (20 s / 100 s) | séries=1 | travail={"kind":"interva
 S7J0 | séance | Lower Strength — squat | bloc=Force maximale | intensité=DUR | durée=70min | échauffement=oui | test=oui | notes=1 | suspendus=—
 S7J0 | pogo-jumps | 3 × 10 | séries=3 | travail={"kind":"reps","reps":10,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=45s | rpe=—-— | superset=— | contraste=—
 S7J0 | box-jump | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=—-— | superset=— | contraste=—
-S7J0 | back-squat | 4 × 2 × 85 kg | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=85 | kgMax=— | source=1rm | repos=240s | rpe=9-9 | superset=— | contraste=—
+S7J0 | pin-squat | 4 × 2 | séries=4 | travail={"kind":"reps","reps":2,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=240s | rpe=9-9 | superset=— | contraste=—
 S7J0 | bulgarian-split-squat | 3 × 5 / jambe | séries=3 | travail={"kind":"reps","reps":5,"perSide":true,"sideLabel":"jambe"} | kg=— | kgMax=— | source=aucune | repos=120s | rpe=8-8 | superset=— | contraste=—
 S7J0 | rdl | 3 × 5 | séries=3 | travail={"kind":"reps","reps":5,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=aucune | repos=150s | rpe=—-— | superset=— | contraste=—
 S7J0 | ab-wheel | 3 × 8 — poids du corps | séries=3 | travail={"kind":"reps","reps":8,"perSide":false,"sideLabel":"côté"} | kg=— | kgMax=— | source=programme | repos=45s | rpe=—-— | superset=tronc-lundi | contraste=—

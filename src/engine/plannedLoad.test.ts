@@ -120,9 +120,9 @@ describe('le tableau §9 donne des intensités, pas des kilos', () => {
   it('deux utilisateurs différents reçoivent deux plans différents', () => {
     const fort = contexte({ 'back-squat': 180 });
     const debutant = contexte({ 'back-squat': 70 });
-    // Semaine 5, 82 % : 147,5 kg pour l'un, 57,5 kg pour l'autre.
-    expect(kgResolu('back-squat', 5, fort)).toBe(147.5);
-    expect(kgResolu('back-squat', 5, debutant)).toBe(57.5);
+    // Semaine 3, 80 % (en S5-7, le lundi est au Pin Squat).
+    expect(kgResolu('back-squat', 3, fort)).toBe(Math.round((180 * 0.8) / 2.5) * 2.5);
+    expect(kgResolu('back-squat', 3, debutant)).toBe(Math.round((70 * 0.8) / 2.5) * 2.5);
   });
 
   it('le pourcentage ne dépend PAS du 1RM — seul le kilo en dépend', () => {
@@ -225,7 +225,8 @@ describe('une installation déjà en cours garde le tableau qu’elle avait', ()
    * gardent donc les kilos d'origine, colonne par colonne.
    */
   const ORIGINE: Record<string, Array<number | null>> = {
-    'back-squat': [77.5, 82.5, 87.5, 70, 90, 95, 97.5, 77.5, 92.5, 95, 97.5, 77.5],
+    // S5-7 : le back squat n'est plus programmé, le Pin Squat le remplace.
+    'back-squat': [77.5, 82.5, 87.5, 70, null, null, null, 77.5, 92.5, 95, 97.5, 77.5],
     'bench-press': [85, 87.5, 90, 77.5, 95, 97.5, 102.5, 82.5, 95, 97.5, 102.5, 82.5],
     deadlift: [105, 110, 115, 92.5, 117.5, 125, 130, 97.5, 120, 127.5, 130, null],
     'weighted-pullup': [20, 22.5, 25, 10, 30, 32.5, 35, 15, 30, 32.5, 35, null],

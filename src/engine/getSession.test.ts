@@ -244,7 +244,8 @@ describe('bloc accumulation (S1-3)', () => {
 
 describe('bloc force maximale (S5-7) — §8', () => {
   it('les repos passent à 4 min sur squat et deadlift', () => {
-    expect(find(session(5, 0), 'back-squat').restSec).toBe(240);
+    // S5-7 : le Pin Squat tient la place du squat, avec ses 4 min.
+    expect(find(session(5, 0), 'pin-squat').restSec).toBe(240);
     expect(find(session(5, 5), 'deadlift').restSec).toBe(240);
     expect(find(session(5, 2), 'bench-press').restSec).toBe(210);
     expect(find(session(5, 2), 'weighted-pullup').restSec).toBe(180);
@@ -460,8 +461,11 @@ describe('readiness ORANGE', () => {
   const orange = ctx({ readiness: readiness(240, 230) }); // −4,2 %
 
   it('−5 % sur les gros mouvements, arrondi au 2,5 kg', () => {
+    // Back squat en S3 (en S5-7, c'est le Pin Squat, testé juste dessous).
+    expect(find(session(3, 0, orange), 'back-squat').load.kg).toBe(
+      Math.round((110 * 0.8 * 0.95) / 2.5) * 2.5,
+    );
     const s = session(5, 0, orange);
-    expect(find(s, 'back-squat').load.kg).toBe(85); // 90 × 0,95 = 85,5 → 85
     expect(find(s, 'rdl').load.kg).toBe(85); // 90 × 0,95 = 85,5 → 85
   });
 
@@ -489,7 +493,7 @@ describe('readiness ORANGE', () => {
   });
 
   it('la séance dit ce qu’elle a changé', () => {
-    const s = session(5, 0, orange);
+    const s = session(3, 0, orange);
     expect(s.adjustments.some((a) => a.source === 'orange')).toBe(true);
     expect(find(s, 'back-squat').adjustments.some((a) => a.source === 'orange')).toBe(true);
   });
@@ -498,25 +502,26 @@ describe('readiness ORANGE', () => {
     const historique: Occurrence[] = [
       {
         exerciseId: 'back-squat',
-        week: 4,
+        week: 2,
         day: 0,
-        kg: 70,
-        plannedKg: 70,
+        kg: 82.5,
+        plannedKg: 82.5,
         rpe: 3,
         failed: false,
-        targetRPE: { min: 5, max: 5, label: 'RPE 5' },
+        targetRPE: { min: 7.5, max: 7.5, label: 'RPE 7,5' },
         completed: true,
       },
     ];
+    // Back squat en S3 (en S5-7, c'est le Pin Squat ; S9 n'a pas de RPE cible).
     const s = session(
-      5,
+      3,
       0,
       ctx({ readiness: readiness(240, 230), history: { 'back-squat': historique } }),
     );
     const squat = find(s, 'back-squat');
     expect(squat.suggestion?.case).toBe(2);
-    // 90 + 5 = 95, puis −5 % = 90,25 → 90
-    expect(squat.suggestion?.suggestedKg).toBe(90);
+    // 87,5 + 5 = 92,5, puis −5 % = 87,875 → 87,5
+    expect(squat.suggestion?.suggestedKg).toBe(87.5);
   });
 });
 
@@ -597,8 +602,9 @@ describe('§11 cas 7 — sauts en baisse', () => {
   const decline = ctx({ explosiveDecline: true });
 
   it('les lifts principaux passent à 3 séries', () => {
-    expect(find(session(5, 0), 'back-squat').sets).toBe(5);
-    expect(find(session(5, 0, decline), 'back-squat').sets).toBe(3);
+    // S5 : c'est le Pin Squat qui porte le lift principal du lundi.
+    expect(find(session(5, 0), 'pin-squat').sets).toBe(5);
+    expect(find(session(5, 0, decline), 'pin-squat').sets).toBe(3);
   });
 
   it('le conditioning disparaît', () => {
