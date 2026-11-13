@@ -247,3 +247,28 @@ describe('FEMMES 8 — ce qui ne doit pas revenir', () => {
     expect(phaseOf(9 as WeekIndex).id).toBe(3);
   });
 });
+
+/*
+ * Décision de Guillaume : « fuite urinaire » ne figure plus dans la question.
+ * Le critère reste le même — le périnée à l'effort — et c'est lui qui écarte
+ * sauts et charges au-dessus de la tête. Une question réduite à « sans gêne à
+ * l'effort ? » le perdrait : une fuite sans gêne y répondrait « oui ».
+ */
+describe('question de sécurité sur le périnée', () => {
+  it('ne dit plus « fuite urinaire », mais nomme toujours le périnée', async () => {
+    const { SAFETY_CHECKS } = await import('./programme');
+    const q = SAFETY_CHECKS.find((c) => c.key === 'plancherPelvienOk')!.question;
+    expect(q).not.toMatch(/fuite urinaire/i);
+    expect(q).toMatch(/périnée/i);
+  });
+
+  it('le mot « fuite » a disparu de tout ce que FEMMES affiche sur la sécurité', async () => {
+    const { SAFETY_CHECKS } = await import('./programme');
+    const { RESTRICTION_REASON } = await import('./types');
+    const textes = [
+      ...SAFETY_CHECKS.flatMap((c) => [c.question, c.consequence, c.detail]),
+      ...Object.values(RESTRICTION_REASON),
+    ];
+    for (const t of textes) expect(t).not.toMatch(/fuite/i);
+  });
+});

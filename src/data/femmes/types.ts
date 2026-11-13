@@ -174,7 +174,7 @@ export const noLoad = (): LoadSpec => ({ kind: 'none' });
  * sans supposer de grossesse.
  */
 export type SafetyKey =
-  /** Aucune gêne ni fuite urinaire à l'effort. */
+  /** Aucune gêne du périnée à l'effort. */
   | 'plancherPelvienOk'
   /** Aucune douleur qui empêche un mouvement. */
   | 'sansDouleurLimitante';
@@ -203,8 +203,8 @@ export const RESTRICTION_GATE: Record<Restriction, SafetyKey> = {
 
 export const RESTRICTION_REASON: Record<Restriction, string> = {
   flexionTronc: 'douleur signalée — pas de flexion du tronc',
-  impact: 'gêne ou fuite à l’effort — pas d’impact',
-  overhead: 'gêne ou fuite à l’effort — pas de charge au-dessus de la tête',
+  impact: 'gêne du périnée à l’effort — pas d’impact',
+  overhead: 'gêne du périnée à l’effort — pas de charge au-dessus de la tête',
 };
 
 // ---------------------------------------------------------------------------

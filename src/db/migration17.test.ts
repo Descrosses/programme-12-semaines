@@ -166,7 +166,7 @@ describe('migration v16 → v17', () => {
 
     const apres = new ProgrammeDB(NOM);
     await apres.open();
-    expect(apres.verno).toBe(22);
+    expect(apres.verno).toBe(23);
 
     expect(await apres.sessions.count()).toBe(2);
     expect(await apres.sets.count()).toBe(1);

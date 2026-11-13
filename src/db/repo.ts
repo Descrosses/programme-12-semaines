@@ -173,20 +173,35 @@ export async function resumesDesCycles(): Promise<ResumeCycle[]> {
   return Promise.all(
     cycles.map(async (cycle) => ({
       cycle,
+      // Les séances POWER/MASS faites, plus les séances FEMMES terminées :
+      // un cycle n'a jamais que l'une ou l'autre, la somme ne double rien.
       faites:
         cycle.id === undefined
           ? 0
-          : await db.sessions
+          : (await db.sessions
               .where('cycleId')
               .equals(cycle.id)
               .filter((s) => s.status === 'done')
-              .count(),
+              .count()) +
+            (await db.femmesSeances
+              .where('cycleId')
+              .equals(cycle.id)
+              .filter((s) => s.terminee)
+              .count()),
       vierge: cycle.id === undefined ? false : await cycleEstVierge(cycle.id),
     })),
   );
 }
 
-/** Les onze tables rattachées à un cycle, dans l'ordre de `TABLES_PAR_CYCLE`. */
+/**
+ * Les tables rattachées à un cycle : les onze de `TABLES_PAR_CYCLE`, plus les
+ * séances FEMMES (v23).
+ *
+ * `femmesSeances` n'entre PAS dans `TABLES_PAR_CYCLE` : cette liste-là sert
+ * aussi à la montée v17, qui tourne sur des bases où la table n'existe pas
+ * encore. Mais elle DOIT être ici — sans elle, un cycle FEMMES avec des
+ * séances faites passerait pour vierge, et pourrait être supprimé.
+ */
 const TABLES_DU_CYCLE = [
   db.sessions,
   db.sets,
@@ -199,6 +214,7 @@ const TABLES_DU_CYCLE = [
   db.notes,
   db.noteDrafts,
   db.sessionExercises,
+  db.femmesSeances,
 ];
 
 /**
@@ -238,6 +254,7 @@ export async function supprimerCycleNonCommence(id: number): Promise<boolean> {
       db.notes,
       db.noteDrafts,
       db.sessionExercises,
+      db.femmesSeances,
     ],
     async () => {
       const cycle = await db.cycles.get(id);

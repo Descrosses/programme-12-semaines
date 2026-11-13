@@ -96,6 +96,31 @@ export interface Famille {
   programmes: readonly ProgrammeDefinition[];
 }
 
+/** Le texte que l'organigramme donne aux trois premières transitions FEMMES. */
+const TRANSITION = 'Travail des points faibles : renforcement, équilibres, mobilité.';
+
+/** Une étape FEMMES encore à venir : rien d'écrit, sinon son résumé et sa règle d'ouverture. */
+function etapeFemmes(
+  id: string,
+  nom: string,
+  dureeSemaines: number,
+  resume: string,
+  apres: string,
+): ProgrammeDefinition {
+  return {
+    id,
+    familleId: 'femmes',
+    nom,
+    version: '0.1',
+    dureeSemaines,
+    statut: 'a-venir',
+    resume,
+    objectifs: [],
+    prerequis: [],
+    deblocage: { apres },
+  };
+}
+
 export const FAMILLES: readonly Famille[] = [
   {
     id: 'power',
@@ -293,32 +318,35 @@ export const FAMILLES: readonly Famille[] = [
     /* Choisi par Guillaume, à la place de « 8 semaines en circuits ». */
     sousTitre: 'Galbe & renforcement',
     /*
-     * Aucun programme, et c'est volontaire. Le §4 interdit d'en inventer les
-     * objectifs, les exercices ou les durées, et le §15 dit que son identité
-     * visuelle sera choisie plus tard. La famille existe pour que la place
-     * soit prête, pas pour remplir le catalogue.
+     * Un parcours en huit étapes, d'après l'organigramme de Guillaume :
+     * quatre cycles de 8 semaines, chacun suivi d'une transition de 4.
+     *
+     * UNE différence avec POWER, voulue par Guillaume : terminer un cycle
+     * ouvre la transition qui le suit ET le cycle suivant. La transition
+     * n'est donc jamais un passage obligé pour avancer. Le mécanisme est le
+     * même (`deblocage.apres`) : seul ce qu'on désigne comme « avant » change.
      */
     resume:
-      'Huit semaines en circuits, à la maison ou en salle, avec un échauffement et deux questions de sécurité qui adaptent la séance.',
+      'Un parcours en huit étapes : quatre cycles de 8 semaines (prise de masse, congestion, perte de poids, prise de masse), chacun suivi d’une transition de 4 semaines pour travailler les points faibles. Terminer un cycle ouvre à la fois la transition qui le suit et le cycle suivant.',
     programmes: [
       {
         id: 'femmes8',
         familleId: 'femmes',
-        nom: 'FEMMES 8',
+        /*
+         * Première étape du parcours FEMMES. L'identifiant `femmes8` ne
+         * change pas : ses écrans d'aperçu et ses données le portent.
+         */
+        nom: 'FEMMES CYCLE 1',
         version: '0.1',
         dureeSemaines: 8,
         /*
-         * `a-venir`, et ce n'est pas une précaution de façade.
-         *
-         * La règle en tête de ce fichier est explicite : un programme n'est
-         * `disponible` que s'il est jouable de bout en bout. Les données
-         * sont là — 3 phases, 30 séances, 39 exercices — mais aucun écran ne
-         * sait encore afficher un circuit en tours, et le cycle ne se
-         * démarre pas. L'annoncer disponible serait le mensonge que le
-         * premier appui révélerait.
+         * `disponible` depuis qu'il se joue de bout en bout : un cycle FEMMES
+         * démarré ouvre les écrans FEMMES (pas ceux de POWER), le niveau et
+         * les deux questions de sécurité sont posés au départ, et chaque
+         * séance est enregistrée en base (`femmesSeances`, v23) et dans
+         * l'export. La dernière séance faite clôt le cycle.
          */
-        statut: 'a-venir',
-        apercu: '#/femmes/aujourdhui',
+        statut: 'disponible',
         resume:
           'Trois phases — Réactivation, Construction, Intensification — en circuits de 20 à 45 minutes, trois à quatre fois par semaine.',
         objectifs: [
@@ -331,6 +359,45 @@ export const FAMILLES: readonly Famille[] = [
           'Trois créneaux de 20 à 45 minutes par semaine',
         ],
       },
+      /*
+       * Les sept étapes suivantes, mot pour mot depuis l'organigramme. Toutes
+       * `a-venir` : aucune séance n'est écrite, donc ni objectifs ni
+       * prérequis.
+       *
+       *   cycle N      → s'ouvre après le cycle N-1 (pas après la transition)
+       *   transition N → s'ouvre après le cycle N
+       */
+      etapeFemmes('femmes-transition1', 'FEMMES TRANSITION 1', 4, TRANSITION, 'femmes8'),
+      etapeFemmes(
+        'femmes-cycle2',
+        'FEMMES CYCLE 2',
+        8,
+        'Congestion : galbe, volume et définition musculaire.',
+        'femmes8',
+      ),
+      etapeFemmes('femmes-transition2', 'FEMMES TRANSITION 2', 4, TRANSITION, 'femmes-cycle2'),
+      etapeFemmes(
+        'femmes-cycle3',
+        'FEMMES CYCLE 3',
+        8,
+        'Perte de poids : déficit contrôlé et maintien de la masse musculaire.',
+        'femmes-cycle2',
+      ),
+      etapeFemmes('femmes-transition3', 'FEMMES TRANSITION 3', 4, TRANSITION, 'femmes-cycle3'),
+      etapeFemmes(
+        'femmes-cycle4',
+        'FEMMES CYCLE 4',
+        8,
+        'Prise de masse : nouvelle phase de développement musculaire.',
+        'femmes-cycle3',
+      ),
+      etapeFemmes(
+        'femmes-transition4',
+        'FEMMES TRANSITION 4',
+        4,
+        'Bilan, consolidation et travail final des points faibles.',
+        'femmes-cycle4',
+      ),
     ],
   },
   {

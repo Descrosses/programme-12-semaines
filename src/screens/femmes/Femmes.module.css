@@ -1017,3 +1017,40 @@
   background: var(--accent-bright);
   box-shadow: 0 0 8px rgb(252 62 196 / 70%);
 }
+
+/* ------------------------------------------------ séances faites, profil */
+
+/* « Faite » : le même vert que « Prévue », plein plutôt que cerclé. */
+.etatFaite {
+  border-color: var(--vert);
+  background: var(--vert);
+  color: #160a26;
+}
+
+/* Une carte qui se choisit (niveau). Le bouton garde la carte telle quelle. */
+.choix {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choixOn {
+  border-color: var(--accent-bright);
+  box-shadow: 0 0 14px rgb(252 62 196 / 35%);
+}
+
+/* Oui / Non : deux boutons du même gabarit que le ressenti. */
+.ouiNon {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 10px 0;
+}
+
+.cta:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

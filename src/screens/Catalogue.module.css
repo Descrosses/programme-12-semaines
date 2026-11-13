@@ -50,13 +50,22 @@
   cursor: pointer;
 }
 
+.nomDuree {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  min-width: 0;
+}
+
 .nom {
   font-weight: 700;
   font-size: 0.98rem;
+  white-space: nowrap;
 }
 
 .duree {
-  flex: 1;
   color: var(--ink-3);
   font-size: var(--fs-small);
   white-space: nowrap;

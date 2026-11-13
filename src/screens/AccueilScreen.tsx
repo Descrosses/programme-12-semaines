@@ -29,6 +29,11 @@ import { HABILLAGE } from '../data/famillesVisuel';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { prochaineSeance, schedule } from '../engine/calendar';
 import { modulePourCycle } from '../programmes/registre';
+import { FEMMES_PROGRAMME_ID, avancementFemmes } from '../db/femmesRepo';
+import { getSession as getSessionFemmes } from '../engine/femmes/getSession';
+import { EMPTY_CONTEXT as EMPTY_FEMMES } from '../engine/femmes/types';
+import { phaseOf } from '../data/femmes/phases';
+import { DAY_OFFSET, WEEKS as WEEKS_FEMMES } from '../data/femmes/types';
 import { allSessions, cycleActif, getSettingsRow } from '../db/repo';
 import type { CycleRow } from '../db/db';
 import { EMPTY_CONTEXT } from '../engine/types';
@@ -85,6 +90,38 @@ export function AccueilScreen({
       if (!vivant) return;
 
       const programme = cycle === null ? null : programmeParId(cycle.programmeId);
+
+      /*
+       * FEMMES n'a pas de calendrier : sa prochaine séance est la première
+       * non faite, et elle se fait quand on veut — donc « aujourd'hui ».
+       */
+      if (cycle?.programmeId === FEMMES_PROGRAMME_ID && cycle.id !== undefined) {
+        const av = await avancementFemmes(cycle.id);
+        if (!vivant) return;
+        const p = av.prochaine;
+        setEtat({
+          cycle,
+          programme,
+          faites: av.faites,
+          total: av.total,
+          semaine: av.termine ? null : (av.semaine as WeekIndex),
+          semaines: WEEKS_FEMMES.length,
+          prochaine:
+            p === null
+              ? null
+              : {
+                  week: p.semaine as WeekIndex,
+                  // Lundi, mercredi, vendredi, samedi : les jours du programme.
+                  day: DAY_OFFSET[p.jour] as DayIndex,
+                  titre: getSessionFemmes(p.semaine, p.jour, 'maison', EMPTY_FEMMES).title,
+                  date: new Date().toISOString().slice(0, 10),
+                  duree: phaseOf(p.semaine).durationLabel,
+                },
+          calendrier: true,
+        });
+        setPret(true);
+        return;
+      }
       // Le calendrier d'un cycle est celui de SON programme : quatre semaines
       // pour MASS 4, treize pour POWER 12.
       const module = modulePourCycle(cycle?.programmeId ?? null);

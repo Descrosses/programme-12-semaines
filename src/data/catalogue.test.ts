@@ -26,7 +26,7 @@ describe('catalogue Dcross-fit', () => {
      * pas « comment le faire passer » mais « ce programme se joue-t-il
      * vraiment du début à la fin dans cette application ».
      */
-    expect(programmesDisponibles().map((p) => p.id)).toEqual(['power12', 'mass4']);
+    expect(programmesDisponibles().map((p) => p.id)).toEqual(['power12', 'mass4', 'femmes8']);
   });
 
   it('fait correspondre le programme par défaut à la durée du moteur', () => {
@@ -49,10 +49,13 @@ describe('catalogue Dcross-fit', () => {
    * phases, trente séances. Un programme déclaré sans son contenu ferait
    * tomber `femmes.test.ts`, qui compte les séances une à une.
    */
-  it('porte FEMMES 8, et lui seul, dans la famille Femmes', () => {
+  it('ouvre le parcours FEMMES par FEMMES 8, le seul dont le contenu est écrit', () => {
     const programmes = familleParId('femmes')?.programmes ?? [];
-    expect(programmes.map((p) => p.id)).toEqual(['femmes8']);
+    expect(programmes[0]?.id).toBe('femmes8');
     expect(programmes[0]?.dureeSemaines).toBe(8);
+    // Le cycle 1 se joue ; les sept étapes suivantes n'ont aucune séance.
+    expect(programmes[0]?.statut).toBe('disponible');
+    for (const p of programmes.slice(1)) expect(p.statut, p.id).toBe('a-venir');
   });
 
   /*
@@ -76,7 +79,8 @@ describe('catalogue Dcross-fit', () => {
    * Tout autre programme `a-venir` reste tenu à la règle : un seul
    * identifiant est exempté, pas un statut.
    */
-  const CONTENU_ECRIT_SANS_ECRAN = ['femmes8'];
+  // Vide depuis que FEMMES 8 est jouable : il était la seule exception.
+  const CONTENU_ECRIT_SANS_ECRAN: string[] = [];
 
   it('ne donne ni objectifs ni prérequis à un programme qui n’existe pas', () => {
     for (const p of tousLesProgrammes()) {
@@ -108,7 +112,6 @@ describe('catalogue Dcross-fit', () => {
       expect(CONTENU_ECRIT_SANS_ECRAN, `${p.id} : aperçu sans écran`).toContain(p.id);
       expect(p.apercu.startsWith('#/femmes/'), `${p.id} : aperçu hors FEMMES`).toBe(true);
     }
-    expect(tousLesProgrammes().find((p) => p.id === 'femmes8')?.apercu).toBeDefined();
   });
 
   it('donne un identifiant unique à chaque programme', () => {
