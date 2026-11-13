@@ -46,11 +46,11 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
    */
   femmes: { photo: 'carteFemmes', teinte: '#d4578f' },
   /*
-   * Pas de photo non plus, et pour une raison différente : il n'y a rien à
-   * photographier. Cette famille ne représente pas un style d'entraînement,
-   * elle représente CELUI DE LA PERSONNE. L'ambre la distingue du bleu, du
-   * rouge et du rose sans prétendre dire ce qu'elle contient. Provisoire,
-   * comme les trois autres.
+   * Une famille sans style d'entraînement à montrer : elle représente CELUI
+   * DE LA PERSONNE. D'où une photo qui ne montre aucun exercice — une
+   * silhouette face à ses reflets — fournie par Guillaume. L'ambre la
+   * distingue du bleu, du rouge et du rose, et répond à la lumière dorée de
+   * la photo.
    */
-  perso: { teinte: '#c08b2c' },
+  perso: { photo: 'cartePerso', teinte: '#c08b2c' },
 };
