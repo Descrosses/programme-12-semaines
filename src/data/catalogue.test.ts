@@ -166,6 +166,14 @@ describe('famille MASS', () => {
     expect(programmeParId('mass-force')?.statut).toBe('a-venir');
   });
 
+  it('seul MASS FORCE demande un combiné avant de démarrer', () => {
+    expect(
+      tousLesProgrammes()
+        .filter((p) => p.combineAvant)
+        .map((p) => p.id),
+    ).toEqual(['mass-force']);
+  });
+
   it('plus aucun écran n’affiche « MASS 4 »', () => {
     for (const f of ['MesuresScreen', 'ProgressVolumeScreen', 'NutritionPrincipesScreen']) {
       const src = readFileSync(new URL(`../screens/${f}.tsx`, import.meta.url), 'utf8');

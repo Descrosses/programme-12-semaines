@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import * as moteur from './references';
 import {
   erreurReference,
+  etatReference,
   historiqueReferences,
   referenceCourante,
   variantesEvaluees,
@@ -38,6 +39,10 @@ describe('saisie d’une référence', () => {
   it('accepte un sous-maximal à plusieurs répétitions', () => {
     expect(erreurReference({ ...ok, modalite: 'sous-maximal', chargeKg: 80, reps: 6 })).toBeNull();
   });
+  it('refuse un matériel hors de la liste fermée', () => {
+    expect(erreurReference({ ...ok, variante: 'kettlebell' })).toMatch(/inconnu/);
+  });
+
   it('refuse une charge nulle, un matériel vide, une date mal formée', () => {
     expect(erreurReference({ ...ok, chargeKg: 0 })).not.toBeNull();
     expect(erreurReference({ ...ok, variante: ' ' })).not.toBeNull();
@@ -83,5 +88,22 @@ describe('rien ne s’efface : la plus récente fait foi, les autres restent', (
 describe('aucune formule d’estimation', () => {
   it('le moteur n’expose rien qui estime un 1RM', () => {
     for (const nom of Object.keys(moteur)) expect(nom).not.toMatch(/estim|1rm|unrm|epley|brzycki/i);
+  });
+});
+
+describe('ce que l’écran dit d’une référence', () => {
+  const lignes = [ref({ id: 1, variante: 'barre', chargeKg: 100, date: '2026-11-01' })];
+  it('courante : ce matériel a une référence', () => {
+    const e = etatReference(lignes, 'developpe-couche', 'barre');
+    expect(e.kind).toBe('courante');
+  });
+  it('autre matériel : évalué ailleurs, rien de transposé', () => {
+    expect(etatReference(lignes, 'developpe-couche', 'smith')).toEqual({
+      kind: 'autre-materiel',
+      variantes: ['barre'],
+    });
+  });
+  it('aucune : jamais évalué', () => {
+    expect(etatReference(lignes, 'squat', 'barre')).toEqual({ kind: 'aucune' });
   });
 });

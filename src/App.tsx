@@ -5,6 +5,7 @@ import type { DayIndex, WeekIndex } from './data/types';
 import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
 import { EcransFemmes } from './screens/femmes/EcransFemmes';
+import { EvaluationScreen } from './screens/EvaluationScreen';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { MesuresScreen } from './screens/MesuresScreen';
@@ -243,7 +244,10 @@ export function App() {
   // Deux niveaux : la plateforme choisit un programme, le programme mène une
   // séance. Chacun garde sa barre, et on ne voit jamais les deux à la fois.
   const dansPlateforme =
-    route.name === 'accueil' || route.name === 'catalogue' || route.name === 'parcours';
+    route.name === 'accueil' ||
+    route.name === 'catalogue' ||
+    route.name === 'parcours' ||
+    route.name === 'evaluation';
   const ecranFemmes = route.name === 'femmes';
 
   /*
@@ -475,6 +479,9 @@ function renderScreen(
           onDataChanged={refresh}
         />
       );
+
+    case 'evaluation':
+      return <EvaluationScreen onRetour={() => navigate({ name: 'catalogue', famille: 'mass' })} />;
 
     case 'parcours':
       return (

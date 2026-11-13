@@ -345,6 +345,27 @@ export function CatalogueScreen({
                             </div>
                           )}
 
+                          {/* Le combiné d'évaluation : il se fait AVANT le
+                              programme, et reste accessible même quand le
+                              programme est encore à venir. */}
+                          {p.combineAvant && (
+                            <>
+                              <button
+                                type="button"
+                                className={local.action}
+                                onClick={() => {
+                                  window.location.hash = '#/evaluation';
+                                }}
+                              >
+                                Combiné d’évaluation
+                              </button>
+                              <p className={local.resume}>
+                                {p.nom} démarre après ce combiné : développé couché, tirage
+                                vertical, squat, push press.
+                              </p>
+                            </>
+                          )}
+
                           {action === 'aucune' && p.apercu !== undefined && (
                             /*
                               L'aperçu ouvre les écrans en lecture seule. Il ne

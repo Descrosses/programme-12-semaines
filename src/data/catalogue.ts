@@ -71,6 +71,13 @@ export interface ProgrammeDefinition {
    * Absent : accessible dès l'inscription.
    */
   deblocage?: { apres: string };
+  /**
+   * Le programme demande un COMBINÉ D'ÉVALUATION avant de démarrer (MASS
+   * FORCE, décision de Guillaume). Le catalogue offre alors l'accès au
+   * combiné, même tant que le programme est « à venir » : les références
+   * appartiennent à la personne et restent datées.
+   */
+  combineAvant?: true;
 }
 
 export interface MaterielRequis {
@@ -311,6 +318,7 @@ export const FAMILLES: readonly Famille[] = [
         version: '0.1',
         dureeSemaines: 4,
         statut: 'a-venir',
+        combineAvant: true,
         resume:
           'Quatre semaines, quatre séances : pectoraux et triceps, dos et biceps, jambes, épaules. Démarre après un combiné d’évaluation. Programmation sportive en cours de validation.',
         objectifs: [],

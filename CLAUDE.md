@@ -275,6 +275,15 @@ matériel et la durée avant d'écrire la moindre séance.
      Des tests (`references.test.ts`, moteur et base) figent tout cela.
   3. **Le sous-maximal enregistre ses données brutes** (charge × reps) sans
      estimation : aucune formule n'est validée. Ne pas en inventer.
+     L'écran du combiné existe — FAIT (lot 3, `#/evaluation`,
+     `EvaluationScreen.tsx`), accessible depuis MASS FORCE au catalogue même
+     tant qu'il est « à venir ». Matériels en LISTE FERMÉE
+     (`data/combineMass.ts` : barre, Smith, haltères, poulie, machine
+     guidée ; décision de Guillaume) ; un matériel hors liste est refusé.
+     Chaque test ne propose que les matériels qui lui conviennent (push
+     press : Smith ou barre). Le test direct porte la phrase de Guillaume
+     (« pour les pratiquants expérimentés, dans des conditions appropriées »)
+     et AUCUN critère d'éligibilité inventé.
   4. Les séries fractionnées ne s'implémentent pas avant validation, et
      jamais via `secondReps` (qui veut dire « dégressive » à l'écran).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**

@@ -50,5 +50,8 @@ describe('routage des séances', () => {
     expect(routeToHash({ name: 'catalogue' })).toBe('#/catalogue');
     // Une famille inconnue ne casse rien : le catalogue s'ouvre fermé.
     expect(parseRoute('#/catalogue/inconnue')).toEqual({ name: 'catalogue' });
+    // Le combiné d'évaluation de MASS FORCE.
+    expect(parseRoute('#/evaluation')).toEqual({ name: 'evaluation' });
+    expect(routeToHash({ name: 'evaluation' })).toBe('#/evaluation');
   });
 });

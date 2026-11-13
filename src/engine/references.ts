@@ -14,6 +14,7 @@
  */
 
 import type { ReferenceForceRow } from '../db/db';
+import { estVariante } from '../data/combineMass';
 
 export type SaisieReference = Omit<ReferenceForceRow, 'id' | 'creeLe'>;
 
@@ -28,6 +29,8 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 export function erreurReference(s: SaisieReference): string | null {
   if (s.exercice.trim() === '') return 'Exercice manquant.';
   if (s.variante.trim() === '') return 'Matériel manquant.';
+  // Liste fermée (décision de Guillaume) : un matériel inconnu est refusé.
+  if (!estVariante(s.variante)) return 'Matériel inconnu.';
   if (!Number.isFinite(s.chargeKg) || s.chargeKg <= 0) return 'La charge doit être positive.';
   if (!Number.isInteger(s.reps) || s.reps < 1) return 'Au moins une répétition.';
   if (s.modalite === 'direct' && s.reps !== 1) {
@@ -81,4 +84,28 @@ export function variantesEvaluees(
   exercice: string,
 ): string[] {
   return [...new Set(historiqueReferences(lignes, exercice).map((r) => r.variante))];
+}
+
+/**
+ * Ce qu'on peut dire de la référence d'un exercice AVEC CE MATÉRIEL :
+ *
+ * - `courante` : une référence existe pour ce matériel — la plus récente ;
+ * - `autre-materiel` : l'exercice a été évalué, mais avec un AUTRE matériel.
+ *   Rien n'est transposé : une nouvelle évaluation est recommandée ;
+ * - `aucune` : l'exercice n'a jamais été évalué.
+ */
+export type EtatReference =
+  | { kind: 'courante'; reference: ReferenceForceRow }
+  | { kind: 'autre-materiel'; variantes: string[] }
+  | { kind: 'aucune' };
+
+export function etatReference(
+  lignes: readonly ReferenceForceRow[],
+  exercice: string,
+  variante: string,
+): EtatReference {
+  const r = referenceCourante(lignes, exercice, variante);
+  if (r !== null) return { kind: 'courante', reference: r };
+  const autres = variantesEvaluees(lignes, exercice);
+  return autres.length > 0 ? { kind: 'autre-materiel', variantes: autres } : { kind: 'aucune' };
 }
