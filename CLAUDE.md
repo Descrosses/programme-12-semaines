@@ -128,7 +128,7 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 | Famille | État |
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
-| MASS | Conçu, tourne dans sa propre application, **pas encore intégré ici** |
+| MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, à venir) → CONGESTION (`mass4`, disponible) |
 | FEMMES | Parcours de 8 étapes. Le cycle 1 (FEMMES 8) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
@@ -254,6 +254,24 @@ matériel et la durée avant d'écrire la moindre séance.
   faite. **Ne rien construire avant que Guillaume ait écrit les cycles** : pas
   de lignes « À venir » aux noms provisoires. Les noms ci-dessus sont des
   exemples, pas des titres.
+- **MASS : trois programmes, aucun verrou** (décisions de Guillaume, audit MASS
+  FORCE). L'ancien « MASS 4 » s'appelle MASS CONGESTION : seul son NOM a changé,
+  l'identifiant `mass4` et le contenu sportif sont strictement inchangés.
+  MASS 12 est retiré. L'ordre conseillé (hypertrophie → force → congestion) se
+  lit au catalogue — numéros + « Ordre conseillé, pas obligatoire » —, jamais
+  comme un déverrouillage (`ordreConseille`, pas `deblocage`).
+  Décisions déjà prises pour la suite, À NE PAS CODER sans « go » du lot :
+  1. **MASS FORCE ne démarre qu'après un combiné** (développé couché, tirage
+     vertical, squat, push press). Le combiné n'est jamais imposé à
+     CONGESTION.
+  2. **Ses références de force iront dans une table À PART**, jamais dans
+     `settings.oneRM` (qui pilote tout le tableau de POWER) : exercice,
+     variante de matériel, mesuré ou estimé, date ; ajout seul, rien
+     d'effacé. Aucune conversion d'une variante de matériel à une autre.
+  3. **Le sous-maximal enregistre ses données brutes** (charge × reps) sans
+     estimation : aucune formule n'est validée. Ne pas en inventer.
+  4. Les séries fractionnées ne s'implémentent pas avant validation, et
+     jamais via `secondReps` (qui veut dire « dégressive » à l'écran).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

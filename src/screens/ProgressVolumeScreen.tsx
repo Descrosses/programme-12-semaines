@@ -135,7 +135,7 @@ export function ProgressVolumeScreen({ programme }: { programme: ModuleProgramme
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader eyebrow="MASS 4" title="Progrès" subtitle={SOUS_TITRES[vue]} />
+      <ScreenHeader eyebrow="MASS CONGESTION" title="Progrès" subtitle={SOUS_TITRES[vue]} />
 
       <div className={styles.segment} role="group" aria-label="Vue">
         {(
@@ -184,7 +184,7 @@ export function ProgressVolumeScreen({ programme }: { programme: ModuleProgramme
               {derniere === null
                 ? 'Rien d’enregistré pour l’instant.'
                 : `Dernière charge travaillée : ${fr(derniere.y)} kg en semaine ${derniere.x}.`}{' '}
-              MASS 4 ne prescrit aucune charge : il n’y a donc qu’une courbe, la tienne.
+              MASS CONGESTION ne prescrit aucune charge : il n’y a donc qu’une courbe, la tienne.
             </p>
             <LineChart
               series={courbe}

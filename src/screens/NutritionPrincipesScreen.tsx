@@ -117,8 +117,8 @@ export function NutritionPrincipesScreen({ todayKind }: { todayKind: DayKind }) 
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Les principes</h2>
         <p className={styles.cardSub}>
-          MASS 4 ne chiffre ni les calories, ni les macronutriments, ni les grammes. Ces six règles
-          sont tout le plan alimentaire du programme.
+          MASS CONGESTION ne chiffre ni les calories, ni les macronutriments, ni les grammes. Ces
+          six règles sont tout le plan alimentaire du programme.
         </p>
         {PRINCIPES.map((p) => (
           <div key={p.titre} className={styles.field}>

@@ -189,6 +189,12 @@ export function CatalogueScreen({
                 <p className={local.rien}>Aucun programme pour l’instant.</p>
               )}
 
+              {/* L'ordre conseillé se DIT, pour qu'un numéro ne se lise pas
+                  comme un verrou : chacun se démarre librement. */}
+              {famille.ordreConseille && (
+                <p className={local.ordreConseille}>Ordre conseillé, pas obligatoire</p>
+              )}
+
               <ul className={local.liste}>
                 {famille.programmes.map((p, rang) => {
                   const action = actionPour(p, cycles);
@@ -210,7 +216,9 @@ export function CatalogueScreen({
                         onClick={() => setDeplie(ouvert ? null : p.id)}
                         aria-expanded={ouvert}
                       >
-                        {enParcours && <span className={local.etape}>{rang + 1}</span>}
+                        {(enParcours || famille.ordreConseille) && (
+                          <span className={local.etape}>{rang + 1}</span>
+                        )}
                         {/* Dans la famille, son nom est déjà dit : « CYCLE 1 » plutôt
                             que « POWER CYCLE 1 », qui passait sur deux lignes. */}
                         {/* Nom et durée ensemble : si la ligne manque de place,
