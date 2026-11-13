@@ -197,12 +197,17 @@ export function CatalogueScreen({
                         {enParcours && <span className={local.etape}>{rang + 1}</span>}
                         {/* Dans la famille, son nom est déjà dit : « CYCLE 1 » plutôt
                             que « POWER CYCLE 1 », qui passait sur deux lignes. */}
-                        <span className={local.nom}>
-                          {p.nom.startsWith(`${famille.nom} `)
-                            ? p.nom.slice(famille.nom.length + 1)
-                            : p.nom}
+                        {/* Nom et durée ensemble : si la ligne manque de place,
+                            la durée passe dessous au lieu de couper le nom
+                            (« TRANSITION / 2 » à 375 px). */}
+                        <span className={local.nomDuree}>
+                          <span className={local.nom}>
+                            {p.nom.startsWith(`${famille.nom} `)
+                              ? p.nom.slice(famille.nom.length + 1)
+                              : p.nom}
+                          </span>
+                          <span className={local.duree}>{p.dureeSemaines} semaines</span>
                         </span>
-                        <span className={local.duree}>{p.dureeSemaines} semaines</span>
                         <span
                           className={`${local.etat} ${p.statut === 'disponible' ? local.dispo : ''}`}
                         >

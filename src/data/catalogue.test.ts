@@ -49,10 +49,12 @@ describe('catalogue Dcross-fit', () => {
    * phases, trente séances. Un programme déclaré sans son contenu ferait
    * tomber `femmes.test.ts`, qui compte les séances une à une.
    */
-  it('porte FEMMES 8, et lui seul, dans la famille Femmes', () => {
+  it('ouvre le parcours FEMMES par FEMMES 8, le seul dont le contenu est écrit', () => {
     const programmes = familleParId('femmes')?.programmes ?? [];
-    expect(programmes.map((p) => p.id)).toEqual(['femmes8']);
+    expect(programmes[0]?.id).toBe('femmes8');
     expect(programmes[0]?.dureeSemaines).toBe(8);
+    // Les sept étapes suivantes n'ont aucune séance : toutes « à venir ».
+    for (const p of programmes) expect(p.statut, p.id).toBe('a-venir');
   });
 
   /*

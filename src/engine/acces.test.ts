@@ -104,3 +104,72 @@ describe('le matériel à prévoir', () => {
     }
   });
 });
+
+/*
+ * Le parcours FEMMES, d'après l'organigramme de Guillaume : quatre cycles de
+ * 8 semaines et quatre transitions de 4.
+ *
+ * Avec UNE exception à la règle de POWER, voulue par Guillaume : terminer un
+ * cycle ouvre la transition qui le suit ET le cycle suivant. Si ces tests
+ * tombent, c'est que la règle a été « réalignée » sur POWER par mégarde.
+ */
+describe('le parcours FEMMES', () => {
+  const ETAPES = [
+    'femmes8',
+    'femmes-transition1',
+    'femmes-cycle2',
+    'femmes-transition2',
+    'femmes-cycle3',
+    'femmes-transition3',
+    'femmes-cycle4',
+    'femmes-transition4',
+  ];
+  const CYCLES = ['femmes8', 'femmes-cycle2', 'femmes-cycle3', 'femmes-cycle4'];
+
+  it('huit étapes dans l’ordre de l’organigramme : 4 × 8 + 4 × 4 = 48 semaines', () => {
+    const programmes = familleParId('femmes')!.programmes;
+    expect(programmes.map((x) => x.id)).toEqual(ETAPES);
+    expect(programmes.map((x) => x.dureeSemaines)).toEqual([8, 4, 8, 4, 8, 4, 8, 4]);
+  });
+
+  it('le cycle 1 s’ouvre dès l’inscription', () => {
+    expect(accesProgramme(p('femmes8'), [])).toEqual({
+      ouvert: true,
+      badge: 'Disponible dès l’inscription',
+    });
+  });
+
+  it('finir un cycle ouvre la transition qui suit ET le cycle suivant', () => {
+    for (let i = 0; i < 3; i++) {
+      const fait = [fini(CYCLES[i]!)];
+      expect(accesProgramme(p(ETAPES[2 * i + 1]!), fait).ouvert, ETAPES[2 * i + 1]).toBe(true);
+      expect(accesProgramme(p(CYCLES[i + 1]!), fait).ouvert, CYCLES[i + 1]).toBe(true);
+    }
+    expect(accesProgramme(p('femmes-transition4'), [fini('femmes-cycle4')]).ouvert).toBe(true);
+  });
+
+  it('une transition n’ouvre rien : seul le cycle fait avancer', () => {
+    expect(accesProgramme(p('femmes-cycle2'), [fini('femmes-transition1')]).ouvert).toBe(false);
+    expect(accesProgramme(p('femmes-cycle3'), [fini('femmes-transition2')]).ouvert).toBe(false);
+  });
+
+  it('commencé n’est pas terminé, et pas de saut de deux cycles', () => {
+    expect(accesProgramme(p('femmes-cycle2'), [enCours('femmes8')]).ouvert).toBe(false);
+    expect(accesProgramme(p('femmes-cycle3'), [fini('femmes8')]).ouvert).toBe(false);
+  });
+
+  it('les badges nomment le cycle qui ouvre, jamais « femmes cycle »', () => {
+    expect(accesProgramme(p('femmes-transition1'), []).badge).toBe('Se débloque après le cycle 1');
+    expect(accesProgramme(p('femmes-cycle2'), []).badge).toBe('Se débloque après le cycle 1');
+    expect(accesProgramme(p('femmes-cycle4'), []).badge).toBe('Se débloque après le cycle 3');
+    expect(accesProgramme(p('femmes-transition4'), []).badge).toBe('Se débloque après le cycle 4');
+  });
+
+  it('les résumés reprennent l’organigramme', () => {
+    expect(p('femmes8').resume).toMatch(/^Prise de masse/);
+    expect(p('femmes-cycle2').resume).toMatch(/^Congestion/);
+    expect(p('femmes-cycle3').resume).toMatch(/^Perte de poids/);
+    expect(p('femmes-cycle4').resume).toMatch(/^Prise de masse/);
+    expect(p('femmes-transition4').resume).toMatch(/^Bilan/);
+  });
+});

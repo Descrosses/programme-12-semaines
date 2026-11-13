@@ -129,7 +129,7 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
 | MASS | Conçu, tourne dans sa propre application, **pas encore intégré ici** |
-| FEMMES | `programmes: []` — la place est prête, le contenu non |
+| FEMMES | Parcours de 8 étapes, toutes `a-venir` ; seul FEMMES 8 (cycle 1) a son contenu écrit |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
 **La place de FEMMES est déjà faite** : l'identifiant existe, l'entrée du
@@ -220,6 +220,11 @@ matériel et la durée avant d'écrire la moindre séance.
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
   affiche l'écart. Proposer un gramme serait une prescription.
+- **Le parcours FEMMES ne s'ouvre PAS comme celui de POWER.** POWER est
+  linéaire : chaque étape attend la précédente. FEMMES (4 cycles de 8
+  semaines, 4 transitions de 4) suit l'exception de Guillaume : **terminer un
+  cycle ouvre la transition qui le suit ET le cycle suivant**. Une transition
+  n'ouvre rien. Des tests de `acces.test.ts` figent cette règle.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

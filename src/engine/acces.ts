@@ -31,7 +31,9 @@ interface CycleMinimal {
  * POWER est retiré : on est déjà dans la famille.
  */
 export function designation(id: string): string {
-  const nom = (programmeParId(id)?.nom ?? id).replace(/^POWER\s+/i, '').toLowerCase();
+  // Le préfixe de famille (POWER, FEMMES) est retiré : « le cycle 1 », pas
+  // « femmes cycle 1 ».
+  const nom = (programmeParId(id)?.nom ?? id).replace(/^(POWER|FEMMES)\s+/i, '').toLowerCase();
   if (nom.startsWith('cycle')) return `le ${nom}`;
   if (nom.startsWith('transition')) return `la ${nom}`;
   return nom;
