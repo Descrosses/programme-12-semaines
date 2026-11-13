@@ -256,7 +256,7 @@ export function ProgressScreen() {
       {vue === 'chiffres' && (
         <>
           {trend?.declining && (
-            <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
+            <p className={styles.alert}>
               <span className={styles.alertIcon} aria-hidden="true">
                 <Icon name="alert" size="18px" />
               </span>

@@ -121,7 +121,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const date = settings.startDate ? dateFor(settings.startDate, week, day, programme) : '';
 
     const history = buildHistoryIndex(sets);
-    const trend = explosiveTrend(toReadinessRecords(readinessRows), date || undefined);
+    const trend = explosiveTrend(toReadinessRecords(readinessRows));
 
     const readinessResult = readinessRow
       ? computeReadiness(settings.broadJumpBaselineCm, readinessRow.jumpCm)
@@ -259,7 +259,6 @@ function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
     trend: {
       declining: false,
       consecutiveDrops: 0,
-      suggestEarlyDeload: false,
       weekly: [],
       message: '',
       debut: null,

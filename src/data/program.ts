@@ -276,5 +276,5 @@ export const PROGRESSION_RULES = {
   /** Cas 5 : rep ratée → −5 à −7,5 %, on retient −7,5 % (le plus prudent). */
   missedRep: { loadFactor: 0.925, rebuildWeeks: 2 },
   /** Cas 7 : sauts en baisse 2 semaines de suite. */
-  explosiveDecline: { weeks: 2, mainLiftSets: 3, removeConditioning: true, deloadAfterDays: 10 },
+  explosiveDecline: { weeks: 2, mainLiftSets: 3, removeConditioning: true },
 } as const;

@@ -134,7 +134,6 @@ export function TodayScreen({
     trend: {
       declining: false,
       consecutiveDrops: 0,
-      suggestEarlyDeload: false,
       weekly: [],
       message: '',
       debut: null,
@@ -167,7 +166,7 @@ export function TodayScreen({
         allSessions(),
       ]);
       const history = buildHistoryIndex(sets);
-      const trend = explosiveTrend(toReadinessRecords(readinessRows), todayIso);
+      const trend = explosiveTrend(toReadinessRecords(readinessRows));
 
       // Aperçu de la séance : seul l'en-tête nous intéresse ici.
       let title = '';
@@ -417,10 +416,7 @@ export function TodayScreen({
          * changer d'avis. C'est la réponse à « je ne sais pas si
          * l'entraînement est plus soft ou pas ».
          */
-        <section
-          className={`${styles.alert} ${styles.alertQuestion} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}
-          aria-label="Sauts en baisse"
-        >
+        <section className={`${styles.alert} ${styles.alertQuestion}`} aria-label="Sauts en baisse">
           <span className={styles.alertIcon} aria-hidden="true">
             <Icon name="chart" size="18px" />
           </span>

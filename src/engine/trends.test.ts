@@ -67,23 +67,15 @@ describe('§11 cas 7 — sauts en baisse deux semaines de suite', () => {
     expect(t.consecutiveDrops).toBe(0);
   });
 
-  it('au-delà de 10 jours de déclin, propose un deload anticipé (§11)', () => {
-    const t = explosiveTrend(
-      [rec(1, 245, '2026-01-05'), rec(2, 242, '2026-01-12'), rec(3, 238, '2026-01-19')],
-      '2026-01-20',
-    );
+  it('aucun deload anticipé, même après un long déclin (retiré par Guillaume)', () => {
+    const t = explosiveTrend([
+      rec(1, 245, '2026-01-05'),
+      rec(2, 242, '2026-01-12'),
+      rec(3, 238, '2026-01-19'),
+    ]);
     expect(t.declining).toBe(true);
-    expect(t.suggestEarlyDeload).toBe(true);
-    expect(t.message).toContain('deload anticipé');
-  });
-
-  it('en dessous de 10 jours, cas 7 seulement', () => {
-    const t = explosiveTrend(
-      [rec(1, 245, '2026-01-12'), rec(2, 242, '2026-01-15'), rec(3, 238, '2026-01-19')],
-      '2026-01-20',
-    );
-    expect(t.declining).toBe(true);
-    expect(t.suggestEarlyDeload).toBe(false);
+    expect(t.message).not.toMatch(/deload/i);
+    expect('suggestEarlyDeload' in t).toBe(false);
   });
 
   it('reste muet tant qu’il n’y a pas assez de données', () => {
