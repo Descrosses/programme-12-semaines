@@ -261,4 +261,14 @@ describe('question de sécurité sur le périnée', () => {
     expect(q).not.toMatch(/fuite urinaire/i);
     expect(q).toMatch(/périnée/i);
   });
+
+  it('le mot « fuite » a disparu de tout ce que FEMMES affiche sur la sécurité', async () => {
+    const { SAFETY_CHECKS } = await import('./programme');
+    const { RESTRICTION_REASON } = await import('./types');
+    const textes = [
+      ...SAFETY_CHECKS.flatMap((c) => [c.question, c.consequence, c.detail]),
+      ...Object.values(RESTRICTION_REASON),
+    ];
+    for (const t of textes) expect(t).not.toMatch(/fuite/i);
+  });
 });

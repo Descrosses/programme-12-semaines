@@ -57,7 +57,7 @@ export const SAFETY_CHECKS: SafetyCheck[] = [
     consequence:
       'Si non : pas de saut, pas de corde à sauter, pas de charge au-dessus de la tête. L’appli remplace ces exercices d’elle-même, elle ne les retire pas.',
     detail:
-      'Une fuite à l’effort, même légère, même occasionnelle, n’est pas une fatalité et n’est pas liée à l’âge. Elle se rééduque. En attendant, les mouvements qui augmentent brutalement la pression abdominale attendent — le reste du programme est inchangé.',
+      'Une gêne du périnée à l’effort, même légère, même occasionnelle, n’est pas une fatalité et n’est pas liée à l’âge. Elle se rééduque. En attendant, les mouvements qui augmentent brutalement la pression abdominale attendent — le reste du programme est inchangé.',
     blocking: false,
   },
   {
