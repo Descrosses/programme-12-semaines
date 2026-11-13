@@ -24,7 +24,12 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { EnTetePlateforme } from '../components/EnTetePlateforme';
 import { Icon } from '../components/Icon';
 import { Visuel } from '../components/Visuel';
-import { FAMILLES, programmeParId, type ProgrammeDefinition } from '../data/catalogue';
+import {
+  FAMILLES,
+  programmeParId,
+  type FamilleId,
+  type ProgrammeDefinition,
+} from '../data/catalogue';
 import { HABILLAGE } from '../data/famillesVisuel';
 import type { DayIndex, WeekIndex } from '../data/types';
 import { prochaineSeance, schedule } from '../engine/calendar';
@@ -70,10 +75,17 @@ const VIDE: Etat = {
 export function AccueilScreen({
   onReprendre,
   onCatalogue,
+  onFamille,
   onParcours,
 }: {
   onReprendre: () => void;
   onCatalogue: () => void;
+  /**
+   * Une tuile de famille : elle ouvre le catalogue SUR cette famille, ses
+   * cycles déjà dépliés. Avant, elle ouvrait les quatre bannières qu'on
+   * venait de voir, et il fallait toucher une seconde fois la même famille.
+   */
+  onFamille: (famille: FamilleId) => void;
   onParcours: () => void;
 }) {
   const [etat, setEtat] = useState<Etat>(VIDE);
@@ -333,7 +345,7 @@ export function AccueilScreen({
                 type="button"
                 className={styles.famille}
                 style={{ '--teinte': habillage.teinte } as CSSProperties}
-                onClick={onCatalogue}
+                onClick={() => onFamille(famille.id)}
               >
                 {habillage.photo !== undefined && (
                   <span className={styles.famillePhoto} aria-hidden="true">
