@@ -3,7 +3,12 @@
  *
  * « Performances explosives en baisse deux semaines de suite (broad jump, box
  * jump, vitesse de barre) → lifts principaux à 3 séries, suppression du
- * conditioning. Si ça persiste 10 jours : deload anticipé. »
+ * conditioning. »
+ *
+ * Le « deload anticipé » qui suivait (« si ça persiste 10 jours ») a été
+ * RETIRÉ par Guillaume : un readiness moins bon n'empêche pas d'avoir la
+ * patate sous la barre, et le programme ne laisse jamais plus de trois
+ * semaines dures d'affilée avant un deload prévu.
  */
 
 import { PROGRESSION_RULES } from '../data/program';
@@ -20,18 +25,54 @@ export interface ExplosiveTrend {
   declining: boolean;
   /** Nombre de semaines consécutives en baisse, en partant de la dernière. */
   consecutiveDrops: number;
-  /** Le déclin dure depuis plus de 10 jours → deload anticipé (§11). */
-  suggestEarlyDeload: boolean;
   weekly: WeeklyBest[];
   message: string;
+  /**
+   * La date du dernier pic, d'où part le déclin. Elle IDENTIFIE l'épisode :
+   * tant que les sauts baissent depuis ce pic, c'est la même alerte, et la
+   * réponse déjà donnée vaut toujours. Un nouveau pic, puis une nouvelle
+   * baisse, reposent la question. `null` hors déclin.
+   */
+  debut: string | null;
+}
+
+/** Ce que l'utilisateur a répondu à l'alerte « sauts en baisse ». */
+export interface DecisionSauts {
+  /** Le `debut` de l'épisode auquel la réponse s'applique. */
+  debut: string;
+  accepte: boolean;
+}
+
+/**
+ * Le cas 7 s'applique-t-il à la séance ? Seulement si les sauts baissent ET
+ * que l'utilisateur a ACCEPTÉ d'alléger pour cet épisode.
+ *
+ * Avant, l'allègement tombait tout seul. Guillaume l'a vécu : ses relevés de
+ * readiness étaient incomplets, les sauts « baissaient », et il ne savait
+ * plus si la séance du jour était la vraie ou une version allégée. Un
+ * allègement qu'on n'a pas choisi est un allègement dont on doute.
+ */
+export function allegementAccepte(
+  trend: ExplosiveTrend,
+  decision: DecisionSauts | null | undefined,
+): boolean {
+  return trend.declining && decision != null && decision.debut === trend.debut && decision.accepte;
+}
+
+/** Une question est-elle en attente pour l'épisode en cours ? */
+export function decisionEnAttente(
+  trend: ExplosiveTrend,
+  decision: DecisionSauts | null | undefined,
+): boolean {
+  return trend.declining && (decision == null || decision.debut !== trend.debut);
 }
 
 const NO_TREND: ExplosiveTrend = {
   declining: false,
   consecutiveDrops: 0,
-  suggestEarlyDeload: false,
   weekly: [],
   message: '',
+  debut: null,
 };
 
 /** Meilleur saut de chaque semaine, dans l'ordre chronologique. */
@@ -49,9 +90,8 @@ export function weeklyBests(records: ReadinessRecord[]): WeeklyBest[] {
 
 /**
  * @param records tous les relevés de readiness, tous ordres acceptés
- * @param todayIso date du jour, pour mesurer la durée du déclin
  */
-export function explosiveTrend(records: ReadinessRecord[], todayIso?: string): ExplosiveTrend {
+export function explosiveTrend(records: ReadinessRecord[]): ExplosiveTrend {
   const weekly = weeklyBests(records);
   if (weekly.length < 2) return { ...NO_TREND, weekly };
 
@@ -66,11 +106,9 @@ export function explosiveTrend(records: ReadinessRecord[], todayIso?: string): E
     return { ...NO_TREND, weekly, consecutiveDrops: drops };
   }
 
-  // Depuis quand ? Le déclin commence au dernier pic.
+  // Le déclin commence au dernier pic : c'est lui qui identifie l'épisode.
   const peakIndex = weekly.length - 1 - drops;
   const peakDate = weekly[peakIndex]!.date;
-  const days = todayIso ? daysBetween(peakDate, todayIso) : 0;
-  const suggestEarlyDeload = days >= PROGRESSION_RULES.explosiveDecline.deloadAfterDays;
 
   const from = weekly[peakIndex]!.cm;
   const to = weekly[weekly.length - 1]!.cm;
@@ -79,16 +117,8 @@ export function explosiveTrend(records: ReadinessRecord[], todayIso?: string): E
   return {
     declining: true,
     consecutiveDrops: drops,
-    suggestEarlyDeload,
     weekly,
-    message: suggestEarlyDeload
-      ? `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %), et ça dure depuis ${days} jours. Le programme dit : deload anticipé.`
-      : `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %). Cas 7 : lifts principaux à 3 séries, conditioning supprimé.`,
+    debut: peakDate,
+    message: `Tes sauts baissent depuis ${drops} semaines (${from} → ${to} cm, ${pct} %).`,
   };
-}
-
-function daysBetween(fromIso: string, toIso: string): number {
-  const a = Date.parse(`${fromIso}T12:00:00Z`);
-  const b = Date.parse(`${toIso}T12:00:00Z`);
-  return Math.round((b - a) / 86_400_000);
 }

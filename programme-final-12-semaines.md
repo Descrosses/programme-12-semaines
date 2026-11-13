@@ -485,7 +485,11 @@ Chronomètre. Un repos raccourci sur un lift lourd transforme la force en fatigu
 
 **Cas 6 — mauvaise journée (boulot, enfants, sommeil)** → feu tricolore section 4. Ne saute pas la séance, adapte-la.
 
-**Cas 7 — performances explosives en baisse deux semaines de suite** (broad jump, box jump, vitesse de barre) → lifts principaux à 3 séries, suppression du conditioning. Si ça persiste 10 jours : deload anticipé.
+**Cas 7 — performances explosives en baisse deux semaines de suite** (broad jump, box jump, vitesse de barre) → lifts principaux à 3 séries, suppression du conditioning.
+
+*Pas de deload anticipé (décision de Guillaume) : un readiness moins bon n'empêche pas d'être fort sous la barre, et le programme ne laisse jamais plus de trois semaines dures avant un deload prévu (S4, S8, puis l'affûtage de S12).*
+
+*Dans l'application, cet allègement est **proposé, jamais imposé** : la baisse peut venir de relevés de readiness incomplets. Tant que la question n'a pas reçu de réponse, la séance reste celle du programme. La réponse vaut pour l'épisode en cours ; une nouvelle baisse après un nouveau pic repose la question.*
 
 **Cas 8 — douleur localisée sur un mouvement** (aujourd'hui : adducteur gauche, §14) → la charge du tableau redevient une référence théorique. Tu travailles à la charge et à l'amplitude tolérées. Tu ne modifies pas ta technique pour contourner la gêne : c'est le meilleur moyen de déplacer le problème ailleurs. Si la gêne augmente pendant la séance, tu réduis la charge ; si elle augmente encore, tu arrêtes l'exercice. Une douleur importante, croissante, ou qui change ta technique, fait réduire ou interrompre — elle ne se valide pas pour terminer la séance.
 
@@ -574,7 +578,7 @@ Appliquées au combine initial de l'auteur — squat 110, bench 115, deadlift 14
 
 **Le vrai critère** : l'écart deadlift − squat. S'il devient nul ou positif, la chaîne postérieure a rattrapé son retard. Si les 1RM montent mais que les sauts stagnent, le programme n'a produit que de la force : demi-échec, le bloc suivant sera orienté vitesse.
 
-**Signaux d'alerte** : sauts en baisse deux semaines de suite → section 11 cas 7. Douleur articulaire (pas musculaire) qui dure plus de 48 h → retire l'exercice, ne pousse pas à travers. Sommeil dégradé + motivation basse + charges qui stagnent → deload anticipé.
+**Signaux d'alerte** : sauts en baisse deux semaines de suite → section 11 cas 7. Douleur articulaire (pas musculaire) qui dure plus de 48 h → retire l'exercice, ne pousse pas à travers. Sommeil dégradé + motivation basse + charges qui stagnent → attendre le deload prévu, qui n'est jamais à plus de trois semaines.
 
 ---
 

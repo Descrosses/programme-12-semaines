@@ -22,8 +22,17 @@ describe('registre des programmes', () => {
   });
 
   it('rend `null` pour un programme annoncé mais pas encore écrit', () => {
-    // POWER 28 figure au catalogue en « à venir ». Il n'a pas de module.
-    expect(moduleParId('power28')).toBeNull();
+    // Les cinq étapes suivantes du parcours POWER sont « à venir ».
+    // Aucune séance n'est écrite : pas de module.
+    for (const id of [
+      'power-transition1',
+      'power-cycle2',
+      'power-transition2',
+      'power-cycle3',
+      'power-transition-finale',
+    ]) {
+      expect(moduleParId(id), id).toBeNull();
+    }
     expect(moduleParId('mass8')).toBeNull();
     expect(moduleParId(null)).toBeNull();
   });

@@ -15,7 +15,7 @@ import {
   toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
-import { explosiveTrend } from '../engine/trends';
+import { allegementAccepte, explosiveTrend } from '../engine/trends';
 import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
@@ -105,7 +105,7 @@ export function WeekScreen({
           settings,
           history,
           readiness: null,
-          explosiveDecline: trend.declining,
+          explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
         });
         if (!s) continue;
         const date = settings.startDate ? dateFor(settings.startDate, week, day, programme) : '';

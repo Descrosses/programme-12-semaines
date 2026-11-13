@@ -55,6 +55,32 @@ export interface ProgrammeDefinition {
   resume: string;
   objectifs: readonly string[];
   prerequis: readonly string[];
+  /**
+   * Le matériel à prévoir AVANT de démarrer, pour l'acheter à temps.
+   *
+   * Seulement ce que la salle ne fournit pas forcément : une ceinture de lest
+   * ne se trouve pas au rack. Chaque objet cite les exercices qui l'exigent ;
+   * un test vérifie qu'ils sont bien programmés, pour que la liste ne garde
+   * pas un objet dont plus aucune séance ne se sert.
+   */
+  materiel?: readonly MaterielRequis[];
+  /**
+   * Ce qu'il faut avoir TERMINÉ pour accéder au programme.
+   *
+   * `apres` : le programme qu'il faut avoir TERMINÉ. Voir `engine/acces.ts`.
+   * Absent : accessible dès l'inscription.
+   */
+  deblocage?: { apres: string };
+}
+
+export interface MaterielRequis {
+  objet: string;
+  /** À quoi il sert, en une phrase. */
+  usage: string;
+  /** Les exercices qui l'exigent (identifiants de `exercises.ts`). */
+  exercices: readonly string[];
+  /** Ce qui le remplace si on ne l'a pas — écrit dans le programme. */
+  sinon?: string;
 }
 
 export interface Famille {
@@ -72,12 +98,17 @@ export const FAMILLES: readonly Famille[] = [
     nom: 'POWER',
     sousTitre: 'Force & explosivité',
     resume:
-      'Force maximale, explosivité et puissance sur les mouvements fondamentaux. Pour pratiquants intermédiaires confirmés et avancés.',
+      'Un parcours sur un an : trois cycles de 12 semaines de force et d’explosivité, séparés par trois transitions de 4 semaines (points faibles, core, mobilité, unilatéral). Chaque étape s’ouvre quand la précédente est terminée.',
     programmes: [
       {
         id: 'power12',
         familleId: 'power',
-        nom: 'POWER 12',
+        /*
+         * Le premier des six temps du parcours POWER (schéma de Guillaume).
+         * L'identifiant `power12` ne change pas : les cycles déjà commencés
+         * le portent. `version` reste sa révision technique (1.2).
+         */
+        nom: 'POWER CYCLE 1',
         version: '1.2',
         dureeSemaines: 12,
         statut: 'disponible',
@@ -93,23 +124,111 @@ export const FAMILLES: readonly Famille[] = [
           'Quatre à cinq séances par semaine',
           'Un combine initial pour mesurer le point de départ',
         ],
-      },
-      {
-        id: 'power28',
-        familleId: 'power',
-        nom: 'POWER 28',
-        version: '0.1',
-        dureeSemaines: 28,
-        statut: 'a-venir',
         /*
-         * Structure envisagée : 12 semaines de force, 4 de transition, 12 de
-         * force. Elle n'a pas été testée. Le §4 est explicite — elle ne doit
-         * pas être présentée comme validée, et les 28 semaines ne sont pas
-         * créées. Seule la place existe.
+         * Tiré du programme, objet par objet — rien d'ajouté. Ce que la salle
+         * fournit (barres, câbles, landmine) n'y est pas.
          */
-        resume: 'Structure longue en trois blocs, encore à l’essai. Non testée, non disponible.',
+        materiel: [
+          {
+            objet: 'Ceinture de lest',
+            usage: 'Tractions lestées (de +20 à +45 kg) et tractions prise neutre à +5-10 kg.',
+            exercices: ['weighted-pullup', 'neutral-grip-pullup', 'test-weighted-pullup-1rm'],
+          },
+          {
+            objet: 'Roue abdominale',
+            usage: 'Ab Wheel en séance et Ab Wheel max aux combines.',
+            exercices: ['ab-wheel', 'test-ab-wheel-max'],
+            sinon: 'Rollout avec une barre chargée de deux disques.',
+          },
+          {
+            objet: 'Box de 60 à 75 cm',
+            usage: 'Box Jump, dont le contraste squat → box jump des semaines 9 à 11.',
+            exercices: ['box-jump'],
+            sinon: 'Box de la zone fonctionnelle Basic-Fit ; sinon Vertical Jump sur cible murale.',
+          },
+          {
+            objet: 'Mètre ruban',
+            usage:
+              'Broad Jump mesuré en cm : test de readiness avant chaque séance jambes, et combines.',
+            exercices: ['broad-jump', 'test-broad-jump', 'test-vertical-jump'],
+          },
+          {
+            objet: 'Téléphone pour filmer + 20 m de surface adaptée',
+            usage: 'Sprints 10 et 20 m des combines, chronométrés à la vidéo, jamais sur tapis.',
+            exercices: ['test-sprint-10m', 'test-sprint-20m'],
+            sinon: 'Sans surface adaptée, le sprint se saute : il est facultatif.',
+          },
+        ],
+      },
+      /*
+       * Le reste du parcours POWER, d'après le schéma de Guillaume : trois
+       * cycles de 12 séparés par trois transitions de 4 (48 semaines — le
+       * schéma écrit 52, écart signalé).
+       *
+       * Linéaire et complet : chaque étape s'ouvre quand la précédente est
+       * TERMINÉE. Les cinq sont `a-venir` — aucune séance n'est écrite ; les
+       * résumés reprennent ses mots, rien n'est inventé.
+       */
+      {
+        id: 'power-transition1',
+        familleId: 'power',
+        nom: 'POWER TRANSITION 1',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume: 'Travail des points faibles : renforcement, core, mobilité, unilatéral.',
         objectifs: [],
         prerequis: [],
+        deblocage: { apres: 'power12' },
+      },
+      {
+        id: 'power-cycle2',
+        familleId: 'power',
+        nom: 'POWER CYCLE 2',
+        version: '0.1',
+        dureeSemaines: 12,
+        statut: 'a-venir',
+        resume: 'Développement de la force et de la puissance.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-transition1' },
+      },
+      {
+        id: 'power-transition2',
+        familleId: 'power',
+        nom: 'POWER TRANSITION 2',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume: 'Travail des points faibles : renforcement, core, mobilité, unilatéral.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-cycle2' },
+      },
+      {
+        id: 'power-cycle3',
+        familleId: 'power',
+        nom: 'POWER CYCLE 3',
+        version: '0.1',
+        dureeSemaines: 12,
+        statut: 'a-venir',
+        resume: 'Phase finale de développement de la force, de la puissance et de l’explosivité.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-transition2' },
+      },
+      {
+        id: 'power-transition-finale',
+        familleId: 'power',
+        nom: 'POWER TRANSITION FINALE',
+        version: '0.1',
+        dureeSemaines: 4,
+        statut: 'a-venir',
+        resume:
+          'Bilan, consolidation et travail global des points faibles : core, mobilité, unilatéral.',
+        objectifs: [],
+        prerequis: [],
+        deblocage: { apres: 'power-cycle3' },
       },
     ],
   },

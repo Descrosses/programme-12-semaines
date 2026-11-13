@@ -12,6 +12,7 @@
  *   7. cas 7            — §11, sauts en baisse : 3 séries, plus de conditioning.
  */
 
+import { estAlignable, repsAlignees } from './alignementReps';
 import {
   BIG_MOVEMENT_IDS,
   BLOCKS,
@@ -58,7 +59,7 @@ export interface Adjustment {
    * vraiment été soulevé — un FAIT, pas un jugement : il s'applique seul,
    * là où un ajustement §11 se propose et s'accepte.
    */
-  source: 'bloc' | 'deload' | 'orange' | 'rouge' | 'cas7' | 'plafond' | 'reel';
+  source: 'bloc' | 'deload' | 'orange' | 'rouge' | 'cas7' | 'plafond' | 'reel' | 'alignement';
   what: string;
   why: string;
 }
@@ -266,6 +267,24 @@ export function getSession(
       contrast,
     });
     if (resolved) exercises.push(resolved);
+  }
+
+  // 5 bis. Reps alignées par l'utilisateur (accessoires et tronc seulement).
+  for (const ex of exercises) {
+    const aligne = ctx.settings.repsAlignees?.[ex.id];
+    if (aligne === undefined) continue;
+    if (!estAlignable(ex.def.role, ex.work.kind, ex.work.kind === 'reps' ? ex.work.reps : null)) {
+      continue;
+    }
+    if (ex.work.kind !== 'reps' || typeof ex.work.reps !== 'number') continue;
+    const cible = repsAlignees(ex.work.reps, aligne, isDeload || special !== null);
+    if (cible === ex.work.reps) continue;
+    ex.adjustments.push({
+      source: 'alignement',
+      what: `${cible} reps au lieu de ${ex.work.reps}`,
+      why: 'Attendu aligné sur ce que tu as tenu à tous les tours : tu l’as accepté.',
+    });
+    ex.work = { ...ex.work, reps: cible };
   }
 
   // 6. Feu tricolore.

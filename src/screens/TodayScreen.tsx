@@ -14,7 +14,12 @@ import {
 } from '../engine/calendar';
 import { fr } from '../engine/format';
 
-import { explosiveTrend, type ExplosiveTrend } from '../engine/trends';
+import {
+  allegementAccepte,
+  decisionEnAttente,
+  explosiveTrend,
+  type ExplosiveTrend,
+} from '../engine/trends';
 import { apercuSeance, type LigneApercu } from '../engine/apercuSeance';
 import {
   cycleActif,
@@ -23,6 +28,7 @@ import {
   allSets,
   buildHistoryIndex,
   getSettingsRow,
+  saveSettings,
   toEngineSettings,
   toReadinessRecords,
 } from '../db/repo';
@@ -128,15 +134,17 @@ export function TodayScreen({
     trend: {
       declining: false,
       consecutiveDrops: 0,
-      suggestEarlyDeload: false,
       weekly: [],
       message: '',
+      debut: null,
     },
     startDate: '',
     combineAhead: false,
     bodyweightKg: null,
     settingsRow: null,
   });
+  /* Relance le chargement après une réponse à l'alerte « sauts en baisse ». */
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     void (async () => {
@@ -158,7 +166,7 @@ export function TodayScreen({
         allSessions(),
       ]);
       const history = buildHistoryIndex(sets);
-      const trend = explosiveTrend(toReadinessRecords(readinessRows), todayIso);
+      const trend = explosiveTrend(toReadinessRecords(readinessRows));
 
       // Aperçu de la séance : seul l'en-tête nous intéresse ici.
       let title = '';
@@ -181,7 +189,7 @@ export function TodayScreen({
           settings,
           history,
           readiness: null,
-          explosiveDecline: trend.declining,
+          explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
         });
         title = s?.title ?? '';
         intensity = s?.intensity ?? '';
@@ -206,7 +214,7 @@ export function TodayScreen({
         settingsRow,
       });
     })();
-  }, []);
+  }, [version]);
 
   if (state.loading) return <div className={styles.loading}>Chargement…</div>;
 
@@ -400,13 +408,81 @@ export function TodayScreen({
         </button>
       )}
 
-      {trend.declining && (
-        <p className={`${styles.alert} ${trend.suggestEarlyDeload ? styles.alertRouge : ''}`}>
+      {trend.declining && trend.debut !== null && (
+        /*
+         * Les sauts baissent : on DEMANDE avant d'alléger (§11 cas 7).
+         * Une fois la réponse donnée, la carte dit clairement ce qui
+         * s'applique — séance allégée ou séance normale — et permet de
+         * changer d'avis. C'est la réponse à « je ne sais pas si
+         * l'entraînement est plus soft ou pas ».
+         */
+        <section className={`${styles.alert} ${styles.alertQuestion}`} aria-label="Sauts en baisse">
           <span className={styles.alertIcon} aria-hidden="true">
             <Icon name="chart" size="18px" />
           </span>
-          <span>{trend.message}</span>
-        </p>
+          <div className={styles.alertCorps}>
+            <p>{trend.message}</p>
+            {decisionEnAttente(trend, state.settingsRow?.decisionSauts) ? (
+              <>
+                <p>
+                  <b>Alléger tes séances ?</b> Lifts principaux ramenés à 3 séries, conditioning
+                  supprimé, tant que les sauts n’ont pas remonté. Si tes relevés de readiness sont
+                  incomplets, la baisse peut être fausse : garde le programme normal.
+                </p>
+                <div className={styles.alertBoutons}>
+                  <button
+                    type="button"
+                    className={styles.alertOui}
+                    onClick={() =>
+                      void (async () => {
+                        await saveSettings({
+                          decisionSauts: { debut: trend.debut!, accepte: true },
+                        });
+                        setVersion((v) => v + 1);
+                      })()
+                    }
+                  >
+                    Alléger
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.alertNon}
+                    onClick={() =>
+                      void (async () => {
+                        await saveSettings({
+                          decisionSauts: { debut: trend.debut!, accepte: false },
+                        });
+                        setVersion((v) => v + 1);
+                      })()
+                    }
+                  >
+                    Garder le programme
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p>
+                {allegementAccepte(trend, state.settingsRow?.decisionSauts) ? (
+                  <b>Séances allégées : lifts principaux à 3 séries, sans conditioning.</b>
+                ) : (
+                  <b>Tu as gardé le programme normal.</b>
+                )}{' '}
+                <button
+                  type="button"
+                  className={styles.alertLien}
+                  onClick={() =>
+                    void (async () => {
+                      await saveSettings({ decisionSauts: null });
+                      setVersion((v) => v + 1);
+                    })()
+                  }
+                >
+                  Changer d’avis
+                </button>
+              </p>
+            )}
+          </div>
+        </section>
       )}
 
       {today.kind === 'session' && (

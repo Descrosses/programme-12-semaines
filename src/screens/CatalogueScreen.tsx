@@ -20,6 +20,7 @@
  * tout, et une surprise pareille doit être demandée.
  */
 
+import { accesProgramme } from '../engine/acces';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Icon } from '../components/Icon';
 import { EnTetePlateforme } from '../components/EnTetePlateforme';
@@ -57,6 +58,12 @@ export function CatalogueScreen({
 }) {
   const [cycles, setCycles] = useState<CycleRow[]>([]);
   const [deplie, setDeplie] = useState<string | null>(null);
+  /*
+   * La liste du matériel est REPLIÉE par défaut : cinq objets détaillés
+   * prenaient tout l'écran et repoussaient le bouton « Commencer » sous le
+   * pli. Le titre dit combien il y en a ; un appui les déplie.
+   */
+  const [materielOuvert, setMaterielOuvert] = useState(false);
   /**
    * La famille dépliée, ou `null`.
    *
@@ -167,9 +174,18 @@ export function CatalogueScreen({
               )}
 
               <ul className={local.liste}>
-                {famille.programmes.map((p) => {
+                {famille.programmes.map((p, rang) => {
                   const action = actionPour(p, cycles);
                   const ouvert = deplie === p.id;
+                  /*
+                   * Une famille en PARCOURS (POWER : six étapes sur 52
+                   * semaines) numérote ses étapes et montre, sur chaque
+                   * ligne, si elle est ouverte ou ce qui la débloque —
+                   * comme le schéma de Guillaume. Les autres familles
+                   * gardent leur liste simple.
+                   */
+                  const enParcours = famille.programmes.some((x) => x.deblocage);
+                  const acces = enParcours ? accesProgramme(p, cycles) : null;
                   return (
                     <li key={p.id} className={local.ligne}>
                       <button
@@ -178,7 +194,14 @@ export function CatalogueScreen({
                         onClick={() => setDeplie(ouvert ? null : p.id)}
                         aria-expanded={ouvert}
                       >
-                        <span className={local.nom}>{p.nom}</span>
+                        {enParcours && <span className={local.etape}>{rang + 1}</span>}
+                        {/* Dans la famille, son nom est déjà dit : « CYCLE 1 » plutôt
+                            que « POWER CYCLE 1 », qui passait sur deux lignes. */}
+                        <span className={local.nom}>
+                          {p.nom.startsWith(`${famille.nom} `)
+                            ? p.nom.slice(famille.nom.length + 1)
+                            : p.nom}
+                        </span>
                         <span className={local.duree}>{p.dureeSemaines} semaines</span>
                         <span
                           className={`${local.etat} ${p.statut === 'disponible' ? local.dispo : ''}`}
@@ -187,6 +210,12 @@ export function CatalogueScreen({
                         </span>
                         <Icon name={ouvert ? 'chevron-up' : 'chevron-down'} size="16px" />
                       </button>
+                      {acces && (
+                        <p className={`${local.badge} ${acces.ouvert ? local.badgeOuvert : ''}`}>
+                          <span aria-hidden="true">{acces.ouvert ? '✓' : '🔒'}</span>
+                          {acces.badge}
+                        </p>
+                      )}
 
                       {ouvert && (
                         <div className={local.details}>
@@ -201,6 +230,44 @@ export function CatalogueScreen({
                                 ))}
                               </ul>
                             </>
+                          )}
+
+                          {p.materiel && p.materiel.length > 0 && (
+                            /*
+                             * Le matériel à prévoir, AVANT de démarrer : de
+                             * quoi acheter une ceinture de lest à temps plutôt
+                             * que de la découvrir en semaine 1.
+                             */
+                            <div className={local.materielBloc}>
+                              <button
+                                type="button"
+                                className={local.materielTete}
+                                onClick={() => setMaterielOuvert((v) => !v)}
+                                aria-expanded={materielOuvert}
+                              >
+                                <span>Matériel à prévoir</span>
+                                <span className={local.materielCompte}>
+                                  {p.materiel.length} objets
+                                </span>
+                                <Icon
+                                  name={materielOuvert ? 'chevron-up' : 'chevron-down'}
+                                  size="16px"
+                                />
+                              </button>
+                              {materielOuvert && (
+                                <ul className={local.materiel}>
+                                  {p.materiel.map((m) => (
+                                    <li key={m.objet}>
+                                      <b>{m.objet}</b>
+                                      <span>{m.usage}</span>
+                                      {m.sinon && (
+                                        <span className={local.sinon}>Sinon : {m.sinon}</span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
                           )}
 
                           {p.prerequis.length > 0 && (

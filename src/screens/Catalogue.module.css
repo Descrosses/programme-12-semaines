@@ -59,6 +59,7 @@
   flex: 1;
   color: var(--ink-3);
   font-size: var(--fs-small);
+  white-space: nowrap;
 }
 
 /*
@@ -77,6 +78,34 @@
 
 .dispo {
   border-color: color-mix(in srgb, var(--vert) 45%, transparent);
+  color: var(--vert);
+}
+
+/* Parcours : le numéro d'étape, et le badge d'accès sous la ligne. */
+.etape {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -4px 0 10px 34px;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
+.badgeOuvert {
   color: var(--vert);
 }
 
@@ -107,6 +136,78 @@
   color: var(--ink-2);
   font-size: var(--fs-small);
   line-height: 1.55;
+}
+
+/* Le matériel à prévoir : un onglet repliable, fermé par défaut. */
+.materielBloc {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.materielTete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+
+.materielCompte {
+  flex: 1;
+  font-family: var(--font);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+}
+
+.materielBloc .materiel {
+  padding: 8px;
+}
+
+/* Le matériel à prévoir : l'objet en gras, son usage, l'alternative. */
+.materiel {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.materiel li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.materiel b {
+  color: var(--ink);
+}
+
+.sinon {
+  color: var(--ink-3);
+  font-style: italic;
 }
 
 .action {
