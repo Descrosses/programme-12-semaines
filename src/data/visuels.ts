@@ -146,9 +146,20 @@ export const VISUELS = {
    * silhouette disparaissait. Les ombres ont été relevées (gamma 0,66)
    * jusqu'à 47 ; la lumière dorée, déjà claire, bouge peu.
    *
-   * `center 10%` et non `center` : la carte fait 128 px de haut, on ne voit
-   * qu'environ 60 % de la hauteur de l'image. Centré, le cadrage coupait la
-   * tête ; à 10 %, la fenêtre part de la casquette et descend jusqu'au short.
+   * Deux emplacements, deux recadrages, et chaque terme du focus en sert un :
+   *
+   * - `10 %` (vertical) sert la carte du catalogue, 128 px de haut : on n'y
+   *   voit qu'environ 60 % de la hauteur. Centré, le cadrage coupait la tête ;
+   *   à 10 %, la fenêtre part de la casquette et descend jusqu'au short.
+   * - `95 %` (horizontal) sert la tuile de l'accueil, presque carrée : on n'y
+   *   voit qu'environ 42 % de la largeur. Centré, il ne restait qu'un bord de
+   *   l'athlète (qui occupe de 57 à 81 % de la largeur). À 78 %, il était
+   *   entier mais sa tête passait sous l'étiquette « À venir », en haut à
+   *   droite. À 95 %, la fenêtre va de 55 à 97 % : l'athlète entier à gauche,
+   *   tête dégagée, ses reflets à droite.
+   *
+   * Aucun des deux ne gêne l'autre : la carte est assez large pour montrer
+   * toute la largeur de l'image, la tuile assez haute pour toute la hauteur.
    */
   cartePerso: {
     display: '22_perso_carte_display.webp',
@@ -156,8 +167,8 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète de dos face au miroir d’une salle sombre, trois reflets, lumière dorée.',
     cadrage: 'cover',
-    focus: 'center 10%',
-    usage: 'Carte de la famille ME, MYSELF & I, page Programmes.',
+    focus: '95% 10%',
+    usage: 'Carte de la famille ME, MYSELF & I : page Programmes et tuile de l’accueil.',
   },
   casque: {
     display: '03_casque_display.webp',
