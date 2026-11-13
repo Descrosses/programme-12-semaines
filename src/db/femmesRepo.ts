@@ -161,3 +161,92 @@ export async function terminerSeanceFemmes(input: {
 
   return clotSiFini(input.cycleId);
 }
+
+/** La séance (cycle, semaine, jour), lue DANS une transaction déjà ouverte. */
+async function ligne(cycleId: number, semaine: number, jour: DayIndex) {
+  return db.femmesSeances.where('[cycleId+semaine+jour]').equals([cycleId, semaine, jour]).first();
+}
+
+/** Une séance vide, prête à recevoir sa première écriture. */
+function neuve(
+  cycleId: number,
+  semaine: number,
+  jour: DayIndex,
+  version: Version,
+): FemmesSeanceRow {
+  return {
+    cycleId,
+    semaine,
+    jour,
+    version,
+    date: aujourdhui(),
+    terminee: false,
+    exercices: [],
+  };
+}
+
+/**
+ * Réécrit UN exercice de la séance à partir de son état actuel — un tour
+ * validé, un ressenti, une remarque.
+ *
+ * La lecture et l'écriture sont dans la même transaction : deux tours validés
+ * coup sur coup partent tous les deux de la version la plus récente, et le
+ * second n'efface jamais le premier.
+ */
+export async function modifierExerciceFemmes(input: {
+  cycleId: number;
+  semaine: number;
+  jour: DayIndex;
+  version: Version;
+  exerciseId: string;
+  modifier: (ancien: ExerciseRecord | null) => ExerciseRecord;
+}): Promise<void> {
+  await db.transaction('rw', db.femmesSeances, async () => {
+    const existante = await ligne(input.cycleId, input.semaine, input.jour);
+    const base = existante ?? neuve(input.cycleId, input.semaine, input.jour, input.version);
+    const ancien = base.exercices.find((r) => r.exerciseId === input.exerciseId) ?? null;
+    const exercices = [
+      ...base.exercices.filter((r) => r.exerciseId !== input.exerciseId),
+      input.modifier(ancien),
+    ];
+    const suite = { ...base, version: input.version, date: aujourdhui(), exercices };
+    if (existante?.id !== undefined) await db.femmesSeances.put({ ...suite, id: existante.id });
+    else await db.femmesSeances.add(suite);
+  });
+}
+
+/** L'échauffement coché, ou le démarrage de la séance. */
+export async function majSeanceFemmes(input: {
+  cycleId: number;
+  semaine: number;
+  jour: DayIndex;
+  version: Version;
+  patch: Pick<FemmesSeanceRow, 'echauffement' | 'debut'>;
+}): Promise<void> {
+  await db.transaction('rw', db.femmesSeances, async () => {
+    const existante = await ligne(input.cycleId, input.semaine, input.jour);
+    if (existante?.id !== undefined) await db.femmesSeances.update(existante.id, input.patch);
+    else
+      await db.femmesSeances.add({
+        ...neuve(input.cycleId, input.semaine, input.jour, input.version),
+        ...input.patch,
+      });
+  });
+}
+
+/**
+ * « Séance terminée — annuler » : la séance redevient à faire, sa saisie
+ * reste. Comme côté POWER. Le statut du cycle n'est pas touché : rouvrir une
+ * séance d'un cycle déjà clos ne le rouvre pas.
+ */
+export async function rouvrirSeanceFemmes(input: {
+  cycleId: number;
+  semaine: number;
+  jour: DayIndex;
+}): Promise<void> {
+  await db.transaction('rw', db.femmesSeances, async () => {
+    const existante = await ligne(input.cycleId, input.semaine, input.jour);
+    if (existante?.id !== undefined)
+      await db.femmesSeances.update(existante.id, { terminee: false });
+  });
+}

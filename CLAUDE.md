@@ -229,6 +229,13 @@ matériel et la durée avant d'écrire la moindre séance.
   `femmesSeances` n'est PAS dans `TABLES_PAR_CYCLE` (la montée v17 tournerait
   sans elle) mais DOIT rester dans `TABLES_DU_CYCLE` de `repo.ts`, sinon un
   cycle FEMMES avec des séances passe pour vierge et peut être supprimé.
+  **La séance FEMMES se présente comme celle de POWER** (demande de Guillaume) :
+  `SeanceFemmes.tsx` reprend `Session.module.css`, `WarmupSection`, `Stepper`
+  et la carte de circuit de POWER — le thème FEMMES repeint le tout. Chaque
+  tour se valide sur sa ligne ; `actual` = le plus petit des tours, `kg` = la
+  charge du dernier (`tours.ts`), pour que la progression des charges lise les
+  mêmes champs qu'avant. Le repos se lance en fin de tour, jamais entre deux
+  exercices d'un même tour.
 - **Le parcours FEMMES ne s'ouvre PAS comme celui de POWER.** POWER est
   linéaire : chaque étape attend la précédente. FEMMES (4 cycles de 8
   semaines, 4 transitions de 4) suit l'exception de Guillaume : **terminer un

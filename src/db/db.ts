@@ -553,6 +553,10 @@ export interface FemmesSeanceRow {
    * aucune montée de version.
    */
   sautee?: boolean;
+  /** Mouvements d'échauffement cochés, comme `warmupChecked` côté POWER. */
+  echauffement?: string[];
+  /** Horodatage de « Démarrer la séance ». Absent tant qu'elle n'a pas démarré. */
+  debut?: number;
   exercices: ExerciseRecord[];
 }
 

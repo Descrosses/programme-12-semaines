@@ -7,13 +7,17 @@ import { db } from './db';
 import {
   enregistrerExerciceFemmes,
   enregistrerProfilFemmes,
+  majSeanceFemmes,
   marquerSeanceFemmesNonFaite,
+  modifierExerciceFemmes,
+  rouvrirSeanceFemmes,
   seancesFemmes,
   terminerSeanceFemmes,
 } from './femmesRepo';
 import { demarrerCycle, supprimerCycleNonCommence } from './repo';
 import { exportAll, importAll, parseExport } from './export';
 import { ORDRE } from '../engine/femmes/avancement';
+import { appliquerTour } from '../engine/femmes/tours';
 import type { ExerciseRecord } from '../engine/femmes/types';
 
 const record = (exerciseId: string, actual: number): ExerciseRecord => ({
@@ -163,6 +167,57 @@ describe('séances FEMMES en base', () => {
       }),
     ).toBe(true);
     expect((await db.cycles.get(id))?.statut).toBe('termine');
+  });
+
+  it('deux tours validés coup sur coup : aucun n’efface l’autre', async () => {
+    const id = await cycleFemmes();
+    const base = { cycleId: id, semaine: 1, jour: 0 as const, version: 'maison' as const };
+    const ctx = {
+      exerciseId: 'a',
+      week: 1,
+      day: 0 as const,
+      date: '2026-11-14',
+      version: 'maison' as const,
+      planned: 12,
+    };
+    await Promise.all([
+      modifierExerciceFemmes({
+        ...base,
+        exerciseId: 'a',
+        modifier: (anc) => appliquerTour(anc, ctx, 0, { reps: 12, kg: null }),
+      }),
+      modifierExerciceFemmes({
+        ...base,
+        exerciseId: 'a',
+        modifier: (anc) => appliquerTour(anc, ctx, 1, { reps: 11, kg: null }),
+      }),
+    ]);
+    const [ligne] = await seancesFemmes(id);
+    expect(ligne!.exercices).toHaveLength(1);
+    expect(ligne!.exercices[0]!.tours).toEqual([
+      { reps: 12, kg: null },
+      { reps: 11, kg: null },
+    ]);
+  });
+
+  it('l’échauffement coché et le démarrage s’enregistrent sur la séance', async () => {
+    const id = await cycleFemmes();
+    const base = { cycleId: id, semaine: 1, jour: 0 as const, version: 'maison' as const };
+    await majSeanceFemmes({ ...base, patch: { echauffement: ['e1', 'e2'] } });
+    await majSeanceFemmes({ ...base, patch: { debut: 123 } });
+    const [ligne] = await seancesFemmes(id);
+    expect(ligne).toMatchObject({ echauffement: ['e1', 'e2'], debut: 123, terminee: false });
+  });
+
+  it('« Séance terminée — annuler » la rouvre et garde sa saisie', async () => {
+    const id = await cycleFemmes();
+    const base = { cycleId: id, semaine: 1, jour: 0 as const, version: 'maison' as const };
+    await enregistrerExerciceFemmes({ ...base, record: record('a', 9) });
+    await terminerSeanceFemmes(base);
+    await rouvrirSeanceFemmes(base);
+    const [ligne] = await seancesFemmes(id);
+    expect(ligne!.terminee).toBe(false);
+    expect(ligne!.exercices).toHaveLength(1);
   });
 
   it('un cycle FEMMES avec une séance n’est pas « vierge » : il ne se supprime pas', async () => {

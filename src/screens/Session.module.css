@@ -198,6 +198,30 @@
   font-size: var(--fs-small);
 }
 
+/* Un mouvement avec sa consigne en phrase : la case reste en haut, la
+   consigne passe sous le libellé. */
+.warmupItemLong {
+  align-items: flex-start;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.warmupItemLong .box {
+  margin-top: 1px;
+}
+
+.warmupConsigne {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
+.warmupDone .warmupConsigne {
+  text-decoration: none;
+}
+
 /* ------------------------------------------------------------ readiness -- */
 
 .ready {
