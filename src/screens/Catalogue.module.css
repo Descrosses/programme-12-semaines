@@ -138,6 +138,47 @@
   line-height: 1.55;
 }
 
+/* Le matériel à prévoir : un onglet repliable, fermé par défaut. */
+.materielBloc {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.materielTete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+
+.materielCompte {
+  flex: 1;
+  font-family: var(--font);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+}
+
+.materielBloc .materiel {
+  padding: 8px;
+}
+
 /* Le matériel à prévoir : l'objet en gras, son usage, l'alternative. */
 .materiel {
   margin: 0;

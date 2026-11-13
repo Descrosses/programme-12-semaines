@@ -58,6 +58,12 @@ export function CatalogueScreen({
 }) {
   const [cycles, setCycles] = useState<CycleRow[]>([]);
   const [deplie, setDeplie] = useState<string | null>(null);
+  /*
+   * La liste du matériel est REPLIÉE par défaut : cinq objets détaillés
+   * prenaient tout l'écran et repoussaient le bouton « Commencer » sous le
+   * pli. Le titre dit combien il y en a ; un appui les déplie.
+   */
+  const [materielOuvert, setMaterielOuvert] = useState(false);
   /**
    * La famille dépliée, ou `null`.
    *
@@ -232,20 +238,36 @@ export function CatalogueScreen({
                              * quoi acheter une ceinture de lest à temps plutôt
                              * que de la découvrir en semaine 1.
                              */
-                            <>
-                              <h3 className={local.sousSection}>Matériel à prévoir</h3>
-                              <ul className={local.materiel}>
-                                {p.materiel.map((m) => (
-                                  <li key={m.objet}>
-                                    <b>{m.objet}</b>
-                                    <span>{m.usage}</span>
-                                    {m.sinon && (
-                                      <span className={local.sinon}>Sinon : {m.sinon}</span>
-                                    )}
-                                  </li>
-                                ))}
-                              </ul>
-                            </>
+                            <div className={local.materielBloc}>
+                              <button
+                                type="button"
+                                className={local.materielTete}
+                                onClick={() => setMaterielOuvert((v) => !v)}
+                                aria-expanded={materielOuvert}
+                              >
+                                <span>Matériel à prévoir</span>
+                                <span className={local.materielCompte}>
+                                  {p.materiel.length} objets
+                                </span>
+                                <Icon
+                                  name={materielOuvert ? 'chevron-up' : 'chevron-down'}
+                                  size="16px"
+                                />
+                              </button>
+                              {materielOuvert && (
+                                <ul className={local.materiel}>
+                                  {p.materiel.map((m) => (
+                                    <li key={m.objet}>
+                                      <b>{m.objet}</b>
+                                      <span>{m.usage}</span>
+                                      {m.sinon && (
+                                        <span className={local.sinon}>Sinon : {m.sinon}</span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
                           )}
 
                           {p.prerequis.length > 0 && (
