@@ -56,6 +56,18 @@ export interface ExerciseRecord {
   ressenti: Ressenti | null;
   /** Remarque libre sur cet exercice ce jour-là, `null` si elle n'a rien noté. */
   remarque: string | null;
+  /**
+   * Le détail tour par tour, quand la séance se saisit comme POWER — une
+   * ligne par tour validé, `null` pour un tour pas encore fait. `actual` et
+   * `kg` en sont tirés (voir `appliquerTour`) : la progression des charges
+   * continue de lire ces deux champs-là, sans rien savoir des tours.
+   */
+  tours?: (TourFait | null)[];
+}
+
+export interface TourFait {
+  reps: number;
+  kg: number | null;
 }
 
 /**

@@ -487,7 +487,14 @@ export type MainLiftTable = Record<MainLiftId, LiftSchedule>;
 export interface WarmupItem {
   id: string;
   label: string;
+  /** La quantité, courte, alignée à droite : « × 8 », « 3 min ». */
   detail?: string;
+  /**
+   * Une consigne en phrase, affichée SOUS le libellé. POWER n'en a pas ;
+   * l'échauffement FEMMES en a une par mouvement, trop longue pour la colonne
+   * de droite.
+   */
+  consigne?: string;
 }
 
 export interface Warmup {

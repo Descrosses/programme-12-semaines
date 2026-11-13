@@ -1061,3 +1061,28 @@
   border-color: rgb(255 255 255 / 35%);
   color: rgb(255 255 255 / 70%);
 }
+
+/* -------------------------------------- séance façon POWER (SeanceFemmes) */
+
+/* La bascule maison / salle, posée dans la séance aux marges de POWER. */
+.basculeSeance {
+  margin: var(--gap, 14px) var(--pad, 16px);
+}
+
+/* Hors de la page FEMMES, la bascule perdait son corps de texte : « Salle de
+   sport » passait sur deux lignes. Ici, une ligne, à la taille des
+   boutons de séance. */
+.basculeSeance .basculeBtn {
+  min-height: 52px;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+/* Le ressenti choisi : il doit se voir d'un coup d'œil, c'est lui que la
+   progression relit. */
+.ressentiChoisi {
+  border-color: var(--accent-bright);
+  background: var(--accent);
+  color: var(--ink-on-accent, #fff);
+}

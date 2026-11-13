@@ -33,14 +33,19 @@ export function WarmupSection({
           <button
             key={item.id}
             type="button"
-            className={`${styles.warmupItem} ${on ? styles.warmupDone : ''}`}
+            className={`${styles.warmupItem} ${on ? styles.warmupDone : ''} ${
+              item.consigne ? styles.warmupItemLong : ''
+            }`}
             onClick={() => onToggle(item.id)}
             aria-pressed={on}
           >
             <span className={`${styles.box} ${on ? styles.boxOn : ''}`} aria-hidden="true">
               {on ? <Icon name="check" size="18px" /> : null}
             </span>
-            <span className={styles.warmupLabel}>{item.label}</span>
+            <span className={styles.warmupLabel}>
+              {item.label}
+              {item.consigne && <span className={styles.warmupConsigne}>{item.consigne}</span>}
+            </span>
             {item.detail && <span className={styles.warmupDetail}>{item.detail}</span>}
           </button>
         );

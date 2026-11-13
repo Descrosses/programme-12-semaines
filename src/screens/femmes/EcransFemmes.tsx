@@ -17,26 +17,26 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CycleRow, FemmesSeanceRow } from '../../db/db';
 import {
   FEMMES_PROGRAMME_ID,
-  enregistrerExerciceFemmes,
   enregistrerProfilFemmes,
+  majSeanceFemmes,
   marquerSeanceFemmesNonFaite,
+  modifierExerciceFemmes,
+  rouvrirSeanceFemmes,
   seancesFemmes,
   terminerSeanceFemmes,
 } from '../../db/femmesRepo';
 import { cycleActif } from '../../db/repo';
 import { avancement, historique } from '../../engine/femmes/avancement';
-import {
-  DEFAULT_SETTINGS,
-  type ExerciseRecord,
-  type SessionContext,
-} from '../../engine/femmes/types';
+import { DEFAULT_SETTINGS, type SessionContext } from '../../engine/femmes/types';
+import { appliquerNote, appliquerTour, type ContexteTour } from '../../engine/femmes/tours';
+import type { ResolvedSlot } from '../../data/femmes/types';
+import type { RestTimer } from '../../state/useRestTimer';
+import { SeanceFemmes } from './SeanceFemmes';
 import { applique } from './etat';
 import {
   ETAT_INITIAL,
   FemmesAujourdhui,
-  FemmesExercice,
   FemmesProfil,
-  FemmesSeance,
   FemmesSemaine,
   type DonneesFemmes,
   type EtatFemmes,
@@ -52,8 +52,11 @@ export function EcransFemmes({
   onNaviguer,
   onSortir,
   onDataChanged,
+  timer,
 }: {
   vue: VueFemmes;
+  /** Le chrono de repos de l'App, le même que POWER : la barre du bas l'affiche. */
+  timer: RestTimer;
   onNaviguer: (v: VueFemmes) => void;
   /*
    * La sortie du programme, vers l'accueil MAJK — le bouton « MAJK » de la
@@ -67,8 +70,6 @@ export function EcransFemmes({
   const [cycle, setCycle] = useState<CycleRow | null | undefined>(undefined);
   const [seances, setSeances] = useState<FemmesSeanceRow[]>([]);
   const [etat, setEtat] = useState<EtatFemmes>(ETAT_INITIAL);
-  /* Quel exercice du circuit est ouvert en plein écran. */
-  const [index, setIndex] = useState(0);
 
   const relire = useCallback(async () => {
     const c = await cycleActif();
@@ -144,16 +145,17 @@ export function EcransFemmes({
     );
   }
 
-  async function enregistrer(record: ExerciseRecord) {
-    await enregistrerExerciceFemmes({
-      cycleId,
-      semaine: etat.semaine,
-      jour: etat.jour,
-      version: etat.version,
-      record,
-    });
-    await relire();
-  }
+  /* La séance ouverte, telle que la base la désigne. */
+  const cible = { cycleId, semaine: etat.semaine, jour: etat.jour, version: etat.version };
+  const ctxTour = (slot: ResolvedSlot, planned: number): ContexteTour => ({
+    exerciseId: slot.exercise.id,
+    week: etat.semaine,
+    day: etat.jour,
+    date: new Date().toISOString().slice(0, 10),
+    version: etat.version,
+    planned,
+  });
+  const ligneOuverte = seances.find((x) => x.semaine === etat.semaine && x.jour === etat.jour);
 
   async function terminer() {
     const fin = await terminerSeanceFemmes({
@@ -205,32 +207,59 @@ export function EcransFemmes({
       />
     );
   }
-  if (vue === 'seance') {
+  /*
+   * La séance, sur UN écran comme POWER. L'ancienne vue « exercice » (un
+   * exercice en plein écran) y mène aussi : un lien gardé en favori ne tombe
+   * pas sur une page vide.
+   */
+  if (vue === 'seance' || vue === 'exercice') {
     return (
-      <FemmesSeance
+      <SeanceFemmes
         etat={etat}
         donnees={donnees}
-        onNonFaite={(oui) => void nonFaite(etat.semaine, etat.jour, oui)}
-        onVersion={(v) => setEtat(applique(etat, { version: v }))}
-        onAller={aller}
-        onExercice={(i) => {
-          setIndex(i);
-          onNaviguer('exercice');
+        timer={timer}
+        actions={{
+          onRetour: () => onNaviguer('semaine'),
+          onVersion: (v) => setEtat(applique(etat, { version: v })),
+          onDemarrer: async () => {
+            await majSeanceFemmes({ ...cible, patch: { debut: Date.now() } });
+            await relire();
+          },
+          onEchauffement: async (ids) => {
+            await majSeanceFemmes({ ...cible, patch: { echauffement: ids } });
+            await relire();
+          },
+          onTour: async (slot, i, tour, planned) => {
+            // Le premier tour validé démarre la séance, comme la première
+            // série validée démarre le chrono de POWER.
+            if (ligneOuverte?.debut === undefined) {
+              await majSeanceFemmes({ ...cible, patch: { debut: Date.now() } });
+            }
+            await modifierExerciceFemmes({
+              ...cible,
+              exerciseId: slot.exercise.id,
+              modifier: (ancien) => appliquerTour(ancien, ctxTour(slot, planned), i, tour),
+            });
+            await relire();
+          },
+          onNote: async (slot, planned, patch) => {
+            await modifierExerciceFemmes({
+              ...cible,
+              exerciseId: slot.exercise.id,
+              modifier: (ancien) => appliquerNote(ancien, ctxTour(slot, planned), patch),
+            });
+            await relire();
+          },
+          onTerminer: async () => {
+            timer.skip();
+            await terminer();
+          },
+          onRouvrir: async () => {
+            await rouvrirSeanceFemmes(cible);
+            await relire();
+          },
+          onNonFaite: (oui) => void nonFaite(etat.semaine, etat.jour, oui),
         }}
-      />
-    );
-  }
-  if (vue === 'exercice') {
-    return (
-      <FemmesExercice
-        etat={etat}
-        donnees={donnees}
-        index={index}
-        onRetour={() => onNaviguer('seance')}
-        onIndex={setIndex}
-        onAller={aller}
-        onEnregistrer={enregistrer}
-        onTerminer={terminer}
       />
     );
   }

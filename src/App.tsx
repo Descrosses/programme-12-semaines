@@ -451,6 +451,7 @@ function renderScreen(
           onNaviguer={(v) => navigate({ name: 'femmes', vue: v })}
           onSortir={() => navigate({ name: 'accueil' })}
           onDataChanged={refresh}
+          timer={timer}
         />
       );
 
