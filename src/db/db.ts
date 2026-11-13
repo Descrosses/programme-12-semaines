@@ -546,6 +546,13 @@ export interface FemmesSeanceRow {
   /** `YYYY-MM-DD` du dernier enregistrement. */
   date: string;
   terminee: boolean;
+  /**
+   * « Séance non faite » : passée sans être faite. Elle ne compte pas parmi
+   * les séances faites, mais la prochaine séance devient celle d'après.
+   * Absent sur les lignes d'avant : `undefined` vaut non. Pas un index, donc
+   * aucune montée de version.
+   */
+  sautee?: boolean;
   exercices: ExerciseRecord[];
 }
 

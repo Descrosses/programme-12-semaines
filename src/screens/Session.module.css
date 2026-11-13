@@ -615,6 +615,20 @@
   color: var(--ink-2);
 }
 
+/* Le geste de côté : visible, mais jamais confondu avec « Séance terminée ». */
+.nonFaite {
+  display: block;
+  width: calc(100% - 2 * var(--pad));
+  margin: 0 var(--pad) 16px;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: var(--fs-small);
+}
+
 .summary {
   margin: 0 var(--pad) 24px;
   padding: 16px var(--pad);

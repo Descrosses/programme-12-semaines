@@ -7,6 +7,7 @@ import { db } from './db';
 import {
   enregistrerExerciceFemmes,
   enregistrerProfilFemmes,
+  marquerSeanceFemmesNonFaite,
   seancesFemmes,
   terminerSeanceFemmes,
 } from './femmesRepo';
@@ -117,6 +118,51 @@ describe('séances FEMMES en base', () => {
         version: 'maison',
       }),
     ).toBe(false);
+  });
+
+  it('« non faite » se pose, garde la saisie, et se défait', async () => {
+    const id = await cycleFemmes();
+    const base = { cycleId: id, semaine: 1, jour: 0 as const, version: 'maison' as const };
+    await enregistrerExerciceFemmes({ ...base, record: record('a', 5) });
+    await marquerSeanceFemmesNonFaite({ ...base, nonFaite: true });
+    let [ligne] = await seancesFemmes(id);
+    expect(ligne!.sautee).toBe(true);
+    expect(ligne!.exercices).toHaveLength(1);
+    await marquerSeanceFemmesNonFaite({ ...base, nonFaite: false });
+    [ligne] = await seancesFemmes(id);
+    expect(ligne!.sautee).toBe(false);
+  });
+
+  it('faire une séance marquée « non faite » efface la marque', async () => {
+    const id = await cycleFemmes();
+    const base = { cycleId: id, semaine: 1, jour: 0 as const, version: 'maison' as const };
+    await marquerSeanceFemmesNonFaite({ ...base, nonFaite: true });
+    await terminerSeanceFemmes(base);
+    const [ligne] = await seancesFemmes(id);
+    expect(ligne).toMatchObject({ terminee: true, sautee: false });
+  });
+
+  it('passer la dernière séance restante clôt aussi le cycle', async () => {
+    const id = await cycleFemmes();
+    for (const c of ORDRE.slice(0, -1)) {
+      await terminerSeanceFemmes({
+        cycleId: id,
+        semaine: c.semaine,
+        jour: c.jour,
+        version: 'maison',
+      });
+    }
+    const der = ORDRE[ORDRE.length - 1]!;
+    expect(
+      await marquerSeanceFemmesNonFaite({
+        cycleId: id,
+        semaine: der.semaine,
+        jour: der.jour,
+        version: 'maison',
+        nonFaite: true,
+      }),
+    ).toBe(true);
+    expect((await db.cycles.get(id))?.statut).toBe('termine');
   });
 
   it('un cycle FEMMES avec une séance n’est pas « vierge » : il ne se supprime pas', async () => {

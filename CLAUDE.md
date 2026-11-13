@@ -234,6 +234,19 @@ matériel et la durée avant d'écrire la moindre séance.
   semaines, 4 transitions de 4) suit l'exception de Guillaume : **terminer un
   cycle ouvre la transition qui le suit ET le cycle suivant**. Une transition
   n'ouvre rien. Des tests de `acces.test.ts` figent cette règle.
+- **Les transitions seront AU CHOIX — décision de Guillaume, pas encore codée.**
+  À chaque étape « Transition » d'un parcours, l'utilisateur choisira UN cycle
+  de renfo parmi plusieurs, selon le point faible qu'il veut travailler (par
+  exemple dos, ischios, pecs-épaules, fessiers — toujours avec un gros travail
+  CORE). Rien n'est imposé. Deux règles tranchées :
+  1. **Chaque famille a ses propres renfos** (POWER, MASS, FEMMES) : un
+     « renfo fessiers » FEMMES n'est pas celui de POWER.
+  2. **Un même renfo peut se refaire** plusieurs fois dans le parcours (« si le
+     besoin de continuer à renforcer son dos se fait ressentir »).
+  Terminer n'importe lequel des renfos proposés compte comme la transition
+  faite. **Ne rien construire avant que Guillaume ait écrit les cycles** : pas
+  de lignes « À venir » aux noms provisoires. Les noms ci-dessus sont des
+  exemples, pas des titres.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

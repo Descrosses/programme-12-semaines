@@ -33,7 +33,12 @@ import { SAFETY_CHECKS, WEEK_DAYS } from '../../data/femmes/programme';
 import { WEEKS, type DayIndex, type Version, type WeekIndex } from '../../data/femmes/types';
 import { getSession } from '../../engine/femmes/getSession';
 import { restLabel, workLabel } from '../../engine/femmes/format';
-import { estFaite, type Avancement, type SeanceFaite } from '../../engine/femmes/avancement';
+import {
+  estFaite,
+  estSautee,
+  type Avancement,
+  type SeanceFaite,
+} from '../../engine/femmes/avancement';
 import { targetForWeek } from '../../engine/femmes/progression';
 import type {
   ExerciseRecord,
@@ -89,11 +94,14 @@ export function FemmesAujourdhui({
   donnees,
   onAller,
   onCommencer,
+  onNonFaite,
 }: {
   etat: EtatFemmes;
   donnees: DonneesFemmes;
   onAller: (o: OngletFemmes) => void;
   onCommencer: () => void;
+  /** « Séance non faite » : passe à la suivante sans la faire. */
+  onNonFaite: () => void;
 }) {
   const phase = phaseOf(etat.semaine);
   const seance = useMemo(
@@ -159,6 +167,15 @@ export function FemmesAujourdhui({
             {dejaFaite ? 'Revoir la séance' : 'Commencer la séance'}
           </button>
         </section>
+
+        {/* Le geste de côté : on laisse cette séance, on passe à la suivante.
+            Elle ne compte pas comme faite, et le choix se défait depuis la
+            semaine. */}
+        {!dejaFaite && !termine && (
+          <button type="button" className={s.secondaire} onClick={onNonFaite}>
+            Séance non faite — passer à la suivante
+          </button>
+        )}
 
         <div className={s.duo}>
           <div className={s.tuile}>
@@ -262,6 +279,8 @@ export function FemmesSemaine({
               {/* Faite, prévue (la prochaine à faire), ou à faire. */}
               {estFaite(donnees.seances, etat.semaine, d) ? (
                 <span className={`${s.etat} ${s.etatFaite}`}>Faite</span>
+              ) : estSautee(donnees.seances, etat.semaine, d) ? (
+                <span className={`${s.etat} ${s.etatSautee}`}>Non faite</span>
               ) : prochaine?.semaine === etat.semaine && prochaine.jour === d ? (
                 <span className={`${s.etat} ${s.etatPrevu}`}>Prévue</span>
               ) : (
@@ -297,12 +316,15 @@ export function FemmesSemaine({
 export function FemmesSeance({
   etat,
   donnees,
+  onNonFaite,
   onVersion,
   onAller,
   onExercice,
 }: {
   etat: EtatFemmes;
   donnees: DonneesFemmes;
+  /** Marque (ou démarque) la séance ouverte comme « non faite ». */
+  onNonFaite: (nonFaite: boolean) => void;
   onVersion: (v: Version) => void;
   onAller: (o: OngletFemmes) => void;
   onExercice: (index: number) => void;
@@ -430,6 +452,17 @@ export function FemmesSeance({
           <Ico nom="play" />
           Démarrer le circuit
         </button>
+
+        {!estFaite(donnees.seances, etat.semaine, etat.jour) &&
+          (estSautee(donnees.seances, etat.semaine, etat.jour) ? (
+            <button type="button" className={s.secondaire} onClick={() => onNonFaite(false)}>
+              Marquée non faite — annuler
+            </button>
+          ) : (
+            <button type="button" className={s.secondaire} onClick={() => onNonFaite(true)}>
+              Séance non faite — passer à la suivante
+            </button>
+          ))}
 
         {seance.notes.length > 0 && (
           <section className={s.carte}>

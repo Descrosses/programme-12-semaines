@@ -400,6 +400,27 @@ export function SessionScreen({
     await data.reload();
   }
 
+  /*
+   * « Séance non faite » : on passe à la suivante sans décaler le calendrier.
+   *
+   * La séance est marquée « sautée », rien n'est effacé : ses séries
+   * éventuelles restent en base, et la progression ignore déjà une séance
+   * sautée. Le geste se défait — et terminer la séance malgré tout la passe
+   * en « faite ».
+   */
+  async function handleNonFaite() {
+    const id = await data.ensureRow();
+    if (id === null) return;
+    if (row?.status === 'skipped') {
+      await updateSession(id, { status: 'planned' });
+      await data.reload();
+      return;
+    }
+    await updateSession(id, { status: 'skipped', finishedAt: undefined });
+    timer.skip();
+    onBack();
+  }
+
   /**
    * Une carte d'exercice, avec tout ce qui s'y rattache.
    *
@@ -808,6 +829,13 @@ export function SessionScreen({
       >
         {row?.status === 'done' ? 'Séance terminée — annuler' : 'Séance terminée'}
       </button>
+      {row?.status !== 'done' && (
+        <button type="button" className={styles.nonFaite} onClick={() => void handleNonFaite()}>
+          {row?.status === 'skipped'
+            ? 'Marquée non faite — annuler'
+            : 'Séance non faite — passer à la suivante'}
+        </button>
+      )}
 
       <div className={styles.summary}>
         <h2>Résumé</h2>
