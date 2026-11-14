@@ -534,9 +534,11 @@ export function SessionScreen({
               <Icon name="stopwatch" size="14px" /> Pas commencée
             </span>
           )}
-          <span className={styles.metaItem}>
-            Bloc <b>{BLOCKS[session.block].name}</b>
-          </span>
+          {session.sansBloc !== true && (
+            <span className={styles.metaItem}>
+              Bloc <b>{BLOCKS[session.block].name}</b>
+            </span>
+          )}
         </div>
 
         {data.trend.declining && <p className={styles.note}>{data.trend.message}</p>}

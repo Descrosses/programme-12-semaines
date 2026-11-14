@@ -132,6 +132,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       history,
       readiness: readinessResult,
       explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
+      ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
     });
 
     /*
@@ -186,6 +187,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
             history,
             readiness: null,
             explosiveDecline: false,
+            ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
           })
         : null;
     const previousSaved: Record<string, SetRow[]> = {};

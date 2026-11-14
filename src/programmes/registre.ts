@@ -16,11 +16,12 @@
 
 import { PROGRAMME_PAR_DEFAUT } from '../data/catalogue';
 import { MASS4 } from './mass4/module';
+import { MASS_FORCE } from './massforce/module';
 import { POWER12 } from './power12';
 import type { ModuleProgramme } from './types';
 
 /** Tous les modules réellement jouables, dans l'ordre du catalogue. */
-export const MODULES: readonly ModuleProgramme[] = [POWER12, MASS4];
+export const MODULES: readonly ModuleProgramme[] = [POWER12, MASS4, MASS_FORCE];
 
 /**
  * Le module d'un programme, ou `null`.

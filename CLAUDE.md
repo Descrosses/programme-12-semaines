@@ -286,6 +286,23 @@ matériel et la durée avant d'écrire la moindre séance.
      et AUCUN critère d'éligibilité inventé.
   4. Les séries fractionnées ne s'implémentent pas avant validation, et
      jamais via `secondReps` (qui veut dire « dégressive » à l'écran).
+  5. **MASS FORCE, lot 4a — FAIT, semaine type S1 seulement.** Source :
+     `programme-mass-force.md` (§1 tableau, §3 consignes/vigilance), relu case
+     par case par `massforce.test.ts`. Module `programmes/massforce/`
+     (`semaines: [1]`) : aucune charge, aucun %, aucun champ RPE (« RPE 8 »
+     est une consigne). Les 4 mouvements évalués portent « charge libre en
+     attendant ». MASS FORCE reste `a-venir` : pas de bouton Commencer.
+     Chaque option (matériel/variante) est un exercice à part (`mf-…`), donc
+     un historique à part ; le choix est fait une fois par cycle
+     (`CycleRow.massForce.choix`, passé aux séances par `ctx.choixCycle`).
+     **La porte** (`depart.ts`, `PorteMassForce`) : Aujourd'hui, Semaine et
+     les séances restent fermés tant que les choix ne sont pas confirmés ET
+     que chaque test a une référence AU MATÉRIEL CHOISI (une référence barre
+     n'ouvre pas un cycle Smith). Onglet Combiné = `EvaluationScreen` ;
+     Progrès et Nutrition = vue `a-venir`, sans contenu. Superset biceps :
+     3e rythme `transition` (repos court puis long), le chrono dit
+     « Transition → … ». Combiné : bench barre/Smith, plus d'haltères.
+     Reste à écrire par Guillaume : S2–S4, fourchettes %1RM.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

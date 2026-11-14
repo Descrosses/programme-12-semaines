@@ -142,6 +142,11 @@ export interface ResolvedSession {
   day: DayIndex;
   block: Block;
   blockName: string;
+  /**
+   * Programme sans bloc de périodisation affiché (MASS FORCE, semaine type) :
+   * l'écran de séance tait l'étiquette « Bloc … » au lieu d'en inventer un.
+   */
+  sansBloc?: true;
   blockColor: string;
   title: string;
   /**

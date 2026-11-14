@@ -65,7 +65,9 @@ export type VueProgramme =
   | 'progress'
   | 'progress-volume'
   | 'combine'
+  | 'evaluation'
   | 'mesures'
+  | 'a-venir'
   | 'settings';
 
 /** Ce qu'un programme pose sur l'écran Réglages, qu'il partage avec les autres. */

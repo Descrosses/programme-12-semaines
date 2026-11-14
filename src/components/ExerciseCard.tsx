@@ -238,6 +238,11 @@ export function ExerciseCard({
         {repere !== null && <p className={styles.exRepere}>{repere}</p>}
         <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
+        {ex.def.vigilance && (
+          <p className={styles.vigilance}>
+            <b>Vigilance</b> — {ex.def.vigilance}
+          </p>
+        )}
 
         <div className={styles.exSub}>
           {ex.targetRPE && <span>{ex.targetRPE.label}</span>}
@@ -790,10 +795,13 @@ export function SetEntry({
   lastInUnit,
   timer,
   onSave,
+  libelleRepos,
 }: {
   ex: ResolvedExercise;
   index: number;
   plannedKg: number | null;
+  /** Le libellé du chrono, quand ce n'est pas un repos (transition de superset). */
+  libelleRepos?: string;
   saved: SetRow | null;
   /** La série à faire maintenant : elle seule est mise en avant. */
   courante?: boolean;
@@ -933,7 +941,7 @@ export function SetEntry({
     if (ex.restSec > 0) {
       const label = ex.contrast
         ? `→ ${nomExplosif} × ${ex.contrast.explosiveReps}`
-        : `${ex.name} — série ${index + 1}`;
+        : (libelleRepos ?? `${ex.name} — série ${index + 1}`);
       timer.start(ex.contrast?.restAfterHeavySec ?? ex.restSec, label);
     }
     if (ex.contrast) setAttenteExplosif(true);

@@ -34,6 +34,7 @@ import {
 } from '../data/combineMass';
 import type { ReferenceForceRow } from '../db/db';
 import { ajouterReference, toutesLesReferences } from '../db/references';
+import { cycleActif } from '../db/repo';
 import { humanDateShort } from '../engine/calendar';
 import { fr } from '../engine/format';
 import { etatReference, historiqueReferences } from '../engine/references';
@@ -50,7 +51,13 @@ function resumeReference(r: ReferenceForceRow): string {
     : `${fr(r.chargeKg)} kg × ${r.reps} — sous-maximal, donnée brute`;
 }
 
-export function EvaluationScreen({ onRetour }: { onRetour: () => void }) {
+/**
+ * `onRetour` absent : l'écran est l'onglet « Combiné » d'un cycle MASS FORCE,
+ * sans bouton retour (la barre du bas en tient lieu), et chaque test est
+ * rattaché au cycle en cours.
+ */
+export function EvaluationScreen({ onRetour }: { onRetour?: () => void }) {
+  const dansCycle = onRetour === undefined;
   const [lignes, setLignes] = useState<ReferenceForceRow[] | null>(null);
   const relire = async () => setLignes(await toutesLesReferences());
 
@@ -61,20 +68,29 @@ export function EvaluationScreen({ onRetour }: { onRetour: () => void }) {
   return (
     <div className={styles.screen}>
       <header className={styles.header}>
-        <button type="button" className={styles.back} onClick={onRetour}>
-          <Icon name="arrow-left" size="18px" />
-          MASS
-        </button>
+        {onRetour !== undefined && (
+          <button type="button" className={styles.back} onClick={onRetour}>
+            <Icon name="arrow-left" size="18px" />
+            MASS
+          </button>
+        )}
         <h1 className={styles.title}>Combiné d’évaluation</h1>
         <span className={styles.titleRule} aria-hidden="true" />
         <p className={styles.note}>
           Quatre tests avant MASS FORCE. Pour chacun : le matériel utilisé, puis un test direct du
           1RM ou une série sous-maximale.
         </p>
-        <p className={styles.note}>
-          MASS FORCE n’est pas encore disponible. Ces tests restent enregistrés et datés : ils
-          serviront de référence.
-        </p>
+        {!dansCycle ? (
+          <p className={styles.note}>
+            MASS FORCE n’est pas encore disponible. Ces tests restent enregistrés et datés : ils
+            serviront de référence.
+          </p>
+        ) : (
+          <p className={styles.note}>
+            Les séances s’ouvrent quand chaque mouvement évalué a une référence avec le matériel
+            choisi pour ce cycle.
+          </p>
+        )}
         <p className={styles.note}>
           Une série sous-maximale ne donne lieu à aucune estimation : la méthode n’est pas encore
           validée. Seules la charge et les répétitions sont gardées.
@@ -84,7 +100,14 @@ export function EvaluationScreen({ onRetour }: { onRetour: () => void }) {
       {lignes === null
         ? null
         : COMBINE_MASS_FORCE.map((t, i) => (
-            <CarteTest key={t.exercice} test={t} rang={i} lignes={lignes} onEnregistre={relire} />
+            <CarteTest
+              key={t.exercice}
+              test={t}
+              rang={i}
+              lignes={lignes}
+              dansCycle={dansCycle}
+              onEnregistre={relire}
+            />
           ))}
     </div>
   );
@@ -94,11 +117,13 @@ function CarteTest({
   test,
   rang,
   lignes,
+  dansCycle,
   onEnregistre,
 }: {
   test: TestCombine;
   rang: number;
   lignes: readonly ReferenceForceRow[];
+  dansCycle: boolean;
   onEnregistre: () => Promise<void>;
 }) {
   const historique = historiqueReferences(lignes, test.exercice);
@@ -134,7 +159,7 @@ function CarteTest({
         reps: repsEffectives!,
         date,
         programmeId: 'mass-force',
-        cycleId: null,
+        cycleId: dansCycle ? ((await cycleActif())?.id ?? null) : null,
         note: '',
       });
       setCharge(null);

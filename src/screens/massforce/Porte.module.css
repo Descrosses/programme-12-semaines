@@ -1,0 +1,37 @@
+/* L'écran de départ de MASS FORCE : seule la liste d'état lui est propre. */
+
+.etats {
+  margin: 10px 0 14px;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.etats li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.statut {
+  flex: none;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+
+.fait {
+  color: var(--ink);
+}
+
+.legende {
+  margin: 12px 0 4px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

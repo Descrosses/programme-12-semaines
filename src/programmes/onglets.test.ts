@@ -40,7 +40,9 @@ const VUES_RENDUES: readonly VueProgramme[] = [
   'progress',
   'progress-volume',
   'combine',
+  'evaluation',
   'mesures',
+  'a-venir',
   'settings',
 ];
 
@@ -234,5 +236,21 @@ describe('calendrier des programmes', () => {
       const attendu = m.semaines.reduce((n, w) => n + m.joursDeLaSemaine(w).length, 0);
       expect({ id: m.id, n: schedule(ancre, m).length }).toEqual({ id: m.id, n: attendu });
     }
+  });
+
+  it('donne à MASS FORCE son combiné, et deux places « à venir » sans contenu emprunté', () => {
+    expect(moduleParId('mass-force')?.onglets).toEqual([
+      { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
+      { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
+      { route: 'combine', label: 'Combiné', icon: 'stopwatch', vue: 'evaluation' },
+      { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'a-venir' },
+      { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'a-venir' },
+      { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
+    ]);
+    // Ni le combine de POWER (1RM dans settings.oneRM), ni ses grammes.
+    const vues = moduleParId('mass-force')?.onglets.map((o) => o.vue) ?? [];
+    expect(vues).not.toContain('combine');
+    expect(vues).not.toContain('nutrition');
+    expect(moduleParId('mass-force')?.reglages.force).toBe(false);
   });
 });
