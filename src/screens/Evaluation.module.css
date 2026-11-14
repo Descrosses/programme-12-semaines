@@ -87,3 +87,283 @@
   color: var(--ink);
   font-weight: 700;
 }
+
+/* ===================================================================== */
+/*
+ * Le combiné MASS d'après la référence de Guillaume (14 novembre).
+ * Mesures relevées sur sa capture (850 px = 402 px CSS, soit × 0,473),
+ * écran entier, barre d'état comprise.
+ *
+ * Écarts VOULUS, parce que la référence contredit une règle de l'app :
+ * - Boutons, curseurs et champ de date gardent 48 px de haut (`--tap`, « non
+ *   négociable ») ; la référence les dessine à 34–36 px.
+ * - « Enregistrer le test » reste dans la carte : sans lui, rien ne s'écrit.
+ * - Dans le cycle, « MASS FORCE » est une étiquette sans chevron : la
+ *   navigation s'y fait par les onglets, il n'y a nulle part où revenir.
+ */
+
+/* ---------------------------------------------------------- en-tête -- */
+
+/* La photo passe sous la barre d'état, comme sur la référence. */
+.entete {
+  --haut-ecran: env(safe-area-inset-top, 0px);
+  isolation: isolate;
+  margin-top: calc(-1 * var(--haut-ecran));
+  padding: calc(var(--haut-ecran) - 7px) 14px 0;
+  border-bottom: 0;
+  background: var(--bg);
+}
+
+/* Les disques à droite, du haut de l'écran jusque sous le titre. */
+.entete .photo {
+  top: 0;
+  right: -18px;
+  left: auto;
+  width: 440px;
+  height: calc(196px + var(--haut-ecran) * 0.5);
+  opacity: 1;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 30%) 38%, #000 66%),
+    linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 30%) 38%, #000 66%),
+    linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.surtitre,
+.retour {
+  margin: 0;
+  color: #f2f2f2;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.125rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.surtitre {
+  padding: 2px 0 0 2px;
+  line-height: 1.2;
+}
+
+/* Deux lignes, argent, vrai italique extra-gras ; le « // » rouge reste. */
+.entete .titre {
+  max-width: 300px;
+  margin-top: 6px;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 2.95rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.92;
+  transform: none;
+  /* Le dégradé se répète LIGNE PAR LIGNE : sinon la 1re ligne est blanche
+     et la 2e grise, là où la référence fait briller chacune. */
+  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%) 0 0 / 100%
+    0.92em repeat-y;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+}
+
+/* Le trait rouge, long, qui s'éteint vers la droite. */
+.entete .trait {
+  width: 140px;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 2px;
+  clip-path: none;
+  background: linear-gradient(90deg, #e3141c 0%, #e3141c 48%, rgb(227 20 28 / 0%) 100%);
+  box-shadow: 0 0 8px rgb(227 20 28 / 40%);
+}
+
+/* Les trois encadrés : bordés en entier, icône rouge à gauche. */
+.entete .encadre {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 15px;
+  min-height: 64px;
+  margin-top: 8px;
+  padding: 7px 14px 7px 13px;
+  border: 1px solid #3a3b3c;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #1c1c1d 0%, #121213 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
+  color: #e6e6e6;
+  line-height: 1.2;
+}
+
+.entete .trait + .encadre {
+  margin-top: 18px;
+}
+
+/* Icônes rouges, au trait plus épais que celui de la navigation. */
+.encadre svg {
+  justify-self: center;
+  width: 30px;
+  height: 30px;
+  color: #e3141c;
+  stroke-width: 2.6;
+}
+
+/* ------------------------------------------------------ carte de test -- */
+
+.carte {
+  margin: 16px 14px;
+  border: 1px solid #3c3d3e;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1b1b1c 0%, #111112 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+}
+
+.repere,
+.nom,
+.rang {
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+.repere {
+  color: #f0f0f0;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+
+.nom {
+  color: #fff;
+  font-size: 1.875rem;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
+.carte .etat {
+  color: #e0e0e0;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+}
+
+.carte .legende {
+  color: #cfcfcf;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Matériel et modalité : sombres, la choisie rouge avec son halo. */
+.option {
+  border-color: #5b5c5d;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #262627 0%, #121213 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+  color: #fff;
+  /* Gras penché, plus extra-gras : les choix se lisent, le titre domine. */
+  font-family: var(--font-cond);
+  font-size: 1.1875rem;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.option.choisi {
+  border-color: #ff3b42;
+  background: linear-gradient(180deg, #d8121c 0%, #a50c15 55%, #7d070e 100%);
+  box-shadow:
+    0 0 14px rgb(226 10 17 / 45%),
+    inset 0 1px 0 rgb(255 255 255 / 18%);
+}
+
+.rang {
+  color: #fff;
+  font-size: 1.875rem;
+  line-height: 1.5;
+}
+
+/* Les curseurs : libellé clair, chiffre en italique extra-gras. */
+.steppers > div > div:first-child {
+  color: #f0f0f0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.steppers > div > div:last-child {
+  border: 1px solid #4a4b4c;
+  background: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
+}
+
+.steppers button:not(:global(.tnum)) {
+  background: rgb(0 0 0 / 18%);
+}
+
+.steppers :global(.tnum) {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.75rem;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.carte .date {
+  color: #e6e6e6;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* Le champ de date : icône calendrier à gauche, derrière un filet. */
+.champDate {
+  position: relative;
+  display: block;
+}
+
+.champDate svg {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  color: #e6e6e6;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.champDate::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 50px;
+  width: 1px;
+  background: #4a4b4c;
+  pointer-events: none;
+}
+
+.carte .champDate input {
+  width: 100%;
+  min-height: var(--tap);
+  padding-left: 64px;
+  border-color: #4a4b4c;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #1d1d1e 0%, #121213 100%);
+  color: #fff;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.valider {
+  border: 1px solid #ff3b42;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #d8121c 0%, #a50c15 55%, #7d070e 100%);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.1875rem;
+  font-style: italic;
+  font-weight: 800;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 18%);
+}
+
+.valider:disabled {
+  border-color: #4a4b4c;
+  background: #1d1d1e;
+  color: #8a8c90;
+  box-shadow: none;
+}

@@ -341,6 +341,41 @@ matériel et la durée avant d'écrire la moindre séance.
      initial, « N semaines bouclées », raccourci Nutrition) passent par
      `programmes/textesCycle.ts`. POWER ne change pas d'un mot — des tests
      (`OnboardingScreen.test.tsx`, `textesCycle.test.ts`) le figent.
+  9. **Identité MASS = maquettes sombres de Guillaume (14 novembre)**, pour
+     toute la famille (FORCE et CONGESTION) : `[data-theme='mass']` presque
+     noir et rouge, « // » rouge après les titres, semaine choisie rouge.
+     Elle REMPLACE la palette claire ardoise (décision antérieure, renversée
+     par Guillaume). Contrastes mesurés par `styles/themeMass.test.ts`.
+     **Photos d'en-tête MASS — FAIT** : quatre photos fournies par Guillaume
+     (885 px de large, pas agrandies), une par écran
+     (`HABILLAGE.mass.entetes` : athlète → Accueil, disque → Semaine, salle →
+     Séance, disques → Combiné). Sujet à droite, voile horizontal à gauche
+     sous le titre. **L'en-tête de l'Accueil MASS est PERMANENT** (décision
+     de Guillaume) : « MASS // » argent, nom exact du cycle (MASS FORCE ou
+     MASS CONGESTION, lu au catalogue), « Semaine X / Y ». L'état du jour
+     (« Ça commence bientôt », nom de séance, « Repos ») descend sous
+     l'en-tête, en petit (`.titreJour`). POWER et FEMMES : rien ne change —
+     `data/enteteMass.test.tsx` le fige.
+     **Écrans Semaine et Combiné MASS — FAIT**, transcrits des références
+     iPhone de Guillaume (mesurées : 1 px de référence = 1,336 px CSS pour
+     Semaine, × 0,473 pour le Combiné). Titres en vrai italique extra-gras
+     (famille `Barlow Mass` dans `fonts.css` : même fichier que l'italique
+     800 de FEMMES, zéro octet de plus) et en argent. Semaine : variante
+     `argent` de `ScreenHeader`, sans « // ». Combiné : « MASS FORCE » est
+     une ÉTIQUETTE dans le cycle (pas de bouton retour : on navigue par les
+     onglets), trois encadrés à icône (haltère ajoutée à `Icon.tsx`).
+     Écarts VOULUS aux références, à ne pas « corriger » : boutons, curseurs
+     et date gardent 48 px (`--tap`), « Enregistrer le test » reste.
+     `screens/combineMass.test.tsx` fige l'étiquette et la variante.
+     **Écran Séance MASS — FAIT** (référence × 0,473), pour FORCE et
+     CONGESTION. Tout le bloc « SÉANCE MASS » de `Session.module.css` est
+     préfixé `:global([data-theme='mass']) .ecranSeance` : ces classes sont
+     partagées avec la séance POWER, la séance FEMMES et le COMBINÉ MASS (une
+     première version les repeignait aussi). `screens/seanceMass.test.ts`
+     refuse tout sélecteur non confiné. Pas de trait sous le titre de séance ;
+     « DUR » (et toute intensité MASS) en bord rouge. Écarts voulus : curseurs
+     et bouton de fiche à 48 px, zone du retour qui mord de 12 px sur la
+     barre d'état, photo de fiche inchangée (pas de fichier fourni).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

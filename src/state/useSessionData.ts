@@ -13,7 +13,7 @@ import { missingPrescribedSets } from '../engine/partialSession';
 import { type ResolvedSession } from '../engine/getSession';
 import { modulePourCycle } from '../programmes/registre';
 import { programmeParId } from '../data/catalogue';
-import { HABILLAGE } from '../data/famillesVisuel';
+import { enteteDe, HABILLAGE } from '../data/famillesVisuel';
 import type { VisuelNom } from '../data/visuels';
 import { readiness as computeReadiness } from '../engine/readiness';
 import { allegementAccepte, explosiveTrend, type ExplosiveTrend } from '../engine/trends';
@@ -76,6 +76,8 @@ export interface SessionData {
    * n'en a pas : le bloc reste alors sur fond uni, sans image empruntée.
    */
   ambiance: VisuelNom | null;
+  /** La photo d'en-tête de séance de la famille (MASS), ou `null`. */
+  entete: VisuelNom | null;
   /** Les réponses aux propositions d'alignement des reps, par exercice. */
   alignements: Record<string, DecisionAlignement>;
   /**
@@ -221,6 +223,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       customRows,
       replaced: applique.replaced,
       ambiance: ambianceDe(programme.id),
+      entete: enteteDe(programme.id, 'seance') ?? null,
       alignements: settingsRow.alignementReps ?? {},
     });
   }, [week, day]);
@@ -254,6 +257,7 @@ function ambianceDe(programmeId: string): VisuelNom | null {
 function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
   return {
     ambiance: null,
+    entete: null,
     alignements: {},
     loading: true,
     session: null,

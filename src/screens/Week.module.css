@@ -331,3 +331,108 @@
 .screen > :last-child {
   margin-bottom: 14px;
 }
+
+/*
+ * MASS — l'écran Semaine d'après la référence de Guillaume (14 novembre).
+ * Valeurs relevées sur la capture (1 px de référence = 1,336 px CSS) :
+ *
+ * - puces : 70 × 71, pas de 80 ; inactives #242424 → #111, bord #3a3a3b ;
+ *   la choisie passe du bordeaux #570e11 au rouge #d0111a vers le bas, bord
+ *   #c5262c, halo rouge. Chiffres de 25 px de haut.
+ * - cartes : fond #1a1a1b, bord #343535, séparateurs #2a2b2c, lignes de 76.
+ * - accent incliné : 31 px de haut, rouge #e3141c.
+ * - « À faire » : 66 × 35, bord #4b4b4b, texte presque blanc.
+ * - bouton : 56 de haut, #e0121c → #8a030d, liseré clair en haut.
+ *
+ * Contraste du chiffre blanc sur le rouge le plus clair de la puce : 4,9:1.
+ */
+:global([data-theme='mass']) .weeks {
+  gap: 10px;
+  padding: 14px var(--pad) 20px;
+}
+
+:global([data-theme='mass']) .week {
+  width: 70px;
+  min-width: 70px;
+  min-height: 71px;
+  border-color: #3a3a3b;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #242424 0%, #111 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+
+:global([data-theme='mass']) .weekNum {
+  font-size: 2.25rem;
+  color: #f2f2f2;
+}
+
+:global([data-theme='mass']) .weekOn {
+  border-color: #c5262c;
+  background: linear-gradient(180deg, #570e11 0%, #8e0c13 55%, #d0111a 100%);
+  box-shadow:
+    0 0 16px rgb(226 10 17 / 45%),
+    inset 0 1px 0 rgb(255 255 255 / 10%);
+  transform: scale(1.03);
+}
+
+:global([data-theme='mass']) .weekOn .weekNum {
+  color: var(--ink-on-accent);
+}
+
+:global([data-theme='mass']) .days {
+  margin-bottom: 20px;
+  border-color: #343535;
+  border-radius: 12px;
+  background: #1a1a1b;
+}
+
+/* Séparateurs en retrait de 12 px de chaque côté, comme sur la référence. */
+:global([data-theme='mass']) .dayRow {
+  min-height: 76px;
+  padding-block: 10px;
+  border-top: 0;
+  background: linear-gradient(#2a2b2c, #2a2b2c) 12px 0 / calc(100% - 24px) 1px no-repeat;
+}
+
+:global([data-theme='mass']) .dayRow:first-child {
+  background: none;
+}
+
+:global([data-theme='mass']) .dayName::before {
+  top: -5px;
+  bottom: -5px;
+  background: #e3141c;
+  transform: skewX(-12deg);
+}
+
+:global([data-theme='mass']) .status {
+  min-width: 66px;
+  min-height: 35px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+/* Seul « À faire » change de teinte : Faite, Sautée, Aujourd'hui gardent la leur. */
+:global([data-theme='mass']) .status:not(.statusDone, .statusSkipped, .statusToday) {
+  border-color: #4b4b4b;
+  color: #f0f0f0;
+}
+
+:global([data-theme='mass']) .cta {
+  min-height: 56px;
+  border: 1px solid #ef2a33;
+  background: linear-gradient(180deg, #e0121c 0%, #c00a17 48%, #8a030d 100%);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.5625rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 25%),
+    0 0 16px rgb(217 2 21 / 30%);
+}
+
+:global([data-theme='mass']) .cta svg {
+  width: 28px;
+  height: 28px;
+}

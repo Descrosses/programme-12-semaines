@@ -25,6 +25,8 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon';
 import { Stepper } from '../components/Stepper';
+import { Visuel } from '../components/Visuel';
+import { HABILLAGE } from '../data/famillesVisuel';
 import {
   COMBINE_MASS_FORCE,
   VARIANTES,
@@ -67,33 +69,56 @@ export function EvaluationScreen({ onRetour }: { onRetour?: () => void }) {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${local.entete}`}>
+        {dansCycle && HABILLAGE.mass.entetes !== undefined && (
+          <Visuel
+            nom={HABILLAGE.mass.entetes.combine}
+            className={`${styles.enteteFond} ${local.photo}`}
+            sizes="100vw"
+            prioritaire
+          />
+        )}
         {onRetour !== undefined && (
-          <button type="button" className={styles.back} onClick={onRetour}>
+          <button type="button" className={`${styles.back} ${local.retour}`} onClick={onRetour}>
             <Icon name="arrow-left" size="18px" />
             MASS
           </button>
         )}
-        <h1 className={styles.title}>Combiné d’évaluation</h1>
-        <span className={styles.titleRule} aria-hidden="true" />
-        <p className={styles.note}>
-          Quatre tests avant MASS FORCE. Pour chacun : le matériel utilisé, puis un test direct du
-          1RM ou une série sous-maximale.
+        {/* Le programme dont on passe le combiné. Dans le cycle, la navigation
+            se fait par les onglets : c'est une étiquette, pas un bouton. */}
+        {dansCycle && <p className={local.surtitre}>MASS FORCE</p>}
+        <h1 className={`${styles.title} ${local.titre}`}>Combiné d’évaluation</h1>
+        <span className={`${styles.titleRule} ${local.trait}`} aria-hidden="true" />
+        <p className={`${styles.note} ${local.encadre}`}>
+          <Icon name="haltere" size="26px" />
+          <span>
+            Quatre tests avant MASS FORCE. Pour chacun : le matériel utilisé, puis un test direct du
+            1RM ou une série sous-maximale.
+          </span>
         </p>
         {!dansCycle ? (
-          <p className={styles.note}>
-            MASS FORCE n’est pas encore disponible. Ces tests restent enregistrés et datés : ils
-            serviront de référence.
+          <p className={`${styles.note} ${local.encadre}`}>
+            <Icon name="calendar" size="24px" />
+            <span>
+              MASS FORCE n’est pas encore disponible. Ces tests restent enregistrés et datés : ils
+              serviront de référence.
+            </span>
           </p>
         ) : (
-          <p className={styles.note}>
-            Les séances s’ouvrent quand chaque mouvement évalué a une référence avec le matériel
-            choisi pour ce cycle.
+          <p className={`${styles.note} ${local.encadre}`}>
+            <Icon name="calendar" size="24px" />
+            <span>
+              Les séances s’ouvrent quand chaque mouvement évalué a une référence avec le matériel
+              choisi pour ce cycle.
+            </span>
           </p>
         )}
-        <p className={styles.note}>
-          Une série sous-maximale ne donne lieu à aucune estimation : la méthode n’est pas encore
-          validée. Seules la charge et les répétitions sont gardées.
+        <p className={`${styles.note} ${local.encadre}`}>
+          <Icon name="chart" size="24px" />
+          <span>
+            Une série sous-maximale ne donne lieu à aucune estimation : la méthode n’est pas encore
+            validée. Seules la charge et les répétitions sont gardées.
+          </span>
         </p>
       </header>
 
@@ -173,10 +198,13 @@ function CarteTest({
   }
 
   return (
-    <article className={styles.exercise} aria-label={`Test ${rang + 1} : ${test.nom}`}>
+    <article
+      className={`${styles.exercise} ${local.carte}`}
+      aria-label={`Test ${rang + 1} : ${test.nom}`}
+    >
       <div className={styles.exHead}>
-        <p className={styles.exRepere}>Test {rang + 1}</p>
-        <div className={styles.exName}>{test.nom}</div>
+        <p className={`${styles.exRepere} ${local.repere}`}>Test {rang + 1}</p>
+        <div className={`${styles.exName} ${local.nom}`}>{test.nom}</div>
 
         {/* Ce que l'on sait déjà, pour CE matériel. */}
         <p className={local.etat} role="status">
@@ -203,7 +231,7 @@ function CarteTest({
           <button
             key={v}
             type="button"
-            className={`${styles.tiroir} ${variante === v ? local.choisi : ''}`}
+            className={`${styles.tiroir} ${local.option} ${variante === v ? local.choisi : ''}`}
             onClick={() => setVariante(v)}
             aria-pressed={variante === v}
           >
@@ -216,7 +244,7 @@ function CarteTest({
       <div className={styles.tiroirs} role="group" aria-label={`Modalité — ${test.nom}`}>
         <button
           type="button"
-          className={`${styles.tiroir} ${modalite === 'sous-maximal' ? local.choisi : ''}`}
+          className={`${styles.tiroir} ${local.option} ${modalite === 'sous-maximal' ? local.choisi : ''}`}
           onClick={() => setModalite('sous-maximal')}
           aria-pressed={modalite === 'sous-maximal'}
         >
@@ -224,7 +252,7 @@ function CarteTest({
         </button>
         <button
           type="button"
-          className={`${styles.tiroir} ${modalite === 'direct' ? local.choisi : ''}`}
+          className={`${styles.tiroir} ${local.option} ${modalite === 'direct' ? local.choisi : ''}`}
           onClick={() => setModalite('direct')}
           aria-pressed={modalite === 'direct'}
         >
@@ -239,10 +267,10 @@ function CarteTest({
       )}
 
       <div className={styles.setRow}>
-        <div className={styles.setIndex}>{rang + 1}</div>
+        <div className={`${styles.setIndex} ${local.rang}`}>{rang + 1}</div>
         <div className={styles.fields}>
           <div
-            className={styles.steppersLigne}
+            className={`${styles.steppersLigne} ${local.steppers}`}
             style={{ gridTemplateColumns: `repeat(${modalite === 'direct' ? 1 : 2}, auto)` }}
           >
             <Stepper
@@ -270,16 +298,19 @@ function CarteTest({
           </div>
           <label className={local.date}>
             Date du test
-            <input
-              type="date"
-              value={date}
-              max={aujourdhui()}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            <span className={local.champDate}>
+              <Icon name="calendar" size="22px" />
+              <input
+                type="date"
+                value={date}
+                max={aujourdhui()}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </span>
           </label>
           <button
             type="button"
-            className={styles.validate}
+            className={`${styles.validate} ${local.valider}`}
             onClick={() => void enregistrer()}
             disabled={!pret || envoi}
           >

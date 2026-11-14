@@ -165,3 +165,12 @@
 .compact .label {
   letter-spacing: 0.02em;
 }
+
+/*
+ * MASS : la valeur saisie est blanche sur la maquette (78,7 comme les kilos
+ * de la séance), pas rouge. Le rouge y est réservé aux boutons et aux pavés.
+ */
+:global([data-theme='mass']) .accent .value,
+:global([data-theme='mass']) .accent .input {
+  color: var(--ink);
+}

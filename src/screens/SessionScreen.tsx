@@ -11,6 +11,7 @@ import { Icon } from '../components/Icon';
 import { ExerciseNote } from '../components/ExerciseNote';
 import { ExercisePanel } from '../components/ExercisePanel';
 import { SupersetCard } from '../components/SupersetCard';
+import { Visuel } from '../components/Visuel';
 import { ReadinessSection } from '../components/ReadinessSection';
 import { WarmupSection } from '../components/WarmupSection';
 import { BLOCKS } from '../data/program';
@@ -508,8 +509,11 @@ export function SessionScreen({
   }
 
   return (
-    <div className={styles.screen}>
-      <header className={styles.header}>
+    <div className={`${styles.screen} ${styles.ecranSeance}`}>
+      <header className={`${styles.header} ${styles.enteteSeance}`}>
+        {data.entete !== null && (
+          <Visuel nom={data.entete} className={styles.enteteFond} sizes="100vw" prioritaire />
+        )}
         <button type="button" className={styles.back} onClick={onBack}>
           <Icon name="arrow-left" size="18px" />
           Semaine {week}
@@ -528,7 +532,7 @@ export function SessionScreen({
             étaient côte à côte mais séparés, et `humanDate` répète déjà le
             jour : on lisait « Lundi lundi 5 octobre ».
           */}
-          <span className={styles.metaItem}>
+          <span className={`${styles.metaItem} ${styles.metaDate}`}>
             {data.date ? `${DAY_LABELS[day]} ${humanDateShort(data.date)}` : DAY_LABELS[day]}
           </span>
           <span className={styles.metaItem}>

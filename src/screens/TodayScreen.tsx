@@ -38,6 +38,7 @@ import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { PeseeDuJour } from '../components/PeseeDuJour';
 import { OnboardingScreen } from './OnboardingScreen';
+import { enteteAccueilFixe, enteteDe } from '../data/famillesVisuel';
 import type { VisuelNom } from '../data/visuels';
 import styles from './Today.module.css';
 
@@ -287,17 +288,34 @@ export function TodayScreen({
           ? { titre: 'Ça commence bientôt', sous: textes.sousAvant }
           : { titre: textes.fin, sous: 'Programme terminé' };
 
+  /*
+   * MASS : un en-tête PERMANENT (décision de Guillaume). La marque, le nom
+   * exact du cycle, « Semaine X / Y ». Ce qui change d'un jour à l'autre —
+   * « Ça commence bientôt », le titre de la séance, « Repos » — descend dans
+   * la zone d'information, juste dessous : rien n'est supprimé, tout est
+   * déplacé. POWER garde son en-tête du jour.
+   */
+  const enteteFixe =
+    programme === null
+      ? null
+      : enteteAccueilFixe(programme.id, programme.dureeSemaines, semaineDuJour);
+
   return (
     <div className={styles.screen}>
       <ScreenHeader
         eyebrow={humanDate(new Date().toISOString().slice(0, 10))}
-        title={entete.titre}
-        subtitle={entete.sous}
+        title={enteteFixe?.titre ?? entete.titre}
+        subtitle={enteteFixe === null ? entete.sous : enteteFixe.sous}
+        {...(enteteFixe !== null ? { marque: enteteFixe.marque } : {})}
         {...(programme === null || programme.id === 'power12'
           ? { visuel: visuelDuJour(today, semaineDuJour) }
-          : {})}
+          : enteteDe(programme.id, 'accueil') !== undefined
+            ? { visuel: enteteDe(programme.id, 'accueil')! }
+            : {})}
         prioritaire
       >
+        {enteteFixe !== null && <h2 className={styles.titreJour}>{entete.titre}</h2>}
+
         {today.kind === 'session' && (
           <div className={styles.meta}>
             <span

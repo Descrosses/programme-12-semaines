@@ -20,6 +20,7 @@ import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { enteteDe } from '../data/famillesVisuel';
 import { DiagonalStripes } from '../components/Decor';
 import styles from './Week.module.css';
 
@@ -150,7 +151,12 @@ export function WeekScreen({
         }
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
         subtitle={block?.objective}
-        {...(programme.id === 'power12' ? ({ visuel: 'casque' } as const) : {})}
+        {...(programme.id === 'power12'
+          ? ({ visuel: 'casque' } as const)
+          : enteteDe(programme.id, 'semaine') !== undefined
+            ? { visuel: enteteDe(programme.id, 'semaine')! }
+            : {})}
+        argent={programme.id !== 'power12' && enteteDe(programme.id, 'semaine') !== undefined}
         prioritaire
       />
 
