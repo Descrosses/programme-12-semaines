@@ -331,3 +331,16 @@
 .screen > :last-child {
   margin-bottom: 14px;
 }
+
+/*
+ * MASS : la semaine choisie est rouge pleine, comme dans les maquettes de
+ * Guillaume (14 novembre). Blanc sur --accent : 5,11:1.
+ */
+:global([data-theme='mass']) .weekOn {
+  border-color: var(--accent-bright);
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+}
+
+:global([data-theme='mass']) .weekOn .weekNum {
+  color: var(--ink-on-accent);
+}

@@ -341,6 +341,12 @@ matériel et la durée avant d'écrire la moindre séance.
      initial, « N semaines bouclées », raccourci Nutrition) passent par
      `programmes/textesCycle.ts`. POWER ne change pas d'un mot — des tests
      (`OnboardingScreen.test.tsx`, `textesCycle.test.ts`) le figent.
+  9. **Identité MASS = maquettes sombres de Guillaume (14 novembre)**, pour
+     toute la famille (FORCE et CONGESTION) : `[data-theme='mass']` presque
+     noir et rouge, « // » rouge après les titres, semaine choisie rouge.
+     Elle REMPLACE la palette claire ardoise (décision antérieure, renversée
+     par Guillaume). Contrastes mesurés par `styles/themeMass.test.ts`. Les
+     photos d'en-tête des maquettes ne sont pas encore fournies en fichiers.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

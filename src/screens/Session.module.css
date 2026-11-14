@@ -2399,3 +2399,9 @@
   font-weight: 600;
   line-height: 1.45;
 }
+
+/* MASS : même « // » rouge que les en-têtes (ScreenHeader.module.css). */
+:global([data-theme='mass']) .title::after {
+  content: '\00a0//' / '';
+  color: var(--accent-bright);
+}

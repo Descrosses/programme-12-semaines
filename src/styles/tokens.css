@@ -248,87 +248,79 @@
 /*
  * ── MASS — prise de masse & congestion ─────────────────────────────────────
  *
- * Ardoise claire, blanc, rouge et marine. Les valeurs ne sont pas inventées :
- * elles sont RELEVÉES dans les jetons de l'application MASS existante, celle
- * que Guillaume utilise déjà et qu'il a désignée comme la référence. Elles ne
- * sont pas estimées à l'œil sur une capture, et pas davantage dérivées de la
- * palette de POWER.
+ * Historique, pour ne pas le refaire : une palette crème (visuel de marque),
+ * puis une palette CLAIRE ardoise/blanc/rouge relevée dans l'application MASS
+ * que Guillaume utilisait. Le 14 novembre, il a fourni des maquettes MASS
+ * sombres et tranché : elles s'appliquent à toute la famille. Les anciennes
+ * valeurs ne sont pas gardées en commentaire — une palette morte finit par
+ * être réveillée par erreur.
  *
- * Une version précédente de ce bloc était crème, beige et noire : elle avait
- * été relevée sur un visuel de marque. Guillaume a tranché pour le
- * bleu/blanc/rouge, parce que c'est une application qui tourne et qu'il a
- * utilisée, là où le crème n'était qu'une image. Le crème n'est pas conservé
- * en commentaire : une palette morte dans une feuille de style finit toujours
- * par être réveillée par erreur.
- *
- * Deux conséquences qui ne sautent pas aux yeux :
- *
- * 1. Le fond est clair, donc `--ink` devient sombre et `--ink-on-accent`
- *    devient blanc. Toute l'inversion tient dans ces jetons : aucun composant
- *    n'a de couleur en dur, c'est ce qui rend la bascule possible.
- * 2. `--accent` est rouge ici, et c'est voulu — contrairement au visuel de
- *    marque crème, l'application de référence utilise bien le rouge pour
- *    l'action. La règle « ne pas utiliser automatiquement le rouge » visait un
- *    choix par défaut non réfléchi ; ici le rouge est le choix explicite de
- *    Guillaume, relevé dans son application.
- *
- * Contrastes mesurés sur cette palette : encre sur fond 13,1 ; encre sur carte
- * 14,9 ; texte secondaire 8,0 sur carte ; blanc sur le rouge d'action 4,6. Le
- * gris des petits libellés tient 5,1 sur la carte — au-dessus du seuil AA.
+ * Le rouge reste l'accent : c'est le choix explicite de Guillaume, relevé dans
+ * ses maquettes. Aucun composant n'a de couleur en dur : toute la bascule
+ * clair → sombre tient dans ces jetons.
  */
 [data-theme='mass'] {
-  --bg: #e9edf1;
-  --bg-2: #e1e7ed;
-  --surface: #ffffff;
-  --surface-2: #f1f4f7;
-  --surface-3: #e2e8ef;
+  /*
+   * ── MASS — l'identité des maquettes de Guillaume (14 novembre) ──────────
+   *
+   * Sombre, presque noir, et rouge : « Accueil / Semaine / Séance / Combiné
+   * MASS ». Le thème clair d'ardoise qu'il remplace n'avait pas été dessiné,
+   * celui-ci l'est. Il vaut pour TOUTE la famille (FORCE et CONGESTION) :
+   * seul l'habillage change, aucun contenu sportif.
+   *
+   * Contrastes MESURÉS :
+   *
+   *                      bg      surface   surface-2   surface-3
+   *   --ink            17,9       16,3        15,0        13,6    AAA partout
+   *   --ink-2          10,4        9,4         8,7         7,9    AAA partout
+   *   --ink-3           6,6        6,0         5,6         5,0    AA+ partout
+   *   --accent-ink      7,1        6,5         6,0         5,4    AA+ partout
+   *   --rouge           6,4        5,8         5,4         4,9    AA partout
+   *
+   * Blanc sur --accent (boutons) : 5,11. Le rouge plein ne porte jamais de
+   * petit texte sur le fond (3,85:1) : il trace les filets, les bordures et
+   * les « // » des titres ; le texte rouge passe par --accent-ink.
+   */
+  --bg: #0b0b0d;
+  --bg-2: #111214;
+  --surface: #16171a;
+  --surface-2: #1d1f23;
+  --surface-3: #25272c;
 
-  --line: #d5dce4;
-  --line-strong: #c3cdd8;
+  --line: #2e3036;
+  --line-strong: #464953;
 
-  --ink: #14202b;
-  --ink-2: #3e4c5a;
-  --ink-3: #5e6b78; /* réservé aux libellés non essentiels */
+  --ink: #f4f4f5;
+  --ink-2: #b9bcc4;
+  --ink-3: #9196a0; /* libellés non essentiels — 5,0:1 au pire */
   --ink-on-accent: #ffffff;
 
-  /* Le rouge des programmes de prise de masse, sur ardoise claire. */
-  --accent: #d62f33;
-  --accent-bright: #e04449;
-  --accent-deep: #ab2225;
-  --accent-dim: #f4c7c8;
-  /* Le marine des en-têtes : c'est lui qui porte traits et pictogrammes. */
-  --accent-ink: #1d2b3a;
-  /*
-   * --accent-ink-fort : l'accent écrit SUR --surface, et pas sur le fond.
-   *
-   * Sur les thèmes sombres c'est le même rouge éclairci que --accent-ink.
-   * Sur le fond blanc de MASS, --accent-ink est volontairement un bleu nuit
-   * — il doit tenir sur le fond gris de l'écran. Mais sur le blanc d'une
-   * carte, le rouge plein tient 4,87:1, au-dessus des 4,5:1 exigés : c'est
-   * lui qu'on écrit, et c'est ce que montre le modèle.
-   */
-  --accent-ink-fort: #d62f33;
+  --accent: #d71f26;
+  --accent-bright: #ff2b33;
+  --accent-deep: #a3161c;
+  --accent-dim: #3a0d10;
 
-  /* Les couleurs d'état restent lisibles sur clair, donc assombries. */
-  --vert: #1e8a4c;
-  --orange: #b8560a;
-  --rouge: #b3261e;
-  --bleu: #2f6fa8;
-  --bleu-ink: #1d4664;
+  --accent-ink: #ff6b70;
+  --accent-ink-fort: #ff6b70;
+
+  /* Couleurs d'état : celles de POWER, mesurées ici (ligne --rouge ci-dessus). */
+  --vert: #3ddc84;
+  --orange: #ff9f1c;
+  --rouge: #ff5a4d;
+  --bleu: #3478c0;
+  --bleu-ink: #6fb0ef;
 
   --macro-glucides: #3d8dc9;
   --macro-proteines: #cf5a86;
   --macro-lipides: #a87b22;
-  --bloc-test: #d62f33;
+  --bloc-test: #d71f26;
 
-  /* Le voile devient ardoise claire : il rend un en-tête clair lisible. */
-  --ink-fort: #14202b;
-  --voile: 233 237 241;
-  --ombre-titre: 0 1px 8px rgb(233 237 241 / 85%);
+  --ink-fort: #ffffff;
+  --voile: 11 11 13;
+  --ombre-titre: 0 2px 12px rgb(0 0 0 / 55%);
 
-  /* Les ombres doivent rester discrètes sur un fond clair. */
-  --shadow-card: 0 1px 2px rgb(20 32 43 / 8%);
-  --shadow-action: 0 2px 8px rgb(20 32 43 / 12%);
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 6px 18px rgb(0 0 0 / 45%);
+  --shadow-action: 0 6px 18px rgb(215 31 38 / 35%);
 }
 
 /*

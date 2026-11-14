@@ -326,3 +326,13 @@
   width: auto;
   min-width: 28px;
 }
+
+/*
+ * MASS : le « // » rouge après le titre, relevé dans les maquettes de
+ * Guillaume (14 novembre). Décoratif : masqué aux lecteurs d'écran par
+ * `content … / ""`, et réservé au thème MASS.
+ */
+:global([data-theme='mass']) .title::after {
+  content: '\00a0//' / '';
+  color: var(--accent-bright);
+}
