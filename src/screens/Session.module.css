@@ -2767,7 +2767,8 @@
 
 :global([data-theme='mass']) .ecranSeance .tiroir,
 :global([data-theme='mass']) .ecranSeance .replaceButton,
-:global([data-theme='mass']) .ecranSeance .failToggle {
+:global([data-theme='mass']) .ecranSeance .failToggle,
+:global([data-theme='mass']) .ecranSeance .mediaAction {
   border: 1px solid var(--mass-sombre-bord);
   border-radius: 10px;
   background: var(--mass-sombre-fond);
@@ -2805,7 +2806,8 @@
 }
 
 :global([data-theme='mass']) .ecranSeance .panelTitle,
-:global([data-theme='mass']) .ecranSeance .mediaBlockTitle {
+:global([data-theme='mass']) .ecranSeance .mediaBlockTitle,
+:global([data-theme='mass']) .ecranSeance .supersetTitle {
   color: #fff;
   font-family: 'Barlow Mass', var(--font-cond);
   font-style: italic;

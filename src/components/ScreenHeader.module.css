@@ -489,7 +489,9 @@
 .argent .fond {
   inset: auto;
   top: calc(var(--haut-ecran) - 21px);
-  left: -25px;
+  /* Calée sur le bord DROIT : à gauche, un grand iPhone (430 px) laissait
+     une bande noire et une arête nette à droite de la photo. */
+  right: -19px;
   width: 446px;
   height: 223px;
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 36px);
