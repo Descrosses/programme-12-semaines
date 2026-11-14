@@ -38,6 +38,22 @@ const ex = (
 });
 
 describe('rythmeDe — lu dans les repos, pas dans un champ de plus', () => {
+  it('repos court puis repos long : transition (MASS FORCE, curl W → curl haltères)', () => {
+    expect(rythmeDe([ex('a', { restSec: 15 }), ex('b', { restSec: 120 })])).toBe('transition');
+    // Deux repos égaux restent une alternance : rien ne change pour POWER 12.
+    expect(rythmeDe([ex('a', { restSec: 45 }), ex('b', { restSec: 45 })])).toBe('alterne');
+    // Le premier plus long que le second n'est pas une transition.
+    expect(rythmeDe([ex('a', { restSec: 120 }), ex('b', { restSec: 15 })])).toBe('alterne');
+  });
+
+  it('en transition, le repos du bloc est celui d’après le dernier mouvement', () => {
+    const [b] = groupSupersets([
+      ex('a', { restSec: 15, superset: 's' }),
+      ex('b', { restSec: 120, superset: 's' }),
+    ]);
+    expect(b).toMatchObject({ kind: 'circuit', rythme: 'transition', restSec: 120 });
+  });
+
   it('premier créneau sans repos : on enchaîne', () => {
     expect(rythmeDe([ex('a', { restSec: 0 }), ex('b', { restSec: 90 })])).toBe('enchaine');
   });

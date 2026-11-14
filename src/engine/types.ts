@@ -173,6 +173,11 @@ export interface SessionContext {
   readiness: ReadinessResult | null;
   /** §11 cas 7 — performances explosives en baisse 2 semaines de suite. */
   explosiveDecline: boolean;
+  /**
+   * Les choix du cycle (MASS FORCE) : clé de ligne → exercice retenu. Lu par
+   * le seul module qui propose des choix ; absent ailleurs.
+   */
+  choixCycle?: Readonly<Record<string, string>>;
 }
 
 export const EMPTY_CONTEXT: SessionContext = {

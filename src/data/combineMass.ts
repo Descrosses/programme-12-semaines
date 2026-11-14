@@ -36,11 +36,8 @@ export interface TestCombine {
 }
 
 export const COMBINE_MASS_FORCE: readonly TestCombine[] = [
-  {
-    exercice: 'developpe-couche',
-    nom: 'Développé couché',
-    variantes: ['barre', 'smith', 'halteres'],
-  },
+  /* Barre ou Smith : les haltères sont retirés (décision de Guillaume, lot 4a). */
+  { exercice: 'developpe-couche', nom: 'Développé couché', variantes: ['barre', 'smith'] },
   { exercice: 'tirage-vertical', nom: 'Tirage vertical', variantes: ['poulie', 'machine'] },
   { exercice: 'squat', nom: 'Squat', variantes: ['barre', 'smith'] },
   { exercice: 'push-press', nom: 'Push press', variantes: ['smith', 'barre'] },

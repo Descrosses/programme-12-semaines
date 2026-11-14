@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties, type ReactElement } from 'react';
 import { Icon, type IconName } from './components/Icon';
 import { RestBar } from './components/RestBar';
 import type { DayIndex, WeekIndex } from './data/types';
@@ -17,6 +17,9 @@ import { SessionScreen } from './screens/SessionScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { TodayScreen } from './screens/TodayScreen';
 import { WeekScreen } from './screens/WeekScreen';
+import { AVenirScreen } from './screens/AVenirScreen';
+import { PorteMassForce } from './screens/massforce/PorteMassForce';
+import { MASS_FORCE_PROGRAMME_ID } from './db/massForceRepo';
 import { modulePourCycle } from './programmes/registre';
 import { FEMMES_PROGRAMME_ID } from './db/femmesRepo';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
@@ -443,6 +446,24 @@ function renderScreen(
   timer: ReturnType<typeof useRestTimer>,
   ouvrirProgramme: () => void,
 ) {
+  /*
+   * MASS FORCE : tant que les choix du cycle et le combiné ne sont pas faits,
+   * la séance du jour, la semaine et les séances cèdent la place à l'écran de
+   * départ. Les autres onglets restent ouverts — le Combiné d'abord.
+   */
+  const porte = (ecran: ReactElement) =>
+    programme?.id === MASS_FORCE_PROGRAMME_ID ? (
+      <PorteMassForce
+        key={`porte-${dataVersion}`}
+        onCombine={() => navigate({ name: 'combine' })}
+        onChanged={refresh}
+      >
+        {ecran}
+      </PorteMassForce>
+    ) : (
+      ecran
+    );
+
   switch (route.name) {
     /*
      * FEMMES 8 a ses propres écrans, branchés sur SON cycle : ils lisent et
@@ -493,14 +514,14 @@ function renderScreen(
       );
 
     case 'session':
-      return (
+      return porte(
         <SessionScreen
           key={`${route.week}-${route.day}-${dataVersion}`}
           week={route.week}
           day={route.day}
           timer={timer}
           onBack={() => navigate({ name: 'week', week: route.week })}
-        />
+        />,
       );
 
     case 'week':
@@ -510,14 +531,14 @@ function renderScreen(
        * choisie sortait de l'écran dès la semaine 7. Le chargement des jours
        * dépend déjà de `week` par son effet, aucun remontage n'est nécessaire.
        */
-      return (
+      return porte(
         <WeekScreen
           key={dataVersion}
           week={route.week}
           onChangeWeek={(w) => navigate({ name: 'week', week: w })}
           onOpen={openSession}
           onGoNutrition={() => navigate({ name: 'nutrition' })}
-        />
+        />,
       );
 
     default:
@@ -546,6 +567,7 @@ function renderScreen(
    * c'est l'écran d'atterrissage, et il sait se charger seul.
    */
   if (programme === null) return route.name === 'today' ? today : null;
+  const todayPorte = porte(today);
 
   /*
    * L'aiguillage des onglets se fait sur la VUE, pas sur la route.
@@ -587,6 +609,12 @@ function renderScreen(
     case 'combine':
       return <CombineScreen key={dataVersion} />;
 
+    case 'evaluation':
+      return <EvaluationScreen key={dataVersion} />;
+
+    case 'a-venir':
+      return <AVenirScreen titre={onglet?.label ?? ''} />;
+
     case 'mesures':
       return <MesuresScreen key={dataVersion} />;
 
@@ -594,6 +622,6 @@ function renderScreen(
       return <SettingsScreen key={dataVersion} onChanged={refresh} programme={programme} />;
 
     default:
-      return today;
+      return todayPorte;
   }
 }

@@ -199,6 +199,10 @@ export function SupersetCard({
                     <span />
                     {rythme === 'enchaine' ? (
                       'ENCHAÎNE, SANS REPOS'
+                    ) : rythme === 'transition' ? (
+                      /* La pause de la station précédente : 15 s, pas le
+                         repos du bloc, qui ne vient qu'après la dernière. */
+                      <>TRANSITION {restLabel(exs[station - 1]!.restSec).toUpperCase()}</>
                     ) : (
                       <>
                         <Icon name="arrow-down" size="15px" />
@@ -217,6 +221,9 @@ export function SupersetCard({
                   saved={serie(ex, i)}
                   timer={timer}
                   onSaveSet={onSaveSet}
+                  {...(rythme === 'transition' && station < exs.length - 1
+                    ? { libelleRepos: `Transition → ${exs[station + 1]!.name}` }
+                    : {})}
                 />
               </Fragment>
             ))}
@@ -247,7 +254,10 @@ function Station({
   saved,
   timer,
   onSaveSet,
+  libelleRepos,
 }: {
+  /** Rythme « transition » : le chrono dit transition, pas repos (§2 MASS FORCE). */
+  libelleRepos?: string;
   ex: ResolvedExercise;
   /** A, B, C… — fournie par `lettreStation`, pas devinée ici. */
   lettre: string;
@@ -286,6 +296,7 @@ function Station({
         lastInUnit={null}
         timer={timer}
         onSave={onSaveSet}
+        {...(libelleRepos === undefined ? {} : { libelleRepos })}
       />
     </div>
   );

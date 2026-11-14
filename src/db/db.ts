@@ -521,6 +521,13 @@ export interface CycleRow {
    * dire avec lequel chaque séance a été faite.
    */
   femmes?: ProfilFemmes;
+  /**
+   * MASS FORCE : le matériel et les variantes retenus pour CE cycle (clé de
+   * ligne → identifiant d'exercice). Choisis une fois, au démarrage ; absent
+   * tant que le choix n'est pas confirmé — c'est ce qui affiche l'écran de
+   * départ. Sur la ligne du cycle : un cycle suivant peut faire d'autres choix.
+   */
+  massForce?: { choix: Record<string, string> };
 }
 
 /**

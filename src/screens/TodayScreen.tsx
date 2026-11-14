@@ -157,7 +157,8 @@ export function TodayScreen({
         mercredi, qui est un jour de repos chez lui : les noms comme les jours
         étaient ceux de POWER 12.
       */
-      const module = modulePourCycle((await cycleActif())?.programmeId ?? null);
+      const cycle = await cycleActif();
+      const module = modulePourCycle(cycle?.programmeId ?? null);
       const today = locateToday(settings.startDate, todayIso, module);
 
       const [sets, readinessRows, rows] = await Promise.all([
@@ -190,6 +191,7 @@ export function TodayScreen({
           history,
           readiness: null,
           explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
+          ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
         });
         title = s?.title ?? '';
         intensity = s?.intensity ?? '';

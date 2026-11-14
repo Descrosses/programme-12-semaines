@@ -2294,3 +2294,20 @@
   gap: 8px;
   margin-left: auto;
 }
+
+/* La vigilance d'un exercice (MASS FORCE) : en tête de carte, liseré
+   d'alerte, pour être lue avant de charger. */
+.vigilance {
+  margin: 10px 0 0;
+  padding: 9px 12px;
+  border-left: 3px solid var(--warn, #e0a030);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--warn, #e0a030) 10%, transparent);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.vigilance b {
+  color: var(--ink);
+}

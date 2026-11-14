@@ -393,6 +393,13 @@ export interface ExerciseDef {
    * pour les autres.
    */
   fiche?: string;
+  /**
+   * Un point de VIGILANCE, affiché en tête de la carte, au-dessus de tout le
+   * reste : sur les exercices à risque technique, c'est ce qu'il faut avoir
+   * lu avant de charger. Rempli seulement avec le texte du programme (MASS
+   * FORCE) ; POWER et MASS CONGESTION n'en ont pas, leur carte est inchangée.
+   */
+  vigilance?: string;
   /** Règle §5 : chaque rep est une tentative de performance, on arrête si ça ralentit. */
   explosive?: boolean;
   /** Unité mesurée lors d'un test ou d'un saut. */

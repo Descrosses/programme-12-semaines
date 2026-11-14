@@ -139,7 +139,14 @@ export function WeekScreen({
     <div className={styles.screen}>
       <ScreenHeader
         eyebrow={
-          week === 0 ? 'Avant le programme' : block === null ? 'Volume' : `Bloc ${block.name}`
+          week === 0
+            ? 'Avant le programme'
+            : block === null
+              ? // MASS FORCE n'a écrit que sa semaine type : « Volume » est le mot de MASS 4.
+                programme.id === 'mass-force'
+                ? 'Semaine type'
+                : 'Volume'
+              : `Bloc ${block.name}`
         }
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
         subtitle={block?.objective}

@@ -49,7 +49,16 @@ import type { ResolvedExercise } from './getSession';
 import { restLabel, workLabel } from './format';
 import type { Work } from '../data/types';
 
-export type Rythme = 'enchaine' | 'alterne';
+/*
+ * TROISIÈME rythme — la transition (MASS FORCE, superset biceps) : « curl
+ * barre W → 15 s → curl haltères → 120 s ». Ni enchaîné (il y a une pause
+ * entre les deux), ni alterné (la pause n'est pas le repos du bloc). Il se lit,
+ * comme les deux autres, dans les repos de la trame : toutes les stations
+ * sauf la dernière ont un repos NON NUL et PLUS COURT que celui de la
+ * dernière. Aucun superset de POWER ni de MASS CONGESTION ne répond à cette
+ * règle (relevé fait : [45, 45] reste alterné, [0, x] reste enchaîné).
+ */
+export type Rythme = 'enchaine' | 'alterne' | 'transition';
 
 export interface Circuit {
   kind: 'circuit';
@@ -95,9 +104,13 @@ export function rythmeDe(exs: readonly ResolvedExercise[]): Rythme {
   const derniere = exs[exs.length - 1];
   if (derniere === undefined) return 'alterne';
   const avant = exs.slice(0, -1);
-  return avant.length > 0 && avant.every((e) => e.restSec === 0) && derniere.restSec > 0
-    ? 'enchaine'
-    : 'alterne';
+  if (avant.length > 0 && avant.every((e) => e.restSec === 0) && derniere.restSec > 0) {
+    return 'enchaine';
+  }
+  if (avant.length > 0 && avant.every((e) => e.restSec > 0 && e.restSec < derniere.restSec)) {
+    return 'transition';
+  }
+  return 'alterne';
 }
 
 /**
@@ -130,7 +143,9 @@ export function groupSupersets(exercises: ResolvedExercise[]): Bloc[] {
           exs,
           rythme,
           tours: Math.max(...exs.map((e) => e.sets)),
-          restSec: rythme === 'enchaine' ? exs[exs.length - 1]!.restSec : ex.restSec,
+          // Enchaîné ou transition : le repos qui compte est celui d'APRÈS le
+          // bloc. Alterné : celui d'entre deux stations.
+          restSec: rythme === 'alterne' ? ex.restSec : exs[exs.length - 1]!.restSec,
           minutesBloc: exs.find((e) => e.blocMinutes !== undefined)?.blocMinutes ?? null,
         });
         i = fin - 1; // les stations suivantes sont déjà consommées
@@ -169,16 +184,22 @@ export function enToutesLettres(n: number): string {
  */
 export function titreRythme(rythme: Rythme, stations = 2): string {
   if (rythme === 'alterne') return 'Alternance';
+  // Une transition reste un superset : les mouvements vont ensemble.
   return stations > 2 ? 'Circuit' : 'Superset';
 }
 
 /** La phrase qui dit comment mener le bloc, sans répéter le programme. */
 export function consigneRythme(c: Circuit): string {
   const n = c.exs.length;
+  const bloc = n > 2 ? 'circuit' : 'duo';
+  if (c.rythme === 'transition') {
+    const transitions = [...new Set(c.exs.slice(0, -1).map((e) => restLabel(e.restSec)))];
+    return `Transition de ${transitions.join(' / ')} entre les mouvements, puis repos ${restLabel(
+      c.restSec,
+    )} après le ${bloc}.`;
+  }
   return c.rythme === 'enchaine'
-    ? `Les ${enToutesLettres(n)} enchaînés, sans repos. Repos ${restLabel(c.restSec)} après le ${
-        n > 2 ? 'circuit' : 'duo'
-      }.`
+    ? `Les ${enToutesLettres(n)} enchaînés, sans repos. Repos ${restLabel(c.restSec)} après le ${bloc}.`
     : `Une série de chaque, ${restLabel(c.restSec)} entre les stations.`;
 }
 
