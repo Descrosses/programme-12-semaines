@@ -32,6 +32,7 @@ import {
   propositionAlignement,
   type DecisionAlignement,
 } from '../engine/alignementReps';
+import { enregistrerOuSignaler } from './enregistrement';
 import styles from '../screens/Session.module.css';
 
 export interface SetPayload {
@@ -876,6 +877,8 @@ export function SetEntry({
   /* MASS FORCE : RIR facultatif, dernière série seulement, VIDE par défaut. */
   const demandeRir = ex.demandeRir === true && index === ex.sets - 1;
   const [rir, setRir] = useState<number | null>(saved?.rirSaisi ?? null);
+  /** La série n'a pas pu être écrite : la phrase à afficher (P1-B). */
+  const [erreur, setErreur] = useState<string | null>(null);
   /*
    * Le champ de mesure s'ouvre sur ce qui a le plus de chances d'être juste,
    * dans cet ordre : ce qui a déjà été saisi pour cette série, la valeur que
@@ -930,24 +933,33 @@ export function SetEntry({
 
   async function validate() {
     timer.prime();
-    await onSave(ex, {
-      setIndex: index,
-      /*
-       * Pas de champ, pas de charge : sans ça un saut hériterait de la dernière
-       * charge connue et la traînerait dans l'historique.
-       */
-      actualKg: showLoad ? kg : null,
-      actualReps: measure ? null : reps,
-      actualRpe: ex.targetRPE ? rpeValue : null,
-      measureValue: measure ? value : null,
-      measureUnit: measure ? (unite ?? measureBase?.unit ?? null) : null,
-      failed,
-      secondReps: seconde ? secondReps : null,
-      // Pas de champ de charge : on écrit `null`, qui se lit « la même charge
-      // que la première partie » et non « aucune charge ».
-      secondKg: seconde?.withLoad ? secondKg : null,
-      ...(demandeRir ? { rirSaisi: rir } : {}),
-    });
+    setErreur(null);
+    const echec = await enregistrerOuSignaler(() =>
+      onSave(ex, {
+        setIndex: index,
+        /*
+         * Pas de champ, pas de charge : sans ça un saut hériterait de la dernière
+         * charge connue et la traînerait dans l'historique.
+         */
+        actualKg: showLoad ? kg : null,
+        actualReps: measure ? null : reps,
+        actualRpe: ex.targetRPE ? rpeValue : null,
+        measureValue: measure ? value : null,
+        measureUnit: measure ? (unite ?? measureBase?.unit ?? null) : null,
+        failed,
+        secondReps: seconde ? secondReps : null,
+        // Pas de champ de charge : on écrit `null`, qui se lit « la même charge
+        // que la première partie » et non « aucune charge ».
+        secondKg: seconde?.withLoad ? secondKg : null,
+        ...(demandeRir ? { rirSaisi: rir } : {}),
+      }),
+    );
+    // Pas de confirmation d'écriture : le formulaire reste ouvert, aucun repos
+    // ne démarre, et l'utilisateur le lit.
+    if (echec !== null) {
+      setErreur(echec);
+      return;
+    }
     setEditing(false);
     if (ex.restSec > 0) {
       const label = ex.contrast
@@ -1206,6 +1218,11 @@ export function SetEntry({
             ? `Valider ${ex.name} — série ${index + 1}`
             : `Valider la série ${index + 1}`}
         </button>
+        {erreur !== null && (
+          <p className={styles.erreurSerie} role="alert">
+            {erreur}
+          </p>
+        )}
         {ex.contrast && (
           <p className={styles.contrasteAide}>
             Ensuite : {nomExplosif} × {ex.contrast.explosiveReps}, avec son propre bouton.

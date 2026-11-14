@@ -220,7 +220,13 @@ export function SessionScreen({
      * suit ne la repousse pas.
      */
     const id = await data.ensureRow();
-    if (id === null) return;
+    /*
+     * Pas de ligne de séance (pas de date de début) : rien ne peut être écrit.
+     * Revenir sans rien dire faisait passer la série pour validée (P1-B).
+     */
+    if (id === null) {
+      throw new Error('séance sans date — pose la date de début dans les Réglages');
+    }
     await startSession(id);
     await saveSet({
       sessionId: id,
