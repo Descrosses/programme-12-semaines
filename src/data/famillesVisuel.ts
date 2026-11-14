@@ -113,3 +113,23 @@ export function enteteAccueilFixe(
     sous: semaine === null ? undefined : `Semaine ${semaine} / ${dureeSemaines}`,
   };
 }
+
+/*
+ * Le fond du bloc « fiche technique » d'un exercice SANS fiche (lot F3, audit
+ * des fiches MASS). Par défaut, la photo de la famille. MASS FORCE prend une
+ * photo MASS déjà intégrée — la salle de son en-tête de séance — au lieu de
+ * la photo de famille `force`, qui vient du pack de POWER (un joueur de
+ * football américain au développé couché). Seul MASS FORCE change : POWER
+ * et MASS CONGESTION gardent exactement leur fond.
+ */
+const AMBIANCE_FICHE: Readonly<Record<string, VisuelNom>> = {
+  'mass-force': 'massSalle',
+};
+
+/** Le fond du bloc fiche technique pour ce programme, ou `null`. */
+export function ambianceFicheDe(programmeId: string): VisuelNom | null {
+  const propre = AMBIANCE_FICHE[programmeId];
+  if (propre !== undefined) return propre;
+  const def = programmeParId(programmeId);
+  return def === null ? null : (HABILLAGE[def.familleId]?.photo ?? null);
+}
