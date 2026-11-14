@@ -447,3 +447,48 @@
 [data-theme='perso'] {
   /* Hérite du thème de base. */
 }
+
+/*
+ * Les valeurs de l'identité MASS validée (14 novembre), rangées UNE fois.
+ *
+ * Relevées sur les écrans Semaine, Combiné et Séance validés par Guillaume ;
+ * ce n'est pas une palette nouvelle, c'est un rangement. Déclarées sur
+ * `:root` et non sous `[data-theme='mass']` : le combiné MASS s'ouvre aussi
+ * depuis le catalogue, sous le thème de la plateforme, et doit les trouver.
+ * Seuls les styles MASS les lisent ; POWER et FEMMES les ignorent.
+ */
+:root {
+  /* Titres : argent poli, blanc en haut, cassure grise sous le milieu. */
+  --mass-argent: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%);
+  --mass-ombre-titre: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+
+  /* Le rouge des accents (traits, icônes, bords d'alerte) et son halo. */
+  --mass-rouge: #e3141c;
+  --mass-halo-trait: 0 0 8px rgb(227 20 28 / 40%);
+
+  /* Boutons d'action (Démarrer, fiche) et choix actifs (Combiné). */
+  --mass-rouge-bord: #ff3b42;
+  --mass-degrade-action: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
+  --mass-degrade-choix: linear-gradient(180deg, #d8121c 0%, #a50c15 55%, #7d070e 100%);
+  --mass-liseret-action: inset 0 1px 0 rgb(255 255 255 / 22%);
+  --mass-liseret-choix: inset 0 1px 0 rgb(255 255 255 / 18%);
+
+  /* Cartes anthracite, et le liseré lumineux de leur bord haut. */
+  --mass-carte-fond: linear-gradient(180deg, #1b1b1c 0%, #111112 100%);
+  --mass-carte-bord: #3c3d3e;
+  --mass-liseret: inset 0 1px 0 rgb(255 255 255 / 7%);
+
+  /* Choix inactifs, curseurs et champs : sombres, bordés. */
+  --mass-sombre-fond: linear-gradient(180deg, #262627 0%, #121213 100%);
+  --mass-sombre-bord: #5b5c5d;
+  --mass-curseur-fond: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
+  --mass-curseur-bord: #4a4b4c;
+  --mass-champ-fond: linear-gradient(180deg, #1d1d1e 0%, #121213 100%);
+
+  /* Puces de choix (semaines, débuts/fins) : écran Semaine validé. */
+  --mass-puce-fond: linear-gradient(180deg, #242424 0%, #111 100%);
+  --mass-puce-bord: #3a3a3b;
+  --mass-puce-on-fond: linear-gradient(180deg, #570e11 0%, #8e0c13 55%, #d0111a 100%);
+  --mass-puce-on-bord: #c5262c;
+  --mass-puce-on-halo: 0 0 16px rgb(226 10 17 / 45%);
+}

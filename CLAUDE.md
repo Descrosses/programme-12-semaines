@@ -376,6 +376,19 @@ matériel et la durée avant d'écrire la moindre séance.
      « DUR » (et toute intensité MASS) en bord rouge. Écarts voulus : curseurs
      et bouton de fiche à 48 px, zone du retour qui mord de 12 px sur la
      barre d'état, photo de fiche inchangée (pas de fichier fourni).
+     **Harmonisation de toute la famille MASS — FAIT** (lots B à E, audit
+     validé par Guillaume). Les valeurs validées vivent dans des jetons
+     `--mass-*` sur `:root` (`tokens.css`) : les réutiliser, n'en inventer
+     aucune. En-têtes sans photo : compacts, sans le décor de POWER, titre
+     argent. Cartes, boutons, champs, sélecteurs, panneaux de séance, barre
+     de repos : tous en jetons MASS. Décisions de Guillaume : le « // » reste
+     partout sauf sur Semaine ; le VERT reste pour « fait » (séance, série,
+     interrupteur, fin de repos) ; le premier lancement MASS n'a pas de
+     photo (le stade est à POWER). Chaque règle MASS d'un fichier partagé
+     avec POWER est sous `:global([data-theme='mass'])` — trois tests de
+     confinement (`enteteMassCss`, `confinementMass`, `seanceMass`) le
+     vérifient. Photo de Semaine calée à DROITE (à gauche, un iPhone de
+     430 px montrait une bande noire).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

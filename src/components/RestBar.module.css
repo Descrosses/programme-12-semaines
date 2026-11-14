@@ -111,3 +111,31 @@
   background: rgb(0 0 0 / 22%);
   color: var(--ink-on-accent);
 }
+
+/*
+ * MASS (lot D) : la barre de repos prend la carte anthracite, le chiffre en
+ * vrai italique extra-gras, la jauge rouge et des boutons sombres bordés.
+ * Le vert de fin de repos (`.over`) garde son sens : le repos est FAIT.
+ */
+:global([data-theme='mass']) .bar:not(.over) {
+  border-top-color: var(--mass-carte-bord);
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .time {
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+:global([data-theme='mass']) .bar:not(.over) .fill {
+  background: var(--mass-rouge);
+  box-shadow: var(--mass-halo-trait);
+}
+
+:global([data-theme='mass']) .bar:not(.over) .action {
+  border: 1px solid var(--mass-sombre-bord);
+  background: var(--mass-sombre-fond);
+  box-shadow: var(--mass-liseret);
+}

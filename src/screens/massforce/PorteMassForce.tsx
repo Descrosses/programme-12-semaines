@@ -97,7 +97,7 @@ export function PorteMassForce({
                     <button
                       key={o.id}
                       type="button"
-                      className={`${session.tiroir} ${brouillon[l.cle] === o.id ? local.choisi : ''}`}
+                      className={`${session.tiroir} ${local.option} ${brouillon[l.cle] === o.id ? local.choisi : ''}`}
                       aria-pressed={brouillon[l.cle] === o.id}
                       onClick={() => setBrouillon((b) => ({ ...b, [l.cle]: o.id }))}
                     >

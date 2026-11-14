@@ -106,7 +106,9 @@ export function OnboardingScreen({
               ? 'Ce que tu soulèves aujourd’hui'
               : 'Trois mesures facultatives'
         }
-        visuel={etape === 1 ? 'stade' : undefined}
+        /* Le stade est une photo de POWER (football américain) : seul le
+           parcours de POWER la montre. MASS garde son en-tête sans photo. */
+        visuel={etape === 1 && parcoursComplet ? 'stade' : undefined}
         prioritaire={etape === 1}
       />
 
