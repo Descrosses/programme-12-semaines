@@ -509,8 +509,8 @@ export function SessionScreen({
   }
 
   return (
-    <div className={styles.screen}>
-      <header className={styles.header}>
+    <div className={`${styles.screen} ${styles.ecranSeance}`}>
+      <header className={`${styles.header} ${styles.enteteSeance}`}>
         {data.entete !== null && (
           <Visuel nom={data.entete} className={styles.enteteFond} sizes="100vw" prioritaire />
         )}
@@ -532,7 +532,7 @@ export function SessionScreen({
             étaient côte à côte mais séparés, et `humanDate` répète déjà le
             jour : on lisait « Lundi lundi 5 octobre ».
           */}
-          <span className={styles.metaItem}>
+          <span className={`${styles.metaItem} ${styles.metaDate}`}>
             {data.date ? `${DAY_LABELS[day]} ${humanDateShort(data.date)}` : DAY_LABELS[day]}
           </span>
           <span className={styles.metaItem}>

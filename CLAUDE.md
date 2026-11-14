@@ -367,6 +367,15 @@ matériel et la durée avant d'écrire la moindre séance.
      Écarts VOULUS aux références, à ne pas « corriger » : boutons, curseurs
      et date gardent 48 px (`--tap`), « Enregistrer le test » reste.
      `screens/combineMass.test.tsx` fige l'étiquette et la variante.
+     **Écran Séance MASS — FAIT** (référence × 0,473), pour FORCE et
+     CONGESTION. Tout le bloc « SÉANCE MASS » de `Session.module.css` est
+     préfixé `:global([data-theme='mass']) .ecranSeance` : ces classes sont
+     partagées avec la séance POWER, la séance FEMMES et le COMBINÉ MASS (une
+     première version les repeignait aussi). `screens/seanceMass.test.ts`
+     refuse tout sélecteur non confiné. Pas de trait sous le titre de séance ;
+     « DUR » (et toute intensité MASS) en bord rouge. Écarts voulus : curseurs
+     et bouton de fiche à 48 px, zone du retour qui mord de 12 px sur la
+     barre d'état, photo de fiche inchangée (pas de fichier fourni).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

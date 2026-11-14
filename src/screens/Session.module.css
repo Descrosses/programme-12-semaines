@@ -2432,3 +2432,319 @@
     linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
   mask-composite: intersect;
 }
+
+/* ===================================================================== */
+/*
+ * SÉANCE MASS — d'après la référence de Guillaume (14 novembre), mesurée sur
+ * sa capture d'iPhone (849 px = 402 px CSS). Tout est sous le thème MASS ET
+ * sous `.ecranSeance` : POWER, FEMMES et le combiné MASS, qui partagent ces
+ * classes, ne voient rien.
+ *
+ * Écarts voulus, la référence contredisant une règle de l'app :
+ * - les curseurs et le bouton de la fiche gardent 48 px (`--tap`) ;
+ * - le retour « Semaine 1 » garde sa zone de 48 px ; elle mord de 12 px sur
+ *   la barre d'état pour que le texte tombe où la référence le pose.
+ */
+
+/* La photo passe sous la barre d'état, comme sur la référence. */
+:global([data-theme='mass']) .ecranSeance .enteteSeance {
+  --haut-ecran: env(safe-area-inset-top, 0px);
+  isolation: isolate;
+  margin-top: calc(-1 * var(--haut-ecran));
+  padding: calc(var(--haut-ecran) - 12px) 19px 8px;
+  border-bottom: 0;
+  background: var(--bg);
+}
+
+:global([data-theme='mass']) .ecranSeance .enteteSeance .enteteFond {
+  height: calc(250px + var(--haut-ecran) * 0.5);
+  -webkit-mask-image:
+    linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 75%) 45%, #000 80%),
+    linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+  mask-image:
+    linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 75%) 45%, #000 80%),
+    linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+}
+
+:global([data-theme='mass']) .ecranSeance .enteteSeance .back {
+  margin-left: -6px;
+  color: #f2f2f2;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.125rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+/* Titre argent, vrai italique extra-gras ; le « // » rouge reste. */
+:global([data-theme='mass']) .ecranSeance .enteteSeance .title {
+  width: fit-content;
+  margin-top: 0;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 3.1rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.95;
+  transform: none;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%) 0 0 / 100%
+    0.95em repeat-y;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+}
+
+/* La référence n'a pas de trait sous le titre de séance. */
+:global([data-theme='mass']) .ecranSeance .enteteSeance .titleRule {
+  display: none;
+}
+
+/* Les pastilles : plus grandes, bord gris, texte blanc gras. */
+:global([data-theme='mass']) .ecranSeance .enteteSeance .meta {
+  gap: 8px 6px;
+  margin-top: 14px;
+}
+
+:global([data-theme='mass']) .ecranSeance .enteteSeance .metaItem {
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 11px;
+  border: 1.5px solid #5c5d5e;
+  background: rgb(0 0 0 / 40%);
+  color: #fff;
+  font-size: 0.90625rem;
+  font-weight: 700;
+}
+
+:global([data-theme='mass']) .ecranSeance .enteteSeance .metaItem b {
+  font-weight: 700;
+}
+
+/* « DUR » : bord rouge, fond rouge sombre, sans la pastille de couleur. */
+:global([data-theme='mass']) .ecranSeance .enteteSeance .tag {
+  border-color: #e3141c;
+  background: linear-gradient(180deg, rgb(160 12 20 / 45%) 0%, rgb(90 6 10 / 45%) 100%);
+}
+
+:global([data-theme='mass']) .ecranSeance .enteteSeance .tag::before {
+  content: none;
+}
+
+/* Le calendrier devant la date. Décoratif. */
+:global([data-theme='mass']) .ecranSeance .metaDate::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16v15H4zM4 10h16M9 3v4M15 3v4M9 15h2M13 15h2M9 18h2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16v15H4zM4 10h16M9 3v4M15 3v4M9 15h2M13 15h2M9 18h2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+/* L'avancement : texte blanc, filet, cinq segments gris arrondis. */
+:global([data-theme='mass']) .ecranSeance .avancement {
+  padding: 10px 19px 12px;
+  border-bottom: 0;
+}
+
+:global([data-theme='mass']) .ecranSeance .avancementTexte {
+  color: #f0f0f0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+:global([data-theme='mass']) .ecranSeance .avancementBarre {
+  gap: 4px;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid #47484a;
+}
+
+:global([data-theme='mass']) .ecranSeance .avancementPas {
+  height: 8px;
+  border-radius: 4px;
+  background: #2a2a2b;
+}
+
+/* Démarrer : dégradé rouge profond, halo, italique extra-gras. */
+:global([data-theme='mass']) .ecranSeance .demarrer {
+  width: calc(100% - 28px);
+  height: 50px;
+  margin: 6px 14px 0;
+  border: 1px solid #ff3b42;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 22%),
+    0 0 18px rgb(226 10 17 / 50%);
+}
+
+/* La carte d'exercice. */
+:global([data-theme='mass']) .ecranSeance .exercise {
+  margin: 17px 13px;
+  border: 1px solid #3c3d3e;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1b1b1c 0%, #101011 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+}
+
+:global([data-theme='mass']) .ecranSeance .exHead {
+  padding: 10px 19px 8px;
+}
+
+:global([data-theme='mass']) .ecranSeance .exRepere {
+  color: #b9b9b9;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 0.9375rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+:global([data-theme='mass']) .ecranSeance .exName {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  line-height: 1.1;
+}
+
+/* « 4 × 5 » : gras plein, pas condensé. */
+:global([data-theme='mass']) .ecranSeance .loadLine {
+  margin-top: 6px;
+  font-family: var(--font);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+:global([data-theme='mass']) .ecranSeance .chargeCible,
+:global([data-theme='mass']) .ecranSeance .chargeCible b,
+:global([data-theme='mass']) .ecranSeance .chargeSource {
+  color: #e8e8e8;
+  font-size: 0.96875rem;
+  line-height: 1.22;
+}
+
+:global([data-theme='mass']) .ecranSeance .chargeCible b,
+:global([data-theme='mass']) .ecranSeance .chargePct {
+  color: #fff;
+}
+
+:global([data-theme='mass']) .ecranSeance .chargeSource {
+  margin-top: 0;
+}
+
+/* Vigilance : bordée de rouge, fond teinté, ⓘ rouge à gauche. */
+:global([data-theme='mass']) .ecranSeance .vigilance {
+  position: relative;
+  margin: 12px -5px 0;
+  padding: 8px 14px 8px 52px;
+  border: 1.5px solid #e3141c;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(120 10 16 / 30%) 0%, rgb(60 5 8 / 22%) 100%);
+  color: #f0f0f0;
+  font-size: 0.96875rem;
+  line-height: 1.22;
+}
+
+:global([data-theme='mass']) .ecranSeance .vigilance::before {
+  content: 'i' / '';
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e3141c;
+  border-radius: 50%;
+  color: #e3141c;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+:global([data-theme='mass']) .ecranSeance .vigilance b {
+  color: #fff;
+}
+
+:global([data-theme='mass']) .ecranSeance .exSub {
+  color: #f0f0f0;
+  font-size: 0.96875rem;
+}
+
+/* La fiche : photo plus claire, bouton rouge rectangle arrondi. */
+:global([data-theme='mass']) .ecranSeance .fiche {
+  height: 118px;
+  margin: 8px 6px 0;
+  border-radius: 12px;
+}
+
+:global([data-theme='mass']) .ecranSeance .ficheVoile {
+  background: rgb(var(--voile) / 22%);
+}
+
+:global([data-theme='mass']) .ecranSeance .ficheBouton {
+  padding: 0 22px;
+  border: 1px solid #ff3b42;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.3125rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 22%),
+    0 0 14px rgb(226 10 17 / 40%);
+}
+
+/* La série en cours : colonne de gauche teintée de rouge, rang rouge. */
+:global([data-theme='mass']) .ecranSeance .setCourante {
+  background: linear-gradient(
+    90deg,
+    rgb(150 10 16 / 38%) 0,
+    rgb(80 6 10 / 30%) 30px,
+    transparent 30px
+  );
+}
+
+:global([data-theme='mass']) .ecranSeance .setCourante .setIndex {
+  color: #e3141c;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.875rem;
+  font-style: italic;
+  font-weight: 800;
+}
+
+/* Les curseurs : libellé blanc, cadre bordé, chiffre en italique extra-gras. */
+:global([data-theme='mass']) .ecranSeance .steppersLigne > div > div:first-child {
+  color: #f0f0f0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+:global([data-theme='mass']) .ecranSeance .steppersLigne > div > div:last-child {
+  border: 1px solid #4a4b4c;
+  background: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
+}
+
+:global([data-theme='mass']) .ecranSeance .steppersLigne :global(.tnum) {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.75rem;
+  font-style: italic;
+  font-weight: 800;
+}
