@@ -389,6 +389,20 @@ matériel et la durée avant d'écrire la moindre séance.
      confinement (`enteteMassCss`, `confinementMass`, `seanceMass`) le
      vérifient. Photo de Semaine calée à DROITE (à gauche, un iPhone de
      430 px montrait une bande noire).
+     **Fiches de MASS FORCE — lots F1, F2, F3 (audit des fiches MASS).**
+     Table propre `programmes/massforce/fiches.ts` (12 exercices), qui ne
+     montre QUE des planches MASS déjà livrées (avatar MASS ; jamais un
+     `power12-*`). MASS CONGESTION garde sa table (`mass4/fiches.ts`),
+     inchangée. Décisions de Guillaume : leg curl → planche du leg curl
+     allongé ; élévations frontales → planche alternée (il les fait ainsi).
+     Restent SANS fiche, exprès : tirage horizontal large (la planche est en
+     prise serrée), push press (la planche Smith est un développé strict),
+     développé incliné haltères (pas de planche) — ne pas les rattacher à
+     ces voisins ; barre au front et curl haltères (Guillaume génère les
+     planches) ; 14 mouvements sans planche MASS. Le fond du bloc fiche
+     (exercice sans fiche) de MASS FORCE est la salle MASS (`massSalle`) et
+     non la photo `force` du pack POWER (`ambianceFicheDe`) ; POWER et MASS
+     CONGESTION gardent le leur. `massforce/fiches.test.ts` fige tout cela.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

@@ -12,8 +12,7 @@ import { dateFor } from '../engine/calendar';
 import { missingPrescribedSets } from '../engine/partialSession';
 import { type ResolvedSession } from '../engine/getSession';
 import { modulePourCycle } from '../programmes/registre';
-import { programmeParId } from '../data/catalogue';
-import { enteteDe, HABILLAGE } from '../data/famillesVisuel';
+import { ambianceFicheDe, enteteDe } from '../data/famillesVisuel';
 import type { VisuelNom } from '../data/visuels';
 import { readiness as computeReadiness } from '../engine/readiness';
 import { allegementAccepte, explosiveTrend, type ExplosiveTrend } from '../engine/trends';
@@ -222,7 +221,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       history,
       customRows,
       replaced: applique.replaced,
-      ambiance: ambianceDe(programme.id),
+      ambiance: ambianceFicheDe(programme.id),
       entete: enteteDe(programme.id, 'seance') ?? null,
       alignements: settingsRow.alignementReps ?? {},
     });
@@ -247,11 +246,6 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
   }, [reload]);
 
   return { ...state, ensureRow, reload };
-}
-
-function ambianceDe(programmeId: string): VisuelNom | null {
-  const def = programmeParId(programmeId);
-  return def === null ? null : (HABILLAGE[def.familleId]?.photo ?? null);
 }
 
 function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {

@@ -26,6 +26,7 @@ import type { SessionContext } from '../../engine/types';
 import { travailPour } from '../mass4/travail';
 import type { ModuleProgramme } from '../types';
 import { chargePour } from './charges';
+import { fichePourForce } from './fiches';
 import { conseilComplementaire, passagesDe } from './progression';
 import { optionChoisie } from './depart';
 import { seanceForce } from './seances';
@@ -71,6 +72,7 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
       : conseilComplementaire(ligne, passagesDe(series, option.id, semaine));
   // Le RIR ne sert qu'à freiner une progression : demandé là où il en pilote une.
   const demandeRir = charge?.kind === 'calculee' || ligne.progression === 'push-press';
+  const fiche = fichePourForce(option.id);
   const def: ExerciseDef = {
     id: option.id,
     name: option.nom,
@@ -78,6 +80,7 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     role: 'accessory',
     intent: ligne.consigne,
     vigilance: ligne.vigilance,
+    ...(fiche === undefined ? {} : { fiche }),
   };
   return {
     def,
