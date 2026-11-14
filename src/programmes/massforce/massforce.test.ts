@@ -161,7 +161,9 @@ describe('MASS FORCE — §3 consignes et vigilance', () => {
 describe('MASS FORCE — le module ne prescrit rien de non validé', () => {
   it('est enregistré, et reste « à venir » au catalogue (pas de bouton Commencer)', () => {
     expect(moduleParId('mass-force')).toBe(MASS_FORCE);
-    expect(programmeParId('mass-force')?.statut).toBe('a-venir');
+    // Ouvert à la demande de Guillaume ; le résumé dit que seule la S1 existe.
+    expect(programmeParId('mass-force')?.statut).toBe('disponible');
+    expect(programmeParId('mass-force')?.resume).toMatch(/seule la semaine 1 est écrite/);
   });
 
   it('semaine 1 seulement : aucune séance en semaine 2, 3 ou 4', () => {

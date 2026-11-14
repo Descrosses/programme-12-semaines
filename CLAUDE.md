@@ -128,7 +128,7 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 | Famille | État |
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
-| MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, à venir) → CONGESTION (`mass4`, disponible) |
+| MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, **disponible en version de travail, S1 seule** — ouvert à la demande de Guillaume) → CONGESTION (`mass4`, disponible) |
 | FEMMES | Parcours de 8 étapes. Le cycle 1 (FEMMES 8) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
@@ -291,7 +291,7 @@ matériel et la durée avant d'écrire la moindre séance.
      par case par `massforce.test.ts`. Module `programmes/massforce/`
      (`semaines: [1]`) : aucune charge, aucun %, aucun champ RPE (« RPE 8 »
      est une consigne). Les 4 mouvements évalués portent « charge libre en
-     attendant ». MASS FORCE reste `a-venir` : pas de bouton Commencer.
+     attendant ». Ouvert ensuite au catalogue (statut `disponible`, S1 seule).
      Chaque option (matériel/variante) est un exercice à part (`mf-…`), donc
      un historique à part ; le choix est fait une fois par cycle
      (`CycleRow.massForce.choix`, passé aux séances par `ctx.choixCycle`).
