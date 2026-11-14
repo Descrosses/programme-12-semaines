@@ -390,7 +390,7 @@ matériel et la durée avant d'écrire la moindre séance.
      vérifient. Photo de Semaine calée à DROITE (à gauche, un iPhone de
      430 px montrait une bande noire).
      **Fiches de MASS FORCE — lots F1, F2, F3 (audit des fiches MASS).**
-     Table propre `programmes/massforce/fiches.ts` (12 exercices), qui ne
+     Table propre `programmes/massforce/fiches.ts` (14 exercices), qui ne
      montre QUE des planches MASS déjà livrées (avatar MASS ; jamais un
      `power12-*`). MASS CONGESTION garde sa table (`mass4/fiches.ts`),
      inchangée. Décisions de Guillaume : leg curl → planche du leg curl
@@ -398,8 +398,11 @@ matériel et la durée avant d'écrire la moindre séance.
      Restent SANS fiche, exprès : tirage horizontal large (la planche est en
      prise serrée), push press (la planche Smith est un développé strict),
      développé incliné haltères (pas de planche) — ne pas les rattacher à
-     ces voisins ; barre au front et curl haltères (Guillaume génère les
-     planches) ; 14 mouvements sans planche MASS. Le fond du bloc fiche
+     ces voisins ; 14 mouvements sans planche MASS. Barre au front et curl
+     haltères ont des planches générées par Guillaume (`ez-skull-crusher`,
+     `db-alternating-curl`, fond BLANC — décision de Guillaume pour toute la
+     bibliothèque MASS) ; deux textes du curl retouchés pour suivre la
+     prescription (montée à intention de vitesse maximale). Le fond du bloc fiche
      (exercice sans fiche) de MASS FORCE est la salle MASS (`massSalle`) et
      non la photo `force` du pack POWER (`ambianceFicheDe`) ; POWER et MASS
      CONGESTION gardent le leur. `massforce/fiches.test.ts` fige tout cela.

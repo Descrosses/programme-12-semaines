@@ -20,8 +20,6 @@
  *   neutre), push press (la planche Smith est un développé strict, sans
  *   impulsion des jambes), développé incliné HALTÈRES (planches : incliné
  *   Smith, ou couché plat) ;
- * - barre au front et curl haltères : Guillaume génère leurs planches (barre
- *   W ; curl haltères), les planches actuelles ne conviennent pas ;
  * - quatorze mouvements sans planche MASS (lot F4).
  *
  * MASS CONGESTION a sa propre table (`mass4/fiches.ts`), inchangée : deux
@@ -32,10 +30,16 @@
 export const FICHES_FORCE: Readonly<Record<string, string>> = {
   // Lundi
   'mf-ecarte-couche': 'db-fly.webp', // « Écarté couché haltères »
+  // Planche générée par Guillaume (lot F2) : la barre au front en barre W,
+  // comme le prescrit MASS FORCE (l'ancienne planche montre une barre droite).
+  'mf-barre-au-front': 'ez-skull-crusher.webp', // « Barre front barre W »
   // Mardi
   'mf-tirage-supination-poulie': 'supinated-lat-pulldown.webp', // « … prise supination »
   'mf-pull-over-poulie': 'cable-pullover.webp', // « Pull over à la poulie »
   'mf-curl-barre-w': 'ez-curl.webp', // « Biceps curl barre W »
+  // Planche générée par Guillaume (lot F2), deux textes retouchés pour suivre
+  // la prescription : montée à intention de vitesse maximale.
+  'mf-curl-halteres': 'db-alternating-curl.webp', // « Curl haltères alterné »
   // Jeudi
   'mf-squat-smith': 'smith-squat.webp', // « Squat Smith Machine »
   'mf-leg-extension': 'leg-extension.webp', // « Leg Extension assis »

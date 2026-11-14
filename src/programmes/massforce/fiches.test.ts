@@ -16,11 +16,13 @@ import { FICHES_FORCE, fichePourForce } from './fiches';
 import { SEANCES_FORCE } from './seances';
 
 const fichier = (nom: string) => new URL(`../../../public/fiches/${nom}`, import.meta.url);
+/* Planches MASS générées par Guillaume pour MASS FORCE, au gabarit et à l'avatar MASS. */
+const PLANCHES_FOURNIES = ['ez-skull-crusher.webp', 'db-alternating-curl.webp'];
 const idsForce = SEANCES_FORCE.flatMap((s) => s.lignes.flatMap((l) => l.options.map((o) => o.id)));
 
 describe('les fiches de MASS FORCE', () => {
-  it('douze mouvements, chacun un vrai exercice de MASS FORCE', () => {
-    expect(Object.keys(FICHES_FORCE)).toHaveLength(12);
+  it('quatorze mouvements, chacun un vrai exercice de MASS FORCE', () => {
+    expect(Object.keys(FICHES_FORCE)).toHaveLength(14);
     for (const id of Object.keys(FICHES_FORCE)) expect(idsForce, id).toContain(id);
   });
 
@@ -31,9 +33,17 @@ describe('les fiches de MASS FORCE', () => {
     }
   });
 
-  it('chaque planche est déjà une planche MASS (celle de MASS CONGESTION)', () => {
-    const planchesMass = new Set(Object.values(FICHES_MASS4));
+  it('chaque planche est une planche MASS : celle de MASS CONGESTION, ou une planche MASS fournie par Guillaume', () => {
+    const planchesMass = new Set([...Object.values(FICHES_MASS4), ...PLANCHES_FOURNIES]);
     for (const f of Object.values(FICHES_FORCE)) expect(planchesMass.has(f), f).toBe(true);
+  });
+
+  it('le curl haltères a sa planche MASS, et non celle du curl alterné de MASS CONGESTION', () => {
+    expect(fichePourForce('mf-curl-halteres')).toBe('fiches/db-alternating-curl.webp');
+  });
+
+  it('la barre au front montre la barre W (planche fournie par Guillaume)', () => {
+    expect(fichePourForce('mf-barre-au-front')).toBe('fiches/ez-skull-crusher.webp');
   });
 
   it('les pièges et les planches partielles restent sans fiche', () => {
@@ -42,8 +52,6 @@ describe('les fiches de MASS FORCE', () => {
       'mf-push-press-smith', // la planche Smith est un développé strict
       'mf-push-press-barre',
       'mf-developpe-incline-halteres', // planches : incliné Smith ou couché plat
-      'mf-barre-au-front', // barre droite dessinée, barre EZ/W prescrite
-      'mf-curl-halteres', // alterné, texte de prise contradictoire
     ]) {
       expect(fichePourForce(id), id).toBeUndefined();
     }
