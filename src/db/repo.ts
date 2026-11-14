@@ -622,6 +622,10 @@ export interface SetInput {
   /** Deuxième partie de la série : reps, et charge allégée s'il y en a une. */
   secondReps?: number | null;
   secondKg?: number | null;
+  /** MASS FORCE (lot 6) : voir `SetRow`. */
+  pctPrescrit?: number | null;
+  kgCible?: number | null;
+  rirSaisi?: number | null;
 }
 
 /**
@@ -650,6 +654,9 @@ export async function saveSet(input: SetInput): Promise<number> {
     failed: input.failed,
     secondReps: input.secondReps ?? null,
     secondKg: input.secondKg ?? null,
+    ...(input.pctPrescrit == null ? {} : { pctPrescrit: input.pctPrescrit }),
+    ...(input.kgCible == null ? {} : { kgCible: input.kgCible }),
+    ...(input.rirSaisi == null ? {} : { rirSaisi: input.rirSaisi }),
     doneAt: Date.now(),
   };
 

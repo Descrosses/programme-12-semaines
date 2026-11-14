@@ -26,6 +26,7 @@ import type { SessionContext } from '../../engine/types';
 import { travailPour } from '../mass4/travail';
 import type { ModuleProgramme } from '../types';
 import { chargePour } from './charges';
+import { conseilComplementaire, passagesDe } from './progression';
 import { optionChoisie } from './depart';
 import { seanceForce } from './seances';
 import { JOURS_FORCE, SEMAINES_FORCE, type LigneForce } from './types';
@@ -62,7 +63,14 @@ function notesPour(ligne: LigneForce): string[] {
 
 function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): ResolvedExercise {
   const option = optionChoisie(ligne, ctx.choixCycle);
-  const charge = chargePour(ligne, option, ctx.referencesForce ?? [], semaine);
+  const series = ctx.seriesCycle ?? [];
+  const charge = chargePour(ligne, option, ctx.referencesForce ?? [], semaine, series);
+  const conseil =
+    ligne.progression === 'pourcentage'
+      ? null
+      : conseilComplementaire(ligne, passagesDe(series, option.id, semaine));
+  // Le RIR ne sert qu'à freiner une progression : demandé là où il en pilote une.
+  const demandeRir = charge?.kind === 'calculee' || ligne.progression === 'push-press';
   const def: ExerciseDef = {
     id: option.id,
     name: option.nom,
@@ -77,11 +85,23 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     name: option.nom,
     sets: ligne.series,
     work: travailPour(ligne.reps) ?? { kind: 'maxSet' },
-    load: { kg: null, shape: 'none', step: 2.5, source: 'aucune' },
+    /*
+     * Le champ kg s'ouvre sur la charge cible du jour (décision de Guillaume,
+     * lot 6) : valider sans y toucher enregistre la cible, donc une séance
+     * conforme. Sans cible calculée, il reste vide.
+     */
+    load: {
+      kg: charge?.kind === 'calculee' ? charge.kgCible : null,
+      shape: 'none',
+      step: 2.5,
+      source: 'aucune',
+    },
     targetRPE: null,
     restSec: ligne.reposSec,
     loadLine: `${ligne.series} × ${ligne.reps}`,
     ...(charge === null ? {} : { chargeCible: charge }),
+    ...(conseil === null ? {} : { conseilProgression: conseil }),
+    ...(demandeRir ? { demandeRir: true } : {}),
     notes: notesPour(ligne),
     ...(ligne.superset === undefined ? {} : { superset: ligne.superset }),
     lastKg: null,

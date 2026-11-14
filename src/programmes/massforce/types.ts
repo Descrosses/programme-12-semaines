@@ -26,6 +26,14 @@ export interface OptionForce {
   test?: { exercice: string; variante: Variante };
 }
 
+/** En pour cent : 82,5 s'écrit 82.5, pour que 100 × 82,5 % tombe juste. */
+export interface FourchettePct {
+  readonly min: number;
+  readonly max: number;
+}
+
+export type ModeProgression = 'pourcentage' | 'plage' | 'fixe' | 'push-press';
+
 export interface LigneForce {
   /** Clé stable de la ligne : c'est sous elle que le choix du cycle est rangé. */
   cle: string;
@@ -45,6 +53,12 @@ export interface LigneForce {
    * attendant, et l'écran le dit. `libre` : charge choisie par l'utilisateur.
    */
   charge: 'a-definir' | 'libre';
+  /**
+   * Comment la charge évolue de S1 à S4 (§1 ter du .md) :
+   * `pourcentage` (fourchette de %1RM), `plage` (répétitions prescrites à +2),
+   * `fixe` (RPE prescrit ou superset), `push-press` (RIR 2 ou plus exigé).
+   */
+  progression: ModeProgression;
   reposSec: number;
   superset?: string;
   /** La ligne du tableau « Consignes techniques et vigilance » du .md. */
@@ -64,8 +78,8 @@ export interface SeanceForce {
 export const JOURS_FORCE: readonly DayIndex[] = [0, 1, 3, 4];
 
 /**
- * Seule la semaine 1 est écrite : la progression S2–S4 n'est pas validée.
- * Recopier S1 sur les trois semaines suivantes ferait passer une absence de
- * progression pour une décision.
+ * Quatre semaines à prescription identique (§1 ter, lot 6) : ce n'est pas une
+ * recopie faute de mieux, c'est la décision — la CHARGE évolue selon ce qui a
+ * été fait (`progression.ts`), pas les séries ni les répétitions.
  */
-export const SEMAINES_FORCE: readonly number[] = [1];
+export const SEMAINES_FORCE: readonly number[] = [1, 2, 3, 4];

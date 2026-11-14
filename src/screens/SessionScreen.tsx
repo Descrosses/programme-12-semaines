@@ -251,6 +251,11 @@ export function SessionScreen({
       failed: payload.failed,
       secondReps: payload.secondReps,
       secondKg: payload.secondKg,
+      // MASS FORCE (lot 6) : la cible du jour voyage avec la série.
+      ...(ex.chargeCible?.kind === 'calculee'
+        ? { pctPrescrit: ex.chargeCible.pctCible, kgCible: ex.chargeCible.kgCible }
+        : {}),
+      ...(payload.rirSaisi == null ? {} : { rirSaisi: payload.rirSaisi }),
     });
     /* Un jour de combine, le résultat part aussi dans la fiche Combine :
        plus besoin de le ressaisir en face du test. */

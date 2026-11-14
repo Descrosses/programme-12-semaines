@@ -140,6 +140,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
       ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
       ...(referencesForce.length === 0 ? {} : { referencesForce }),
+      ...(cycle?.programmeId === MASS_FORCE_PROGRAMME_ID ? { seriesCycle: sets } : {}),
     });
 
     /*

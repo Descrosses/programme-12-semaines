@@ -93,7 +93,7 @@ describe('MASS FORCE — §1 semaine type, case par case', () => {
       for (const o of l.options) {
         const vise =
           pMin !== undefined && (smithSeul === undefined || o.test?.variante === 'smith');
-        expect({ o: o.id, f: FOURCHETTES_FORCE[1]![o.id] }).toEqual({
+        expect({ o: o.id, f: FOURCHETTES_FORCE[o.id] }).toEqual({
           o: o.id,
           f: vise
             ? { min: Number(pMin.replace(',', '.')), max: Number(pMax!.replace(',', '.')) }
@@ -166,13 +166,23 @@ describe('MASS FORCE — le module ne prescrit rien de non validé', () => {
     expect(programmeParId('mass-force')?.resume).toMatch(/seule la semaine 1 est écrite/);
   });
 
-  it('semaine 1 seulement : aucune séance en semaine 2, 3 ou 4', () => {
-    expect(MASS_FORCE.semaines).toEqual([1]);
-    expect(MASS_FORCE.joursDeLaSemaine(1)).toEqual([0, 1, 3, 4]);
-    for (const w of [0, 2, 3, 4, 5]) {
+  it('quatre semaines, prescription identique (§1 ter) : seule la charge évolue', () => {
+    expect(MASS_FORCE.semaines).toEqual([1, 2, 3, 4]);
+    const forme = (w: number, d: 0 | 1 | 3 | 4) =>
+      MASS_FORCE.getSession(w, d, EMPTY_CONTEXT)!.exercises.map((e) => [
+        e.id,
+        e.sets,
+        e.loadLine,
+        e.restSec,
+        e.def.intent,
+        e.def.vigilance,
+      ]);
+    for (const d of [0, 1, 3, 4] as const) {
+      for (const w of [2, 3, 4]) expect(forme(w, d), `S${w} j${d}`).toEqual(forme(1, d));
+    }
+    for (const w of [0, 5]) {
       expect(MASS_FORCE.joursDeLaSemaine(w)).toEqual([]);
-      for (const d of [0, 1, 3, 4] as const)
-        expect(MASS_FORCE.getSession(w, d, EMPTY_CONTEXT)).toBeNull();
+      expect(MASS_FORCE.getSession(w, 0, EMPTY_CONTEXT)).toBeNull();
     }
     expect(MASS_FORCE.getSession(1, 2, EMPTY_CONTEXT)).toBeNull();
   });
@@ -329,5 +339,31 @@ describe('MASS FORCE — combiné aligné sur le programme', () => {
         v: [...t.variantes].sort(),
       });
     }
+  });
+});
+
+describe('MASS FORCE — §1 ter, mode de progression ligne par ligne', () => {
+  const md = tableau('| Exercice | Progression |');
+  const MODE: Record<string, string> = {
+    Plage: 'plage',
+    Fixe: 'fixe',
+    'Push press': 'push-press',
+  };
+
+  it('chaque ligne sans fourchette porte le mode écrit dans le .md', () => {
+    const sansPct = toutes.filter(({ l }) => l.progression !== 'pourcentage');
+    expect(md.map(([e]) => e)).toEqual(sansPct.map(({ l }) => l.libelle));
+    md.forEach(([, mode], i) => {
+      expect({ l: sansPct[i]!.l.cle, m: sansPct[i]!.l.progression }).toEqual({
+        l: sansPct[i]!.l.cle,
+        m: MODE[mode!],
+      });
+    });
+  });
+
+  it('les trois mouvements à fourchette sont en pourcentage, et eux seuls', () => {
+    expect(toutes.filter(({ l }) => l.progression === 'pourcentage').map(({ l }) => l.cle)).toEqual(
+      ['lun-developpe', 'mar-tirage', 'jeu-squat'],
+    );
   });
 });

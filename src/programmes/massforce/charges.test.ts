@@ -164,9 +164,7 @@ describe('ce qui ne doit jamais apparaître', () => {
         ]),
       ).toEqual({ kind: 'a-determiner' });
     }
-    for (const s of Object.values(FOURCHETTES_FORCE)) {
-      expect(Object.keys(s).some((k) => k.includes('push-press'))).toBe(false);
-    }
+    expect(Object.keys(FOURCHETTES_FORCE).some((k) => k.includes('push-press'))).toBe(false);
   });
 
   it('squat à la barre libre : pas de fourchette (décision : Smith seulement)', () => {
@@ -189,27 +187,44 @@ describe('ce qui ne doit jamais apparaître', () => {
     }
   });
 
-  it('semaine 2 : aucune fourchette héritée de la S1', () => {
-    expect(Object.keys(FOURCHETTES_FORCE)).toEqual(['1']);
-    expect(
-      charge(
-        'lun-developpe',
-        'mf-developpe-couche-barre',
-        [ref('developpe-couche', 'barre', 100)],
-        2,
-      ),
-    ).toEqual({ kind: 'a-determiner' });
+  it('la fourchette est le couloir des quatre semaines : sans séance passée, on part du bas', () => {
+    expect(Object.keys(FOURCHETTES_FORCE)).toEqual([
+      'mf-developpe-couche-barre',
+      'mf-developpe-couche-smith',
+      'mf-tirage-vertical-poulie',
+      'mf-tirage-vertical-machine',
+      'mf-squat-smith',
+    ]);
+    for (const w of [1, 2, 3, 4]) {
+      expect(
+        charge(
+          'lun-developpe',
+          'mf-developpe-couche-barre',
+          [ref('developpe-couche', 'barre', 100)],
+          w,
+        ),
+      ).toMatchObject({ kind: 'calculee', pctCible: 75, kgCible: 75 });
+    }
   });
 
-  it('aucune charge unique : le champ kg n’est jamais pré-rempli', () => {
+  it('le champ kg s’ouvre sur la charge cible ; sans cible calculée, il reste vide', () => {
     const lundi = MASS_FORCE.getSession(1, 0, {
       ...EMPTY_CONTEXT,
       referencesForce: [ref('developpe-couche', 'barre', 100)],
     })!;
     const bench = lundi.exercises[0]!;
-    expect(bench.chargeCible).toMatchObject({ kind: 'calculee', kgMin: 75, kgMax: 82.5 });
-    expect(bench.load.kg).toBeNull();
+    expect(bench.chargeCible).toMatchObject({
+      kind: 'calculee',
+      kgCible: 75,
+      kgMin: 75,
+      kgMax: 82.5,
+    });
+    expect(bench.load.kg).toBe(75);
     expect(bench.planKg).toBeNull();
     expect(bench.suggestion).toBeNull();
+    // À compléter (pas de 1RM), à déterminer (push press) ou libre : vide.
+    expect(MASS_FORCE.getSession(1, 0, EMPTY_CONTEXT)!.exercises[0]!.load.kg).toBeNull();
+    expect(MASS_FORCE.getSession(1, 4, EMPTY_CONTEXT)!.exercises[0]!.load.kg).toBeNull();
+    for (const e of lundi.exercises.slice(1)) expect(e.load.kg, e.id).toBeNull();
   });
 });

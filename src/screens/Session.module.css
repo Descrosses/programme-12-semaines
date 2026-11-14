@@ -2340,3 +2340,49 @@
   color: var(--ink-3);
   font-size: 0.8125rem;
 }
+
+/* MASS FORCE, lot 6 : pourquoi cette cible, et le conseil des complémentaires. */
+.chargeMotif {
+  margin-top: 2px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.conseilProgression {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+/* Le RIR de la dernière série : facultatif, vide par défaut. */
+.rir {
+  margin: 10px 0 0;
+}
+
+.rirLegende {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+.rirChoix {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rirBouton {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.rirChoisi {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
