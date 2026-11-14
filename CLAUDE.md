@@ -329,6 +329,14 @@ matériel et la durée avant d'écrire la moindre séance.
      Progrès en font la moyenne. Complémentaires : `plage` (+2), `fixe` (RPE
      prescrit, superset), `push-press` (RIR ≥ 2) — conseil sans kilos.
      `progression.test.ts` rejoue les anomalies et trois profils.
+  8. **Le parcours d'accueil et l'écran Aujourd'hui dépendent du programme**
+     (régression signalée par Guillaume : MASS FORCE ouvrait le parcours de
+     POWER avec ses 1RM de septembre). `OnboardingScreen` ne montre les
+     maxima et la référence de saut que si `reglages.force` ; sinon, la date
+     seule (« Lundi de la semaine 1 »). Les textes hors séance (combine
+     initial, « N semaines bouclées », raccourci Nutrition) passent par
+     `programmes/textesCycle.ts`. POWER ne change pas d'un mot — des tests
+     (`OnboardingScreen.test.tsx`, `textesCycle.test.ts`) le figent.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

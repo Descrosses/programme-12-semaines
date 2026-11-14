@@ -7,6 +7,7 @@ import { humanDate } from '../engine/calendar';
 import { poseMaximum } from '../engine/maxima';
 import { fr } from '../engine/format';
 import { saveSettings } from '../db/repo';
+import type { ModuleProgramme } from '../programmes/types';
 import type { SettingsRow } from '../db/db';
 import styles from './Screens.module.css';
 import local from './Onboarding.module.css';
@@ -56,12 +57,27 @@ type Etape = 1 | 2 | 3;
 export function OnboardingScreen({
   /** Les réglages actuels — vides au premier lancement. */
   row,
+  /** Le programme du cycle : c'est lui qui dit quelles étapes ont un sens. */
+  programme,
   /** Appelé une seule fois, à la sortie du parcours. */
   onFini,
 }: {
   row: SettingsRow;
+  programme: ModuleProgramme;
   onFini: () => void;
 }) {
+  /*
+   * Les maxima (étape 2) et les mesures de l'étape 3 — référence de saut,
+   * feu tricolore — sont ceux de POWER 12 : ils pilotent SON tableau
+   * (`settings.oneRM`). Un programme qui ne s'en sert pas (`reglages.force`
+   * à `false` : MASS FORCE, MASS CONGESTION) ne pose que la date. Lui montrer
+   * les maxima de POWER, c'était afficher le combine d'un autre programme —
+   * et proposer d'effacer ces maxima d'un geste.
+   */
+  const parcoursComplet = programme.reglages.force;
+  const total = parcoursComplet ? 3 : 1;
+  /* POWER commence par son combine (semaine 0) ; les autres, par la semaine 1. */
+  const combineInitial = programme.semaines.includes(0);
   const [etape, setEtape] = useState<Etape>(1);
   /** Copie locale : le parcours enregistre à chaque geste et se redessine seul. */
   const [reglages, setReglages] = useState<SettingsRow>(row);
@@ -81,7 +97,7 @@ export function OnboardingScreen({
   return (
     <div className={styles.screen}>
       <ScreenHeader
-        eyebrow={`Étape ${etape} sur 3`}
+        eyebrow={`Étape ${etape} sur ${total}`}
         title={etape === 1 ? 'Bienvenue' : etape === 2 ? 'Tes maxima' : 'Presque fini'}
         subtitle={
           etape === 1
@@ -95,7 +111,7 @@ export function OnboardingScreen({
       />
 
       <div className={local.etapes} aria-hidden="true">
-        {([1, 2, 3] as const).map((n) => (
+        {([1, 2, 3] as const).slice(0, total).map((n) => (
           <span
             key={n}
             className={`${local.etape} ${
@@ -108,13 +124,14 @@ export function OnboardingScreen({
       {etape === 1 && (
         <>
           <p className={styles.lead}>
-            Il manque une seule chose pour démarrer : le <b>lundi</b> de ton combine initial. Tout
-            le calendrier en découle, et il ne bougera plus ensuite.
+            Il manque une seule chose pour démarrer : le <b>lundi</b>{' '}
+            {combineInitial ? 'de ton combine initial' : 'de ta première semaine'}. Tout le
+            calendrier en découle, et il ne bougera plus ensuite.
           </p>
           <section className={styles.card}>
             <div className={styles.field}>
               <label className={styles.label} htmlFor="accueil-date">
-                Lundi du combine initial
+                {combineInitial ? 'Lundi du combine initial' : 'Lundi de la semaine 1'}
               </label>
               <input
                 id="accueil-date"
@@ -124,8 +141,9 @@ export function OnboardingScreen({
                 onChange={(e) => void enregistre({ startDate: e.target.value })}
               />
               <p className={styles.fieldHint}>
-                Six jours de tests : squat lundi, tractions lestées mardi, deadlift jeudi, bench
-                vendredi, tractions max samedi. Dimanche repos, puis la semaine 1 démarre le lundi.
+                {combineInitial
+                  ? 'Six jours de tests : squat lundi, tractions lestées mardi, deadlift jeudi, bench vendredi, tractions max samedi. Dimanche repos, puis la semaine 1 démarre le lundi.'
+                  : 'La première séance tombe ce lundi-là.'}
               </p>
             </div>
           </section>
@@ -134,9 +152,9 @@ export function OnboardingScreen({
               type="button"
               className={styles.primary}
               disabled={!dateOk}
-              onClick={() => setEtape(2)}
+              onClick={() => (parcoursComplet ? setEtape(2) : onFini())}
             >
-              Continuer
+              {parcoursComplet ? 'Continuer' : 'C’est parti'}
             </button>
             {!dateOk && (
               <p className={local.compteur}>
@@ -148,7 +166,7 @@ export function OnboardingScreen({
         </>
       )}
 
-      {etape === 2 && (
+      {parcoursComplet && etape === 2 && (
         <>
           <p className={styles.lead}>
             Rien n’est prérempli : l’application ne connaît aucun de tes chiffres. Si tu arrives
@@ -241,7 +259,7 @@ export function OnboardingScreen({
         </>
       )}
 
-      {etape === 3 && (
+      {parcoursComplet && etape === 3 && (
         <>
           <p className={styles.lead}>
             Aucune n’est obligatoire, et aucune n’a de valeur par défaut. Tu peux toutes les remplir

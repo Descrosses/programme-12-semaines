@@ -3,6 +3,7 @@ import type { DayKind } from '../data/nutrition';
 import { cibleDuJour } from '../engine/cibleDuJour';
 import { WEEK_BLOCKS, blocInfo, isCombineDay } from '../data/program';
 import { modulePourCycle, nutritionChiffree } from '../programmes/registre';
+import { textesCycle } from '../programmes/textesCycle';
 import type { ModuleProgramme } from '../programmes/types';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
 import {
@@ -228,7 +229,11 @@ export function TodayScreen({
    * les maxima et les mesures facultatives, sans jamais rien préremplir.
    */
   if (!today && state.settingsRow) {
-    return <OnboardingScreen row={state.settingsRow} onFini={onDataChanged} />;
+    // Le parcours dépend du programme : on attend de le connaître.
+    if (programme === null) return <div className={styles.loading}>Chargement…</div>;
+    return (
+      <OnboardingScreen row={state.settingsRow} programme={programme} onFini={onDataChanged} />
+    );
   }
   if (!today) return <div className={styles.loading}>Chargement…</div>;
 
@@ -272,14 +277,15 @@ export function TodayScreen({
     programme === null || semaineDuJour === null ? null : programme.blocDeLaSemaine(semaineDuJour);
   const bloc = blocInfo(blocSemaine);
 
+  const textes = textesCycle(programme);
   const entete =
     today.kind === 'session'
       ? { titre: state.title, sous: bloc ? bloc.name : undefined }
       : today.kind === 'rest'
         ? { titre: 'Repos', sous: 'Récupération' }
         : today.kind === 'before'
-          ? { titre: 'Ça commence bientôt', sous: 'Combine initial' }
-          : { titre: '12 semaines bouclées', sous: 'Programme terminé' };
+          ? { titre: 'Ça commence bientôt', sous: textes.sousAvant }
+          : { titre: textes.fin, sous: 'Programme terminé' };
 
   return (
     <div className={styles.screen}>
@@ -324,15 +330,16 @@ export function TodayScreen({
 
         {today.kind === 'before' && (
           <p className={styles.lead}>
-            Premier jour du combine initial dans {today.daysUntil} jour
+            {textes.attente} dans {today.daysUntil} jour
             {today.daysUntil > 1 ? 's' : ''}, le {humanDate(today.first.date)}.
           </p>
         )}
 
         {today.kind === 'finished' && (
           <p className={styles.lead}>
-            Dernière séance le {humanDate(today.last.date)}. Regarde l’écran Progression pour
-            comparer tes trois combines.
+            Dernière séance le {humanDate(today.last.date)}.
+            {textes.comparerCombines &&
+              ' Regarde l’écran Progression pour comparer tes trois combines.'}
           </p>
         )}
       </ScreenHeader>
@@ -350,14 +357,15 @@ export function TodayScreen({
         mélange des jours d'entraînement et des jours de repos, donc une carte
         unique y afficherait une cible fausse pour au moins un des jours listés.
       */}
-      <button type="button" className={styles.nutriCard} onClick={onGoNutrition}>
-        <span className={styles.nutriIcon} aria-hidden="true">
-          <Icon name="meal" size="22px" />
-        </span>
-        <span className={styles.nutriText}>
-          <b>Nutrition — {todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}</b>
-          <span>
-            {/*
+      {textes.raccourciNutrition && (
+        <button type="button" className={styles.nutriCard} onClick={onGoNutrition}>
+          <span className={styles.nutriIcon} aria-hidden="true">
+            <Icon name="meal" size="22px" />
+          </span>
+          <span className={styles.nutriText}>
+            <b>Nutrition — {todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}</b>
+            <span>
+              {/*
               CE RACCOURCI ANNONÇAIT LES CHIFFRES DE GUILLAUME À TOUT LE MONDE.
               Il lisait `NUTRITION_TARGETS` en dur, hors de toute condition :
               une installation neuve, qui ne voit pourtant aucun plan dans
@@ -367,17 +375,18 @@ export function TodayScreen({
               ils sont affichés, les cibles saisies sinon, et rien du tout
               quand il n'y a ni l'un ni l'autre.
             */}
-            {programme !== null && !nutritionChiffree(programme)
-              ? 'Des principes, pas de calories ni de grammes'
-              : cibleNutrition === null
-                ? 'Pose tes cibles dans les Réglages'
-                : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal · ${String(cibleNutrition.proteinG)} g de protéines`}
+              {programme !== null && !nutritionChiffree(programme)
+                ? 'Des principes, pas de calories ni de grammes'
+                : cibleNutrition === null
+                  ? 'Pose tes cibles dans les Réglages'
+                  : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal · ${String(cibleNutrition.proteinG)} g de protéines`}
+            </span>
           </span>
-        </span>
-        <span className={styles.nutriChevron} aria-hidden="true">
-          <Icon name="arrow-right" size="20px" />
-        </span>
-      </button>
+          <span className={styles.nutriChevron} aria-hidden="true">
+            <Icon name="arrow-right" size="20px" />
+          </span>
+        </button>
+      )}
 
       {state.startDate !== '' && !isMonday(state.startDate) && (
         <button
