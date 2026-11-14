@@ -325,7 +325,7 @@ function CarteTest({
           <div className={styles.tiroirs}>
             <button
               type="button"
-              className={`${styles.tiroir} ${historiqueOuvert ? styles.tiroirOuvert : ''}`}
+              className={`${styles.tiroir} ${local.option} ${historiqueOuvert ? styles.tiroirOuvert : ''}`}
               onClick={() => setHistoriqueOuvert((o) => !o)}
               aria-expanded={historiqueOuvert}
             >

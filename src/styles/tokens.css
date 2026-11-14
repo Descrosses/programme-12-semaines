@@ -484,4 +484,11 @@
   --mass-curseur-fond: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
   --mass-curseur-bord: #4a4b4c;
   --mass-champ-fond: linear-gradient(180deg, #1d1d1e 0%, #121213 100%);
+
+  /* Puces de choix (semaines, débuts/fins) : écran Semaine validé. */
+  --mass-puce-fond: linear-gradient(180deg, #242424 0%, #111 100%);
+  --mass-puce-bord: #3a3a3b;
+  --mass-puce-on-fond: linear-gradient(180deg, #570e11 0%, #8e0c13 55%, #d0111a 100%);
+  --mass-puce-on-bord: #c5262c;
+  --mass-puce-on-halo: 0 0 16px rgb(226 10 17 / 45%);
 }

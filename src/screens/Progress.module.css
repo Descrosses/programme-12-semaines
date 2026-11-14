@@ -224,3 +224,77 @@
 .ecartEgal {
   color: var(--ink-2);
 }
+
+/*
+ * MASS — puces de mouvement (lot C, harmonisation du 14 novembre) : celles
+ * des choix du combiné. Sous le thème MASS seulement.
+ */
+:global([data-theme='mass']) .lift {
+  border-color: var(--mass-sombre-bord);
+  background: var(--mass-sombre-fond);
+  box-shadow: var(--mass-liseret);
+  color: #fff;
+}
+
+:global([data-theme='mass']) .liftOn {
+  border-color: var(--mass-rouge-bord);
+  background: var(--mass-degrade-choix);
+  box-shadow:
+    0 0 14px rgb(226 10 17 / 45%),
+    var(--mass-liseret-choix);
+}
+
+:global([data-theme='mass']) .liftOn::after {
+  content: none;
+}
+
+/* Cartes, onglets et alertes de Progrès : mêmes règles MASS que les écrans
+   communs (`Screens.module.css`). Ce fichier a ses propres classes, d'où la
+   répétition. */
+:global([data-theme='mass']) .card {
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .cardTitle {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+:global([data-theme='mass']) .segment {
+  border-color: var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+}
+
+:global([data-theme='mass']) .segmentButton {
+  color: #cfcfcf;
+}
+
+:global([data-theme='mass']) .segmentOn {
+  border: 1px solid var(--mass-rouge-bord);
+  background: var(--mass-degrade-choix);
+  color: #fff;
+  box-shadow: var(--mass-liseret-choix);
+}
+
+:global([data-theme='mass']) .segmentOn::after {
+  content: none;
+}
+
+:global([data-theme='mass']) .alert {
+  border: 1.5px solid var(--orange);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--orange) 10%, var(--surface));
+  color: #f0f0f0;
+}
+
+:global([data-theme='mass']) .alertRouge {
+  border-color: var(--mass-rouge);
+  background: linear-gradient(180deg, rgb(120 10 16 / 30%) 0%, rgb(60 5 8 / 22%) 100%);
+}

@@ -2747,3 +2747,42 @@
   font-style: italic;
   font-weight: 800;
 }
+
+/* Boutons de la carte (lot C) : « Valider la série » comme « Démarrer » ;
+   Consignes, Remarque, Documenter, Remplacer, Rep ratée sombres et bordés ;
+   « Ajouter un exercice » au trait rouge plein. */
+:global([data-theme='mass']) .ecranSeance .validate {
+  border: 1px solid var(--mass-rouge-bord);
+  border-radius: 12px;
+  background: var(--mass-degrade-action);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.1875rem;
+  font-style: italic;
+  font-weight: 800;
+  text-transform: uppercase;
+  box-shadow:
+    var(--mass-liseret-action),
+    0 0 14px rgb(226 10 17 / 40%);
+}
+
+:global([data-theme='mass']) .ecranSeance .tiroir,
+:global([data-theme='mass']) .ecranSeance .replaceButton,
+:global([data-theme='mass']) .ecranSeance .failToggle {
+  border: 1px solid var(--mass-sombre-bord);
+  border-radius: 10px;
+  background: var(--mass-sombre-fond);
+  box-shadow: var(--mass-liseret);
+  color: #fff;
+}
+
+:global([data-theme='mass']) .ecranSeance .failToggleOn {
+  border-color: var(--mass-rouge-bord);
+  background: var(--mass-degrade-choix);
+}
+
+:global([data-theme='mass']) .ecranSeance .addButton {
+  border: 1.5px solid var(--mass-rouge);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(120 10 16 / 22%) 0%, rgb(60 5 8 / 14%) 100%);
+  color: #fff;
+}

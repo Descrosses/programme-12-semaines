@@ -1620,3 +1620,143 @@
 .fichePreview p:last-child {
   margin-bottom: 0;
 }
+
+/* ===================================================================== */
+/*
+ * MASS — cartes, boutons, champs et sélecteurs des écrans communs
+ * (Réglages, Mesures, Nutrition, Progrès, porte de MASS FORCE, « à venir »).
+ * Lot C de l'harmonisation validée par Guillaume (14 novembre). Aucune valeur
+ * nouvelle : tout vient des jetons `--mass-*`, relevés sur les écrans validés.
+ * Tout est sous le thème MASS : POWER partage ce fichier.
+ */
+
+/* Cartes : anthracite dégradé, contour clair, liseré lumineux en haut. */
+:global([data-theme='mass']) .card {
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .cardTitle,
+:global([data-theme='mass']) .sectionTitle {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Le paragraphe d'ouverture de Mesures touchait le bord de l'écran. */
+:global([data-theme='mass']) .screen > .lead {
+  padding: 0 var(--pad);
+}
+
+/* Bouton principal : celui de « Démarrer la séance ». */
+:global([data-theme='mass']) .primary {
+  height: 50px;
+  border: 1px solid var(--mass-rouge-bord);
+  border-radius: 14px;
+  background: var(--mass-degrade-action);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.3125rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  box-shadow:
+    var(--mass-liseret-action),
+    0 0 18px rgb(226 10 17 / 50%);
+}
+
+:global([data-theme='mass']) .primary:disabled {
+  border-color: var(--mass-curseur-bord);
+  background: #1d1d1e;
+  color: #8a8c90;
+  box-shadow: none;
+}
+
+/* Bouton secondaire : celui de « Voir la semaine » (Accueil validé). */
+:global([data-theme='mass']) .secondary {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--mass-liseret);
+}
+
+/* Alertes : bordées sur tout le tour, comme la Vigilance ; la couleur
+   (orange, rouge, vert) garde son sens. */
+:global([data-theme='mass']) .alert {
+  border: 1.5px solid var(--orange);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--orange) 10%, var(--surface));
+  color: #f0f0f0;
+}
+
+:global([data-theme='mass']) .alertRouge {
+  border-color: var(--mass-rouge);
+  background: linear-gradient(180deg, rgb(120 10 16 / 30%) 0%, rgb(60 5 8 / 22%) 100%);
+}
+
+:global([data-theme='mass']) .alertVert {
+  border-color: var(--vert);
+  background: color-mix(in srgb, var(--vert) 10%, var(--surface));
+}
+
+/* Champs de saisie : ceux du combiné (date). */
+:global([data-theme='mass']) .card input:not([type='checkbox'], [type='radio'], [type='file']),
+:global([data-theme='mass']) .card textarea,
+:global([data-theme='mass']) .card select {
+  border: 1px solid var(--mass-curseur-bord);
+  border-radius: 10px;
+  background: var(--mass-champ-fond);
+  color: #fff;
+}
+
+/* Puces Début / Fin (Mesures) : celles de l'écran Semaine. */
+:global([data-theme='mass']) .week {
+  border: 1px solid var(--mass-puce-bord);
+  border-radius: 9px;
+  background: var(--mass-puce-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .weekNum {
+  color: #f2f2f2;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+:global([data-theme='mass']) .weekOn {
+  border-color: var(--mass-puce-on-bord);
+  background: var(--mass-puce-on-fond);
+  box-shadow: var(--mass-puce-on-halo);
+}
+
+:global([data-theme='mass']) .weekOn .weekNum,
+:global([data-theme='mass']) .weekOn .weekTag {
+  color: #fff;
+}
+
+/* Onglets (Charges, Poids…) : l'onglet choisi rouge, comme les choix du
+   combiné ; les autres dans un cadre sombre bordé. */
+:global([data-theme='mass']) .segment {
+  border-color: var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+}
+
+:global([data-theme='mass']) .segmentButton {
+  color: #cfcfcf;
+}
+
+:global([data-theme='mass']) .segmentOn {
+  border: 1px solid var(--mass-rouge-bord);
+  background: var(--mass-degrade-choix);
+  color: #fff;
+  box-shadow: var(--mass-liseret-choix);
+}
+
+:global([data-theme='mass']) .segmentOn::after {
+  content: none;
+}

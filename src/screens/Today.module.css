@@ -503,3 +503,16 @@
 .titreJour + .lead {
   margin-top: 4px;
 }
+
+/* MASS — la carte Nutrition (jour de repos) : carte anthracite bordée, plus
+   le filet rouge à gauche de l'ancienne direction (lot C). */
+:global([data-theme='mass']) .nutriCard {
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .nutriIcon {
+  color: var(--mass-rouge);
+}
