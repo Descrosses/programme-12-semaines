@@ -313,6 +313,22 @@ matériel et la durée avant d'écrire la moindre séance.
      pour un 1RM (aucune formule validée). Fourchette sans arrondi, champ kg
      jamais pré-rempli. Affichage `chargeCible` dans `ExerciseCard` (absent
      pour POWER et MASS CONGESTION). `charges.test.ts` fige tout cela.
+  7. **MASS FORCE, lot 6 — FAIT : progression S1 → S4** (§1 ter du .md).
+     Prescription IDENTIQUE sur 4 semaines (`SEMAINES_FORCE = [1,2,3,4]`) ;
+     seule la charge évolue, selon les séances réellement faites
+     (`programmes/massforce/progression.ts`, fonctions pures sur les séries
+     BRUTES du cycle — jamais `buildHistoryIndex`, dont `completed` veut dire
+     « au moins une série »). Fourchettes = couloir : départ au bas, +2,5 %
+     après réussite, plafond au haut, −5 % après deux échecs, suspendu au bas.
+     Tolérance de 2,5 points (sous-charge = même %). Sans RIR : deux
+     réussites au même % avant de monter. Ancre figée à la hausse, baisse
+     immédiate. Trois champs FACULTATIFS sur `SetRow` (`pctPrescrit`,
+     `kgCible`, `rirSaisi`), non indexés : pas de migration, l'export les
+     garde. **Ne jamais réutiliser `actualRpe` pour le RIR** : son sélecteur
+     est pré-rempli (une absence deviendrait une valeur) et les écrans
+     Progrès en font la moyenne. Complémentaires : `plage` (+2), `fixe` (RPE
+     prescrit, superset), `push-press` (RIR ≥ 2) — conseil sans kilos.
+     `progression.test.ts` rejoue les anomalies et trois profils.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

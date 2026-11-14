@@ -81,12 +81,19 @@ export type ChargeCible =
       pctMax: number;
       kgMin: number;
       kgMax: number;
+      /** La cible de CETTE séance, dans la fourchette (lot 6). */
+      pctCible: number;
+      kgCible: number;
+      /** Pourquoi cette cible : la séance précédente, en une phrase. */
+      motif: string | null;
       materiel: string;
       date: string;
       type: 'mesure' | 'estime';
     }
   | { kind: 'a-completer'; pctMin: number; pctMax: number; materiel: string }
-  | { kind: 'a-determiner' };
+  | { kind: 'a-determiner' }
+  /** Deux échecs au bas de la fourchette : plus de %, charge libre (lot 6). */
+  | { kind: 'suspendue'; pctMin: number; pctMax: number; materiel: string; motif: string };
 
 export interface ResolvedExercise {
   def: ExerciseDef;
@@ -101,6 +108,10 @@ export interface ResolvedExercise {
   loadLine: string;
   /** Fourchette en %1RM (MASS FORCE). Absente partout ailleurs. */
   chargeCible?: ChargeCible;
+  /** MASS FORCE : « augmente / garde / baisse », en une phrase. */
+  conseilProgression?: string;
+  /** MASS FORCE : sélecteur RIR facultatif sur la dernière série. */
+  demandeRir?: boolean;
   notes: string[];
   /** S9-11 : l'explosif intercalé entre les séries. */
   contrast?: ContrastSpec;

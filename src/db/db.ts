@@ -116,6 +116,21 @@ export interface SetRow {
   secondKg?: number | null;
 
   doneAt: number;
+  /*
+   * MASS FORCE, lot 6 — facultatifs, non indexés (aucune montée de version) :
+   * l'export copie les lignes entières, ils voyagent avec.
+   */
+  /** % du 1RM prescrit pour cette séance (mouvements à fourchette). */
+  pctPrescrit?: number | null;
+  /** Charge cible du jour = ancre × %, sans arrondi. Jamais pré-remplie. */
+  kgCible?: number | null;
+  /**
+   * Répétitions en réserve saisies (0, 1, 2 ; 3 = « 3 ou plus »), sur la
+   * dernière série seulement. Vide par défaut : `null` veut dire « non
+   * renseigné », jamais une valeur supposée. Distinct de `actualRpe`, dont le
+   * sélecteur est pré-rempli et dont les écrans Progrès font la moyenne.
+   */
+  rirSaisi?: number | null;
 }
 
 export interface ReadinessRow {

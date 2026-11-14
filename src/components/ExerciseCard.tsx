@@ -53,6 +53,8 @@ export interface SetPayload {
    */
   secondReps: number | null;
   secondKg: number | null;
+  /** MASS FORCE : RIR de la dernière série, `null` = non renseigné. */
+  rirSaisi?: number | null;
 }
 
 /**
@@ -240,6 +242,9 @@ export function ExerciseCard({
         <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
         {ex.chargeCible !== undefined && <ChargeCibleBloc charge={ex.chargeCible} />}
+        {ex.conseilProgression !== undefined && (
+          <p className={styles.conseilProgression}>{ex.conseilProgression}</p>
+        )}
         {ex.def.vigilance && (
           <p className={styles.vigilance}>
             <b>Vigilance</b> — {ex.def.vigilance}
@@ -868,6 +873,9 @@ export function SetEntry({
   const entry = loadEntryFor(ex, saved?.actualKg ?? plannedKg ?? undefined);
   const [kg, setKg] = useState<number | null>(entry.initialKg);
   const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
+  /* MASS FORCE : RIR facultatif, dernière série seulement, VIDE par défaut. */
+  const demandeRir = ex.demandeRir === true && index === ex.sets - 1;
+  const [rir, setRir] = useState<number | null>(saved?.rirSaisi ?? null);
   /*
    * Le champ de mesure s'ouvre sur ce qui a le plus de chances d'être juste,
    * dans cet ordre : ce qui a déjà été saisi pour cette série, la valeur que
@@ -938,6 +946,7 @@ export function SetEntry({
       // Pas de champ de charge : on écrit `null`, qui se lit « la même charge
       // que la première partie » et non « aucune charge ».
       secondKg: seconde?.withLoad ? secondKg : null,
+      ...(demandeRir ? { rirSaisi: rir } : {}),
     });
     setEditing(false);
     if (ex.restSec > 0) {
@@ -994,6 +1003,11 @@ export function SetEntry({
           </span>
           {saved.actualRpe !== null && (
             <span className={`${styles.setSummaryUnit} tnum`}>· RPE {fr(saved.actualRpe)}</span>
+          )}
+          {saved.rirSaisi != null && (
+            <span className={`${styles.setSummaryUnit} tnum`}>
+              · RIR {saved.rirSaisi >= 3 ? '3+' : saved.rirSaisi}
+            </span>
           )}
           {saved.secondReps !== null && saved.secondReps !== undefined && (
             <span className={`${styles.setSummaryUnit} tnum`}>
@@ -1105,6 +1119,25 @@ export function SetEntry({
             />
           )}
         </div>
+
+        {demandeRir && (
+          <div className={styles.rir} role="group" aria-label="Répétitions en réserve (facultatif)">
+            <span className={styles.rirLegende}>Répétitions en réserve (facultatif)</span>
+            <div className={styles.rirChoix}>
+              {[0, 1, 2, 3].map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  className={`${styles.rirBouton} ${rir === v ? styles.rirChoisi : ''}`}
+                  aria-pressed={rir === v}
+                  onClick={() => setRir((r) => (r === v ? null : v))}
+                >
+                  {v === 3 ? '3+' : v}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {ex.def.role === 'main' && (
           <button
@@ -1258,9 +1291,9 @@ function buildLoadLine(ex: ResolvedExercise, kg: number | null): string {
 }
 
 /**
- * La fourchette de charge (MASS FORCE) : le %, puis les kilos, puis la
- * provenance en petit. Une fourchette, jamais une charge unique, et aucun
- * arrondi : `fr` n'écrit que deux décimales au plus.
+ * La charge (MASS FORCE) : la cible de la séance, la fourchette, pourquoi
+ * cette cible, puis la provenance en petit. Aucun arrondi : `fr` n'écrit que
+ * deux décimales au plus. La cible n'est JAMAIS pré-remplie dans le champ kg.
  */
 function ChargeCibleBloc({ charge }: { charge: ChargeCible }) {
   if (charge.kind === 'a-determiner') {
@@ -1270,25 +1303,38 @@ function ChargeCibleBloc({ charge }: { charge: ChargeCible }) {
       </p>
     );
   }
-  const pct = `${fr(charge.pctMin)}–${fr(charge.pctMax)} % du 1RM`;
+  const fourchette = `${fr(charge.pctMin)}–${fr(charge.pctMax)} % du 1RM`;
   if (charge.kind === 'a-completer') {
     return (
       <div className={styles.chargeCible}>
-        <p className={styles.chargePct}>{pct}</p>
+        <p className={styles.chargePct}>{fourchette}</p>
         <p>Référence 1RM à compléter pour calculer votre fourchette de charges.</p>
+        <p className={styles.chargeSource}>Matériel : {charge.materiel}</p>
+      </div>
+    );
+  }
+  if (charge.kind === 'suspendue') {
+    return (
+      <div className={styles.chargeCible}>
+        <p className={styles.chargePct}>{fourchette} · charge libre</p>
+        <p className={styles.chargeMotif}>{charge.motif}</p>
         <p className={styles.chargeSource}>Matériel : {charge.materiel}</p>
       </div>
     );
   }
   return (
     <div className={styles.chargeCible}>
-      <p className={styles.chargePct}>{pct}</p>
       <p className="tnum">
-        Charge cible : <b>{`${fr(charge.kgMin)}–${fr(charge.kgMax)} kg`}</b>
+        Charge cible : <b>{`${fr(charge.kgCible)} kg`}</b>{' '}
+        <span className={styles.chargePct}>({fr(charge.pctCible)} %)</span>
       </p>
+      <p className="tnum">
+        Fourchette : {fourchette} · {`${fr(charge.kgMin)}–${fr(charge.kgMax)} kg`}
+      </p>
+      {charge.motif !== null && <p className={styles.chargeMotif}>{charge.motif}</p>}
       <p className={styles.chargeSource}>
-        {charge.materiel} · 1RM {charge.type === 'mesure' ? 'mesuré' : 'estimé'} le{' '}
-        {humanDateShort(charge.date)}
+        {charge.materiel} · 1RM {charge.type === 'mesure' ? 'mesuré' : 'estimé'}
+        {charge.date !== '' && <> le {humanDateShort(charge.date)}</>}
       </p>
     </div>
   );

@@ -1,9 +1,8 @@
 # MASS FORCE — semaine type (S1)
 
-Version de travail V1, validée par Guillaume. **Seule la semaine type S1 est
-validée**, avec ses fourchettes de charge (lot 5). La progression S2–S4 ne
-l'est pas : elle ne figure pas ici, et l'application ne l'invente pas. Tant
-qu'elle manque, MASS FORCE reste « à venir ».
+Version de travail V1, validée par Guillaume. La semaine type S1 (§1), ses
+fourchettes de charge (§1 bis, lot 5) et la progression sur quatre semaines
+(§1 ter, lot 6) sont validées.
 
 Ce fichier est la source de vérité. Le code le transcrit (`src/programmes/massforce/`)
 et un test le relit case par case.
@@ -68,14 +67,83 @@ disques ne sont pas connus).
 - **Tirage vertical supination** : aucune fourchette, aucun lien avec le 1RM
   du tirage vertical.
 
-Ces fourchettes valent pour la **S1**. Elles ne sont pas validées comme
-progression : les semaines 2 à 4 n'en héritent pas.
+Ces fourchettes sont le **couloir** de la progression (§1 ter) : la S1 part
+du bas, la progression ne dépasse jamais le haut.
 
 Cadrage scientifique (pas une source de calcul) : méta-régression *Sports
 Medicine* 2024, 269 études, 7 289 participants — la relation répétitions /
 %1RM varie selon les individus, les exercices et les conditions
 (https://pmc.ncbi.nlm.nih.gov/articles/PMC10933212/). Les fourchettes
 ci-dessus sont des choix de programmation, pas des moyennes de l'article.
+
+## 1 ter. Progression S1 → S4 (lot 6)
+
+**Prescription** : S2, S3 et S4 reprennent exactement la S1 (séries,
+répétitions, repos, consignes). Ce qui évolue, c'est la **charge**, selon ce
+qui a été réellement fait.
+
+### Mouvements à fourchette (développé couché, tirage vertical, squat Smith)
+
+- **Ancre** : le 1RM mesuré utilisé au premier passage de l'exercice dans le
+  cycle. Elle ne monte jamais en cours de cycle (un test plus haut sert au
+  cycle suivant) ; un test plus bas s'applique tout de suite.
+- **Charge cible** = ancre × % de la séance, sans arrondi. Première séance :
+  le bas de la fourchette.
+- **Classement de la séance précédente**, dans cet ordre :
+  1. **Échec** : une série enregistrée sous les répétitions prescrites.
+  2. **Incomplète** : moins de séries que prescrit.
+  3. **Sous-charge** : charge la plus basse ÷ ancre < % prescrit − 2,5 points,
+     ou charge non saisie.
+  4. **Dure** : RIR 0 saisi sur la dernière série.
+  5. **Réussite** : RIR 1 ou plus saisi.
+  6. **Réussite à confirmer** : pas de RIR saisi.
+- **% suivant** :
+
+| Classement | % suivant |
+|---|---|
+| Réussite | + 2,5, sans dépasser le haut de la fourchette |
+| Réussite à confirmer | + 2,5 si la séance d'avant était déjà une réussite au même %, sinon le même |
+| Dure, incomplète, sous-charge | le même |
+| Échec, après une séance qui n'était pas un échec | le même |
+| Échec, après un échec | − 5, sans descendre sous le bas ; si on y était déjà : suspendu |
+
+- **Suspendu** : plus de % proposé, charge libre, « Référence à réévaluer ».
+  Un nouveau test direct crée une nouvelle ancre et repart du bas.
+- Une séance non faite ne compte pas. Les séries saisies sont toujours
+  conservées. Le RIR (0, 1, 2, 3 ou plus) est facultatif et se saisit sur la
+  dernière série seulement.
+
+### Exercices complémentaires et push press
+
+| Exercice | Progression |
+|---|---|
+| Développé incliné haltères | Plage |
+| Écarté couché | Plage |
+| Barre au front | Fixe |
+| Extension triceps allongé | Plage |
+| Rowing buste penché / Tirage horizontal large | Fixe |
+| Tirage vertical supination | Plage |
+| Pull-over poulie haute | Plage |
+| Curl barre W | Fixe |
+| Curl haltères | Fixe |
+| Leg extension | Plage |
+| Leg curl | Plage |
+| Fentes avant / arrière / bulgares | Plage |
+| Push press | Push press |
+| Élévations frontales | Plage |
+| Élévations latérales | Plage |
+| Oiseau penché / Pec fly inversée | Plage |
+
+- **Plage** : des répétitions prescrites à + 2. Toutes les séries au haut de
+  la plage → augmenter la charge et revenir au bas. Une série sous le bas,
+  deux séances de suite → baisser. Sinon : garder, viser + 1.
+- **Fixe** (RPE prescrit, superset) : répétitions fixes. Deux séances
+  complètes de suite à la même charge → augmenter. Une série manquée, deux
+  séances de suite → baisser. Sinon : garder.
+- **Push press** : 4 × 4 complet avec un RIR de 2 ou plus → augmenter. Sans
+  RIR, la charge est gardée.
+- Aucun kilo n'est calculé : MAJK dit « augmente », « garde » ou « baisse ».
+  Une séance incomplète garde la charge.
 
 ## 2. Superset
 
@@ -110,8 +178,7 @@ transition du repos.
 
 ## 4. Non validé — ne rien transcrire
 
-- Progression S2, S3, S4 (pourcentages, critères de réussite, RPE/RIR,
-  recalage).
 - Fourchette du push press ; fourchette du squat à la barre libre.
+- Fourchette au-delà du haut actuel (plafond atteint : refaire le combiné).
 - Formules d'estimation du 1RM, protocole du combiné.
 - Séries fractionnées (4 + 4 avec 5 à 10 s de pause) : à l'étude.

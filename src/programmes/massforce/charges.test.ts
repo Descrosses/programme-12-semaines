@@ -164,9 +164,7 @@ describe('ce qui ne doit jamais apparaître', () => {
         ]),
       ).toEqual({ kind: 'a-determiner' });
     }
-    for (const s of Object.values(FOURCHETTES_FORCE)) {
-      expect(Object.keys(s).some((k) => k.includes('push-press'))).toBe(false);
-    }
+    expect(Object.keys(FOURCHETTES_FORCE).some((k) => k.includes('push-press'))).toBe(false);
   });
 
   it('squat à la barre libre : pas de fourchette (décision : Smith seulement)', () => {
@@ -189,16 +187,24 @@ describe('ce qui ne doit jamais apparaître', () => {
     }
   });
 
-  it('semaine 2 : aucune fourchette héritée de la S1', () => {
-    expect(Object.keys(FOURCHETTES_FORCE)).toEqual(['1']);
-    expect(
-      charge(
-        'lun-developpe',
-        'mf-developpe-couche-barre',
-        [ref('developpe-couche', 'barre', 100)],
-        2,
-      ),
-    ).toEqual({ kind: 'a-determiner' });
+  it('la fourchette est le couloir des quatre semaines : sans séance passée, on part du bas', () => {
+    expect(Object.keys(FOURCHETTES_FORCE)).toEqual([
+      'mf-developpe-couche-barre',
+      'mf-developpe-couche-smith',
+      'mf-tirage-vertical-poulie',
+      'mf-tirage-vertical-machine',
+      'mf-squat-smith',
+    ]);
+    for (const w of [1, 2, 3, 4]) {
+      expect(
+        charge(
+          'lun-developpe',
+          'mf-developpe-couche-barre',
+          [ref('developpe-couche', 'barre', 100)],
+          w,
+        ),
+      ).toMatchObject({ kind: 'calculee', pctCible: 75, kgCible: 75 });
+    }
   });
 
   it('aucune charge unique : le champ kg n’est jamais pré-rempli', () => {
