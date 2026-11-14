@@ -39,6 +39,7 @@ export function ScreenHeader({
   title,
   subtitle,
   marque,
+  argent = false,
   visuel,
   /** Premier écran ouvert : sa photo se charge tout de suite, pas en différé. */
   prioritaire = false,
@@ -55,6 +56,11 @@ export function ScreenHeader({
    * passe alors en seconde ligne, plus petit. Maquette MASS de Guillaume.
    */
   marque?: string;
+  /**
+   * Titre argenté sans « // », trait rouge court, photo qui passe sous la
+   * barre d'état : l'écran Semaine MASS, d'après la référence de Guillaume.
+   */
+  argent?: boolean;
   /** Photo d'ambiance, quand elle existe. */
   visuel?: VisuelNom;
   prioritaire?: boolean;
@@ -65,7 +71,7 @@ export function ScreenHeader({
 
   const entete = (
     <header
-      className={`${styles.header} ${pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''} ${marque !== undefined ? styles.avecMarque : ''}`}
+      className={`${styles.header} ${pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''} ${marque !== undefined ? styles.avecMarque : ''} ${argent ? styles.argent : ''}`}
     >
       <StadiumGlow className={styles.lueur} />
       {visuel &&

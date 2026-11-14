@@ -418,3 +418,97 @@
 :global([data-theme='mass']) .hero::after {
   background: linear-gradient(180deg, rgb(var(--voile) / 0%) 55%, rgb(var(--voile) / 40%) 100%);
 }
+
+/*
+ * Variante « argent » : l'écran Semaine MASS, relevé sur la référence de
+ * Guillaume (capture d'iPhone, 1 px de référence = 1,336 px CSS).
+ *
+ * - La photo passe sous la barre d'état, comme sur la référence : l'en-tête
+ *   remonte de la zone de sécurité et la rend en rembourrage. Hors iPhone
+ *   (zone nulle), rien ne bouge.
+ * - Titre : capitales de 47 px, vrai italique extra-gras, argent — blanc
+ *   en haut, une cassure grise sous le milieu, comme un métal poli. Pas de
+ *   « // » ici.
+ * - Sous le titre, un trait rouge de 3 px qui s'éteint vers la droite.
+ */
+.argent {
+  --haut-ecran: env(safe-area-inset-top, 0px);
+  min-height: calc(202px + var(--haut-ecran));
+  margin-top: calc(-1 * var(--haut-ecran));
+  padding: calc(18px + var(--haut-ecran)) 22px 8px;
+}
+
+/*
+ * Le voile du texte (horizontal sur MASS) s'arrêtait sur une arête nette en
+ * travers de la photo : il naît ici en fondu. Le haut de l'en-tête est le
+ * noir de la page, comme sur la référence.
+ */
+.argent {
+  background: var(--bg);
+}
+
+.argent .content::before {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 48px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 48px);
+}
+
+.argent .eyebrow {
+  color: #e6e6e6;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.0625rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.argent .title {
+  width: fit-content;
+  margin: 2px 0 0 -4px;
+  padding-right: 6px;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 4.3rem;
+  letter-spacing: -0.005em;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.9;
+  transform: none;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+}
+
+/*
+ * La photo, à la place et à l'échelle de la référence : le disque y fait
+ * ≈ 215 px de diamètre, moyeu vers (262, 155) depuis le haut de l'écran.
+ * La photo (2:1) fait donc 446 × 223 ; son bord haut est fondu. Le bas reste
+ * fondu dans le noir par le voile de l'en-tête.
+ */
+.argent .fond {
+  inset: auto;
+  top: calc(var(--haut-ecran) - 21px);
+  left: -25px;
+  width: 446px;
+  height: 223px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 36px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 36px);
+}
+
+:global([data-theme='mass']) .argent .title::after {
+  content: none;
+}
+
+.argent .subtitleRow {
+  margin-top: 14px;
+}
+
+.argent .subtitleRow::before {
+  content: '';
+  width: 108px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #e3141c 0%, #e3141c 52%, rgb(227 20 28 / 0%) 100%);
+  box-shadow: 0 0 8px rgb(227 20 28 / 40%);
+}

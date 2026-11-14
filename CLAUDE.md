@@ -356,6 +356,17 @@ matériel et la durée avant d'écrire la moindre séance.
      (« Ça commence bientôt », nom de séance, « Repos ») descend sous
      l'en-tête, en petit (`.titreJour`). POWER et FEMMES : rien ne change —
      `data/enteteMass.test.tsx` le fige.
+     **Écrans Semaine et Combiné MASS — FAIT**, transcrits des références
+     iPhone de Guillaume (mesurées : 1 px de référence = 1,336 px CSS pour
+     Semaine, × 0,473 pour le Combiné). Titres en vrai italique extra-gras
+     (famille `Barlow Mass` dans `fonts.css` : même fichier que l'italique
+     800 de FEMMES, zéro octet de plus) et en argent. Semaine : variante
+     `argent` de `ScreenHeader`, sans « // ». Combiné : « MASS FORCE » est
+     une ÉTIQUETTE dans le cycle (pas de bouton retour : on navigue par les
+     onglets), trois encadrés à icône (haltère ajoutée à `Icon.tsx`).
+     Écarts VOULUS aux références, à ne pas « corriger » : boutons, curseurs
+     et date gardent 48 px (`--tap`), « Enregistrer le test » reste.
+     `screens/combineMass.test.tsx` fige l'étiquette et la variante.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

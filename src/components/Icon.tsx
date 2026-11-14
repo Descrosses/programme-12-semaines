@@ -32,6 +32,7 @@ export type IconName =
   | 'calendar'
   | 'meal'
   | 'chart'
+  | 'haltere'
   | 'stopwatch'
   | 'settings'
   | 'arrow-left'
@@ -64,6 +65,8 @@ const PATHS: Record<IconName, string> = {
   calendar: 'M4 6h16v15H4zM4 10h16M9 3v4M15 3v4',
   meal: 'M6 3v8a2 2 0 002 2v8M6 3v5M9 3v5M18 3c-1.5 2-2 4-2 7h2v11',
   chart: 'M4 20V9M10 20V4M16 20v-7M22 20H2',
+  /* Haltère de profil : deux paires de disques sur une barre. Combiné MASS. */
+  haltere: 'M7 7v10M4 9v6M17 7v10M20 9v6M7 12h10',
   stopwatch: 'M12 21a8 8 0 100-16 8 8 0 000 16zM12 9v4l2 2M9 2h6',
   /*
    * Des curseurs, et non une roue dentée : à 21 px, un engrenage à huit dents

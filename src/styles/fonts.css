@@ -74,6 +74,21 @@
 }
 
 /*
+ * « Barlow Mass » — le vrai italique extra-gras du titre de l'écran Semaine
+ * MASS (référence de Guillaume, 14 novembre). Même fichier que l'italique
+ * 800 de FEMMES, déjà embarqué : aucun octet de plus. Une famille à part,
+ * pour la même raison que ci-dessus — POWER et le reste de MASS ne la
+ * voient pas.
+ */
+@font-face {
+  font-family: 'Barlow Mass';
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../assets/fonts/barlow-condensed-800-italic-latin.woff2') format('woff2');
+}
+
+/*
  * « Barlow Femmes Texte » — le texte courant des écrans FEMMES.
  *
  * Le reste de l'application compose son texte dans la police du système,
