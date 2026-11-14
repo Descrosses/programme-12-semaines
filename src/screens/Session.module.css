@@ -2486,12 +2486,11 @@
   font-weight: 800;
   line-height: 0.95;
   transform: none;
-  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%) 0 0 / 100%
-    0.95em repeat-y;
+  background: var(--mass-argent) 0 0 / 100% 0.95em repeat-y;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+  filter: var(--mass-ombre-titre);
 }
 
 /* La référence n'a pas de trait sous le titre de séance. */
@@ -2522,7 +2521,7 @@
 
 /* « DUR » : bord rouge, fond rouge sombre, sans la pastille de couleur. */
 :global([data-theme='mass']) .ecranSeance .enteteSeance .tag {
-  border-color: #e3141c;
+  border-color: var(--mass-rouge);
   background: linear-gradient(180deg, rgb(160 12 20 / 45%) 0%, rgb(90 6 10 / 45%) 100%);
 }
 
@@ -2573,26 +2572,26 @@
   width: calc(100% - 28px);
   height: 50px;
   margin: 6px 14px 0;
-  border: 1px solid #ff3b42;
+  border: 1px solid var(--mass-rouge-bord);
   border-radius: 14px;
-  background: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
+  background: var(--mass-degrade-action);
   font-family: 'Barlow Mass', var(--font-cond);
   font-size: 1.5rem;
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.01em;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 22%),
+    var(--mass-liseret-action),
     0 0 18px rgb(226 10 17 / 50%);
 }
 
 /* La carte d'exercice. */
 :global([data-theme='mass']) .ecranSeance .exercise {
   margin: 17px 13px;
-  border: 1px solid #3c3d3e;
+  border: 1px solid var(--mass-carte-bord);
   border-radius: 14px;
   background: linear-gradient(180deg, #1b1b1c 0%, #101011 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+  box-shadow: var(--mass-liseret);
 }
 
 :global([data-theme='mass']) .ecranSeance .exHead {
@@ -2649,7 +2648,7 @@
   position: relative;
   margin: 12px -5px 0;
   padding: 8px 14px 8px 52px;
-  border: 1.5px solid #e3141c;
+  border: 1.5px solid var(--mass-rouge);
   border-radius: 12px;
   background: linear-gradient(180deg, rgb(120 10 16 / 30%) 0%, rgb(60 5 8 / 22%) 100%);
   color: #f0f0f0;
@@ -2666,9 +2665,9 @@
   place-items: center;
   width: 20px;
   height: 20px;
-  border: 2px solid #e3141c;
+  border: 2px solid var(--mass-rouge);
   border-radius: 50%;
-  color: #e3141c;
+  color: var(--mass-rouge);
   font-family: Georgia, serif;
   font-size: 13px;
   font-weight: 700;
@@ -2698,16 +2697,16 @@
 
 :global([data-theme='mass']) .ecranSeance .ficheBouton {
   padding: 0 22px;
-  border: 1px solid #ff3b42;
+  border: 1px solid var(--mass-rouge-bord);
   border-radius: 14px;
-  background: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
+  background: var(--mass-degrade-action);
   font-family: 'Barlow Mass', var(--font-cond);
   font-size: 1.3125rem;
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.01em;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 22%),
+    var(--mass-liseret-action),
     0 0 14px rgb(226 10 17 / 40%);
 }
 
@@ -2722,7 +2721,7 @@
 }
 
 :global([data-theme='mass']) .ecranSeance .setCourante .setIndex {
-  color: #e3141c;
+  color: var(--mass-rouge);
   font-family: 'Barlow Mass', var(--font-cond);
   font-size: 1.875rem;
   font-style: italic;
@@ -2737,8 +2736,8 @@
 }
 
 :global([data-theme='mass']) .ecranSeance .steppersLigne > div > div:last-child {
-  border: 1px solid #4a4b4c;
-  background: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
+  border: 1px solid var(--mass-curseur-bord);
+  background: var(--mass-curseur-fond);
 }
 
 :global([data-theme='mass']) .ecranSeance .steppersLigne :global(.tnum) {

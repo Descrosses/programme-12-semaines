@@ -472,12 +472,12 @@
   font-weight: 800;
   line-height: 0.9;
   transform: none;
-  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%);
+  background: var(--mass-argent);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: none;
-  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
+  filter: var(--mass-ombre-titre);
 }
 
 /*
@@ -510,5 +510,73 @@
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #e3141c 0%, #e3141c 52%, rgb(227 20 28 / 0%) 100%);
-  box-shadow: 0 0 8px rgb(227 20 28 / 40%);
+  box-shadow: var(--mass-halo-trait);
+}
+
+/* ===================================================================== */
+/*
+ * MASS — en-têtes SANS photo (porte de MASS FORCE, Progrès, Nutrition,
+ * Mesures, Réglages). Harmonisation validée par Guillaume (audit du
+ * 14 novembre), à partir des écrans validés :
+ *
+ * - plus de décor de POWER : ni halo de stade bleuté, ni lignes de terrain ;
+ *   le fond est le noir de la page ;
+ * - compact, comme le Combiné : le titre monte sous la barre d'état au lieu
+ *   d'attendre au bas d'un bandeau de 196 px resté vide sans photo ;
+ * - sur-titre et titre comme la Séance : vrai italique extra-gras, titre
+ *   argent. Le « // » rouge reste (règle MASS des titres) ;
+ * - la ligne de sous-titre entre deux traits rouges est celle, validée, de
+ *   l'Accueil.
+ *
+ * `:not(.hero)` : les en-têtes à photo (Accueil, Semaine) ont leurs règles.
+ */
+:global([data-theme='mass']) .header:not(.hero) {
+  min-height: 0;
+  padding: 6px var(--pad) 16px;
+  background: var(--bg);
+}
+
+:global([data-theme='mass']) .header:not(.hero)::after,
+:global([data-theme='mass']) .header:not(.hero) .lueur,
+:global([data-theme='mass']) .header:not(.hero) .yard {
+  display: none;
+}
+
+:global([data-theme='mass']) .header:not(.hero) .eyebrow {
+  color: #e6e6e6;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.0625rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+:global([data-theme='mass']) .header:not(.hero) .title {
+  width: fit-content;
+  margin-top: 4px;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 3.1rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.95;
+  transform: none;
+  background: var(--mass-argent) 0 0 / 100% 0.95em repeat-y;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: var(--mass-ombre-titre);
+}
+
+/*
+ * MASS — l'Accueil fait passer sa photo sous la barre d'état, comme
+ * Semaine, Combiné et Séance (décision de Guillaume, audit du 14 novembre).
+ * L'en-tête remonte de la zone de sécurité et la rend en rembourrage : le
+ * texte ne bouge pas, seule la photo gagne le haut de l'écran.
+ */
+:global([data-theme='mass']) .avecMarque {
+  --haut-ecran: env(safe-area-inset-top, 0px);
+  min-height: calc(196px + var(--haut-ecran));
+  margin-top: calc(-1 * var(--haut-ecran));
+  padding-top: calc(18px + var(--haut-ecran));
 }
