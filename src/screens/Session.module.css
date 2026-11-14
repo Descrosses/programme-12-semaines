@@ -2786,3 +2786,47 @@
   background: linear-gradient(180deg, rgb(120 10 16 / 22%) 0%, rgb(60 5 8 / 14%) 100%);
   color: #fff;
 }
+
+/* Panneaux et états de la séance (lot D) : cartes anthracite bordées au lieu
+   des filets de couleur à gauche ; champs comme ceux du combiné. */
+:global([data-theme='mass']) .ecranSeance .panel,
+:global([data-theme='mass']) .ecranSeance .mediaPanel,
+:global([data-theme='mass']) .ecranSeance .exNote {
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 12px;
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
+}
+
+:global([data-theme='mass']) .ecranSeance .mediaBlock {
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 10px;
+  background: #0e0e0f;
+}
+
+:global([data-theme='mass']) .ecranSeance .panelTitle,
+:global([data-theme='mass']) .ecranSeance .mediaBlockTitle {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+:global([data-theme='mass']) .ecranSeance .panelSearch,
+:global([data-theme='mass']) .ecranSeance .exNoteField {
+  border: 1px solid var(--mass-curseur-bord);
+  border-radius: 10px;
+  background: var(--mass-champ-fond);
+  color: #fff;
+}
+
+/* Le superset garde son cadre rouge (il se repère de loin), sur une carte
+   anthracite. */
+:global([data-theme='mass']) .ecranSeance .superset {
+  border-color: var(--mass-rouge);
+  border-radius: 14px;
+  background: var(--mass-carte-fond);
+}

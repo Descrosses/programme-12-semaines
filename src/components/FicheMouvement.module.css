@@ -108,3 +108,11 @@
   max-width: none;
   height: auto;
 }
+
+/* MASS (lot D) : « Fermer » prend l'action rouge des écrans validés. */
+:global([data-theme='mass']) .fermer {
+  border: 1px solid var(--mass-rouge-bord);
+  border-radius: 12px;
+  background: var(--mass-degrade-action);
+  box-shadow: var(--mass-liseret-action);
+}
