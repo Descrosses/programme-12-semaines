@@ -302,7 +302,17 @@ matériel et la durée avant d'écrire la moindre séance.
      Progrès et Nutrition = vue `a-venir`, sans contenu. Superset biceps :
      3e rythme `transition` (repos court puis long), le chrono dit
      « Transition → … ». Combiné : bench barre/Smith, plus d'haltères.
-     Reste à écrire par Guillaume : S2–S4, fourchettes %1RM.
+     Reste à écrire par Guillaume : S2–S4.
+  6. **MASS FORCE, lot 5 — FAIT : fourchettes de charge S1.** Paramètres
+     propres à MASS FORCE dans `programmes/massforce/charges.ts`, rangés PAR
+     SEMAINE (seule la S1 existe ; une semaine absente n'hérite de rien) et
+     par exercice-matériel : bench et tirage vertical 75–82,5 % (les deux
+     matériels, chacun sur SON 1RM), squat 70–80 % **Smith seulement**, push
+     press AUCUNE. Seul un 1RM **mesuré** (test direct), même exercice et
+     même matériel, sert ; le plus récent ; un sous-maximal n'est jamais pris
+     pour un 1RM (aucune formule validée). Fourchette sans arrondi, champ kg
+     jamais pré-rempli. Affichage `chargeCible` dans `ExerciseCard` (absent
+     pour POWER et MASS CONGESTION). `charges.test.ts` fige tout cela.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

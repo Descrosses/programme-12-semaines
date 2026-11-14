@@ -12,8 +12,9 @@
  *
  * ── Ce qu'il ne fait PAS, volontairement ──────────────────────────────────
  *
- * - Aucune charge prescrite : la fourchette en %1RM n'est pas validée. Les
- *   quatre mouvements évalués le disent sous leur nom ; la charge est libre.
+ * - Aucune charge UNIQUE : les mouvements évalués reçoivent une fourchette
+ *   en %1RM (`charges.ts`, lot 5), calculée sur un 1RM mesuré au même
+ *   matériel ; sans lui, l'écran demande de compléter la référence.
  * - Aucune semaine 2 à 4 : la progression n'est pas validée. Recopier la S1
  *   ferait passer une absence de progression pour une décision.
  * - Aucun champ RPE : « RPE 8 » est une consigne (décision de Guillaume).
@@ -24,7 +25,8 @@ import type { ResolvedExercise, ResolvedSession } from '../../engine/getSession'
 import type { SessionContext } from '../../engine/types';
 import { travailPour } from '../mass4/travail';
 import type { ModuleProgramme } from '../types';
-import { optionChoisie, type ChoixForce } from './depart';
+import { chargePour } from './charges';
+import { optionChoisie } from './depart';
 import { seanceForce } from './seances';
 import { JOURS_FORCE, SEMAINES_FORCE, type LigneForce } from './types';
 
@@ -51,20 +53,16 @@ const FAMILLE: Record<string, MovementFn> = {
   'ven-oiseau': 'pull',
 };
 
-/** La phrase sous les quatre mouvements évalués, tant que le % manque. */
-export const NOTE_A_DEFINIR =
-  'Charge libre en attendant : la fourchette en %1RM n’est pas encore validée.';
-
 function notesPour(ligne: LigneForce): string[] {
   const out: string[] = [];
-  if (ligne.charge === 'a-definir') out.push(NOTE_A_DEFINIR);
   // Le matériel, quand il n'est pas déjà dans le nom de l'option choisie.
   if (ligne.options.length === 1 && ligne.materiel !== 'À préciser') out.push(ligne.materiel);
   return out;
 }
 
-function exercicePour(ligne: LigneForce, choix: ChoixForce | undefined): ResolvedExercise {
-  const option = optionChoisie(ligne, choix);
+function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): ResolvedExercise {
+  const option = optionChoisie(ligne, ctx.choixCycle);
+  const charge = chargePour(ligne, option, ctx.referencesForce ?? [], semaine);
   const def: ExerciseDef = {
     id: option.id,
     name: option.nom,
@@ -83,6 +81,7 @@ function exercicePour(ligne: LigneForce, choix: ChoixForce | undefined): Resolve
     targetRPE: null,
     restSec: ligne.reposSec,
     loadLine: `${ligne.series} × ${ligne.reps}`,
+    ...(charge === null ? {} : { chargeCible: charge }),
     notes: notesPour(ligne),
     ...(ligne.superset === undefined ? {} : { superset: ligne.superset }),
     lastKg: null,
@@ -170,7 +169,7 @@ export const MASS_FORCE: ModuleProgramme = {
       warmup: null,
       readinessTest: false,
       notes: [],
-      exercises: seance.lignes.map((l) => exercicePour(l, ctx.choixCycle)),
+      exercises: seance.lignes.map((l) => exercicePour(l, week, ctx)),
       suspended: [],
       adjustments: [],
     };

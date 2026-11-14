@@ -1,33 +1,34 @@
 # MASS FORCE — semaine type (S1)
 
 Version de travail V1, validée par Guillaume. **Seule la semaine type S1 est
-validée.** La progression S2–S4 et les pourcentages de 1RM ne le sont pas :
-ils ne figurent pas ici, et l'application ne les invente pas. Tant qu'ils
-manquent, MASS FORCE reste « à venir ».
+validée**, avec ses fourchettes de charge (lot 5). La progression S2–S4 ne
+l'est pas : elle ne figure pas ici, et l'application ne l'invente pas. Tant
+qu'elle manque, MASS FORCE reste « à venir ».
 
 Ce fichier est la source de vérité. Le code le transcrit (`src/programmes/massforce/`)
 et un test le relit case par case.
 
 ## 1. Semaine type
 
-Lecture : séries × répétitions · charge · repos en secondes. « À définir » :
-la fourchette en %1RM n'est pas validée — en attendant, la charge est libre.
+Lecture : séries × répétitions · charge · repos en secondes. Un pourcentage :
+fourchette en %1RM (voir §1 bis). « (Smith) » : la fourchette ne vaut que pour
+ce matériel. « À définir » : aucune fourchette validée — charge à déterminer.
 « Libre » : charge choisie par l'utilisateur.
 
 | Séance | Exercice | Matériel autorisé | Test de référence | S1 |
 |---|---|---|---|---|
-| Lundi — Pecs / Triceps | Développé couché | Barre libre / Smith | Bench | 4×5 · À définir · 240s |
+| Lundi — Pecs / Triceps | Développé couché | Barre libre / Smith | Bench | 4×5 · 75–82,5 % · 240s |
 | Lundi — Pecs / Triceps | Développé incliné haltères | Haltères | Aucun | 4×8 · Libre · 150s |
 | Lundi — Pecs / Triceps | Écarté couché | Haltères | Aucun | 3×10 · Libre · 90s |
 | Lundi — Pecs / Triceps | Barre au front | Barre EZ / W | Aucun | 4×8 · Libre · 120s |
 | Lundi — Pecs / Triceps | Extension triceps allongé | Haltères | Aucun | 3×10 · Libre · 90s |
-| Mardi — Dos / Biceps | Tirage vertical | Poulie / Machine guidée | Tirage vertical | 4×5 · À définir · 240s |
+| Mardi — Dos / Biceps | Tirage vertical | Poulie / Machine guidée | Tirage vertical | 4×5 · 75–82,5 % · 240s |
 | Mardi — Dos / Biceps | Rowing buste penché / Tirage horizontal large | Barre / Poulie | Aucun | 4×8 · Libre · 150s |
 | Mardi — Dos / Biceps | Tirage vertical supination | Poulie / Machine guidée | Aucun | 3×10 · Libre · 120s |
 | Mardi — Dos / Biceps | Pull-over poulie haute | Poulie | Aucun | 3×15 · Libre · 90s |
 | Mardi — Dos / Biceps | Curl barre W | Barre W | Aucun | 4×8 · Libre · 15s |
 | Mardi — Dos / Biceps | Curl haltères | Haltères | Aucun | 4×12 · Libre · 120s |
-| Jeudi — Jambes | Squat | Barre libre / Smith | Squat | 4×6 · À définir · 180s |
+| Jeudi — Jambes | Squat | Barre libre / Smith | Squat | 4×6 · 70–80 % (Smith) · 180s |
 | Jeudi — Jambes | Leg extension | Machine | Aucun | 3×8 · Libre · 120s |
 | Jeudi — Jambes | Leg curl | Machine | Aucun | 3×8 · Libre · 120s |
 | Jeudi — Jambes | Fentes avant / arrière / bulgares | À préciser | Aucun | 3×12/jambe · Libre · 120s |
@@ -48,6 +49,33 @@ Décisions de Guillaume :
   démarrage.
 - **Fentes** : 12 répétitions **par jambe**.
 - **RPE 8** : une consigne, pas un champ à saisir.
+
+## 1 bis. Fourchettes de charge (S1)
+
+Décisions de Guillaume (lot 5). Charge = 1RM de référence × pourcentage :
+une **fourchette**, jamais une charge unique, **sans arrondi** (les paliers de
+disques ne sont pas connus).
+
+- **Développé couché, tirage vertical** : 75–82,5 %, pour chacun des deux
+  matériels, calculé sur le 1RM de CE matériel.
+- **Squat** : 70–80 %, à la **Smith seulement**. À la barre libre : charge à
+  déterminer.
+- **Push press** : aucune fourchette. Rien n'est déduit du développé couché.
+- **Référence exploitable** : le 1RM **mesuré** (test direct) le plus récent,
+  même exercice, même matériel. Une série sous-maximale n'est jamais prise
+  pour un 1RM : aucune formule d'estimation n'est validée. Sans 1RM mesuré :
+  « Référence 1RM à compléter pour calculer votre fourchette de charges. »
+- **Tirage vertical supination** : aucune fourchette, aucun lien avec le 1RM
+  du tirage vertical.
+
+Ces fourchettes valent pour la **S1**. Elles ne sont pas validées comme
+progression : les semaines 2 à 4 n'en héritent pas.
+
+Cadrage scientifique (pas une source de calcul) : méta-régression *Sports
+Medicine* 2024, 269 études, 7 289 participants — la relation répétitions /
+%1RM varie selon les individus, les exercices et les conditions
+(https://pmc.ncbi.nlm.nih.gov/articles/PMC10933212/). Les fourchettes
+ci-dessus sont des choix de programmation, pas des moyennes de l'article.
 
 ## 2. Superset
 
@@ -82,7 +110,8 @@ transition du repos.
 
 ## 4. Non validé — ne rien transcrire
 
-- Progression S2, S3, S4.
-- Fourchettes de %1RM des quatre mouvements évalués.
+- Progression S2, S3, S4 (pourcentages, critères de réussite, RPE/RIR,
+  recalage).
+- Fourchette du push press ; fourchette du squat à la barre libre.
 - Formules d'estimation du 1RM, protocole du combiné.
 - Séries fractionnées (4 + 4 avec 5 à 10 s de pause) : à l'étude.

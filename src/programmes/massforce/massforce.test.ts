@@ -22,7 +22,8 @@ import {
   optionChoisie,
   testsRequis,
 } from './depart';
-import { MASS_FORCE, NOTE_A_DEFINIR } from './module';
+import { FOURCHETTES_FORCE } from './charges';
+import { MASS_FORCE } from './module';
 import { SEANCES_FORCE } from './seances';
 
 const MD = readFileSync(resolve(__dirname, '../../../programme-mass-force.md'), 'utf8');
@@ -82,14 +83,28 @@ describe('MASS FORCE — §1 semaine type, case par case', () => {
       expect({ i, v: l.materiel }).toEqual({ i, v: materiel });
       expect({ i, v: l.testLibelle }).toEqual({ i, v: test });
 
-      const m = /^(\d+)×(\d+)(\/jambe)? · (À définir|Libre) · (\d+)s$/.exec(s1!);
+      const m =
+        /^(\d+)×(\d+)(\/jambe)? · (À définir|Libre|([\d,]+)–([\d,]+) %( \(Smith\))?) · (\d+)s$/.exec(
+          s1!,
+        );
       expect(m, `${exercice} : ${s1}`).not.toBeNull();
-      const [, series, reps, jambe, charge, repos] = m!;
+      const [, series, reps, jambe, charge, pMin, pMax, smithSeul, repos] = m!;
+      // §1 bis : la fourchette du .md, option par option — et rien d'autre.
+      for (const o of l.options) {
+        const vise =
+          pMin !== undefined && (smithSeul === undefined || o.test?.variante === 'smith');
+        expect({ o: o.id, f: FOURCHETTES_FORCE[1]![o.id] }).toEqual({
+          o: o.id,
+          f: vise
+            ? { min: Number(pMin.replace(',', '.')), max: Number(pMax!.replace(',', '.')) }
+            : undefined,
+        });
+      }
       expect({ i, series: l.series, reps: l.reps, charge: l.charge, repos: l.reposSec }).toEqual({
         i,
         series: Number(series),
         reps: jambe ? `${reps} / jambe` : reps,
-        charge: charge === 'À définir' ? 'a-definir' : 'libre',
+        charge: charge === 'Libre' ? 'libre' : 'a-definir',
         repos: Number(repos),
       });
     });
@@ -177,17 +192,17 @@ describe('MASS FORCE — le module ne prescrit rien de non validé', () => {
     }
   });
 
-  it('les quatre mouvements évalués disent que la charge est libre en attendant le %', () => {
-    const notees = [0, 1, 3, 4].flatMap((d) =>
+  it('sans référence, les mouvements évalués disent quoi faire — jamais une charge', () => {
+    const charges = [0, 1, 3, 4].flatMap((d) =>
       MASS_FORCE.getSession(1, d as 0, EMPTY_CONTEXT)!
-        .exercises.filter((e) => e.notes.includes(NOTE_A_DEFINIR))
-        .map((e) => e.id),
+        .exercises.filter((e) => e.chargeCible !== undefined)
+        .map((e) => [e.id, e.chargeCible!.kind]),
     );
-    expect(notees).toEqual([
-      'mf-developpe-couche-barre',
-      'mf-tirage-vertical-poulie',
-      'mf-squat-barre',
-      'mf-push-press-smith',
+    expect(charges).toEqual([
+      ['mf-developpe-couche-barre', 'a-completer'],
+      ['mf-tirage-vertical-poulie', 'a-completer'],
+      ['mf-squat-barre', 'a-determiner'],
+      ['mf-push-press-smith', 'a-determiner'],
     ]);
   });
 
