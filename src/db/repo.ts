@@ -660,17 +660,25 @@ export async function saveSet(input: SetInput): Promise<number> {
     doneAt: Date.now(),
   };
 
-  const existing = await db.sets
-    .where('[sessionId+exerciseId]')
-    .equals([input.sessionId, input.exerciseId])
-    .and((s) => s.setIndex === input.setIndex)
-    .first();
+  /*
+   * Lire puis écrire DANS UNE transaction sur `sets` (P1-A) : deux validations
+   * simultanées de la même série sont mises en file, la seconde voit la
+   * première et la met à jour au lieu d'insérer un doublon. Sans elle, la
+   * protection ne tenait qu'au hasard de la transaction de `idEcriture`.
+   */
+  return db.transaction('rw', db.sets, async () => {
+    const existing = await db.sets
+      .where('[sessionId+exerciseId]')
+      .equals([input.sessionId, input.exerciseId])
+      .and((s) => s.setIndex === input.setIndex)
+      .first();
 
-  if (existing?.id !== undefined) {
-    await db.sets.update(existing.id, row);
-    return existing.id;
-  }
-  return db.sets.add(row);
+    if (existing?.id !== undefined) {
+      await db.sets.update(existing.id, row);
+      return existing.id;
+    }
+    return db.sets.add(row);
+  });
 }
 
 export async function deleteSet(id: number): Promise<void> {
