@@ -1139,7 +1139,7 @@ export function SetEntry({
           </div>
         )}
 
-        {ex.def.role === 'main' && (
+        {(ex.def.role === 'main' || ex.signaleEchec === true) && (
           <button
             type="button"
             className={`${styles.failToggle} ${failed ? styles.failToggleOn : ''}`}

@@ -102,6 +102,9 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     ...(charge === null ? {} : { chargeCible: charge }),
     ...(conseil === null ? {} : { conseilProgression: conseil }),
     ...(demandeRir ? { demandeRir: true } : {}),
+    // Une série ratée est un échec pour la progression (§1 ter) : il faut
+    // pouvoir le dire, sur tous les exercices.
+    signaleEchec: true,
     notes: notesPour(ligne),
     ...(ligne.superset === undefined ? {} : { superset: ligne.superset }),
     lastKg: null,

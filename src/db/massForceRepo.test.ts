@@ -81,6 +81,14 @@ describe('séries MASS FORCE (lot 6) : cible du jour et RIR', () => {
     expect(r).toMatchObject({ pctPrescrit: 75, kgCible: 75, rirSaisi: 2, actualRpe: null });
   });
 
+  it('« Rep ratée » : failed est enregistré tel quel', async () => {
+    await demarrer();
+    await serie(2, { failed: true });
+    await serie(3);
+    const lignes = (await db.sets.toArray()).sort((a, b) => a.setIndex - b.setIndex);
+    expect(lignes.map((l) => l.failed)).toEqual([true, false]);
+  });
+
   it('un RIR non saisi reste absent : jamais une valeur supposée', async () => {
     await demarrer();
     await serie(0, { pctPrescrit: 75, kgCible: 75 });
