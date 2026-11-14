@@ -122,7 +122,7 @@ export interface SetRow {
    */
   /** % du 1RM prescrit pour cette séance (mouvements à fourchette). */
   pctPrescrit?: number | null;
-  /** Charge cible du jour = ancre × %, sans arrondi. Jamais pré-remplie. */
+  /** Charge cible du jour = ancre × %, sans arrondi (le champ kg s’ouvre dessus). */
   kgCible?: number | null;
   /**
    * Répétitions en réserve saisies (0, 1, 2 ; 3 = « 3 ou plus »), sur la

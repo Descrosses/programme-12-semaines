@@ -1293,7 +1293,7 @@ function buildLoadLine(ex: ResolvedExercise, kg: number | null): string {
 /**
  * La charge (MASS FORCE) : la cible de la séance, la fourchette, pourquoi
  * cette cible, puis la provenance en petit. Aucun arrondi : `fr` n'écrit que
- * deux décimales au plus. La cible n'est JAMAIS pré-remplie dans le champ kg.
+ * deux décimales au plus. Le champ kg, lui, s'ouvre sur la cible (lot 6).
  */
 function ChargeCibleBloc({ charge }: { charge: ChargeCible }) {
   if (charge.kind === 'a-determiner') {

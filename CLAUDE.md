@@ -310,8 +310,8 @@ matériel et la durée avant d'écrire la moindre séance.
      matériels, chacun sur SON 1RM), squat 70–80 % **Smith seulement**, push
      press AUCUNE. Seul un 1RM **mesuré** (test direct), même exercice et
      même matériel, sert ; le plus récent ; un sous-maximal n'est jamais pris
-     pour un 1RM (aucune formule validée). Fourchette sans arrondi, champ kg
-     jamais pré-rempli. Affichage `chargeCible` dans `ExerciseCard` (absent
+     pour un 1RM (aucune formule validée). Fourchette sans arrondi. Depuis
+     le lot 6, le champ kg s'ouvre sur la charge cible (décision de Guillaume). Affichage `chargeCible` dans `ExerciseCard` (absent
      pour POWER et MASS CONGESTION). `charges.test.ts` fige tout cela.
   7. **MASS FORCE, lot 6 — FAIT : progression S1 → S4** (§1 ter du .md).
      Prescription IDENTIQUE sur 4 semaines (`SEMAINES_FORCE = [1,2,3,4]`) ;

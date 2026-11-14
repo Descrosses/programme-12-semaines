@@ -89,6 +89,8 @@ qui a été réellement fait.
   cycle suivant) ; un test plus bas s'applique tout de suite.
 - **Charge cible** = ancre × % de la séance, sans arrondi. Première séance :
   le bas de la fourchette.
+  Le champ kg s'ouvre sur cette charge cible ; on la modifie si les disques
+  disponibles ne permettent pas de la charger.
 - **Classement de la séance précédente**, dans cet ordre :
   1. **Échec** : une série enregistrée sous les répétitions prescrites.
   2. **Incomplète** : moins de séries que prescrit.

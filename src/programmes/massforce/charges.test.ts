@@ -207,15 +207,24 @@ describe('ce qui ne doit jamais apparaître', () => {
     }
   });
 
-  it('aucune charge unique : le champ kg n’est jamais pré-rempli', () => {
+  it('le champ kg s’ouvre sur la charge cible ; sans cible calculée, il reste vide', () => {
     const lundi = MASS_FORCE.getSession(1, 0, {
       ...EMPTY_CONTEXT,
       referencesForce: [ref('developpe-couche', 'barre', 100)],
     })!;
     const bench = lundi.exercises[0]!;
-    expect(bench.chargeCible).toMatchObject({ kind: 'calculee', kgMin: 75, kgMax: 82.5 });
-    expect(bench.load.kg).toBeNull();
+    expect(bench.chargeCible).toMatchObject({
+      kind: 'calculee',
+      kgCible: 75,
+      kgMin: 75,
+      kgMax: 82.5,
+    });
+    expect(bench.load.kg).toBe(75);
     expect(bench.planKg).toBeNull();
     expect(bench.suggestion).toBeNull();
+    // À compléter (pas de 1RM), à déterminer (push press) ou libre : vide.
+    expect(MASS_FORCE.getSession(1, 0, EMPTY_CONTEXT)!.exercises[0]!.load.kg).toBeNull();
+    expect(MASS_FORCE.getSession(1, 4, EMPTY_CONTEXT)!.exercises[0]!.load.kg).toBeNull();
+    for (const e of lundi.exercises.slice(1)) expect(e.load.kg, e.id).toBeNull();
   });
 });

@@ -85,7 +85,17 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     name: option.nom,
     sets: ligne.series,
     work: travailPour(ligne.reps) ?? { kind: 'maxSet' },
-    load: { kg: null, shape: 'none', step: 2.5, source: 'aucune' },
+    /*
+     * Le champ kg s'ouvre sur la charge cible du jour (décision de Guillaume,
+     * lot 6) : valider sans y toucher enregistre la cible, donc une séance
+     * conforme. Sans cible calculée, il reste vide.
+     */
+    load: {
+      kg: charge?.kind === 'calculee' ? charge.kgCible : null,
+      shape: 'none',
+      step: 2.5,
+      source: 'aucune',
+    },
     targetRPE: null,
     restSec: ligne.reposSec,
     loadLine: `${ligne.series} × ${ligne.reps}`,
