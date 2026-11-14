@@ -425,6 +425,13 @@ export function parseAnyExport(text: string): AnyExportFile {
 
 /** Remplace les photos par celles du fichier. Ne touche à aucune autre table. */
 export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportReport> {
+  /*
+   * Le cycle AVANT la conversion des photos : chaque ligne en a besoin. Lu
+   * après, il valait « non initialisé » dès qu'un fichier contenait une photo,
+   * et l'import partait en erreur (importPhotos.test.ts).
+   */
+  const cyclePhotos = (await cyclePourEcriture()).id as number;
+
   const progress = await Promise.all(
     file.progressPhotos.map(async (p) => {
       const blob = await dataUrlToBlob(p.dataUrl);
@@ -455,8 +462,6 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
       };
     }),
   );
-
-  const cyclePhotos = (await cyclePourEcriture()).id as number;
 
   const references = await Promise.all(
     (file.exerciseReference ?? []).map(async (r) => {

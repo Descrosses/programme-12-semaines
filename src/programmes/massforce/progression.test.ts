@@ -37,7 +37,7 @@ function seance(
   exerciseId: string,
   reps: (number | null)[],
   kg: number | null,
-  o: { pct?: number; kgCible?: number; rir?: number | null; day?: number } = {},
+  o: { pct?: number; kgCible?: number; rir?: number | null; day?: number; ratee?: number } = {},
 ): SetRow[] {
   return reps.map((r, i) => ({
     cycleId: 1,
@@ -56,7 +56,7 @@ function seance(
     actualReps: r,
     actualRpe: null,
     measureValue: null,
-    failed: false,
+    failed: o.ratee === i,
     secondReps: null,
     secondKg: null,
     doneAt: tic(),
@@ -176,6 +176,34 @@ describe('correction 3 — échecs répétés', () => {
     const refs = [ref('developpe-couche', 'barre', 100)];
     const series = seance(1, B, [5, 5, 5, 4], 75, { pct: 75, kgCible: 75 });
     expect(pctCible(cible(refs, series, 2))).toBe(75);
+  });
+});
+
+describe('« Rep ratée » (P0-B) : une série marquée ratée est un échec', () => {
+  it('4 × 5 complètes mais la dernière marquée ratée : même cible, motif « manquées »', () => {
+    const refs = [ref('developpe-couche', 'barre', 100)];
+    const series = seance(1, B, cinq, 75, { pct: 75, kgCible: 75, rir: 2, ratee: 3 });
+    expect(cible(refs, series, 2)).toMatchObject({
+      pctCible: 75,
+      motif: expect.stringMatching(/manquées/),
+    });
+  });
+
+  it('deux séances de suite avec une série ratée à 80 % : −5 %', () => {
+    const refs = [ref('developpe-couche', 'barre', 100)];
+    const series = [
+      ...seance(1, B, cinq, 80, { pct: 80, kgCible: 80, ratee: 1 }),
+      ...seance(2, B, cinq, 80, { pct: 80, kgCible: 80, ratee: 2 }),
+    ];
+    expect(pctCible(cible(refs, series, 3))).toBe(75);
+  });
+
+  it('complémentaires : une série ratée garde la charge, deux séances de suite la baissent', () => {
+    const F = 'mf-barre-au-front';
+    const une = seance(1, F, [8, 8, 8, 8], 30, { ratee: 0 });
+    const conseil = (s: SetRow[]) => conseilComplementaire(ligne('lun-front'), passagesDe(s, F, 9));
+    expect(conseil(une)).toMatch(/Série manquée : garde/);
+    expect(conseil([...une, ...seance(2, F, [8, 8, 8, 8], 30, { ratee: 1 })])).toMatch(/baisse/);
   });
 });
 

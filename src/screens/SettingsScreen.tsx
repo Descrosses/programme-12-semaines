@@ -31,7 +31,9 @@ import {
   importPhotos,
   parseAnyExport,
   resetPhotos,
+  type AnyExportFile,
 } from '../db/export';
+import { resumeImport } from '../db/resumeImport';
 import { formatBytes } from '../media/photo';
 import {
   allMeasurements,
@@ -69,6 +71,17 @@ const ONE_RM_FIELDS = [
   { id: 'push-press', label: 'Push Press' },
 ] as const;
 
+type Annonce = { text: string; kind: 'ok' | 'erreur' };
+
+/**
+ * Le message à montrer APRÈS un rechargement de l'écran.
+ *
+ * `onChanged` fait remonter l'écran (sa clé change) : un message posé juste
+ * avant disparaissait avec l'ancienne instance. « Import réussi » et « Photos
+ * effacées » n'apparaissaient donc jamais (P1-D). Le nouvel écran le reprend.
+ */
+let annonceEnAttente: Annonce | null = null;
+
 export function SettingsScreen({
   onChanged,
   programme,
@@ -98,10 +111,15 @@ export function SettingsScreen({
   const [last3, setLast3] = useState<number | null>(null);
   const [usage, setUsage] = useState<PhotoUsage | null>(null);
   const [confirmPhotos, setConfirmPhotos] = useState(false);
+  const [aRestaurer, setARestaurer] = useState<AnyExportFile | null>(null);
   const [message, setMessage] = useState<{
     text: string;
     kind: 'ok' | 'erreur';
-  } | null>(null);
+  } | null>(() => {
+    const a = annonceEnAttente;
+    annonceEnAttente = null;
+    return a;
+  });
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -133,14 +151,38 @@ export function SettingsScreen({
    * des photos. L'appli reconnaît lequel on lui donne, ce qui évite de choisir
    * le mauvais bouton et d'écraser ce qu'on voulait garder.
    */
+  /** Annonce un résultat, puis recharge l'application (l'écran remonte). */
+  function annoncerPuisRecharger(a: Annonce) {
+    annonceEnAttente = a;
+    setMessage(a);
+    onChanged();
+  }
+
+  /**
+   * Choisir un fichier ne remplace plus rien : il est lu, puis l'écran dit ce
+   * qu'il contient et ce qu'il remplacera, et attend une confirmation (P1-D).
+   */
   async function handleImport(file: File) {
     try {
-      const parsed = parseAnyExport(await file.text());
+      setMessage(null);
+      setARestaurer(parseAnyExport(await file.text()));
+    } catch (e) {
+      setARestaurer(null);
+      setMessage({
+        text: e instanceof Error ? e.message : 'Import impossible.',
+        kind: 'erreur',
+      });
+    }
+  }
+
+  /** La restauration elle-même, une fois confirmée. */
+  async function restaurer(parsed: AnyExportFile) {
+    try {
       if (parsed.kind === 'photos') {
         const report = await importPhotos(parsed.file);
         setUsage(await photoUsage());
-        onChanged();
-        setMessage({
+        setARestaurer(null);
+        annoncerPuisRecharger({
           text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice, ${report.exerciseReference} fiche${report.exerciseReference > 1 ? 's' : ''} technique${report.exerciseReference > 1 ? 's' : ''}. L’historique d’entraînement n’a pas été touché.`,
           kind: 'ok',
         });
@@ -148,14 +190,15 @@ export function SettingsScreen({
       }
       const report = await importAll(parsed.file);
       setRow(await getSettingsRow());
-      onChanged();
-      setMessage({
+      setARestaurer(null);
+      annoncerPuisRecharger({
         text: `Import réussi : ${report.sets} séries, ${report.sessions} séances, ${report.readiness} readiness, ${report.combines} combines, ${report.measurements} pesées, ${report.painLog} notes de douleur, ${report.extraFoods} aliments ajoutés, ${report.notes + report.exerciseNotes} remarques, ${report.sessionExercises} exercices de séance, ${report.mealLog} repas cochés, ${report.customFoods + report.foodOverrides} aliments personnels. Les photos ne sont pas dans ce fichier, elles sont restées en place.`,
         kind: 'ok',
       });
     } catch (e) {
+      setARestaurer(null);
       setMessage({
-        text: e instanceof Error ? e.message : 'Import impossible.',
+        text: `${e instanceof Error ? e.message : 'Import impossible.'} Tes données n’ont pas été modifiées.`,
         kind: 'erreur',
       });
     }
@@ -495,6 +538,52 @@ export function SettingsScreen({
           des séries en double et fausserait les règles de progression. Le même bouton accepte les
           deux fichiers : l’appli reconnaît lequel tu lui donnes.
         </p>
+        {aRestaurer !== null &&
+          (() => {
+            const r = resumeImport(aRestaurer);
+            return (
+              <div role="alertdialog" aria-label="Confirmer la restauration">
+                <p className={styles.fieldHint}>{r.contenu}</p>
+                <p className={styles.fieldHint} style={{ color: 'var(--rouge)', fontWeight: 700 }}>
+                  {r.remplace} Irréversible.
+                </p>
+                <p className={styles.fieldHint}>{r.garde}</p>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{ width: '100%', margin: '10px 0 0' }}
+                  onClick={() =>
+                    void (aRestaurer.kind === 'photos' ? downloadPhotoExport() : downloadExport())
+                  }
+                >
+                  {aRestaurer.kind === 'photos'
+                    ? 'Exporter d’abord mes photos actuelles'
+                    : 'Exporter d’abord mes données actuelles'}
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{
+                    width: '100%',
+                    margin: '10px 0 0',
+                    background: 'var(--rouge)',
+                    color: 'var(--ink-on-accent)',
+                  }}
+                  onClick={() => void restaurer(aRestaurer)}
+                >
+                  {r.bouton}
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  style={{ width: '100%', margin: '10px 0 0' }}
+                  onClick={() => setARestaurer(null)}
+                >
+                  Annuler
+                </button>
+              </div>
+            );
+          })()}
       </section>
 
       {/* --------------------------------------------- sauvegarde photos -- */}
@@ -572,8 +661,7 @@ export function SettingsScreen({
                       await resetPhotos();
                       setUsage(await photoUsage());
                       setConfirmPhotos(false);
-                      onChanged();
-                      setMessage({ text: 'Photos effacées.', kind: 'ok' });
+                      annoncerPuisRecharger({ text: 'Photos effacées.', kind: 'ok' });
                     })()
                   }
                 >

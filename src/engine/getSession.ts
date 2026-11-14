@@ -112,6 +112,11 @@ export interface ResolvedExercise {
   conseilProgression?: string;
   /** MASS FORCE : sélecteur RIR facultatif sur la dernière série. */
   demandeRir?: boolean;
+  /**
+   * Le bouton « Rep ratée » sur un exercice qui n'est pas un mouvement
+   * principal de POWER (MASS FORCE : sa progression lit `failed`).
+   */
+  signaleEchec?: boolean;
   notes: string[];
   /** S9-11 : l'explosif intercalé entre les séries. */
   contrast?: ContrastSpec;

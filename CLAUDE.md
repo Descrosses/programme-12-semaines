@@ -329,6 +329,10 @@ matériel et la durée avant d'écrire la moindre séance.
      Progrès en font la moyenne. Complémentaires : `plage` (+2), `fixe` (RPE
      prescrit, superset), `push-press` (RIR ≥ 2) — conseil sans kilos.
      `progression.test.ts` rejoue les anomalies et trois profils.
+     Le bouton « Rep ratée » s'affiche sur TOUS les exercices MASS FORCE
+     (`signaleEchec`, posé par le module ; POWER : rôle `main` seulement,
+     MASS CONGESTION : jamais). Une série ratée = échec pour la progression.
+     `repRatee.test.tsx` fige les trois programmes.
   8. **Le parcours d'accueil et l'écran Aujourd'hui dépendent du programme**
      (régression signalée par Guillaume : MASS FORCE ouvrait le parcours de
      POWER avec ses 1RM de septembre). `OnboardingScreen` ne montre les

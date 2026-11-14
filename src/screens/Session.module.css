@@ -2386,3 +2386,16 @@
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 22%, var(--surface));
 }
+
+/* Une série qui n'a pas pu être écrite (P1-B) : lisible, sous le bouton. */
+.erreurSerie {
+  margin: 8px 0 0;
+  padding: 9px 12px;
+  border-left: 3px solid var(--rouge, #e5484d);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--rouge, #e5484d) 10%, transparent);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.45;
+}
