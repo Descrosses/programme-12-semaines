@@ -345,8 +345,17 @@ matériel et la durée avant d'écrire la moindre séance.
      toute la famille (FORCE et CONGESTION) : `[data-theme='mass']` presque
      noir et rouge, « // » rouge après les titres, semaine choisie rouge.
      Elle REMPLACE la palette claire ardoise (décision antérieure, renversée
-     par Guillaume). Contrastes mesurés par `styles/themeMass.test.ts`. Les
-     photos d'en-tête des maquettes ne sont pas encore fournies en fichiers.
+     par Guillaume). Contrastes mesurés par `styles/themeMass.test.ts`.
+     **Photos d'en-tête MASS — FAIT** : quatre photos fournies par Guillaume
+     (885 px de large, pas agrandies), une par écran
+     (`HABILLAGE.mass.entetes` : athlète → Accueil, disque → Semaine, salle →
+     Séance, disques → Combiné). Sujet à droite, voile horizontal à gauche
+     sous le titre. **L'en-tête de l'Accueil MASS est PERMANENT** (décision
+     de Guillaume) : « MASS // » argent, nom exact du cycle (MASS FORCE ou
+     MASS CONGESTION, lu au catalogue), « Semaine X / Y ». L'état du jour
+     (« Ça commence bientôt », nom de séance, « Repos ») descend sous
+     l'en-tête, en petit (`.titreJour`). POWER et FEMMES : rien ne change —
+     `data/enteteMass.test.tsx` le fige.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

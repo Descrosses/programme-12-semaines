@@ -170,6 +170,49 @@ export const VISUELS = {
     focus: '95% 10%',
     usage: 'Carte de la famille ME, MYSELF & I : page Programmes et tuile de l’accueil.',
   },
+  /*
+   * Les quatre photos d'en-tête de MASS, fournies par Guillaume (14 novembre)
+   * en une planche de 1774 × 887 : chacune fait 885 px de large, pas 1200.
+   * On ne les agrandit pas. Sujet à DROITE, noir à gauche : le titre se pose
+   * sur le noir, d'où un focus calé à droite.
+   */
+  massAthlete: {
+    display: '30_mass_athlete_display.webp',
+    mobile: '30_mass_athlete_mobile.webp',
+    largeurs: { display: 885, mobile: 640 },
+    description: 'Athlète torse nu, tête levée, lumière rouge en contre-jour sur fond noir.',
+    cadrage: 'cover',
+    focus: 'right center',
+    usage: 'Bandeau d’en-tête MASS : Aujourd’hui.',
+  },
+  massDisque: {
+    display: '31_mass_disque_display.webp',
+    mobile: '31_mass_disque_mobile.webp',
+    largeurs: { display: 885, mobile: 640 },
+    description: 'Disque de 20 kg sur une barre, liseré de lumière rouge, salle sombre.',
+    cadrage: 'cover',
+    focus: 'right center',
+    usage: 'Bandeau d’en-tête MASS : Semaine.',
+  },
+  massSalle: {
+    display: '32_mass_salle_display.webp',
+    mobile: '32_mass_salle_mobile.webp',
+    largeurs: { display: 885, mobile: 640 },
+    description:
+      'Banc de développé couché et barre chargée dans une salle sombre, éclairage rouge.',
+    cadrage: 'cover',
+    focus: 'right center',
+    usage: 'En-tête de séance MASS.',
+  },
+  massDisques: {
+    display: '33_mass_disques_display.webp',
+    mobile: '33_mass_disques_mobile.webp',
+    largeurs: { display: 885, mobile: 640 },
+    description: 'Rangée de disques en gros plan, reflets rouges.',
+    cadrage: 'cover',
+    focus: 'right center',
+    usage: 'En-tête du combiné d’évaluation MASS.',
+  },
   casque: {
     display: '03_casque_display.webp',
     mobile: '03_casque_mobile.webp',

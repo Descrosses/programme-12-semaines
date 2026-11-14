@@ -336,3 +336,85 @@
   content: '\00a0//' / '';
   color: var(--accent-bright);
 }
+
+/*
+ * La marque : « MASS // » en argent, très gros, au-dessus du titre du jour.
+ * Relevé sur la maquette de l'Accueil : capitales de 50 px de haut (corps
+ * ≈ 72 px), dégradé du blanc #f3f4f5 au gris #878887. Le « // » passe du
+ * titre à la marque. L'ombre est un `drop-shadow` : un `text-shadow` se
+ * peindrait PAR-DESSUS un dégradé découpé dans le texte.
+ */
+.marque {
+  width: fit-content;
+  margin: 4px 0 2px;
+  font-family: var(--font-cond);
+  font-size: clamp(3.5rem, 18vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  transform: skewX(-8deg);
+  transform-origin: left bottom;
+  background: linear-gradient(180deg, #f3f4f5 0%, #d6d7d8 42%, #878887 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 55%));
+}
+
+.marque::after {
+  content: '\00a0//' / '';
+  color: var(--accent-bright);
+}
+
+/* Le titre du jour, en seconde ligne : 22 px de capitales sur la maquette. */
+.title.titreSecond {
+  max-width: 74%;
+  font-size: clamp(1.75rem, 8.2vw, 2.0625rem);
+  line-height: 1.02;
+  color: #e3e4e6;
+}
+
+:global([data-theme='mass']) .title.titreSecond::after {
+  content: none;
+}
+
+/*
+ * MASS : les photos des maquettes ont leur sujet À DROITE et du noir à
+ * gauche. Le voile vertical de POWER (fait pour un stade éclairé sur toute
+ * la largeur) éteindrait l'athlète derrière le titre ; ici le voile du texte
+ * est HORIZONTAL — opaque à gauche sous le titre, transparent à droite sur
+ * le sujet. Les lignes de terrain, décor de POWER, n'ont rien à faire sur
+ * une photo de salle.
+ */
+:global([data-theme='mass']) .hero .content::before {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--voile) / 86%) 0%,
+    rgb(var(--voile) / 68%) 50%,
+    rgb(var(--voile) / 0%) 88%
+  );
+}
+
+:global([data-theme='mass']) .hero .voile {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--voile) / 0%) 0%,
+    rgb(var(--voile) / 8%) 60%,
+    rgb(var(--voile) / 30%) 100%
+  );
+}
+
+:global([data-theme='mass']) .hero .yard,
+:global([data-theme='mass']) .hero .lueur {
+  display: none;
+}
+
+/*
+ * Le voile général de l'en-tête (35 → 78 %) est réglé pour des projecteurs
+ * de stade. Ces photos-ci sont déjà presque noires : sous lui, l'athlète
+ * disparaissait. Il ne garde que le raccord du bas.
+ */
+:global([data-theme='mass']) .hero::after {
+  background: linear-gradient(180deg, rgb(var(--voile) / 0%) 55%, rgb(var(--voile) / 40%) 100%);
+}

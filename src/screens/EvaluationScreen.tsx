@@ -25,6 +25,8 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon';
 import { Stepper } from '../components/Stepper';
+import { Visuel } from '../components/Visuel';
+import { HABILLAGE } from '../data/famillesVisuel';
 import {
   COMBINE_MASS_FORCE,
   VARIANTES,
@@ -68,6 +70,14 @@ export function EvaluationScreen({ onRetour }: { onRetour?: () => void }) {
   return (
     <div className={styles.screen}>
       <header className={styles.header}>
+        {dansCycle && HABILLAGE.mass.entetes !== undefined && (
+          <Visuel
+            nom={HABILLAGE.mass.entetes.combine}
+            className={styles.enteteFond}
+            sizes="100vw"
+            prioritaire
+          />
+        )}
         {onRetour !== undefined && (
           <button type="button" className={styles.back} onClick={onRetour}>
             <Icon name="arrow-left" size="18px" />

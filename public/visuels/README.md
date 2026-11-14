@@ -13,6 +13,10 @@ par emplacement, choisie par `srcSet` et `sizes` (voir `src/data/visuels.ts`).
 | `06_developpe_couche` | 1200×675 / 640×360 | 65 / 29 Ko | Aujourd'hui (accumulation, deload) |
 | `07_reception` | 801×1200 / 427×640 | 80 / 30 Ko | Aujourd'hui (combine) |
 | `athlete-squat` | 1086×1448 / 640×853 | 117 / 59 Ko | Aujourd'hui (force maximale) |
+| `30_mass_athlete` | 885×441 / 640×319 | 21 / 13 Ko | MASS — Aujourd'hui |
+| `31_mass_disque` | 885×443 / 640×320 | 24 / 15 Ko | MASS — Semaine |
+| `32_mass_salle` | 885×443 / 640×320 | 17 / 11 Ko | MASS — Séance |
+| `33_mass_disques` | 885×443 / 640×320 | 22 / 13 Ko | MASS — Combiné |
 
 ## Poids réel
 
@@ -82,3 +86,10 @@ diagonales du composant `Decor`.
 
 `focus` est le point d'intérêt (`object-position`) : c'est lui qui décide de
 ce qu'on garde quand un bandeau de 390 × 200 recadre une image de 1200 × 675.
+
+## Les quatre photos MASS
+
+Fournies par Guillaume le 14 novembre, en une planche de 1774 × 887 découpée
+en quatre. Chacune fait 885 px de large : elles ne sont **pas agrandies** à
+1200, ce qui n'ajouterait que du flou. Même réserve de droits que le pack
+POWER : ce sont vraisemblablement des générations d'IA. Aucune marque visible.
