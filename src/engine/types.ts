@@ -5,6 +5,7 @@
 
 import type { DayIndex, MainLiftId, RPETarget, WeekIndex } from '../data/types';
 import type { PerformedSet } from './setFormat';
+import type { ReferenceForceRow } from '../db/db';
 
 /**
  * Les 1RM réellement testés. Mis à jour par le combine initial et le final.
@@ -178,6 +179,8 @@ export interface SessionContext {
    * le seul module qui propose des choix ; absent ailleurs.
    */
   choixCycle?: Readonly<Record<string, string>>;
+  /** Les références du combiné (MASS FORCE), pour les fourchettes de charge. */
+  referencesForce?: readonly ReferenceForceRow[];
 }
 
 export const EMPTY_CONTEXT: SessionContext = {

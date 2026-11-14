@@ -128,7 +128,7 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 | Famille | État |
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
-| MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, à venir) → CONGESTION (`mass4`, disponible) |
+| MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, **disponible en version de travail, S1 seule** — ouvert à la demande de Guillaume) → CONGESTION (`mass4`, disponible) |
 | FEMMES | Parcours de 8 étapes. Le cycle 1 (FEMMES 8) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
@@ -291,7 +291,7 @@ matériel et la durée avant d'écrire la moindre séance.
      par case par `massforce.test.ts`. Module `programmes/massforce/`
      (`semaines: [1]`) : aucune charge, aucun %, aucun champ RPE (« RPE 8 »
      est une consigne). Les 4 mouvements évalués portent « charge libre en
-     attendant ». MASS FORCE reste `a-venir` : pas de bouton Commencer.
+     attendant ». Ouvert ensuite au catalogue (statut `disponible`, S1 seule).
      Chaque option (matériel/variante) est un exercice à part (`mf-…`), donc
      un historique à part ; le choix est fait une fois par cycle
      (`CycleRow.massForce.choix`, passé aux séances par `ctx.choixCycle`).
@@ -302,7 +302,17 @@ matériel et la durée avant d'écrire la moindre séance.
      Progrès et Nutrition = vue `a-venir`, sans contenu. Superset biceps :
      3e rythme `transition` (repos court puis long), le chrono dit
      « Transition → … ». Combiné : bench barre/Smith, plus d'haltères.
-     Reste à écrire par Guillaume : S2–S4, fourchettes %1RM.
+     Reste à écrire par Guillaume : S2–S4.
+  6. **MASS FORCE, lot 5 — FAIT : fourchettes de charge S1.** Paramètres
+     propres à MASS FORCE dans `programmes/massforce/charges.ts`, rangés PAR
+     SEMAINE (seule la S1 existe ; une semaine absente n'hérite de rien) et
+     par exercice-matériel : bench et tirage vertical 75–82,5 % (les deux
+     matériels, chacun sur SON 1RM), squat 70–80 % **Smith seulement**, push
+     press AUCUNE. Seul un 1RM **mesuré** (test direct), même exercice et
+     même matériel, sert ; le plus récent ; un sous-maximal n'est jamais pris
+     pour un 1RM (aucune formule validée). Fourchette sans arrondi, champ kg
+     jamais pré-rempli. Affichage `chargeCible` dans `ExerciseCard` (absent
+     pour POWER et MASS CONGESTION). `charges.test.ts` fige tout cela.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

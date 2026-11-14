@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { SetRow } from '../db/db';
 import { fr, gripHint, loadLine, restLabel } from '../engine/format';
-import type { ResolvedExercise } from '../engine/getSession';
+import type { ChargeCible, ResolvedExercise } from '../engine/getSession';
+import { humanDateShort } from '../engine/calendar';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
 import { FicheTechnique } from './FicheTechnique';
@@ -238,6 +239,7 @@ export function ExerciseCard({
         {repere !== null && <p className={styles.exRepere}>{repere}</p>}
         <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
+        {ex.chargeCible !== undefined && <ChargeCibleBloc charge={ex.chargeCible} />}
         {ex.def.vigilance && (
           <p className={styles.vigilance}>
             <b>Vigilance</b> — {ex.def.vigilance}
@@ -1253,4 +1255,41 @@ export function showsLoadField(ex: ResolvedExercise): boolean {
 function buildLoadLine(ex: ResolvedExercise, kg: number | null): string {
   if (kg === null || kg === ex.load.kg) return ex.loadLine;
   return loadLine(ex.sets, ex.work, { ...ex.load, kg });
+}
+
+/**
+ * La fourchette de charge (MASS FORCE) : le %, puis les kilos, puis la
+ * provenance en petit. Une fourchette, jamais une charge unique, et aucun
+ * arrondi : `fr` n'écrit que deux décimales au plus.
+ */
+function ChargeCibleBloc({ charge }: { charge: ChargeCible }) {
+  if (charge.kind === 'a-determiner') {
+    return (
+      <p className={styles.chargeCible}>
+        Charge à déterminer — prescription en cours de validation.
+      </p>
+    );
+  }
+  const pct = `${fr(charge.pctMin)}–${fr(charge.pctMax)} % du 1RM`;
+  if (charge.kind === 'a-completer') {
+    return (
+      <div className={styles.chargeCible}>
+        <p className={styles.chargePct}>{pct}</p>
+        <p>Référence 1RM à compléter pour calculer votre fourchette de charges.</p>
+        <p className={styles.chargeSource}>Matériel : {charge.materiel}</p>
+      </div>
+    );
+  }
+  return (
+    <div className={styles.chargeCible}>
+      <p className={styles.chargePct}>{pct}</p>
+      <p className="tnum">
+        Charge cible : <b>{`${fr(charge.kgMin)}–${fr(charge.kgMax)} kg`}</b>
+      </p>
+      <p className={styles.chargeSource}>
+        {charge.materiel} · 1RM {charge.type === 'mesure' ? 'mesuré' : 'estimé'} le{' '}
+        {humanDateShort(charge.date)}
+      </p>
+    </div>
+  );
 }

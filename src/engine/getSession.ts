@@ -64,6 +64,30 @@ export interface Adjustment {
   why: string;
 }
 
+/**
+ * La charge cible d'un exercice en fourchette de %1RM (MASS FORCE).
+ *
+ * - `calculee` : un 1RM compatible existe ; la charge est une FOURCHETTE,
+ *   sans arrondi. `type` dit d'où vient le 1RM : seul « mesure » existe
+ *   aujourd'hui, « estime » attend une formule validée.
+ * - `a-completer` : la fourchette existe, mais aucun 1RM mesuré au même
+ *   matériel.
+ * - `a-determiner` : aucune fourchette validée pour cet exercice.
+ */
+export type ChargeCible =
+  | {
+      kind: 'calculee';
+      pctMin: number;
+      pctMax: number;
+      kgMin: number;
+      kgMax: number;
+      materiel: string;
+      date: string;
+      type: 'mesure' | 'estime';
+    }
+  | { kind: 'a-completer'; pctMin: number; pctMax: number; materiel: string }
+  | { kind: 'a-determiner' };
+
 export interface ResolvedExercise {
   def: ExerciseDef;
   id: string;
@@ -75,6 +99,8 @@ export interface ResolvedExercise {
   restSec: number;
   /** L'élément le plus visible de l'écran : « 5 × 3 × 115 kg ». */
   loadLine: string;
+  /** Fourchette en %1RM (MASS FORCE). Absente partout ailleurs. */
+  chargeCible?: ChargeCible;
   notes: string[];
   /** S9-11 : l'explosif intercalé entre les séries. */
   contrast?: ContrastSpec;

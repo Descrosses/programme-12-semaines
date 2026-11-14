@@ -2311,3 +2311,32 @@
 .vigilance b {
   color: var(--ink);
 }
+
+/* La fourchette de charge (MASS FORCE) : lisible d'un coup d'œil, la
+   provenance en retrait. */
+.chargeCible {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.chargeCible p {
+  margin: 0;
+}
+
+.chargeCible b {
+  color: var(--ink);
+  font-size: 1.0625rem;
+}
+
+.chargePct {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.chargeSource {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}

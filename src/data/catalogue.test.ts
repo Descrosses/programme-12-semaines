@@ -27,7 +27,17 @@ describe('catalogue Dcross-fit', () => {
      * pas « comment le faire passer » mais « ce programme se joue-t-il
      * vraiment du début à la fin dans cette application ».
      */
-    expect(programmesDisponibles().map((p) => p.id)).toEqual(['power12', 'mass4', 'femmes8']);
+    /*
+     * UNE exception nommée : MASS FORCE, ouvert en version de travail (S1
+     * seule) à la demande explicite de Guillaume — « personne n'a accès à
+     * l'appli pour l'instant, je veux voir le résultat ». Son résumé le dit.
+     */
+    expect(programmesDisponibles().map((p) => p.id)).toEqual([
+      'power12',
+      'mass-force',
+      'mass4',
+      'femmes8',
+    ]);
   });
 
   it('fait correspondre le programme par défaut à la durée du moteur', () => {
@@ -160,10 +170,11 @@ describe('famille MASS', () => {
     for (const p of mass.programmes) expect(p.deblocage, p.id).toBeUndefined();
   });
 
-  it('CONGESTION reste jouable sous son identifiant d’origine ; les deux autres sont à venir', () => {
+  it('CONGESTION reste jouable sous son identifiant d’origine ; FORCE ouvert, HYPERTROPHIE à venir', () => {
     expect(programmeParId('mass4')?.statut).toBe('disponible');
     expect(programmeParId('mass8')?.statut).toBe('a-venir');
-    expect(programmeParId('mass-force')?.statut).toBe('a-venir');
+    // Ouvert à la demande de Guillaume, en version de travail (S1 seule).
+    expect(programmeParId('mass-force')?.statut).toBe('disponible');
   });
 
   it('seul MASS FORCE demande un combiné avant de démarrer', () => {

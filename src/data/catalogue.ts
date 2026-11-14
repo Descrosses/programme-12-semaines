@@ -317,10 +317,15 @@ export const FAMILLES: readonly Famille[] = [
         nom: 'MASS FORCE',
         version: '0.1',
         dureeSemaines: 4,
-        statut: 'a-venir',
+        /*
+         * Disponible à la demande de Guillaume (« personne n'a accès à
+         * l'appli pour l'instant, je veux voir le résultat ») — alors que
+         * seule la semaine 1 est écrite. Le résumé le dit.
+         */
+        statut: 'disponible',
         combineAvant: true,
         resume:
-          'Quatre semaines, quatre séances : pectoraux et triceps, dos et biceps, jambes, épaules. Démarre après un combiné d’évaluation. Programmation sportive en cours de validation.',
+          'Quatre semaines, quatre séances : pectoraux et triceps, dos et biceps, jambes, épaules. Démarre après un combiné d’évaluation. Version de travail : seule la semaine 1 est écrite, la progression est en cours de validation.',
         objectifs: [],
         prerequis: [],
       },

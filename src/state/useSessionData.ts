@@ -3,6 +3,8 @@
  * saisies. Tout vient de la base locale, rien du réseau.
  */
 
+import { MASS_FORCE_PROGRAMME_ID } from '../db/massForceRepo';
+import { toutesLesReferences } from '../db/references';
 import type { DecisionAlignement } from '../engine/alignementReps';
 import { useCallback, useEffect, useState } from 'react';
 import type { DayIndex, WeekIndex } from '../data/types';
@@ -127,12 +129,17 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       ? computeReadiness(settings.broadJumpBaselineCm, readinessRow.jumpCm)
       : null;
 
+    /* Les références du combiné ne servent qu'à MASS FORCE : rien n'est lu ailleurs. */
+    const referencesForce =
+      cycle?.programmeId === MASS_FORCE_PROGRAMME_ID ? await toutesLesReferences() : [];
+
     const prescrite = programme.getSession(week, day, {
       settings,
       history,
       readiness: readinessResult,
       explosiveDecline: allegementAccepte(trend, settingsRow.decisionSauts),
       ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
+      ...(referencesForce.length === 0 ? {} : { referencesForce }),
     });
 
     /*
