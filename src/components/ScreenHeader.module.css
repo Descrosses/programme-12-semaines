@@ -634,3 +634,59 @@
   text-shadow: none;
   filter: var(--mass-ombre-titre);
 }
+
+/*
+ * MASS — retours de Guillaume du 15 novembre (captures d'iPhone).
+ *
+ * 1. Un seul trait rouge sous le titre, celui de Semaine et du Combiné :
+ *    court, il s'éteint vers la droite. Plus de ligne de sous-titre entre
+ *    deux traits ; le sous-titre (« Semaine 1 / 4 », « Contenu à venir »…)
+ *    reste, en dessous du trait.
+ */
+:global([data-theme='mass']) .header:not(.argent) .ruleLeft,
+:global([data-theme='mass']) .header:not(.argent) .ruleRight {
+  display: none;
+}
+
+:global([data-theme='mass']) .header:not(.argent) .subtitleRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+:global([data-theme='mass']) .header:not(.argent) .subtitleRow::before {
+  content: '';
+  flex: none;
+  width: 108px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #e3141c 0%, #e3141c 52%, rgb(227 20 28 / 0%) 100%);
+  box-shadow: var(--mass-halo-trait);
+}
+
+/*
+ * 2. Le voile du titre s'arrêtait sur une arête nette au milieu de la photo
+ *    (« un film noir sur 60-70 % du bandeau ») : il naît désormais en fondu.
+ *    Semaine (`.argent`) a déjà le sien.
+ */
+:global([data-theme='mass']) .hero:not(.argent) .content::before {
+  /* Le fondu tient dans les 40 px AU-DESSUS du texte : le titre garde tout
+     son voile (contraste mesuré ≥ 4:1). */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 40px);
+}
+
+/*
+ * 3. Accueil : la tête de l'athlète est tout en haut de la photo. Posée dès
+ *    le haut de l'écran, elle passait sous l'heure et le visage était coupé.
+ *    La photo commence sous la barre d'état ; son haut, déjà noir, se fond
+ *    dans le fond de page.
+ */
+:global([data-theme='mass']) .avecMarque .fond {
+  inset: auto 0 0 0;
+  top: var(--haut-ecran, 0px);
+  height: calc(100% - var(--haut-ecran, 0px));
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22px);
+}
