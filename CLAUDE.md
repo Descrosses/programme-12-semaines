@@ -419,6 +419,14 @@ matériel et la durée avant d'écrire la moindre séance.
      (`--haut-ecran + 10px`), la photo reste dessous ; le rebond iOS est
      bloqué sur `html[data-theme='mass']` (bande vide sous l'heure, vidéo de
      Guillaume du 15 novembre).
+     **Retours du 15 novembre** (`ScreenHeader.module.css`, thème MASS) :
+     UN seul trait rouge sous les titres MASS, celui de Semaine et du
+     Combiné (court, qui s'éteint) — plus de ligne de sous-titre entre deux
+     traits ; le sous-titre reste dessous. Le voile du titre des bandeaux naît
+     en fondu dans les 40 px au-dessus du texte (sinon arête nette, « film
+     noir ») ; contraste des titres mesuré ≥ 3,5:1. Accueil : la photo de
+     l'athlète commence SOUS la barre d'état (sa tête est en haut du fichier,
+     elle passait sous l'heure). La Séance MASS n'a toujours pas de trait.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le
