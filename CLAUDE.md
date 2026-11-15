@@ -389,23 +389,21 @@ matériel et la durée avant d'écrire la moindre séance.
      confinement (`enteteMassCss`, `confinementMass`, `seanceMass`) le
      vérifient. Photo de Semaine calée à DROITE (à gauche, un iPhone de
      430 px montrait une bande noire).
-     **Fiches de MASS FORCE — lots F1, F2, F3 (audit des fiches MASS).**
-     Table propre `programmes/massforce/fiches.ts` (14 exercices), qui ne
-     montre QUE des planches MASS déjà livrées (avatar MASS ; jamais un
-     `power12-*`). MASS CONGESTION garde sa table (`mass4/fiches.ts`),
-     inchangée. Décisions de Guillaume : leg curl → planche du leg curl
-     allongé ; élévations frontales → planche alternée (il les fait ainsi).
-     Restent SANS fiche, exprès : tirage horizontal large (la planche est en
-     prise serrée), push press (la planche Smith est un développé strict),
-     développé incliné haltères (pas de planche) — ne pas les rattacher à
-     ces voisins ; 14 mouvements sans planche MASS. Barre au front et curl
-     haltères ont des planches générées par Guillaume (`ez-skull-crusher`,
-     `db-alternating-curl`, fond BLANC — décision de Guillaume pour toute la
-     bibliothèque MASS) ; deux textes du curl retouchés pour suivre la
-     prescription (montée à intention de vitesse maximale). Le fond du bloc fiche
-     (exercice sans fiche) de MASS FORCE est la salle MASS (`massSalle`) et
-     non la photo `force` du pack POWER (`ambianceFicheDe`) ; POWER et MASS
-     CONGESTION gardent le leur. `massforce/fiches.test.ts` fige tout cela.
+     **Fiches de MASS FORCE — COMPLÈTES : 28 exercices sur 28.** Table
+     propre `programmes/massforce/fiches.ts` : 10 planches de MASS CONGESTION
+     au même geste et au même matériel, 2 rattachements décidés par
+     Guillaume (leg curl → leg curl allongé ; élévations frontales →
+     alternées), 16 planches générées par Guillaume pour MASS FORCE, fond
+     BLANC (décision de Guillaume pour toute la bibliothèque MASS), avatar
+     MASS. Jamais un `power12-*`. MASS CONGESTION garde sa table
+     (`mass4/fiches.ts`), inchangée. Les pièges de l'audit ont LEUR planche —
+     ne jamais leur rattacher la voisine : tirage horizontal large ≠ prise
+     serrée, push press ≠ développé militaire, incliné haltères ≠ incliné
+     Smith. Toute planche fournie se vérifie (geste, matériel, muscles,
+     cohérence avec la prescription) avant intégration : le curl et
+     l'extension triceps ont été refaits pour des muscles ou un tempo faux.
+     Le fond du bloc fiche (exercice sans fiche) de MASS FORCE est la salle
+     MASS (`massSalle`, `ambianceFicheDe`). `massforce/fiches.test.ts`.
      **Bandeaux du 14 novembre — FAIT.** Sept images de Guillaume (3:1,
      ramenées à 1200/640 px). POWER : Nutrition (`nutritionPower`), Combine
      (`combinePower`, logo de chaussure effacé du fichier), Semaine
