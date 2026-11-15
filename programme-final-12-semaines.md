@@ -112,7 +112,7 @@ Tempo 3-0-X : descente 3 s sur les semaines 1-3, remontée avec intention d'acc�
 Progression : 8 reps propres à RPE ≤ 7,5 → +2 kg par haltère.
 
 **E. Romanian Deadlift — 3 × 8 × 80 kg** — RPE 7 — Repos 2 min 30 — Tempo 3-1-X-1
-Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lombaire. S2 : 85 kg, S3 : 90 kg si RPE conforme.
+Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lombaire. Semaines 2 et 3 : la charge monte d'un cran si le RPE de la semaine précédente est resté à 7 ou moins. Sinon, garde la même. L'application propose la charge, recalée sur ce que tu as réellement soulevé.
 
 **F. Ab Wheel — 3 × 8** — Repos 60 s — Bassin en rétroversion, jamais d'extension lombaire. Augmente l'amplitude avant les reps.
 À partir de la semaine 5, il s'enchaîne **en alternance avec le Roman Side Bench** (§8) : une série de chaque, 45 s entre les stations.

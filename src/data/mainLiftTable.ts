@@ -298,7 +298,8 @@ const speedSquat: LiftSchedule = [
 // ---------------------------------------------------------------------------
 
 /**
- * S1-3 : §7 (« 3 × 8 × 80 kg », « S2 : 85 kg, S3 : 90 kg »).
+ * S1-3 : §7 (« 3 × 8 × 80 kg ») ; 85 puis 90 kg, la consigne du .md ne cite
+ *        plus de kilos (« la charge monte d'un cran si RPE ≤ 7 »).
  * S5-7 : §8 « 3 × 6 × 90 kg → 4 × 5 × 92,5-95 kg », découpé 90 / 92,5 / 95.
  * S9-11 : §8 « 3 × 5 × 90-95 kg RPE 7 » → plancher 90, plafond assumé 95.
  * S4 / S8 : règle générale de deload — 80 % de la dernière semaine non-deload,
