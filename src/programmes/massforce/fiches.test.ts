@@ -17,12 +17,29 @@ import { SEANCES_FORCE } from './seances';
 
 const fichier = (nom: string) => new URL(`../../../public/fiches/${nom}`, import.meta.url);
 /* Planches MASS générées par Guillaume pour MASS FORCE, au gabarit et à l'avatar MASS. */
-const PLANCHES_FOURNIES = ['ez-skull-crusher.webp', 'db-alternating-curl.webp'];
+const PLANCHES_FOURNIES = [
+  'ez-skull-crusher.webp',
+  'db-alternating-curl.webp',
+  'incline-db-press.webp',
+  'smith-bench-press.webp',
+  'barbell-bench-press.webp',
+  'lat-pulldown-cable.webp',
+  'lat-pulldown-machine.webp',
+  'barbell-row.webp',
+  'wide-cable-row.webp',
+  'supinated-machine-pulldown.webp',
+  'barbell-squat.webp',
+  'forward-lunge.webp',
+  'bulgarian-split-squat.webp',
+  'push-press-smith.webp',
+  'push-press-barbell.webp',
+  'db-lying-triceps-extension.webp',
+];
 const idsForce = SEANCES_FORCE.flatMap((s) => s.lignes.flatMap((l) => l.options.map((o) => o.id)));
 
 describe('les fiches de MASS FORCE', () => {
-  it('quatorze mouvements, chacun un vrai exercice de MASS FORCE', () => {
-    expect(Object.keys(FICHES_FORCE)).toHaveLength(14);
+  it('vingt-huit mouvements, chacun un vrai exercice de MASS FORCE', () => {
+    expect(Object.keys(FICHES_FORCE)).toHaveLength(28);
     for (const id of Object.keys(FICHES_FORCE)) expect(idsForce, id).toContain(id);
   });
 
@@ -46,15 +63,21 @@ describe('les fiches de MASS FORCE', () => {
     expect(fichePourForce('mf-barre-au-front')).toBe('fiches/ez-skull-crusher.webp');
   });
 
-  it('les pièges et les planches partielles restent sans fiche', () => {
-    for (const id of [
-      'mf-tirage-horizontal-large', // planche en prise serrée neutre
-      'mf-push-press-smith', // la planche Smith est un développé strict
-      'mf-push-press-barre',
-      'mf-developpe-incline-halteres', // planches : incliné Smith ou couché plat
-    ]) {
-      expect(fichePourForce(id), id).toBeUndefined();
-    }
+  it('les pièges ont LEUR planche, jamais celle du mouvement voisin', () => {
+    expect(fichePourForce('mf-tirage-horizontal-large')).toBe('fiches/wide-cable-row.webp');
+    expect(fichePourForce('mf-push-press-smith')).toBe('fiches/push-press-smith.webp');
+    expect(fichePourForce('mf-push-press-barre')).toBe('fiches/push-press-barbell.webp');
+    expect(fichePourForce('mf-developpe-incline-halteres')).toBe('fiches/incline-db-press.webp');
+    const voisines = [
+      'close-grip-cable-row.webp',
+      'smith-military-press.webp',
+      'smith-incline-press.webp',
+    ];
+    for (const f of Object.values(FICHES_FORCE)) expect(voisines, f).not.toContain(f);
+  });
+
+  it('chaque exercice de MASS FORCE a sa fiche', () => {
+    expect(idsForce.filter((id) => fichePourForce(id) === undefined)).toEqual([]);
   });
 
   it('le chemin servi est celui des autres fiches', () => {
