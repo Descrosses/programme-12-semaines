@@ -85,3 +85,39 @@ export function loadEntryFor(ex: ResolvedExercise, saved?: number | null): LoadE
 export function parseKg(raw: string, previous: number | null): number | null {
   return parseNombre(raw, previous, { min: KG_MIN, max: KG_MAX, decimales: KG_DECIMALES });
 }
+
+/**
+ * La phrase d'aide sous une case « Charge » VIDE, la première fois.
+ *
+ * Pour un nouvel utilisateur, le moteur ne propose aucun kilo sur un
+ * accessoire autorégulé (Face Pull, Landmine Press…) ni sur un repère de
+ * forme : il ne sait rien de lui, et lui servir la charge de l'auteur du
+ * programme serait faux. La case affiche « — » ; sans explication, on croit à
+ * un oubli. Cette phrase dit quoi faire et ce qui se passera ensuite.
+ *
+ * `null` dès qu'un kilo existe (prévu, repris, ou déjà tapé), et partout où la
+ * case vide a un autre sens : le poids du corps (« PDC »), ce qui couvre aussi
+ * les modules MASS, dont le champ reste vide par construction.
+ */
+/** Les mouvements testés au combine, dont la charge est un % du 1RM. */
+const LIFTS_DU_COMBINE: readonly string[] = [
+  'back-squat',
+  'bench-press',
+  'deadlift',
+  'weighted-pullup',
+];
+
+export function aideChargeVide(ex: ResolvedExercise, kgSaisi: number | null): string | null {
+  if (kgSaisi !== null || ex.load.kg !== null || ex.lastKg !== null) return null;
+  if (ex.load.source !== 'aucune' || emptyLabelForShape(ex.load.shape) !== '—') return null;
+  /*
+   * Les quatre mouvements du combine se calculent sur le 1RM : vide, c'est
+   * qu'il manque le 1RM, pas qu'il faut choisir. Leur dire « choisis » ferait
+   * oublier le combine, qui pilote tout le tableau.
+   */
+  if (ex.def.liftId !== undefined && LIFTS_DU_COMBINE.includes(ex.def.liftId)) {
+    return 'Charge calculée sur ton 1RM : saisis-le dans Réglages, ou passe le combine.';
+  }
+  const rpe = ex.targetRPE === null ? '' : ` à ${ex.targetRPE.label}`;
+  return `Première fois : choisis une charge qui tient les répétitions demandées${rpe}. Elle sera reprise la prochaine fois.`;
+}

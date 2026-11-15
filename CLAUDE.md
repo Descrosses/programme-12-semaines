@@ -216,6 +216,17 @@ matériel et la durée avant d'écrire la moindre séance.
   Roman Side Bench). C'est l'**unique dérogation** à la règle « jamais deux
   exercices du tronc de la même famille le même jour », écrite comme une paire
   nommée et assumée par Guillaume.
+- **Case « Charge » vide = à toi de choisir, et l'écran le dit** (POWER).
+  Sans historique, un accessoire autorégulé ou un repère de forme n'affiche
+  aucun kilo (jamais la charge de l'auteur). `aideChargeVide`
+  (`engine/loadEntry.ts`) écrit dessous « Première fois : choisis une charge
+  qui tient les répétitions demandées à RPE x… » ; pour les 4 mouvements du
+  combine, « Charge calculée sur ton 1RM… ». Jamais au poids du corps, donc
+  jamais sur MASS. L'alternative du Landmine Press ne donne plus « 22 kg »
+  (charge de l'auteur) mais un repère relatif (−10 à 15 % du Landmine barre)
+  et le RPE — `.md` et code, `data/alternativeLandmine.test.ts`. Le « S2 :
+  85 kg, S3 : 90 kg » du RDL (§3 du `.md`) est un autre chiffre personnel,
+  laissé tel quel sans décision de Guillaume.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

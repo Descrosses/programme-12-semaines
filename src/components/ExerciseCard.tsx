@@ -9,7 +9,7 @@ import { FicheTechnique } from './FicheTechnique';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { Icon } from './Icon';
 import { Stepper, stepValue } from './Stepper';
-import { KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
+import { aideChargeVide, KG_MAX, KG_MIN, loadEntryFor, parseKg } from '../engine/loadEntry';
 import { lastPerformance } from '../engine/lastPerformance';
 import { premierePhrase } from '../engine/apercuSeance';
 import { replacementChip, type CustomRow } from '../engine/customExercise';
@@ -1131,6 +1131,10 @@ export function SetEntry({
             />
           )}
         </div>
+
+        {courante && aideChargeVide(ex, kg) !== null && (
+          <p className={styles.aideCharge}>{aideChargeVide(ex, kg)}</p>
+        )}
 
         {demandeRir && (
           <div className={styles.rir} role="group" aria-label="Répétitions en réserve (facultatif)">
