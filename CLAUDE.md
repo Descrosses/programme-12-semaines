@@ -224,9 +224,11 @@ matériel et la durée avant d'écrire la moindre séance.
   combine, « Charge calculée sur ton 1RM… ». Jamais au poids du corps, donc
   jamais sur MASS. L'alternative du Landmine Press ne donne plus « 22 kg »
   (charge de l'auteur) mais un repère relatif (−10 à 15 % du Landmine barre)
-  et le RPE — `.md` et code, `data/alternativeLandmine.test.ts`. Le « S2 :
-  85 kg, S3 : 90 kg » du RDL (§3 du `.md`) est un autre chiffre personnel,
-  laissé tel quel sans décision de Guillaume.
+  et le RPE — `.md` et code, `data/alternativeLandmine.test.ts`. Le RDL (§3
+  du `.md`) ne dit plus « S2 : 85 kg, S3 : 90 kg » mais une règle au RPE
+  (« monte d'un cran si le RPE […] est resté à 7 ou moins »), décision de
+  Guillaume — `data/consigneRdl.test.ts`. Le moteur, lui, n'a pas changé :
+  charge « forme » recalée sur le réel ; la règle RPE est une consigne.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
