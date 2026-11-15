@@ -229,6 +229,12 @@ matériel et la durée avant d'écrire la moindre séance.
   (« monte d'un cran si le RPE […] est resté à 7 ou moins »), décision de
   Guillaume — `data/consigneRdl.test.ts`. Le moteur, lui, n'a pas changé :
   charge « forme » recalée sur le réel ; la règle RPE est une consigne.
+- **« Mon plan » (nutrition sans plan historique) se lit comme les « Repas
+  types »** (demande de Guillaume, 15 novembre) : une ligne par aliment (nom,
+  quantité, kcal), le curseur / « Remplacer » / « Retirer » seulement sur la
+  ligne touchée, les pastilles derrière « + Ajouter un aliment ». Le « % » de
+  l'en-tête est la part de la CIBLE du jour (le plan est incomplet), à défaut
+  du total du plan. `components/planPersoPresentation.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
