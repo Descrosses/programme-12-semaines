@@ -2360,6 +2360,14 @@
   margin: 10px 0 0;
 }
 
+/* Sous une case « Charge » vide, la première fois : quoi faire, et ensuite. */
+.aideCharge {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
 .rirLegende {
   display: block;
   margin-bottom: 6px;

@@ -192,7 +192,7 @@ const LIST: ExerciseDef[] = [
     measure: 'kg',
     intent: 'Transfert jambes → tronc → bras, tronc verrouillé.',
     altBasicFit:
-      'Barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou, 22 kg.',
+      'Barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou. Repère : environ 10 à 15 % de moins que ta charge au Landmine Press barre. Sans repère, choisis la charge qui tient 8 reps à RPE 7.',
   }),
   def({
     id: 'chest-supported-row',

@@ -128,7 +128,7 @@ Descends jusqu'à l'étirement maximal des ischios sans perdre la neutralité lo
 **C. Tractions lestées — 4 × 5 × +20 kg** — RPE 7 — Repos 2 min 30 — Dead hang complet, zéro kipping, poitrine vers la barre.
 
 **D. Landmine Press half-kneeling — 3 × 8/côté, barre + 20 kg** — RPE 7 — Repos 75 s
-Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou, 22 kg.
+Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon développé haltère unilatéral à genou. Repère : environ 10 à 15 % de moins que ta charge au Landmine Press barre. Sans repère, choisis la charge qui tient 8 reps à RPE 7.
 
 **E. Chest-supported Dumbbell Row — 3 × 8 × 30 kg** — RPE 8 — Repos 90 s — Pause 1 s en contraction.
 
