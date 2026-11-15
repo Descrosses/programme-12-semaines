@@ -138,7 +138,7 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     id: 'poulet-riz-brocolis',
     nom: 'Poulet, riz, brocolis',
     creneaux: PLAT,
-    lignes: [l('poulet', 150), l('riz', 250), l('brocolis', 150), l('huile', 10)],
+    lignes: [l('poulet', 150), l('riz', 250), l('brocolisCuits', 150), l('huile', 10)],
   },
   {
     id: 'boeuf-riz-haricots-verts',
@@ -206,7 +206,7 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('riz', 200),
       l('courgettes', 80),
       l('poivrons', 60),
-      l('brocolis', 80),
+      l('brocolisCuits', 80),
     ],
   },
   {
@@ -246,7 +246,7 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     id: 'dinde-pates-brocolis',
     nom: 'Dinde, pâtes, brocolis',
     creneaux: PLAT,
-    lignes: [l('dinde', 150), l('pates', 250), l('brocolis', 150), l('huile', 10)],
+    lignes: [l('dinde', 150), l('pates', 250), l('brocolisCuits', 150), l('huile', 10)],
   },
   {
     id: 'thon-pates-tomates',

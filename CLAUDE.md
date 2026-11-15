@@ -235,6 +235,17 @@ matériel et la durée avant d'écrire la moindre séance.
   ligne touchée, les pastilles derrière « + Ajouter un aliment ». Le « % » de
   l'en-tête est la part de la CIBLE du jour (le plan est incomplet), à défaut
   du total du plan. `components/planPersoPresentation.test.tsx`.
+- **Photos des plats** (Guillaume, 15 novembre). Toucher une carte de « Choisir
+  un repas » ouvre `FicheRepas` (photo en grand, chaque ingrédient avec
+  quantité et kcal, « Choisir ce repas »). Dans « Mon plan », le repas porte la
+  vignette de son plat tant que TOUS les ingrédients du plat y sont
+  (`engine/repasReconnu.ts`) : quantité changée ou aliment ajouté la gardent,
+  ingrédient remplacé ou retiré l'efface. Rien n'est écrit en base. Les plats
+  aux brocolis utilisent `brocolisCuits` (« Brocolis cuits », fleurettes sur
+  les photos), jamais `brocolis` (« Purée de brocolis », celle du plan
+  historique, inchangée) ; le questionnaire « brocolis » pointe vers
+  `brocolisCuits`. `ficheRepas.test.tsx`, `repasReconnu.test.ts`,
+  `bibliothequeRepas.test.ts`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

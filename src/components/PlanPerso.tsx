@@ -34,6 +34,9 @@ import { stateLabel, type LibraryFood } from '../data/foodLibrary';
 import type { DayKind } from '../data/nutrition';
 import type { Macros } from '../engine/nutrition';
 import { ChoixRepas } from './ChoixRepas';
+import { FicheRepas } from './FicheRepas';
+import { photoDe, type RepasBibliotheque } from '../data/bibliothequeRepas';
+import { repasReconnu } from '../engine/repasReconnu';
 import { FoodSwapSheet } from './FoodSwapSheet';
 import {
   GROUPES_REPAS,
@@ -114,6 +117,8 @@ export function PlanPerso({
   const [ligneOuverte, setLigneOuverte] = useState<string | null>(null);
   /** Le repas dont les pastilles « + Ajouter un aliment » sont dépliées. */
   const [ajout, setAjout] = useState<RepasId | null>(null);
+  /** Le plat dont la fiche plein écran est ouverte (photo touchée). */
+  const [fiche, setFiche] = useState<RepasBibliotheque | null>(null);
   /*
    * Il n'y a plus d'état local « aliment ouvert ». Depuis le lot 0, choisir
    * un aliment s'écrit en base : c'est une décision, elle survit au
@@ -210,6 +215,7 @@ export function PlanPerso({
         const m = arrondirMacros(macrosDeRepas(journee, repas.id, catalogue));
         const lignes = journee[repas.id] ?? [];
         const estOuvert = ouvert === repas.id;
+        const plat = repasReconnu(repas.id, lignes);
         return (
           <div key={repas.id} className={styles.repas}>
             {/*
@@ -218,37 +224,64 @@ export function PlanPerso({
               des macros est dessous, hors du bouton — un bloc ne se glisse
               pas dans un <button>.
             */}
-            <button
-              type="button"
-              className={styles.repasTete}
-              onClick={() => {
-                setOuvert(estOuvert ? null : repas.id);
-                setLigneOuverte(null);
-                setAjout(null);
-              }}
-              aria-expanded={estOuvert}
-            >
-              <span className={styles.repasNom}>{repas.nom}</span>
-              <span className={styles.repasKcal}>
-                {lignes.length === 0 ? (
-                  <span className={styles.vide}>vide</span>
-                ) : (
-                  <span className={`${styles.repasChiffres} tnum`}>
-                    <span>{m.kcal.toLocaleString('fr-FR')} kcal</span>
-                    {/*
-                      La part de la CIBLE, pas du plan : tant que le plan est
-                      incomplet, « 64 % du plan » ne dirait rien de ce qu'il
-                      reste à manger. Sans cible posée, on retombe sur le
-                      total du plan.
-                    */}
-                    <span className={styles.repasPart}>
-                      {shareOfDay(m.kcal, cible?.kcal ?? total.kcal)} %
+            <div className={styles.repasLigne}>
+              {plat !== null && (
+                /*
+                  LA PHOTO DU PLAT, tant que le repas EST ce plat : tous ses
+                  ingrédients présents (`repasReconnu`). Un ingrédient
+                  remplacé ou retiré, et elle disparaît — elle montrerait une
+                  assiette qui n'est plus la sienne. Hors du bouton du repas :
+                  la toucher ouvre la fiche en grand.
+                */
+                <button
+                  type="button"
+                  className={styles.repasPhotoBouton}
+                  onClick={() => setFiche(plat)}
+                  aria-label={`Voir le plat en grand : ${plat.nom}`}
+                >
+                  <img
+                    className={styles.repasPhoto}
+                    src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
+                    alt=""
+                    width={600}
+                    height={600}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.repasTete}
+                onClick={() => {
+                  setOuvert(estOuvert ? null : repas.id);
+                  setLigneOuverte(null);
+                  setAjout(null);
+                }}
+                aria-expanded={estOuvert}
+              >
+                <span className={styles.repasNom}>{repas.nom}</span>
+                <span className={styles.repasKcal}>
+                  {lignes.length === 0 ? (
+                    <span className={styles.vide}>vide</span>
+                  ) : (
+                    <span className={`${styles.repasChiffres} tnum`}>
+                      <span>{m.kcal.toLocaleString('fr-FR')} kcal</span>
+                      {/*
+                        La part de la CIBLE, pas du plan : tant que le plan est
+                        incomplet, « 64 % du plan » ne dirait rien de ce qu'il
+                        reste à manger. Sans cible posée, on retombe sur le
+                        total du plan.
+                      */}
+                      <span className={styles.repasPart}>
+                        {shareOfDay(m.kcal, cible?.kcal ?? total.kcal)} %
+                      </span>
                     </span>
-                  </span>
-                )}
-                <Icon name={estOuvert ? 'chevron-up' : 'chevron-down'} size="18px" />
-              </span>
-            </button>
+                  )}
+                  <Icon name={estOuvert ? 'chevron-up' : 'chevron-down'} size="18px" />
+                </span>
+              </button>
+            </div>
 
             {lignes.length > 0 && m.kcal > 0 && (
               <div className={styles.repasBarre}>
@@ -408,6 +441,14 @@ export function PlanPerso({
           </div>
         );
       })}
+      {fiche !== null && (
+        <FicheRepas
+          repas={fiche}
+          catalogue={catalogue}
+          preferes={preferes}
+          onFermer={() => setFiche(null)}
+        />
+      )}
       <p className={styles.note}>
         {kind === 'train'
           ? 'Ce plan est celui de tes jours d’entraînement.'
@@ -464,7 +505,17 @@ export function LigneAliment({
   return (
     <li className={styles.foodItem}>
       <button type="button" className={styles.foodRow} onClick={onToggle} aria-expanded={ouverte}>
-        <span className={styles.foodName}>{food.label}</span>
+        <span className={styles.foodName}>
+          {food.label}
+          {horsListe && (
+            /*
+              Le dire sans l'enlever, SOUS LE NOM : posé sous la ligne, il
+              semblait appartenir à l'aliment suivant. Il est dans l'assiette
+              choisie, il compte, et c'est à la personne de décider.
+            */
+            <span className={styles.horsListe}>Pas dans tes aliments déclarés</span>
+          )}
+        </span>
         <span className={`${styles.foodQty} tnum`}>
           {qty === null ? (
             /* Un aliment choisi sans quantité reste visible, et dit ce qu'il attend. */
@@ -478,14 +529,6 @@ export function LigneAliment({
         </span>
         <span className={`${styles.foodKcal} tnum`}>{qty === null ? '—' : `${kcal} kcal`}</span>
       </button>
-      {horsListe && (
-        /*
-          Le dire sans l'enlever. Il est dans l'assiette qu'on vient de
-          choisir, il compte, et c'est à la personne de décider si elle le
-          garde — pas à l'application.
-        */
-        <p className={styles.horsListe}>Pas dans tes aliments déclarés</p>
-      )}
       {ouverte && (
         <div className={styles.foodEdit}>
           <Stepper

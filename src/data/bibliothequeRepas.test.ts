@@ -127,7 +127,7 @@ describe('les assiettes de référence', () => {
 describe('les aliments non déclarés', () => {
   it('se signalent sans filtrer le repas', () => {
     const repas = BIBLIOTHEQUE_REPAS.find((r) => r.id === 'poulet-riz-brocolis')!;
-    expect(alimentsNonDeclares(repas, ['poulet', 'riz', 'huile'])).toEqual(['brocolis']);
+    expect(alimentsNonDeclares(repas, ['poulet', 'riz', 'huile'])).toEqual(['brocolisCuits']);
   });
 
   it('rien à signaler quand tout est déclaré', () => {
@@ -144,5 +144,30 @@ describe('les aliments non déclarés', () => {
     for (const r of BIBLIOTHEQUE_REPAS) {
       expect(alimentsNonDeclares(r, []), r.id).toEqual([]);
     }
+  });
+});
+
+describe('les brocolis des plats sont des fleurettes, pas une purée', () => {
+  // Les trois photos montrent des brocolis entiers. La « Purée de brocolis »
+  // (`brocolis`) est celle du plan historique de Guillaume ; aucun plat de la
+  // bibliothèque ne doit la reprendre (décision du 15 novembre).
+  it('aucun plat n’utilise la purée', () => {
+    for (const r of BIBLIOTHEQUE_REPAS)
+      expect(
+        r.lignes.map((l) => l.foodId),
+        r.id,
+      ).not.toContain('brocolis');
+  });
+
+  it('les trois plats aux brocolis portent « Brocolis cuits »', () => {
+    const avec = BIBLIOTHEQUE_REPAS.filter((r) =>
+      r.lignes.some((l) => l.foodId === 'brocolisCuits'),
+    );
+    expect(avec.map((r) => r.id).sort()).toEqual([
+      'dinde-pates-brocolis',
+      'lentilles-riz-legumes',
+      'poulet-riz-brocolis',
+    ]);
+    expect(FOOD_LIBRARY['brocolisCuits']?.label).toBe('Brocolis cuits');
   });
 });

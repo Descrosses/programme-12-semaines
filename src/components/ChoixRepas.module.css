@@ -74,7 +74,15 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  width: 100%;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .photo {
@@ -88,6 +96,7 @@
 }
 
 .texte {
+  display: block;
   flex: 1;
   min-width: 0;
 }
@@ -140,6 +149,7 @@
 /* Une seule ligne : la composition complète est dans le repas une fois
    choisi. Ici elle sert à reconnaître l'assiette, pas à la lire. */
 .ingredients {
+  display: block;
   margin: 4px 0 0;
   color: var(--ink-3);
   font-size: 0.75rem;
@@ -166,4 +176,16 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* Ce qui dit que la carte s'ouvre : sans ça, rien n'indiquait qu'on pouvait
+   agrandir la photo ou lire la composition. */
+.voir {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  color: var(--accent-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
 }

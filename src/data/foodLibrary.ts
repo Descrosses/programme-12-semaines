@@ -255,6 +255,24 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
     referenceState: 'cuit',
     category: 'legume',
   },
+  /*
+   * LE BROCOLI ENTIER, en fleurettes. Le seul brocoli du catalogue était la
+   * « Purée de brocolis » du plan de Guillaume, et les trois plats de la
+   * bibliothèque qui en montrent (des fleurettes, sur la photo) l'affichaient
+   * sous ce nom. Même légume, mêmes valeurs que la purée — seul le libellé
+   * change. La purée reste, pour le plan historique qui la nomme.
+   */
+  brocolisCuits: {
+    label: 'Brocolis cuits',
+    unit: 'g',
+    per: 100,
+    kcal: 35,
+    proteinG: 2.8,
+    carbsG: 4,
+    fatG: 0.4,
+    referenceState: 'cuit',
+    category: 'legume',
+  },
   carottes: {
     label: 'Carottes cuites',
     unit: 'g',
