@@ -112,7 +112,34 @@
   border-bottom: 0;
 }
 
+.repasLigne {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* La vignette du plat : 52 px, au-dessus de la cible tactile de 48. */
+.repasPhotoBouton {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.repasPhoto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .repasTete {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,7 +316,8 @@
  * personne de décider si elle le garde.
  */
 .horsListe {
-  margin: 0 0 3px;
+  display: block;
+  margin: 2px 0 0;
   color: var(--orange);
   font-size: 0.6875rem;
   font-weight: 700;

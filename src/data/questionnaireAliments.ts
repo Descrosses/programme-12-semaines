@@ -88,11 +88,11 @@ export const ALIMENTS_QUESTIONNAIRE: Readonly<Record<string, string>> = {
 
   // ---------------------------------------------------------- LÉGUMES (11) --
   /*
-   * `brocolis` pointe vers « Purée de brocolis » : c'est le seul brocoli du
-   * catalogue, hérité du plan de Guillaume. Même légume, libellé plus
-   * précis — à renommer le jour où quelqu'un le mange autrement.
+   * `brocolis` pointe vers les BROCOLIS CUITS (le légume entier), ceux des
+   * plats de la bibliothèque. Il pointait vers la « Purée de brocolis » du
+   * plan de Guillaume, faute d'autre brocoli au catalogue.
    */
-  brocolis: 'brocolis',
+  brocolis: 'brocolisCuits',
   'haricots-verts': 'haricotsVerts',
   courgettes: 'courgettes',
   concombre: 'concombre',

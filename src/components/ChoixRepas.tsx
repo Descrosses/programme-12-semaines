@@ -10,13 +10,15 @@
  *
  * ── La photo ──────────────────────────────────────────────────────────────
  *
- * Elle est décorative au sens strict : le nom du repas et sa liste
- * d'ingrédients disent déjà tout, donc son `alt` reste vide plutôt que de
- * répéter ce qui est écrit juste à côté. Chargement différé : dix-neuf
- * images ne doivent pas retarder l'ouverture de la feuille.
+ * Sur la carte, elle reste décorative : le nom est écrit juste à côté, son
+ * `alt` est vide. Toucher la carte ouvre la FICHE (`FicheRepas`) : la photo
+ * en grand et la composition entière. Chargement différé : les images ne
+ * doivent pas retarder l'ouverture de la feuille.
  */
 
+import { useState } from 'react';
 import { Icon } from './Icon';
+import { FicheRepas } from './FicheRepas';
 import { fr } from '../engine/format';
 import {
   alimentsNonDeclares,
@@ -51,6 +53,8 @@ export function ChoixRepas({
   onFermer: () => void;
 }) {
   const repas = repasPourCreneau(creneau);
+  /** Le plat dont la fiche (grande photo, composition) est ouverte. */
+  const [detail, setDetail] = useState<RepasBibliotheque | null>(null);
 
   return (
     <div className={styles.feuille} role="dialog" aria-label={`Choisir un repas — ${nomCreneau}`}>
@@ -76,7 +80,18 @@ export function ChoixRepas({
                 repas se brisait sur trois lignes et le bouton devenait une
                 plaque rouge de 62 × 133.
               */}
-              <div className={styles.rangee}>
+              {/*
+                Toute la rangée ouvre la fiche : photo en grand et
+                composition entière. La ligne d'ingrédients de la carte est
+                coupée à sa largeur — elle sert à reconnaître l'assiette, la
+                fiche sert à la lire.
+              */}
+              <button
+                type="button"
+                className={styles.rangee}
+                onClick={() => setDetail(r)}
+                aria-label={`Voir la composition : ${r.nom}`}
+              >
                 <img
                   className={styles.photo}
                   src={`${BASE}${photoDe(r.id)}`}
@@ -86,9 +101,9 @@ export function ChoixRepas({
                   width={600}
                   height={600}
                 />
-                <div className={styles.texte}>
-                  <p className={styles.nom}>{r.nom}</p>
-                  <p className={styles.bas}>
+                <span className={styles.texte}>
+                  <span className={styles.nom}>{r.nom}</span>
+                  <span className={styles.bas}>
                     <span className="tnum">
                       {kcalDe(r, catalogue).toLocaleString('fr-FR')} kcal
                     </span>
@@ -102,8 +117,8 @@ export function ChoixRepas({
                             : `${String(manquants.length)} à remplacer`}
                         </span>
                       ))}
-                  </p>
-                  <p className={styles.ingredients}>
+                  </span>
+                  <span className={styles.ingredients}>
                     {r.lignes
                       .map((l) => {
                         const f = catalogue[l.foodId];
@@ -114,9 +129,13 @@ export function ChoixRepas({
                           : `${f.label} ${q} ${f.unit}`;
                       })
                       .join(' · ')}
-                  </p>
-                </div>
-              </div>
+                  </span>
+                  <span className={styles.voir}>
+                    Voir la composition
+                    <Icon name="arrow-right" size="14px" />
+                  </span>
+                </span>
+              </button>
               <button type="button" className={styles.choisir} onClick={() => onChoisir(r)}>
                 <Icon name="check" size="17px" />
                 Choisir ce repas
@@ -125,6 +144,19 @@ export function ChoixRepas({
           );
         })}
       </ul>
+      {detail !== null && (
+        <FicheRepas
+          repas={detail}
+          catalogue={catalogue}
+          preferes={preferes}
+          onChoisir={() => {
+            const r = detail;
+            setDetail(null);
+            onChoisir(r);
+          }}
+          onFermer={() => setDetail(null)}
+        />
+      )}
     </div>
   );
 }
