@@ -406,6 +406,19 @@ matériel et la durée avant d'écrire la moindre séance.
      (exercice sans fiche) de MASS FORCE est la salle MASS (`massSalle`) et
      non la photo `force` du pack POWER (`ambianceFicheDe`) ; POWER et MASS
      CONGESTION gardent le leur. `massforce/fiches.test.ts` fige tout cela.
+     **Bandeaux du 14 novembre — FAIT.** Sept images de Guillaume (3:1,
+     ramenées à 1200/640 px). POWER : Nutrition (`nutritionPower`), Combine
+     (`combinePower`, logo de chaussure effacé du fichier), Semaine
+     (`semainePower`) ; leur voile est allégé (règle `data-visuel` de
+     `ScreenHeader.module.css`), les autres en-têtes POWER ne changent pas.
+     MASS (famille, `HABILLAGE.mass.entetes`) : nutrition, progres, mesures,
+     reglages — aussi sur les onglets « à venir » de MASS FORCE. Jamais une
+     image d'une famille chez l'autre : `data/bandeaux.test.ts`. `ballon` et
+     `casque` supprimés (plus utilisés) ; `stade` reste (Aujourd'hui).
+     Séance et Combiné MASS : le contenu commence SOUS la barre d'état
+     (`--haut-ecran + 10px`), la photo reste dessous ; le rebond iOS est
+     bloqué sur `html[data-theme='mass']` (bande vide sous l'heure, vidéo de
+     Guillaume du 15 novembre).
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

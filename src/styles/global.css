@@ -139,3 +139,14 @@ button:focus-visible {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/*
+ * MASS : la page ne rebondit pas quand on la tire vers le bas. Le rebond
+ * d'iOS faisait apparaître une bande de fond vide entre l'heure et la photo
+ * d'en-tête (vidéo de Guillaume, 15 novembre). `body` le bloquait déjà, mais
+ * sur iPhone c'est `html` qui défile. Limité au thème MASS : POWER et FEMMES
+ * gardent leur comportement.
+ */
+html[data-theme='mass'] {
+  overscroll-behavior-y: none;
+}

@@ -25,6 +25,8 @@ import { FEMMES_PROGRAMME_ID } from './db/femmesRepo';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
 import { MARQUE_CAPITALES } from './data/marque';
 import { themePour } from './state/theme';
+import { enteteDe, type EcranEntete } from './data/famillesVisuel';
+import type { VisuelNom } from './data/visuels';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
 import { useRoute, type Route } from './state/useRoute';
@@ -604,7 +606,13 @@ function renderScreen(
       );
 
     case 'nutrition-principes':
-      return <NutritionPrincipesScreen key={dataVersion} todayKind={todayKind} />;
+      return (
+        <NutritionPrincipesScreen
+          key={dataVersion}
+          todayKind={todayKind}
+          {...visuelFamille(programme.id, 'nutrition')}
+        />
+      );
 
     case 'combine':
       return <CombineScreen key={dataVersion} />;
@@ -613,10 +621,19 @@ function renderScreen(
       return <EvaluationScreen key={dataVersion} />;
 
     case 'a-venir':
-      return <AVenirScreen titre={onglet?.label ?? ''} />;
+      return (
+        <AVenirScreen
+          titre={onglet?.label ?? ''}
+          {...(onglet?.route === 'nutrition'
+            ? visuelFamille(programme.id, 'nutrition')
+            : onglet?.route === 'progress'
+              ? visuelFamille(programme.id, 'progres')
+              : {})}
+        />
+      );
 
     case 'mesures':
-      return <MesuresScreen key={dataVersion} />;
+      return <MesuresScreen key={dataVersion} {...visuelFamille(programme.id, 'mesures')} />;
 
     case 'settings':
       return <SettingsScreen key={dataVersion} onChanged={refresh} programme={programme} />;
@@ -624,4 +641,10 @@ function renderScreen(
     default:
       return todayPorte;
   }
+}
+
+/** Le bandeau de la famille du programme pour cet écran, prêt à étaler en props. */
+function visuelFamille(programmeId: string, ecran: EcranEntete): { visuel?: VisuelNom } {
+  const v = enteteDe(programmeId, ecran);
+  return v === undefined ? {} : { visuel: v };
 }

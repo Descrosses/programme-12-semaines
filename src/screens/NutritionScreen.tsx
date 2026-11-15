@@ -235,7 +235,7 @@ export function NutritionScreen({
           eyebrow="Suivi personnel"
           title="Nutrition"
           subtitle={cibleJour === null ? 'Tes cibles restent à poser' : cibleJour.label}
-          visuel="ballon"
+          visuel="nutritionPower"
         />
 
         {cibleJour === null ? (
@@ -555,7 +555,7 @@ export function NutritionScreen({
         eyebrow="Cinq prises par jour"
         title="Nutrition"
         subtitle="Glucides hauts, protéines suffisantes"
-        visuel="ballon"
+        visuel="nutritionPower"
       >
         <p className={styles.lead}>
           Les mêmes aliments tous les jours — seuls les féculents baissent les jours de repos.

@@ -29,6 +29,7 @@
 
 import { useEffect, useState } from 'react';
 import { ScreenHeader } from '../components/ScreenHeader';
+import type { VisuelNom } from '../data/visuels';
 import { Stepper, stepValue } from '../components/Stepper';
 import type { DayKind } from '../data/nutrition';
 import { humanDate } from '../engine/calendar';
@@ -74,7 +75,14 @@ const PRINCIPES: Array<{ titre: string; texte: string }> = [
   },
 ];
 
-export function NutritionPrincipesScreen({ todayKind }: { todayKind: DayKind }) {
+export function NutritionPrincipesScreen({
+  todayKind,
+  visuel,
+}: {
+  todayKind: DayKind;
+  /** Le bandeau de la famille (MASS), s'il existe. */
+  visuel?: VisuelNom;
+}) {
   const todayIso = new Date().toISOString().slice(0, 10);
   const [poids, setPoids] = useState<number | null>(null);
   const [historique, setHistorique] = useState<MeasurementRow[]>([]);
@@ -112,6 +120,7 @@ export function NutritionPrincipesScreen({ todayKind }: { todayKind: DayKind }) 
         eyebrow={todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}
         title="Nutrition"
         subtitle="Des principes, pas des grammes"
+        {...(visuel === undefined ? {} : { visuel })}
       />
 
       <section className={styles.card}>

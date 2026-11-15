@@ -515,6 +515,19 @@
   box-shadow: var(--mass-halo-trait);
 }
 
+/*
+ * POWER — les trois bandeaux du 14 novembre (Nutrition, Combine, Semaine) un
+ * peu plus présents : le voile général (35 → 78 %), réglé pour un stade
+ * éclairé, les effaçait trop (retour de Guillaume). Ces photos sont déjà
+ * sombres ; le titre blanc reste au-dessus de 15:1. Les autres en-têtes POWER
+ * (Aujourd'hui, Progression, Réglages) ne changent pas.
+ */
+.hero[data-visuel='nutritionPower']::after,
+.hero[data-visuel='combinePower']::after,
+.hero[data-visuel='semainePower']::after {
+  background: linear-gradient(180deg, rgb(var(--voile) / 15%) 0%, rgb(var(--voile) / 62%) 100%);
+}
+
 /* ===================================================================== */
 /*
  * MASS — en-têtes SANS photo (porte de MASS FORCE, Progrès, Nutrition,
@@ -581,4 +594,43 @@
   min-height: calc(196px + var(--haut-ecran));
   margin-top: calc(-1 * var(--haut-ecran));
   padding-top: calc(18px + var(--haut-ecran));
+}
+
+/*
+ * MASS — en-têtes À photo hors Accueil et Semaine (bandeaux du 14 novembre :
+ * Nutrition, Progrès, Mesures, Réglages, et les onglets « à venir » de MASS
+ * FORCE). Même titre que les en-têtes MASS sans photo (argent, vrai italique
+ * extra-gras), et la photo passe sous la barre d'état comme sur l'Accueil.
+ * L'Accueil (`.avecMarque`) et la Semaine (`.argent`) gardent leurs règles.
+ */
+:global([data-theme='mass']) .hero:not(.avecMarque):not(.argent) {
+  --haut-ecran: env(safe-area-inset-top, 0px);
+  min-height: calc(196px + var(--haut-ecran));
+  margin-top: calc(-1 * var(--haut-ecran));
+  padding-top: calc(18px + var(--haut-ecran));
+}
+
+:global([data-theme='mass']) .hero:not(.avecMarque):not(.argent) .eyebrow {
+  color: #e6e6e6;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.0625rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+:global([data-theme='mass']) .hero:not(.avecMarque):not(.argent) .title {
+  width: fit-content;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 3.1rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.95;
+  transform: none;
+  background: var(--mass-argent) 0 0 / 100% 0.95em repeat-y;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: var(--mass-ombre-titre);
 }

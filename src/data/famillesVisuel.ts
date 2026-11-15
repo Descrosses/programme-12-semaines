@@ -44,7 +44,15 @@ export interface HabillageFamille {
 }
 
 /** Les quatre écrans d'un cycle qui portent une photo d'en-tête. */
-export type EcranEntete = 'accueil' | 'semaine' | 'seance' | 'combine';
+export type EcranEntete =
+  | 'accueil'
+  | 'semaine'
+  | 'seance'
+  | 'combine'
+  | 'nutrition'
+  | 'progres'
+  | 'mesures'
+  | 'reglages';
 
 export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
   power: { photo: 'sprint', teinte: '#2f7fd0' },
@@ -61,6 +69,11 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
       semaine: 'massDisque',
       seance: 'massSalle',
       combine: 'massDisques',
+      // Bandeaux du 14 novembre, pour toute la famille (FORCE et CONGESTION).
+      nutrition: 'massNutrition',
+      progres: 'massProgres',
+      mesures: 'massMesures',
+      reglages: 'massReglages',
     },
   },
   /*

@@ -224,7 +224,7 @@ export function CombineScreen() {
         eyebrow="Trois mesures comparables"
         title="Combine"
         subtitle="Mêmes conditions à chaque fois"
-        visuel="stade"
+        visuel="combinePower"
       />
 
       <p className={styles.hint}>

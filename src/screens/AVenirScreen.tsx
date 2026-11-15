@@ -7,12 +7,24 @@
  * précisément la panne que les onglets par programme ont supprimée.
  */
 import { ScreenHeader } from '../components/ScreenHeader';
+import type { VisuelNom } from '../data/visuels';
 import styles from './Screens.module.css';
 
-export function AVenirScreen({ titre }: { titre: string }) {
+export function AVenirScreen({
+  titre,
+  visuel,
+}: {
+  titre: string;
+  /** Le bandeau de la famille pour cet onglet (MASS), s'il existe. */
+  visuel?: VisuelNom;
+}) {
   return (
     <div className={styles.screen}>
-      <ScreenHeader title={titre} subtitle="Contenu à venir" />
+      <ScreenHeader
+        title={titre}
+        subtitle="Contenu à venir"
+        {...(visuel === undefined ? {} : { visuel })}
+      />
       <section className={styles.card}>
         <p className={styles.cardSub}>
           Cette partie du programme n’est pas encore écrite. Elle arrivera dans une prochaine
