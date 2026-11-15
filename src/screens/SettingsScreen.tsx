@@ -44,6 +44,7 @@ import {
 } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { enteteDe } from '../data/famillesVisuel';
 import type { ModuleProgramme } from '../programmes/types';
 import styles from './Screens.module.css';
 
@@ -229,13 +230,16 @@ export function SettingsScreen({
   const joursDeFin = programme.joursDeLaSemaine(derniereSemaine);
   const dernierJour = joursDeFin[joursDeFin.length - 1] ?? 0;
 
+  /* La photo du programme (POWER : `athlete`), sinon celle de sa famille (MASS). */
+  const bandeauReglages = programme.reglages.visuel ?? enteteDe(programme.id, 'reglages');
+
   return (
     <div className={styles.screen}>
       <ScreenHeader
         eyebrow={programme.reglages.eyebrow}
         title="Réglages"
         subtitle="Tout reste sur ce téléphone"
-        {...(programme.reglages.visuel === undefined ? {} : { visuel: programme.reglages.visuel })}
+        {...(bandeauReglages === undefined ? {} : { visuel: bandeauReglages })}
       >
         <p className={styles.lead}>Tout est stocké sur ce téléphone. Rien ne part sur internet.</p>
       </ScreenHeader>

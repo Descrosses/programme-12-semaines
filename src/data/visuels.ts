@@ -64,24 +64,6 @@ export interface VisuelSpec {
 }
 
 export const VISUELS = {
-  ballon: {
-    display: '01_ballon_display.webp',
-    mobile: '01_ballon_mobile.webp',
-    largeurs: { display: 760, mobile: 420 },
-    description: 'Ballon de football américain posé sur l’herbe, cuir texturé, coutures blanches.',
-    cadrage: 'contain',
-    focus: 'center',
-    /*
-     * Détouré. La source du pack était sur fond BLANC : posée telle quelle
-     * dans un en-tête marine, elle y collait un rectangle blanc. Le fond a été
-     * rendu transparent et l'image rognée au ballon.
-     *
-     * Deux tailles modestes (760 et 420 px) et non 1200 : cette image ne sert
-     * jamais de bandeau, seulement une vignette de 190 px. Le canal alpha
-     * compresse mal — en 1200 px elle pesait 204 Ko, plus que le stade.
-     */
-    usage: 'Vignette d’en-tête, en haut à droite. Jamais en bandeau.',
-  },
   stade: {
     display: '02_stade_display.webp',
     mobile: '02_stade_mobile.webp',
@@ -213,15 +195,83 @@ export const VISUELS = {
     focus: 'right center',
     usage: 'En-tête du combiné d’évaluation MASS.',
   },
-  casque: {
-    display: '03_casque_display.webp',
-    mobile: '03_casque_mobile.webp',
+  /*
+   * Les bandeaux fournis par Guillaume le 14 novembre (3:1, 2172 × 724 à la
+   * livraison, ramenés à 1200 et 640 px). Sujet à DROITE, zone sombre à gauche
+   * pour le titre : le focus les cale à droite. Trois pour POWER, quatre pour
+   * la famille MASS — jamais l'un dans l'autre (`bandeaux.test.ts`).
+   *
+   * `combinePower` : le logo de la chaussure droite a été effacé du fichier
+   * (1 682 pixels, retouche locale), comme sur les autres photos POWER.
+   */
+  nutritionPower: {
+    display: '40_power_nutrition_display.webp',
+    mobile: '40_power_nutrition_mobile.webp',
     largeurs: { display: 1200, mobile: 640 },
-    description:
-      'Casque de football américain rouge de profil sur la pelouse, projecteurs de stade en arrière-plan.',
+    description: 'Repas poulet, riz, légumes, banane et shaker sur un terrain, éclairage de stade.',
     cadrage: 'cover',
-    focus: '58% center',
-    usage: 'Bandeau d’en-tête : Semaine.',
+    focus: '92% center',
+    usage: 'Bandeau d’en-tête : Nutrition de POWER.',
+  },
+  combinePower: {
+    display: '41_power_combine_display.webp',
+    mobile: '41_power_combine_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète au back squat, barre chargée, t-shirt bleu, salle de préparation.',
+    cadrage: 'cover',
+    /*
+     * 55 % et non « à droite » : le bandeau 2:1 ne montre que les deux tiers
+     * de l'image 3:1. Calé à droite (78 %), le titre « COMBINE » couvrait le
+     * buste ; à 35 %, l'athlète sortait par la droite. À 55 %, il est entier
+     * à droite du titre : visage, buste et barre.
+     */
+    focus: '55% center',
+    usage: 'Bandeau d’en-tête : Combine de POWER.',
+  },
+  semainePower: {
+    display: '42_power_semaine_display.webp',
+    mobile: '42_power_semaine_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Calendrier, chronomètre et barre olympique, bleu nuit et rouge.',
+    cadrage: 'cover',
+    focus: '90% center',
+    usage: 'Bandeau d’en-tête : Semaine de POWER.',
+  },
+  massNutrition: {
+    display: '34_mass_nutrition_display.webp',
+    mobile: '34_mass_nutrition_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Repas poulet, riz, brocolis, shaker et disques, noir et rouge.',
+    cadrage: 'cover',
+    focus: '88% center',
+    usage: 'Bandeau d’en-tête MASS : Nutrition.',
+  },
+  massReglages: {
+    display: '35_mass_reglages_display.webp',
+    mobile: '35_mass_reglages_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Engrenage métallique et smartphone à curseurs, éclairage rouge.',
+    cadrage: 'cover',
+    focus: '92% center',
+    usage: 'Bandeau d’en-tête MASS : Réglages.',
+  },
+  massMesures: {
+    display: '36_mass_mesures_display.webp',
+    mobile: '36_mass_mesures_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Carnet de silhouettes anatomiques, mètre ruban et stylo, éclairage rouge.',
+    cadrage: 'cover',
+    focus: '92% center',
+    usage: 'Bandeau d’en-tête MASS : Mesures.',
+  },
+  massProgres: {
+    display: '37_mass_progres_display.webp',
+    mobile: '37_mass_progres_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Carnet à graphique de progression, smartphone et mètre ruban, éclairage rouge.',
+    cadrage: 'cover',
+    focus: '92% center',
+    usage: 'Bandeau d’en-tête MASS : Progrès.',
   },
   athlete: {
     display: '04_montage_athlete_display.webp',

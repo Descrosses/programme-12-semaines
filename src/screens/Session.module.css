@@ -2451,7 +2451,10 @@
   --haut-ecran: env(safe-area-inset-top, 0px);
   isolation: isolate;
   margin-top: calc(-1 * var(--haut-ecran));
-  padding: calc(var(--haut-ecran) - 12px) 19px 8px;
+  /* Le contenu commence SOUS la barre d'état : collé à l'heure, le retour
+     « Semaine 1 » tombait dans la zone qu'iOS assombrit (vidéo de Guillaume,
+     15 novembre). La photo, elle, reste sous l'heure. */
+  padding: calc(var(--haut-ecran) + 10px) 19px 8px;
   border-bottom: 0;
   background: var(--bg);
 }

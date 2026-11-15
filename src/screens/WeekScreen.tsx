@@ -152,7 +152,7 @@ export function WeekScreen({
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
         subtitle={block?.objective}
         {...(programme.id === 'power12'
-          ? ({ visuel: 'casque' } as const)
+          ? ({ visuel: 'semainePower' } as const)
           : enteteDe(programme.id, 'semaine') !== undefined
             ? { visuel: enteteDe(programme.id, 'semaine')! }
             : {})}

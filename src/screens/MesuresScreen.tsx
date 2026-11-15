@@ -27,6 +27,7 @@
 
 import { useEffect, useState } from 'react';
 import { ScreenHeader } from '../components/ScreenHeader';
+import type { VisuelNom } from '../data/visuels';
 import { Stepper, stepValue } from '../components/Stepper';
 import { fr } from '../engine/format';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
@@ -34,7 +35,9 @@ import type { CombinePhase, CombineRow } from '../db/db';
 import { DEFINITIONS_MESURES, RELEVES_MASS4 } from '../programmes/mass4/mesures';
 import styles from './Screens.module.css';
 
-export function MesuresScreen() {
+export function MesuresScreen({
+  visuel,
+}: { /** Le bandeau de la famille (MASS). */ visuel?: VisuelNom } = {}) {
   const [rows, setRows] = useState<CombineRow[] | null>(null);
   const [releve, setReleve] = useState<CombinePhase>('initial');
   const [brouillon, setBrouillon] = useState<Record<string, number | null>>({});
@@ -71,7 +74,12 @@ export function MesuresScreen() {
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader eyebrow="MASS CONGESTION" title="Mesures" subtitle="Semaine 1 et semaine 4" />
+      <ScreenHeader
+        eyebrow="MASS CONGESTION"
+        title="Mesures"
+        subtitle="Semaine 1 et semaine 4"
+        {...(visuel === undefined ? {} : { visuel })}
+      />
 
       <p className={styles.lead}>
         Poids de corps et tour de bras, au début et à la fin du cycle. Mêmes conditions les deux

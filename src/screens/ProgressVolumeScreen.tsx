@@ -26,6 +26,7 @@ import { SessionDurations } from '../components/SessionDurations';
 import { VisualTracking } from '../components/VisualTracking';
 import { WeightOverview } from '../components/WeightOverview';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { enteteDe } from '../data/famillesVisuel';
 import { DAY_LABELS_SHORT, type DayIndex } from '../data/types';
 import { fr } from '../engine/format';
 import type { HistoryIndex, SessionContext } from '../engine/types';
@@ -58,6 +59,7 @@ const RPE_LIMITE = 9;
 
 export function ProgressVolumeScreen({ programme }: { programme: ModuleProgramme }) {
   const [vue, setVue] = useState<Vue>('charges');
+  const bandeau = enteteDe(programme.id, 'progres');
   const [mouvement, setMouvement] = useState<string>('developpe-incline-smith');
   const [data, setData] = useState<{
     history: HistoryIndex;
@@ -135,7 +137,12 @@ export function ProgressVolumeScreen({ programme }: { programme: ModuleProgramme
 
   return (
     <div className={styles.screen}>
-      <ScreenHeader eyebrow="MASS CONGESTION" title="Progrès" subtitle={SOUS_TITRES[vue]} />
+      <ScreenHeader
+        eyebrow="MASS CONGESTION"
+        title="Progrès"
+        subtitle={SOUS_TITRES[vue]}
+        {...(bandeau === undefined ? {} : { visuel: bandeau })}
+      />
 
       <div className={styles.segment} role="group" aria-label="Vue">
         {(

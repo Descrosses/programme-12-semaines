@@ -15,13 +15,17 @@ import { VISUELS } from './visuels';
 
 const fichier = (nom: string) => new URL(`../../public/visuels/${nom}`, import.meta.url);
 
-describe('les quatre photos d’en-tête MASS', () => {
+describe('les photos d’en-tête MASS (quatre écrans validés + quatre bandeaux du 14 novembre)', () => {
   it('chaque écran a la sienne, et les deux tailles existent', () => {
     expect(HABILLAGE.mass.entetes).toEqual({
       accueil: 'massAthlete',
       semaine: 'massDisque',
       seance: 'massSalle',
       combine: 'massDisques',
+      nutrition: 'massNutrition',
+      progres: 'massProgres',
+      mesures: 'massMesures',
+      reglages: 'massReglages',
     });
     for (const nom of Object.values(HABILLAGE.mass.entetes!)) {
       for (const f of [VISUELS[nom].display, VISUELS[nom].mobile]) {
@@ -34,7 +38,16 @@ describe('les quatre photos d’en-tête MASS', () => {
     expect(enteteDe('mass-force', 'semaine')).toBe('massDisque');
     expect(enteteDe('mass4', 'accueil')).toBe('massAthlete');
     for (const id of ['power12', 'femmes8']) {
-      for (const ecran of ['accueil', 'semaine', 'seance', 'combine'] as const) {
+      for (const ecran of [
+        'accueil',
+        'semaine',
+        'seance',
+        'combine',
+        'nutrition',
+        'progres',
+        'mesures',
+        'reglages',
+      ] as const) {
         expect(enteteDe(id, ecran)).toBeUndefined();
       }
     }

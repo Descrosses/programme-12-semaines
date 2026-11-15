@@ -109,7 +109,8 @@
   --haut-ecran: env(safe-area-inset-top, 0px);
   isolation: isolate;
   margin-top: calc(-1 * var(--haut-ecran));
-  padding: calc(var(--haut-ecran) - 7px) 14px 0;
+  /* Même correction que la séance : « MASS FORCE » sous la barre d'état. */
+  padding: calc(var(--haut-ecran) + 10px) 14px 0;
   border-bottom: 0;
   background: var(--bg);
 }

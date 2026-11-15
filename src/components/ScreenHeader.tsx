@@ -71,6 +71,7 @@ export function ScreenHeader({
 
   const entete = (
     <header
+      data-visuel={visuel}
       className={`${styles.header} ${pleineImage ? styles.hero : visuel ? styles.avecVisuel : ''} ${marque !== undefined ? styles.avecMarque : ''} ${argent ? styles.argent : ''}`}
     >
       <StadiumGlow className={styles.lueur} />
