@@ -6,7 +6,7 @@
  */
 
 import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
-import { programmesDeSauvegarde } from './programmesImportes';
+import { hydraterProgrammesImportes, programmesDeSauvegarde } from './programmesImportes';
 import { cyclePourEcriture } from './repo';
 import {
   db,
@@ -598,7 +598,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
   const rattacher = <T extends { cycleId?: number }>(lignes: T[]): T[] =>
     cyclesDuFichier.length > 0 ? lignes : lignes.map((l) => ({ ...l, cycleId: idSecours }));
 
-  return db.transaction(
+  const rapport = await db.transaction(
     'rw',
     [
       db.settings,
@@ -722,6 +722,9 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       };
     },
   );
+  // La mémoire suit la base restaurée : les programmes importés y entrent.
+  await hydraterProgrammesImportes();
+  return rapport;
 }
 
 /*

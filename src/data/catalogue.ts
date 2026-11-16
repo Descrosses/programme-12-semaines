@@ -26,6 +26,8 @@
  * La logique sportive reste dans le module de chaque programme.
  */
 
+import { programmeEnMemoire } from '../programmes/perso/memoire';
+
 /** Les trois familles prévues. Aucune autre n'est au catalogue de lancement. */
 export type FamilleId = 'power' | 'mass' | 'femmes' | 'perso';
 
@@ -474,8 +476,40 @@ export function tousLesProgrammes(): ProgrammeDefinition[] {
   return FAMILLES.flatMap((f) => [...f.programmes]);
 }
 
+/**
+ * Un programme par son identifiant : le catalogue compilé D'ABORD, puis les
+ * programmes importés (ME, MYSELF & I) gardés en mémoire.
+ *
+ * Dans cet ordre, un programme importé ne peut jamais masquer POWER, MASS ou
+ * FEMMES. `FAMILLES` et `tousLesProgrammes` restent strictement compilés :
+ * les importés n'y entrent pas.
+ */
 export function programmeParId(id: string): ProgrammeDefinition | null {
-  return tousLesProgrammes().find((p) => p.id === id) ?? null;
+  return tousLesProgrammes().find((p) => p.id === id) ?? programmeImporteParId(id);
+}
+
+/** La fiche de catalogue d'une version importée, lue dans la mémoire. */
+function programmeImporteParId(cle: string): ProgrammeDefinition | null {
+  const row = programmeEnMemoire(cle);
+  if (row === null) return null;
+  return {
+    id: row.cle,
+    familleId: 'perso',
+    nom: row.nom,
+    version: String(row.rev),
+    // Toujours renseignée : le validateur et l'import l'exigent, du document
+    // ou du questionnaire.
+    dureeSemaines: row.reponses.dureeSemaines ?? row.document.dureeSemaines ?? 0,
+    /*
+     * « À venir » tant qu'aucun module ne sait jouer ses séances : c'est le
+     * lot 4. Annoncer « disponible » un programme injouable serait le
+     * mensonge que la règle du catalogue interdit.
+     */
+    statut: 'a-venir',
+    resume: `Importé de « ${row.document.source.document} ».`,
+    objectifs: [],
+    prerequis: [],
+  };
 }
 
 export function familleParId(id: FamilleId): Famille | null {

@@ -14,7 +14,7 @@
  * annoncé, le temps de le vérifier.
  */
 
-import { PROGRAMME_PAR_DEFAUT } from '../data/catalogue';
+import { PROGRAMME_PAR_DEFAUT, tousLesProgrammes } from '../data/catalogue';
 import { MASS4 } from './mass4/module';
 import { MASS_FORCE } from './massforce/module';
 import { POWER12 } from './power12';
@@ -37,16 +37,56 @@ export function moduleParId(id: string | null): ModuleProgramme | null {
 }
 
 /**
- * Le module à utiliser pour un cycle, avec un repli sûr.
+ * L'identifiant de FEMMES 8, écrit ici en clair.
  *
- * Une base peut porter un cycle dont le programme n'a plus de module — un
- * identifiant renommé, un import d'un fichier plus ancien. Laisser
- * l'application sans programme afficherait un écran vide sans rien expliquer.
- * Elle retombe donc sur POWER 12, qui est le programme historique de cette
- * installation.
+ * Le registre ne peut pas importer `db/femmesRepo` (la base importe déjà le
+ * registre) : un test vérifie que les deux valeurs restent égales.
+ */
+export const FEMMES_SANS_MODULE = 'femmes8';
+
+export const ID_PROGRAMME_INDISPONIBLE = 'indisponible';
+
+/**
+ * Le module d'un programme que MAJK ne connaît pas : aucune semaine, aucune
+ * séance, l'onglet Réglages seul (pour restaurer une sauvegarde). L'App
+ * affiche à sa place l'écran « Programme indisponible ».
+ */
+export const MODULE_INDISPONIBLE: ModuleProgramme = {
+  id: ID_PROGRAMME_INDISPONIBLE,
+  onglets: [{ route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' }],
+  reglages: { eyebrow: 'Programme indisponible', refPoids: null, force: false },
+  dureeSemaines: 0,
+  semaines: [],
+  joursDeLaSemaine: () => [],
+  blocDeLaSemaine: () => null,
+  couleurDuBloc: () => 'transparent',
+  getSession: () => null,
+};
+
+/**
+ * Le module à utiliser pour un cycle.
+ *
+ * ── Le repli sur POWER 12, et où il s'arrête (lot 3 de l'ADR perso) ───────
+ *
+ * Sans cycle (`null`), FEMMES 8 (qui a ses propres écrans mais dont l'App
+ * calcule la semaine avec ce module), et tout programme inscrit au catalogue
+ * compilé sans module : POWER 12, comme toujours. Rien ne change pour eux.
+ *
+ * Un identifiant que MAJK ne connaît PAS — absent du catalogue compilé, sans
+ * module, pas FEMMES — n'ouvre plus POWER 12 en silence : ce serait jouer les
+ * séances de POWER et enregistrer ses séries sous un cycle qui n'est pas le
+ * sien (un programme importé disparu, par exemple). Il rend le module
+ * « indisponible ». Décision de Guillaume, 16 novembre.
  */
 export function modulePourCycle(programmeId: string | null): ModuleProgramme {
-  return moduleParId(programmeId) ?? moduleParId(PROGRAMME_PAR_DEFAUT) ?? POWER12;
+  const trouve = moduleParId(programmeId);
+  if (trouve !== null) return trouve;
+  const connu =
+    programmeId === null ||
+    programmeId === FEMMES_SANS_MODULE ||
+    tousLesProgrammes().some((p) => p.id === programmeId);
+  if (!connu) return MODULE_INDISPONIBLE;
+  return moduleParId(PROGRAMME_PAR_DEFAUT) ?? POWER12;
 }
 
 /**

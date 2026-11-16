@@ -405,3 +405,46 @@ describe('sauvegarde', () => {
     base.close();
   });
 });
+
+describe('la mémoire suit la base', () => {
+  it('import, archivage, suppression et restauration mettent la mémoire à jour', async () => {
+    const base = await monterBaseJetable();
+    const { lireMemoire, viderMemoire } = await import('../programmes/perso/memoire');
+    viderMemoire();
+    const m = await import('./programmesImportes');
+    const cle = `perso-${UID_T1}-1`;
+
+    await m.importerProgramme(TRAINING1, { dureeSemaines: 8 });
+    expect(lireMemoire().etat).toBe('pret');
+    expect(lireMemoire().programmes.map((p) => p.cle)).toEqual([cle]);
+
+    await m.archiverProgramme(cle, true);
+    expect(lireMemoire().programmes[0]!.archive).toBe(true);
+
+    const { exportAll, importAll } = await import('./export');
+    const fichier = await exportAll();
+    await m.supprimerProgramme(cle);
+    expect(lireMemoire().programmes).toEqual([]);
+
+    await importAll(fichier);
+    expect(lireMemoire().programmes.map((p) => p.cle)).toEqual([cle]);
+    base.close();
+  });
+
+  it('une base illisible met la mémoire en erreur, sans lever', async () => {
+    const mod = await import('./db');
+    const vraie = mod.db;
+    Object.defineProperty(mod, 'db', {
+      value: { programmesImportes: { toArray: () => Promise.reject(new Error('panne')) } },
+      configurable: true,
+      writable: true,
+    });
+    const { hydraterProgrammesImportes } = await import('./programmesImportes');
+    const { lireMemoire, viderMemoire } = await import('../programmes/perso/memoire');
+    viderMemoire();
+    await expect(hydraterProgrammesImportes()).resolves.toBeUndefined();
+    expect(lireMemoire()).toEqual({ etat: 'erreur', programmes: [] });
+    Object.defineProperty(mod, 'db', { value: vraie, configurable: true, writable: true });
+    viderMemoire();
+  });
+});

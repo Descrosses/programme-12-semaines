@@ -12,13 +12,17 @@
  * - Supprimer un programme qu'un cycle utilise est refusé : l'archiver le
  *   masque sans rien perdre.
  *
+ * Après chaque écriture, la mémoire (`programmes/perso/memoire.ts`) est
+ * relue : les lectures synchrones du catalogue et du registre la consultent.
+ *
  * Ce module ne joue aucune séance : le moteur des programmes importés est le
- * lot 4. Rien dans l'application ne l'appelle encore.
+ * lot 4.
  */
 
 import { formeCanonique } from '../engine/perso/canonique';
 import { LIMITES, type ErreurValidation, type RapportCompatibilite } from '../engine/perso/types';
 import { validerProgramme } from '../engine/perso/valider';
+import { memoireEnErreur, remplirMemoire } from '../programmes/perso/memoire';
 import { db, type ProgrammeImporteRow } from './db';
 
 /** Le préfixe réservé : aucun programme compilé ne commence ainsi. */
@@ -51,6 +55,21 @@ export function idExerciceImporte(cle: string, idLocal: string): string {
 /** Ce qui identifie un import : le document normalisé ET les réponses. */
 function empreinte(row: Pick<ProgrammeImporteRow, 'document' | 'reponses'>): string {
   return `${formeCanonique(row.document)}|${String(row.reponses.dureeSemaines)}`;
+}
+
+/**
+ * Remplit la mémoire depuis la base. Appelé au démarrage, avant le premier
+ * écran, puis après chaque écriture.
+ *
+ * Ne lève jamais : une base illisible met la mémoire en erreur, et
+ * l'application démarre quand même — POWER, MASS et FEMMES n'en dépendent pas.
+ */
+export async function hydraterProgrammesImportes(): Promise<void> {
+  try {
+    remplirMemoire(await db.programmesImportes.toArray());
+  } catch {
+    memoireEnErreur();
+  }
 }
 
 export type ResultatImport =
@@ -100,38 +119,44 @@ export async function importerProgramme(
   const candidat = { document: doc, reponses: { dureeSemaines: reponse } };
   const cible = empreinte(candidat);
 
-  return db.transaction('rw', db.programmesImportes, async () => {
-    const versions = await db.programmesImportes.where('uid').equals(doc.uid).toArray();
-    const identique = versions.find((r) => empreinte(r) === cible);
-    if (identique) return { statut: 'deja-importe', cle: identique.cle };
+  const resultat = await db.transaction(
+    'rw',
+    db.programmesImportes,
+    async (): Promise<ResultatImport> => {
+      const versions = await db.programmesImportes.where('uid').equals(doc.uid).toArray();
+      const identique = versions.find((r) => empreinte(r) === cible);
+      if (identique) return { statut: 'deja-importe', cle: identique.cle };
 
-    const derniere = versions.reduce<ProgrammeImporteRow | null>(
-      (max, r) => (max === null || r.rev > max.rev ? r : max),
-      null,
-    );
-    if (derniere !== null && options.confirmerNouvelleVersion !== true) {
-      return {
-        statut: 'nouvelle-version-a-confirmer',
-        actuelle: { cle: derniere.cle, nom: derniere.nom },
+      const derniere = versions.reduce<ProgrammeImporteRow | null>(
+        (max, r) => (max === null || r.rev > max.rev ? r : max),
+        null,
+      );
+      if (derniere !== null && options.confirmerNouvelleVersion !== true) {
+        return {
+          statut: 'nouvelle-version-a-confirmer',
+          actuelle: { cle: derniere.cle, nom: derniere.nom },
+          nom: doc.nom,
+        };
+      }
+
+      const rev = derniere === null ? 1 : derniere.rev + 1;
+      const cle = clePerso(doc.uid, rev);
+      await db.programmesImportes.add({
+        cle,
+        uid: doc.uid,
+        rev,
         nom: doc.nom,
-      };
-    }
-
-    const rev = derniere === null ? 1 : derniere.rev + 1;
-    const cle = clePerso(doc.uid, rev);
-    await db.programmesImportes.add({
-      cle,
-      uid: doc.uid,
-      rev,
-      nom: doc.nom,
-      importeLe: options.aujourdhui ?? new Date().toISOString().slice(0, 10),
-      archive: false,
-      texte: contenu,
-      document: doc,
-      reponses: candidat.reponses,
-    });
-    return { statut: 'importe', cle, rapport: v.rapport };
-  });
+        importeLe: options.aujourdhui ?? new Date().toISOString().slice(0, 10),
+        archive: false,
+        texte: contenu,
+        document: doc,
+        reponses: candidat.reponses,
+      });
+      return { statut: 'importe', cle, rapport: v.rapport };
+    },
+  );
+  if (resultat.statut === 'importe') await hydraterProgrammesImportes();
+  return resultat;
 }
 
 /** Toutes les versions, archivées comprises, rangées par programme puis par version. */
@@ -146,7 +171,9 @@ export async function programmeImporte(cle: string): Promise<ProgrammeImporteRow
 
 /** Le seul champ qui change après l'import. `false` si la version n'existe pas. */
 export async function archiverProgramme(cle: string, archive: boolean): Promise<boolean> {
-  return (await db.programmesImportes.where('cle').equals(cle).modify({ archive })) > 0;
+  const trouve = (await db.programmesImportes.where('cle').equals(cle).modify({ archive })) > 0;
+  if (trouve) await hydraterProgrammesImportes();
+  return trouve;
 }
 
 export type ResultatSuppression = 'supprime' | 'utilise-par-un-cycle' | 'introuvable';
@@ -158,7 +185,7 @@ export type ResultatSuppression = 'supprime' | 'utilise-par-un-cycle' | 'introuv
  * resteraient sans programme. Dans ce cas, l'archivage est la voie prévue.
  */
 export async function supprimerProgramme(cle: string): Promise<ResultatSuppression> {
-  return db.transaction(
+  const resultat = await db.transaction(
     'rw',
     [db.programmesImportes, db.cycles, db.exerciseReference],
     async () => {
@@ -169,9 +196,11 @@ export async function supprimerProgramme(cle: string): Promise<ResultatSuppressi
       }
       await db.exerciseReference.where('exerciseId').startsWith(`${cle}-`).delete();
       await db.programmesImportes.where('cle').equals(cle).delete();
-      return 'supprime';
+      return 'supprime' as const;
     },
   );
+  if (resultat === 'supprime') await hydraterProgrammesImportes();
+  return resultat;
 }
 
 /**

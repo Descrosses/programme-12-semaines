@@ -20,7 +20,8 @@ import { WeekScreen } from './screens/WeekScreen';
 import { AVenirScreen } from './screens/AVenirScreen';
 import { PorteMassForce } from './screens/massforce/PorteMassForce';
 import { MASS_FORCE_PROGRAMME_ID } from './db/massForceRepo';
-import { modulePourCycle } from './programmes/registre';
+import { ID_PROGRAMME_INDISPONIBLE, modulePourCycle } from './programmes/registre';
+import { ProgrammeIndisponibleScreen } from './screens/ProgrammeIndisponibleScreen';
 import { FEMMES_PROGRAMME_ID } from './db/femmesRepo';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
 import { MARQUE_CAPITALES } from './data/marque';
@@ -454,7 +455,17 @@ function renderScreen(
    * départ. Les autres onglets restent ouverts — le Combiné d'abord.
    */
   const porte = (ecran: ReactElement) =>
-    programme?.id === MASS_FORCE_PROGRAMME_ID ? (
+    /*
+     * Un cycle dont le programme est inconnu (lot 3 de l'ADR perso) : la
+     * séance du jour, la semaine et les séances cèdent la place à l'écran
+     * « indisponible ». Réglages reste ouvert, pour restaurer une sauvegarde.
+     */
+    programme?.id === ID_PROGRAMME_INDISPONIBLE ? (
+      <ProgrammeIndisponibleScreen
+        onReglages={() => navigate({ name: 'settings' })}
+        onAccueil={() => navigate({ name: 'accueil' })}
+      />
+    ) : programme?.id === MASS_FORCE_PROGRAMME_ID ? (
       <PorteMassForce
         key={`porte-${dataVersion}`}
         onCombine={() => navigate({ name: 'combine' })}
