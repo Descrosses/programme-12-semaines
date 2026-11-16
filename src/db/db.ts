@@ -11,6 +11,7 @@ import type { DayIndex as JourFemmes, Version as VersionFemmes } from '../data/f
 import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
 import Dexie, { type Table } from 'dexie';
+import type { ProgrammeNormalise } from '../engine/perso/types';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
 import type { PlanPerso } from '../data/planPerso';
 import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
@@ -596,6 +597,45 @@ export interface ReferenceForceRow {
   creeLe: number;
 }
 
+/**
+ * Une version figée d'un programme importé (ME, MYSELF & I).
+ *
+ * Trois identifiants à ne pas confondre : `uid` désigne le programme toutes
+ * versions confondues (il vient du fichier) ; `cle` désigne CETTE version
+ * (`perso-<uid>-<rev>`, attribuée par MAJK) ; le cycle, lui, a son propre
+ * `id` et range `cle` dans son `programmeId`.
+ *
+ * Après l'import, seul `archive` change. Une nouvelle version est une NOUVELLE
+ * ligne : un cycle commencé garde les prescriptions sous lesquelles il a
+ * démarré.
+ */
+export interface ProgrammeImporteRow {
+  id?: number;
+  cle: string;
+  uid: string;
+  rev: number;
+  nom: string;
+  /** `YYYY-MM-DD`. */
+  importeLe: string;
+  /** Masqué du catalogue, toujours lisible : un cycle peut encore s'en servir. */
+  archive: boolean;
+  /**
+   * Le fichier tel qu'il a été importé, au caractère près.
+   *
+   * C'est la source de vérité : à la restauration d'une sauvegarde, il repasse
+   * par le validateur et `document` en est reconstruit. Une sauvegarde
+   * retouchée à la main ne peut donc pas faire entrer un programme invalide.
+   */
+  texte: string;
+  /** Le programme normalisé à l'import, classement des lignes compris. */
+  document: ProgrammeNormalise;
+  /**
+   * Les réponses au questionnaire d'import. `dureeSemaines` vaut `null`
+   * quand le document fixe lui-même sa durée : la question n'a pas été posée.
+   */
+  reponses: { dureeSemaines: number | null };
+}
+
 export interface ProfilFemmes {
   niveau: Niveau;
   safety: SafetyAnswers;
@@ -651,6 +691,7 @@ export class ProgrammeDB extends Dexie {
   painLog!: Table<PainLogRow, number>;
   femmesSeances!: Table<FemmesSeanceRow, number>;
   referencesForce!: Table<ReferenceForceRow, number>;
+  programmesImportes!: Table<ProgrammeImporteRow, number>;
   extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
   notes!: Table<NoteRow, number>;
@@ -1162,6 +1203,16 @@ export class ProgrammeDB extends Dexie {
      * modifiée ni supprimée, et `settings.oneRM` n'est pas touché.
      */
     this.version(24).stores({ referencesForce: '++id, [exercice+variante], exercice, date' });
+
+    /*
+     * v25 — les programmes importés (ME, MYSELF & I, lot 2 de l'ADR).
+     *
+     * Une table neuve, rien d'autre : aucune ligne existante n'est lue,
+     * modifiée ni supprimée. Une ligne par VERSION figée d'un programme ;
+     * `cle` est ce qu'un cycle range dans `programmeId`, donc unique. Pas
+     * rattachée à un cycle : supprimer un cycle ne l'emporte jamais.
+     */
+    this.version(25).stores({ programmesImportes: '++id, &cle, uid' });
 
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;
