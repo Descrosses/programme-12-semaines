@@ -77,6 +77,12 @@ export const FICHES_POWER12: Readonly<Record<string, string>> = {
   'landmine-press-standing': 'power12-landmine-press-standing.webp',
   'cable-chop': 'power12-cable-chop.webp', // woodchop haut → bas
   'hanging-leg-raise': 'power12-hanging-leg-raise.webp',
+
+  // ---------------------------------------------------------- combiné ---
+  // Deux tests du combiné (§12) n'ont aucun mouvement de séance derrière
+  // eux : leur planche est la leur, rattachée directement à leur identifiant.
+  'test-vertical-jump': 'power12-vertical-jump.webp', // trois temps : impulsion, élan des bras, apex
+  'test-strict-pullup-max': 'power12-strict-pullup.webp', // poids de corps, de la suspension au menton
 };
 
 /**
@@ -88,11 +94,13 @@ export const FICHES_POWER12: Readonly<Record<string, string>> = {
  * La planche n'est pas recopiée : le test lit celle du mouvement, donc les
  * deux ne peuvent pas diverger (une planche remplacée suit partout).
  *
- * Absents volontairement, faute de planche pour CE mouvement :
- * - Vertical Jump, Sprint 10 m, Sprint 20 m, Poids de corps : aucune planche ;
- * - Tractions strictes max : la planche des tractions lestées montre une
- *   ceinture et un disque de 20 kg, ce n'est pas la traction au poids de
- *   corps du test — on ne rattache pas la voisine.
+ * Deux tests ont leur propre planche (Vertical Jump, Tractions strictes max)
+ * et figurent directement dans `FICHES_POWER12`. Pour les tractions strictes,
+ * on ne reprend pas la planche des tractions lestées : elle montre une ceinture
+ * et un disque de 20 kg, ce n'est pas le geste du test — on ne rattache pas
+ * la voisine.
+ *
+ * Sans planche : Sprint 10 m, Sprint 20 m, Poids de corps (rien à montrer).
  */
 export const MOUVEMENT_DU_TEST: Readonly<Record<string, string>> = {
   'test-squat-1rm': 'back-squat',
