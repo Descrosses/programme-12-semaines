@@ -1,0 +1,134 @@
+{
+  "format": "majk-programme",
+  "schemaVersion": 1,
+  "programme": {
+    "uid": "training1guillaume201005",
+    "nom": "Training 1",
+    "versionSource": "Guillaume 05/10/20",
+    "source": { "document": "Training 1 Guillaume (3).pdf" },
+    "consignes": [
+      "Pour l’ensemble des exercices, une pique de concertation est obligatoire Tu dois contracté à chaque rép",
+      "Pour l'ensemble des exercices, un contrôle des charge dans la phrase excentrique est obligatoire.",
+      "C’est pour quoi, l’accent doit être mis sur la propreté de chaque mouvement et ne pas sur les charges."
+    ],
+    "decisions": [
+      { "sujet": "exclusion", "texte": "« Séance 1 sans les bras » : la séance 1 sans le superset curl barre EZ / barre au front EZ." },
+      { "sujet": "convention", "texte": "« + abdos » : les abdos se font après la séance." },
+      { "sujet": "identite", "texte": "« Barre au front EZ » (séance 1) et « Barre au front » (séance 4) sont le même exercice, nommé « Barre au front »." },
+      { "sujet": "convention", "texte": "« en super set » : enchaînement sans repos entre les exercices ; le repos écrit suit le groupe." },
+      { "sujet": "texte", "texte": "Texte du document reproduit verbatim, fautes comprises." }
+    ]
+  },
+  "exercices": [
+    { "id": "oiseau-poulie-haute", "nom": "Arrière épaule oiseau à la poulie haute" },
+    { "id": "militaire-smith", "nom": "Développé militaire smith ( assis )" },
+    { "id": "arnold", "nom": "Développé épaule Arnold ( assis )" },
+    { "id": "oiseau-banc-incline", "nom": "Oiseau sur banc incliné haltère" },
+    { "id": "elevation-laterale", "nom": "Elévation latérale", "consignes": ["Ne montes pas trop haut les haltère. Ne pas dépasser la ligne d'épaule, pour ne pas mettre l'accent sur les trapèzes"] },
+    { "id": "curl-ez", "nom": "Curl barre Ez" },
+    { "id": "barre-au-front", "nom": "Barre au front" },
+    { "id": "fentes", "nom": "Fentes" },
+    { "id": "squat", "nom": "Squat" },
+    { "id": "presse-verticale", "nom": "Presse cuisse verticale" },
+    { "id": "leg-extension", "nom": "Leg extension" },
+    { "id": "leg-curl", "nom": "Leg curl" },
+    { "id": "mollet-presse", "nom": "Mollet presse horizontale" },
+    { "id": "pull-over-poulie", "nom": "Pull over à la poulie haute bras tendus" },
+    { "id": "traction-large", "nom": "Traction prise large", "consignes": ["Assisté ; poids libre ou lesté selon ton niveau"] },
+    { "id": "rowing-pronation", "nom": "Rowing barre pronation", "consignes": ["Ceinture", "Ramène la barre vers nombril pour accentuer la pression sur les grand dorsal. Gardes la barre prés de tes genoux pour ne pas agresser les lombaires"] },
+    { "id": "tirage-horizontal", "nom": "Tirage horizontale prise serré avec poignet en fer" },
+    { "id": "tirage-vertical", "nom": "Tirage verticale prise serré supination", "consignes": ["Ramène la au milieu des pecs pour mettre l'accent sur les coiffes des rotateurs et deltoïde postérieurs en muscle secondaire"] },
+    { "id": "curl-haltere-incline", "nom": "Curl haltère sur banc incliné" },
+    { "id": "pupitre-ez", "nom": "Biceps pupitre barre EZ ( une prise serré )" },
+    { "id": "ecarte-poulie-haute", "nom": "Ecarté à la poulie haute" },
+    { "id": "couche-haltere", "nom": "Développé couché haltère" },
+    { "id": "incline-haltere", "nom": "Développé incliné haltère" },
+    { "id": "ecarte-incline", "nom": "Ecarté incliné" },
+    { "id": "ecarte-couche", "nom": "Ecarté couché" },
+    { "id": "triceps-corde", "nom": "Triceps à la poulie haute corde" },
+    { "id": "releve-buste", "nom": "Relevé de buste pieds au sol avec un disque sur potine" },
+    { "id": "releve-jambes", "nom": "Relevé de jambes au sol" },
+    { "id": "twist", "nom": "Twist medcines ball ( ou haltère ou autre objet )" },
+    { "id": "planche", "nom": "La planche ( gainage )" }
+  ],
+  "semaines": [
+    {
+      "seances": [
+        {
+          "id": "lundi", "jour": 0, "titre": "Séance 1 + abdos",
+          "notes": ["Echauffement : 5 minutes de rameur", "Enchainer les 4 exercices sans temps de repos entre chaque. À la fin de chaque circuit, prendre 1min de repos."],
+          "lignes": [
+            { "exerciceId": "oiseau-poulie-haute", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Arrière épaule oiseau à la poulie haute | 1min | 3 x 15", "prescription": { "series": 3, "objectif": { "type": "reps", "reps": 15 }, "reposSec": 60 } },
+            { "exerciceId": "militaire-smith", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Développé militaire smith ( assis ) | 1min30 | 4 x 6 à 8", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 6, "max": 8 } }, "reposSec": 90 } },
+            { "exerciceId": "arnold", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Développé épaule Arnold ( assis ) | 1min30 | 4 x 8 à 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 8, "max": 10 } }, "reposSec": 90 } },
+            { "exerciceId": "oiseau-banc-incline", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Oiseau sur banc incliné haltère | 1min30 | 4 x 9 à 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 9, "max": 12 } }, "reposSec": 90 } },
+            { "exerciceId": "elevation-laterale", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Elévation latérale | 1min30 | 4 x 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 12 }, "reposSec": 90 } },
+            { "exerciceId": "curl-ez", "section": "SEANCE 1 EPAULES BRAS", "groupe": "bras", "texteOriginal": "Curl barre Ez en super set avec barre au front EZ | 1min30 | 4 x 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 12 }, "reposSec": 0 } },
+            { "exerciceId": "barre-au-front", "section": "SEANCE 1 EPAULES BRAS", "groupe": "bras", "texteOriginal": "Curl barre Ez en super set avec barre au front EZ | 1min30 | 4 x 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 12 }, "reposSec": 90 } },
+            { "exerciceId": "releve-buste", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de buste pieds au sol avec un disque sur potine | 10 | ou tu prends un poids quand tu le fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "releve-jambes", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de jambes au sol | 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "twist", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Twist medcines ball ( ou haltère ou autre objet ) | 10 de chaque coté | ou une bouteille 1L5 quand tu fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "cote": "côté", "reposSec": 0 } },
+            { "exerciceId": "planche", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "La planche ( gainage ) | 1min", "prescription": { "series": 4, "objectif": { "type": "duree", "secondes": 60 }, "reposSec": 60 } }
+          ]
+        },
+        {
+          "id": "mardi", "jour": 1, "titre": "Séance 2",
+          "notes": ["Echauffement : 5 minutes de vélo"],
+          "lignes": [
+            { "exerciceId": "fentes", "section": "SEANCE 2 JAMBES", "texteOriginal": "Fentes | 1min30 | 4 x 10 de chaque jambes", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "cote": "jambe", "reposSec": 90 } },
+            { "exerciceId": "squat", "section": "SEANCE 2 JAMBES", "texteOriginal": "Squat | 2min | 4 x 8", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 8 }, "reposSec": 120 } },
+            { "exerciceId": "presse-verticale", "section": "SEANCE 2 JAMBES", "texteOriginal": "Presse cuisse verticale | 2min | 4 x 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 120 } },
+            { "exerciceId": "leg-extension", "section": "SEANCE 2 JAMBES", "groupe": "cuisses", "texteOriginal": "Leg extension en super set avec leg curl | 1min30 | 4 x 10 + 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "leg-curl", "section": "SEANCE 2 JAMBES", "groupe": "cuisses", "texteOriginal": "Leg extension en super set avec leg curl | 1min30 | 4 x 10 + 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 90 } },
+            { "exerciceId": "mollet-presse", "section": "SEANCE 2 JAMBES", "texteOriginal": "Mollet presse horizontale | 1min | 4 x 15", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 15 }, "reposSec": 60 } }
+          ]
+        },
+        {
+          "id": "jeudi", "jour": 3, "titre": "Séance 1 sans les bras + abdos",
+          "notes": ["Echauffement : 5 minutes de rameur", "Enchainer les 4 exercices sans temps de repos entre chaque. À la fin de chaque circuit, prendre 1min de repos."],
+          "lignes": [
+            { "exerciceId": "oiseau-poulie-haute", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Arrière épaule oiseau à la poulie haute | 1min | 3 x 15", "prescription": { "series": 3, "objectif": { "type": "reps", "reps": 15 }, "reposSec": 60 } },
+            { "exerciceId": "militaire-smith", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Développé militaire smith ( assis ) | 1min30 | 4 x 6 à 8", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 6, "max": 8 } }, "reposSec": 90 } },
+            { "exerciceId": "arnold", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Développé épaule Arnold ( assis ) | 1min30 | 4 x 8 à 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 8, "max": 10 } }, "reposSec": 90 } },
+            { "exerciceId": "oiseau-banc-incline", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Oiseau sur banc incliné haltère | 1min30 | 4 x 9 à 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 9, "max": 12 } }, "reposSec": 90 } },
+            { "exerciceId": "elevation-laterale", "section": "SEANCE 1 EPAULES BRAS", "texteOriginal": "Elévation latérale | 1min30 | 4 x 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 12 }, "reposSec": 90 } },
+            { "exerciceId": "releve-buste", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de buste pieds au sol avec un disque sur potine | 10 | ou tu prends un poids quand tu le fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "releve-jambes", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de jambes au sol | 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "twist", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Twist medcines ball ( ou haltère ou autre objet ) | 10 de chaque coté | ou une bouteille 1L5 quand tu fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "cote": "côté", "reposSec": 0 } },
+            { "exerciceId": "planche", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "La planche ( gainage ) | 1min", "prescription": { "series": 4, "objectif": { "type": "duree", "secondes": 60 }, "reposSec": 60 } }
+          ]
+        },
+        {
+          "id": "vendredi", "jour": 4, "titre": "Séance 3",
+          "notes": ["Echauffement : 5 minutes rameur"],
+          "lignes": [
+            { "exerciceId": "pull-over-poulie", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Pull over à la poulie haute bras tendus | 1min | 3 x 15", "prescription": { "series": 3, "objectif": { "type": "reps", "reps": 15 }, "reposSec": 60 } },
+            { "exerciceId": "traction-large", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Traction prise large | 1min30 | 4 x 6 à 8", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 6, "max": 8 } }, "reposSec": 90 } },
+            { "exerciceId": "rowing-pronation", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Rowing barre pronation | Ceinture | 1min30 | 4 x 8 à 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 8, "max": 10 } }, "reposSec": 90 } },
+            { "exerciceId": "tirage-horizontal", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Tirage horizontale prise serré avec poignet en fer | 1min30 | 4 x 9 à 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 9, "max": 12 } }, "reposSec": 90 } },
+            { "exerciceId": "tirage-vertical", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Tirage verticale prise serré supination | 1min30 | 4 x 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 12 }, "reposSec": 90 } },
+            { "exerciceId": "curl-haltere-incline", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Curl haltère sur banc incliné | 1min30 | 4 x 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 90 } },
+            { "exerciceId": "pupitre-ez", "section": "SEANCE 3 DOS BICEPS", "texteOriginal": "Biceps pupitre barre EZ ( une prise serré ) | 1min30 | 4 x 12 à 15", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 12, "max": 15 } }, "reposSec": 90 } }
+          ]
+        },
+        {
+          "id": "samedi", "jour": 5, "titre": "Séance 4 + abdos",
+          "notes": ["Echauffement : 5 minutes de rameur", "Enchainer les 4 exercices sans temps de repos entre chaque. À la fin de chaque circuit, prendre 1min de repos."],
+          "lignes": [
+            { "exerciceId": "ecarte-poulie-haute", "section": "SEANCE 4 PEC TRICEPS", "texteOriginal": "Ecarté à la poulie haute | 1min | 3 x 15", "prescription": { "series": 3, "objectif": { "type": "reps", "reps": 15 }, "reposSec": 60 } },
+            { "exerciceId": "couche-haltere", "section": "SEANCE 4 PEC TRICEPS", "texteOriginal": "Développé couché haltère | 1min30 | 4 x 6 à 8", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 6, "max": 8 } }, "reposSec": 90 } },
+            { "exerciceId": "incline-haltere", "section": "SEANCE 4 PEC TRICEPS", "texteOriginal": "Développé incliné haltère | 1min30 | 4 x 8 à 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 8, "max": 10 } }, "reposSec": 90 } },
+            { "exerciceId": "ecarte-incline", "section": "SEANCE 4 PEC TRICEPS", "groupe": "pecs", "texteOriginal": "Ecarté incliné en super set avec écarté couché | 1min30 | 4 x 10 + 10 | 10rép pour écarté incliné suib sans repos de 10 rép pour écarté couché", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "ecarte-couche", "section": "SEANCE 4 PEC TRICEPS", "groupe": "pecs", "texteOriginal": "Ecarté incliné en super set avec écarté couché | 1min30 | 4 x 10 + 10 | 10rép pour écarté incliné suib sans repos de 10 rép pour écarté couché", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 90 } },
+            { "exerciceId": "barre-au-front", "section": "SEANCE 4 PEC TRICEPS", "texteOriginal": "Barre au front | chauffe bien tes coudes | 1min30 | 4 x 10 à 12", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 10, "max": 12 } }, "reposSec": 90 } },
+            { "exerciceId": "triceps-corde", "section": "SEANCE 4 PEC TRICEPS", "texteOriginal": "Triceps à la poulie haute corde | 1min30 | 4 x 12 à 15", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": { "min": 12, "max": 15 } }, "reposSec": 90 } },
+            { "exerciceId": "releve-buste", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de buste pieds au sol avec un disque sur potine | 10 | ou tu prends un poids quand tu le fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "releve-jambes", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Relevé de jambes au sol | 10", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "reposSec": 0 } },
+            { "exerciceId": "twist", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "Twist medcines ball ( ou haltère ou autre objet ) | 10 de chaque coté | ou une bouteille 1L5 quand tu fais à la maison", "prescription": { "series": 4, "objectif": { "type": "reps", "reps": 10 }, "cote": "côté", "reposSec": 0 } },
+            { "exerciceId": "planche", "section": "SEANCE ABDOS", "groupe": "abdos", "texteOriginal": "La planche ( gainage ) | 1min", "prescription": { "series": 4, "objectif": { "type": "duree", "secondes": 60 }, "reposSec": 60 } }
+          ]
+        }
+      ]
+    }
+  ]
+}
