@@ -6,8 +6,9 @@
  * - le catalogue compilé passe TOUJOURS d'abord : un programme importé ne
  *   masque jamais POWER, MASS ni FEMMES ;
  * - `FAMILLES` et `tousLesProgrammes` restent compilés ;
- * - un programme importé connu s'annonce « à venir » tant qu'aucun module ne
- *   le joue (lot 4), et son cycle ouvre l'écran « indisponible », pas POWER ;
+ * - un programme importé connu est « disponible » et son cycle ouvre SON
+ *   module (lot 4) ; un programme inconnu, l'écran « indisponible » ;
+ *   jamais POWER ;
  * - les abonnés sont prévenus à chaque changement.
  */
 import { readFileSync } from 'node:fs';
@@ -49,7 +50,7 @@ describe('la mémoire vue du catalogue', () => {
     expect(programmeParId(CLE)).toBeNull();
   });
 
-  it('un programme importé devient une fiche de la famille perso, « à venir »', () => {
+  it('un programme importé devient une fiche de la famille perso, « disponible »', () => {
     remplirMemoire([ligne(CLE)]);
     expect(lireMemoire().etat).toBe('pret');
     expect(programmeParId(CLE)).toMatchObject({
@@ -58,7 +59,7 @@ describe('la mémoire vue du catalogue', () => {
       nom: 'Training 1',
       version: '1',
       dureeSemaines: 8,
-      statut: 'a-venir',
+      statut: 'disponible',
     });
   });
 
@@ -71,9 +72,11 @@ describe('la mémoire vue du catalogue', () => {
     expect(tousLesProgrammes().map((p) => p.id)).toEqual(avant);
   });
 
-  it('le cycle d’un programme importé n’ouvre jamais POWER 12', () => {
+  it('le cycle d’un programme importé ouvre SON module, jamais POWER 12', () => {
     remplirMemoire([ligne(CLE)]);
-    // Connu, mais sans module avant le lot 4 : indisponible, pas POWER.
+    expect(modulePourCycle(CLE).id).toBe(CLE);
+    // Retiré de la mémoire (programme disparu) : indisponible, pas POWER.
+    remplirMemoire([]);
     expect(modulePourCycle(CLE).id).toBe(ID_PROGRAMME_INDISPONIBLE);
   });
 

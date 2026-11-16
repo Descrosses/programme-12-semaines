@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { Fragment, useState, type CSSProperties } from 'react';
 import {
   shouldRemindSession,
   missingPrescribedSets,
@@ -49,7 +49,8 @@ import {
   type CustomSpec,
 } from '../engine/customExercise';
 import { EXERCISES } from '../data/exercises';
-import { groupSupersets } from '../engine/superset';
+import { groupSupersets, type Bloc } from '../engine/superset';
+import type { Work } from '../data/types';
 import { useNow } from '../state/useNow';
 import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
@@ -246,9 +247,13 @@ export function SessionScreen({
        * saisie à la main, elle, remplace bien le plan — c'est un choix
        * explicite de Guillaume, pas un recalage automatique.
        */
-      plannedKg: overrides[ex.id] ?? ex.planKg ?? ex.load.kg,
-      plannedReps:
-        ex.work.kind === 'reps' && typeof ex.work.reps === 'number' ? ex.work.reps : null,
+      plannedKg:
+        overrides[ex.id] ??
+        // Programme importé : la charge que le document écrit pour CETTE série.
+        ex.objectifsParSerie?.[payload.setIndex]?.kg ??
+        ex.planKg ??
+        ex.load.kg,
+      plannedReps: repsPrevues(ex.objectifsParSerie?.[payload.setIndex]?.work ?? ex.work),
       targetRPE: ex.targetRPE,
       actualKg: payload.actualKg,
       actualReps: payload.actualReps,
@@ -521,12 +526,14 @@ export function SessionScreen({
         <h1 className={styles.title}>{session.title}</h1>
         <span className={styles.titleRule} aria-hidden="true" />
         <div className={styles.meta}>
-          <span
-            className={`${styles.metaItem} ${styles.tag}`}
-            style={{ '--bloc': session.blockColor } as CSSProperties}
-          >
-            {session.intensity}
-          </span>
+          {session.sansIntensite !== true && (
+            <span
+              className={`${styles.metaItem} ${styles.tag}`}
+              style={{ '--bloc': session.blockColor } as CSSProperties}
+            >
+              {session.intensity}
+            </span>
+          )}
           {/*
             Le jour de la semaine et la date, dans une seule pastille. Ils
             étaient côte à côte mais séparés, et `humanDate` répète déjà le
@@ -535,9 +542,11 @@ export function SessionScreen({
           <span className={`${styles.metaItem} ${styles.metaDate}`}>
             {data.date ? `${DAY_LABELS[day]} ${humanDateShort(data.date)}` : DAY_LABELS[day]}
           </span>
-          <span className={styles.metaItem}>
-            Prévu <b>{session.durationLabel}</b>
-          </span>
+          {session.sansDuree !== true && (
+            <span className={styles.metaItem}>
+              Prévu <b>{session.durationLabel}</b>
+            </span>
+          )}
           {chrono !== null ? (
             <span className={`${styles.metaItem} ${styles.chrono}`}>
               <Icon name="stopwatch" size="14px" />
@@ -641,29 +650,50 @@ export function SessionScreen({
         />
       )}
 
-      {blocs.map((bloc) =>
-        bloc.kind === 'circuit' ? (
-          /*
-           * Deux mouvements menés ensemble : un seul encadré, les séries dans
-           * l'ordre où elles se font. Les fiches des deux exercices — remarque,
-           * douleur, consignes, remplacement — sont rendues DANS le bloc, par
-           * les mêmes cartes que partout ailleurs, privées de leurs séries.
-           */
-          <SupersetCard
-            key={`superset-${bloc.id}`}
-            circuit={bloc}
-            week={week}
-            day={day}
-            savedSets={data.savedSets}
-            overrides={overrides}
-            timer={timer}
-            onSaveSet={handleSaveSet}
-            fiches={<>{bloc.exs.map((ex) => carte(ex, true))}</>}
-          />
+      {blocs.map((bloc, i) => {
+        /*
+         * Programme importé : l'intertitre du bloc du document (« SEANCE
+         * ABDOS »), posé à chaque changement de section. POWER et MASS n'en
+         * ont pas : rien ne s'affiche.
+         */
+        const section = sectionDe(bloc);
+        const intertitre =
+          section !== undefined && section !== (i > 0 ? sectionDe(blocs[i - 1]!) : undefined) ? (
+            <h2 key={`section-${i}`} className={styles.sectionImportee}>
+              {section}
+            </h2>
+          ) : null;
+        const contenu =
+          bloc.kind === 'circuit' ? (
+            /*
+             * Deux mouvements menés ensemble : un seul encadré, les séries dans
+             * l'ordre où elles se font. Les fiches des deux exercices — remarque,
+             * douleur, consignes, remplacement — sont rendues DANS le bloc, par
+             * les mêmes cartes que partout ailleurs, privées de leurs séries.
+             */
+            <SupersetCard
+              key={`superset-${bloc.id}`}
+              circuit={bloc}
+              week={week}
+              day={day}
+              savedSets={data.savedSets}
+              overrides={overrides}
+              timer={timer}
+              onSaveSet={handleSaveSet}
+              fiches={<>{bloc.exs.map((ex) => carte(ex, true))}</>}
+            />
+          ) : (
+            carte(bloc.ex, false)
+          );
+        return intertitre === null ? (
+          contenu
         ) : (
-          carte(bloc.ex, false)
-        ),
-      )}
+          <Fragment key={`avec-section-${i}`}>
+            {intertitre}
+            {contenu}
+          </Fragment>
+        );
+      })}
 
       {/*
         Exercices suspendus — affichés, jamais prescrits.
@@ -979,4 +1009,17 @@ function tonnage(saved: Record<string, { actualKg: number | null; actualReps: nu
     }
   }
   return Math.round(total);
+}
+
+/** La section du document d'où vient un bloc (programme importé), ou rien. */
+function sectionDe(bloc: Bloc): string | undefined {
+  return bloc.kind === 'circuit' ? bloc.exs[0]?.section : bloc.ex.section;
+}
+
+/**
+ * Les répétitions PRÉVUES d'une série, telles qu'enregistrées : un nombre
+ * fixe seulement. Une fourchette ou « max » ne prévoit pas de nombre : `null`.
+ */
+function repsPrevues(work: Work): number | null {
+  return work.kind === 'reps' && typeof work.reps === 'number' ? work.reps : null;
 }

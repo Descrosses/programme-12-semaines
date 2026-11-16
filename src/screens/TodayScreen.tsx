@@ -196,8 +196,9 @@ export function TodayScreen({
           ...(cycle?.massForce === undefined ? {} : { choixCycle: cycle.massForce.choix }),
         });
         title = s?.title ?? '';
-        intensity = s?.intensity ?? '';
-        duration = s?.durationLabel ?? '';
+        // Programme importé : ni intensité ni durée inventées.
+        intensity = s?.sansIntensite === true ? '' : (s?.intensity ?? '');
+        duration = s?.sansDuree === true ? '' : (s?.durationLabel ?? '');
         apercu = s ? apercuSeance(s.exercises) : [];
         apercuAvantReadiness = s?.readinessTest ?? false;
       }
@@ -318,24 +319,28 @@ export function TodayScreen({
 
         {today.kind === 'session' && (
           <div className={styles.meta}>
-            <span
-              className={`${styles.metaItem} ${styles.metaBloc}`}
-              style={
-                {
-                  '--bloc': programme?.couleurDuBloc(today.session.week) ?? 'transparent',
-                } as CSSProperties
-              }
-            >
-              {state.intensity}
-            </span>
+            {state.intensity !== '' && (
+              <span
+                className={`${styles.metaItem} ${styles.metaBloc}`}
+                style={
+                  {
+                    '--bloc': programme?.couleurDuBloc(today.session.week) ?? 'transparent',
+                  } as CSSProperties
+                }
+              >
+                {state.intensity}
+              </span>
+            )}
             <span className={styles.metaItem}>
               Semaine <b>{today.session.week === 0 ? 'de test' : today.session.week}</b>
             </span>
             <span className={styles.metaItem}>{DAY_LABELS[today.session.day]}</span>
-            <span className={styles.metaItem}>
-              <Icon name="stopwatch" size="14px" />
-              <b>{state.duration}</b>
-            </span>
+            {state.duration !== '' && (
+              <span className={styles.metaItem}>
+                <Icon name="stopwatch" size="14px" />
+                <b>{state.duration}</b>
+              </span>
+            )}
           </div>
         )}
 

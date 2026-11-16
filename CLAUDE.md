@@ -246,6 +246,19 @@ matériel et la durée avant d'écrire la moindre séance.
   historique, inchangée) ; le questionnaire « brocolis » pointe vers
   `brocolisCuits`. `ficheRepas.test.tsx`, `repasReconnu.test.ts`,
   `bibliothequeRepas.test.ts`.
+- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 4 FAITS.** Source :
+  `docs/ADR-perso.md` (branche `docs/adr-perso`). Validateur pur
+  (`engine/perso/`), table v25 `programmesImportes` et sauvegardes au format 4
+  (`db/programmesImportes.ts`), mémoire synchrone remplie avant le premier
+  écran (`programmes/perso/memoire.ts`), module générique
+  (`programmes/perso/module.ts`). Règles à ne pas « corriger » : une absence
+  n'est jamais 0 ; texte verbatim ; 12 semaines au plus ; aucune charge,
+  aucun RPE, aucune progression calculée ; le champ de charge s'ouvre VIDE
+  (l'historique n'est qu'un repère écrit) ; un identifiant inconnu ouvre
+  « Programme indisponible », jamais POWER 12 (`femmes8`, `null` et le
+  catalogue compilé gardent leur repli). Fichier d'exemple : Training 1
+  (`engine/perso/__fixtures__/training1.json`, identique à l'annexe B).
+  Reste le lot 5 (page d'import) et le lot 6 (non-régression).
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

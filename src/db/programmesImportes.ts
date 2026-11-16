@@ -22,35 +22,11 @@
 import { formeCanonique } from '../engine/perso/canonique';
 import { LIMITES, type ErreurValidation, type RapportCompatibilite } from '../engine/perso/types';
 import { validerProgramme } from '../engine/perso/valider';
+import { clePerso, lireCle, PREFIXE_PERSO } from '../programmes/perso/ids';
 import { memoireEnErreur, remplirMemoire } from '../programmes/perso/memoire';
 import { db, type ProgrammeImporteRow } from './db';
 
-/** Le préfixe réservé : aucun programme compilé ne commence ainsi. */
-export const PREFIXE_PERSO = 'perso-';
-
-/** `perso-<uid>-<rev>` — l'uid ne contient ni tiret ni majuscule. */
-const CLE = /^perso-([a-z0-9]{8,24})-([1-9][0-9]*)$/;
-
-export function clePerso(uid: string, rev: number): string {
-  return `${PREFIXE_PERSO}${uid}-${String(rev)}`;
-}
-
-export function lireCle(cle: string): { uid: string; rev: number } | null {
-  const m = CLE.exec(cle);
-  return m === null ? null : { uid: m[1]!, rev: Number(m[2]) };
-}
-
-/**
- * L'identifiant d'un exercice importé, tel que l'historique l'enregistrera.
- *
- * Préfixé par la clé de VERSION : la même « squat » de deux programmes, ou de
- * deux versions d'un programme, ne partage ni historique ni image de
- * référence. Aucune performance n'est attribuée d'office à un autre
- * programme.
- */
-export function idExerciceImporte(cle: string, idLocal: string): string {
-  return `${cle}-${idLocal}`;
-}
+export { PREFIXE_PERSO, clePerso, idExerciceImporte, lireCle } from '../programmes/perso/ids';
 
 /** Ce qui identifie un import : le document normalisé ET les réponses. */
 function empreinte(row: Pick<ProgrammeImporteRow, 'document' | 'reponses'>): string {

@@ -18,6 +18,8 @@ import { PROGRAMME_PAR_DEFAUT, tousLesProgrammes } from '../data/catalogue';
 import { MASS4 } from './mass4/module';
 import { MASS_FORCE } from './massforce/module';
 import { POWER12 } from './power12';
+import { programmeEnMemoire } from './perso/memoire';
+import { creerModuleImporte } from './perso/module';
 import type { ModuleProgramme } from './types';
 
 /** Tous les modules réellement jouables, dans l'ordre du catalogue. */
@@ -33,7 +35,26 @@ export const MODULES: readonly ModuleProgramme[] = [POWER12, MASS4, MASS_FORCE];
  */
 export function moduleParId(id: string | null): ModuleProgramme | null {
   if (id === null) return null;
-  return MODULES.find((m) => m.id === id) ?? null;
+  return MODULES.find((m) => m.id === id) ?? moduleImporte(id);
+}
+
+/*
+ * Les modules des programmes importés, construits une fois par version.
+ *
+ * La clé du cache est la LIGNE elle-même : la mémoire la remplace à chaque
+ * relecture (un archivage, une restauration), et le module est alors
+ * reconstruit. Une version importée ne change pas de prescriptions.
+ */
+const modulesImportes = new WeakMap<object, ModuleProgramme>();
+
+function moduleImporte(cle: string): ModuleProgramme | null {
+  const row = programmeEnMemoire(cle);
+  if (row === null) return null;
+  const connu = modulesImportes.get(row);
+  if (connu !== undefined) return connu;
+  const cree = creerModuleImporte(row);
+  modulesImportes.set(row, cree);
+  return cree;
 }
 
 /**

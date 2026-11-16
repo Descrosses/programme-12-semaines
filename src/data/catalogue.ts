@@ -501,11 +501,11 @@ function programmeImporteParId(cle: string): ProgrammeDefinition | null {
     // ou du questionnaire.
     dureeSemaines: row.reponses.dureeSemaines ?? row.document.dureeSemaines ?? 0,
     /*
-     * « À venir » tant qu'aucun module ne sait jouer ses séances : c'est le
-     * lot 4. Annoncer « disponible » un programme injouable serait le
-     * mensonge que la règle du catalogue interdit.
+     * Jouable de bout en bout depuis le lot 4 (`programmes/perso/module.ts`).
+     * Que certaines lignes ne soient que consultables se dit ailleurs
+     * (« Suivi partiel »), pas par le statut.
      */
-    statut: 'a-venir',
+    statut: 'disponible',
     resume: `Importé de « ${row.document.source.document} ».`,
     objectifs: [],
     prerequis: [],
