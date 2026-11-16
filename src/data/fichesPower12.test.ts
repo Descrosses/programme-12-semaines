@@ -16,7 +16,7 @@ import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 const DOSSIER = join(process.cwd(), 'public', 'fiches');
 
 describe('fiches de mouvement de POWER 12', () => {
-  it('couvre exactement les trente-six mouvements livrés, ni plus ni moins', () => {
+  it('couvre exactement les trente-huit planches livrées, ni plus ni moins', () => {
     expect(Object.keys(FICHES_POWER12).sort()).toEqual(
       [
         'ab-wheel',
@@ -55,6 +55,8 @@ describe('fiches de mouvement de POWER 12', () => {
         'landmine-press-standing',
         'cable-chop',
         'hanging-leg-raise',
+        'test-vertical-jump',
+        'test-strict-pullup-max',
       ].sort(),
     );
   });
@@ -89,7 +91,7 @@ describe('fiches de mouvement de POWER 12', () => {
   it('laisse sans planche les mouvements qui n’en ont pas', () => {
     expect(exercise('back-squat').fiche).toBe('fiches/power12-back-squat.webp');
     expect(exercise('speed-squat').fiche).toBeUndefined();
-    expect(exercise('test-vertical-jump').fiche).toBeUndefined();
+    expect(exercise('test-sprint-10m').fiche).toBeUndefined();
     expect(fichePower12('mouvement-inconnu')).toBeUndefined();
   });
 
@@ -121,15 +123,17 @@ describe('fiches de mouvement de POWER 12', () => {
     }
   });
 
+  it('le combiné : Vertical Jump et Tractions strictes ont leur propre planche', () => {
+    expect(exercise('test-vertical-jump').fiche).toBe('fiches/power12-vertical-jump.webp');
+    expect(exercise('test-strict-pullup-max').fiche).toBe('fiches/power12-strict-pullup.webp');
+    // Pas la planche lestée : ceinture et disque de 20 kg, ce n'est pas le geste du test.
+    expect(exercise('test-strict-pullup-max').fiche).not.toBe(
+      exercise('test-weighted-pullup-1rm').fiche,
+    );
+  });
+
   it('le combiné : sans planche pour CE mouvement, rien n’est rattaché', () => {
-    for (const id of [
-      'test-vertical-jump',
-      'test-sprint-10m',
-      'test-sprint-20m',
-      'test-bodyweight',
-      // Ni la planche des tractions lestées (ceinture + disque) : pas la même traction.
-      'test-strict-pullup-max',
-    ]) {
+    for (const id of ['test-sprint-10m', 'test-sprint-20m', 'test-bodyweight']) {
       expect(exercise(id).fiche, id).toBeUndefined();
     }
   });
