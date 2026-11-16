@@ -26,7 +26,7 @@
  * La logique sportive reste dans le module de chaque programme.
  */
 
-import { programmeEnMemoire } from '../programmes/perso/memoire';
+import { lireMemoire, programmeEnMemoire } from '../programmes/perso/memoire';
 
 /** Les trois familles prévues. Aucune autre n'est au catalogue de lancement. */
 export type FamilleId = 'power' | 'mass' | 'femmes' | 'perso';
@@ -466,7 +466,7 @@ export const FAMILLES: readonly Famille[] = [
      * ne venir de nulle part.
      */
     resume:
-      'Ton propre programme, suivi avec le chrono, l’historique et les courbes de MAJK. Rien n’est prescrit ici : le contenu vient de toi.',
+      'Ton propre programme, suivi avec le chrono et l’historique de MAJK. Rien n’est prescrit ici : le contenu vient de toi.',
     programmes: [],
   },
 ];
@@ -486,6 +486,18 @@ export function tousLesProgrammes(): ProgrammeDefinition[] {
  */
 export function programmeParId(id: string): ProgrammeDefinition | null {
   return tousLesProgrammes().find((p) => p.id === id) ?? programmeImporteParId(id);
+}
+
+/**
+ * Les programmes importés à montrer dans la famille ME, MYSELF & I : les
+ * versions non archivées, dans l'ordre de la mémoire. Une version archivée
+ * reste lisible (un cycle peut s'en servir) mais ne se propose plus.
+ */
+export function programmesImportesProposes(): ProgrammeDefinition[] {
+  return lireMemoire()
+    .programmes.filter((p) => !p.archive)
+    .map((p) => programmeImporteParId(p.cle))
+    .filter((p): p is ProgrammeDefinition => p !== null);
 }
 
 /** La fiche de catalogue d'une version importée, lue dans la mémoire. */

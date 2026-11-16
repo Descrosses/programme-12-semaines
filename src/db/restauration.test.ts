@@ -12,6 +12,8 @@ import { db } from './db';
 import { demarrerCycle, saveSet } from './repo';
 import { exportAll, importAll, parseAnyExport, parseExport, type PhotoExportFile } from './export';
 import { resumeImport } from './resumeImport';
+import { importerProgramme } from './programmesImportes';
+import { readFileSync } from 'node:fs';
 
 beforeEach(async () => {
   await db.open();
@@ -50,6 +52,20 @@ describe('ce que la restauration annonce avant de remplacer', () => {
     expect(r.remplace).toMatch(/références du combiné/);
     expect(r.garde).toBe('Les photos ne sont pas touchées.');
     expect(r.bouton).toBe('Remplacer mes données');
+  });
+
+  it('programmes importés : comptés, et annoncés comme remplacés (ME, MYSELF & I)', async () => {
+    const texte = readFileSync(
+      new URL('../engine/perso/__fixtures__/training1.json', import.meta.url),
+      'utf8',
+    );
+    expect((await importerProgramme(texte, { dureeSemaines: 8 })).statut).toBe('importe');
+    const fichier = { ...(await exportAll()), exportedAt: '2026-11-14T09:00:00.000Z' };
+    const r = resumeImport(parseAnyExport(JSON.stringify(fichier)));
+    expect(r.contenu).toBe(
+      'Fichier du samedi 14 novembre : 0 séance, 0 série, 0 référence du combiné, 1 programme importé.',
+    );
+    expect(r.remplace).toMatch(/programmes importés/);
   });
 
   it('photos : le nombre de photos, et que l’historique n’est pas touché', () => {

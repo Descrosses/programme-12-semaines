@@ -28,6 +28,18 @@ export function textesCycle(programme: ModuleProgramme | null): TextesCycle {
     attente: combine ? 'Premier jour du combine initial' : 'Première séance',
     fin: `${programme?.dureeSemaines ?? 12} semaines bouclées`,
     comparerCombines: combine,
-    raccourciNutrition: programme?.onglets.find((o) => o.route === 'nutrition')?.vue !== 'a-venir',
+    /*
+     * Seulement pour un programme qui A un onglet Nutrition qui chiffre ou
+     * résume quelque chose. Un programme importé n'en a pas : sans cette
+     * condition, l'absence d'onglet valait « pas à venir », et l'écran
+     * Aujourd'hui proposait un raccourci vers rien.
+     */
+    raccourciNutrition: raccourciNutrition(programme),
   };
+}
+
+function raccourciNutrition(programme: ModuleProgramme | null): boolean {
+  if (programme === null) return true;
+  const onglet = programme.onglets.find((o) => o.route === 'nutrition');
+  return onglet !== undefined && onglet.vue !== 'a-venir';
 }

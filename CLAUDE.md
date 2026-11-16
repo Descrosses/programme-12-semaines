@@ -246,7 +246,7 @@ matériel et la durée avant d'écrire la moindre séance.
   historique, inchangée) ; le questionnaire « brocolis » pointe vers
   `brocolisCuits`. `ficheRepas.test.tsx`, `repasReconnu.test.ts`,
   `bibliothequeRepas.test.ts`.
-- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 4 FAITS.** Source :
+- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 5 FAITS.** Source :
   `docs/ADR-perso.md` (branche `docs/adr-perso`). Validateur pur
   (`engine/perso/`), table v25 `programmesImportes` et sauvegardes au format 4
   (`db/programmesImportes.ts`), mémoire synchrone remplie avant le premier
@@ -258,7 +258,16 @@ matériel et la durée avant d'écrire la moindre séance.
   « Programme indisponible », jamais POWER 12 (`femmes8`, `null` et le
   catalogue compilé gardent leur repli). Fichier d'exemple : Training 1
   (`engine/perso/__fixtures__/training1.json`, identique à l'annexe B).
-  Reste le lot 5 (page d'import) et le lot 6 (non-régression).
+  **Lot 5, la page** (`components/perso/`, famille `perso` du catalogue) :
+  le fichier est validé et montré AVANT d'être enregistré (suivi complet ou
+  « Suivi partiel : X exercices sur Y », « Ce que le document ne disait
+  pas ») ; une durée absente est demandée de 1 à 12 semaines, « Choisir »
+  sélectionné et bouton désactivé tant qu'il manque — jamais de valeur par
+  défaut. Archiver sort la version de la liste (section « Archivés ») ;
+  supprimer est refusé, avec la raison, tant qu'un cycle la suit. La famille
+  n'est jamais « À venir ». La restauration annonce les programmes importés
+  qu'elle remplace. `components/perso/importPerso.test.tsx`.
+  Reste le lot 6 (non-régression).
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

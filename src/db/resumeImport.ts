@@ -40,10 +40,17 @@ export function resumeImport(f: AnyExportFile): ResumeImport {
   }
   const d = f.file;
   return {
-    contenu: `${dateDu(d.exportedAt)} : ${n(d.sessions.length, 'séance', 'séances')}, ${n(d.sets.length, 'série', 'séries')}, ${n((d.referencesForce ?? []).length, 'référence du combiné', 'références du combiné')}.`,
+    /* Les programmes importés (ME, MYSELF & I) ne se comptent que s'il y en a :
+       une sauvegarde POWER garde exactement sa phrase. */
+    contenu: `${dateDu(d.exportedAt)} : ${n(d.sessions.length, 'séance', 'séances')}, ${n(d.sets.length, 'série', 'séries')}, ${n((d.referencesForce ?? []).length, 'référence du combiné', 'références du combiné')}${importes(d)}.`,
     remplace:
-      'Il remplacera TOUTES les données d’entraînement de ce téléphone : cycles, séances, séries, réglages, références du combiné, nutrition et remarques.',
+      'Il remplacera TOUTES les données d’entraînement de ce téléphone : cycles, séances, séries, réglages, références du combiné, programmes importés, nutrition et remarques.',
     garde: 'Les photos ne sont pas touchées.',
     bouton: 'Remplacer mes données',
   };
+}
+
+function importes(d: { programmesImportes?: readonly unknown[] }): string {
+  const nb = (d.programmesImportes ?? []).length;
+  return nb === 0 ? '' : `, ${n(nb, 'programme importé', 'programmes importés')}`;
 }
