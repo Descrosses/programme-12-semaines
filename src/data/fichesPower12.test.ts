@@ -10,7 +10,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { EXERCISES, exercise } from './exercises';
-import { FICHES_POWER12, fichePower12 } from './fichesPower12';
+import { FICHES_POWER12, MOUVEMENT_DU_TEST, fichePower12 } from './fichesPower12';
 import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 
 const DOSSIER = join(process.cwd(), 'public', 'fiches');
@@ -89,7 +89,7 @@ describe('fiches de mouvement de POWER 12', () => {
   it('laisse sans planche les mouvements qui n’en ont pas', () => {
     expect(exercise('back-squat').fiche).toBe('fiches/power12-back-squat.webp');
     expect(exercise('speed-squat').fiche).toBeUndefined();
-    expect(exercise('test-deadlift-1rm').fiche).toBeUndefined();
+    expect(exercise('test-vertical-jump').fiche).toBeUndefined();
     expect(fichePower12('mouvement-inconnu')).toBeUndefined();
   });
 
@@ -99,5 +99,38 @@ describe('fiches de mouvement de POWER 12', () => {
     const box = exercise('box-jump');
     expect(box.fiche).toBe('fiches/power12-box-jump.webp');
     expect(box.cues?.some((c) => c.startsWith('Chaque répétition est une tentative'))).toBe(true);
+  });
+
+  it('le combiné : chaque test lit la planche de SON mouvement (Back Squat 1RM = back squat)', () => {
+    expect(exercise('test-squat-1rm').fiche).toBe(exercise('back-squat').fiche);
+    expect(exercise('test-squat-1rm').fiche).toBe('fiches/power12-back-squat.webp');
+    expect(exercise('test-bench-1rm').fiche).toBe('fiches/power12-bench-press.webp');
+    expect(exercise('test-deadlift-1rm').fiche).toBe('fiches/power12-deadlift.webp');
+    expect(exercise('test-weighted-pullup-1rm').fiche).toBe('fiches/power12-weighted-pullup.webp');
+    expect(exercise('test-push-press-1rm').fiche).toBe('fiches/power12-push-press.webp');
+    expect(exercise('test-broad-jump').fiche).toBe('fiches/power12-broad-jump.webp');
+    expect(exercise('test-ab-wheel-max').fiche).toBe('fiches/power12-ab-wheel.webp');
+    expect(exercise('test-leg-raise-max').fiche).toBe('fiches/power12-hanging-leg-raise.webp');
+  });
+
+  it('le combiné : chaque correspondance vise un test réel et un mouvement qui a une planche', () => {
+    for (const [test, mouvement] of Object.entries(MOUVEMENT_DU_TEST)) {
+      expect(EXERCISES[test]?.role, test).toBe('test');
+      expect(FICHES_POWER12[mouvement], mouvement).toBeDefined();
+      expect(EXERCISES[mouvement], mouvement).toBeDefined();
+    }
+  });
+
+  it('le combiné : sans planche pour CE mouvement, rien n’est rattaché', () => {
+    for (const id of [
+      'test-vertical-jump',
+      'test-sprint-10m',
+      'test-sprint-20m',
+      'test-bodyweight',
+      // Ni la planche des tractions lestées (ceinture + disque) : pas la même traction.
+      'test-strict-pullup-max',
+    ]) {
+      expect(exercise(id).fiche, id).toBeUndefined();
+    }
   });
 });

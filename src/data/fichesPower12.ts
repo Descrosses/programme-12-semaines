@@ -79,8 +79,34 @@ export const FICHES_POWER12: Readonly<Record<string, string>> = {
   'hanging-leg-raise': 'power12-hanging-leg-raise.webp',
 };
 
+/**
+ * Les exercices du combiné (§12) portent des identifiants à eux (`test-…`)
+ * pour que leur historique reste séparé de celui des séances. Le MOUVEMENT,
+ * lui, est le même : « Back Squat 1RM » est un back squat. Cette table dit,
+ * pour chaque test, de quel mouvement il emprunte la planche.
+ *
+ * La planche n'est pas recopiée : le test lit celle du mouvement, donc les
+ * deux ne peuvent pas diverger (une planche remplacée suit partout).
+ *
+ * Absents volontairement, faute de planche pour CE mouvement :
+ * - Vertical Jump, Sprint 10 m, Sprint 20 m, Poids de corps : aucune planche ;
+ * - Tractions strictes max : la planche des tractions lestées montre une
+ *   ceinture et un disque de 20 kg, ce n'est pas la traction au poids de
+ *   corps du test — on ne rattache pas la voisine.
+ */
+export const MOUVEMENT_DU_TEST: Readonly<Record<string, string>> = {
+  'test-squat-1rm': 'back-squat',
+  'test-bench-1rm': 'bench-press',
+  'test-deadlift-1rm': 'deadlift',
+  'test-weighted-pullup-1rm': 'weighted-pullup',
+  'test-push-press-1rm': 'push-press',
+  'test-broad-jump': 'broad-jump',
+  'test-ab-wheel-max': 'ab-wheel',
+  'test-leg-raise-max': 'hanging-leg-raise',
+};
+
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */
 export function fichePower12(exerciceId: string): string | undefined {
-  const fichier = FICHES_POWER12[exerciceId];
+  const fichier = FICHES_POWER12[MOUVEMENT_DU_TEST[exerciceId] ?? exerciceId];
   return fichier === undefined ? undefined : `fiches/${fichier}`;
 }
