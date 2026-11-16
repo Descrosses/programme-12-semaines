@@ -97,11 +97,11 @@ Conséquence pour la conversion : un 0 s n'est écrit que si le document dit « 
 
 **Contrat moteur.** Le module générique remplit `ResolvedExercise` comme MASS CONGESTION : aucune charge calculée, `suggestion: null`, `targetRPE: null`, aucun ajustement. Famille de mouvement `libre` (elle existe déjà pour « un mouvement que le programme ne connaît pas »), rôle `accessory`, jamais `main`. Trois champs facultatifs sont à ajouter au contrat : `objectifsParSerie` sur l'exercice, `sansIntensite` et `sansDuree` sur la séance. Sans les deux derniers, l'écran afficherait « MODÉRÉ » ou une durée que le document n'a jamais écrits.
 
-**Durée du programme.** Le questionnaire est une décision de Guillaume (16 novembre). La limite de 12 semaines reste une proposition à valider.
+**Durée du programme.** Décisions de Guillaume (16 novembre) : le questionnaire, et 12 semaines au plus.
 
 - **La limite actuelle.** `useRoute.ts` ramène toute semaine hors de 0 à 12 vers la semaine 1 (`clampWeek`). C'est la seule limite que j'ai vue : `WeekIndex` est un simple nombre, et ni `SetRow` ni `ModuleProgramme` ne bornent les semaines. Je n'ai pas lu les écrans.
 - **Le coût d'une extension.** La borne tient en une ligne, mais elle est partagée par POWER et MASS. Fichiers à examiner avant de la déplacer : `src/state/useRoute.ts` et ses tests, `src/screens/WeekScreen.tsx`, `src/engine/calendar.ts` (`locateToday`, `currentWeek`), `src/App.tsx`, les écrans Progrès, et tout test qui écrit « 12 ». Cet ADR ne conçoit pas l'extension.
-- **Quand le document fixe une durée**, le fichier la porte (`dureeSemaines`) et ses semaines la couvrent. Au-delà de 12, l'import est refusé avec un message clair (proposition à valider).
+- **Quand le document fixe une durée**, le fichier la porte (`dureeSemaines`) et ses semaines la couvrent. Au-delà de 12, l'import est refusé avec un message clair.
 - **Quand le document ne la fixe pas** (Training 1 : aucune durée écrite), ce n'est plus un blocage. Le fichier décrit une seule semaine type, sans numéros. Au moment de l'import, MAJK pose la question à la personne : « Combien de semaines veux-tu suivre ce programme ? », avec une réponse de 1 à 12. MAJK n'invente pas de valeur par défaut : sans réponse, le programme n'est pas importé.
 - **Où vit la réponse.** Avec la version importée, dans un champ `reponses` distinct du `document`. Elle n'est pas une prescription et MAJK ne l'affiche jamais comme telle (« Durée : 8 semaines, choisie par toi »). Le registre reste synchrone : un programme garde une durée fixe. Suivre le même document sur une autre durée crée une nouvelle version (voir §3).
 
@@ -273,7 +273,7 @@ Pourquoi deux formes : les 44 lignes de Training 1 ont toutes des séries identi
 | `identifiant-duplique` | Deux exercices ou deux séances de même identifiant ; le même exercice deux fois dans une séance. |
 | `prescription-incompatible` | Cas bloquants ci-dessous. |
 
-**Cas bloquants** : plus de 12 semaines (limite proposée, toujours à valider : voir D2), séance sans jour, deux séances le même jour d'une même semaine (la table `sessions` impose une séance par jour ; la conversion juxtapose les blocs d'un même jour, voir D2), ligne qui cite un exercice non déclaré. La durée absente n'est plus bloquante : MAJK la demande à l'import. Si le document ne fixe pas les jours, Guillaume les tranche à la conversion et l'écrit dans `decisions`. MAJK affiche toutes les `decisions` à l'import et dans le programme, sous le titre « Ce que le document ne disait pas ».
+**Cas bloquants** : plus de 12 semaines (décision de Guillaume : voir D2), séance sans jour, deux séances le même jour d'une même semaine (la table `sessions` impose une séance par jour ; la conversion juxtapose les blocs d'un même jour, voir D2), ligne qui cite un exercice non déclaré. La durée absente n'est plus bloquante : MAJK la demande à l'import. Si le document ne fixe pas les jours, Guillaume les tranche à la conversion et l'écrit dans `decisions`. MAJK affiche toutes les `decisions` à l'import et dans le programme, sous le titre « Ce que le document ne disait pas ».
 
 **Texte verbatim.** `texteOriginal`, `nom`, `consignes` et `notes` reproduisent le document au caractère près, fautes comprises (« pique de concertation », « potine »). Quand la conversion ne sait pas trancher entre deux lectures, elle ne choisit pas : elle s'arrête et pose la question à Guillaume, dont la réponse entre dans `decisions` (décision du 16 novembre).
 
@@ -327,7 +327,7 @@ Si l'un des deux contrôles échoue, la restauration est refusée et la base res
 
 | Lot | Objectif | Fichiers | Test d'acceptation | Risque de régression |
 |---|---|---|---|---|
-| 1 | Format, validateur, classement, forme canonique. | Nouveaux, sous `src/engine/perso/`. | L'annexe B est acceptée : 44 lignes compatibles sur 44, durée « à demander », 5 décisions lues. Un fichier fautif par classe d'erreur ; une valeur absente ne devient jamais 0 ; une clé inconnue est refusée ; une pyramide est compatible, un AMRAP au temps est consultable. | Faible, tant que le validateur reste isolé. |
+| 1 — FAIT | Format, validateur, classement, forme canonique. | Nouveaux, sous `src/engine/perso/`. | L'annexe B est acceptée : 44 lignes compatibles sur 44, durée « à demander », 5 décisions lues. Un fichier fautif par classe d'erreur ; une valeur absente ne devient jamais 0 ; une clé inconnue est refusée ; une pyramide est compatible, un AMRAP au temps est consultable. | Faible, tant que le validateur reste isolé. |
 | 2 | Table v25, import, archivage, suppression, sauvegardes. | `db/db.ts`, nouveau `db/programmesImportes.ts`, `db/export.ts`, `exportRoundTrip.test.ts`. | Aller-retour avec deux programmes, dont un en deux versions, et leurs cycles ; un fichier v3 se restaure ; une restauration incohérente ne modifie rien. | Moyen : `importAll`. |
 | 3 | Mémoire, hydratation, fin du repli pour les seuls identifiants inconnus. | Nouveau `programmes/perso/memoire.ts`, `programmes/registre.ts`, `registre.test.ts`, `data/catalogue.ts` (`programmeParId` seul), `main.tsx`, `App.tsx`. | Pour `femmes8` et pour `null`, `modulePourCycle` et les valeurs que calcule `App.tsx` (`locateToday`, `currentWeek`) sont identiques à aujourd'hui ; les identifiants compilés rendent les mêmes modules qu'avant ; un identifiant inconnu ne rend jamais POWER 12 ; suite complète verte. | Élevé. |
 | 4 | Module générique et champs du contrat. | Nouveau `programmes/perso/module.ts`, `engine/getSession.ts` (types), carte d'exercice, écran de séance. | Les séances de l'annexe B sont comparées ligne à ligne et série à série au fichier ; le circuit d'abdos sort en un bloc de 4 stations, 4 tours, rythme enchaîné, 60 s ; les trois supersets sortent enchaînés ; les sections et les consignes générales s'affichent ; une ligne consultable n'a aucune série ; un contexte rempli de 1RM ne change rien ; une série validée sans charge enregistre `null`. | Moyen : composants partagés. |
@@ -384,6 +384,7 @@ Si l'un des deux contrôles échoue, la restauration est refusée et la base res
 | 4 | « Barre au front EZ » et « Barre au front » : même exercice ? | Oui, même exercice, un seul historique. |
 | 5 | « en super set » = sans repos entre les exercices ? | Oui. |
 | 6 | Fautes du PDF | Verbatim. Quand l'IA ne sait pas trancher, Guillaume tranche. |
+| 7 | Durée maximale d'un programme importé | 12 semaines. |
 
 ## Annexe B — « Training 1 Guillaume », converti au format MAJK
 
