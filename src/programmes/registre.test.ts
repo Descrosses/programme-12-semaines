@@ -7,7 +7,16 @@
 import { describe, expect, it } from 'vitest';
 import { PROGRAMME_PAR_DEFAUT, programmesDisponibles } from '../data/catalogue';
 import { EMPTY_CONTEXT } from '../engine/types';
-import { MODULES, moduleParId, modulePourCycle } from './registre';
+import {
+  FEMMES_SANS_MODULE,
+  ID_PROGRAMME_INDISPONIBLE,
+  MODULES,
+  MODULE_INDISPONIBLE,
+  moduleParId,
+  modulePourCycle,
+} from './registre';
+import { POWER12 } from './power12';
+import { currentWeek, locateToday } from '../engine/calendar';
 import { FEMMES_PROGRAMME_ID } from '../db/femmesRepo';
 
 describe('registre des programmes', () => {
@@ -56,10 +65,56 @@ describe('registre des programmes', () => {
     expect(m?.joursDeLaSemaine(5)).toEqual([]);
   });
 
-  it('ne laisse jamais un cycle sans programme', () => {
-    // Un identifiant renommé, un import d'un fichier plus ancien.
-    expect(modulePourCycle('power99').id).toBe(PROGRAMME_PAR_DEFAUT);
+  it('ne laisse jamais un cycle sans programme : sans cycle, POWER 12', () => {
     expect(modulePourCycle(null).id).toBe(PROGRAMME_PAR_DEFAUT);
+  });
+
+  /*
+   * Lot 3 de l'ADR ME, MYSELF & I (décision de Guillaume, 16 novembre) :
+   * un identifiant INCONNU n'ouvre plus POWER 12 en silence. Il aurait joué
+   * les séances de POWER et enregistré leurs séries sous un cycle qui n'est
+   * pas le sien.
+   */
+  it('un programme inconnu rend le module « indisponible », jamais POWER 12', () => {
+    for (const id of ['power99', 'mass12', 'perso-inconnu00-1']) {
+      const m = modulePourCycle(id);
+      expect(m.id, id).toBe(ID_PROGRAMME_INDISPONIBLE);
+      expect(m.semaines, id).toEqual([]);
+      expect(m.getSession(1, 0, EMPTY_CONTEXT), id).toBeNull();
+      // Réglages reste ouvert : c'est de là qu'on restaure une sauvegarde.
+      expect(
+        m.onglets.map((o) => o.vue),
+        id,
+      ).toEqual(['settings']);
+    }
+    expect(MODULE_INDISPONIBLE.id).toBe(ID_PROGRAMME_INDISPONIBLE);
+  });
+
+  it('le calendrier d’un programme indisponible ne plante pas : aucune semaine, aucun jour', () => {
+    // Ce que l'App calcule au démarrage d'un cycle (vu planter dans le navigateur).
+    expect(currentWeek('2026-11-16', '2026-11-20', MODULE_INDISPONIBLE)).toBeNull();
+    expect(locateToday('2026-11-16', '2026-11-20', MODULE_INDISPONIBLE)).toBeNull();
+  });
+
+  it('FEMMES 8 garde son repli sur POWER 12, et App calcule les mêmes valeurs', () => {
+    expect(FEMMES_SANS_MODULE).toBe(FEMMES_PROGRAMME_ID);
+    const femmes = modulePourCycle(FEMMES_PROGRAMME_ID);
+    // Le MÊME objet qu'avant le lot 3 : rien de ce qu'App en tire ne change.
+    expect(femmes).toBe(POWER12);
+    for (const jour of ['2026-11-07', '2026-11-16', '2026-12-31']) {
+      expect(locateToday('2026-11-07', jour, femmes)).toEqual(
+        locateToday('2026-11-07', jour, POWER12),
+      );
+      expect(currentWeek('2026-11-07', jour, femmes)).toBe(
+        currentWeek('2026-11-07', jour, POWER12),
+      );
+    }
+  });
+
+  it('un programme du catalogue compilé sans module garde son repli', () => {
+    for (const id of ['mass8', 'power-cycle2', 'femmes-cycle2']) {
+      expect(modulePourCycle(id).id, id).toBe(PROGRAMME_PAR_DEFAUT);
+    }
   });
 
   it('décrit POWER 12 comme il est réellement', () => {

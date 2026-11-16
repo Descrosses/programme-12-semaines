@@ -110,6 +110,15 @@ export interface ResolvedExercise {
   chargeCible?: ChargeCible;
   /** MASS FORCE : « augmente / garde / baisse », en une phrase. */
   conseilProgression?: string;
+  /**
+   * Programme importé (ME, MYSELF & I) : l'objectif et la charge PRESCRITE de
+   * chaque série, quand elles diffèrent d'une série à l'autre (une pyramide
+   * 12/10/8/6). Absent partout ailleurs : `work` et `planKg` valent alors
+   * pour toutes les séries.
+   */
+  objectifsParSerie?: readonly { work: Work; kg: number | null }[];
+  /** Programme importé : l'intertitre du bloc du document (« SEANCE ABDOS »). */
+  section?: string;
   /** MASS FORCE : sélecteur RIR facultatif sur la dernière série. */
   demandeRir?: boolean;
   /**
@@ -189,6 +198,13 @@ export interface ResolvedSession {
    * l'écran de séance tait l'étiquette « Bloc … » au lieu d'en inventer un.
    */
   sansBloc?: true;
+  /**
+   * Programme importé dont le document ne donne ni intensité ni durée :
+   * l'écran tait ces pastilles au lieu d'afficher « MODÉRÉ » ou une durée que
+   * personne n'a écrite.
+   */
+  sansIntensite?: true;
+  sansDuree?: true;
   blockColor: string;
   title: string;
   /**

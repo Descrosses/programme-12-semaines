@@ -21,6 +21,7 @@ import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { enteteDe } from '../data/famillesVisuel';
+import { programmeParId } from '../data/catalogue';
 import { DiagonalStripes } from '../components/Decor';
 import styles from './Week.module.css';
 
@@ -114,7 +115,8 @@ export function WeekScreen({
           day,
           title: s.title,
           intensity: s.intensity,
-          duration: s.durationLabel,
+          // Programme importé sans durée écrite : la ligne n'en affiche pas.
+          duration: s.sansDuree === true ? '' : s.durationLabel,
           date,
           status: rows.find((r) => r.week === week && r.day === day)?.status ?? 'planned',
           isToday: date === todayIso,
@@ -135,19 +137,29 @@ export function WeekScreen({
   const blocCourant = programme.blocDeLaSemaine(week);
   const block = blocInfo(blocCourant);
   if (!programme.semaines.includes(week)) return null;
+  /*
+   * Programme importé (ME, MYSELF & I) : le sur-titre est le nom de phase que
+   * le DOCUMENT écrit, ou rien. « Volume » est un mot de MASS 4 qu'aucun
+   * programme importé n'a écrit.
+   */
+  const importe = programmeParId(programme.id)?.familleId === 'perso';
+  /* Le lien Nutrition n'existe que pour un programme qui a cet onglet. */
+  const aNutrition = programme.onglets.some((o) => o.route === 'nutrition');
 
   return (
     <div className={styles.screen}>
       <ScreenHeader
         eyebrow={
-          week === 0
-            ? 'Avant le programme'
-            : block === null
-              ? // MASS FORCE n'a écrit que sa semaine type : « Volume » est le mot de MASS 4.
-                programme.id === 'mass-force'
-                ? 'Semaine type'
-                : 'Volume'
-              : `Bloc ${block.name}`
+          importe
+            ? (blocCourant ?? undefined)
+            : week === 0
+              ? 'Avant le programme'
+              : block === null
+                ? // MASS FORCE n'a écrit que sa semaine type : « Volume » est le mot de MASS 4.
+                  programme.id === 'mass-force'
+                  ? 'Semaine type'
+                  : 'Volume'
+                : `Bloc ${block.name}`
         }
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
         subtitle={block?.objective}
@@ -217,10 +229,11 @@ export function WeekScreen({
               <span className={styles.dayBody}>
                 <span className={styles.dayTitle}>{l.title}</span>
                 <span className={styles.dayMeta}>
-                  <Icon name="stopwatch" size="15px" />
+                  {l.duration !== '' && <Icon name="stopwatch" size="15px" />}
                   <span className={styles.dayMetaText}>
                     {l.duration}
-                    {l.date && ` · ${humanDateShort(l.date)}`}
+                    {l.duration !== '' && l.date && ' · '}
+                    {l.date && humanDateShort(l.date)}
                   </span>
                 </span>
               </span>
@@ -255,10 +268,12 @@ export function WeekScreen({
         treize fois la même chose, et une cible fausse pour les jours de repos
         de la semaine affichée.
       */}
-      <button type="button" className={styles.cta} onClick={onGoNutrition}>
-        <Icon name="meal" size="22px" />
-        Voir la nutrition
-      </button>
+      {aNutrition && (
+        <button type="button" className={styles.cta} onClick={onGoNutrition}>
+          <Icon name="meal" size="22px" />
+          Voir la nutrition
+        </button>
+      )}
     </div>
   );
 }

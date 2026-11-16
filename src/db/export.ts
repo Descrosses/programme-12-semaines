@@ -6,6 +6,7 @@
  */
 
 import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
+import { hydraterProgrammesImportes, programmesDeSauvegarde } from './programmesImportes';
 import { cyclePourEcriture } from './repo';
 import {
   db,
@@ -23,6 +24,7 @@ import {
   type NoteRow,
   type PainLogRow,
   type FemmesSeanceRow,
+  type ProgrammeImporteRow,
   type ReferenceForceRow,
   type SessionExerciseRow,
   type ReadinessRow,
@@ -31,8 +33,14 @@ import {
   type SettingsRow,
 } from './db';
 
-/** Version du format, pour qu'un export d'aujourd'hui reste lisible plus tard. */
-export const EXPORT_VERSION = 3;
+/**
+ * Version du format, pour qu'un export d'aujourd'hui reste lisible plus tard.
+ *
+ * 4 : les programmes importés (ME, MYSELF & I). Une application plus
+ * ancienne refuse ce fichier au lieu d'en perdre les programmes en silence ;
+ * les fichiers 1 à 3 restent importables tels quels.
+ */
+export const EXPORT_VERSION = 4;
 
 /*
  * Les tables que la sauvegarde couvre, nommées une fois.
@@ -59,6 +67,7 @@ export const TABLES_SAUVEGARDEES = [
   'painLog',
   'femmesSeances',
   'referencesForce',
+  'programmesImportes',
   'extraFoods',
   'notes',
   'noteDrafts',
@@ -92,6 +101,8 @@ export interface ExportFile {
   femmesSeances?: FemmesSeanceRow[];
   /** Références de force (v24). Absent des exports antérieurs : toujours optionnel. */
   referencesForce?: ReferenceForceRow[];
+  /** Programmes importés (v25). Absent des exports antérieurs : toujours optionnel. */
+  programmesImportes?: ProgrammeImporteRow[];
   /** Aliments mangés en plus du plan. Absent des exports antérieurs. */
   extraFoods?: ExtraFoodRow[];
   /**
@@ -212,6 +223,7 @@ export async function exportAll(): Promise<ExportFile> {
     painLog,
     femmesSeances,
     referencesForce,
+    programmesImportes,
     extraFoods,
     notes,
     noteDrafts,
@@ -233,6 +245,7 @@ export async function exportAll(): Promise<ExportFile> {
     db.painLog.toArray(),
     db.femmesSeances.toArray(),
     db.referencesForce.toArray(),
+    db.programmesImportes.toArray(),
     db.extraFoods.toArray(),
     db.notes.toArray(),
     db.noteDrafts.toArray(),
@@ -259,6 +272,7 @@ export async function exportAll(): Promise<ExportFile> {
     painLog,
     femmesSeances,
     referencesForce,
+    programmesImportes,
     extraFoods,
     notes,
     noteDrafts,
@@ -369,6 +383,7 @@ export interface ImportReport {
   painLog: number;
   femmesSeances: number;
   referencesForce: number;
+  programmesImportes: number;
   extraFoods: number;
   notes: number;
   noteDrafts: number;
@@ -532,6 +547,7 @@ export function parseExport(text: string): ExportFile {
     painLog: f.painLog ?? [],
     femmesSeances: f.femmesSeances ?? [],
     referencesForce: f.referencesForce ?? [],
+    programmesImportes: f.programmesImportes ?? [],
     extraFoods: f.extraFoods ?? [],
     notes: f.notes ?? [],
     noteDrafts: f.noteDrafts ?? [],
@@ -570,12 +586,19 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
    *   v17 le fait sur une base existante.
    */
   const cyclesDuFichier = file.cycles ?? [];
+  /*
+   * Les programmes importés sont relus et validés AVANT la transaction, donc
+   * avant le moindre effacement : un programme invalide, ou un cycle dont le
+   * programme manque au fichier, et la restauration est refusée sur une base
+   * intacte.
+   */
+  const programmesImportes = programmesDeSauvegarde(file.programmesImportes ?? [], cyclesDuFichier);
   const cycleDeSecours = cyclesDuFichier.length === 0 ? await cyclePourEcriture() : null;
   const idSecours = cycleDeSecours?.id ?? 1;
   const rattacher = <T extends { cycleId?: number }>(lignes: T[]): T[] =>
     cyclesDuFichier.length > 0 ? lignes : lignes.map((l) => ({ ...l, cycleId: idSecours }));
 
-  return db.transaction(
+  const rapport = await db.transaction(
     'rw',
     [
       db.settings,
@@ -588,6 +611,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       db.painLog,
       db.femmesSeances,
       db.referencesForce,
+      db.programmesImportes,
       db.extraFoods,
       db.notes,
       db.noteDrafts,
@@ -625,6 +649,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         db.painLog.clear(),
         db.femmesSeances.clear(),
         db.referencesForce.clear(),
+        db.programmesImportes.clear(),
         db.extraFoods.clear(),
         db.notes.clear(),
         db.noteDrafts.clear(),
@@ -660,6 +685,8 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       // Avec leurs identifiants et leurs dates : l'historique des évaluations
       // se restaure tel quel, dans le même ordre.
       await db.referencesForce.bulkAdd(referencesForce);
+      // Validés plus haut, reconstruits depuis leur texte d'origine.
+      await db.programmesImportes.bulkAdd(programmesImportes);
       await db.extraFoods.bulkAdd(extraFoods);
       await db.notes.bulkAdd(rattacher(notes));
       await db.noteDrafts.bulkAdd(rattacher(noteDrafts));
@@ -680,6 +707,7 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
         painLog: painLog.length,
         femmesSeances: femmesSeances.length,
         referencesForce: referencesForce.length,
+        programmesImportes: programmesImportes.length,
         extraFoods: extraFoods.length,
         notes: notes.length,
         noteDrafts: noteDrafts.length,
@@ -694,6 +722,9 @@ export async function importAll(file: ExportFile): Promise<ImportReport> {
       };
     },
   );
+  // La mémoire suit la base restaurée : les programmes importés y entrent.
+  await hydraterProgrammesImportes();
+  return rapport;
 }
 
 /*

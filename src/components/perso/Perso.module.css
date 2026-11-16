@@ -1,0 +1,210 @@
+/*
+ * ME, MYSELF & I : import et gestion des programmes importés.
+ * Uniquement les jetons de l'application : aucune couleur nouvelle.
+ */
+
+.panneau {
+  margin: 12px 0 4px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.titre {
+  margin: 0 0 4px;
+  font-family: var(--font-cond);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Le vrai champ de fichier est caché sous un bouton de 48 px. */
+.fichier {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap, 48px);
+  margin-top: 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fichier input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.ok {
+  margin: 10px 0 0;
+  color: var(--vert);
+  font-size: var(--fs-small);
+}
+
+.refus {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--rouge) 55%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.refus p {
+  margin: 0 0 6px;
+}
+
+.refus ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.refusCourt {
+  margin: 10px 0 0;
+  color: var(--rouge);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.chemin {
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.apercu {
+  margin-top: 12px;
+}
+
+.nom {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.meta {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.complet,
+.partiel {
+  margin: 10px 0 0;
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.complet {
+  color: var(--vert);
+}
+
+.partiel {
+  color: var(--orange);
+}
+
+.sous {
+  margin: 12px 0 4px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.puces {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.question select {
+  min-height: var(--tap, 48px);
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.confirme {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.confirme p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.detail {
+  margin-top: 4px;
+}
+
+.gestes {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.secondaire,
+.danger {
+  flex: 1;
+  min-height: var(--tap, 48px);
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondaire {
+  border: 1px solid var(--line-strong);
+  background: none;
+  color: var(--ink-2);
+}
+
+.danger {
+  border: 1px solid var(--rouge);
+  background: none;
+  color: var(--rouge);
+}
+
+.archives {
+  margin-top: 16px;
+}
+
+.erreurMemoire {
+  margin: 10px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}

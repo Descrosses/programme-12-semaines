@@ -238,7 +238,13 @@ export function currentWeek(
 ): WeekIndex | null {
   if (!startDate) return null;
   const all = schedule(startDate, prog);
-  const first = all[0]!;
+  /*
+   * Un programme sans aucune séance — le module « indisponible » d'un cycle
+   * dont le programme est inconnu — n'a pas de semaine en cours. Lire
+   * `all[0]` sans garde faisait planter l'App au démarrage de ce cycle.
+   */
+  const first = all[0];
+  if (first === undefined) return null;
   if (todayIso < first.date) return first.week;
   let week = first.week;
   for (const s of all) {

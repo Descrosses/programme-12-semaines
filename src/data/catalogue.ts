@@ -26,6 +26,8 @@
  * La logique sportive reste dans le module de chaque programme.
  */
 
+import { lireMemoire, programmeEnMemoire } from '../programmes/perso/memoire';
+
 /** Les trois familles prévues. Aucune autre n'est au catalogue de lancement. */
 export type FamilleId = 'power' | 'mass' | 'femmes' | 'perso';
 
@@ -464,7 +466,7 @@ export const FAMILLES: readonly Famille[] = [
      * ne venir de nulle part.
      */
     resume:
-      'Ton propre programme, suivi avec le chrono, l’historique et les courbes de MAJK. Rien n’est prescrit ici : le contenu vient de toi.',
+      'Ton propre programme, suivi avec le chrono et l’historique de MAJK. Rien n’est prescrit ici : le contenu vient de toi.',
     programmes: [],
   },
 ];
@@ -474,8 +476,52 @@ export function tousLesProgrammes(): ProgrammeDefinition[] {
   return FAMILLES.flatMap((f) => [...f.programmes]);
 }
 
+/**
+ * Un programme par son identifiant : le catalogue compilé D'ABORD, puis les
+ * programmes importés (ME, MYSELF & I) gardés en mémoire.
+ *
+ * Dans cet ordre, un programme importé ne peut jamais masquer POWER, MASS ou
+ * FEMMES. `FAMILLES` et `tousLesProgrammes` restent strictement compilés :
+ * les importés n'y entrent pas.
+ */
 export function programmeParId(id: string): ProgrammeDefinition | null {
-  return tousLesProgrammes().find((p) => p.id === id) ?? null;
+  return tousLesProgrammes().find((p) => p.id === id) ?? programmeImporteParId(id);
+}
+
+/**
+ * Les programmes importés à montrer dans la famille ME, MYSELF & I : les
+ * versions non archivées, dans l'ordre de la mémoire. Une version archivée
+ * reste lisible (un cycle peut s'en servir) mais ne se propose plus.
+ */
+export function programmesImportesProposes(): ProgrammeDefinition[] {
+  return lireMemoire()
+    .programmes.filter((p) => !p.archive)
+    .map((p) => programmeImporteParId(p.cle))
+    .filter((p): p is ProgrammeDefinition => p !== null);
+}
+
+/** La fiche de catalogue d'une version importée, lue dans la mémoire. */
+function programmeImporteParId(cle: string): ProgrammeDefinition | null {
+  const row = programmeEnMemoire(cle);
+  if (row === null) return null;
+  return {
+    id: row.cle,
+    familleId: 'perso',
+    nom: row.nom,
+    version: String(row.rev),
+    // Toujours renseignée : le validateur et l'import l'exigent, du document
+    // ou du questionnaire.
+    dureeSemaines: row.reponses.dureeSemaines ?? row.document.dureeSemaines ?? 0,
+    /*
+     * Jouable de bout en bout depuis le lot 4 (`programmes/perso/module.ts`).
+     * Que certaines lignes ne soient que consultables se dit ailleurs
+     * (« Suivi partiel »), pas par le statut.
+     */
+    statut: 'disponible',
+    resume: `Importé de « ${row.document.source.document} ».`,
+    objectifs: [],
+    prerequis: [],
+  };
 }
 
 export function familleParId(id: FamilleId): Famille | null {

@@ -820,7 +820,12 @@ export function SetEntry({
   timer: RestTimer;
   onSave: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
 }) {
-  const plannedReps = plannedRepsOf(ex);
+  /*
+   * Programme importé : une pyramide prescrit un objectif et une charge par
+   * série (`objectifsParSerie`). Absent partout ailleurs : rien ne change.
+   */
+  const plannedKgSerie = ex.objectifsParSerie?.[index]?.kg ?? plannedKg;
+  const plannedReps = plannedRepsOf(ex, index);
   const measureBase = measureOf(ex);
   /*
    * Le curseur suit l'unité : les pas montent plus haut et avancent plus fin
@@ -871,7 +876,7 @@ export function SetEntry({
    * `null` et non 0 : un « 0 kg » affiché ressemble à une charge prescrite,
    * alors que le programme n'en donne aucune sur ces mouvements-là.
    */
-  const entry = loadEntryFor(ex, saved?.actualKg ?? plannedKg ?? undefined);
+  const entry = loadEntryFor(ex, saved?.actualKg ?? plannedKgSerie ?? undefined);
   const [kg, setKg] = useState<number | null>(entry.initialKg);
   const [rpeValue, setRpe] = useState<number>(saved?.actualRpe ?? ex.targetRPE?.max ?? 7);
   /* MASS FORCE : RIR facultatif, dernière série seulement, VIDE par défaut. */
@@ -890,7 +895,7 @@ export function SetEntry({
    * comparaison répétait ensuite ce 5 m semaine après semaine.
    */
   const [value, setValue] = useState<number>(
-    saved?.measureValue ?? plannedMeasureOf(ex) ?? ex.lastMeasure ?? measure?.min ?? 0,
+    saved?.measureValue ?? plannedMeasureOf(ex, index) ?? ex.lastMeasure ?? measure?.min ?? 0,
   );
   const [failed, setFailed] = useState<boolean>(saved?.failed ?? false);
   /*
@@ -920,14 +925,14 @@ export function SetEntry({
    */
   useEffect(() => {
     if (saved !== null || unite === null) return;
-    setValue(valueForUnit(unite, { lastInUnit, plannedMeters: plannedMeasureOf(ex) }));
+    setValue(valueForUnit(unite, { lastInUnit, plannedMeters: plannedMeasureOf(ex, index) }));
   }, [unite, lastInUnit, saved, ex]);
 
   // Quand la charge du plan change — suggestion acceptée, feu tricolore, charge
   // saisie à la main — les séries pas encore validées se réalignent dessus.
   useEffect(() => {
-    if (saved === null && plannedKg !== null) setKg(plannedKg);
-  }, [plannedKg, saved]);
+    if (saved === null && plannedKgSerie !== null) setKg(plannedKgSerie);
+  }, [plannedKgSerie, saved]);
 
   const done = saved !== null && !editing;
 
@@ -1246,17 +1251,24 @@ export function SetEntry({
  * valeur existe. Un saut, non : le programme ne dit pas à quelle distance
  * sauter, c'est la mesure du jour. D'où le repli sur la dernière réalisée.
  */
-function plannedMeasureOf(ex: ResolvedExercise): number | null {
-  if (ex.work.kind === 'distance') return ex.work.meters;
+function plannedMeasureOf(ex: ResolvedExercise, index = 0): number | null {
+  const work = travailDeLaSerie(ex, index);
+  if (work.kind === 'distance') return work.meters;
   // Une tenue s'ouvre sur la durée prescrite : c'est elle qu'on valide le
   // plus souvent, et la saisie ne doit demander aucun appui dans ce cas.
-  if (ex.work.kind === 'time') return ex.work.seconds;
+  if (work.kind === 'time') return work.seconds;
   return null;
 }
 
-function plannedRepsOf(ex: ResolvedExercise): number | null {
-  if (ex.work.kind !== 'reps') return null;
-  const r = ex.work.reps;
+/** Le travail d'UNE série : le sien quand le programme en prescrit un par série. */
+function travailDeLaSerie(ex: ResolvedExercise, index: number) {
+  return ex.objectifsParSerie?.[index]?.work ?? ex.work;
+}
+
+function plannedRepsOf(ex: ResolvedExercise, index = 0): number | null {
+  const work = travailDeLaSerie(ex, index);
+  if (work.kind !== 'reps') return null;
+  const r = work.reps;
   if (r === 'max') return null;
   return typeof r === 'number' ? r : r.max;
 }
