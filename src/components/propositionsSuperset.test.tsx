@@ -23,7 +23,7 @@ import { PropositionsExercice } from './PropositionsExercice';
 import { SupersetCard } from './SupersetCard';
 
 const timer = { state: null, start: () => {} } as unknown as RestTimer;
-const note = { week: 11, day: 0, date: '' };
+const note = { week: 11, day: 0 as const, date: '' };
 
 /** Le superset de tronc du lundi : Ab Wheel + Roman Side Bench (S11). */
 const lundi = moduleParId('power12')!.getSession(11, 0, EMPTY_CONTEXT)!;
