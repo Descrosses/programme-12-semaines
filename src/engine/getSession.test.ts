@@ -314,11 +314,11 @@ describe('bloc puissance (S9-11) — contraste', () => {
      * volume réduit.
      */
     expect(find(s, 'dead-bug-cable').loadLine).toBe('2 × 5 / côté');
-    // Vendredi plafonné à 4 séries, Jump Squat retiré (décision de Guillaume).
+    // Vendredi plafonné à 3 séries, Push Press et Speed Squat à 4 (Guillaume).
     expect(find(s, 'speed-squat').loadLine).toBe('4 × 2 × 65 kg');
     expect(find(s, 'push-press').sets).toBe(4);
-    expect(find(s, 'broad-jump').sets).toBe(4);
-    expect(ids(s.exercises)).not.toContain('jump-squat-db');
+    expect(find(s, 'broad-jump').sets).toBe(3);
+    expect(find(s, 'jump-squat-db').loadLine).toBe('3 × 3 — 2 × 6-8 kg');
   });
 
   it('aucune progression automatique : le tableau tient, la vitesse pilote', () => {

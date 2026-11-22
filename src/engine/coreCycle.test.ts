@@ -211,7 +211,8 @@ describe('le deload touche enfin le tronc et les portés', () => {
 
   it('hors deload, rien n’est touché', () => {
     expect(trouve(3, 0, 'ab-wheel').loadLine).toBe('3 × 8 — poids du corps');
-    expect(trouve(3, 4, 'farmer-carry').loadLine).toBe('4 × 25 m — 2 × 34 kg');
+    // 3 séries : vendredi plafonné à 3 séries (Guillaume, 22 novembre).
+    expect(trouve(3, 4, 'farmer-carry').loadLine).toBe('3 × 25 m — 2 × 34 kg');
     expect(trouve(3, 5, 'suitcase-carry').loadLine).toBe('3 × 30 m / côté × 32 kg');
   });
 

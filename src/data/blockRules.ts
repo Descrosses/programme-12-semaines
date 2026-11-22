@@ -343,8 +343,8 @@ const MAXFORCE: BlockRuleSet[] = [
       patch('copenhagen-plank', {
         note: 'Jambe haute TENDUE, appui sur le pied, si les 3 × 8 en levier court sont passés sans douleur. Sinon tu restes au genou fléchi : ce mouvement-là ne se force pas.',
       }),
-      // « Hang High Pull 4 × 3, repos 2 min » (§8).
-      patch('hang-high-pull', { sets: 4, restSec: 120 }),
+      // « Hang High Pull 3 × 3, repos 2 min » (§8) — 3 séries : plafond du vendredi.
+      patch('hang-high-pull', { sets: 3, restSec: 120 }),
       patch('push-press', { restSec: 150 }),
       patch('speed-squat', { restSec: 75 }),
       /*
@@ -650,23 +650,25 @@ const POWER: BlockRuleSet[] = [
           restSec: 45,
         },
       },
-      patch('lateral-bound', { sets: 4, work: reps(2, true), restSec: 90 }),
+      patch('lateral-bound', { sets: 3, work: reps(2, true), restSec: 90 }),
       /*
-       * Le schéma ne bouge pas de force max à puissance : 4 × 3. Ce qui change
-       * est ce qu'on cherche — la vitesse de barre, pas le kilo de plus. Sans
-       * RPE cible, §11 se contente de reporter le décalage réel.
+       * Le schéma ne bouge pas de force max à puissance : 3 × 3 (plafond du
+       * vendredi). Ce qui change est ce qu'on cherche — la vitesse de barre,
+       * pas le kilo de plus. Sans RPE cible, §11 se contente de reporter le
+       * décalage réel.
        */
       patch('hang-high-pull', {
-        sets: 4,
+        sets: 3,
         restSec: 120,
         note: 'Vitesse de barre : la charge ne monte que si les reps restent vives.',
       }),
       patch('speed-squat', { restSec: 90 }),
       /*
-       * Volume plafonné à 4 séries, Jump Squat retiré : désormais dans la
-       * séance de base et dans le tableau du §9, pour les douze semaines
-       * (décision de Guillaume, 22 novembre). Rien à corriger ici.
+       * Vendredi plafonné à 3 séries par exercice, Push Press et Speed Squat
+       * exceptés (4, tableau du §9) — décision de Guillaume, 22 novembre. Le
+       * Jump Squat garde 3 séries, en 3 reps et 2 min de repos ici.
        */
+      patch('jump-squat-db', { work: reps(3), restSec: 120 }),
       remove('farmer-carry'),
       remove('explosive-cable-row'),
       /*

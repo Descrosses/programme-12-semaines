@@ -150,17 +150,18 @@ describe('le volume suit les blocs du §8', () => {
     }
   });
 
-  it('semaines 5-7 — force maximale : 4 × 3, repos 2 min', () => {
+  // 3 séries et non plus 4 : vendredi plafonné à 3 séries (Guillaume, 22 novembre).
+  it('semaines 5-7 — force maximale : 3 × 3, repos 2 min', () => {
     for (const w of [5, 6, 7] as WeekIndex[]) {
-      expect(hhp(w)!.sets, `S${w}`).toBe(4);
+      expect(hhp(w)!.sets, `S${w}`).toBe(3);
       expect(hhp(w)!.restSec, `S${w}`).toBe(120);
     }
   });
 
-  it('semaines 9-11 — puissance : 4 × 3 maintenu, la vitesse prime', () => {
+  it('semaines 9-11 — puissance : 3 × 3 maintenu, la vitesse prime', () => {
     for (const w of [9, 10, 11] as WeekIndex[]) {
       const ex = hhp(w)!;
-      expect(ex.sets, `S${w}`).toBe(4);
+      expect(ex.sets, `S${w}`).toBe(3);
       expect((ex.work as { reps: number }).reps, `S${w}`).toBe(3);
       expect(ex.notes.join(' '), `S${w}`).toContain('Vitesse de barre');
     }
@@ -288,8 +289,8 @@ describe('le .md reste la source de vérité', () => {
   });
 
   it('le §8 écrit les deux modifications de bloc', () => {
-    expect(md).toContain('Hang High Pull 4 × 3, repos 2 min');
-    expect(md).toContain('Hang High Pull 4 × 3 (2 min, vitesse de barre');
+    expect(md).toContain('Hang High Pull 3 × 3, repos 2 min');
+    expect(md).toContain('Hang High Pull 3 × 3 (2 min, vitesse de barre');
   });
 
   it('la règle de progression du code est celle du .md', () => {

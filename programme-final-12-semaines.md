@@ -63,7 +63,7 @@ La borne basse de chaque fourchette correspond aux semaines de deload, la borne 
 | Mercredi | 60-70 min | **78 min** | Force maximale (S5-7) |
 | Vendredi | ~60 min | **75 min** | Force maximale (S5-7) |
 
-Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 4 séries au plus par exercice et Jump Squat déprogrammé (§7). L'Explosive Cable Row reste ; le vendredi passe de 85-97 min à 71-75 min.
+Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat (§7). L'Explosive Cable Row et le Jump Squat restent ; le vendredi passe de 85-97 min à 72-75 min.
 
 Pourquoi cet ordre : vendredi (neuronal, peu de dommages) potentialise samedi ; dimanche = haut du corps pour que les jambes récupèrent entre le deadlift du samedi et le squat du lundi.
 
@@ -143,7 +143,7 @@ Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon dével
 
 Tu dois sortir en te disant « j'aurais pu en faire plus ».
 
-**A. Broad Jump — 4 × 2** — Repos 2 min — Les 3 sauts du readiness comptent comme échauffement. Mesure les distances.
+**A. Broad Jump — 3 × 2** — Repos 2 min — Les 3 sauts du readiness comptent comme échauffement. Mesure les distances.
 
 **B. Hang High Pull — 3 × 3 × 40 kg** — Repos 90 s — Barre au niveau des cuisses, extension explosive hanches-genoux-chevilles, tirage jusqu'à hauteur de poitrine environ. Sans réception : ce n'est pas un hang clean. Priorité à la vitesse, jamais à la charge. Reset complet entre chaque répétition (barre reposée ou position réinitialisée), 5 à 10 s de pause avant la rep suivante — jamais enchaîné en continu.
 Progression : +2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.
@@ -155,13 +155,13 @@ Progression : +2,5 kg quand les 3 reps de toutes les séries sont rapides.
 
 **E. Speed Squat — 4 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
 
-**F. Jump Squat haltères — déprogrammé** (décision de Guillaume, 22 novembre). C'était le troisième exercice de vitesse des jambes du vendredi, après le Broad Jump et le Speed Squat. Il reste au catalogue avec sa fiche (4 × 4, haltères 2 × 6-8 kg, repos 90 s) et peut se reprogrammer sans rien réécrire.
+**F. Jump Squat haltères — 3 × 4, 2 × 6-8 kg** — Repos 90 s — Vitesse de projection, pas de charge lourde.
 
-*Le vendredi est plafonné à 4 séries par exercice sur les douze semaines : dix exercices et une trentaine de séries le faisaient durer 85 à 97 min, contre 55 à 75 pour les autres séances.*
+*Le vendredi est plafonné à 3 séries par exercice sur les douze semaines, Push Press et Speed Squat exceptés (4 séries) : trop de séries empêchent de rester explosif jusqu'au bout (décision de Guillaume, 22 novembre). Dix exercices et une trentaine de séries le faisaient durer 85 à 97 min ; il tient désormais en 72 à 75 min.*
 
 **G. Explosive Cable Row — 3 × 5** — RPE 6 — Repos 75 s — Tirer vite, retour contrôlé.
 
-**H. Farmer Carry — 4 × 25 m, haltères 2 × 34 kg** — Repos 90 s — **DEUX haltères, une dans chaque main.** Charge symétrique, buste haut, marche agressive. À ne pas confondre avec le Suitcase Carry du samedi, qui se porte d'un seul côté.
+**H. Farmer Carry — 3 × 25 m, haltères 2 × 34 kg** — Repos 90 s — **DEUX haltères, une dans chaque main.** Charge symétrique, buste haut, marche agressive. À ne pas confondre avec le Suitcase Carry du samedi, qui se porte d'un seul côté.
 Progression : +2 kg quand les 25 m sont tenus sans ralentir.
 **Semaines 1 à 4 seulement.** À partir de la semaine 5, il sort du programme et son créneau revient à la Landmine Rotation (§8). Il reste testé au combine : distance max à 2 × 40 kg (§12).
 
@@ -309,7 +309,7 @@ Le samedi garde donc le Suitcase Carry. **C'est le Zercher March qui est déprog
 
 La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
 
-- Hang High Pull 4 × 3, repos 2 min
+- Hang High Pull 3 × 3, repos 2 min
 - Push Press 4 × 2, RPE 6-7, repos 2 min 30
 - Speed Squat 4 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
@@ -426,8 +426,8 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
 
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
-**Vendredi** : Broad Jump 4 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 4 × 2 RPE 6-7, Speed Squat 4 × 2 × 65 kg (90 s), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, plus de Jump Squat, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
-*Volume plafonné à 4 séries par exercice et Jump Squat déprogrammé, comme sur tout le programme (§7, décision de Guillaume, 22 novembre) : la séance passe d'environ 97 à 73 min.*
+**Vendredi** : Broad Jump 3 × 2 (2 min), Pogo 3 × 10, Lateral Bound 3 × 2/côté (90 s), Hang High Pull 3 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 4 × 2 RPE 6-7, Speed Squat 4 × 2 × 65 kg (90 s), Jump Squat 3 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+*3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat, comme sur tout le programme (§7, décision de Guillaume, 22 novembre) : la séance passe d'environ 97 à 73 min.*
 *Ordre (décision de Guillaume) : les plyos des jambes d'abord — Broad Jump, Pogo, Lateral Bound —, le Hang High Pull ensuite.*
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
 **Samedi** : Deadlift (série) → repos 1 min 30 → Broad Jump × 2 → repos 2 min → deadlift suivant. Cycle ≈ 3 min 30. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
