@@ -29,6 +29,7 @@
  * Tout ici est pur : aucun accès à la base, aucun React.
  */
 
+import { BIBLIOTHEQUE_LIBRE_POWER } from '../data/fichesPower12';
 import { reps as repsWork, type ExerciseDef, type Work } from '../data/types';
 import type { ResolvedExercise } from './getSession';
 import { loadLine as formatLoadLine } from './format';
@@ -103,8 +104,27 @@ export function isFreeId(id: string): boolean {
  * lifts principaux, n'apparaît donc pas — et c'est juste, puisqu'aucune règle
  * de §11 ne s'applique à un mouvement sans cible de RPE.
  */
-export function freeDef(spec: CustomSpec): ExerciseDef {
-  return { id: spec.exerciseId, name: spec.name, fn: 'libre', role: 'accessory' };
+export function freeDef(spec: CustomSpec, fiche?: string): ExerciseDef {
+  return {
+    id: spec.exerciseId,
+    name: spec.name,
+    fn: 'libre',
+    role: 'accessory',
+    ...(fiche === undefined ? {} : { fiche }),
+  };
+}
+
+/**
+ * La planche d'un exercice LIBRE de POWER, si son nom est dans la
+ * bibliothèque (`BIBLIOTHEQUE_LIBRE_POWER`) — nom ou alias, casse et accents
+ * ignorés, comme l'identifiant lui-même. `undefined` sinon.
+ */
+export function ficheLibrePower(exerciseId: string): string | undefined {
+  if (!isFreeId(exerciseId)) return undefined;
+  const e = BIBLIOTHEQUE_LIBRE_POWER.find((x) =>
+    [x.nom, ...(x.alias ?? [])].some((n) => freeId(n) === exerciseId),
+  );
+  return e === undefined ? undefined : `fiches/${e.fichier}`;
 }
 
 /**
@@ -131,11 +151,15 @@ function customLoad(spec: CustomSpec): ResolvedLoad {
  * garde ses consignes et sa fiche technique. Un nom libre reçoit la fiche
  * minimale ci-dessus.
  */
-export function resolveCustom(spec: CustomSpec, def?: ExerciseDef): ResolvedExercise {
+export function resolveCustom(
+  spec: CustomSpec,
+  def?: ExerciseDef,
+  ficheLibre?: (exerciseId: string) => string | undefined,
+): ResolvedExercise {
   const work: Work = repsWork(spec.reps);
   const load = customLoad(spec);
   return {
-    def: def ?? freeDef(spec),
+    def: def ?? freeDef(spec, ficheLibre?.(spec.exerciseId)),
     id: spec.exerciseId,
     name: spec.name,
     sets: spec.sets,
@@ -236,6 +260,8 @@ export function applyCustom(
   exercises: ResolvedExercise[],
   rows: CustomRow[],
   defFor: (exerciseId: string) => ExerciseDef | undefined,
+  /** La bibliothèque de planches des exercices libres de la famille, s'il y en a une. */
+  ficheLibre?: (exerciseId: string) => string | undefined,
 ): CustomApplied {
   const remplacements = new Map<string, CustomRow>();
   for (const r of rows) {
@@ -256,12 +282,12 @@ export function applyCustom(
       continue;
     }
     replaced.push({ original: ex, row });
-    liste.push(resolveCustom(row, defFor(row.exerciseId)));
+    liste.push(resolveCustom(row, defFor(row.exerciseId), ficheLibre));
   }
 
   for (const r of rows) {
     if (r.kind !== 'add') continue;
-    liste.push(resolveCustom(r, defFor(r.exerciseId)));
+    liste.push(resolveCustom(r, defFor(r.exerciseId), ficheLibre));
   }
 
   return { exercises: liste, replaced };

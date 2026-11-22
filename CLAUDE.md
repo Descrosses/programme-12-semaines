@@ -308,6 +308,15 @@ matériel et la durée avant d'écrire la moindre séance.
   carte). `engine/recalageToutEnProportion.test.ts`. Les INCRÉMENTS du §11
   (+5 / +2,5 kg des cas 2-3, +10 kg Hip Thrust, +2,5 kg Front Squat, +1 kg
   poulie) restent en kilos : les passer en % demande des chiffres de Guillaume.
+- **Speed Squat = planche du back squat** (`MEME_GESTE`, `fichesPower12.ts`) :
+  la planche que Guillaume y avait déposée était celle du back squat, au
+  pixel près. **Bibliothèque des exercices LIBRES de POWER**
+  (`BIBLIOTHEQUE_LIBRE_POWER`) : un exercice de remplacement tapé à la main
+  dont le nom (ou un alias, casse et accents ignorés, via `freeId`) y figure
+  reçoit sa planche — sous un cycle POWER seulement (`ficheLibrePower`, passé
+  par `useSessionData`). Il est aussi proposé dans le panneau « Remplacer ».
+  Première entrée : Rowing buste penché. « On étoffe la bibliothèque dès
+  qu'on peut » : chaque planche se vérifie avant d'entrer.
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
