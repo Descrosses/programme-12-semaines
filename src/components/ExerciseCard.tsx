@@ -166,6 +166,8 @@ export function ExerciseCard({
   };
 }) {
   const [openCues, setOpenCues] = useState(false);
+  const [explosifEnAttente, setExplosifEnAttente] = useState(false);
+  const explosifContraste = ex.contrast ? EXERCISES[ex.contrast.explosive] : undefined;
   const [openNote, setOpenNote] = useState(false);
   const [openMedia, setOpenMedia] = useState(false);
   const [ficheVersion, setFicheVersion] = useState(0);
@@ -183,7 +185,12 @@ export function ExerciseCard({
 
   const plannedKg = overrideKg ?? ex.load.kg;
   const shownLoadLine = buildLoadLine(ex, plannedKg);
-  const allDone = savedSets.length >= ex.sets && ex.sets > 0;
+  /*
+   * Contraste : la dernière série lourde notée, le saut reste à faire. La
+   * carte entière se grisait pourtant déjà, alors que le bouton du saut était
+   * encore là (retour de Guillaume, bench + plyo push-up). Elle attend le saut.
+   */
+  const allDone = savedSets.length >= ex.sets && ex.sets > 0 && !explosifEnAttente;
 
   /*
    * La série à faire : la première qui n'a rien d'enregistré. Elle seule est
@@ -366,7 +373,22 @@ export function ExerciseCard({
         {...(ambiance === undefined ? {} : { ambiance })}
         version={ficheVersion}
         onAjouter={() => setOpenMedia(true)}
+        {...(explosifContraste !== undefined ? { titre: ex.name } : {})}
       />
+
+      {/*
+        Contraste : le mouvement explosif n'a pas de carte à lui — il se fait
+        dans celle du lourd. Sa planche y vient donc aussi (retour de
+        Guillaume : la fiche du plyo push-up manquait sous le bench).
+      */}
+      {explosifContraste?.fiche !== undefined && (
+        <FicheTechnique
+          def={explosifContraste}
+          version={ficheVersion}
+          titre={explosifContraste.name}
+          onAjouter={() => {}}
+        />
+      )}
 
       {ex.ramp && (
         <div className={styles.adjust} style={{ margin: '0 var(--pad) 12px' }}>
@@ -435,6 +457,7 @@ export function ExerciseCard({
                 lastInUnit={choixUnite ? lastMeasureIn(history, unite) : null}
                 timer={timer}
                 onSave={onSaveSet}
+                onAttenteExplosif={setExplosifEnAttente}
               />
             );
           })}
@@ -723,10 +746,17 @@ export function SetEntry({
   timer,
   onSave,
   libelleRepos,
+  onAttenteExplosif,
 }: {
   ex: ResolvedExercise;
   index: number;
   plannedKg: number | null;
+  /**
+   * Contraste : prévient la carte qu'un saut reste à valider après cette
+   * série lourde (`true`), puis qu'il est fait (`false`). La carte ne se grise
+   * pas tant que le saut de la DERNIÈRE série attend.
+   */
+  onAttenteExplosif?: (enAttente: boolean) => void;
   /** Le libellé du chrono, quand ce n'est pas un repos (transition de superset). */
   libelleRepos?: string;
   saved: SetRow | null;
@@ -891,7 +921,10 @@ export function SetEntry({
         : (libelleRepos ?? `${ex.name} — série ${index + 1}`);
       timer.start(ex.contrast?.restAfterHeavySec ?? ex.restSec, label);
     }
-    if (ex.contrast) setAttenteExplosif(true);
+    if (ex.contrast) {
+      setAttenteExplosif(true);
+      onAttenteExplosif?.(true);
+    }
   }
 
   if (done) {
@@ -967,6 +1000,7 @@ export function SetEntry({
                 `${nomExplosif} fait → série suivante`,
               );
               setAttenteExplosif(false);
+              onAttenteExplosif?.(false);
             }}
           >
             {nomExplosif} × {ex.contrast.explosiveReps} fait — valider la série {index + 1}

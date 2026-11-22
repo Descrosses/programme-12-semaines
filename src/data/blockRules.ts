@@ -62,7 +62,9 @@ export interface SlotPatch {
 export type SlotRule =
   | { op: 'patch'; exId: string; patch: SlotPatch }
   | { op: 'remove'; exId: string }
-  | { op: 'insert'; slot: Slot; after?: string; atStart?: true };
+  | { op: 'insert'; slot: Slot; after?: string; atStart?: true }
+  /** Déplace un exercice déjà dans la séance juste après un autre. */
+  | { op: 'move'; exId: string; after: string };
 
 export interface BlockRuleSet {
   block: Block;
@@ -631,12 +633,14 @@ const POWER: BlockRuleSet[] = [
     rules: [
       {
         /*
-         * Les pogos passent derrière le Hang High Pull, pas devant : c'est lui
-         * qui demande le plus de fraîcheur nerveuse du bloc, et trente contacts
-         * de pogo juste avant iraient contre sa seule raison d'être.
+         * Ordre décidé par Guillaume (22 novembre) : les plyos des jambes
+         * d'abord — Broad Jump, Pogo, Lateral Bound —, le Hang High Pull
+         * ensuite. Il remplace l'ordre précédent, qui plaçait les pogos derrière
+         * le Hang High Pull pour le garder frais : l'explosif des jambes passe
+         * désormais en premier, quand il est le plus frais.
          */
         op: 'insert',
-        after: 'hang-high-pull',
+        after: 'broad-jump',
         slot: {
           exId: 'pogo-jumps',
           sets: 3,
@@ -658,7 +662,11 @@ const POWER: BlockRuleSet[] = [
         note: 'Vitesse de barre : la charge ne monte que si les reps restent vives.',
       }),
       patch('speed-squat', { restSec: 90 }),
-      patch('jump-squat-db', { sets: 5, work: reps(3), restSec: 120 }),
+      /*
+       * Volume plafonné à 4 séries, Jump Squat retiré : désormais dans la
+       * séance de base et dans le tableau du §9, pour les douze semaines
+       * (décision de Guillaume, 22 novembre). Rien à corriger ici.
+       */
       remove('farmer-carry'),
       remove('explosive-cable-row'),
       /*
@@ -697,6 +705,9 @@ const POWER: BlockRuleSet[] = [
           'Rotation explosive. Reset 5-10 s entre les reps. La vitesse prime sur la charge : si elle baisse, la charge ne monte pas.',
         ),
       },
+      // Le Lateral Bound rejoint les plyos des jambes ; le Hang High Pull et la
+      // Landmine Rotation, insérée derrière lui plus haut, suivent.
+      { op: 'move', exId: 'lateral-bound', after: 'pogo-jumps' },
     ],
   },
   {

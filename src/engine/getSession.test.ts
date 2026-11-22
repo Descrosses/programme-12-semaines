@@ -314,7 +314,11 @@ describe('bloc puissance (S9-11) — contraste', () => {
      * volume réduit.
      */
     expect(find(s, 'dead-bug-cable').loadLine).toBe('2 × 5 / côté');
-    expect(find(s, 'speed-squat').loadLine).toBe('8 × 2 × 65 kg');
+    // Vendredi plafonné à 4 séries, Jump Squat retiré (décision de Guillaume).
+    expect(find(s, 'speed-squat').loadLine).toBe('4 × 2 × 65 kg');
+    expect(find(s, 'push-press').sets).toBe(4);
+    expect(find(s, 'broad-jump').sets).toBe(4);
+    expect(ids(s.exercises)).not.toContain('jump-squat-db');
   });
 
   it('aucune progression automatique : le tableau tient, la vitesse pilote', () => {
@@ -380,7 +384,7 @@ describe('deload (S4) — §8', () => {
     const s = session(4, 0);
     expect(find(s, 'pogo-jumps').sets).toBe(2); // 3 → 2
     expect(find(s, 'box-jump').sets).toBe(2); // 4 → 2
-    expect(find(session(4, 4), 'broad-jump').sets).toBe(3); // 5 → 3
+    expect(find(session(4, 4), 'broad-jump').sets).toBe(2); // 4 → 2 (vendredi plafonné à 4)
   });
 
   it('ni Nordic ni conditioning', () => {

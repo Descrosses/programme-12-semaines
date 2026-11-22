@@ -423,6 +423,13 @@ function applyBlockRules(slots: Slot[], block: Block, day: DayIndex, week: WeekI
       out = out.filter((s) => s.exId !== rule.exId);
     } else if (rule.op === 'patch') {
       out = out.map((s) => (s.exId === rule.exId ? patchSlot(s, rule.patch) : s));
+    } else if (rule.op === 'move') {
+      const slot = out.find((s) => s.exId === rule.exId);
+      if (slot) {
+        const reste = out.filter((s) => s !== slot);
+        const i = reste.findIndex((s) => s.exId === rule.after);
+        out = i === -1 ? out : [...reste.slice(0, i + 1), slot, ...reste.slice(i + 1)];
+      }
     } else {
       const slot = { ...rule.slot };
       if (rule.atStart) {

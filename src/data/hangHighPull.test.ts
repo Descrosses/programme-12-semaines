@@ -112,10 +112,16 @@ describe('sa place dans la séance du vendredi', () => {
     expect(ids.slice(0, 4)).toEqual(['broad-jump', ID, 'lateral-bound', 'push-press']);
   });
 
-  it('reste deuxième dans le bloc puissance, devant les pogos ajoutés', () => {
+  it('bloc puissance : après les plyos des jambes (décision de Guillaume, 22 novembre)', () => {
     for (const w of [9, 10, 11]) {
       const ids = vendredi(w as WeekIndex)!.exercises.map((e) => e.id);
-      expect(ids.slice(0, 4), `S${w}`).toEqual(['broad-jump', ID, 'pogo-jumps', 'lateral-bound']);
+      expect(ids.slice(0, 5), `S${w}`).toEqual([
+        'broad-jump',
+        'pogo-jumps',
+        'lateral-bound',
+        ID,
+        'landmine-rotation',
+      ]);
     }
   });
 
@@ -182,8 +188,9 @@ describe('le volume suit les blocs du §8', () => {
     for (const w of [4, 8] as WeekIndex[]) {
       const s = vendredi(w)!;
       const reduit = (id: string) => s.exercises.find((e) => e.id === id)?.sets;
-      // Broad Jump 5 × 2 → 3 séries, Lateral Bound 3 → 2, Hang High Pull 3 → 2.
-      expect(reduit('broad-jump'), `S${w} broad jump`).toBe(3);
+      // Broad Jump 4 × 2 → 2 séries (§8 : « volume divisé par 2 » ; il était à
+      // 5 avant le plafond du vendredi), Lateral Bound 3 → 2, Hang High Pull 3 → 2.
+      expect(reduit('broad-jump'), `S${w} broad jump`).toBe(2);
       expect(reduit('lateral-bound'), `S${w} lateral bound`).toBe(2);
       expect(reduit(ID), `S${w} hang high pull`).toBe(2);
     }

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 /**
  * La durée affichée, et l'étiquette qui la promet.
  *
@@ -84,6 +85,31 @@ describe('les montées de charge comptent', () => {
 });
 
 describe('l’étiquette du §3 tient ce que la séance fait', () => {
+  it('les fourchettes du code sont celles du §3 du .md, jour par jour', () => {
+    const md = readFileSync(
+      new URL('../../programme-final-12-semaines.md', import.meta.url),
+      'utf8',
+    );
+    const section = md.slice(md.indexOf('## 3. Semaine type'), md.indexOf('## 4.'));
+    const JOURS: Record<string, DayIndex> = {
+      Lundi: 0,
+      Mercredi: 2,
+      Vendredi: 4,
+      Samedi: 5,
+      Dimanche: 6,
+    };
+    let vus = 0;
+    for (const ligne of section.split('\n')) {
+      const m = /^\| (Lundi|Mercredi|Vendredi|Samedi|Dimanche) \| [^|]+ \| (\d+-\d+ min) \|/.exec(
+        ligne,
+      );
+      if (!m) continue;
+      expect(BASE_SESSIONS[JOURS[m[1]!]!]!.durationLabel, m[1]).toBe(m[2]);
+      vus++;
+    }
+    expect(vus).toBe(5);
+  });
+
   it('chaque séance des douze semaines tombe dans sa fourchette', () => {
     for (let w = 0; w <= 12; w++) {
       const week = w as WeekIndex;
@@ -116,10 +142,11 @@ describe('l’étiquette du §3 tient ce que la séance fait', () => {
 describe('ce que la séance affiche', () => {
   it('la durée vient du calcul, plus de la trame', () => {
     // Le vendredi du bloc puissance : la trame annonçait 60 min pour tout le
-    // programme, le calcul en donne plus de quatre-vingts.
+    // programme. Le calcul en donnait 97 ; plafonné à 4 séries et sans Jump
+    // Squat (décision de Guillaume, 22 novembre), il en donne 73.
     const s = getSession(9 as WeekIndex, 4 as DayIndex, CTX)!;
     expect(s.durationLabel).toMatch(/^≈ \d+ min$/);
-    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBeGreaterThan(80);
+    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBe(73);
   });
 
   it('un deload est visiblement plus court que la semaine pleine', () => {

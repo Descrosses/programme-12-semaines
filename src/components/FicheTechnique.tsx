@@ -37,8 +37,11 @@ export function FicheTechnique({
   ambiance,
   version,
   onAjouter,
+  titre,
 }: {
   def: ExerciseDef;
+  /** Le mouvement nommé sur le bouton, quand deux fiches se suivent (contraste). */
+  titre?: string;
   /** La photo d'ambiance du programme, quand il en a une. */
   ambiance?: VisuelNom;
   /** Change quand une fiche est déposée ou retirée : le bloc se relit. */
@@ -88,7 +91,11 @@ export function FicheTechnique({
           }}
         >
           <Icon name={src === null ? 'image' : 'play'} size="16px" />
-          {src === null ? 'Ajouter la fiche technique' : 'Fiche technique'}
+          {src === null
+            ? 'Ajouter la fiche technique'
+            : titre === undefined
+              ? 'Fiche technique'
+              : `Fiche — ${titre}`}
         </button>
       </div>
 

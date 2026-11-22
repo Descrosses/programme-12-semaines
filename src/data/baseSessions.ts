@@ -136,7 +136,7 @@ const VENDREDI: SessionBlueprint = {
    * L'étiquette dit ce que la séance fait — la raccourcir en la mentant
    * n'aurait trompé que celui qui la lit avant de partir à la salle.
    */
-  durationLabel: '50-100 min',
+  durationLabel: '50-75 min',
   intensity: 'RAPIDE',
   warmup: 'lower',
   readinessTest: true,
@@ -144,7 +144,9 @@ const VENDREDI: SessionBlueprint = {
   slots: [
     s(
       'broad-jump',
-      5,
+      // 4 séries, et pas 5 : vendredi plafonné à 4 séries par exercice (§7,
+      // décision de Guillaume, 22 novembre).
+      4,
       reps(2),
       noLoad(),
       null,
@@ -173,7 +175,12 @@ const VENDREDI: SessionBlueprint = {
     s('lateral-bound', 3, reps(3, true), noLoad(), null, 75),
     fromTable('push-press', 'push-press', 120),
     fromTable('speed-squat', 'speed-squat', 60),
-    s('jump-squat-db', 4, reps(4), textLoad('2 × 6-8 kg'), null, 90),
+    /*
+     * Le Jump Squat haltères est DÉPROGRAMMÉ (décision de Guillaume, 22
+     * novembre) : troisième exercice de vitesse des jambes du vendredi, après
+     * le Broad Jump et le Speed Squat. Il reste au catalogue, avec sa fiche :
+     * on ne supprime pas d'exercices existants.
+     */
     s('explosive-cable-row', 3, reps(5), autoreg(undefined, 1, 'cable'), rpe(6), 75),
     s('farmer-carry', 4, meters(25), autoreg(undefined, 2, 'dbPair'), null, 90),
     s('dead-bug-cable', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 45),
