@@ -246,7 +246,7 @@ matériel et la durée avant d'écrire la moindre séance.
   historique, inchangée) ; le questionnaire « brocolis » pointe vers
   `brocolisCuits`. `ficheRepas.test.tsx`, `repasReconnu.test.ts`,
   `bibliothequeRepas.test.ts`.
-- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 5 FAITS.** Source :
+- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 6 FAITS.** Source :
   `docs/ADR-perso.md` (branche `docs/adr-perso`). Validateur pur
   (`engine/perso/`), table v25 `programmesImportes` et sauvegardes au format 4
   (`db/programmesImportes.ts`), mémoire synchrone remplie avant le premier
@@ -267,7 +267,15 @@ matériel et la durée avant d'écrire la moindre séance.
   supprimer est refusé, avec la raison, tant qu'un cycle la suit. La famille
   n'est jamais « À venir ». La restauration annonce les programmes importés
   qu'elle remplace. `components/perso/importPerso.test.tsx`.
-  Reste le lot 6 (non-régression).
+  **Lot 6, non-régression (tests seulement)** : `db/nonRegressionV25.test.ts`
+  restaure une VRAIE sauvegarde format 3 (`db/__fixtures__/sauvegarde-avant-v25.json`,
+  fabriquée avec la version d'avant le lot 1 : POWER, MASS CONGESTION et
+  FEMMES joués) et rejoue Training 1 importé → séance jouée → export → base
+  neuve → restauration. Ne pas régénérer ce fichier avec la version
+  actuelle : il doit rester d'AVANT la v25. Comparaison navigateur faite le
+  22 novembre : les mêmes séances écrivent les mêmes lignes en base avant et
+  après les lots 1-5. Un seul PDF réel éprouvé (Training 1) : pas de second
+  programme fourni.
 - **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
   carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
   superset. Champ `tempo` (`TempoPrescrit` : texte, semaines?, jours?) sur
