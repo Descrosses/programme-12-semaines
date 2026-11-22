@@ -144,9 +144,9 @@ const VENDREDI: SessionBlueprint = {
   slots: [
     s(
       'broad-jump',
-      // 4 séries, et pas 5 : vendredi plafonné à 4 séries par exercice (§7,
-      // décision de Guillaume, 22 novembre).
-      4,
+      // 3 séries : vendredi plafonné à 3 séries par exercice, Push Press et
+      // Speed Squat exceptés (4) — §7, décision de Guillaume, 22 novembre.
+      3,
       reps(2),
       noLoad(),
       null,
@@ -175,14 +175,10 @@ const VENDREDI: SessionBlueprint = {
     s('lateral-bound', 3, reps(3, true), noLoad(), null, 75),
     fromTable('push-press', 'push-press', 120),
     fromTable('speed-squat', 'speed-squat', 60),
-    /*
-     * Le Jump Squat haltères est DÉPROGRAMMÉ (décision de Guillaume, 22
-     * novembre) : troisième exercice de vitesse des jambes du vendredi, après
-     * le Broad Jump et le Speed Squat. Il reste au catalogue, avec sa fiche :
-     * on ne supprime pas d'exercices existants.
-     */
+    // 3 séries et non plus 4 : le plafond du vendredi (§7, Guillaume).
+    s('jump-squat-db', 3, reps(4), textLoad('2 × 6-8 kg'), null, 90),
     s('explosive-cable-row', 3, reps(5), autoreg(undefined, 1, 'cable'), rpe(6), 75),
-    s('farmer-carry', 4, meters(25), autoreg(undefined, 2, 'dbPair'), null, 90),
+    s('farmer-carry', 3, meters(25), autoreg(undefined, 2, 'dbPair'), null, 90),
     s('dead-bug-cable', 3, reps(6, true), autoreg(undefined, 1, 'cable'), null, 45),
     /*
      * Copenhagen Plank — venu du samedi, où il doublonnait avec le Suitcase

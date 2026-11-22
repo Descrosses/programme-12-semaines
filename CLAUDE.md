@@ -323,13 +323,14 @@ matériel et la durée avant d'écrire la moindre séance.
   série validé (`onAttenteExplosif`). **Vendredi S9-11 : ordre de Guillaume**
   — Broad Jump, Pogo, Lateral Bound, PUIS Hang High Pull (op `move` des
   règles de bloc ; S1-8 inchangés). `hangHighPull.test.ts`.
-  **Vendredi plafonné à 4 séries par exercice, sur les douze semaines, Jump
-  Squat DÉPROGRAMMÉ** (Guillaume, « go 73 min » puis « + S1-S8 ») : Broad
-  Jump 4 × 2 (deload : 2, « volume divisé par 2 »), Push Press et Speed
-  Squat à 4 séries (§9 ET `mainLiftTable.ts`). Le Jump Squat reste au
-  catalogue. Vendredi : 71 min (S1-3), 75 (S5-7), 73 (S9-11), 50 en deload ;
-  fourchette « 50-75 min » au §3 = `durationLabel` du code (testé, ils
-  divergeaient avant). `data/vendrediPlafond.test.ts`.
+  **Vendredi plafonné à 3 séries par exercice, sur les douze semaines,
+  Push Press et Speed Squat exceptés (4)** — Guillaume : « trop de séries
+  empêchent de rester explosif jusqu'au bout ». Broad Jump 3 × 2 (deload :
+  2), Hang High Pull 3 × 3 (tous blocs), Lateral Bound 3, Farmer Carry 3,
+  **Jump Squat GARDÉ à 3 séries** (3 × 4 S1-8, 3 × 3 S9-11 ; 2 en deload),
+  Push Press et Speed Squat à 4 (§9 ET `mainLiftTable.ts`). Vendredi : 72
+  (S1-3), 75 (S5-7), 73 (S9-11), 53-54 en deload ; « 50-75 min » au §3 =
+  `durationLabel` du code (testé). `data/vendrediPlafond.test.ts`.
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
