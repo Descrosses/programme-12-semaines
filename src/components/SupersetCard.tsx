@@ -58,6 +58,7 @@ export function SupersetCard({
   timer,
   onSaveSet,
   fiches,
+  propositions,
 }: {
   circuit: Circuit;
   /** La séance : deux circuits homonymes de deux jours ont chacun leur chrono. */
@@ -76,6 +77,13 @@ export function SupersetCard({
    * fabriqué une deuxième carte d'exercice à maintenir en parallèle.
    */
   fiches: ReactNode;
+  /**
+   * Les questions sur les stations (aligner les reps, charge de la semaine,
+   * charge après la 1re série), posées EN TÊTE de bloc, avant les tours.
+   * Rangées dans les fiches du bas, elles n'étaient lues qu'une fois toutes
+   * les séries faites (retour de Guillaume, 22 novembre).
+   */
+  propositions?: ReactNode;
 }) {
   const { exs, tours, rythme } = circuit;
   const titre = titreRythme(rythme, exs.length);
@@ -179,6 +187,10 @@ export function SupersetCard({
           </div>
         )}
       </div>
+
+      {propositions !== undefined && (
+        <div className={styles.supersetPropositions}>{propositions}</div>
+      )}
 
       {Array.from({ length: tours }, (_, i) => {
         const ouvert = i === actif;

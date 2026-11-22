@@ -296,6 +296,12 @@ matériel et la durée avant d'écrire la moindre séance.
   La semaine suivante repart de la charge réelle (l'occurrence compare la
   série la plus lourde au plan de la 1re) : rien à changer côté historique.
   `engine/ajustementIntra.test.ts`.
+  **Les questions d'un exercice se posent AVANT ses séries, superset
+  compris** (le vrai « point 1 » de Guillaume) : aligner les reps, charge de
+  la semaine (§11), charge après la 1re série (cas 10) vivent dans
+  `PropositionsExercice`. Carte seule : au même endroit qu'avant. Superset :
+  en tête de bloc, avant « Tour 1 », avec le nom de la station ; la fiche du
+  bas (`hideSets`) ne les répète pas. `components/propositionsSuperset.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

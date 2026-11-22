@@ -426,6 +426,22 @@
   font-size: 0.875rem;
 }
 
+/* Les questions des stations, en tête de superset, avant les tours. */
+.supersetPropositions {
+  padding-top: 4px;
+}
+
+.supersetPropositions:empty {
+  display: none;
+}
+
+.propositionTitre {
+  margin: 12px var(--pad) 6px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .tempoStation {
   display: inline-flex;
   flex-wrap: wrap;
