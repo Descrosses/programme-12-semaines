@@ -284,6 +284,18 @@ matériel et la durée avant d'écrire la moindre séance.
   vieille sauvegarde ne doit pas faire croire qu'un export vient d'être fait.
   **« Préparer une fiche pour quelqu'un »** est sorti des Réglages vers
   `#/admin` (`AdminScreen`), qu'aucun lien n'ouvre : outil de coach.
+  **§11 cas 10 — ajustement après la 1re série** (règle proposée puis
+  validée par Guillaume, écrite au `.md`). RPE ≥ 1,5 sous le bas de la cible
+  → +5 kg bas / +2,5 kg haut (incréments du cas 2, plafond respecté) ; RPE
+  ≥ 1 au-dessus du haut → −5 % au pas INFÉRIEUR ; rep ratée → cas 5, −7,5 %.
+  Une seule proposition, après la 1re série, jamais imposée ; acceptée, elle
+  devient la charge ajustée (`loadOverrides`). POWER seulement : le moteur
+  pose `ajustementIntra` sur les exercices chargés à RPE cible, blocs
+  accumulation / force max / puissance, hors séances spéciales, readiness
+  VERTE. Ni deload, ni combine, ni affûtage, ni MASS / FEMMES / importés.
+  La semaine suivante repart de la charge réelle (l'occurrence compare la
+  série la plus lourde au plan de la 1re) : rien à changer côté historique.
+  `engine/ajustementIntra.test.ts`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

@@ -534,6 +534,15 @@ Ils progressent, mais dans cet ordre, et jamais dans un autre :
 
 **Et si une douleur apparaît**, elle passe avant tout ce qui précède, comme au cas 8.
 
+**Cas 10 — ajustement en cours d'exercice, après la première série** (décision de Guillaume). Les cas 2 à 5 jugent une séance entière et agissent sur la suivante. Celui-ci agit tout de suite, sur les séries restantes du même exercice, pour ne pas faire quatre séries à une charge dont la première a déjà montré qu'elle n'était pas la bonne.
+
+- **RPE de la 1re série inférieur d'au moins 1,5 point au bas de la cible** (6,5 pour 8, ou pour 8-9) → séries restantes à +5 kg bas du corps, +2,5 kg haut du corps (les incréments du cas 2), arrondis au pas de charge, plafond de bloc respecté.
+- **RPE de la 1re série supérieur d'au moins 1 point au haut de la cible** (9 pour 8) → séries restantes à −5 %, arrondies au pas de charge inférieur.
+- **Rep ratée à la 1re série** → le cas 5 s'applique tout de suite : −7,5 % sur les séries restantes, sans retenter.
+- **Sinon** → la charge ne bouge pas.
+
+Une seule proposition par exercice, après la 1re série seulement, et toujours **proposée, jamais imposée**. Elle ne s'applique ni aux semaines de deload (4 et 8), ni au combine (semaine 0), ni à l'affûtage et aux tests (semaine 12), ni un jour de readiness orange ou rouge : ces séances sont déjà allégées ou mesurées par le programme. Les exercices sans RPE cible ou sans charge (tronc, poids du corps) n'en ont pas. La semaine suivante, la progression part de la charge réellement soulevée, comme toujours.
+
 Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement douloureux, la tolérance passe avant le RPE (cas 8).
 
 ---

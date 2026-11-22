@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { propositionApresPremiereSerie } from '../engine/ajustementIntra';
+import { chargeGardee, noterChargeGardee } from '../state/decisionIntra';
 import { TempoChip } from './TempoChip';
 import { tempoDuJour } from '../engine/tempo';
 import type { SetRow } from '../db/db';
@@ -176,6 +178,7 @@ export function ExerciseCard({
   const [ouvertes, setOuvertes] = useState<ReadonlySet<number>>(() => new Set());
   const [refusing, setRefusing] = useState(false);
   const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
+  const [intraGardee, setIntraGardee] = useState(() => chargeGardee(note.week, note.day, ex.id));
   /*
    * L'unité est choisie une fois pour l'exercice, pas série par série : on ne
    * change pas de façon de compter entre la deuxième et la troisième série.
@@ -195,6 +198,24 @@ export function ExerciseCard({
     suggestion.suggestedKg !== null &&
     overrideKg === null &&
     savedSets.length === 0;
+
+  /*
+   * §11 cas 10 — après la 1re série, et seulement elle : faut-il monter ou
+   * baisser pour les séries restantes ? Le moteur dit si l'exercice est
+   * éligible (`ajustementIntra`) ; la règle compare la 1re série à la cible.
+   * Acceptée, la proposition devient la charge ajustée (même mécanisme que
+   * « Accepter » du §11) ; elle se tait dès la 2e série notée.
+   */
+  const premiere = savedSets.length === 1 ? savedSets[0]! : null;
+  const propositionIntra =
+    ex.ajustementIntra !== undefined && premiere !== null && ex.sets >= 2 && !intraGardee
+      ? propositionApresPremiereSerie(ex.ajustementIntra, ex.targetRPE, {
+          kg: premiere.actualKg,
+          rpe: premiere.actualRpe,
+          failed: premiere.failed,
+        })
+      : null;
+  const montrerIntra = propositionIntra !== null && overrideKg !== propositionIntra.kg;
 
   /*
    * La série à faire : la première qui n'a rien d'enregistré. Elle seule est
@@ -383,6 +404,31 @@ export function ExerciseCard({
               onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: false })}
             >
               Garder {proposition.prevu}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {montrerIntra && propositionIntra && (
+        <div className={styles.suggestion} role="status">
+          <div className={styles.suggestionText}>{propositionIntra.raison}</div>
+          <div className={styles.suggestionActions}>
+            <button
+              type="button"
+              className={styles.accept}
+              onClick={() => onOverride(ex.id, propositionIntra.kg)}
+            >
+              Passer à {fr(propositionIntra.kg)} kg
+            </button>
+            <button
+              type="button"
+              className={styles.refuse}
+              onClick={() => {
+                noterChargeGardee(note.week, note.day, ex.id);
+                setIntraGardee(true);
+              }}
+            >
+              Garder {fr(premiere?.actualKg ?? plannedKg ?? 0)} kg
             </button>
           </div>
         </div>

@@ -275,6 +275,11 @@ export const PROGRESSION_RULES = {
   tooHard: { repeatSameLoad: true, recalcAfterOccurrences: 2, recalcFactor: 0.95 },
   /** Cas 5 : rep ratée → −5 à −7,5 %, on retient −7,5 % (le plus prudent). */
   missedRep: { loadFactor: 0.925, rebuildWeeks: 2 },
+  /**
+   * Cas 10 : ajustement en cours d'exercice, après la 1re série (décision de
+   * Guillaume). Monter : incréments du cas 2. Baisser : −5 %. Rep ratée : cas 5.
+   */
+  apresPremiereSerie: { rpeSousCibleAuMoins: 1.5, rpeAuDessusAuMoins: 1, baisseFacteur: 0.95 },
   /** Cas 7 : sauts en baisse 2 semaines de suite. */
   explosiveDecline: { weeks: 2, mainLiftSets: 3, removeConditioning: true },
 } as const;
