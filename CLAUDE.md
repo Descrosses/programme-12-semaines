@@ -299,6 +299,18 @@ matériel et la durée avant d'écrire la moindre séance.
   RETIRÉ à la demande de Guillaume : ne pas le réintroduire sans qu'il l'écrive. Carte seule : au même endroit qu'avant. Superset :
   en tête de bloc, avant « Tour 1 », avec le nom de la station ; la fiche du
   bas (`hideSets`) ne les répète pas. `components/propositionsSuperset.test.tsx`.
+- **Recalage sur le réel : EN PROPORTION, sauf le lest** (Guillaume, 22
+  novembre, écrit au §11 du `.md`). L'écart réel / prévu se reporte en %
+  pour toute charge écrite par le programme : les lifts du §9 (déjà le cas)
+  et désormais le RDL et le Pin Squat (seules cases en kilos). Le lest des
+  tractions reste en kilos. Le §11 (`enPourcentage`) suit la même règle.
+  La proportion est dans la PREMIÈRE phrase du message (seule visible sur la
+  carte). `engine/recalageToutEnProportion.test.ts`. Les INCRÉMENTS du §11
+  (+5 / +2,5 kg des cas 2-3, +10 kg Hip Thrust, +2,5 kg Front Squat, +1 kg
+  poulie) restent en kilos : les passer en % demande des chiffres de Guillaume.
+- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
+  squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
+  n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

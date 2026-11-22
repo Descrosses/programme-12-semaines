@@ -231,10 +231,22 @@ export function ExerciseCard({
 
         <div className={styles.exSub}>
           {ex.targetRPE && <span>{ex.targetRPE.label}</span>}
-          {ex.restSec > 0 && (
+          {/*
+            En contraste, le repos de base n'a pas cours : le chrono suit la
+            séquence « lourd → explosif → lourd » (§10). Afficher « Repos 3 min
+            30 » à côté d'un « Cycle ≈ 4 min » donnait deux durées pour le même
+            exercice (retour de Guillaume, back squat S9-11).
+          */}
+          {ex.contrast ? (
             <span>
-              Repos <b>{restLabel(ex.restSec)}</b>
+              <b>{ex.contrast.cycleLabel}</b>
             </span>
+          ) : (
+            ex.restSec > 0 && (
+              <span>
+                Repos <b>{restLabel(ex.restSec)}</b>
+              </span>
+            )
           )}
           <TempoChip tempo={tempoDuJour(ex.def.tempo, note.week, note.day)} />
           {overrideKg !== null && (

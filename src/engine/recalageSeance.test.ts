@@ -94,8 +94,9 @@ describe('le décalage cumulé suit le programme', () => {
   it('les semaines 9 à 11 repartent du réel, pas du tableau', () => {
     for (const w of [9, 10, 11]) {
       const ex = charge(w, ctx(REEL))!;
-      // Plan 90 + décalage 35 = 125.
-      expect(ex.load.kg, `S${w}`).toBe(125);
+      // En proportion (décision de Guillaume, 22 novembre) : plan 90 × (130
+      // réels / 95 prévus) = 123,2 → 122,5. En kilos, c'était 90 + 35 = 125.
+      expect(ex.load.kg, `S${w}`).toBe(122.5);
       expect(ex.planKg, `S${w}`).toBe(90);
     }
   });
@@ -107,14 +108,15 @@ describe('le décalage cumulé suit le programme', () => {
      * semaine 9 prescrirait 95 kg à quelqu'un qui en tire 130.
      */
     const ex = charge(9, ctx(REEL))!;
+    // Le plafond suit la même proportion : 95 × 130/95 = 130.
     expect(ex.load.kgMax).toBe(130);
-    expect(ex.load.kg).toBe(125);
+    expect(ex.load.kg).toBe(122.5);
   });
 
   it('explique d’où vient le chiffre', () => {
     const a = charge(9, ctx(REEL))!.adjustments.find((x) => x.source === 'reel')!;
     expect(a.why).toContain('130 kg');
-    expect(a.why).toContain('+35 kg');
+    expect(a.why).toContain('136,8 % du plan');
   });
 
   it('descend aussi quand il soulève MOINS que prévu', () => {
@@ -145,10 +147,10 @@ describe('le décalage cumulé suit le programme', () => {
 describe('le décalage ne se mange pas lui-même', () => {
   it('§11 reçoit le plan BRUT, donc ne compte pas le décalage deux fois', () => {
     const ex = charge(9, ctx(REEL))!;
-    // Le décalage vaut +35. Si §11 le rajoutait à une charge qui le contient
-    // déjà, la suggestion partirait à 160 au lieu de 125.
+    // L'écart vaut +35 kg, soit ×1,368. Si §11 le rajoutait à une charge qui
+    // le contient déjà, la suggestion partirait à 168 au lieu de 122,5.
     expect(ex.suggestion?.offsetKg).toBe(35);
-    expect(ex.suggestion?.suggestedKg).toBe(125);
+    expect(ex.suggestion?.suggestedKg).toBe(122.5);
     expect(ex.load.kg).toBe(ex.suggestion?.suggestedKg);
   });
 

@@ -534,6 +534,8 @@ Ils progressent, mais dans cet ordre, et jamais dans un autre :
 
 **Et si une douleur apparaît**, elle passe avant tout ce qui précède, comme au cas 8.
 
+**Recalage sur le réel — en proportion** (décision de Guillaume). Quand tu soulèves plus ou moins que ce que le plan annonçait, l'écart se reporte sur les semaines suivantes en **pourcentage**, jamais en kilos : 110 kg pour 100 annoncés, c'est 110 % du plan, donc 105 prévus deviennent 115,5, arrondis au pas de charge (115). C'est vrai pour toute charge écrite par le programme — les quatre lifts du tableau comme le RDL et le Pin Squat. Seule exception : le **lest** des tractions. +5 kg à la ceinture restent +5 kg, parce que le corps porte le reste de la charge.
+
 Règle générale : un exercice progresse quand la dernière série sort au RPE prévu avec la même technique que la première. Sur un mouvement douloureux, la tolérance passe avant le RPE (cas 8).
 
 ---
