@@ -1,4 +1,5 @@
 import { Fragment, useState, type CSSProperties } from 'react';
+import { RappelSauvegarde } from '../components/RappelSauvegarde';
 import {
   shouldRemindSession,
   missingPrescribedSets,
@@ -869,6 +870,7 @@ export function SessionScreen({
           </div>
         </section>
       )}
+      <RappelSauvegarde joursDeLaSemaine={data.joursDeLaSemaine} jour={day} />
       <button
         type="button"
         className={`${styles.finish} ${row?.status === 'done' ? styles.finishDone : ''}`}

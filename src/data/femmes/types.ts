@@ -19,6 +19,7 @@
  * Les deux versions de chaque séance (§2). Elle choisit au moment de
  * s'entraîner ; les deux comptent comme la même séance dans le suivi.
  */
+import type { TempoPrescrit } from '../types';
 import type { Niveau } from './niveaux';
 
 export type Version = 'maison' | 'salle';
@@ -224,6 +225,8 @@ export interface ExerciseDef {
   version: Version;
   /** Intention d'exécution, en une phrase. */
   intent: string;
+  /** Le tempo, extrait mot pour mot de `intent` (voir `TempoPrescrit`). */
+  tempo?: readonly TempoPrescrit[];
   cues?: string[];
   /** Contre-indications qui s'appliquent à CET exercice (§1). */
   restrictions?: Restriction[];

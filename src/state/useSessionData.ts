@@ -79,6 +79,8 @@ export interface SessionData {
   entete: VisuelNom | null;
   /** Les réponses aux propositions d'alignement des reps, par exercice. */
   alignements: Record<string, DecisionAlignement>;
+  /** Les jours de la semaine qui portent une séance, selon le programme du cycle. */
+  joursDeLaSemaine: readonly number[];
   /**
    * L'identifiant de la ligne de séance, créée MAINTENANT si elle n'existe
    * pas encore — et avec elle le cycle, s'il n'y en avait aucun.
@@ -223,6 +225,7 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
       replaced: applique.replaced,
       ambiance: ambianceFicheDe(programme.id),
       entete: enteteDe(programme.id, 'seance') ?? null,
+      joursDeLaSemaine: programme.joursDeLaSemaine(week),
       alignements: settingsRow.alignementReps ?? {},
     });
   }, [week, day]);
@@ -252,6 +255,7 @@ function empty(): Omit<SessionData, 'reload' | 'ensureRow'> {
   return {
     ambiance: null,
     entete: null,
+    joursDeLaSemaine: [],
     alignements: {},
     loading: true,
     session: null,

@@ -48,6 +48,7 @@ const C = {
   supination: {
     consigneCle: 'Tirage vertical supination',
     consigne: 'Contraction maintenue 1 seconde. La qualité prime sur la charge.',
+    tempo: [{ texte: 'Contraction maintenue 1 seconde' }],
     vigilance: 'Ne pas augmenter la charge au détriment de la contraction recherchée.',
   },
   pullover: {
@@ -58,6 +59,7 @@ const C = {
   curlW: {
     consigneCle: 'Curl barre W',
     consigne: 'RPE 8, excentrique 2 secondes, contrôle total.',
+    tempo: [{ texte: 'Excentrique 2 secondes' }],
     vigilance: 'Ne pas accélérer la descente sous l’effet de la fatigue.',
   },
   curlH: {
@@ -74,11 +76,13 @@ const C = {
   legExt: {
     consigneCle: 'Leg extension',
     consigne: 'Excentrique 3 secondes, pic de contraction.',
+    tempo: [{ texte: 'Excentrique 3 secondes' }],
     vigilance: 'Éviter les mouvements brusques.',
   },
   legCurl: {
     consigneCle: 'Leg curl',
     consigne: 'Excentrique 3 secondes, pic de contraction.',
+    tempo: [{ texte: 'Excentrique 3 secondes' }],
     vigilance: 'Maintenir une position stable.',
   },
   fentes: {

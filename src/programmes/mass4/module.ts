@@ -102,6 +102,7 @@ function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
     fn: FAMILLE[id] ?? 'push',
     role,
     ...(e?.consigne === undefined ? {} : { intent: e.consigne }),
+    ...(e?.tempo === undefined ? {} : { tempo: e.tempo }),
     ...(fiche === undefined ? {} : { fiche }),
     ...(seconde === undefined ? {} : { secondPart: seconde }),
     ...(mode === null || frise === null ? {} : { alternance: { mode, frise } }),

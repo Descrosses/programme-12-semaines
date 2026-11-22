@@ -22,7 +22,7 @@
  * l'écran doit afficher.
  */
 
-import type { DayIndex } from '../../data/types';
+import type { DayIndex, TempoPrescrit } from '../../data/types';
 
 /** Les quatre jours du programme : lundi, mardi, jeudi, samedi. */
 export const JOURS_MASS4: readonly DayIndex[] = [0, 1, 3, 5];
@@ -52,6 +52,8 @@ export interface ExerciceMass4 {
   nom: string;
   /** Ce que le document écrit sur l'exécution. Jamais inventé. */
   consigne?: string;
+  /** Le tempo, extrait mot pour mot de `consigne` (voir `TempoPrescrit`). */
+  tempo?: readonly TempoPrescrit[];
   /** Matériel attendu, quand le document le précise. */
   materiel?: string;
 }

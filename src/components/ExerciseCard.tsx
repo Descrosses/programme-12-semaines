@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { TempoChip } from './TempoChip';
+import { tempoDuJour } from '../engine/tempo';
 import type { SetRow } from '../db/db';
 import { fr, gripHint, loadLine, restLabel } from '../engine/format';
 import type { ChargeCible, ResolvedExercise } from '../engine/getSession';
@@ -259,6 +261,7 @@ export function ExerciseCard({
               Repos <b>{restLabel(ex.restSec)}</b>
             </span>
           )}
+          <TempoChip tempo={tempoDuJour(ex.def.tempo, note.week, note.day)} />
           {overrideKg !== null && (
             <span style={{ color: 'var(--accent-ink)' }}>charge ajustée</span>
           )}

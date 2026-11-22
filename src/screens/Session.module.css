@@ -403,6 +403,36 @@
   color: var(--ink);
 }
 
+/*
+ * Le tempo : à droite du RPE et du repos, plus visible qu'eux (décision de
+ * Guillaume). Une pastille cerclée d'accent, texte de l'encre principale —
+ * jamais du petit texte sur l'accent, dont le contraste n'est pas garanti
+ * dans tous les thèmes.
+ */
+.tempo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+}
+
+.tempoIcone {
+  font-size: 0.875rem;
+}
+
+.tempoStation {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
 .adjust {
   margin-top: 8px;
   padding: 8px 10px;

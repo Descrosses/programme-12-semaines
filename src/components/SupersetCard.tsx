@@ -1,4 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
+import { TempoChip } from './TempoChip';
+import { tempoDuJour } from '../engine/tempo';
 import { Icon } from './Icon';
 import type { SetRow } from '../db/db';
 import type { ResolvedExercise } from '../engine/getSession';
@@ -110,6 +112,21 @@ export function SupersetCard({
           {tours} tour{tours > 1 ? 's' : ''} · {exs.map((e) => travailCourt(e.work)).join(' · ')}
         </div>
         <p className={styles.supersetConsigne}>{consigneRythme(circuit)}</p>
+        {/* Le tempo de chaque station qui en a un, en tête de bloc comme sur
+            une carte simple : on le lit avant de se mettre au travail. */}
+        {exs.some((e) => tempoDuJour(e.def.tempo, week, day) !== null) && (
+          <div className={styles.exSub}>
+            {exs.map((e) => {
+              const t = tempoDuJour(e.def.tempo, week, day);
+              return t === null ? null : (
+                <span key={e.id} className={styles.tempoStation}>
+                  {exs.length > 1 && <span>{e.name}</span>}
+                  <TempoChip tempo={t} />
+                </span>
+              );
+            })}
+          </div>
+        )}
         <div className={`${styles.supersetCount} tnum`}>
           {faites} / {total} séries
         </div>

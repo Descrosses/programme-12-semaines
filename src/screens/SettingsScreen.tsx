@@ -755,7 +755,9 @@ export function SettingsScreen({
 
       {/* ----------------------------------------------------- la fiche -- */}
       <CarteFiche row={row} patch={patch} />
-      <CarteFichePour />
+      {/* « Préparer une fiche pour quelqu'un » est un outil de coach : il vit
+          sur l'écran admin (`#/admin`), jamais dans les réglages d'un
+          utilisateur. */}
 
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Gestion des données</h2>
@@ -1023,7 +1025,7 @@ function CarteFiche({
  * Il ne calcule rien. Le poids, la taille, l'objectif se lisent dans le
  * questionnaire ; les huit nombres se décident, ils ne se déduisent pas.
  */
-function CarteFichePour() {
+export function CarteFichePour() {
   const [cibles, setCibles] = useState<CiblesNutrition>(CIBLES_NUTRITION_VIERGES);
   const [collage, setCollage] = useState('');
   const [copie, setCopie] = useState(false);

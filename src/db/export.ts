@@ -6,6 +6,7 @@
  */
 
 import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
+import { noterExport } from '../state/dernierExport';
 import { hydraterProgrammesImportes, programmesDeSauvegarde } from './programmesImportes';
 import { cyclePourEcriture } from './repo';
 import {
@@ -351,6 +352,8 @@ function download(content: string, filename: string): void {
 /** Déclenche le téléchargement du fichier de données depuis le navigateur. */
 export async function downloadExport(): Promise<void> {
   download(JSON.stringify(await exportAll(), null, 2), exportFileName());
+  // Tout export compte, d'où qu'il parte : il fait taire le rappel du jour.
+  noterExport();
 }
 
 /**

@@ -5,6 +5,7 @@ import type { DayIndex, WeekIndex } from './data/types';
 import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
 import { EcransFemmes } from './screens/femmes/EcransFemmes';
+import { AdminScreen } from './screens/AdminScreen';
 import { EvaluationScreen } from './screens/EvaluationScreen';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
@@ -253,7 +254,8 @@ export function App() {
     route.name === 'accueil' ||
     route.name === 'catalogue' ||
     route.name === 'parcours' ||
-    route.name === 'evaluation';
+    route.name === 'evaluation' ||
+    route.name === 'admin';
   const ecranFemmes = route.name === 'femmes';
 
   /*
@@ -516,6 +518,9 @@ function renderScreen(
 
     case 'evaluation':
       return <EvaluationScreen onRetour={() => navigate({ name: 'catalogue', famille: 'mass' })} />;
+
+    case 'admin':
+      return <AdminScreen onRetour={() => navigate({ name: 'accueil' })} />;
 
     case 'parcours':
       return (
