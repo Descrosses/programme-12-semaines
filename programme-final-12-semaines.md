@@ -61,7 +61,7 @@ La borne basse de chaque fourchette correspond aux semaines de deload, la borne 
 |---|---|---|---|
 | Lundi | 60-70 min | **75 min** | Force maximale (S5-7) |
 | Mercredi | 60-70 min | **78 min** | Force maximale (S5-7) |
-| Vendredi | ~60 min | **92 min** | Puissance (S9-11) |
+| Vendredi | ~60 min | **92 min** | Force maximale (S5-7) — la puissance (S9-11) est passée de 97 à 73 min |
 
 Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée.
 
@@ -424,7 +424,8 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 **Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
 
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
-**Vendredi** : Broad Jump 5 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 6 × 2 RPE 6-7, Speed Squat 8 × 2 × 65 kg (90 s), Jump Squat 5 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+**Vendredi** : Broad Jump 4 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 4 × 2 RPE 6-7, Speed Squat 4 × 2 × 65 kg (90 s), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, plus de Jump Squat, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
+*Volume plafonné à 4 séries par exercice et Jump Squat retiré (décision de Guillaume, 22 novembre) : dix exercices et une trentaine de séries faisaient du vendredi une séance d'environ 97 min. Elle passe à environ 73 min. Le Jump Squat était le troisième exercice de vitesse des jambes, après le Broad Jump et le Speed Squat.*
 *Ordre (décision de Guillaume) : les plyos des jambes d'abord — Broad Jump, Pogo, Lateral Bound —, le Hang High Pull ensuite.*
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
 **Samedi** : Deadlift (série) → repos 1 min 30 → Broad Jump × 2 → repos 2 min → deadlift suivant. Cycle ≈ 3 min 30. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
@@ -453,9 +454,9 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 | 6 | — | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×74 % | 4×4×64 % | 6×2×60 % |
 | 7 | — | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×77 % | 4×4×64 % | 6×2×60 % |
 | 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×58 % | 2×4×50 % | 4×2×50 % |
-| 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 6×2×74 % | 3×3×64 % | 8×2×60 % |
-| 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 6×2×77 % | 3×3×66 % | 8×2×60 % |
-| 11 | 4×1-2×89 % + contraste | 4×1-2×89 % + contraste | 3×1-2×89 % + contraste | 3×2×78 % | 6×2×81 % | 3×3×68 % | 8×2×60 % |
+| 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 4×2×74 % | 3×3×64 % | 4×2×60 % |
+| 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 4×2×77 % | 3×3×66 % | 4×2×60 % |
+| 11 | 4×1-2×89 % + contraste | 4×1-2×89 % + contraste | 3×1-2×89 % + contraste | 3×2×78 % | 4×2×81 % | 3×3×68 % | 4×2×60 % |
 | 12 | 3×2×70 % puis TEST sam | 3×2×72 % puis TEST dim | TEST mer | TEST dim | 3×2×65 % | — | 2×2×50 % |
 
 Le tableau est un plan initial. Le RPE prime sur le chiffre.

@@ -116,10 +116,11 @@ describe('l’étiquette du §3 tient ce que la séance fait', () => {
 describe('ce que la séance affiche', () => {
   it('la durée vient du calcul, plus de la trame', () => {
     // Le vendredi du bloc puissance : la trame annonçait 60 min pour tout le
-    // programme, le calcul en donne plus de quatre-vingts.
+    // programme. Le calcul en donnait 97 ; plafonné à 4 séries et sans Jump
+    // Squat (décision de Guillaume, 22 novembre), il en donne 73.
     const s = getSession(9 as WeekIndex, 4 as DayIndex, CTX)!;
     expect(s.durationLabel).toMatch(/^≈ \d+ min$/);
-    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBeGreaterThan(80);
+    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBe(73);
   });
 
   it('un deload est visiblement plus court que la semaine pleine', () => {

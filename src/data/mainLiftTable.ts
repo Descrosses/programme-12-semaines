@@ -211,9 +211,10 @@ const pushPress: LiftSchedule = [
   p(6, 2, pct(74, 'push-press', 57.5), rpeRange(6, 7)),
   p(6, 2, pct(77, 'push-press', 60), rpeRange(6, 7)),
   p(3, 2, pct(58, 'push-press', 45), rpeAtMost(6)),
-  p(6, 2, pct(74, 'push-press', 57.5), rpeRange(6, 7)),
-  p(6, 2, pct(77, 'push-press', 60), rpeRange(6, 7)),
-  p(6, 2, pct(81, 'push-press', 62.5), rpeRange(6, 7)),
+  // S9-11 : 4 × 2 et non plus 6 × 2 — vendredi plafonné à 4 séries (§8, Guillaume).
+  p(4, 2, pct(74, 'push-press', 57.5), rpeRange(6, 7)),
+  p(4, 2, pct(77, 'push-press', 60), rpeRange(6, 7)),
+  p(4, 2, pct(81, 'push-press', 62.5), rpeRange(6, 7)),
   p(3, 2, pct(65, 'push-press', 50), rpeAtMost(6), {
     note: 'Placé le lundi, après le squat (décision de Guillaume).',
   }),
@@ -285,9 +286,9 @@ const speedSquat: LiftSchedule = [
   p(6, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM.' }),
   p(6, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM.' }),
   p(4, 2, pct(50, 'back-squat', 55), null, { note: 'Deload.' }),
-  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
-  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
-  p(8, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 8 séries (§8).' }),
+  p(4, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 4 séries (§8).' }),
+  p(4, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 4 séries (§8).' }),
+  p(4, 2, pct(60, 'back-squat', 65), null, { note: '60 % du 1RM — 4 séries (§8).' }),
   p(2, 2, pct(50, 'back-squat', 55), null, {
     note: 'Après les tests athlétiques du vendredi, charge légère (décision de Guillaume).',
   }),

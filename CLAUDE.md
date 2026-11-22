@@ -323,6 +323,10 @@ matériel et la durée avant d'écrire la moindre séance.
   série validé (`onAttenteExplosif`). **Vendredi S9-11 : ordre de Guillaume**
   — Broad Jump, Pogo, Lateral Bound, PUIS Hang High Pull (op `move` des
   règles de bloc ; S1-8 inchangés). `hangHighPull.test.ts`.
+  **Vendredi S9-11 plafonné à 4 séries, Jump Squat retiré** (Guillaume,
+  « go 73 min ») : Broad Jump 4 × 2, Push Press 4 × 2, Speed Squat 4 × 2 (§9
+  ET `mainLiftTable.ts`), Jump Squat supprimé du bloc. ≈ 97 → 73 min. Le pic
+  du vendredi est désormais en force max (S5-7, 92 min) ; S1-8 non touchés.
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.

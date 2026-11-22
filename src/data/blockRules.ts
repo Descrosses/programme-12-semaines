@@ -662,7 +662,13 @@ const POWER: BlockRuleSet[] = [
         note: 'Vitesse de barre : la charge ne monte que si les reps restent vives.',
       }),
       patch('speed-squat', { restSec: 90 }),
-      patch('jump-squat-db', { sets: 5, work: reps(3), restSec: 120 }),
+      /*
+       * Volume plafonné à 4 séries par exercice, Jump Squat retiré (décision
+       * de Guillaume, 22 novembre) : environ 97 → 73 min. Push Press et Speed
+       * Squat passent à 4 × 2 dans le tableau du §9.
+       */
+      patch('broad-jump', { sets: 4 }),
+      remove('jump-squat-db'),
       remove('farmer-carry'),
       remove('explosive-cable-row'),
       /*
