@@ -112,10 +112,16 @@ describe('sa place dans la séance du vendredi', () => {
     expect(ids.slice(0, 4)).toEqual(['broad-jump', ID, 'lateral-bound', 'push-press']);
   });
 
-  it('reste deuxième dans le bloc puissance, devant les pogos ajoutés', () => {
+  it('bloc puissance : après les plyos des jambes (décision de Guillaume, 22 novembre)', () => {
     for (const w of [9, 10, 11]) {
       const ids = vendredi(w as WeekIndex)!.exercises.map((e) => e.id);
-      expect(ids.slice(0, 4), `S${w}`).toEqual(['broad-jump', ID, 'pogo-jumps', 'lateral-bound']);
+      expect(ids.slice(0, 5), `S${w}`).toEqual([
+        'broad-jump',
+        'pogo-jumps',
+        'lateral-bound',
+        ID,
+        'landmine-rotation',
+      ]);
     }
   });
 

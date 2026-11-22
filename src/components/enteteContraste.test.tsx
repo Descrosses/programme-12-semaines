@@ -25,8 +25,8 @@ const exo = (semaine: number, jour: number, id: string) =>
     .getSession(semaine, jour as 0, { ...EMPTY_CONTEXT, settings: SETTINGS })!
     .exercises.find((e) => e.id === id)!;
 
-const entete = (ex: ResolvedExercise) => {
-  const html = renderToStaticMarkup(
+const carte = (ex: ResolvedExercise) =>
+  renderToStaticMarkup(
     <ExerciseCard
       ex={ex}
       savedSets={[]}
@@ -39,6 +39,8 @@ const entete = (ex: ResolvedExercise) => {
       onOverride={() => {}}
     />,
   );
+const entete = (ex: ResolvedExercise) => {
+  const html = carte(ex);
   const i = html.indexOf('exSub');
   return html.slice(i, html.indexOf('</div>', i));
 };
@@ -57,5 +59,29 @@ describe('en contraste, l’en-tête dit le cycle du §10, pas le repos de base'
 
   it('hors contraste, le repos de base reste affiché', () => {
     expect(entete(exo(1, 0, 'back-squat'))).toContain('Repos');
+  });
+});
+
+describe('en contraste, la planche du mouvement explosif est dans la carte', () => {
+  const planches = (html: string) => [
+    ...new Set([...html.matchAll(/fiches\/([a-z0-9-]+\.webp)/g)].map((m) => m[1])),
+  ];
+
+  it('bench S10 : la planche du bench ET celle du plyo push-up, chacune nommée', () => {
+    const html = carte(exo(10, 2, 'bench-press'));
+    expect(planches(html)).toEqual(['power12-bench-press.webp', 'power12-plyo-push-up.webp']);
+    expect(html).toContain('Fiche — Plyo Push-Up');
+    expect(html).toContain('Fiche — Bench Press');
+  });
+
+  it('squat S9 : box jump ; deadlift S9 : broad jump', () => {
+    expect(planches(carte(exo(9, 0, 'back-squat')))).toContain('power12-box-jump.webp');
+    expect(planches(carte(exo(9, 5, 'deadlift')))).toContain('power12-broad-jump.webp');
+  });
+
+  it('hors contraste : une seule planche, bouton inchangé', () => {
+    const html = carte(exo(1, 2, 'bench-press'));
+    expect(planches(html)).toEqual(['power12-bench-press.webp']);
+    expect(html).toContain('Fiche technique');
   });
 });
