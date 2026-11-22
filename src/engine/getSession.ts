@@ -126,6 +126,14 @@ export interface ResolvedExercise {
    * principal de POWER (MASS FORCE : sa progression lit `failed`).
    */
   signaleEchec?: boolean;
+  /**
+   * Le moteur appliquera un alignement des reps accepté sur cet exercice
+   * (POWER : accessoire ou tronc compté en reps, hors deload et jour de test).
+   * La question « aligner l'attendu ? » n'est posée QUE là : ailleurs (MASS,
+   * programme importé, exercice remplacé), « Passer à X reps » ne changeait
+   * rien à la séance.
+   */
+  alignable?: boolean;
   notes: string[];
   /** S9-11 : l'explosif intercalé entre les séries. */
   contrast?: ContrastSpec;
@@ -334,12 +342,13 @@ export function getSession(
 
   // 5 bis. Reps alignées par l'utilisateur (accessoires et tronc seulement).
   for (const ex of exercises) {
-    const aligne = ctx.settings.repsAlignees?.[ex.id];
-    if (aligne === undefined) continue;
     if (!estAlignable(ex.def.role, ex.work.kind, ex.work.kind === 'reps' ? ex.work.reps : null)) {
       continue;
     }
     if (ex.work.kind !== 'reps' || typeof ex.work.reps !== 'number') continue;
+    if (!isDeload && special === null) ex.alignable = true;
+    const aligne = ctx.settings.repsAlignees?.[ex.id];
+    if (aligne === undefined) continue;
     const cible = repsAlignees(ex.work.reps, aligne, isDeload || special !== null);
     if (cible === ex.work.reps) continue;
     ex.adjustments.push({
