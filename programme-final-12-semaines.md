@@ -47,7 +47,7 @@ Ratio hebdomadaire retenu : **3 jours durs (lundi, mercredi, samedi) + 1 jour ne
 |---|---|---|---|
 | Lundi | Lower Strength — squat | 45-80 min | DUR |
 | Mercredi | Upper Strength — bench + tractions | 50-80 min | DUR |
-| Vendredi | Total Body Power — sauts, vitesse | 50-95 min | RAPIDE, peu de fatigue |
+| Vendredi | Total Body Power — sauts, vitesse | 50-75 min | RAPIDE, peu de fatigue |
 | Samedi | Posterior Chain — deadlift | 45-80 min | DUR |
 | Dimanche | Upper Athletic + tronc + conditioning | 30-70 min | MODÉRÉ |
 
@@ -61,9 +61,9 @@ La borne basse de chaque fourchette correspond aux semaines de deload, la borne 
 |---|---|---|---|
 | Lundi | 60-70 min | **75 min** | Force maximale (S5-7) |
 | Mercredi | 60-70 min | **78 min** | Force maximale (S5-7) |
-| Vendredi | ~60 min | **92 min** | Force maximale (S5-7) — la puissance (S9-11) est passée de 97 à 73 min |
+| Vendredi | ~60 min | **75 min** | Force maximale (S5-7) |
 
-Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée.
+Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 4 séries au plus par exercice et Jump Squat déprogrammé (§7). L'Explosive Cable Row reste ; le vendredi passe de 85-97 min à 71-75 min.
 
 Pourquoi cet ordre : vendredi (neuronal, peu de dommages) potentialise samedi ; dimanche = haut du corps pour que les jambes récupèrent entre le deadlift du samedi et le squat du lundi.
 
@@ -143,19 +143,21 @@ Basic-Fit : barre olympique calée dans un coin avec une serviette. Sinon dével
 
 Tu dois sortir en te disant « j'aurais pu en faire plus ».
 
-**A. Broad Jump — 5 × 2** — Repos 2 min — Les 3 sauts du readiness comptent comme échauffement. Mesure les distances.
+**A. Broad Jump — 4 × 2** — Repos 2 min — Les 3 sauts du readiness comptent comme échauffement. Mesure les distances.
 
 **B. Hang High Pull — 3 × 3 × 40 kg** — Repos 90 s — Barre au niveau des cuisses, extension explosive hanches-genoux-chevilles, tirage jusqu'à hauteur de poitrine environ. Sans réception : ce n'est pas un hang clean. Priorité à la vitesse, jamais à la charge. Reset complet entre chaque répétition (barre reposée ou position réinitialisée), 5 à 10 s de pause avant la rep suivante — jamais enchaîné en continu.
 Progression : +2,5 kg quand les 3 reps de toutes les séries restent rapides et propres.
 
 **C. Lateral Bound — 3 × 3/côté** — Repos 75 s — Tiens la réception 2 s.
 
-**D. Push Press — 5 × 3 × 50 kg** — RPE ≤ 7 — Repos 2 min — Dip court (10-15 cm), drive explosif. La barre doit voler. Si la dernière rep devient un strict press : trop lourd.
+**D. Push Press — 4 × 3 × 50 kg** — RPE ≤ 7 — Repos 2 min — Dip court (10-15 cm), drive explosif. La barre doit voler. Si la dernière rep devient un strict press : trop lourd.
 Progression : +2,5 kg quand les 3 reps de toutes les séries sont rapides.
 
-**E. Speed Squat — 6 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
+**E. Speed Squat — 4 × 2 × 60 kg (55 %)** — Repos 60 s — Descente contrôlée, remontée la plus rapide possible. Arrêt dès que la vitesse baisse visiblement.
 
-**F. Jump Squat haltères — 4 × 4, 2 × 6-8 kg** — Repos 90 s — Vitesse de projection, pas de charge lourde.
+**F. Jump Squat haltères — déprogrammé** (décision de Guillaume, 22 novembre). C'était le troisième exercice de vitesse des jambes du vendredi, après le Broad Jump et le Speed Squat. Il reste au catalogue avec sa fiche (4 × 4, haltères 2 × 6-8 kg, repos 90 s) et peut se reprogrammer sans rien réécrire.
+
+*Le vendredi est plafonné à 4 séries par exercice sur les douze semaines : dix exercices et une trentaine de séries le faisaient durer 85 à 97 min, contre 55 à 75 pour les autres séances.*
 
 **G. Explosive Cable Row — 3 × 5** — RPE 6 — Repos 75 s — Tirer vite, retour contrôlé.
 
@@ -308,8 +310,8 @@ Le samedi garde donc le Suitcase Carry. **C'est le Zercher March qui est déprog
 La Landmine Rotation quitte le dimanche pour le **vendredi** : c'est la seule qualité de tronc qui s'exprime en vitesse, sa place est dans la séance de puissance. Elle se glisse après le Lateral Bound et avant le Push Press — tronc encore frais, et tout ce qui le fatigue vraiment vient ensuite.
 
 - Hang High Pull 4 × 3, repos 2 min
-- Push Press 6 × 2, RPE 6-7, repos 2 min 30
-- Speed Squat 6 × 2 × 65 kg (60 %), repos 75 s
+- Push Press 4 × 2, RPE 6-7, repos 2 min 30
+- Speed Squat 4 × 2 × 65 kg (60 %), repos 75 s
 - Dimanche : tout à 3 séries, conditioning 6 × 20 s / 100 s
 
 **Le Zercher March est déprogrammé — et c'est lui qui paie, pas le Roman Side Bench.**
@@ -425,7 +427,7 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
 **Vendredi** : Broad Jump 4 × 2 (2 min), Pogo 3 × 10, Lateral Bound 4 × 2/côté (90 s), Hang High Pull 4 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 4 × 2 RPE 6-7, Speed Squat 4 × 2 × 65 kg (90 s), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, plus de Jump Squat, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
-*Volume plafonné à 4 séries par exercice et Jump Squat retiré (décision de Guillaume, 22 novembre) : dix exercices et une trentaine de séries faisaient du vendredi une séance d'environ 97 min. Elle passe à environ 73 min. Le Jump Squat était le troisième exercice de vitesse des jambes, après le Broad Jump et le Speed Squat.*
+*Volume plafonné à 4 séries par exercice et Jump Squat déprogrammé, comme sur tout le programme (§7, décision de Guillaume, 22 novembre) : la séance passe d'environ 97 à 73 min.*
 *Ordre (décision de Guillaume) : les plyos des jambes d'abord — Broad Jump, Pogo, Lateral Bound —, le Hang High Pull ensuite.*
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
 **Samedi** : Deadlift (série) → repos 1 min 30 → Broad Jump × 2 → repos 2 min → deadlift suivant. Cycle ≈ 3 min 30. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
@@ -446,13 +448,13 @@ Principe : série lourde → repos → mouvement explosif → repos → série l
 
 | Sem | Back Squat (lun) | Bench (mer) | Deadlift (sam) | Tractions lestées (mer) | Push Press (ven) | Front Squat (sam) | Speed Squat (ven) |
 |---|---|---|---|---|---|---|---|
-| 1 | 5×5×70 % – RPE 7 | 5×5×74 % – RPE 7 | 4×5×70 % – RPE 7 | 4×5×44 % | 5×3×65 % | 3×6×55 % | 6×2×55 % |
-| 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 5×3×68 % | 3×6×55 % | 6×2×55 % |
-| 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 6×2×71 % | 3×6×57 % | 6×2×55 % |
+| 1 | 5×5×70 % – RPE 7 | 5×5×74 % – RPE 7 | 4×5×70 % – RPE 7 | 4×5×44 % | 4×3×65 % | 3×6×55 % | 4×2×55 % |
+| 2 | 5×5×75 % – RPE 7,5 | 5×5×76 % – RPE 7,5 | 4×5×75 % – RPE 7,5 | 4×5×50 % | 4×3×68 % | 3×6×55 % | 4×2×55 % |
+| 3 | 5×4×80 % – RPE 8 | 5×4×78 % – RPE 8 | 4×4×80 % – RPE 8 | 4×4×56 % | 4×2×71 % | 3×6×57 % | 4×2×55 % |
 | 4 | 3×3×64 % – RPE 5 | 3×3×67 % – RPE 5 | 3×3×64 % – RPE 5 | 3×3×22 % | 3×3×58 % | 2×5×45 % | 4×2×50 % |
-| 5 | — | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 6×2×71 % | 4×5×59 % | 6×2×60 % |
-| 6 | — | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 6×2×74 % | 4×4×64 % | 6×2×60 % |
-| 7 | — | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 6×2×77 % | 4×4×64 % | 6×2×60 % |
+| 5 | — | 5×3×83 % – RPE 8 | 4×3×82 % – RPE 8 | 4×3×67 % | 4×2×71 % | 4×5×59 % | 4×2×60 % |
+| 6 | — | 4×3×85 % – RPE 8,5 | 3×3×86 % – RPE 8,5 | 4×3×72 % | 4×2×74 % | 4×4×64 % | 4×2×60 % |
+| 7 | — | 4×2×89 % – RPE 9 | 3×2×89 % – RPE 9 | 4×2×78 % | 4×2×77 % | 4×4×64 % | 4×2×60 % |
 | 8 | 3×3×70 % – RPE 5 | 3×3×72 % – RPE 5 | 3×3×70 % – RPE 5 | 3×2×33 % | 3×2×58 % | 2×4×50 % | 4×2×50 % |
 | 9 | 4×2×84 % + contraste | 4×2×83 % + contraste | 3×2×84 % + contraste | 3×3×67 % | 4×2×74 % | 3×3×64 % | 4×2×60 % |
 | 10 | 4×2×86 % + contraste | 4×2×85 % + contraste | 3×2×86 % + contraste | 3×3×72 % | 4×2×77 % | 3×3×66 % | 4×2×60 % |

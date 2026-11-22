@@ -384,7 +384,7 @@ describe('deload (S4) — §8', () => {
     const s = session(4, 0);
     expect(find(s, 'pogo-jumps').sets).toBe(2); // 3 → 2
     expect(find(s, 'box-jump').sets).toBe(2); // 4 → 2
-    expect(find(session(4, 4), 'broad-jump').sets).toBe(3); // 5 → 3
+    expect(find(session(4, 4), 'broad-jump').sets).toBe(2); // 4 → 2 (vendredi plafonné à 4)
   });
 
   it('ni Nordic ni conditioning', () => {
