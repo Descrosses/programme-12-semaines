@@ -1,7 +1,6 @@
 /**
  * Les questions posées sur un exercice, AVANT d'en faire les séries :
- * aligner les reps attendues, accepter la charge de la semaine (§11), changer
- * la charge après la 1re série (§11 cas 10).
+ * aligner les reps attendues, accepter la charge de la semaine (§11).
  *
  * Extraites de la carte d'exercice pour une raison précise (retour de
  * Guillaume, 22 novembre) : dans un superset, la carte de chaque station est
@@ -12,7 +11,6 @@
  */
 import { useState } from 'react';
 import type { SetRow } from '../db/db';
-import { propositionApresPremiereSerie } from '../engine/ajustementIntra';
 import {
   estAlignable,
   propositionAlignement,
@@ -21,7 +19,6 @@ import {
 import { fr } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { Occurrence } from '../engine/types';
-import { chargeGardee, noterChargeGardee } from '../state/decisionIntra';
 import type { NoteContext } from './ExerciseNote';
 import { Stepper, stepValue } from './Stepper';
 import styles from '../screens/Session.module.css';
@@ -51,7 +48,6 @@ export function PropositionsExercice({
 }) {
   const [refusing, setRefusing] = useState(false);
   const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
-  const [intraGardee, setIntraGardee] = useState(() => chargeGardee(note.week, note.day, ex.id));
   const plannedKg = overrideKg ?? ex.load.kg;
 
   const suggestion = ex.suggestion;
@@ -60,24 +56,6 @@ export function PropositionsExercice({
     suggestion.suggestedKg !== null &&
     overrideKg === null &&
     savedSets.length === 0;
-
-  /*
-   * §11 cas 10 — après la 1re série, et seulement elle : faut-il monter ou
-   * baisser pour les séries restantes ? Le moteur dit si l'exercice est
-   * éligible (`ajustementIntra`) ; la règle compare la 1re série à la cible.
-   * Acceptée, la proposition devient la charge ajustée (même mécanisme que
-   * « Accepter » du §11) ; elle se tait dès la 2e série notée.
-   */
-  const premiere = savedSets.length === 1 ? savedSets[0]! : null;
-  const propositionIntra =
-    ex.ajustementIntra !== undefined && premiere !== null && ex.sets >= 2 && !intraGardee
-      ? propositionApresPremiereSerie(ex.ajustementIntra, ex.targetRPE, {
-          kg: premiere.actualKg,
-          rpe: premiere.actualRpe,
-          failed: premiere.failed,
-        })
-      : null;
-  const montrerIntra = propositionIntra !== null && overrideKg !== propositionIntra.kg;
 
   /*
    * « Tu as fait 3 × 10 au lieu de 3 × 6 : aligner l'attendu ? » — seulement
@@ -93,7 +71,7 @@ export function PropositionsExercice({
       ? propositionAlignement(ex.work.reps, history, note.week, alignement.decision)
       : null;
 
-  if (!proposition && !montrerIntra && !showSuggestion) return null;
+  if (!proposition && !showSuggestion) return null;
 
   return (
     <>
@@ -119,31 +97,6 @@ export function PropositionsExercice({
               onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: false })}
             >
               Garder {proposition.prevu}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {montrerIntra && propositionIntra && (
-        <div className={styles.suggestion} role="status">
-          <div className={styles.suggestionText}>{propositionIntra.raison}</div>
-          <div className={styles.suggestionActions}>
-            <button
-              type="button"
-              className={styles.accept}
-              onClick={() => onOverride(ex.id, propositionIntra.kg)}
-            >
-              Passer à {fr(propositionIntra.kg)} kg
-            </button>
-            <button
-              type="button"
-              className={styles.refuse}
-              onClick={() => {
-                noterChargeGardee(note.week, note.day, ex.id);
-                setIntraGardee(true);
-              }}
-            >
-              Garder {fr(premiere?.actualKg ?? plannedKg ?? 0)} kg
             </button>
           </div>
         </div>

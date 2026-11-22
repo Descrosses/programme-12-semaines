@@ -12,7 +12,6 @@
  *   7. cas 7            — §11, sauts en baisse : 3 séries, plus de conditioning.
  */
 
-import type { ParametresIntra } from './ajustementIntra';
 import { estAlignable, repsAlignees } from './alignementReps';
 import {
   BIG_MOVEMENT_IDS,
@@ -104,13 +103,6 @@ export interface ResolvedExercise {
   work: Work;
   load: ResolvedLoad;
   targetRPE: RPETarget | null;
-  /**
-   * §11 cas 10 : posé seulement si l'exercice peut recevoir une proposition
-   * après sa 1re série (RPE cible, charge, bloc de travail, readiness verte).
-   * Absent : aucune proposition — c'est le cas de MASS, FEMMES et des
-   * programmes importés, qui ne passent pas par ce moteur.
-   */
-  ajustementIntra?: ParametresIntra;
   restSec: number;
   /** L'élément le plus visible de l'écran : « 5 × 3 × 115 kg ». */
   loadLine: string;
@@ -386,21 +378,6 @@ export function getSession(
       what: 'Sauts en baisse',
       why: 'Lifts principaux ramenés à 3 séries, conditioning supprimé (§11 cas 7).',
     });
-  }
-
-  // 8. Cas 10 — ajustement après la 1re série : on pose les paramètres, l'écran
-  //    propose. Seulement les semaines de travail, hors tests, readiness verte.
-  const blocDeTravail = block === 'accumulation' || block === 'maxforce' || block === 'power';
-  if (blocDeTravail && !special && !isDeload && level === 'vert') {
-    for (const ex of finalExercises) {
-      if (ex.targetRPE === null || ex.load.kg === null || ex.def.role === 'test' || ex.sets < 2)
-        continue;
-      ex.ajustementIntra = {
-        isLowerBody: LOWER_BODY_FN.has(ex.def.fn),
-        step: ex.load.step,
-        ...(ex.load.kgMax !== undefined ? { kgMax: ex.load.kgMax } : {}),
-      };
-    }
   }
 
   const warmup = blueprint.warmup ? WARMUPS[blueprint.warmup] : null;

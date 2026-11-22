@@ -78,8 +78,8 @@ export function SupersetCard({
    */
   fiches: ReactNode;
   /**
-   * Les questions sur les stations (aligner les reps, charge de la semaine,
-   * charge après la 1re série), posées EN TÊTE de bloc, avant les tours.
+   * Les questions sur les stations (aligner les reps, charge de la semaine),
+   * posées EN TÊTE de bloc, avant les tours.
    * Rangées dans les fiches du bas, elles n'étaient lues qu'une fois toutes
    * les séries faites (retour de Guillaume, 22 novembre).
    */
