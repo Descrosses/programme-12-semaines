@@ -10,7 +10,14 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { EXERCISES, exercise } from './exercises';
-import { FICHES_POWER12, MOUVEMENT_DU_TEST, fichePower12 } from './fichesPower12';
+import {
+  BIBLIOTHEQUE_LIBRE_POWER,
+  FICHES_POWER12,
+  MEME_GESTE,
+  MOUVEMENT_DU_TEST,
+  fichePower12,
+} from './fichesPower12';
+import { ficheLibrePower, freeId, resolveCustom } from '../engine/customExercise';
 import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 
 const DOSSIER = join(process.cwd(), 'public', 'fiches');
@@ -90,7 +97,7 @@ describe('fiches de mouvement de POWER 12', () => {
 
   it('laisse sans planche les mouvements qui n’en ont pas', () => {
     expect(exercise('back-squat').fiche).toBe('fiches/power12-back-squat.webp');
-    expect(exercise('speed-squat').fiche).toBeUndefined();
+    expect(exercise('pin-squat').fiche).toBeUndefined();
     expect(exercise('test-sprint-10m').fiche).toBeUndefined();
     expect(fichePower12('mouvement-inconnu')).toBeUndefined();
   });
@@ -136,5 +143,58 @@ describe('fiches de mouvement de POWER 12', () => {
     for (const id of ['test-sprint-10m', 'test-sprint-20m', 'test-bodyweight']) {
       expect(exercise(id).fiche, id).toBeUndefined();
     }
+  });
+
+  it('le Speed Squat lit la planche du back squat (même geste, plus léger, plus vite)', () => {
+    expect(exercise('speed-squat').fiche).toBe('fiches/power12-back-squat.webp');
+    expect(exercise('speed-squat').fiche).toBe(exercise('back-squat').fiche);
+    for (const [id, cible] of Object.entries(MEME_GESTE)) {
+      expect(EXERCISES[id], id).toBeDefined();
+      expect(FICHES_POWER12[cible], cible).toBeDefined();
+    }
+  });
+});
+
+describe('bibliothèque des exercices libres de POWER', () => {
+  it('chaque planche existe, et n’est partagée ni avec POWER ni avec MASS', () => {
+    const mass4 = new Set(Object.values(FICHES_MASS4));
+    const power = new Set(Object.values(FICHES_POWER12));
+    for (const e of BIBLIOTHEQUE_LIBRE_POWER) {
+      expect(existsSync(join(DOSSIER, e.fichier)), e.fichier).toBe(true);
+      expect(mass4.has(e.fichier), e.fichier).toBe(false);
+      expect(power.has(e.fichier), e.fichier).toBe(false);
+    }
+  });
+
+  it('« Rowing buste penché » tapé à la main retrouve sa planche — nom, alias, casse, accents', () => {
+    const attendu = 'fiches/power12-rowing-buste-penche.webp';
+    for (const nom of [
+      'Rowing buste penché',
+      'rowing buste penche',
+      'ROWING BUSTE PENCHÉ',
+      'Rowing barre buste penché',
+      'Bent over row',
+    ]) {
+      expect(ficheLibrePower(freeId(nom)), nom).toBe(attendu);
+    }
+    expect(ficheLibrePower(freeId('Rowing haltère'))).toBeUndefined();
+    // Un exercice du catalogue n'est pas un exercice libre.
+    expect(ficheLibrePower('chest-supported-row')).toBeUndefined();
+  });
+
+  it('la planche arrive sur l’exercice de remplacement, sous POWER seulement', () => {
+    const spec = {
+      exerciseId: freeId('Rowing buste penché'),
+      name: 'Rowing buste penché',
+      sets: 3,
+      reps: 8,
+      kg: 60,
+      restSec: 90,
+    };
+    expect(resolveCustom(spec, undefined, ficheLibrePower).def.fiche).toBe(
+      'fiches/power12-rowing-buste-penche.webp',
+    );
+    // Sans bibliothèque (MASS, programmes importés) : la fiche minimale, sans planche.
+    expect(resolveCustom(spec).def.fiche).toBeUndefined();
   });
 });

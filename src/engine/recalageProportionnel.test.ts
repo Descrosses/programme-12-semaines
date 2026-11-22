@@ -126,7 +126,7 @@ describe('le scénario exact de Guillaume', () => {
 
   it('et l’écran dit que l’écart suit une proportion', () => {
     const a = charge('back-squat', 8, 0, apresS7).adjustments.find((x) => x.source === 'reel')!;
-    expect(a.why).toContain('POURCENTAGE');
+    expect(a.why).toContain('en proportion');
     expect(a.why).toContain('107,5');
   });
 });

@@ -661,20 +661,30 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
      * deloads.
      */
   } else if (recalage && load.source !== 'historique' && load.kg !== null) {
-    const proportionnel = loadSpec.kind === 'pct1RM' && !lest;
+    /*
+     * EN PROPORTION, pour toute charge sauf un lest (décision de Guillaume,
+     * 22 novembre : « le plus de règles de calcul en % possible »). Avant,
+     * seules les cases du §9 en pourcentage se recalaient en proportion ;
+     * un RDL, un Hip Thrust, des haltères reportaient l'écart en KILOS —
+     * 110 au lieu de 100 donnait 115 au lieu de 105, et non 115,5 arrondi.
+     * Le lest reste en kilos : le corps porte le reste de la charge.
+     */
+    const proportionnel = !lest;
     const avant = load.kg;
     load = proportionnel ? scaleToReal(load, recalage.facteur) : shiftLoad(load, recalage.offsetKg);
     if (load.kg !== avant) {
       const ecart =
         `en semaine ${recalage.refWeek} tu as fait ${fr(recalage.refKg)} kg ` +
         `là où le plan annonçait ${fr(recalage.refPlannedKg!)} kg`;
+      const pctPlan = fr(Math.round(recalage.facteur * 1000) / 10);
       adjustments.push({
         source: 'reel',
         what: `${fr(avant)} → ${fr(load.kg!)} kg`,
+        // La proportion dans la PREMIÈRE phrase : c'est la seule que la carte
+        // affiche, le reste est sous Consignes.
         why: proportionnel
-          ? `Recalé sur ce que tu soulèves vraiment : ${ecart}. Le programme demande un ` +
-            `POURCENTAGE de ton maximum, donc ton écart le suit en proportion — ` +
-            `${fr(Math.round(recalage.facteur * 1000) / 10)} % du plan, cette semaine comme les autres.`
+          ? `Recalé en proportion de ce que tu soulèves vraiment : ${pctPlan} % du plan (${ecart}). ` +
+            `Le même pourcentage s'applique cette semaine comme les autres.`
           : `Recalé sur ce que tu soulèves vraiment : ${ecart}. Ton décalage de ` +
             `${recalage.offsetKg > 0 ? '+' : '−'}${fr(Math.abs(recalage.offsetKg))} kg ` +
             `suit le programme semaine après semaine.`,
@@ -797,7 +807,8 @@ function resolveSlot(slot: Slot, o: ResolveOpts): ResolvedExercise | null {
           isLowerBody: LOWER_BODY_FN.has(def.fn),
           // Même unité que l'affichage : une case en pourcentage reporte
           // l'écart en proportion, pas en kilos.
-          enPourcentage: loadSpec.kind === 'pct1RM' && load.shape !== 'added',
+          // Même règle que l'affichage : tout en proportion, sauf un lest.
+          enPourcentage: load.shape !== 'added',
           // §8 prescrit la semaine de deload : §11 n'a rien à proposer dessus.
           isDeload: o.isDeload,
           ...(load.kgMax !== undefined ? { kgMax: load.kgMax } : {}),

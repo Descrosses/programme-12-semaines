@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { BIBLIOTHEQUE_LIBRE_POWER } from '../data/fichesPower12';
 import { EXERCISES, EXERCISE_IDS } from '../data/exercises';
 import {
   ADD_DEFAULTS,
@@ -60,7 +61,12 @@ export function ExercisePanel({
   const choix = useMemo(
     () =>
       exerciseChoices(
-        EXERCISE_IDS.map((id) => ({ id, name: EXERCISES[id]!.name })),
+        [
+          ...EXERCISE_IDS.map((id) => ({ id, name: EXERCISES[id]!.name })),
+          // La bibliothèque des exercices libres : proposés par leur nom, ils
+          // restent des exercices libres (et retrouvent leur planche).
+          ...BIBLIOTHEQUE_LIBRE_POWER.map((e) => ({ id: freeId(e.nom), name: e.nom })),
+        ],
         used,
       ),
     [used],

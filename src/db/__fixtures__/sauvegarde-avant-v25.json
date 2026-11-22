@@ -1,0 +1,236 @@
+{
+  "format": "programme-12-semaines",
+  "version": 3,
+  "exportedAt": "2026-11-16T10:00:11.101Z",
+  "settings": {
+    "id": 1,
+    "startDate": "2026-11-16",
+    "broadJumpBaselineCm": null,
+    "decisionSauts": null,
+    "alignementReps": {},
+    "oneRM": {
+      "back-squat": 140,
+      "bench-press": 100,
+      "deadlift": 180
+    },
+    "bodyweightKg": null,
+    "bodyweightDate": "",
+    "ciblePoidsBasKg": null,
+    "ciblePoidsHautKg": null,
+    "tableauOrigine": false,
+    "oneRMCalibratedAt": "",
+    "cycleActifId": 3,
+    "soundEnabled": true,
+    "vibrationEnabled": true,
+    "legacyNutritionPlan": false,
+    "ciblesNutrition": null,
+    "alimentsPreferes": null,
+    "planPerso": null
+  },
+  "sessions": [
+    {
+      "cycleId": 1,
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-23",
+      "status": "planned",
+      "warmupChecked": [],
+      "notes": "",
+      "id": 1,
+      "startedAt": 1794823203071
+    },
+    {
+      "cycleId": 2,
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-16",
+      "status": "planned",
+      "warmupChecked": [],
+      "notes": "",
+      "id": 2,
+      "startedAt": 1794823207363
+    }
+  ],
+  "sets": [
+    {
+      "cycleId": 1,
+      "sessionId": 1,
+      "exerciseId": "pogo-jumps",
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-23",
+      "setIndex": 0,
+      "plannedKg": null,
+      "plannedReps": 10,
+      "targetRpeMin": null,
+      "targetRpeMax": null,
+      "targetRpeLabel": null,
+      "actualKg": null,
+      "actualReps": 10,
+      "actualRpe": null,
+      "measureValue": null,
+      "measureUnit": null,
+      "failed": false,
+      "secondReps": null,
+      "secondKg": null,
+      "doneAt": 1794823203075,
+      "id": 1
+    },
+    {
+      "cycleId": 1,
+      "sessionId": 1,
+      "exerciseId": "pogo-jumps",
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-23",
+      "setIndex": 1,
+      "plannedKg": null,
+      "plannedReps": 10,
+      "targetRpeMin": null,
+      "targetRpeMax": null,
+      "targetRpeLabel": null,
+      "actualKg": null,
+      "actualReps": 10,
+      "actualRpe": null,
+      "measureValue": null,
+      "measureUnit": null,
+      "failed": false,
+      "secondReps": null,
+      "secondKg": null,
+      "doneAt": 1794823203899,
+      "id": 2
+    },
+    {
+      "cycleId": 1,
+      "sessionId": 1,
+      "exerciseId": "pogo-jumps",
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-23",
+      "setIndex": 2,
+      "plannedKg": null,
+      "plannedReps": 10,
+      "targetRpeMin": null,
+      "targetRpeMax": null,
+      "targetRpeLabel": null,
+      "actualKg": null,
+      "actualReps": 10,
+      "actualRpe": null,
+      "measureValue": null,
+      "measureUnit": null,
+      "failed": false,
+      "secondReps": null,
+      "secondKg": null,
+      "doneAt": 1794823204731,
+      "id": 3
+    },
+    {
+      "cycleId": 2,
+      "sessionId": 2,
+      "exerciseId": "oiseau-machine",
+      "week": 1,
+      "day": 0,
+      "date": "2026-11-16",
+      "setIndex": 0,
+      "plannedKg": null,
+      "plannedReps": null,
+      "targetRpeMin": null,
+      "targetRpeMax": null,
+      "targetRpeLabel": null,
+      "actualKg": null,
+      "actualReps": 10,
+      "actualRpe": null,
+      "measureValue": null,
+      "measureUnit": null,
+      "failed": false,
+      "secondReps": null,
+      "secondKg": null,
+      "doneAt": 1794823207366,
+      "id": 4
+    }
+  ],
+  "readiness": [],
+  "combines": [],
+  "measurements": [],
+  "videoLog": [],
+  "painLog": [],
+  "femmesSeances": [
+    {
+      "cycleId": 3,
+      "semaine": 1,
+      "jour": 0,
+      "version": "maison",
+      "date": "2026-11-16",
+      "terminee": false,
+      "exercices": [
+        {
+          "exerciseId": "squat-pdc",
+          "week": 1,
+          "day": 0,
+          "date": "2026-11-16",
+          "version": "maison",
+          "planned": 12,
+          "ressenti": null,
+          "remarque": null,
+          "tours": [
+            {
+              "reps": 12,
+              "kg": null
+            }
+          ],
+          "actual": 12,
+          "kg": null
+        }
+      ],
+      "debut": 1794823210291,
+      "id": 1
+    }
+  ],
+  "referencesForce": [],
+  "extraFoods": [],
+  "notes": [],
+  "noteDrafts": [],
+  "sessionExercises": [],
+  "exerciseNotes": [],
+  "mealLog": [],
+  "dayKind": [],
+  "foodOverrides": [],
+  "customFoods": [],
+  "cycles": [
+    {
+      "programmeId": "power12",
+      "programmeVersion": "1",
+      "startDate": "2026-11-16",
+      "statut": "en-cours",
+      "endedAt": "",
+      "createdAt": "2026-11-16",
+      "id": 1
+    },
+    {
+      "programmeId": "mass4",
+      "programmeVersion": "1",
+      "startDate": "2026-11-16",
+      "statut": "en-cours",
+      "endedAt": "",
+      "createdAt": "2026-11-16",
+      "id": 2
+    },
+    {
+      "programmeId": "femmes8",
+      "programmeVersion": "1",
+      "startDate": "2026-11-16",
+      "statut": "en-cours",
+      "endedAt": "",
+      "createdAt": "2026-11-16",
+      "id": 3,
+      "femmes": {
+        "niveau": "debutante",
+        "safety": {
+          "plancherPelvienOk": true,
+          "sansDouleurLimitante": true
+        }
+      }
+    }
+  ],
+  "photosIncluded": false
+}

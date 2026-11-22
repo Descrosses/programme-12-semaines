@@ -113,8 +113,51 @@ export const MOUVEMENT_DU_TEST: Readonly<Record<string, string>> = {
   'test-leg-raise-max': 'hanging-leg-raise',
 };
 
+/**
+ * Un mouvement de séance qui partage le GESTE d'un autre, et donc sa planche.
+ *
+ * Le Speed Squat est un back squat — plus léger (≈ 60 %), remontée à vitesse
+ * maximale. La planche que Guillaume y avait déposée sur son téléphone était
+ * celle du back squat, au pixel près : elle est désormais livrée à tous, sans
+ * second fichier (une planche remplacée suit partout).
+ */
+export const MEME_GESTE: Readonly<Record<string, string>> = {
+  'speed-squat': 'back-squat',
+};
+
+/**
+ * La bibliothèque des exercices LIBRES de POWER : ceux qu'on tape à la main
+ * pour remplacer un exercice (« Remplacer cet exercice »). Un nom reconnu —
+ * le nom ou un de ses alias, casse et accents ignorés — reçoit sa planche.
+ *
+ * Décision de Guillaume (22 novembre) : « on étoffe la bibliothèque dès qu'on
+ * peut ». Chaque entrée est une planche fournie et vérifiée (geste, matériel,
+ * prise) ; elle ne s'affiche que sous un cycle POWER — jamais une image d'une
+ * famille chez l'autre.
+ */
+export interface ExerciceLibre {
+  nom: string;
+  fichier: string;
+  alias?: readonly string[];
+}
+
+export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
+  {
+    nom: 'Rowing buste penché',
+    fichier: 'power12-rowing-buste-penche.webp', // barre, prise pronation, buste ≈ 45°
+    alias: [
+      'Rowing barre buste penché',
+      'Rowing buste penché barre',
+      'Rowing buste penché à la barre',
+      'Bent over row',
+      'Barbell bent over row',
+    ],
+  },
+];
+
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */
 export function fichePower12(exerciceId: string): string | undefined {
-  const fichier = FICHES_POWER12[MOUVEMENT_DU_TEST[exerciceId] ?? exerciceId];
+  const fichier =
+    FICHES_POWER12[MOUVEMENT_DU_TEST[exerciceId] ?? MEME_GESTE[exerciceId] ?? exerciceId];
   return fichier === undefined ? undefined : `fiches/${fichier}`;
 }

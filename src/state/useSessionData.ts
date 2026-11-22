@@ -3,6 +3,7 @@
  * saisies. Tout vient de la base locale, rien du réseau.
  */
 
+import { programmeParId } from '../data/catalogue';
 import { MASS_FORCE_PROGRAMME_ID } from '../db/massForceRepo';
 import { toutesLesReferences } from '../db/references';
 import type { DecisionAlignement } from '../engine/alignementReps';
@@ -33,7 +34,12 @@ import {
   toReadinessRecords,
 } from '../db/repo';
 import { EXERCISES } from '../data/exercises';
-import { applyCustom, type CustomRow, type Replaced } from '../engine/customExercise';
+import {
+  applyCustom,
+  ficheLibrePower,
+  type CustomRow,
+  type Replaced,
+} from '../engine/customExercise';
 import type { SessionExerciseRow } from '../db/db';
 
 export interface SessionData {
@@ -173,7 +179,13 @@ export function useSessionData(week: WeekIndex, day: DayIndex): SessionData {
     const applique =
       prescrite === null
         ? { exercises: [], replaced: [] }
-        : applyCustom(prescrite.exercises, duJour as CustomRow[], (id) => EXERCISES[id]);
+        : applyCustom(
+            prescrite.exercises,
+            duJour as CustomRow[],
+            (id) => EXERCISES[id],
+            // La bibliothèque de planches POWER, sous un cycle POWER seulement.
+            programmeParId(programme.id)?.familleId === 'power' ? ficheLibrePower : undefined,
+          );
     const session = prescrite === null ? null : { ...prescrite, exercises: applique.exercises };
 
     const savedSets: Record<string, SetRow[]> = {};

@@ -246,7 +246,7 @@ matériel et la durée avant d'écrire la moindre séance.
   historique, inchangée) ; le questionnaire « brocolis » pointe vers
   `brocolisCuits`. `ficheRepas.test.tsx`, `repasReconnu.test.ts`,
   `bibliothequeRepas.test.ts`.
-- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 5 FAITS.** Source :
+- **ME, MYSELF & I (programmes importés en JSON) — lots 1 à 6 FAITS.** Source :
   `docs/ADR-perso.md` (branche `docs/adr-perso`). Validateur pur
   (`engine/perso/`), table v25 `programmesImportes` et sauvegardes au format 4
   (`db/programmesImportes.ts`), mémoire synchrone remplie avant le premier
@@ -267,7 +267,15 @@ matériel et la durée avant d'écrire la moindre séance.
   supprimer est refusé, avec la raison, tant qu'un cycle la suit. La famille
   n'est jamais « À venir ». La restauration annonce les programmes importés
   qu'elle remplace. `components/perso/importPerso.test.tsx`.
-  Reste le lot 6 (non-régression).
+  **Lot 6, non-régression (tests seulement)** : `db/nonRegressionV25.test.ts`
+  restaure une VRAIE sauvegarde format 3 (`db/__fixtures__/sauvegarde-avant-v25.json`,
+  fabriquée avec la version d'avant le lot 1 : POWER, MASS CONGESTION et
+  FEMMES joués) et rejoue Training 1 importé → séance jouée → export → base
+  neuve → restauration. Ne pas régénérer ce fichier avec la version
+  actuelle : il doit rester d'AVANT la v25. Comparaison navigateur faite le
+  22 novembre : les mêmes séances écrivent les mêmes lignes en base avant et
+  après les lots 1-5. Un seul PDF réel éprouvé (Training 1) : pas de second
+  programme fourni.
 - **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
   carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
   superset. Champ `tempo` (`TempoPrescrit` : texte, semaines?, jours?) sur
@@ -291,6 +299,27 @@ matériel et la durée avant d'écrire la moindre séance.
   RETIRÉ à la demande de Guillaume : ne pas le réintroduire sans qu'il l'écrive. Carte seule : au même endroit qu'avant. Superset :
   en tête de bloc, avant « Tour 1 », avec le nom de la station ; la fiche du
   bas (`hideSets`) ne les répète pas. `components/propositionsSuperset.test.tsx`.
+- **Recalage sur le réel : EN PROPORTION, sauf le lest** (Guillaume, 22
+  novembre, écrit au §11 du `.md`). L'écart réel / prévu se reporte en %
+  pour toute charge écrite par le programme : les lifts du §9 (déjà le cas)
+  et désormais le RDL et le Pin Squat (seules cases en kilos). Le lest des
+  tractions reste en kilos. Le §11 (`enPourcentage`) suit la même règle.
+  La proportion est dans la PREMIÈRE phrase du message (seule visible sur la
+  carte). `engine/recalageToutEnProportion.test.ts`. Les INCRÉMENTS du §11
+  (+5 / +2,5 kg des cas 2-3, +10 kg Hip Thrust, +2,5 kg Front Squat, +1 kg
+  poulie) restent en kilos : les passer en % demande des chiffres de Guillaume.
+- **Speed Squat = planche du back squat** (`MEME_GESTE`, `fichesPower12.ts`) :
+  la planche que Guillaume y avait déposée était celle du back squat, au
+  pixel près. **Bibliothèque des exercices LIBRES de POWER**
+  (`BIBLIOTHEQUE_LIBRE_POWER`) : un exercice de remplacement tapé à la main
+  dont le nom (ou un alias, casse et accents ignorés, via `freeId`) y figure
+  reçoit sa planche — sous un cycle POWER seulement (`ficheLibrePower`, passé
+  par `useSessionData`). Il est aussi proposé dans le panneau « Remplacer ».
+  Première entrée : Rowing buste penché. « On étoffe la bibliothèque dès
+  qu'on peut » : chaque planche se vérifie avant d'entrer.
+- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
+  squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
+  n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

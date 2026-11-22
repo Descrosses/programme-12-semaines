@@ -149,10 +149,10 @@ export function shiftLoad(load: ResolvedLoad, offsetKg: number): ResolvedLoad {
  *
  * ── Ce qui reste en kilos ──────────────────────────────────────────────────
  *
- * Un LEST n'est pas une charge : +10 kg à la ceinture restent +10 kg, que la
- * semaine demande 44 % ou 78 %, parce que le corps porte le reste. Et une case
- * que le programme écrit en kilos (Push Press, RDL) n'a pas de pourcentage à
- * mettre à l'échelle — sa progression est en paliers de 2,5 kg.
+ * Un LEST, et lui seul : +10 kg à la ceinture restent +10 kg, que la semaine
+ * demande 44 % ou 78 %, parce que le corps porte le reste. Depuis le 22
+ * novembre (décision de Guillaume, §11 « Recalage sur le réel »), les cases
+ * écrites en kilos — RDL, Pin Squat — se recalent elles aussi en proportion.
  */
 export function scaleToReal(load: ResolvedLoad, facteur: number): ResolvedLoad {
   if (load.kg === null || facteur === 1) return load;
