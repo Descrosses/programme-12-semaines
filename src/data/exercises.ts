@@ -10,6 +10,7 @@
  */
 
 import { fichePower12 } from './fichesPower12';
+import { infosFichePower12 } from './musclesErreursPower12';
 import type { ExerciseDef } from './types';
 
 /** Rappel §5, ajouté à chaque mouvement explosif. */
@@ -21,13 +22,17 @@ const REGLE_EXPLOSIF =
 
 /**
  * Ajoute la règle §5 aux mouvements explosifs, et la planche d'exécution aux
- * mouvements qui en ont une (`fichesPower12.ts`). Ni l'une ni l'autre ne
- * touche à la prescription : séries, charges et repos vivent ailleurs.
+ * mouvements qui en ont une (`fichesPower12.ts`), avec ses muscles et ses
+ * erreurs (`musclesErreursPower12.ts`). Rien de cela ne touche à la
+ * prescription : séries, charges et repos vivent ailleurs.
  */
 function def(e: ExerciseDef): ExerciseDef {
   const fiche = fichePower12(e.id);
   const avecRegle = e.explosive ? { ...e, cues: [...(e.cues ?? []), REGLE_EXPLOSIF] } : e;
-  return fiche === undefined ? avecRegle : { ...avecRegle, fiche };
+  if (fiche === undefined) return avecRegle;
+  // Muscles et erreurs suivent la planche : jamais l'un sans l'autre.
+  const infosFiche = infosFichePower12(e.id);
+  return infosFiche === undefined ? { ...avecRegle, fiche } : { ...avecRegle, fiche, infosFiche };
 }
 
 const LIST: ExerciseDef[] = [
