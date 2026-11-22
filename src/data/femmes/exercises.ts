@@ -250,6 +250,7 @@ const LIST: ExerciseDef[] = [
   },
   {
     id: 'squat-tempo',
+    tempo: [{ texte: '3 s de descente · 1 s en bas' }],
     name: 'Squat tempo',
     fn: 'squat',
     version: 'maison',

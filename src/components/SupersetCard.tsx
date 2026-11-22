@@ -1,4 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
+import { TempoChip } from './TempoChip';
+import { tempoDuJour } from '../engine/tempo';
 import { Icon } from './Icon';
 import type { SetRow } from '../db/db';
 import type { ResolvedExercise } from '../engine/getSession';
@@ -56,6 +58,7 @@ export function SupersetCard({
   timer,
   onSaveSet,
   fiches,
+  propositions,
 }: {
   circuit: Circuit;
   /** La séance : deux circuits homonymes de deux jours ont chacun leur chrono. */
@@ -74,6 +77,13 @@ export function SupersetCard({
    * fabriqué une deuxième carte d'exercice à maintenir en parallèle.
    */
   fiches: ReactNode;
+  /**
+   * Les questions sur les stations (aligner les reps, charge de la semaine),
+   * posées EN TÊTE de bloc, avant les tours.
+   * Rangées dans les fiches du bas, elles n'étaient lues qu'une fois toutes
+   * les séries faites (retour de Guillaume, 22 novembre).
+   */
+  propositions?: ReactNode;
 }) {
   const { exs, tours, rythme } = circuit;
   const titre = titreRythme(rythme, exs.length);
@@ -110,6 +120,21 @@ export function SupersetCard({
           {tours} tour{tours > 1 ? 's' : ''} · {exs.map((e) => travailCourt(e.work)).join(' · ')}
         </div>
         <p className={styles.supersetConsigne}>{consigneRythme(circuit)}</p>
+        {/* Le tempo de chaque station qui en a un, en tête de bloc comme sur
+            une carte simple : on le lit avant de se mettre au travail. */}
+        {exs.some((e) => tempoDuJour(e.def.tempo, week, day) !== null) && (
+          <div className={styles.exSub}>
+            {exs.map((e) => {
+              const t = tempoDuJour(e.def.tempo, week, day);
+              return t === null ? null : (
+                <span key={e.id} className={styles.tempoStation}>
+                  {exs.length > 1 && <span>{e.name}</span>}
+                  <TempoChip tempo={t} />
+                </span>
+              );
+            })}
+          </div>
+        )}
         <div className={`${styles.supersetCount} tnum`}>
           {faites} / {total} séries
         </div>
@@ -162,6 +187,10 @@ export function SupersetCard({
           </div>
         )}
       </div>
+
+      {propositions !== undefined && (
+        <div className={styles.supersetPropositions}>{propositions}</div>
+      )}
 
       {Array.from({ length: tours }, (_, i) => {
         const ouvert = i === actif;

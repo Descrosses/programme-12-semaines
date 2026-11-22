@@ -337,6 +337,24 @@ export const TABLE_LIFTS = [
  * sur 12 semaines. Renommer `name` est sans conséquence, changer `id` efface
  * l'historique.
  */
+/**
+ * Le tempo d'exécution, tel que le programme l'écrit (« Tempo 3-1-X-0 »,
+ * « Descente 3 s », « Excentrique 2 secondes »).
+ *
+ * Décision de Guillaume : le tempo est trop important pour rester rangé sous
+ * Consignes ; il s'affiche en tête de carte, à côté du RPE et du repos. Le
+ * texte est EXTRAIT mot pour mot de la consigne de l'exercice — jamais
+ * reformulé, jamais déduit (un test le vérifie). Les segments séparés par
+ * « · » sont relus un par un.
+ */
+export interface TempoPrescrit {
+  texte: string;
+  /** Seulement ces semaines (le tempo 3-0-X du squat : S1-3). Absent = toutes. */
+  semaines?: readonly number[];
+  /** Seulement ces jours (0 = lundi). Absent = tous. */
+  jours?: readonly number[];
+}
+
 export interface ExerciseDef {
   id: string;
   name: string;
@@ -350,6 +368,8 @@ export interface ExerciseDef {
    * programme.
    */
   intent?: string;
+  /** Le tempo à afficher en tête de carte. Voir `TempoPrescrit`. */
+  tempo?: readonly TempoPrescrit[];
   /** Critère de progression écrit dans le programme (§7). */
   progressionRule?: string;
   /** Repli quand le matériel Basic-Fit ne suit pas. */

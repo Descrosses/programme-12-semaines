@@ -3,7 +3,7 @@
  *
  * Source : `programme-mass-force.md` (semaine type S1, seule validée).
  */
-import type { DayIndex } from '../../data/types';
+import type { DayIndex, TempoPrescrit } from '../../data/types';
 import type { Variante } from '../../data/combineMass';
 
 /**
@@ -65,6 +65,8 @@ export interface LigneForce {
   consigneCle: string;
   consigne: string;
   vigilance: string;
+  /** Le tempo, extrait mot pour mot de `consigne` (voir `TempoPrescrit`). */
+  tempo?: readonly TempoPrescrit[];
 }
 
 export interface SeanceForce {

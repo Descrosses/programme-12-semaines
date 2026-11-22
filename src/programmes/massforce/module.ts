@@ -80,6 +80,7 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     role: 'accessory',
     intent: ligne.consigne,
     vigilance: ligne.vigilance,
+    ...(ligne.tempo === undefined ? {} : { tempo: ligne.tempo }),
     ...(fiche === undefined ? {} : { fiche }),
   };
   return {

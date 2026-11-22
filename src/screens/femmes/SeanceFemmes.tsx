@@ -18,6 +18,9 @@
  * moteur FEMMES, rien d'ajouté.
  */
 
+import { TempoChip } from '../../components/TempoChip';
+import { tempoDuJour } from '../../engine/tempo';
+import { RappelSauvegarde } from '../../components/RappelSauvegarde';
 import { Fragment, useMemo, useState, type CSSProperties } from 'react';
 import { Icon } from '../../components/Icon';
 import { Stepper } from '../../components/Stepper';
@@ -316,6 +319,7 @@ export function SeanceFemmes({
               rang={i}
               tours={tours}
               semaine={etat.semaine}
+              jour={etat.jour}
               record={record(sl.exercise.id)}
               fait={etats[i] === 'fait'}
               onNote={(patch) => actions.onNote(sl, targetForWeek(sl.work, etat.semaine), patch)}
@@ -324,6 +328,7 @@ export function SeanceFemmes({
         </div>
       </section>
 
+      <RappelSauvegarde joursDeLaSemaine={WEEK_DAYS[etat.semaine]} jour={etat.jour} />
       <button
         type="button"
         className={`${styles.finish} ${terminee ? styles.finishDone : ''}`}
@@ -465,6 +470,7 @@ function FicheExercice({
   rang,
   tours,
   semaine,
+  jour,
   record,
   fait,
   onNote,
@@ -473,6 +479,7 @@ function FicheExercice({
   rang: number;
   tours: number;
   semaine: EtatFemmes['semaine'];
+  jour: number;
   record: ExerciseRecord | null;
   fait: boolean;
   onNote: (patch: { ressenti?: Ressenti | null; remarque?: string | null }) => Promise<void>;
@@ -497,6 +504,7 @@ function FicheExercice({
           <span>
             Cible <b>{targetForWeek(slot.work, semaine)}</b>
           </span>
+          <TempoChip tempo={tempoDuJour(slot.exercise.tempo, semaine, jour)} />
         </div>
         {slot.substitutedFor !== undefined && (
           /* La substitution se DIT : la taire ferait passer un repli pour une

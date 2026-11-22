@@ -54,6 +54,10 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'back-squat',
+    tempo: [
+      { texte: 'Tempo 3-0-X', semaines: [1, 2, 3] },
+      { texte: 'Descente contrôlée ~2 s', semaines: [5, 6, 7] },
+    ],
     name: 'Back Squat',
     fn: 'squat',
     role: 'main',
@@ -99,6 +103,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'bulgarian-split-squat',
+    tempo: [{ texte: 'Tempo 3-1-X-0' }],
     name: 'Bulgarian Split Squat',
     fn: 'squat',
     role: 'accessory',
@@ -108,6 +113,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'rdl',
+    tempo: [{ texte: 'Tempo 3-1-X-1' }],
     name: 'Romanian Deadlift',
     fn: 'hinge',
     role: 'accessory',
@@ -167,6 +173,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'bench-press',
+    tempo: [{ texte: 'Tempo 2-1-X-0' }],
     name: 'Bench Press',
     fn: 'push',
     role: 'main',
@@ -176,6 +183,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'weighted-pullup',
+    tempo: [{ texte: 'Descente contrôlée 2 s' }],
     name: 'Tractions lestées',
     fn: 'pull',
     role: 'main',
@@ -196,6 +204,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'chest-supported-row',
+    tempo: [{ texte: 'Pause 1 s en contraction' }],
     name: 'Chest-supported Dumbbell Row',
     fn: 'pull',
     role: 'accessory',
@@ -261,6 +270,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'pallof-press',
+    tempo: [{ texte: 'Verrouillage 2 s' }],
     name: 'Pallof Press Step-Out',
     fn: 'core',
     role: 'core',
@@ -283,6 +293,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'lateral-bound',
+    tempo: [{ texte: 'Tiens la réception 2 s' }],
     name: 'Lateral Bound',
     fn: 'jump',
     role: 'power',
@@ -406,6 +417,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'hip-thrust',
+    tempo: [{ texte: '2 s de contraction en haut' }],
     name: 'Hip Thrust',
     fn: 'hinge',
     role: 'accessory',
@@ -416,6 +428,7 @@ const LIST: ExerciseDef[] = [
   }),
   def({
     id: 'nordic-curl',
+    tempo: [{ texte: 'Descente 4-5 s' }],
     name: 'Nordic Curl',
     fn: 'hinge',
     role: 'accessory',

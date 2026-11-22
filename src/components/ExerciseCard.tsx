@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { PropositionsExercice } from './PropositionsExercice';
+import { TempoChip } from './TempoChip';
+import { tempoDuJour } from '../engine/tempo';
 import type { SetRow } from '../db/db';
 import { fr, gripHint, loadLine, restLabel } from '../engine/format';
 import type { ChargeCible, ResolvedExercise } from '../engine/getSession';
@@ -27,11 +30,7 @@ import type { DayIndex } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
 import { EXERCISES } from '../data/exercises';
 import { fonctionTronc } from '../data/fonctionsTronc';
-import {
-  estAlignable,
-  propositionAlignement,
-  type DecisionAlignement,
-} from '../engine/alignementReps';
+import { type DecisionAlignement } from '../engine/alignementReps';
 import { enregistrerOuSignaler } from './enregistrement';
 import styles from '../screens/Session.module.css';
 
@@ -172,8 +171,6 @@ export function ExerciseCard({
   const [ficheVersion, setFicheVersion] = useState(0);
   /* Les séries « à venir » que la personne a choisi d'ouvrir à l'avance. */
   const [ouvertes, setOuvertes] = useState<ReadonlySet<number>>(() => new Set());
-  const [refusing, setRefusing] = useState(false);
-  const [manualKg, setManualKg] = useState<number>(ex.load.kg ?? 0);
   /*
    * L'unité est choisie une fois pour l'exercice, pas série par série : on ne
    * change pas de façon de compter entre la deuxième et la troisième série.
@@ -187,12 +184,6 @@ export function ExerciseCard({
   const plannedKg = overrideKg ?? ex.load.kg;
   const shownLoadLine = buildLoadLine(ex, plannedKg);
   const allDone = savedSets.length >= ex.sets && ex.sets > 0;
-  const suggestion = ex.suggestion;
-  const showSuggestion =
-    suggestion?.requiresConfirm &&
-    suggestion.suggestedKg !== null &&
-    overrideKg === null &&
-    savedSets.length === 0;
 
   /*
    * La série à faire : la première qui n'a rien d'enregistré. Elle seule est
@@ -212,20 +203,6 @@ export function ExerciseCard({
    * en entier.
    */
   const fonction = fonctionTronc(ex.id);
-
-  /*
-   * « Tu as fait 3 × 10 au lieu de 3 × 6 : aligner l'attendu ? » — seulement
-   * avant la première série du jour, et pour un accessoire ou un exercice de
-   * tronc compté en reps.
-   */
-  const proposition =
-    alignement &&
-    savedSets.length === 0 &&
-    ex.work.kind === 'reps' &&
-    typeof ex.work.reps === 'number' &&
-    estAlignable(ex.def.role, ex.work.kind, ex.work.reps)
-      ? propositionAlignement(ex.work.reps, history, note.week, alignement.decision)
-      : null;
 
   const aDesConsignes =
     ex.adjustments.some((a) => a.source !== 'rouge') ||
@@ -259,6 +236,7 @@ export function ExerciseCard({
               Repos <b>{restLabel(ex.restSec)}</b>
             </span>
           )}
+          <TempoChip tempo={tempoDuJour(ex.def.tempo, note.week, note.day)} />
           {overrideKg !== null && (
             <span style={{ color: 'var(--accent-ink)' }}>charge ajustée</span>
           )}
@@ -359,87 +337,16 @@ export function ExerciseCard({
         plannedKg={plannedKg}
       />
 
-      {proposition && alignement && (
-        <div className={styles.suggestion}>
-          <div className={styles.suggestionText}>
-            En semaine {proposition.semaine}, tu as tenu <b>{proposition.propose} reps</b> à chacun
-            de tes {proposition.nbTours} tours, au lieu de {proposition.prevu}. Aligner l’attendu
-            sur {proposition.propose} reps pour la suite du programme ?
-          </div>
-          <div className={styles.suggestionActions}>
-            <button
-              type="button"
-              className={styles.accept}
-              onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: true })}
-            >
-              Passer à {proposition.propose} reps
-            </button>
-            <button
-              type="button"
-              className={styles.refuse}
-              onClick={() => alignement.onDecider({ reps: proposition.propose, accepte: false })}
-            >
-              Garder {proposition.prevu}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showSuggestion && (
-        <div className={styles.suggestion}>
-          <div className={styles.suggestionText}>{suggestion.reason}</div>
-          {!refusing ? (
-            <div className={styles.suggestionActions}>
-              <button
-                type="button"
-                className={styles.accept}
-                onClick={() => onOverride(ex.id, suggestion.suggestedKg)}
-              >
-                Accepter {fr(suggestion.suggestedKg!)} kg
-              </button>
-              <button
-                type="button"
-                className={styles.refuse}
-                onClick={() => {
-                  setManualKg(plannedKg ?? 0);
-                  setRefusing(true);
-                }}
-              >
-                Refuser
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className={styles.suggestionActions} style={{ marginTop: 12 }}>
-                <Stepper
-                  label="Ma charge"
-                  value={manualKg}
-                  step={ex.load.step}
-                  min={0}
-                  max={300}
-                  unit="kg"
-                  tone="accent"
-                  onStep={(d) => setManualKg((v) => stepValue(v, d, 0, 300))}
-                />
-              </div>
-              <div className={styles.suggestionActions}>
-                <button
-                  type="button"
-                  className={styles.accept}
-                  onClick={() => {
-                    onOverride(ex.id, manualKg);
-                    setRefusing(false);
-                  }}
-                >
-                  Utiliser {fr(manualKg)} kg
-                </button>
-                <button type="button" className={styles.refuse} onClick={() => setRefusing(false)}>
-                  Annuler
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+      {!hideSets && (
+        <PropositionsExercice
+          ex={ex}
+          savedSets={savedSets}
+          overrideKg={overrideKg}
+          history={history}
+          note={note}
+          onOverride={onOverride}
+          {...(alignement === undefined ? {} : { alignement })}
+        />
       )}
 
       <FicheTechnique

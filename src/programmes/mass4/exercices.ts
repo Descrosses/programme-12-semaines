@@ -50,18 +50,24 @@ const LISTE: readonly ExerciceMass4[] = [
   // ------------------------------------------------------------------- bras
   {
     id: 'barre-au-front',
+    tempo: [
+      { texte: 'Descente 3 s', jours: [0] },
+      { texte: 'Descente 2 s', jours: [5] },
+    ],
     nom: 'Barre au front',
     consigne: 'Descente 3 s en superset du lundi, 2 s en superset du samedi.',
     materiel: 'Barre EZ',
   },
   {
     id: 'curl-barre-ez',
+    tempo: [{ texte: 'Descente 3 s' }],
     nom: 'Curl barre EZ',
     consigne: 'Descente 3 s.',
     materiel: 'Barre EZ',
   },
   {
     id: 'curl-halteres-alterne',
+    tempo: [{ texte: 'Descente 2 s' }],
     nom: 'Curl haltères debout alterné',
     consigne: 'Descente 2 s, pic de contraction.',
     materiel: 'Haltères',
@@ -87,6 +93,7 @@ const LISTE: readonly ExerciceMass4[] = [
   // -------------------------------------------------------------------- dos
   {
     id: 'tirage-vertical-supination',
+    tempo: [{ texte: 'Contraction 1 s, relâchement 2 s' }],
     nom: 'Tirage vertical prise supination',
     consigne: 'Contraction 1 s, relâchement 2 s.',
     materiel: 'Poulie haute',
@@ -99,6 +106,7 @@ const LISTE: readonly ExerciceMass4[] = [
   },
   {
     id: 'tirage-horizontal-serre',
+    tempo: [{ texte: 'Contraction 2 s, relâchement 3 s' }],
     nom: 'Tirage horizontal prise serrée',
     consigne: 'Contraction 2 s, relâchement 3 s.',
     materiel: 'Poulie basse',
@@ -110,12 +118,14 @@ const LISTE: readonly ExerciceMass4[] = [
   },
   {
     id: 'rowing-bucheron',
+    tempo: [{ texte: 'Pic de contraction 1 s' }],
     nom: 'Rowing bûcheron',
     consigne: 'Coude à 45°, pic de contraction 1 s.',
     materiel: 'Haltère',
   },
   {
     id: 'shrugs-halteres',
+    tempo: [{ texte: 'Pic de contraction 1 s, descente 2 s' }],
     nom: 'Shrugs haltères',
     consigne: 'Pic de contraction 1 s, descente 2 s.',
     materiel: 'Haltères',
@@ -142,12 +152,14 @@ const LISTE: readonly ExerciceMass4[] = [
   },
   {
     id: 'ecarte-couche-halteres',
+    tempo: [{ texte: 'Descente 3 s' }],
     nom: 'Écarté couché haltères',
     consigne: 'Descente 3 s, recherche d’étirement.',
     materiel: 'Haltères',
   },
   {
     id: 'pull-over-haltere',
+    tempo: [{ texte: 'Descente 3 s' }],
     nom: 'Pull over haltère',
     consigne: 'Descente 3 s, recherche d’étirement.',
     materiel: 'Haltère',
@@ -156,6 +168,7 @@ const LISTE: readonly ExerciceMass4[] = [
   // ----------------------------------------------------------------- jambes
   {
     id: 'squat-smith',
+    tempo: [{ texte: 'Descente 3 s · pause 1 s' }],
     nom: 'Squat Smith',
     consigne:
       'Descente 3 s le plus bas possible, dos droit et talons au sol, pause 1 s, remontée explosive.',
@@ -163,12 +176,14 @@ const LISTE: readonly ExerciceMass4[] = [
   },
   {
     id: 'leg-extension',
+    tempo: [{ texte: 'Descente 2 s, pic 1 s' }],
     nom: 'Leg extension',
     consigne: 'Descente 2 s, pic 1 s.',
     materiel: 'Machine',
   },
   {
     id: 'leg-curl-allonge',
+    tempo: [{ texte: 'Descente 2 s, pic 1 s' }],
     nom: 'Leg curl allongé',
     consigne: 'Descente 2 s, pic 1 s.',
     materiel: 'Machine',
@@ -200,6 +215,7 @@ const LISTE: readonly ExerciceMass4[] = [
   },
   {
     id: 'releve-de-buste',
+    tempo: [{ texte: 'Descente 2 s, pic 1 s' }],
     nom: 'Relevé de buste',
     consigne: 'Lombaires. Descente 2 s, pic 1 s.',
     materiel: 'Banc à lombaires',

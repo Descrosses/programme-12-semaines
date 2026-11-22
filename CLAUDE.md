@@ -268,6 +268,29 @@ matériel et la durée avant d'écrire la moindre séance.
   n'est jamais « À venir ». La restauration annonce les programmes importés
   qu'elle remplace. `components/perso/importPerso.test.tsx`.
   Reste le lot 6 (non-régression).
+- **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
+  carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
+  superset. Champ `tempo` (`TempoPrescrit` : texte, semaines?, jours?) sur
+  les définitions d'exercice des 4 programmes ; le texte est EXTRAIT mot pour
+  mot de la consigne, jamais reformulé (`engine/tempo.test.tsx` relit chaque
+  segment « · »). Squat : 3-0-X en S1-3, « descente contrôlée ~2 s » en
+  S5-7, rien ailleurs ; barre au front MASS CONGESTION : 3 s lundi, 2 s
+  samedi. Les programmes importés n'ont pas de tempo extrait (texte
+  verbatim). **Rappel de sauvegarde** : carte au-dessus de « Séance
+  terminée » le DERNIER jour d'entraînement de la semaine du programme
+  (`RappelSauvegarde`, aussi dans la séance FEMMES), qui lance l'export ;
+  elle se tait après un export du jour. La date du dernier export vit en
+  `localStorage` (`state/dernierExport.ts`), jamais en base : restaurer une
+  vieille sauvegarde ne doit pas faire croire qu'un export vient d'être fait.
+  **« Préparer une fiche pour quelqu'un »** est sorti des Réglages vers
+  `#/admin` (`AdminScreen`), qu'aucun lien n'ouvre : outil de coach.
+  **Les questions d'un exercice se posent AVANT ses séries, superset
+  compris** (le vrai « point 1 » de Guillaume) : aligner les reps et charge
+  de la semaine (§11) vivent dans `PropositionsExercice`. Un « cas 10 »
+  (changer la charge après la 1re série) a été écrit sur un malentendu puis
+  RETIRÉ à la demande de Guillaume : ne pas le réintroduire sans qu'il l'écrive. Carte seule : au même endroit qu'avant. Superset :
+  en tête de bloc, avant « Tour 1 », avec le nom de la station ; la fiche du
+  bas (`hideSets`) ne les répète pas. `components/propositionsSuperset.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

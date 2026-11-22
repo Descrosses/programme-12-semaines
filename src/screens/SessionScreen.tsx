@@ -1,4 +1,6 @@
 import { Fragment, useState, type CSSProperties } from 'react';
+import { PropositionsExercice } from '../components/PropositionsExercice';
+import { RappelSauvegarde } from '../components/RappelSauvegarde';
 import {
   shouldRemindSession,
   missingPrescribedSets,
@@ -446,6 +448,34 @@ export function SessionScreen({
    * le bloc). Une seule définition, donc aucun risque qu'un exercice perde sa
    * remarque ou son suivi de douleur selon l'endroit où il s'affiche.
    */
+  /**
+   * Les questions d'une station de superset, posées en tête de bloc (voir
+   * `PropositionsExercice`). La carte de la station, rangée sous les tours,
+   * ne les répète pas.
+   */
+  function propositions(ex: ResolvedExercise) {
+    return (
+      <PropositionsExercice
+        key={`propositions-${ex.id}`}
+        ex={ex}
+        savedSets={data.savedSets[ex.id] ?? []}
+        overrideKg={overrides[ex.id] ?? null}
+        history={data.history[ex.id]}
+        note={{ week, day, date: data.date ?? '' }}
+        titre={ex.name}
+        alignement={{
+          decision: data.alignements[ex.id],
+          onDecider: (d) =>
+            void (async () => {
+              await deciderAlignement(ex.id, d);
+              await data.reload();
+            })(),
+        }}
+        onOverride={(id, kg) => void handleOverride(id, kg)}
+      />
+    );
+  }
+
   function carte(ex: ResolvedExercise, sansSeries: boolean) {
     const custom = duJour.find((r) => r.exerciseId === ex.id) ?? null;
     const original = custom?.originalExerciseId ?? null;
@@ -681,6 +711,7 @@ export function SessionScreen({
               timer={timer}
               onSaveSet={handleSaveSet}
               fiches={<>{bloc.exs.map((ex) => carte(ex, true))}</>}
+              propositions={<>{bloc.exs.map((ex) => propositions(ex))}</>}
             />
           ) : (
             carte(bloc.ex, false)
@@ -869,6 +900,7 @@ export function SessionScreen({
           </div>
         </section>
       )}
+      <RappelSauvegarde joursDeLaSemaine={data.joursDeLaSemaine} jour={day} />
       <button
         type="button"
         className={`${styles.finish} ${row?.status === 'done' ? styles.finishDone : ''}`}
