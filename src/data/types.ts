@@ -414,6 +414,13 @@ export interface ExerciseDef {
    */
   fiche?: string;
   /**
+   * Muscles sollicités et erreurs à éviter, affichés sous la planche quand on
+   * l'ouvre. Rempli pour les planches de POWER 12 seulement
+   * (`musclesErreursPower12.ts`, validé par Guillaume) ; absent ailleurs, et
+   * alors aucune section ne s'affiche.
+   */
+  infosFiche?: InfosFiche;
+  /**
    * Un point de VIGILANCE, affiché en tête de la carte, au-dessus de tout le
    * reste : sur les exercices à risque technique, c'est ce qu'il faut avoir
    * lu avant de charger. Rempli seulement avec le texte du programme (MASS
@@ -622,4 +629,12 @@ export interface Session {
   readinessTest: boolean;
   notes: string[];
   exercises: Exercise[];
+}
+
+/** Ce que la fiche technique dit d'un mouvement, en plus de sa planche. */
+export interface InfosFiche {
+  readonly principaux: readonly string[];
+  readonly secondaires: readonly string[];
+  /** Trois au plus. */
+  readonly erreurs: readonly string[];
 }

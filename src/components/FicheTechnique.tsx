@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { ExerciseDef } from '../data/types';
+import type { ExerciseDef, InfosFiche } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
 import { referenceForExercise } from '../db/repo';
 import { Icon } from './Icon';
@@ -125,9 +125,78 @@ export function FicheTechnique({
                 className={zoom ? fiche.imageZoom : fiche.image}
               />
             </button>
+            {def.infosFiche !== undefined && (
+              <InfosDeLaFiche infos={def.infosFiche} onCompris={() => setOuverte(false)} />
+            )}
           </div>
         </div>
       )}
     </>
+  );
+}
+
+/**
+ * Sous la planche : les muscles sollicités et les erreurs à éviter (maquette
+ * « Fiche » de la DA MAJK). Le texte vient du tableau validé par Guillaume ;
+ * une liste vide n'affiche pas sa section, rien n'est inventé à la place.
+ *
+ * « C'est compris — aux séries » referme la fiche : on la lit AVANT la
+ * première série, puis on revient à la carte.
+ */
+export function InfosDeLaFiche({ infos, onCompris }: { infos: InfosFiche; onCompris: () => void }) {
+  const muscles = infos.principaux.length + infos.secondaires.length > 0;
+  return (
+    <div className={fiche.infos}>
+      {muscles && (
+        <section className={fiche.carteInfo} aria-labelledby="fiche-muscles">
+          <h2 id="fiche-muscles" className={fiche.titreInfo}>
+            Muscles sollicités
+          </h2>
+          {infos.principaux.length > 0 && (
+            <>
+              <p className={fiche.sousTitreInfo}>Principaux</p>
+              <ul className={fiche.pastilles}>
+                {infos.principaux.map((m) => (
+                  <li key={m} className={fiche.pastillePrincipale}>
+                    {m}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {infos.secondaires.length > 0 && (
+            <>
+              <p className={fiche.sousTitreInfo}>Secondaires</p>
+              <ul className={fiche.pastilles}>
+                {infos.secondaires.map((m) => (
+                  <li key={m} className={fiche.pastille}>
+                    {m}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      )}
+
+      {infos.erreurs.length > 0 && (
+        <section className={fiche.carteInfo} aria-labelledby="fiche-erreurs">
+          <h2 id="fiche-erreurs" className={fiche.titreInfo}>
+            <Icon name="alert" size="18px" />
+            Erreurs à éviter
+          </h2>
+          <ul className={fiche.erreurs}>
+            {infos.erreurs.map((e) => (
+              <li key={e}>{e}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <button type="button" className={fiche.compris} onClick={onCompris}>
+        <Icon name="check" size="18px" />
+        C’est compris — aux séries
+      </button>
+    </div>
   );
 }

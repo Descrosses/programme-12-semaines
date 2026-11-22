@@ -883,6 +883,15 @@ export function SetEntry({
     if (saved === null && plannedKgSerie !== null) setKg(plannedKgSerie);
   }, [plannedKgSerie, saved]);
 
+  /*
+   * Même règle pour les reps : « Passer à 10 reps » changeait l'en-tête
+   * (3 × 10) mais chaque curseur restait sur le 6 qu'il avait à l'ouverture
+   * (retour de Guillaume, 22 novembre). Une série déjà validée ne bouge pas.
+   */
+  useEffect(() => {
+    if (saved === null && plannedReps !== null) setReps(plannedReps);
+  }, [plannedReps, saved]);
+
   const done = saved !== null && !editing;
 
   async function validate() {

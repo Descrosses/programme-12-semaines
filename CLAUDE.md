@@ -334,6 +334,20 @@ matériel et la durée avant d'écrire la moindre séance.
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
+- **Muscles et erreurs sous les 38 planches POWER** (repris du lot 6 de
+  MAJK, 22 novembre). Texte transcrit tel quel du tableau « MAJK — Fiches
+  techniques POWER 12 » (révision 5, toutes lignes « Validé » par Guillaume)
+  dans `data/musclesErreursPower12.ts` : le tableau fait foi. Rattaché par
+  `def()` d'`exercises.ts`, seulement quand le mouvement a une planche ; les
+  tests du combiné empruntent le texte de leur mouvement ; MASS et FEMMES
+  n'en ont pas. Affiché sous la planche ouverte (`InfosDeLaFiche`), section
+  vide = pas de section, « C'est compris — aux séries » referme la fiche. La
+  section CSS est AVANT le bloc MASS de `FicheMouvement.module.css`
+  (`confinementMass.test.ts`). `musclesErreursPower12.test.tsx`.
+- **Alignement des reps** : la question n'est posée que sur un exercice
+  marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
+  et les curseurs des séries non validées suivent l'attendu accepté.
+  `components/alignementApplique.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

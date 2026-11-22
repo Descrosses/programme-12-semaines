@@ -11,11 +11,7 @@
  */
 import { useState } from 'react';
 import type { SetRow } from '../db/db';
-import {
-  estAlignable,
-  propositionAlignement,
-  type DecisionAlignement,
-} from '../engine/alignementReps';
+import { propositionAlignement, type DecisionAlignement } from '../engine/alignementReps';
 import { fr } from '../engine/format';
 import type { ResolvedExercise } from '../engine/getSession';
 import type { Occurrence } from '../engine/types';
@@ -59,15 +55,15 @@ export function PropositionsExercice({
 
   /*
    * « Tu as fait 3 × 10 au lieu de 3 × 6 : aligner l'attendu ? » — seulement
-   * avant la première série du jour, et pour un accessoire ou un exercice de
-   * tronc compté en reps.
+   * avant la première série du jour, et seulement là où le moteur appliquera
+   * la réponse (`ex.alignable`, posé par la séance POWER).
    */
   const proposition =
     alignement &&
     savedSets.length === 0 &&
+    ex.alignable === true &&
     ex.work.kind === 'reps' &&
-    typeof ex.work.reps === 'number' &&
-    estAlignable(ex.def.role, ex.work.kind, ex.work.reps)
+    typeof ex.work.reps === 'number'
       ? propositionAlignement(ex.work.reps, history, note.week, alignement.decision)
       : null;
 
