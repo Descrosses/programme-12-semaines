@@ -121,7 +121,9 @@ export const VISUELS = {
    * générés sans texte (ChatGPT), 1633 × 963 livrés, ramenés à 1200 et
    * 640 px. Sujet à DROITE, gauche dégagée pour le titre HTML.
    * Calés sur leur BORD HAUT (`… 0%`) : les têtes sont en haut des
-   * fichiers, et un recadrage par le haut les coupait (iPhone de Guillaume). Ils ne
+   * fichiers, et un recadrage par le haut les coupait (iPhone de Guillaume).
+   * Sauf Nutrition (bol et smoothie, 23 novembre, aucune tête) : calé vers
+   * le bas, pour garder le bol entier. Ils ne
    * servent qu'aux écrans FEMMES (`Bandeau`, `Pieces.tsx`) : jamais dans
    * POWER ni MASS (`bandeaux.test.ts`). Mêmes réserves de droits que le
    * reste : des générations d'IA.
@@ -148,9 +150,10 @@ export const VISUELS = {
     display: '52_femmes_nutrition_display.webp',
     mobile: '52_femmes_nutrition_mobile.webp',
     largeurs: { display: 1200, mobile: 640 },
-    description: 'Athlète qui mélange un bol de poulet et de légumes dans une cuisine rose.',
+    description:
+      'Bol de saumon, quinoa, avocat, tomates et salade, smoothie aux fruits rouges, fond rose.',
     cadrage: 'cover',
-    focus: '82% 0%',
+    focus: '85% 72%',
     usage: 'Bandeau d’en-tête FEMMES : Nutrition.',
   },
   femmesMesures: {

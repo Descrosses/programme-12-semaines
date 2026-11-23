@@ -108,7 +108,10 @@ describe('bandeaux FEMMES', () => {
   it('les têtes restent entières : photo calée en haut, fondu de 10 px au plus', () => {
     // Retour de Guillaume (iPhone) : recadrée par le haut et fondue sur
     // 26 px, la photo effaçait la tête des athlètes.
-    for (const nom of FEMMES) expect(VISUELS[nom].focus).toMatch(/ 0%$/);
+    // Nutrition n'a pas d'athlète (bol et smoothie) : calé vers le bas.
+    for (const nom of FEMMES.filter((n) => n !== 'femmesNutrition')) {
+      expect(VISUELS[nom].focus).toMatch(/ 0%$/);
+    }
     const fondu = /\.hero img \{[^}]*#000 (\d+)px\)/.exec(lire('./Femmes.module.css'));
     expect(Number(fondu?.[1])).toBeLessThanOrEqual(10);
   });
