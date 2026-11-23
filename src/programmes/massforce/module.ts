@@ -20,6 +20,7 @@
  * - Aucun champ RPE : « RPE 8 » est une consigne (décision de Guillaume).
  */
 
+import { SEC_MONTEE_EN_CHARGE } from '../../engine/sessionDuration';
 import type { DayIndex, ExerciseDef, MovementFn } from '../../data/types';
 import type { ResolvedExercise, ResolvedSession } from '../../engine/getSession';
 import type { SessionContext } from '../../engine/types';
@@ -109,6 +110,9 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
     // Une série ratée est un échec pour la progression (§1 ter) : il faut
     // pouvoir le dire, sur tous les exercices.
     signaleEchec: true,
+    // §2 bis : montée en charge avant le mouvement évalué au combiné, qui
+    // ouvre chaque séance.
+    ...(ligne.testLibelle === 'Aucun' ? {} : { monteeEnCharge: true }),
     notes: notesPour(ligne),
     ...(ligne.superset === undefined ? {} : { superset: ligne.superset }),
     lastKg: null,
@@ -122,12 +126,15 @@ function exercicePour(ligne: LigneForce, semaine: number, ctx: SessionContext): 
 /**
  * Durée estimée des séries et des repos, à la même convention que MASS
  * CONGESTION (une minute par série). Le document de MASS FORCE ne donne
- * aucune durée d'échauffement : aucune n'est ajoutée.
+ * aucune durée d'échauffement : aucune n'est ajoutée — sauf la montée en
+ * charge du mouvement évalué (§2 bis), au même compte que POWER.
  */
 export function dureeMinutes(lignes: readonly LigneForce[]): number {
   let secondes = 0;
   for (const l of lignes) {
     secondes += l.series * 60;
+    // §2 bis : les paliers d'approche du mouvement évalué.
+    if (l.testLibelle !== 'Aucun') secondes += SEC_MONTEE_EN_CHARGE;
     // En superset, la transition du premier mouvement revient à chaque tour.
     const pauses = l.superset !== undefined && l.reposSec < 60 ? l.series : l.series - 1;
     secondes += l.reposSec * Math.max(0, pauses);

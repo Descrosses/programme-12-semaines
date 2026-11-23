@@ -6,7 +6,8 @@
  * - le vendredi ne porte aucun exercice à plus de 3 séries, sauf le Push Press
  *   et le Speed Squat (4) : trop de séries empêchent de rester explosif ;
  * - le Jump Squat est gardé, à 3 séries (2 en deload), le vendredi seulement ;
- * - le vendredi tient en 75 min au plus, deloads compris.
+ * - le vendredi tient en 81 min au plus, deloads compris : 75 min au plafond
+ *   du 22 novembre, plus les ~5 min de la montée en charge du 23 novembre.
  */
 import { describe, expect, it } from 'vitest';
 import type { DayIndex, WeekIndex } from './types';
@@ -48,10 +49,10 @@ describe('le vendredi plafonné', () => {
     }
   });
 
-  it('75 min au plus, deloads compris', () => {
+  it('81 min au plus, deloads compris (montée en charge comprise)', () => {
     for (const w of SEMAINES) {
       const min = Number(vendredi(w).durationLabel.replace(/\D/g, ''));
-      expect(min, `S${w}`).toBeLessThanOrEqual(75);
+      expect(min, `S${w}`).toBeLessThanOrEqual(81);
     }
   });
 });

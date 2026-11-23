@@ -154,6 +154,22 @@ Mardi — biceps : Curl barre W (A1) → **15 s de transition** → Curl haltèr
 s'enregistrent séparément, liés au même superset ; le chrono distingue la
 transition du repos.
 
+## 2 bis. Montée en charge
+
+Décision de Guillaume (23 novembre). Avant le premier exercice de chaque
+séance — le mouvement évalué au combiné (développé couché, tirage vertical,
+squat, push press) —, plusieurs séries d'approche mènent à la charge de
+travail :
+
+| Palier | Répétitions | Charge |
+|---|---|---|
+| 1 | 5 | 50 % de la charge de travail |
+| 2 | 3 | 70 % de la charge de travail |
+| 3 | 2-3 | 85 % de la charge de travail |
+| 4 | 2 | 90-95 % de la charge de travail |
+
+1 min de repos entre ces séries, puis les séries de travail. Le but : générer progressivement une tension et un stress musculaire et tendineux suffisants pour être prêt pour les vraies séries de travail. Ces séries d'approche ne comptent pas dans les séries prescrites et ne s'enregistrent pas.
+
 ## 3. Consignes techniques et vigilance
 
 | Exercice | Consignes techniques | Vigilance |

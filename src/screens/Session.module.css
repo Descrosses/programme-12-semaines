@@ -2503,6 +2503,95 @@
 }
 
 /* ===================================================================== */
+/* ------------------------------------------------ montée en charge (§6) -- */
+/*
+ * En tête de la carte du premier mouvement lourd. Cadre à l'accent discret :
+ * c'est une consigne à lire avant de charger, pas une série à valider.
+ */
+.montee {
+  margin: 0 var(--pad) 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--accent-dim);
+}
+
+.monteeTitre {
+  margin: 0;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.monteeTexte {
+  margin: 6px 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.monteePaliers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.monteePalier {
+  display: grid;
+  grid-template-columns: 5em 1fr auto;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 0 0 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.monteeFait {
+  opacity: 0.6;
+}
+
+.monteeReps {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Les kilos sur une ligne (« 87,5-92,5 kg » ne se coupe pas), le % dessous. */
+.monteeChargeBloc {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.monteeCharge {
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.monteePct {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.monteeBouton {
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 /*
  * SÉANCE MASS — d'après la référence de Guillaume (14 novembre), mesurée sur
  * sa capture d'iPhone (849 px = 402 px CSS). Tout est sous le thème MASS ET

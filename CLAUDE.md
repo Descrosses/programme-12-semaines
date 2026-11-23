@@ -351,9 +351,10 @@ matériel et la durée avant d'écrire la moindre séance.
   empêchent de rester explosif jusqu'au bout ». Broad Jump 3 × 2 (deload :
   2), Hang High Pull 3 × 3 (tous blocs), Lateral Bound 3, Farmer Carry 3,
   **Jump Squat GARDÉ à 3 séries** (3 × 4 S1-8, 3 × 3 S9-11 ; 2 en deload),
-  Push Press et Speed Squat à 4 (§9 ET `mainLiftTable.ts`). Vendredi : 72
-  (S1-3), 75 (S5-7), 73 (S9-11), 53-54 en deload ; « 50-75 min » au §3 =
-  `durationLabel` du code (testé). `data/vendrediPlafond.test.ts`.
+  Push Press et Speed Squat à 4 (§9 ET `mainLiftTable.ts`). Vendredi : 77
+  (S1-3), 81 (S5-7), 79 (S9-11), 59 en deload, montée en charge comprise ;
+  « 55-85 min » au §3 = `durationLabel` du code (testé).
+  `data/vendrediPlafond.test.ts` (81 au plus).
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
@@ -371,6 +372,19 @@ matériel et la durée avant d'écrire la moindre séance.
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.
   `components/alignementApplique.test.tsx`.
+- **Montée en charge avant le PREMIER mouvement lourd de la séance**
+  (Guillaume, 23 novembre ; §6 du `.md` POWER, §2 bis de MASS FORCE, même
+  tableau) : 5 reps à 50 %, 3 à 70 %, 2-3 à 85 %, 2 à 90-95 % de la charge
+  de travail, 1 min de repos. Données `data/monteeEnCharge.ts`, kilos
+  arrondis au pas par `engine/monteeEnCharge.ts` (sans charge connue : des
+  %, jamais un kilo). POWER : le premier lift `main` de la séance (squat,
+  Pin Squat en S5-7, bench, push press, deadlift — même APRÈS un explosif),
+  combiné S8 compris, jamais en S0 ni S12. MASS FORCE : le mouvement évalué
+  qui ouvre chaque séance. Jamais MASS CONGESTION, FEMMES ni importés. Bloc
+  `MonteeEnCharge` en tête de carte, retiré à la 1re série de travail ;
+  « Fait → 1 min » lance le chrono ; RIEN n'est enregistré. Compté dans les
+  durées (`SEC_MONTEE_EN_CHARGE`, ~5 min) : §3 relevé à 50-85 / 55-85 /
+  55-85 / 45-85. `components/monteeEnCharge.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et
