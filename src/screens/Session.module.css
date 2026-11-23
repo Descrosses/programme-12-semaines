@@ -2543,7 +2543,9 @@
   padding: 12px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
-  border: 1px solid var(--accent-dim);
+  /* Variante M2 (Guillaume, 23 novembre) : filet rouge à gauche, comme
+     l'encadré « Contraste » ; plus de contour rouge foncé sur le bleu. */
+  border-left: 4px solid var(--accent);
 }
 
 .monteeTitre {
@@ -2582,14 +2584,9 @@
 
 .monteeChevron {
   flex: none;
-  font-size: 1.25rem;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   color: var(--ink-2);
-  transition: transform 0.2s ease;
-}
-
-.monteeChevronOuvert {
-  transform: rotate(180deg);
 }
 
 .monteeTexte {

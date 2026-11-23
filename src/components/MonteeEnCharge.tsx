@@ -16,6 +16,7 @@
  */
 
 import { useState } from 'react';
+import { Icon } from './Icon';
 import { POURQUOI_MONTEE, REPOS_MONTEE_SEC } from '../data/monteeEnCharge';
 import { paliersMontee } from '../engine/monteeEnCharge';
 import type { RestTimer } from '../state/useRestTimer';
@@ -50,11 +51,8 @@ export function MonteeEnCharge({
           <span className={styles.monteeTitre}>Montée en charge · avant tes séries</span>
           <span className={`${styles.monteeResume} tnum`}>{resume}</span>
         </span>
-        <span
-          className={`${styles.monteeChevron} ${ouvert ? styles.monteeChevronOuvert : ''}`}
-          aria-hidden="true"
-        >
-          ⌄
+        <span className={styles.monteeChevron} aria-hidden="true">
+          <Icon name={ouvert ? 'chevron-up' : 'chevron-down'} size="20px" />
         </span>
       </button>
       <div id="montee-paliers" hidden={!ouvert}>

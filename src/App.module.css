@@ -127,28 +127,25 @@
 }
 
 /*
- * L'onglet actif se reconnaît à TROIS choses : sa couleur, son trait rouge en
- * haut, et son libellé plus appuyé. Une seule d'entre elles suffirait à un œil
- * normal ; les trois ensemble servent à celui qui distingue mal le rouge.
- */
-/*
- * Le LIBELLÉ prend le rouge éclairci, pas le rouge vif : à 10 px sur le fond
- * de la barre, #f01432 ne fait que 3,4:1. Le trait du dessus, lui, est
- * décoratif et garde le rouge vif.
+ * L'onglet actif se reconnaît à TROIS choses : sa pastille ivoire, son libellé
+ * ivoire et son libellé plus appuyé. Aucune ne repose sur le rouge : celui
+ * qui distingue mal les couleurs le lit aussi.
  */
 .tabOn {
-  color: var(--accent-ink);
+  color: var(--ivoire);
 }
 
-.tabOn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 22%;
-  right: 22%;
-  height: 3px;
-  border-radius: 0 0 2px 2px;
-  background: var(--accent-bright);
+/*
+ * Variante N3 (Guillaume, 23 novembre) : l'icône de l'onglet actif dans une
+ * pastille ivoire, encre sombre. Elle remplace la couleur rouge et le trait
+ * du dessus : la pastille, le libellé ivoire et appuyé suffisent, et se
+ * lisent sans distinguer les couleurs.
+ */
+.tabOn .tabIcon {
+  padding: 3px 14px;
+  border-radius: 14px;
+  background: var(--ivoire);
+  color: var(--encre);
 }
 
 .tabOn .tabLabel {

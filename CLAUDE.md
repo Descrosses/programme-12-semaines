@@ -402,6 +402,12 @@ matériel et la durée avant d'écrire la moindre séance.
   en haut, X = le plus vite possible) ; un tempo en mots reste une pastille
   (`tempoExplique.test.tsx`). Les **fiches d'un superset sont AVANT les
   tours** (« Tour 1 »), après les questions (`propositionsSuperset.test.tsx`).
+- **Choix visuels du 23 novembre** (planches de variantes, Guillaume) :
+  **N3** — l'onglet actif du menu du bas porte une pastille IVOIRE, encre
+  sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
+  rouge ni de trait au-dessus ; **M2** — l'encadré « Montée en charge » a un
+  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé.
+  `styles/touchesClaires.test.ts`. Le tempo : pas encore tranché.
 - **Alignement des reps** : la question n'est posée que sur un exercice
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.
