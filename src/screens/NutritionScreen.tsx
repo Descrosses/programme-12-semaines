@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type ReactNode } from 'react';
 import { LineChart, type Series } from '../components/Chart';
 import { Stepper, stepValue } from '../components/Stepper';
 import {
@@ -105,6 +105,8 @@ export function NutritionScreen({
   todayDay,
   todayWeek,
   onDayKindChange,
+  entete,
+  sansPlanHistorique = false,
 }: {
   /** Le palier RETENU pour aujourd'hui — un choix de Guillaume s'il en a fait un. */
   todayKind: DayKind;
@@ -116,6 +118,17 @@ export function NutritionScreen({
   todayWeek: WeekIndex | null;
   /** Prévient l'appli que la journée a changé de palier. */
   onDayKindChange: () => void;
+  /**
+   * L'en-tête d'un autre univers (FEMMES : son bandeau photo), à la place de
+   * celui de POWER. Absent : l'en-tête de POWER, inchangé.
+   */
+  entete?: ReactNode;
+  /**
+   * Vrai sous FEMMES : le plan historique est celui de Guillaume, jamais
+   * montré ailleurs que sous POWER — seul « Mon plan » s'affiche, quel que
+   * soit le réglage.
+   */
+  sansPlanHistorique?: boolean;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
@@ -147,7 +160,7 @@ export function NutritionScreen({
 
   async function reload() {
     const settings = await getSettingsRow();
-    setLegacyPlan(settings.legacyNutritionPlan);
+    setLegacyPlan(sansPlanHistorique ? false : settings.legacyNutritionPlan);
     setCibles(settings.ciblesNutrition);
     setPlan(settings.planPerso);
     setPreferes(settings.alimentsPreferes ?? []);
@@ -224,12 +237,14 @@ export function NutritionScreen({
 
     return (
       <div className={styles.screen}>
-        <ScreenHeader
-          eyebrow="Suivi personnel"
-          title="Nutrition"
-          subtitle={cibleJour === null ? 'Tes cibles restent à poser' : cibleJour.label}
-          visuel="nutritionPower"
-        />
+        {entete ?? (
+          <ScreenHeader
+            eyebrow="Suivi personnel"
+            title="Nutrition"
+            subtitle={cibleJour === null ? 'Tes cibles restent à poser' : cibleJour.label}
+            visuel="nutritionPower"
+          />
+        )}
 
         {cibleJour === null ? (
           <section className={styles.card}>

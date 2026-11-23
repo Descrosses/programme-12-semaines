@@ -1,0 +1,102 @@
+/**
+ * L'onglet Nutrition de FEMMES et ses bandeaux photo (Guillaume, 23 novembre).
+ *
+ * - la Nutrition FEMMES est l'écran « Mon plan » de l'appli, JAMAIS le plan
+ *   historique de Guillaume ;
+ * - FEMMES n'a pas de calendrier : « entraînement » seulement si une séance
+ *   a été terminée ce jour-là ;
+ * - chaque bandeau FEMMES reste dans FEMMES (règle de Guillaume : une image
+ *   ne passe jamais d'un programme à l'autre).
+ */
+import { existsSync, readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import type { FemmesSeanceRow } from '../../db/db';
+import { VISUELS, type VisuelNom } from '../../data/visuels';
+import { parseRoute, routeToHash } from '../../state/useRoute';
+import { paliersFemmes } from './NutritionFemmes';
+
+const lire = (chemin: string) => readFileSync(new URL(chemin, import.meta.url), 'utf8');
+
+const ligne = (date: string, terminee: boolean): FemmesSeanceRow =>
+  ({ cycleId: 1, semaine: 1, jour: 0, version: 'maison', date, terminee }) as FemmesSeanceRow;
+
+const FEMMES: VisuelNom[] = [
+  'femmesAujourdhui',
+  'femmesSemaine',
+  'femmesNutrition',
+  'femmesMesures',
+  'femmesReglages',
+];
+
+describe('Nutrition FEMMES', () => {
+  it('a sa route : #/femmes/nutrition', () => {
+    expect(parseRoute('#/femmes/nutrition')).toEqual({ name: 'femmes', vue: 'nutrition' });
+    expect(routeToHash({ name: 'femmes', vue: 'nutrition' })).toBe('#/femmes/nutrition');
+  });
+
+  it('l’onglet du bas y mène (il ramenait à Aujourd’hui)', () => {
+    expect(lire('./EcransFemmes.tsx')).toMatch(/o === 'nutrition'\) onNaviguer\('nutrition'\)/);
+  });
+
+  it('entraînement seulement si une séance FEMMES a été TERMINÉE ce jour-là', () => {
+    expect(paliersFemmes([], '2026-11-23')).toBe('rest');
+    expect(paliersFemmes([ligne('2026-11-23', false)], '2026-11-23')).toBe('rest');
+    expect(paliersFemmes([ligne('2026-11-22', true)], '2026-11-23')).toBe('rest');
+    expect(paliersFemmes([ligne('2026-11-23', true)], '2026-11-23')).toBe('train');
+  });
+
+  it('jamais le plan historique de Guillaume, même s’il est allumé dans les réglages', () => {
+    expect(lire('./NutritionFemmes.tsx')).toMatch(/<NutritionScreen[\s\S]*sansPlanHistorique/);
+    expect(lire('../NutritionScreen.tsx')).toContain(
+      'setLegacyPlan(sansPlanHistorique ? false : settings.legacyNutritionPlan)',
+    );
+  });
+
+  it('les cibles et la fiche se règlent dans les Réglages FEMMES, sans la phrase du plan historique', () => {
+    expect(lire('./FemmesScreens.tsx')).toMatch(
+      /<CartesNutrition[\s\S]*avecPlanHistorique=\{false\}/,
+    );
+  });
+
+  it('le retour du questionnaire alimentaire mène à la Nutrition FEMMES', () => {
+    expect(lire('../../App.tsx')).toContain(
+      "vue: route.name === 'nutrition' ? 'nutrition' : 'aujourdhui'",
+    );
+  });
+});
+
+describe('bandeaux FEMMES', () => {
+  it('les deux tailles de chacun existent', () => {
+    for (const nom of FEMMES) {
+      for (const f of [VISUELS[nom].display, VISUELS[nom].mobile]) {
+        expect(existsSync(new URL(`../../../public/visuels/${f}`, import.meta.url)), f).toBe(true);
+      }
+    }
+  });
+
+  it('chaque écran FEMMES montre le sien', () => {
+    const ecrans = lire('./FemmesScreens.tsx');
+    for (const nom of ['femmesAujourdhui', 'femmesSemaine', 'femmesReglages']) {
+      expect(ecrans).toContain(`photo="${nom}"`);
+    }
+    expect(lire('./NutritionFemmes.tsx')).toContain('photo="femmesNutrition"');
+  });
+
+  it('aucun bandeau FEMMES hors des écrans FEMMES', () => {
+    for (const f of [
+      '../NutritionScreen.tsx',
+      '../SettingsScreen.tsx',
+      '../WeekScreen.tsx',
+      '../CombineScreen.tsx',
+      '../../data/famillesVisuel.ts',
+    ]) {
+      const source = lire(f);
+      for (const nom of FEMMES)
+        expect({ f, nom, present: source.includes(nom) }).toEqual({
+          f,
+          nom,
+          present: false,
+        });
+    }
+  });
+});

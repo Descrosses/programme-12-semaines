@@ -176,9 +176,24 @@ la planche sont ASSOMBRIES pour le petit texte, et c'est voulu : bouton plein
 `#b14f6e` (blanc 4,98), rose écrit `#a8435f`, vert « faite » `#2e6b47` sur
 `#d5ecdd`. Seul thème clair : il redéfinit les couleurs d'état de POWER
 (orange, rouge, bleu, faites pour un fond sombre) et passe
-`color-scheme: light`. Le bandeau d'en-tête est un DÉGRADÉ rose tant que
-Guillaume n'a pas fourni de photo (`PHOTO_BANDEAU = null`, `Pieces.tsx`) ;
-le contenu de la planche (Bloc Congestion, 71-79 %…) est celui de POWER :
+`color-scheme: light`. **Bandeaux photo** (Guillaume, 23 novembre, générés
+SANS texte) : `Bandeau photo=…` — Aujourd'hui `femmesAujourdhui` (squat),
+Semaine `femmesSemaine` (kettlebell), Nutrition `femmesNutrition`, Profil
+`femmesReglages` (téléphone) ; `femmesMesures` (carnet) attend l'écran
+Mesures. La photo commence SOUS la barre d'état (la bande de l'heure
+couvrirait les têtes) ; le dégradé rose reste dessous. Jamais hors des
+écrans FEMMES. Pas de Progrès FEMMES pour l'instant (décision de Guillaume) ;
+le menu dit « Mesures », pas « Combiné ».
+**Nutrition FEMMES** (`#/femmes/nutrition`, `NutritionFemmes.tsx`) : l'écran
+« Mon plan » de l'appli sous le bandeau et le menu FEMMES, JAMAIS le plan
+historique (`sansPlanHistorique`). Palier du jour : « entraînement » si une
+séance FEMMES a été TERMINÉE ce jour-là, sinon « repos » ; le choix à
+l'écran l'emporte. Cibles et fiche dans le Profil (`CartesNutrition`,
+partagé avec les Réglages, `avecPlanHistorique={false}`). Sous FEMMES,
+`#/nutrition` (retour du questionnaire) mène à `#/femmes/nutrition`. La
+page Nutrition n'a PAS la classe `.page` (elle lève le plancher de 48 px
+des boutons). `nutritionFemmes.test.tsx`.
+Le contenu de la planche (Bloc Congestion, 71-79 %…) est celui de POWER :
 seul le STYLE est repris, le contenu FEMMES ne bouge pas.
 `styles/themeFemmes.test.ts` mesure les contrastes et refuse le synthwave.
 **Écran Semaine — lot 1/6 FAIT** (référence iPhone + planche, « go

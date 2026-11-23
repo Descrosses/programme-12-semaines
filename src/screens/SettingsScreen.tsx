@@ -744,55 +744,7 @@ export function SettingsScreen({
         </p>
       </section>
 
-      {/* ------------------------------------------------- mes cibles ---- */}
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Mes cibles nutritionnelles</h2>
-        <p className={styles.cardSub}>
-          <b>Facultatif, et vide par défaut.</b> MAJK ne décide pas combien tu dois manger. Si tu as
-          des chiffres — d’un diététicien, d’un coach, ou les tiens — pose-les ici : l’onglet
-          Nutrition affichera tes barres de macros et l’écart du jour.
-        </p>
-        {row.legacyNutritionPlan && (
-          <p className={styles.fieldHint}>
-            {/*
-              Dire pourquoi ces champs ne servent à rien en ce moment vaut
-              mieux que de les griser sans un mot : quelqu'un qui les
-              remplirait sans comprendre croirait l'écran cassé.
-            */}
-            Ton plan nutritionnel est affiché : ce sont ses repas qui font foi, et la cible du jour
-            vient de leur somme. Ce que tu poses ici est conservé, mais ne sera utilisé que si tu
-            masques le plan — carte <b>Plan nutritionnel</b>, juste au-dessus.
-          </p>
-        )}
-        {(['train', 'rest'] as const).map((kind) => (
-          <CiblesDuJour
-            key={kind}
-            kind={kind}
-            valeurs={(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES)[kind]}
-            onChange={(suivantes) =>
-              void patch({
-                ciblesNutrition: {
-                  ...(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES),
-                  [kind]: suivantes,
-                } as CiblesNutrition,
-              })
-            }
-          />
-        ))}
-        {row.ciblesNutrition !== null && (
-          <button
-            type="button"
-            className={styles.secondary}
-            style={{ width: '100%', margin: '12px 0 0' }}
-            onClick={() => void patch({ ciblesNutrition: null })}
-          >
-            Effacer mes cibles
-          </button>
-        )}
-      </section>
-
-      {/* ----------------------------------------------------- la fiche -- */}
-      <CarteFiche row={row} patch={patch} />
+      <CartesNutrition row={row} patch={patch} />
       {/* « Préparer une fiche pour quelqu'un » est un outil de coach : il vit
           sur l'écran admin (`#/admin`), jamais dans les réglages d'un
           utilisateur. */}
@@ -871,6 +823,74 @@ function CiblesDuJour({
           voulu.
         </p>
       )}
+    </>
+  );
+}
+
+/**
+ * « Mes cibles nutritionnelles » et « Partager une fiche », les deux cartes
+ * nutrition des réglages. Partagées avec les Réglages de FEMMES (Profil),
+ * qui n'ouvrent pas cet écran : `avecPlanHistorique` à `false` tait la
+ * phrase sur le plan historique de Guillaume, qui n'existe pas sous FEMMES.
+ */
+export function CartesNutrition({
+  row,
+  patch,
+  avecPlanHistorique = true,
+}: {
+  row: SettingsRow;
+  patch: (p: Partial<SettingsRow>) => Promise<void>;
+  avecPlanHistorique?: boolean;
+}) {
+  return (
+    <>
+      {/* ------------------------------------------------- mes cibles ---- */}
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Mes cibles nutritionnelles</h2>
+        <p className={styles.cardSub}>
+          <b>Facultatif, et vide par défaut.</b> MAJK ne décide pas combien tu dois manger. Si tu as
+          des chiffres — d’un diététicien, d’un coach, ou les tiens — pose-les ici : l’onglet
+          Nutrition affichera tes barres de macros et l’écart du jour.
+        </p>
+        {avecPlanHistorique && row.legacyNutritionPlan && (
+          <p className={styles.fieldHint}>
+            {/*
+            Dire pourquoi ces champs ne servent à rien en ce moment vaut
+            mieux que de les griser sans un mot : quelqu'un qui les
+            remplirait sans comprendre croirait l'écran cassé.
+          */}
+            Ton plan nutritionnel est affiché : ce sont ses repas qui font foi, et la cible du jour
+            vient de leur somme. Ce que tu poses ici est conservé, mais ne sera utilisé que si tu
+            masques le plan — carte <b>Plan nutritionnel</b>, juste au-dessus.
+          </p>
+        )}
+        {(['train', 'rest'] as const).map((kind) => (
+          <CiblesDuJour
+            key={kind}
+            kind={kind}
+            valeurs={(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES)[kind]}
+            onChange={(suivantes) =>
+              void patch({
+                ciblesNutrition: {
+                  ...(row.ciblesNutrition ?? CIBLES_NUTRITION_VIERGES),
+                  [kind]: suivantes,
+                } as CiblesNutrition,
+              })
+            }
+          />
+        ))}
+        {row.ciblesNutrition !== null && (
+          <button
+            type="button"
+            className={styles.secondary}
+            style={{ width: '100%', margin: '12px 0 0' }}
+            onClick={() => void patch({ ciblesNutrition: null })}
+          >
+            Effacer mes cibles
+          </button>
+        )}
+      </section>
+      <CarteFiche row={row} patch={patch} />
     </>
   );
 }

@@ -60,15 +60,17 @@
 }
 
 .hero img {
+  /* La photo commence SOUS la barre d'état : la bande fixe de l'heure
+     (global.css) couvrirait sinon le haut des têtes. */
   position: absolute;
-  inset: 0;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - env(safe-area-inset-top, 0px));
   object-fit: cover;
   object-position: 70% 30%;
 }
 
-/* Écran 1 : la photo descend jusqu'aux pastilles, le logo vit dedans. */
 /* Le voile : le texte blanc reste lisible sur n'importe quelle photo. */
 .hero::after {
   content: '';
@@ -117,9 +119,6 @@
   color: var(--ink-2);
 }
 
-.hero:has(.logo) img {
-  object-position: 70% 25%;
-}
 
 /* « MAJK FEMMES » : deux lignes penchées, blanc à tranche rose.
    Relevé : « FEMMES » fait 163 px de large, capitales de 43 px. */
@@ -1337,4 +1336,27 @@
   border-color: var(--accent-bright);
   background: var(--accent);
   color: var(--ink-on-accent, #fff);
+}
+
+/* ------------------------------------------- nutrition (écran et réglages) */
+
+/*
+ * L'écran Nutrition SANS la classe `.page` : celle-ci lève le plancher de
+ * 48 px des boutons (chaque pièce FEMMES porte sa hauteur), et l'écran
+ * Nutrition de l'appli compte sur ce plancher — son sélecteur de journée
+ * tombait à 24 px. Il garde aussi sa propre marge basse (`.screen`).
+ */
+.pageNutrition {
+  --f: 'Oswald Femmes', var(--font-cond);
+  --t: 'Inter Femmes', var(--font);
+
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+  color: var(--ink);
+}
+
+/* Les cartes nutrition des réglages viennent de l'écran Réglages de l'appli :
+   elles portent leurs marges latérales, la colonne FEMMES aussi. */
+.cartesReglages {
+  margin: 0 calc(-1 * var(--pad, 16px));
 }

@@ -43,10 +43,11 @@ import {
   type ProfilSaisi,
 } from './FemmesScreens';
 import type { OngletFemmes } from './Pieces';
+import { FemmesNutrition } from './NutritionFemmes';
 import { sauvegardeAuto } from '../../cloud/sauvegarde';
 import s from './Femmes.module.css';
 
-export type VueFemmes = 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite';
+export type VueFemmes = 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite' | 'nutrition';
 
 export function EcransFemmes({
   vue,
@@ -115,6 +116,7 @@ export function EcransFemmes({
     if (o === 'majk') onSortir();
     else if (o === 'semaine') onNaviguer('semaine');
     else if (o === 'reglages') onNaviguer('securite');
+    else if (o === 'nutrition') onNaviguer('nutrition');
     else onNaviguer('aujourdhui');
   };
 
@@ -265,6 +267,9 @@ export function EcransFemmes({
         }}
       />
     );
+  }
+  if (vue === 'nutrition') {
+    return <FemmesNutrition seances={seances} onAller={aller} />;
   }
   if (vue === 'securite') {
     return (

@@ -10,7 +10,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { visuelSrcSet, visuelUrl } from '../../data/visuels';
+import { VISUELS, visuelSrcSet, visuelUrl, type VisuelNom } from '../../data/visuels';
 import s from './Femmes.module.css';
 
 /* ------------------------------------------------------------- les icônes */
@@ -111,9 +111,6 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
  *
  * `alt=""` : le décor n'apporte aucune information que le titre ne dise.
  */
-/** La photo du bandeau FEMMES (nom d'un visuel), ou `null` : dégradé rose. */
-const PHOTO_BANDEAU: Parameters<typeof visuelUrl>[0] | null = null;
-
 export function Bandeau({
   logo = false,
   surTitre,
@@ -123,7 +120,10 @@ export function Bandeau({
   sousTitre,
   retour,
   onRetour,
+  photo,
 }: {
+  /** La photo de l'écran (bandeaux FEMMES de Guillaume) ; sans elle, le dégradé rose. */
+  photo?: VisuelNom;
   logo?: boolean;
   surTitre?: string;
   /* Écran 2 : « Programme » en rose italique plutôt qu'en capitales. */
@@ -136,19 +136,25 @@ export function Bandeau({
   onRetour?: () => void;
 }) {
   /*
-   * « Rosée Sculptée » : la photo du bandeau viendra des visuels de
-   * Guillaume ; en attendant, le panneau porte un dégradé rose (CSS). L'ancien
-   * ciel synthwave (`horizonFemmes`) n'est plus affiché. Un écran de détail
-   * (avec retour) n'a pas de panneau : titre rose sur fond clair.
+   * « Rosée Sculptée » : une photo par écran (bandeaux de Guillaume, sujet à
+   * droite) ; le dégradé rose du panneau reste dessous, et seul si l'écran
+   * n'en a pas. Un écran de détail (avec retour) n'a pas de panneau : titre
+   * rose sur fond clair.
    */
-  const src = PHOTO_BANDEAU === null ? null : visuelUrl(PHOTO_BANDEAU);
-  const srcSet = PHOTO_BANDEAU === null ? null : visuelSrcSet(PHOTO_BANDEAU);
+  const src = photo === undefined ? null : visuelUrl(photo);
+  const srcSet = photo === undefined ? null : visuelSrcSet(photo);
   const tailleCls = taille === 'xl' ? s.titreXl : taille === 'l' ? s.titreL : s.titreM;
   const clair = retour !== undefined;
   return (
     <div className={`${s.hero} ${clair ? s.heroClair : ''}`}>
       {!clair && src !== null && (
-        <img src={src} {...(srcSet !== null ? { srcSet } : {})} sizes="100vw" alt="" />
+        <img
+          src={src}
+          {...(srcSet !== null ? { srcSet } : {})}
+          sizes="100vw"
+          alt=""
+          style={{ objectPosition: VISUELS[photo!].focus }}
+        />
       )}
       {logo ? (
         <h1 className={s.logo}>
