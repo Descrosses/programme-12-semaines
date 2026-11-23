@@ -360,7 +360,12 @@ export const FAMILLES: readonly Famille[] = [
   },
   {
     id: 'femmes',
-    nom: 'FEMMES',
+    /*
+     * LADIES : nom choisi par Guillaume le 23 novembre (« go ladies »), à la
+     * place de « FEMMES ». Seuls les NOMS affichés changent : l'identifiant
+     * `femmes`, `femmes8`, les routes `#/femmes/*` et le thème restent.
+     */
+    nom: 'LADIES',
     /* Choisi par Guillaume, à la place de « 8 semaines en circuits ». */
     sousTitre: 'Galbe & renforcement',
     /*
@@ -382,7 +387,7 @@ export const FAMILLES: readonly Famille[] = [
          * Première étape du parcours FEMMES. L'identifiant `femmes8` ne
          * change pas : ses écrans d'aperçu et ses données le portent.
          */
-        nom: 'FEMMES CYCLE 1',
+        nom: 'LADIES CYCLE 1',
         version: '0.1',
         dureeSemaines: 8,
         /*
@@ -413,33 +418,33 @@ export const FAMILLES: readonly Famille[] = [
        *   cycle N      → s'ouvre après le cycle N-1 (pas après la transition)
        *   transition N → s'ouvre après le cycle N
        */
-      etapeFemmes('femmes-transition1', 'FEMMES TRANSITION 1', 4, TRANSITION, 'femmes8'),
+      etapeFemmes('femmes-transition1', 'LADIES TRANSITION 1', 4, TRANSITION, 'femmes8'),
       etapeFemmes(
         'femmes-cycle2',
-        'FEMMES CYCLE 2',
+        'LADIES CYCLE 2',
         8,
         'Congestion : galbe, volume et définition musculaire.',
         'femmes8',
       ),
-      etapeFemmes('femmes-transition2', 'FEMMES TRANSITION 2', 4, TRANSITION, 'femmes-cycle2'),
+      etapeFemmes('femmes-transition2', 'LADIES TRANSITION 2', 4, TRANSITION, 'femmes-cycle2'),
       etapeFemmes(
         'femmes-cycle3',
-        'FEMMES CYCLE 3',
+        'LADIES CYCLE 3',
         8,
         'Perte de poids : déficit contrôlé et maintien de la masse musculaire.',
         'femmes-cycle2',
       ),
-      etapeFemmes('femmes-transition3', 'FEMMES TRANSITION 3', 4, TRANSITION, 'femmes-cycle3'),
+      etapeFemmes('femmes-transition3', 'LADIES TRANSITION 3', 4, TRANSITION, 'femmes-cycle3'),
       etapeFemmes(
         'femmes-cycle4',
-        'FEMMES CYCLE 4',
+        'LADIES CYCLE 4',
         8,
         'Prise de masse : nouvelle phase de développement musculaire.',
         'femmes-cycle3',
       ),
       etapeFemmes(
         'femmes-transition4',
-        'FEMMES TRANSITION 4',
+        'LADIES TRANSITION 4',
         4,
         'Bilan, consolidation et travail final des points faibles.',
         'femmes-cycle4',

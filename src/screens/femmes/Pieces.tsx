@@ -194,7 +194,7 @@ export function Bandeau({
       {logo ? (
         <h1 className={s.logo}>
           <span>MAJK</span>
-          <span>FEMMES</span>
+          <span>LADIES</span>
         </h1>
       ) : (
         <div className={s.heroTexte}>

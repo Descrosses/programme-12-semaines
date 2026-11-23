@@ -1,6 +1,8 @@
 # Orienter vers un programme à partir du bilan sportif
 
 > **Statut : VALIDÉ par Guillaume le 23 novembre 2026 — source de vérité.**
+> **Renommage (23 novembre, « go ladies ») :** la famille FEMMES s'appelle
+> désormais **LADIES** ; seuls les noms changent, pas les règles.
 > Le code le transcrit (`src/data/orientationProgrammes.ts`,
 > `src/engine/orientation.ts`) et `orientationProgrammes.test.ts` relit ses
 > tableaux. Pour changer une règle : changer ce fichier ET le code.
@@ -41,7 +43,7 @@
 | Séances par semaine | 12 | prérequis |
 | Disponibilités jour par jour | 13 | prérequis (durée des séances) |
 | Lieu | 14 | prérequis (matériel) |
-| Sexe | 2 | FEMMES seulement (§5) |
+| Sexe | 2 | LADIES seulement (§5) |
 
 **Non utilisés, volontairement :** le matériel (question 15) et l'objectif
 chiffré (4) sont du texte libre ; l'appli ne les interprète pas. Les repères
@@ -67,7 +69,7 @@ FORCE). Guillaume les lit dans le résumé.
 Un programme est **suggéré** quand **toutes** ses conditions sont remplies.
 Pas de score, pas de pondération : chaque raison s'affiche telle quelle.
 Au plus deux suggestions (réponse G), dans l'ordre de ce paragraphe :
-POWER, MASS, FEMMES.
+POWER, MASS, LADIES.
 
 ### POWER CYCLE 1 (`power12`)
 
@@ -127,12 +129,12 @@ Mentionné « bientôt disponible » quand la famille MASS correspond ; il
 deviendra LA suggestion MASS quand il existera (ce fichier sera alors
 révisé).
 
-### Transitions et cycles suivants (POWER, FEMMES)
+### Transitions et cycles suivants (POWER, LADIES)
 
 Jamais suggérés : « à venir », ils ne se démarrent pas, et le parcours les
 ouvre après l'étape précédente.
 
-### FEMMES CYCLE 1 (`femmes8`)
+### LADIES CYCLE 1 (`femmes8`)
 
 | Condition | Valeur | Source |
 |---|---|---|
@@ -158,21 +160,21 @@ Guillaume te proposera un programme adapté après avoir lu ton bilan. »*
 poids / de la masse grasse »** et **« Améliorer ma mobilité / ma posture »**,
 et la méthode **Pilates**, n'ont **aucun programme** dans l'appli aujourd'hui.
 Ton site les prévoit pourtant comme « bases » (Perte de poids homme/femme,
-Pilates). Le seul cycle de perte de poids écrit au catalogue est FEMMES
+Pilates). Le seul cycle de perte de poids écrit au catalogue est LADIES
 CYCLE 3, « à venir ».
 
 ---
 
-## 5. Le sexe : seulement pour FEMMES
+## 5. Le sexe : seulement pour LADIES
 
-**Décision de Guillaume (réponses E et F) :** FEMMES CYCLE 1 n'est suggéré
+**Décision de Guillaume (réponses E et F) :** LADIES CYCLE 1 n'est suggéré
 qu'à une personne qui a répondu « Femme ». Pour POWER et MASS, le sexe ne
 compte jamais.
 
 C'est un écart assumé à la phrase du site (« sexe : information, ne décide
 jamais seul ») : ici il ne décide pas seul non plus, puisque l'objectif, les
 séances et les disponibilités doivent aussi correspondre. « Autre » et
-« Préfère ne pas répondre » ne reçoivent pas FEMMES (lecture stricte de « si
+« Préfère ne pas répondre » ne reçoivent pas LADIES (lecture stricte de « si
 c'est une femme »).
 
 ---
@@ -185,7 +187,7 @@ c'est une femme »).
 | B | POWER : jours et minutes ? | 5 jours à 60-75 min |
 | C | MASS CONGESTION : « Débutant (moins d'1 an) » suffit ? | Oui, mais départ MASS et débutants → HYPERTROPHIE 1.0 (à créer) |
 | D | MASS FORCE en version de travail : suggéré ? | Oui, le chemin est déjà écrit ainsi |
-| E | FEMMES CYCLE 1 : quels objectifs ? | Renforcement, reprise, santé, condition physique, et prise de masse / volume des fessiers si c'est une femme |
-| F | FEMMES CYCLE 1 à un homme qui correspond ? | Non |
+| E | LADIES CYCLE 1 : quels objectifs ? | Renforcement, reprise, santé, condition physique, et prise de masse / volume des fessiers si c'est une femme |
+| F | LADIES CYCLE 1 à un homme qui correspond ? | Non |
 | G | Au plus deux suggestions ? | Oui |
 | H | MASS tant que HYPERTROPHIE n'existe pas ? | HYPERTROPHIE « bientôt disponible » + MASS FORCE en attendant |
