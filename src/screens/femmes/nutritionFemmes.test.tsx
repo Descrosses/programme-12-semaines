@@ -105,6 +105,13 @@ describe('bandeaux FEMMES', () => {
     );
   });
 
+  it('le bandeau Nutrition est le bol, sous un nom NEUF (cache de 180 jours)', () => {
+    // Remplacé sous son ancien nom, le bol ne remplaçait rien sur l'iPhone :
+    // les images sont en CacheFirst. Ce nom ne doit jamais revenir.
+    expect(VISUELS.femmesNutrition.display).toBe('55_femmes_nutrition_bol_display.webp');
+    expect(Object.values(VISUELS).some((v) => v.display?.startsWith('52_'))).toBe(false);
+  });
+
   it('les têtes restent entières : photo calée en haut, fondu de 10 px au plus', () => {
     // Retour de Guillaume (iPhone) : recadrée par le haut et fondue sur
     // 26 px, la photo effaçait la tête des athlètes.
