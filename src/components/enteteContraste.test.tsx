@@ -52,9 +52,9 @@ describe('en contraste, l’en-tête dit le cycle du §10, pas le repos de base'
     expect(h).not.toContain('Repos');
   });
 
-  it('bench et deadlift S10 : « Cycle ≈ 3 min 30 »', () => {
-    expect(entete(exo(10, 2, 'bench-press'))).toContain('Cycle ≈ 3 min 30');
-    expect(entete(exo(10, 5, 'deadlift'))).toContain('Cycle ≈ 3 min 30');
+  it('bench et deadlift S10 : « Cycle ≈ 4 min » (2 min après la série lourde depuis le 23 novembre)', () => {
+    expect(entete(exo(10, 2, 'bench-press'))).toContain('Cycle ≈ 4 min');
+    expect(entete(exo(10, 5, 'deadlift'))).toContain('Cycle ≈ 4 min');
   });
 
   it('hors contraste, le repos de base reste affiché', () => {

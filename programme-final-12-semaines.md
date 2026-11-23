@@ -434,14 +434,14 @@ Seul ajout du cycle, et il ne s'ajoute à rien : il remplace le Cable Chop du di
 Principe : série lourde → repos → mouvement explosif → repos → série lourde suivante. C'est du contraste, pas un superset.
 
 **Lundi** : Back Squat (série) → repos 2 min → Box Jump × 2 maximaux → repos 2 min → squat suivant. Cycle ≈ 4 min. Pogos et box jumps de début de séance supprimés. Bulgarian 3 × 5, RDL 3 × 5 × 90-95 kg RPE 7, Ab Wheel 3 × 8.
-**Mercredi** : Bench (série) → repos 90 s → Plyo Push-Up × 3 → repos 2 min → bench suivant. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
+**Mercredi** : Bench (série) → repos 2 min → Plyo Push-Up × 3 → repos 2 min → bench suivant. Cycle ≈ 4 min. Tractions lestées 3 × 3 intention explosive, repos 3 min. Landmine explosif 4 × 5/côté RPE 6. Row 3 × 6. Pallof 3 × 5. Barbell Offset Hold 2 × 20 s/côté, repos 45 s.
 
 **Lundi** (tronc) : Ab Wheel 3 × 8 en alternance avec **Roman Side Bench 3 × 8/côté**, 45 s entre les stations.
 **Vendredi** : Broad Jump 3 × 2 (2 min), Pogo 3 × 10, Lateral Bound 3 × 2/côté (90 s), Hang High Pull 3 × 3 (2 min, vitesse de barre : la charge ne monte que si les reps restent vives), **Landmine Rotation 3 × 4/côté explosive (90 s)**, Push Press 4 × 2 RPE 6-7, Speed Squat 4 × 2 × 65 kg (90 s), Jump Squat 3 × 3 (2 min), **Dead Bug 2 × 5/côté**. Plus de Farmer Carry, pas de conditioning. Tu quittes la salle stimulé, pas détruit.
 *3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat, comme sur tout le programme (§7, décision de Guillaume, 22 novembre) : la séance passe d'environ 97 à 73 min.*
 *Ordre (décision de Guillaume) : les plyos des jambes d'abord — Broad Jump, Pogo, Lateral Bound —, le Hang High Pull ensuite.*
 *Le Dead Bug ne disparaît plus du bloc puissance : il le faisait quand le vendredi n'avait qu'un exercice de tronc. Depuis que la Landmine Rotation y vit, le retirer laisserait la séance à un seul.*
-**Samedi** : Deadlift (série) → repos 1 min 30 → Broad Jump × 2 → repos 2 min → deadlift suivant. Cycle ≈ 3 min 30. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
+**Samedi** : Deadlift (série) → repos 2 min → Broad Jump × 2 → repos 2 min → deadlift suivant. Cycle ≈ 4 min. Hip Thrust 4 × 5 explosif, Front Squat 3 × 3 RPE 7, Nordic 2 × 4 seulement, **Suitcase Carry 3 × 30 m/côté**, **Roman Side Bench 3 × 8/côté**.
 **Dimanche** : Incline 3 × 6-8, tractions 3 × 5-6, row 3 × 8, landmine press 2 × 8, **Woodchop 2 × 6/côté**, leg raise 3 × 8. La Landmine Rotation est passée au vendredi. Conditioning facultatif : 10-15 min zone 2 vélo, rien de plus.
 
 ### Semaine 12 — Taper + tests
@@ -497,7 +497,7 @@ Le tableau est un plan initial. Le RPE prime sur le chiffre.
 | Pogo, dead bug, tronc léger | 45 s |
 | Bounds, plyo push-up, box jump | 75-90 s |
 | Broad jump, jump squat | 90 s à 2 min |
-| Contraste (sem. 9-11) | 2 min lourd → explosif, 2 min explosif → lourd (90 s après bench et après deadlift) |
+| Contraste (sem. 9-11) | 2 min lourd → explosif, 2 min explosif → lourd, sur les trois jours (décision de Guillaume, 23 novembre : 1 min 30 → 2 min après le bench et le deadlift) |
 | Squat / deadlift 71-79 % | 3 min 30 |
 | Squat / deadlift 82-90 % | 4 min |
 | Bench / tractions 71-79 % | 3 min / 2 min 30 |

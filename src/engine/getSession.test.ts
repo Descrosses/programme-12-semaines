@@ -285,13 +285,13 @@ describe('bloc puissance (S9-11) — contraste', () => {
     expect(squat.loadLine).toBe('4 × 2 × 92,5 kg');
   });
 
-  it('mercredi : contraste bench / plyo push-up, 90 s après le bench (§10)', () => {
+  it('mercredi : contraste bench / plyo push-up, 2 min après le bench (§10)', () => {
     const s = session(9, 2);
     expect(ids(s.exercises)).not.toContain('plyo-push-up');
     expect(find(s, 'bench-press').contrast).toMatchObject({
       explosive: 'plyo-push-up',
       explosiveReps: 3,
-      restAfterHeavySec: 90,
+      restAfterHeavySec: 120,
     });
   });
 

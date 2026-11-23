@@ -377,9 +377,13 @@ matériel et la durée avant d'écrire la moindre séance.
   (S1-3), 81 (S5-7), 79 (S9-11), 59 en deload, montée en charge comprise ;
   « 55-85 min » au §3 = `durationLabel` du code (testé).
   `data/vendrediPlafond.test.ts` (81 au plus).
-- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
-  squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
-  n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
+- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min » sur
+  les trois jours, §10), plus le repos de base qui n'a pas cours. Le chrono
+  suivait déjà la séquence. **Repos : 2 min lourd → explosif ET 2 min
+  explosif → lourd, squat, bench et deadlift** (Guillaume, 23 novembre :
+  « Repos Contraste = 1'30 -> 2 min », qui remplace le cycle de 3 min 30 du
+  bench et du deadlift ; +2 min le mercredi, +1 min 30 le samedi).
+  `enteteContraste.test.tsx`, `program.test.ts` (relit le §8).
 - **Muscles et erreurs sous les 38 planches POWER** (repris du lot 6 de
   MAJK, 22 novembre). Texte transcrit tel quel du tableau « MAJK — Fiches
   techniques POWER 12 » (révision 5, toutes lignes « Validé » par Guillaume)

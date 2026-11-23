@@ -550,22 +550,22 @@ export const CONTRAST_BY_DAY: Partial<Record<DayIndex, ContrastSpec>> = {
     heavy: 'bench-press',
     explosive: 'plyo-push-up',
     explosiveReps: 3,
-    restAfterHeavySec: 90,
+    restAfterHeavySec: 120,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 3 min 30',
+    cycleLabel: 'Cycle ≈ 4 min',
   },
   5: {
     heavy: 'deadlift',
     explosive: 'broad-jump',
     explosiveReps: 2,
     /*
-     * 1 min 30 après le deadlift, puis 2 min après les deux broad jumps :
-     * décision de Guillaume (cycle de 3 min 30 au lieu de 4). C'est le même
-     * rythme que le bench du mercredi.
+     * 2 min après le deadlift comme après le bench et le squat : décision de
+     * Guillaume du 23 novembre (« Repos Contraste = 1'30 -> 2 min »), qui
+     * remplace le cycle de 3 min 30 décidé plus tôt.
      */
-    restAfterHeavySec: 90,
+    restAfterHeavySec: 120,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 3 min 30',
+    cycleLabel: 'Cycle ≈ 4 min',
   },
 };
 
