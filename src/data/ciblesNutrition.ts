@@ -88,7 +88,7 @@ function nombreValide(v: unknown, bornes: { min: number; max: number }): boolean
   return typeof v === 'number' && Number.isFinite(v) && v >= bornes.min && v <= bornes.max;
 }
 
-/** Une journée est utilisable si ses quatre nombres tiennent dans les bornes. */
+/** Les quatre nombres d'une journée tiennent dans les bornes (la barre de macros en a besoin). */
 export function macrosValides(m: CiblesMacros | null | undefined): m is MacrosCompletes {
   if (m === null || m === undefined) return false;
   return (
@@ -99,10 +99,49 @@ export function macrosValides(m: CiblesMacros | null | undefined): m is MacrosCo
   );
 }
 
+/**
+ * Une cible UTILISABLE : les calories, et les macros posées.
+ *
+ * Décision de Guillaume (23 novembre, lot 1 de la nutrition) : seul le
+ * chiffre des calories est obligatoire. Les protéines, glucides et lipides
+ * sont facultatifs, un par un. Une macro absente reste `null` — jamais 0 :
+ * « 0 g de protéines » serait une cible, et fausse.
+ */
+export interface CibleSaisie {
+  kcal: number;
+  proteinG: number | null;
+  carbsG: number | null;
+  fatG: number | null;
+}
+
+const MACROS = ['proteinG', 'carbsG', 'fatG'] as const;
+
+/**
+ * La cible utilisable d'une journée, ou `null` : calories dans les bornes,
+ * et chaque macro soit absente, soit dans ses bornes. Une macro hors bornes
+ * rend la journée inutilisable : on ne l'efface pas en silence.
+ */
+export function cibleSaisie(m: CiblesMacros | null | undefined): CibleSaisie | null {
+  if (m === null || m === undefined || !nombreValide(m.kcal, BORNES.kcal)) return null;
+  const out: CibleSaisie = { kcal: m.kcal as number, proteinG: null, carbsG: null, fatG: null };
+  for (const k of MACROS) {
+    const v = m[k];
+    if (v === null || v === undefined) continue;
+    if (!nombreValide(v, BORNES[k])) return null;
+    out[k] = v;
+  }
+  return out;
+}
+
+/** Les trois macros sont-elles posées ? (la barre de répartition n'a de sens qu'alors) */
+export function macrosPosees(c: CibleSaisie): c is MacrosCompletes {
+  return c.proteinG !== null && c.carbsG !== null && c.fatG !== null;
+}
+
 export function ciblesValides(c: unknown): c is CiblesNutrition {
   if (typeof c !== 'object' || c === null) return false;
   const v = c as Partial<CiblesNutrition>;
-  return macrosValides(v.train) && macrosValides(v.rest);
+  return cibleSaisie(v.train) !== null && cibleSaisie(v.rest) !== null;
 }
 
 /**

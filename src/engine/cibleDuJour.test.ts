@@ -19,7 +19,7 @@ describe('quand les menus sont affichés', () => {
     const r = cibleDuJour('train', { menus: true, cibles: SAISIE });
     expect(r?.origine).toBe('menus');
     expect(r?.cible.kcal).toBe(NUTRITION_TARGETS.train.kcal);
-    expect(r?.cible.meals.length).toBeGreaterThan(0);
+    expect(r?.origine === 'menus' && r.cible.meals.length).toBeGreaterThan(0);
   });
 
   it('les chiffres saisis ne sont pas perdus pour autant', () => {
@@ -40,7 +40,8 @@ describe('quand il n’y a pas de menus', () => {
     const r = cibleDuJour('rest', { menus: false, cibles: SAISIE });
     expect(r?.origine).toBe('saisie');
     expect(r?.cible).toMatchObject({ kcal: 2100, proteinG: 150, carbsG: 200, fatG: 70 });
-    expect(r?.cible.meals).toEqual([]);
+    // Pas de repas : c'est ce qui distingue ce cas de l'autre.
+    expect(r?.cible).not.toHaveProperty('meals');
   });
 
   it('n’applique AUCUN allègement de deload', () => {
@@ -67,14 +68,26 @@ describe('quand il n’y a pas de menus', () => {
 });
 
 describe('une journée à moitié remplie', () => {
-  it('n’est pas utilisable, mais n’empêche pas l’autre de l’être', () => {
-    // La saisie se fait chiffre par chiffre : une journée incomplète doit
-    // pouvoir exister en base sans produire une cible fausse.
+  it('les calories suffisent ; les macros absentes restent absentes, jamais 0', () => {
+    // Décision du 23 novembre : seules les calories sont obligatoires.
     const partiel: CiblesNutrition = {
       train: { kcal: 2400, proteinG: 150, carbsG: null, fatG: null },
       rest: SAISIE.rest,
     };
-    expect(cibleDuJour('train', { menus: false, cibles: partiel })).toBeNull();
+    expect(cibleDuJour('train', { menus: false, cibles: partiel })?.cible).toMatchObject({
+      kcal: 2400,
+      proteinG: 150,
+      carbsG: null,
+      fatG: null,
+    });
     expect(cibleDuJour('rest', { menus: false, cibles: partiel })?.origine).toBe('saisie');
+  });
+
+  it('sans calories, pas de cible, même avec des macros', () => {
+    const sansKcal: CiblesNutrition = {
+      train: { kcal: null, proteinG: 150, carbsG: 260, fatG: 80 },
+      rest: SAISIE.rest,
+    };
+    expect(cibleDuJour('train', { menus: false, cibles: sansKcal })).toBeNull();
   });
 });

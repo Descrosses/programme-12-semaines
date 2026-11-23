@@ -403,6 +403,20 @@ matériel et la durée avant d'écrire la moindre séance.
   `alimentPour`) ; une liste existante est annoncée avant d'être remplacée ;
   les aliments ajoutés à la main restent dans le résumé seulement.
   Aucun calcul de cibles : le questionnaire recueille, Guillaume décide.
+- **Nutrition, lot 1 — un objectif en CALORIES suffit** (Guillaume, 23
+  novembre). `cibleSaisie` (`data/ciblesNutrition.ts`) : calories dans les
+  bornes OBLIGATOIRES, protéines / glucides / lipides FACULTATIFS un par un ;
+  une macro absente reste `null`, JAMAIS 0 ; une macro hors bornes rend la
+  journée inutilisable. `macrosValides` garde son sens (les 4 chiffres) et ne
+  sert plus qu'à la barre de répartition (`macrosPosees`) et au contrôle
+  d'écart kcal/macros. Le reste à manger et l'écart de « Mon plan » ne citent
+  que les macros posées (`ecartCible`, `phraseReste` : avec les 4 chiffres,
+  la phrase d'avant mot pour mot). FICHE : une macro absente s'écrit « - »
+  (`C=2400,-,-,-`), JAMAIS une case vide — l'ancienne lecture prenait « »
+  pour 0 ; l'ancien format à 4 nombres se relit tel quel. Les deux journées
+  restent exigées par la fiche. `engine/caloriesSeules.test.tsx`. Lots 2 et
+  3 (écran du choix, mises en place, écran du jour fusionné : maquettes du
+  23 novembre) attendent les maquettes de la refonte visuelle.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

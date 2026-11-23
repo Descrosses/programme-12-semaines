@@ -37,7 +37,7 @@
 
 import { FOOD_LIBRARY } from '../data/foodLibrary';
 import { alimentPour } from '../data/questionnaireAliments';
-import { macrosValides, type CiblesMacros, type CiblesNutrition } from '../data/ciblesNutrition';
+import { cibleSaisie, type CiblesMacros, type CiblesNutrition } from '../data/ciblesNutrition';
 
 /** Le marqueur, suivi de la version du format. */
 export const MARQUEUR = 'MAJK1';
@@ -67,8 +67,18 @@ const VIDE: LectureFiche = {
   problemes: [],
 };
 
+/**
+ * Une journée : « kcal,protéines,glucides,lipides ». Une macro non posée
+ * s'écrit « - » (décision du 23 novembre : seules les calories sont
+ * obligatoires). Le tiret, et pas une case vide : une version plus ancienne
+ * de l'appli lit « » comme 0 — « 0 g de protéines », une fausse cible —,
+ * alors qu'elle refuse « - » et le dit.
+ */
 function ecrireMacros(m: CiblesMacros): string | null {
-  return macrosValides(m) ? `${m.kcal},${m.proteinG},${m.carbsG},${m.fatG}` : null;
+  const c = cibleSaisie(m);
+  if (c === null) return null;
+  const g = (v: number | null) => (v === null ? '-' : String(v));
+  return `${c.kcal},${g(c.proteinG)},${g(c.carbsG)},${g(c.fatG)}`;
 }
 
 /**
@@ -91,18 +101,25 @@ export function genererFiche(contenu: ContenuFiche): string {
 }
 
 function lireMacros(brut: string, journee: string, problemes: string[]): CiblesMacros | null {
-  const parts = brut.split(',').map((x) => Number(x.trim()));
-  if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n))) {
+  const champs = brut.split(',').map((x) => x.trim());
+  // « - » (ou rien) = macro non posée ; les calories, elles, sont obligatoires.
+  const lu = champs.map((x, i) => (i > 0 && (x === '-' || x === '') ? null : Number(x)));
+  if (
+    champs.length !== 4 ||
+    lu.some((n) => n !== null && !Number.isFinite(n)) ||
+    lu[0] === null ||
+    champs[0] === ''
+  ) {
     problemes.push(`${journee} : quatre nombres attendus, « ${brut} » reçu.`);
     return null;
   }
   const m: CiblesMacros = {
-    kcal: parts[0]!,
-    proteinG: parts[1]!,
-    carbsG: parts[2]!,
-    fatG: parts[3]!,
+    kcal: lu[0]!,
+    proteinG: lu[1] ?? null,
+    carbsG: lu[2] ?? null,
+    fatG: lu[3] ?? null,
   };
-  if (!macrosValides(m)) {
+  if (cibleSaisie(m) === null) {
     problemes.push(`${journee} : valeurs hors des bornes acceptées (« ${brut} »).`);
     return null;
   }

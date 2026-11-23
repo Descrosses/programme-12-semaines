@@ -1,3 +1,4 @@
+import { messageCibles } from '../engine/cibleDuJour';
 import { cloudDisponible } from '../cloud/sauvegarde';
 import { CompteCloud } from '../components/CompteCloud';
 import { useEffect, useRef, useState } from 'react';
@@ -806,12 +807,12 @@ export function SettingsScreen({
 }
 
 /**
- * Les quatre nombres d'une journée.
+ * Les nombres d'une journée : les calories (obligatoires), puis les trois
+ * macros (facultatives depuis le lot 1 de la nutrition, 23 novembre).
  *
  * Chaque champ s'enregistre seul, dès qu'il change : une journée à moitié
- * remplie survit à un changement d'écran, et on peut poser ses chiffres en
- * deux fois. Tant que les quatre n'y sont pas, l'encart le dit — sans rien
- * corriger sous les doigts.
+ * remplie survit à un changement d'écran. L'encart dit ce qui manque — sans
+ * rien corriger sous les doigts.
  */
 function CiblesDuJour({
   kind,
@@ -836,6 +837,7 @@ function CiblesDuJour({
   const completes = macrosValides(valeurs);
   const manquants = champs.filter((c) => valeurs[c.cle] === null).length;
   const ecart = completes ? ecartKcal(valeurs) : 0;
+  const message = messageCibles(valeurs);
 
   return (
     <>
@@ -854,13 +856,7 @@ function CiblesDuJour({
           />
         </div>
       ))}
-      {manquants > 0 && (
-        <p className={styles.fieldHint}>
-          {manquants === 4
-            ? 'Rien de posé pour cette journée.'
-            : `Il manque ${String(manquants)} valeur${manquants > 1 ? 's' : ''} : les quatre sont nécessaires pour afficher une cible.`}
-        </p>
-      )}
+      {manquants > 0 && message !== null && <p className={styles.fieldHint}>{message}</p>}
       {completes && ecart > ECART_TOLERE && (
         <p className={styles.fieldHint} style={{ color: 'var(--accent-ink)' }}>
           {/*

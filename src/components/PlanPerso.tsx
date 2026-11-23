@@ -32,6 +32,8 @@ import { fr } from '../engine/format';
 import { shareOfDay } from '../engine/macroBar';
 import { stateLabel, type LibraryFood } from '../data/foodLibrary';
 import type { DayKind } from '../data/nutrition';
+import type { CibleSaisie } from '../data/ciblesNutrition';
+import { ecartCible } from '../engine/cibleDuJour';
 import type { Macros } from '../engine/nutrition';
 import { ChoixRepas } from './ChoixRepas';
 import { FicheRepas } from './FicheRepas';
@@ -102,7 +104,8 @@ export function PlanPerso({
   /** Les aliments saisis à la main, proposés au remplacement. */
   customs: LibraryFood[];
   onCreateCustom: (food: LibraryFood) => void;
-  cible: Macros | null;
+  /** Calories obligatoires, macros facultatives (`null` = non posée). */
+  cible: CibleSaisie | null;
   onChange: (suivante: JourneePerso) => void;
   /** Recopier l'autre journée ici. `null` quand il n'y a rien à copier. */
   onCopier: (() => void) | null;
@@ -129,15 +132,8 @@ export function PlanPerso({
   const parGroupe = alimentsParGroupe(preferes, catalogue);
   const total = macrosDeJournee(journee, catalogue);
   const aPoser = quantitesAPoser(journee);
-  const reste =
-    cible === null
-      ? null
-      : arrondirMacros({
-          kcal: cible.kcal - total.kcal,
-          proteinG: cible.proteinG - total.proteinG,
-          carbsG: cible.carbsG - total.carbsG,
-          fatG: cible.fatG - total.fatG,
-        });
+  // Une macro non posée dans la cible n'a pas d'écart : elle reste absente.
+  const reste = cible === null ? null : ecartCible(cible, total);
 
   if (preferes.length === 0) {
     return (
@@ -208,7 +204,14 @@ export function PlanPerso({
             {reste.kcal === 0
               ? 'Ton plan tombe pile sur ta cible.'
               : reste.kcal > 0
-                ? `Il manque ${reste.kcal.toLocaleString('fr-FR')} kcal à ton plan · ${fr(reste.proteinG)} g P · ${fr(reste.carbsG)} g G · ${fr(reste.fatG)} g L`
+                ? `Il manque ${reste.kcal.toLocaleString('fr-FR')} kcal à ton plan${[
+                    [reste.proteinG, 'P'],
+                    [reste.carbsG, 'G'],
+                    [reste.fatG, 'L'],
+                  ]
+                    .filter((x): x is [number, string] => x[0] !== null)
+                    .map(([g, l]) => ` · ${fr(g)} g ${l}`)
+                    .join('')}`
                 : `Ton plan dépasse ta cible de ${Math.abs(reste.kcal).toLocaleString('fr-FR')} kcal.`}
           </p>
         )}

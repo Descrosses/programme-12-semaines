@@ -58,7 +58,7 @@ import {
   saveSettings,
 } from '../db/repo';
 import { MealItems } from '../components/MealItems';
-import { cibleDuJour } from '../engine/cibleDuJour';
+import { cibleDuJour, ecartCible, phraseReste } from '../engine/cibleDuJour';
 /*
  * Le « repas » auquel s'accrochent les aliments notés sans menu.
  *
@@ -67,7 +67,7 @@ import { cibleDuJour } from '../engine/cibleDuJour';
  * de les distinguer un jour des ajouts faits à un vrai repas.
  */
 const MEAL_LIBRE = 'libre';
-import { macrosValides, type CiblesNutrition } from '../data/ciblesNutrition';
+import { cibleSaisie, macrosPosees, type CiblesNutrition } from '../data/ciblesNutrition';
 import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { MacroBar } from '../components/MacroBar';
@@ -207,15 +207,8 @@ export function NutritionScreen({
     const resolue = cibleDuJour(kind, { menus: false, cibles });
     const mange = extrasTotal(extras);
     const cibleJour = resolue?.cible ?? null;
-    const reste =
-      cibleJour === null
-        ? null
-        : {
-            kcal: Math.round(cibleJour.kcal - mange.kcal),
-            proteinG: Math.round(cibleJour.proteinG - mange.proteinG),
-            carbsG: Math.round(cibleJour.carbsG - mange.carbsG),
-            fatG: Math.round(cibleJour.fatG - mange.fatG),
-          };
+    // Une macro non posée reste absente du reste : rien à comparer.
+    const reste = cibleJour === null ? null : ecartCible(cibleJour, mange);
     /*
      * `null` en base veut dire « rien de composé ». On travaille sur un plan
      * vide, mais on ne l'ÉCRIT pas : poser `{train:{},rest:{}}` en base ferait
@@ -242,9 +235,9 @@ export function NutritionScreen({
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Aucune cible posée</h2>
             <p className={styles.cardSub}>
-              MAJK ne décide pas combien tu dois manger. Pose tes calories et tes macros dans
-              Réglages → Mes cibles nutritionnelles, et cet écran affichera ta cible du jour, ce que
-              tu as mangé et l’écart entre les deux.
+              MAJK ne décide pas combien tu dois manger. Pose ton objectif de calories (les macros
+              sont facultatives) dans Réglages → Mes cibles nutritionnelles, et cet écran affichera
+              ta cible du jour, ce que tu as mangé et l’écart entre les deux.
             </p>
             <p className={styles.fieldHint}>
               Tu peux déjà noter ce que tu manges et te peser ci-dessous : rien n’attend les cibles.
@@ -258,14 +251,17 @@ export function NutritionScreen({
                 {cibleJour.kcal.toLocaleString('fr-FR')} <span>kcal</span>
               </div>
             </div>
-            <MacroBar
-              macros={{
-                kcal: cibleJour.kcal,
-                proteinG: cibleJour.proteinG,
-                carbsG: cibleJour.carbsG,
-                fatG: cibleJour.fatG,
-              }}
-            />
+            {/* La répartition n'a de sens qu'avec les trois macros posées. */}
+            {macrosPosees(cibleJour) && (
+              <MacroBar
+                macros={{
+                  kcal: cibleJour.kcal,
+                  proteinG: cibleJour.proteinG,
+                  carbsG: cibleJour.carbsG,
+                  fatG: cibleJour.fatG,
+                }}
+              />
+            )}
           </section>
         )}
 
@@ -372,13 +368,7 @@ export function NutritionScreen({
               />
             </>
           )}
-          {reste !== null && (
-            <p className={styles.fieldHint}>
-              {reste.kcal > 0
-                ? `Il reste ${reste.kcal.toLocaleString('fr-FR')} kcal, ${String(reste.proteinG)} g de protéines, ${String(reste.carbsG)} g de glucides et ${String(reste.fatG)} g de lipides pour atteindre ta cible.`
-                : `Tu dépasses ta cible de ${Math.abs(reste.kcal).toLocaleString('fr-FR')} kcal.`}
-            </p>
-          )}
+          {reste !== null && <p className={styles.fieldHint}>{phraseReste(reste)}</p>}
           <button
             type="button"
             className={styles.secondary}
@@ -547,7 +537,8 @@ export function NutritionScreen({
    * mangé. Mais quelqu'un qui vient de poser 2 800 kcal dans les Réglages et
    * qui lit 3 226 ici croit que son geste n'a servi à rien. On lui dit.
    */
-  const ciblesEnAttente = macrosValides(cibles?.[kind]) ? cibles![kind] : null;
+  // Les calories suffisent à faire une cible posée (macros facultatives).
+  const ciblesEnAttente = cibleSaisie(cibles?.[kind]);
 
   return (
     <div className={styles.screen}>
