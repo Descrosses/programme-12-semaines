@@ -205,7 +205,12 @@ export function AccueilScreen({
         <div className={styles.bienvenue}>
           <p className={styles.bonjour}>
             <span className={styles.bonjourLigne}>
-              Bonjour Guillaume <span aria-hidden="true">👋</span>
+              {/*
+                Pas de prénom : l'appli n'en connaît aucun (pas de compte, rien
+                de demandé à l'accueil). « Bonjour Guillaume » s'affichait à
+                tout le monde (Guillaume, 23 novembre).
+              */}
+              Bonjour <span aria-hidden="true">👋</span>
             </span>
             <span className={styles.sousBienvenue}>Ton espace d’entraînement personnalisé.</span>
           </p>
@@ -336,9 +341,13 @@ export function AccueilScreen({
         <div className={styles.familles}>
           {FAMILLES.map((famille) => {
             const habillage = HABILLAGE[famille.id];
+            // ME, MYSELF & I n'a jamais de programme écrit d'avance : sa liste
+            // vide est son état normal, pas un contenu « à venir ». L'import
+            // marche depuis le lot 5.
             const aVenir =
-              famille.programmes.length === 0 ||
-              famille.programmes.every((p) => p.statut === 'a-venir');
+              famille.id !== 'perso' &&
+              (famille.programmes.length === 0 ||
+                famille.programmes.every((p) => p.statut === 'a-venir'));
             return (
               <button
                 key={famille.id}
