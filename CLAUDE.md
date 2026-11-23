@@ -411,6 +411,22 @@ matériel et la durée avant d'écrire la moindre séance.
   filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé.
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
+- **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,
+  maquette B2 thème POWER, « go comparatif »). Carte de l'écran Combine
+  (`components/ComparatifPartage.tsx`) : combine INITIAL (S0) face aux tests
+  FINAUX (S12) — l'appli ne mesure pas en S1. Moteur pur
+  `engine/comparatif.ts` : quatre barres (squat, bench, deadlift, tractions
+  lestées) + deux tuiles (broad jump, sprint 10 m) ; **une mesure absente
+  s'écrit « non mesuré S0 / S12 »** (décision de Guillaume), jamais 0, jamais
+  une ligne retirée ; **vert = progrès, rouge = recul** (hachuré), jugement
+  d'`ecartCombine` (sprint plus court = progrès) ; 1RM en %, lest en kg.
+  Image 1080 × 1350 dessinée au canvas dans le téléphone
+  (`media/comparatifImage.ts`), partagée par la feuille de partage, sinon
+  téléchargée. Photos : première et dernière photo de suivi du cycle par
+  défaut, remplaçables à l'écran ; le choix n'est enregistré NULLE PART.
+  S'ouvre dès une mesure S12 ; avant, la carte l'annonce. POWER seulement
+  (MASS et FEMMES n'ont pas de combine S0/S12). `comparatif.test.ts`,
+  `comparatifPartage.test.tsx`.
 - **Alignement des reps** : la question n'est posée que sur un exercice
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.
