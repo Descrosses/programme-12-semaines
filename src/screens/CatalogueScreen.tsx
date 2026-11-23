@@ -160,6 +160,18 @@ export function CatalogueScreen({
         </p>
       </div>
 
+      {/*
+        Le bilan sportif part chez Guillaume, qui oriente : l'appli ne choisit
+        aucun programme à partir des réponses.
+      */}
+      <a className={local.bilan} href="#/bilan">
+        <span className={local.bilanTexte}>
+          <span className={local.bilanTitre}>Pas sûr de ton choix ? Fais ton bilan sportif</span>
+          <span className={local.bilanAide}>10 à 15 minutes, envoyé à ton coach.</span>
+        </span>
+        <Icon name="arrow-right" size="18px" />
+      </a>
+
       {FAMILLES.map((famille) => {
         const programmes = programmesDe(famille);
         const perso = famille.id === 'perso';

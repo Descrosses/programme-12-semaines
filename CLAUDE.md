@@ -422,6 +422,25 @@ matériel et la durée avant d'écrire la moindre séance.
   `alimentPour`) ; une liste existante est annoncée avant d'être remplacée ;
   les aliments ajoutés à la main restent dans le résumé seulement.
   Aucun calcul de cibles : le questionnaire recueille, Guillaume décide.
+- **Bilan sportif et nutrition dans l'appli** (Guillaume, 23 novembre, « go
+  bilan sportif »). Route `#/bilan`, ouverte par la carte « Pas sûr de ton
+  choix ? Fais ton bilan sportif » du catalogue et par Réglages → Partager une
+  fiche. Source FIGÉE : `docs/questionnaires/bilan-sportif/bilan.js` (script
+  du site, copie exacte). Transcription mot pour mot (« tu », apostrophes
+  droites, noms de champs du site) dans `data/questionnaireBilanSportif.ts` ;
+  logique dans `engine/questionnaireBilanSportif.ts`, fonction par fonction.
+  Le test EXÉCUTE le script du site et compare, sur 400 jeux de réponses,
+  sections montrées, conditions, questions obligatoires, vigilance, arrêt de
+  sécurité et résumé (au caractère près). Réponses en `localStorage`
+  (`state/questionnaireBilan.ts`), jamais en base, ni export ni cloud.
+  L'appli n'en tire RIEN : ni programme, ni charge, ni cible. Les « bases
+  candidates » du résumé sont celles du site (Force + explosivité, Prise de
+  masse, Perte de poids H/F, Pilates), indicatives pour le coach, et ne
+  désignent AUCUN programme de l'appli. Le « max estimé ≈ » du résumé est la
+  formule du site (Epley), affichée au coach seulement : elle ne doit jamais
+  servir à une charge (règle « aucune formule validée » de MASS FORCE).
+  Orienter vers un programme de l'appli à partir des réponses : PAS FAIT,
+  demande une table écrite par Guillaume (ne rien inventer).
 - **Nutrition, lot 1 — un objectif en CALORIES suffit** (Guillaume, 23
   novembre). `cibleSaisie` (`data/ciblesNutrition.ts`) : calories dans les
   bornes OBLIGATOIRES, protéines / glucides / lipides FACULTATIFS un par un ;
