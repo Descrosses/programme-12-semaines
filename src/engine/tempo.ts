@@ -46,3 +46,32 @@ export function expliquerTempo(texte: string | null): string[] | null {
     out.push(h === '0' ? 'pas d’arrêt en haut : enchaîne' : `${s(h)} d’arrêt en haut`);
   return out;
 }
+
+export interface PhaseTempo {
+  /** Le chiffre du programme, ou « X ». */
+  valeur: string;
+  libelle: 'descente' | 'en bas' | 'montée' | 'en haut';
+  /** « X » : le plus vite possible. */
+  explosif: boolean;
+}
+
+/**
+ * Les phases d'un tempo chiffré, dans l'ordre de la notation, pour les
+ * quatre cases de la carte (variante TB, Guillaume, 23 novembre). `null`
+ * quand le texte n'est pas un tempo chiffré.
+ */
+export function phasesTempo(texte: string | null): PhaseTempo[] | null {
+  if (texte === null) return null;
+  const m = /\b([0-9X])-([0-9X])-([0-9X])(?:-([0-9X]))?\b/i.exec(texte);
+  if (!m) return null;
+  const libelles = ['descente', 'en bas', 'montée', 'en haut'] as const;
+  return m
+    .slice(1)
+    .map((v, i) => ({ v, l: libelles[i]! }))
+    .filter((x): x is { v: string; l: PhaseTempo['libelle'] } => x.v !== undefined)
+    .map(({ v, l }) => ({
+      valeur: v.toUpperCase(),
+      libelle: l,
+      explosif: v.toUpperCase() === 'X',
+    }));
+}

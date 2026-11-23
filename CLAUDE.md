@@ -396,10 +396,12 @@ matériel et la durée avant d'écrire la moindre séance.
 - **Retours du 23 novembre (séance POWER).** La **montée en charge est
   REPLIÉE par défaut** : une ligne (« 5 · 3 · 2-3 · 2 reps · 1 min entre
   chaque », puis « n/4 faits ») ; on l'ouvre pour les kilos et les boutons,
-  replier ne perd rien (`monteeEnCharge.test.tsx`). Le **tempo chiffré se
-  touche** (« Tempo 3-1-X-1 ? ») et s'explique dessous, phase par phase
-  (`expliquerTempo`, `engine/tempo.ts` : descente, arrêt en bas, montée, arrêt
-  en haut, X = le plus vite possible) ; un tempo en mots reste une pastille
+  replier ne perd rien (`monteeEnCharge.test.tsx`). Le **tempo chiffré
+  s'affiche en QUATRE CASES** (variante TB, choix de Guillaume) : « 2
+  descente · 1 en bas · X montée · 0 en haut » (`phasesTempo`,
+  `engine/tempo.ts`), en ivoire DOUX `--ivoire-doux` #d8d1c3 (« pas un blanc
+  trop blanc, que ça reste discret »), case X rouge ; le lecteur d'écran lit
+  la phrase complète (`expliquerTempo`). Un tempo en mots reste une pastille
   (`tempoExplique.test.tsx`). Les **fiches d'un superset sont AVANT les
   tours** (« Tour 1 »), après les questions (`propositionsSuperset.test.tsx`).
 - **Choix visuels du 23 novembre** (planches de variantes, Guillaume) :
@@ -407,7 +409,8 @@ matériel et la durée avant d'écrire la moindre séance.
   sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
   rouge ni de trait au-dessus ; **M2** — l'encadré « Montée en charge » a un
   filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé.
-  `styles/touchesClaires.test.ts`. Le tempo : pas encore tranché.
+  `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
+  23 novembre (séance POWER) »).
 - **Alignement des reps** : la question n'est posée que sur un exercice
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.
