@@ -73,7 +73,7 @@ const r1to2 = { min: 1, max: 2 };
 
 // --- notes récurrentes ------------------------------------------------------
 
-const CONTRASTE = 'Contraste : série lourde → 2 min → explosif → 2 min → série suivante.';
+const CONTRASTE = 'Contraste : série lourde → 1 min 30 → explosif → 2 min → série suivante.';
 
 // ---------------------------------------------------------------------------
 // Les 7 colonnes du tableau §9

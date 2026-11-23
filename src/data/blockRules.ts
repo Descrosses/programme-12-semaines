@@ -537,35 +537,36 @@ export interface ContrastSpec {
   cycleLabel: string;
 }
 
+/*
+ * 1 min 30 après la série lourde, 2 min après l'explosif, sur les TROIS
+ * jours : décision de Guillaume du 23 novembre (« 1'30 après le mouvement
+ * lourd et 2' après mouvement explosif »). Le squat du lundi, à 2 min / 2 min
+ * jusque-là, s'aligne : cycle de 3 min 30 partout.
+ */
 export const CONTRAST_BY_DAY: Partial<Record<DayIndex, ContrastSpec>> = {
   0: {
     heavy: 'back-squat',
     explosive: 'box-jump',
     explosiveReps: 2,
-    restAfterHeavySec: 120,
+    restAfterHeavySec: 90,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 4 min',
+    cycleLabel: 'Cycle ≈ 3 min 30',
   },
   2: {
     heavy: 'bench-press',
     explosive: 'plyo-push-up',
     explosiveReps: 3,
-    restAfterHeavySec: 120,
+    restAfterHeavySec: 90,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 4 min',
+    cycleLabel: 'Cycle ≈ 3 min 30',
   },
   5: {
     heavy: 'deadlift',
     explosive: 'broad-jump',
     explosiveReps: 2,
-    /*
-     * 2 min après le deadlift comme après le bench et le squat : décision de
-     * Guillaume du 23 novembre (« Repos Contraste = 1'30 -> 2 min »), qui
-     * remplace le cycle de 3 min 30 décidé plus tôt.
-     */
-    restAfterHeavySec: 120,
+    restAfterHeavySec: 90,
     restAfterExplosiveSec: 120,
-    cycleLabel: 'Cycle ≈ 4 min',
+    cycleLabel: 'Cycle ≈ 3 min 30',
   },
 };
 
