@@ -22,13 +22,25 @@ réinterprète pas.**
 - `plan-alimentaire-12-semaines.md` — le plan alimentaire personnel de
   Guillaume.
 - `regles-cibles-nutrition.md` — les règles de calcul des cibles
-  nutritionnelles (validées le 23 novembre, **pas encore codées**) : Mifflin-St
+  nutritionnelles (validées le 23 novembre, **codées côté coach seulement**) : Mifflin-St
   Jeor, grille d'activité, objectif (perte −15/−20/−25 %, prise +5/+10/+15 %),
   protéines 1,8 g/kg (2,2 en perte), lipides 25 % (≥ 0,6 g/kg), glucides le
   reste, même cible repos/entraînement, exclusions et planchers, réajustement
   ±100 kcal toutes les 2 semaines. Chaque section sépare les études des choix
   de l'appli : ne pas présenter un choix de l'appli comme une recommandation
   scientifique.
+  **Calcul coach — FAIT** (« go calcul coach ») : valeurs dans
+  `data/reglesCiblesNutrition.ts` (relues dans le `.md` tableau par tableau,
+  exemple du §8 rejoué : `reglesCiblesNutrition.test.ts`), moteur pur
+  `engine/calculCibles.ts` (étapes détaillées, exclusions §6, plancher →
+  `proposable: false`, chiffres TOUJOURS calculés pour que le coach décide).
+  `engine/lireResumeQuestionnaire.ts` relit le résumé du questionnaire collé
+  tel quel (message entier, apostrophes typographiques) ; un libellé inconnu
+  = donnée manquante, jamais devinée (aller-retour sur 400 profils depuis
+  `resume()`). Écran : `components/CalculCoach.tsx` dans la carte
+  « Préparer une fiche » de `#/admin` ; « Reprendre ces chiffres » remplit
+  les DEUX journées avec la même cible (§5). Rien n'est enregistré. Côté
+  utilisateur (profil en base, proposition, réajustement §7) : pas fait.
 
 Des tests **relisent ces `.md`** et comparent case par case (`mainLiftTable.test.ts`,
 `program.test.ts`). Si le code et le `.md` divergent, le déploiement échoue.

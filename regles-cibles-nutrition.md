@@ -3,7 +3,8 @@
 > **Statut : VALIDÉ par Guillaume le 23 novembre 2026 — source de vérité.**
 > Le code transcrit ce fichier, il ne le réinterprète pas ; des tests le
 > relisent. Pour changer une règle : changer ce fichier ET le code.
-> **Pas encore codé.**
+> **Codé côté coach** (`#/admin`, 23 novembre) : moteur `engine/calculCibles.ts`,
+> valeurs `data/reglesCiblesNutrition.ts`. Pas encore côté utilisateur (§0, §7).
 >
 > Chaque section sépare **ce que disent les études** (référence exacte et son
 > contexte) des **choix de l'appli** (valeurs de conception validées par

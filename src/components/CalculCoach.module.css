@@ -1,0 +1,103 @@
+/* Le calcul des cibles, dans l'écran coach (#/admin). Jetons seulement. */
+
+.bloc {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.titre {
+  margin: 0 0 6px;
+  font-family: var(--font-cond);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.profil,
+.texte {
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.alerte {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--rouge);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--rouge) 8%, transparent);
+}
+
+.alerteTitre {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.liste {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.etapes {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.etapes th,
+.etapes td {
+  padding: 6px 4px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+  text-align: left;
+}
+
+.etapes th {
+  font-weight: 600;
+  color: var(--ink-2);
+  width: 30%;
+}
+
+.calcul {
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.resultat {
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.attention {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  color: var(--orange);
+}
+
+.cible {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.bouton {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+}
