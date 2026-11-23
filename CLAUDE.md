@@ -21,6 +21,14 @@ réinterprète pas.**
   été retiré, voir plus bas.
 - `plan-alimentaire-12-semaines.md` — le plan alimentaire personnel de
   Guillaume.
+- `regles-cibles-nutrition.md` — les règles de calcul des cibles
+  nutritionnelles (validées le 23 novembre, **pas encore codées**) : Mifflin-St
+  Jeor, grille d'activité, objectif (perte −15/−20/−25 %, prise +5/+10/+15 %),
+  protéines 1,8 g/kg (2,2 en perte), lipides 25 % (≥ 0,6 g/kg), glucides le
+  reste, même cible repos/entraînement, exclusions et planchers, réajustement
+  ±100 kcal toutes les 2 semaines. Chaque section sépare les études des choix
+  de l'appli : ne pas présenter un choix de l'appli comme une recommandation
+  scientifique.
 
 Des tests **relisent ces `.md`** et comparent case par case (`mainLiftTable.test.ts`,
 `program.test.ts`). Si le code et le `.md` divergent, le déploiement échoue.
