@@ -78,7 +78,8 @@
   left: 0;
   width: 100%;
   height: calc(100% - var(--haut));
-  mask-image: linear-gradient(to bottom, transparent 0, #000 26px);
+  /* 10 px de fondu seulement : plus large, il effaçait les têtes. */
+  mask-image: linear-gradient(to bottom, transparent 0, #000 10px);
   object-fit: cover;
   object-position: 70% 30%;
 }
