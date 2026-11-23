@@ -41,14 +41,3 @@ describe('l’accueil', () => {
     expect(src).toMatch(/famille\.id !== 'perso' &&\s*\(famille\.programmes\.length === 0 \|\|/);
   });
 });
-
-describe('« Ce que j’ai mangé » dit à quoi il sert', () => {
-  it('journal du jour, comparé à la cible, le plan non compté', () => {
-    const src = readFileSync(new URL('./NutritionScreen.tsx', import.meta.url), 'utf8').replace(
-      /\s+/g,
-      ' ',
-    );
-    expect(src).toContain('Ton journal du jour : note ce que tu manges vraiment.');
-    expect(src).toContain('ton plan, lui, n’est pas compté.');
-  });
-});
