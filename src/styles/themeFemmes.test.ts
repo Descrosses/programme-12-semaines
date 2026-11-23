@@ -89,6 +89,19 @@ describe('thème FEMMES — Rosée Sculptée', () => {
     expect(contraste('#ffffff', jeton('barre-etat'))).toBeGreaterThanOrEqual(4.5);
   });
 
+  it('alignement : circuit adouci sous FEMMES seulement, niveau choisi dit en mot', () => {
+    const seance = lire('../screens/Session.module.css');
+    // POWER et MASS gardent leur circuit à double contour…
+    expect(seance).toMatch(/\n\.superset \{[^}]*border: 2px solid var\(--accent\);/);
+    // … FEMMES a le sien, confiné.
+    expect(seance).toMatch(
+      /:global\(\[data-theme='femmes'\]\) \.superset \{[^}]*border-left: 4px solid var\(--accent-bright\);/,
+    );
+    expect(lire('../screens/femmes/Femmes.module.css')).toMatch(
+      /\.choixOn::after \{[^}]*content: 'Choisi';/,
+    );
+  });
+
   it('embarque Oswald et Inter (aucune police chargée en ligne)', () => {
     const polices = lire('./fonts.css');
     expect(bloc).toContain("'Inter Femmes'");

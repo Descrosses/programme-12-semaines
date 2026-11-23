@@ -60,6 +60,15 @@
 
 /* FEMMES « Rosée Sculptée » : le titre de séance en rose profond, comme la
    planche. Confiné au thème : POWER et MASS ne bougent pas. */
+/* FEMMES « Rosée Sculptée » : le circuit perd son double contour épais —
+   filet rose à gauche et ombre douce, comme les cartes de la planche. */
+:global([data-theme='femmes']) .superset {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent-bright);
+  border-radius: 20px;
+  box-shadow: var(--ombre-carte);
+}
+
 :global([data-theme='femmes']) .title {
   color: var(--accent-deep);
 }

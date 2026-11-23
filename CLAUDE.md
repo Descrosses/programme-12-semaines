@@ -197,7 +197,14 @@ exemples POWER, jamais repris : `screens/femmes/semaineFemmes.test.tsx`.
 6,58:1) tient la zone de l'heure sur TOUS les écrans FEMMES
 (`html[data-theme='femmes'] body::before`, `global.css`) — sans elle,
 l'heure disparaissait sur la Séance et dès qu'un écran défilait. Hauteur
-nulle sans encoche. `themeFemmes.test.ts`. Les cinq autres écrans : lots 2 à 6.
+nulle sans encoche. `themeFemmes.test.ts`.
+**Alignement des autres écrans sur Semaine — FAIT** (« go alignement
+FEMMES », sans maquette par écran) : titres de carte 22 px, texte 14,5 px ;
+Aujourd'hui reprend la carte de phase de Semaine (haltère, filet rose) ;
+Profil : niveau choisi = filet + pastille « CHOISI » (jamais la couleur
+seule) ; séance : le circuit perd son double contour épais (filet rose à
+gauche, sous `:global([data-theme='femmes'])` dans `Session.module.css`,
+POWER et MASS inchangés). Les cinq autres écrans : lots 2 à 6.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 

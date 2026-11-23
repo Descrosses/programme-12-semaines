@@ -378,8 +378,9 @@
   margin: 0;
   font-family: var(--f);
   font-weight: 700;
-  font-size: 26px;
-  line-height: 30px;
+  /* 22 px : la taille des titres de carte de l'écran Semaine (planche). */
+  font-size: 22px;
+  line-height: 26px;
   text-transform: uppercase;
   color: var(--ink);
 }
@@ -401,8 +402,8 @@
 
 .carteTexte {
   margin-top: 4px;
-  font-size: 15.5px;
-  line-height: 21px;
+  font-size: 14.5px;
+  line-height: 20px;
   color: var(--texte);
 }
 
@@ -543,9 +544,9 @@
   background: #fff;
   box-shadow: var(--ombre-carte);
   font-family: var(--f);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent-ink);
   cursor: pointer;
@@ -735,12 +736,12 @@
 
 /* « Circuit · 5 exercices à enchaîner » : 280 px de large. */
 .titreSection {
-  margin: 0 0 -6px 2px;
+  margin: 8px 0 -6px 2px;
   font-family: var(--f);
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: 0.04em;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink);
 }
@@ -1251,6 +1252,7 @@
 
 /* Une carte qui se choisit (niveau). Le bouton garde la carte telle quelle. */
 .choix {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1261,9 +1263,35 @@
 
 .choixOn {
   border-color: var(--accent-bright);
+  border-left: 4px solid var(--accent-bright);
   box-shadow:
     0 0 0 2px var(--accent-dim),
     var(--ombre-carte);
+}
+
+/* Le niveau choisi se dit aussi en MOT, pas seulement en couleur
+   (le lecteur d'écran l'entend par aria-pressed). */
+.choixOn::after {
+  content: 'Choisi';
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 20px;
+  background: var(--accent);
+  font-family: var(--f);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-on-accent);
+}
+
+.choixOn .carteTitre {
+  padding-right: 84px;
 }
 
 /* Oui / Non : deux boutons du même gabarit que le ressenti. */

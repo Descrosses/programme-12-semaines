@@ -118,11 +118,17 @@ export function FemmesAujourdhui({
       </div>
 
       <div className={s.corps}>
-        <section className={s.carte}>
-          <h2 className={s.carteTitre}>
-            Semaine {etat.semaine} · {phase.name}
-          </h2>
-          <p className={s.carteTexte}>{phase.objective}</p>
+        {/* La carte de phase, la même que sur l'écran Semaine. */}
+        <section className={s.carteBloc}>
+          <span className={s.carteBlocIco}>
+            <Ico nom="haltere" taille={34} />
+          </span>
+          <span>
+            <h2 className={s.carteBlocTitre}>
+              Semaine {etat.semaine} · {phase.name}
+            </h2>
+            <p className={s.carteBlocTexte}>{phase.objective}</p>
+          </span>
         </section>
 
         {termine && (
