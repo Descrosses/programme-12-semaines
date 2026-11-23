@@ -117,6 +117,59 @@ export const VISUELS = {
     usage: 'Carte de la famille FEMMES, page Programmes.',
   },
   /*
+   * Les bandeaux « Rosée Sculptée » de FEMMES (Guillaume, 23 novembre),
+   * générés sans texte (ChatGPT), 1633 × 963 livrés, ramenés à 1200 et
+   * 640 px. Sujet à DROITE, gauche dégagée pour le titre HTML. Ils ne
+   * servent qu'aux écrans FEMMES (`Bandeau`, `Pieces.tsx`) : jamais dans
+   * POWER ni MASS (`bandeaux.test.ts`). Mêmes réserves de droits que le
+   * reste : des générations d'IA.
+   */
+  femmesAujourdhui: {
+    display: '50_femmes_aujourdhui_display.webp',
+    mobile: '50_femmes_aujourdhui_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète au back squat, barre chargée, salle baignée de lumière rose.',
+    cadrage: 'cover',
+    focus: '78% 30%',
+    usage: 'Bandeau d’en-tête FEMMES : Aujourd’hui.',
+  },
+  femmesSemaine: {
+    display: '51_femmes_semaine_display.webp',
+    mobile: '51_femmes_semaine_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète en position de kettlebell swing, salle sombre et rose.',
+    cadrage: 'cover',
+    focus: '78% 35%',
+    usage: 'Bandeau d’en-tête FEMMES : Semaine.',
+  },
+  femmesNutrition: {
+    display: '52_femmes_nutrition_display.webp',
+    mobile: '52_femmes_nutrition_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète qui mélange un bol de poulet et de légumes dans une cuisine rose.',
+    cadrage: 'cover',
+    focus: '82% 30%',
+    usage: 'Bandeau d’en-tête FEMMES : Nutrition.',
+  },
+  femmesMesures: {
+    display: '53_femmes_mesures_display.webp',
+    mobile: '53_femmes_mesures_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète qui note dans un carnet, salle de sport, gourde MAJK.',
+    cadrage: 'cover',
+    focus: '80% 30%',
+    usage: 'Bandeau d’en-tête FEMMES : Mesures (écran à venir).',
+  },
+  femmesReglages: {
+    display: '54_femmes_reglages_display.webp',
+    mobile: '54_femmes_reglages_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description: 'Athlète qui consulte son téléphone, montre au poignet, rack en arrière-plan.',
+    cadrage: 'cover',
+    focus: '75% 30%',
+    usage: 'Bandeau d’en-tête FEMMES : Réglages (Profil).',
+  },
+  /*
    * La photo de la carte ME, MYSELF & I, page Programmes. Générée par
    * Guillaume (ChatGPT) : une silhouette de dos face au miroir, trois reflets
    * — « me, myself and I ». Le voile en dégradé du code fait

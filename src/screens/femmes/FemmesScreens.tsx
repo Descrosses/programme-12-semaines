@@ -21,6 +21,9 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { SettingsRow } from '../../db/db';
+import { getSettingsRow, saveSettings } from '../../db/repo';
+import { CartesNutrition } from '../SettingsScreen';
 import type { FemmesSeanceRow } from '../../db/db';
 import {
   NIVEAU_DEFS,
@@ -104,7 +107,7 @@ export function FemmesAujourdhui({
 
   return (
     <div className={s.page}>
-      <Bandeau logo titre="MAJK FEMMES" />
+      <Bandeau logo titre="MAJK FEMMES" photo="femmesAujourdhui" />
 
       {/* Les quatre pastilles de la planche : niveau, semaine, jour, durée. */}
       <div className={`${s.chips} ${s.chipsAccueil}`}>
@@ -249,6 +252,7 @@ export function FemmesSemaine({
   return (
     <div className={s.page}>
       <Bandeau
+        photo="femmesSemaine"
         surTitre={`Phase ${phase.id} · ${phase.name}`}
         titre={`SEMAINE ${etat.semaine}`}
         taille="xl"
@@ -372,6 +376,12 @@ export function FemmesProfil({
   );
   const [envoi, setEnvoi] = useState(false);
   const [enregistre, setEnregistre] = useState(false);
+  /* Les réglages de l'appli : cibles nutritionnelles et fiche (onglet Nutrition). */
+  const [reglages, setReglages] = useState<SettingsRow | null>(null);
+  useEffect(() => {
+    if (depart) return;
+    void getSettingsRow().then(setReglages);
+  }, [depart]);
   const complet = SAFETY_CHECKS.every((c) => safety[c.key] !== null);
 
   async function valider() {
@@ -388,6 +398,7 @@ export function FemmesProfil({
   return (
     <div className={s.page}>
       <Bandeau
+        photo="femmesReglages"
         surTitre={depart ? 'Avant de commencer' : 'Réglages'}
         titre={depart ? 'Ton départ' : 'Profil'}
       />
@@ -447,6 +458,22 @@ export function FemmesProfil({
         </button>
         {!complet && <p className={s.notePetite}>Réponds aux deux questions pour continuer.</p>}
         {enregistre && !depart && <p className={s.notePetite}>Enregistré.</p>}
+
+        {/* Nutrition : les mêmes cartes que les Réglages de POWER, sans la
+            phrase sur le plan historique (jamais montré sous FEMMES). Chaque
+            champ s'enregistre seul. */}
+        {reglages !== null && (
+          <>
+            <h2 className={s.titreSection}>Nutrition</h2>
+            <div className={s.cartesReglages}>
+              <CartesNutrition
+                row={reglages}
+                avecPlanHistorique={false}
+                patch={async (p) => setReglages(await saveSettings(p))}
+              />
+            </div>
+          </>
+        )}
       </div>
       <NavFemmes actif="reglages" onAller={onAller} />
     </div>

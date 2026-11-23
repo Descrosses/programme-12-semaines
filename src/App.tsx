@@ -218,7 +218,12 @@ export function App() {
       const femmesActif = (await cycleActif())?.programmeId === FEMMES_PROGRAMME_ID;
       if (!vivant) return;
       if (femmesActif && ROUTES_MODULE.has(route.name)) {
-        navigate({ name: 'femmes', vue: 'aujourdhui' }, true);
+        /* FEMMES a sa Nutrition : le retour du questionnaire alimentaire
+           (`#/nutrition`) y mène, plutôt qu'à Aujourd'hui. */
+        navigate(
+          { name: 'femmes', vue: route.name === 'nutrition' ? 'nutrition' : 'aujourdhui' },
+          true,
+        );
       } else if (!femmesActif && route.name === 'femmes') {
         navigate({ name: 'catalogue' }, true);
       }

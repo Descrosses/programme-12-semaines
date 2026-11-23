@@ -50,7 +50,10 @@ export type Route =
    * `vue` dit lequel des écrans afficher ; le reste (semaine, jour, version,
    * niveau) vit dans l'état de l'application, pas dans l'URL.
    */
-  | { name: 'femmes'; vue: 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite' };
+  | {
+      name: 'femmes';
+      vue: 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite' | 'nutrition';
+    };
 
 export function parseRoute(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
@@ -82,7 +85,11 @@ export function parseRoute(hash: string): Route {
     case 'femmes': {
       const v = parts[1];
       const vue =
-        v === 'semaine' || v === 'seance' || v === 'exercice' || v === 'securite'
+        v === 'semaine' ||
+        v === 'seance' ||
+        v === 'exercice' ||
+        v === 'securite' ||
+        v === 'nutrition'
           ? v
           : ('aujourdhui' as const);
       return { name: 'femmes', vue };
