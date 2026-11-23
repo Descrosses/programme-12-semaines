@@ -119,7 +119,9 @@ export const VISUELS = {
   /*
    * Les bandeaux « Rosée Sculptée » de FEMMES (Guillaume, 23 novembre),
    * générés sans texte (ChatGPT), 1633 × 963 livrés, ramenés à 1200 et
-   * 640 px. Sujet à DROITE, gauche dégagée pour le titre HTML. Ils ne
+   * 640 px. Sujet à DROITE, gauche dégagée pour le titre HTML.
+   * Calés sur leur BORD HAUT (`… 0%`) : les têtes sont en haut des
+   * fichiers, et un recadrage par le haut les coupait (iPhone de Guillaume). Ils ne
    * servent qu'aux écrans FEMMES (`Bandeau`, `Pieces.tsx`) : jamais dans
    * POWER ni MASS (`bandeaux.test.ts`). Mêmes réserves de droits que le
    * reste : des générations d'IA.
@@ -130,7 +132,7 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète au back squat, barre chargée, salle baignée de lumière rose.',
     cadrage: 'cover',
-    focus: '78% 30%',
+    focus: '78% 0%',
     usage: 'Bandeau d’en-tête FEMMES : Aujourd’hui.',
   },
   femmesSemaine: {
@@ -139,7 +141,7 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète en position de kettlebell swing, salle sombre et rose.',
     cadrage: 'cover',
-    focus: '78% 35%',
+    focus: '78% 0%',
     usage: 'Bandeau d’en-tête FEMMES : Semaine.',
   },
   femmesNutrition: {
@@ -148,7 +150,7 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète qui mélange un bol de poulet et de légumes dans une cuisine rose.',
     cadrage: 'cover',
-    focus: '82% 30%',
+    focus: '82% 0%',
     usage: 'Bandeau d’en-tête FEMMES : Nutrition.',
   },
   femmesMesures: {
@@ -157,7 +159,7 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète qui note dans un carnet, salle de sport, gourde MAJK.',
     cadrage: 'cover',
-    focus: '80% 30%',
+    focus: '80% 0%',
     usage: 'Bandeau d’en-tête FEMMES : Mesures (écran à venir).',
   },
   femmesReglages: {
@@ -166,7 +168,7 @@ export const VISUELS = {
     largeurs: { display: 1200, mobile: 640 },
     description: 'Athlète qui consulte son téléphone, montre au poignet, rack en arrière-plan.',
     cadrage: 'cover',
-    focus: '75% 30%',
+    focus: '75% 0%',
     usage: 'Bandeau d’en-tête FEMMES : Réglages (Profil).',
   },
   /*

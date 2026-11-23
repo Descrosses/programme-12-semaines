@@ -187,7 +187,9 @@ programme ») ; le numéro de semaine et la phase passent dans la carte de
 Semaine. **Le bandeau REMONTE jusqu'en haut** : `.app` réserve déjà
 l'encoche, `.hero` l'annule (marge négative) — sinon un vide doublait
 l'encoche (vu sur iPhone). La photo nette commence sous l'heure (têtes en
-haut des fichiers), son double flouté passe dessous ; la bande `--barre-etat`
+haut des fichiers), CALÉE EN HAUT (`focus` en `… 0%`) avec un fondu de
+10 px au plus — recadrée par le haut et fondue sur 26 px, elle effaçait les
+têtes (iPhone de Guillaume) ; son double flouté passe dessous ; la bande `--barre-etat`
 est transparente en haut d'un écran à photo et revient au défilement
 (`data-bandeau-photo` / `data-defile`, posés par `Bandeau`). Sur iOS 26
 l'heure est NOIRE sur un voile clair posé par le système (captures de
