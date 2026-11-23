@@ -5,10 +5,15 @@
  * Règles (`regles-cibles-nutrition.md`) : chaque étape est montrée, la cible
  * est une ESTIMATION ; dans les cas du §6 (exclusions, sous un plancher)
  * l'écran dit que l'appli ne la proposerait pas — le coach voit quand même
- * les chiffres et décide. Rien n'est enregistré : « Reprendre ces chiffres »
+ * les chiffres et décide. Rien n’est enregistré : « Utiliser cette cible »
  * remplit seulement les champs de la fiche, la même cible les deux jours (§5).
+ *
+ * Le bouton dit « Utiliser cette cible », pas « Valider » : rien n'est
+ * enregistré, et « les deux journées » ne parle pas à un nouveau venu — la
+ * phrase juste au-dessus dit déjà « même cible entraînement et repos ».
  */
 
+import { useState } from 'react';
 import { OPTIONS } from '../data/questionnairePlanAlimentaire';
 import { calculerCibles, imc, type ResultatCibles } from '../engine/calculCibles';
 import type { LectureResume } from '../engine/lireResumeQuestionnaire';
@@ -26,6 +31,7 @@ export function CalculCoach({
   lecture: LectureResume;
   onReprendre: (r: ResultatCibles) => void;
 }) {
+  const [reprise, setReprise] = useState(false);
   if (lecture.profil === null) {
     return (
       <div className={styles.bloc} data-calcul="incomplet">
@@ -94,8 +100,15 @@ export function CalculCoach({
         Une estimation, pas une mesure. Même cible les jours d’entraînement et de repos ; à
         réajuster sur le poids réel toutes les deux semaines.
       </p>
-      <button type="button" className={styles.bouton} onClick={() => onReprendre(r)}>
-        Reprendre ces chiffres pour les deux journées
+      <button
+        type="button"
+        className={styles.bouton}
+        onClick={() => {
+          onReprendre(r);
+          setReprise(true);
+        }}
+      >
+        {reprise ? 'Cible reportée ci-dessous ✓' : 'Utiliser cette cible'}
       </button>
     </div>
   );

@@ -38,7 +38,7 @@ réinterprète pas.**
   tel quel (message entier, apostrophes typographiques) ; un libellé inconnu
   = donnée manquante, jamais devinée (aller-retour sur 400 profils depuis
   `resume()`). Écran : `components/CalculCoach.tsx` dans la carte
-  « Préparer une fiche » de `#/admin` ; « Reprendre ces chiffres » remplit
+  « Préparer une fiche » de `#/admin` ; « Utiliser cette cible » remplit
   les DEUX journées avec la même cible (§5). Rien n'est enregistré. Côté
   utilisateur (profil en base, proposition, réajustement §7) : pas fait.
 

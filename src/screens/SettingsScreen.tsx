@@ -1127,6 +1127,7 @@ export function CarteFichePour() {
       )}
       {questionnaire?.trouve === true && (
         <CalculCoach
+          key={collage}
           lecture={questionnaire}
           onReprendre={(r) => {
             const m = { kcal: r.kcal, proteinG: r.proteinG, carbsG: r.carbsG, fatG: r.fatG };
