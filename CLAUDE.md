@@ -187,19 +187,18 @@ vendredi en levier court) sont **gardées telles quelles**. Des tests
 2. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
 3. **Les objectifs du §13**, calculés sur ses 1RM à lui.
 
-**L'avertissement, corrigé.** Une première version de ces notes affirmait que
-« programme femme » n'est pas une catégorie physiologique. **C'est faux dans le
-cas qui nous occupe**, et la correction compte : le programme retenu pour le
-cycle 1 est un programme POST-PARTUM. Le diastasis des grands droits et la
-rééducation périnéale sont des réalités physiologiques précises, qui
-interdisent des exercices nommés et en imposent d'autres. Ce n'est pas du
-marketing, c'est de la sécurité.
+**FEMMES 8 n'est PAS un programme post-partum** (Guillaume, 23 novembre :
+« supprime cette donnée »). Sa base d'origine l'était ; les questions datées
+(visite post-natale, diastasis, rééducation périnéale) ont été retirées et
+`femmes.test.ts` interdit tout retour de « post-partum », « accouchement » ou
+« grossesse » dans ses textes. Ne jamais le présenter, le commenter ni le
+calibrer comme une reprise post-partum.
 
-Ce qui reste vrai : un programme ne se justifie pas par le sexe seul. Il se
-justifie par sa **structure** — ici, des circuits en tours, du matériel léger à
-domicile, un questionnaire de sécurité bloquant et des substitutions
-automatiques. Rien de tout cela n'existe dans POWER 12, et c'est bien pour ça
-que le programme a lieu d'être.
+Un programme ne se justifie pas par le sexe seul. Il se justifie par sa
+**structure** — ici, des circuits en tours, du matériel léger à domicile, une
+question de sécurité (gêne du périnée à l'effort, non bloquante) et des
+substitutions automatiques. Rien de tout cela n'existe dans POWER 12, et c'est
+bien pour ça que le programme a lieu d'être.
 
 Demande à Guillaume le niveau visé, l'objectif, les jours disponibles, le
 matériel et la durée avant d'écrire la moindre séance.

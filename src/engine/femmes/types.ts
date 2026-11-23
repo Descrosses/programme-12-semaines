@@ -73,7 +73,7 @@ export interface TourFait {
 /**
  * Le ressenti remplace le RPE du programme 12 semaines.
  *
- * Trois niveaux et pas dix : à 5 mois post-partum, ce qu'on veut savoir c'est
+ * Trois niveaux et pas dix : ce qu'on veut savoir c'est
  * « est-ce que c'était trop », pas graduer une échelle. Une échelle fine donne
  * l'illusion de la précision et se remplit au hasard.
  */

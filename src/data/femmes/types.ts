@@ -49,7 +49,7 @@ export const WEEKS: readonly WeekIndex[] = [1, 2, 3, 4, 5, 6, 7, 8] as const;
  *
  * Le .md fixe le NOMBRE de séances par semaine (3 en phase 1, 4 ensuite) mais
  * pas les jours. Ce découpage laisse au moins un jour de récupération entre
- * deux séances, ce qui est le minimum à 5 mois post-partum. Les séances
+ * deux séances, ce qui est le minimum pour récupérer. Les séances
  * restent ouvrables et validables n'importe quel jour : le calendrier propose,
  * il n'impose pas.
  */

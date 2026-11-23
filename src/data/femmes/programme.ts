@@ -16,7 +16,7 @@ export const OBJECTIF = {
   annonce: { deKg: 57, aKg: 51.5, label: '56-58 → 51-52 kg' },
   /**
    * Ce que le programme vise réellement. C'est CE chiffre que l'appli affiche
-   * partout : « Une perte plus rapide en post-partum augmente le risque de
+   * partout : « Une perte plus rapide augmente le risque de
    * fonte musculaire, de fatigue et de rebond. »
    */
   realiste: { minKg: 3, maxKg: 4, label: '-3 à -4 kg sur 8 semaines' },
@@ -94,7 +94,7 @@ export const TOTAL_SESSIONS = WEEKS.reduce((n, w) => n + WEEK_DAYS[w].length, 0)
 
 export const SUIVI = {
   pesee:
-    'Pesée 1×/semaine, même jour, même moment. Pas plus souvent : le poids post-partum fluctue beaucoup et une pesée quotidienne ne mesure que du bruit.',
+    'Pesée 1×/semaine, même jour, même moment. Pas plus souvent : le poids fluctue beaucoup d’un jour à l’autre et une pesée quotidienne ne mesure que du bruit.',
   /** Semaine du point d'étape et seuil de déclenchement. */
   checkpointWeek: 4 as WeekIndex,
   checkpointSeuilKg: 1,
