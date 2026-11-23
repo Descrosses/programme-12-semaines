@@ -1,25 +1,31 @@
-# Règles de calcul des cibles nutritionnelles — BROUILLON
+# Règles de calcul des cibles nutritionnelles — BROUILLON (révision 2)
 
-> **Statut : brouillon du 23 novembre, rien n'est codé.** Rédigé par Claude à
-> partir des références publiées citées en fin de document. Chaque valeur
-> marquée **[À VALIDER]** est un choix de coach que Guillaume confirme,
-> corrige ou remplace. Une fois validé, ce fichier devient la source de
-> vérité, comme `programme-final-12-semaines.md` : le code le transcrit, des
-> tests le relisent.
+> **Statut : brouillon, rien n'est codé.** Révision 2 du 23 novembre :
+> sources relues et corrigées par Guillaume (relecture externe), qui a
+> **validé** la formule de dépense au repos et les fourchettes des études.
+>
+> Chaque section sépare deux choses :
+> - **Ce que disent les études** — référence exacte, avec son contexte ;
+> - **Choix de l'appli** — une valeur de conception, raisonnable mais qui ne
+>   sort d'aucune étude. Celles marquées **[À DÉCIDER]** attendent Guillaume.
+>
+> Une fois tout décidé, ce fichier devient la source de vérité, comme
+> `programme-final-12-semaines.md` : le code le transcrit, des tests le
+> relisent.
 
 ---
 
 ## 0. Ce que l'appli fera, et ce qu'elle ne fera pas
 
 - Elle **propose** une cible (calories, puis protéines, lipides, glucides) à
-  partir des réponses du questionnaire. La personne la voit, avec le détail
-  du calcul, et **l'accepte ou la modifie**. Rien n'est imposé.
-- Elle **ne calcule rien** dans les cas du §6 (sécurité) : la cible reste à
-  poser par Guillaume, l'écran le dit.
-- Elle **réajuste** la cible toutes les deux semaines selon l'évolution
-  réelle du poids (§7), toujours en proposition.
-- Elle ne prescrit **aucune quantité d'aliment** : la règle actuelle reste
-  (« MAJK additionne et affiche l'écart »).
+  partir des réponses du questionnaire. La personne voit le détail du calcul
+  et **l'accepte ou la modifie**. Rien n'est imposé.
+- Toute cible est présentée comme une **estimation**, jamais comme une mesure.
+- Elle **ne calcule rien** dans les cas du §6 : la cible reste à poser par
+  Guillaume, l'écran le dit.
+- Elle **réajuste** toutes les deux semaines selon le poids réel (§7),
+  toujours en proposition.
+- Elle ne prescrit **aucune quantité d'aliment** (règle actuelle inchangée).
 
 ---
 
@@ -27,39 +33,40 @@
 
 | Donnée | Question du questionnaire | Usage |
 |---|---|---|
-| Sexe | « Sexe » | formule de dépense au repos |
-| Âge | « Âge » (18 ans et plus) | formule |
-| Taille | « Taille » | formule, IMC |
-| Poids | « Poids » (moyenne de 3 matins) | formule, protéines, lipides |
-| Travail | « Votre travail » | activité quotidienne |
-| Pas | « Pas par jour en moyenne » | activité quotidienne |
-| Séances | « Séances de sport par semaine » + « Durée moyenne » | activité sportive |
-| Objectif | « Votre objectif » + « À quel rythme ? » | déficit ou surplus |
-| Tendance | « Votre poids des 4 dernières semaines » (+ poids il y a 4 semaines) | contrôle de cohérence (§7) |
-| Sécurité | grossesse, maladie / traitement, relation à la nourriture | exclusions (§6) |
+| Sexe, âge, taille, poids | écran « Vous » | dépense au repos, protéines, lipides, IMC |
+| Travail, pas par jour | écran « Votre activité » | activité quotidienne |
+| Séances par semaine, durée | écran « Votre activité » | activité sportive |
+| Objectif, rythme | écran « Votre objectif » | déficit ou surplus |
+| Tendance du poids sur 4 semaines | écran « Votre objectif » | contrôle de cohérence (§7) |
+| Grossesse, maladie, relation à la nourriture | écran « Sécurité » | exclusions (§6) |
 
-**Manque côté appli (technique, pas une décision) :** aujourd'hui ces
-réponses restent dans le questionnaire, sur le téléphone. Pour calculer puis
-réajuster, l'appli devra garder un **profil** (sexe, date de naissance ou âge,
-taille, activité, objectif) en base, avec le poids lu dans les pesées.
+**Manque côté appli (technique) :** un **profil** gardé en base (sexe, âge,
+taille, activité, objectif), le poids étant lu dans les pesées. Aujourd'hui
+les réponses restent dans le questionnaire, sur le téléphone.
 
 ---
 
-## 2. Dépense au repos — formule de Mifflin-St Jeor
+## 2. Dépense au repos — VALIDÉ
+
+**Équation de Mifflin-St Jeor (1990)** :
 
     Homme : 10 × poids (kg) + 6,25 × taille (cm) − 5 × âge + 5
     Femme : 10 × poids (kg) + 6,25 × taille (cm) − 5 × âge − 161
 
-Choisie parce qu'elle est la plus juste des équations simples chez l'adulte
-en population générale (Frankenfield 2005). **[À VALIDER]**
+Une estimation de départ à partir du poids, de la taille, de l'âge et du
+sexe — présentée comme telle à l'écran.
 
 ---
 
-## 3. Coefficient d'activité
+## 3. Coefficient d'activité — choix de l'appli **[À DÉCIDER]**
 
-Deux parts, additionnées.
+**Ce que disent les études :** les niveaux d'activité physique de la
+FAO/OMS donnent des ordres de grandeur (sédentaire 1,40–1,69, actif
+1,70–1,99). Aucune étude ne donne une grille travail × pas × séances.
 
-### 3a. Activité quotidienne (travail + pas) **[À VALIDER — grille proposée]**
+**Choix de l'appli (proposition) :** deux parts additionnées.
+
+**3a. Activité quotidienne**
 
 | Travail \ Pas | < 5 000 | 5 000–8 000 | 8 000–12 000 | > 12 000 | Je ne sais pas |
 |---|---|---|---|---|---|
@@ -67,25 +74,28 @@ Deux parts, additionnées.
 | Debout | 1,35 | 1,45 | 1,55 | 1,60 | 1,40 |
 | Physique | 1,45 | 1,55 | 1,65 | 1,70 | 1,50 |
 
-### 3b. Entraînement : + par séance hebdomadaire **[À VALIDER]**
-
-| Durée moyenne | + par séance / semaine |
-|---|---|
-| < 45 min | + 0,025 |
-| 45–75 min | + 0,035 |
-| > 75 min | + 0,05 |
-
-« 6 ou plus » compte pour 6. Plafond du coefficient total : **1,95**.
-
-Ordres de grandeur cohérents avec les niveaux d'activité physique de la
-FAO/OMS (sédentaire 1,40–1,69, actif 1,70–1,99) ; la grille elle-même est
-une proposition, aucune étude ne donne ce tableau case par case.
+**3b. Entraînement, par séance hebdomadaire** : + 0,025 (< 45 min),
++ 0,035 (45–75 min), + 0,05 (> 75 min). « 6 ou plus » compte pour 6.
+Plafond du coefficient total : 1,95.
 
     Dépense totale = dépense au repos × (3a + 3b)
 
 ---
 
-## 4. Ajustement selon l'objectif et le rythme **[À VALIDER]**
+## 4. Objectif et rythme
+
+**Ce que disent les études :**
+
+- **Perte : environ 0,5 à 1 % du poids par semaine** (Helms 2014). Contexte :
+  préparation de compétition de bodybuilders naturels. Garde-fou utile pour
+  un sportif entraîné, à adapter au niveau et à la tolérance.
+- **Prise : environ 0,25 à 0,5 % du poids par semaine**, avec un surplus
+  modéré d'environ 10 à 20 % (Iraki 2019). Contexte : bodybuilders hors
+  saison ; les athlètes avancés visent le bas de la fourchette.
+- **Repère général** (NHLBI, *Aim for a Healthy Weight*) : un déficit de 500
+  à 1 000 kcal par jour pour perdre 0,5 à 1 kg par semaine.
+
+**Choix de l'appli [À DÉCIDER] :**
 
 | Objectif | Progressif | Modéré | Le plus vite possible |
 |---|---|---|---|
@@ -93,32 +103,56 @@ une proposition, aucune étude ne donne ce tableau case par case.
 | Maintenir | 0 | 0 | 0 |
 | Prendre du poids (muscle) | + 5 % | + 10 % | + 15 % |
 
-Garde-fous de rythme (vérifiés au réajustement, §7) :
-
-- perte : **0,5 à 1 % du poids par semaine** au plus (Helms 2014) ;
-- prise : **0,25 à 0,5 % du poids par semaine** au plus (Iraki 2019) — au-delà,
-  le surplus part surtout en gras.
+Les fourchettes de rythme ci-dessus servent de garde-fou au réajustement (§7).
 
 ---
 
-## 5. Répartition des macros **[À VALIDER — chaque ligne]**
+## 5. Répartition des macros
 
-1. **Protéines** : **2,0 g/kg** de poids (fourchette des études : 1,6 à
-   2,2 ; Morton 2018, ISSN 2017). En perte rapide : **2,2 g/kg** (Helms 2014
-   recommande plus haut en déficit).
-   *Personne en forte surcharge (IMC ≥ 30) :* calcul sur le poids
-   correspondant à un IMC de 25, pas sur le poids réel. **[À VALIDER]**
-2. **Lipides** : **25 % des calories**, jamais sous **0,6 g/kg**
-   (ACSM 2016 : 20 à 35 % des calories).
-3. **Glucides** : le reste. Contrôle : si le reste passe sous **2 g/kg**,
-   l'écran le signale (ACSM 2016 : 3 à 5 g/kg pour une activité modérée).
+### Protéines
 
-### Jour d'entraînement et jour de repos **[À VALIDER — 1 choix]**
+**Ce que disent les études :**
 
-- **Option A (proposée)** : même cible les deux jours. Le plus simple, et les
-  études ne montrent pas d'avantage clair à faire varier.
+- **ISSN 2017** : 1,4 à 2,0 g/kg/j pour la plupart des personnes physiquement
+  actives.
+- **Morton 2018** : point de rupture autour de **1,6 g/kg/j** pour les gains
+  de masse maigre avec entraînement en résistance (ce n'est pas une
+  fourchette de prescription).
+- **Iraki 2019** : 1,6 à 2,2 g/kg/j pour les sportifs de force et de physique
+  (bodybuilders hors saison).
+
+**Choix de l'appli :**
+
+- Par défaut : **[À DÉCIDER] une valeur entre 1,6 et 2,0 g/kg/j** (la
+  révision 1 proposait 2,0).
+- En déficit, pour retenir la masse maigre : **[À DÉCIDER] une valeur entre
+  2,0 et 2,2 g/kg/j** — et dans quels déficits (tous, ou « rapide » seulement).
+- **IMC ≥ 30 : calcul sur le poids correspondant à un IMC de 25.** Adaptation
+  pratique de l'appli, pas une recommandation des études citées. Validée
+  comme règle.
+
+### Lipides
+
+**Ce que disent les études :** **20 à 35 % de l'énergie totale**
+(ACSM / Academy of Nutrition and Dietetics / Dietitians of Canada, 2016).
+
+**Choix de l'appli :** **25 % des calories** par défaut (dans la
+fourchette), avec un garde-fou pratique : **jamais sous 0,6 g/kg/j**. Ce
+plancher est un choix de l'appli, pas une valeur de l'ACSM.
+
+### Glucides
+
+**Choix de l'appli :** le reste des calories. Si le reste passe sous
+**2 g/kg/j**, l'écran le signale (repère : l'ACSM 2016 indique 3 à 5 g/kg/j
+pour une activité légère à modérée).
+
+### Jour d'entraînement et jour de repos **[À DÉCIDER]**
+
+- **Option A (proposée)** : même cible les deux jours.
 - **Option B** : jour de repos = jour d'entraînement − 10 %, pris sur les
   glucides ; protéines et lipides inchangés.
+
+Aucune des deux ne sort d'une étude citée ; A est la plus simple.
 
 ### Arrondis
 
@@ -126,9 +160,11 @@ Calories à 50 kcal près, macros à 5 g près.
 
 ---
 
-## 6. Sécurité : quand l'appli NE CALCULE PAS **[À VALIDER]**
+## 6. Sécurité
 
-L'écran affiche « Ta cible sera posée par Guillaume » et rien d'autre si :
+### Quand l'appli NE CALCULE PAS (choix de l'appli)
+
+L'écran affiche « Ta cible sera posée par Guillaume » si :
 
 - grossesse, allaitement ou accouchement récent = Oui ;
 - maladie ou traitement influençant l'alimentation = Oui ;
@@ -136,14 +172,28 @@ L'écran affiche « Ta cible sera posée par Guillaume » et rien d'autre si :
 - perte de poids demandée avec un IMC < 18,5 ;
 - moins de 18 ans (déjà refusé par le questionnaire).
 
-Planchers, même hors exclusion : jamais sous **1 500 kcal (homme)** ni
-**1 200 kcal (femme)** (repères NIH/NHLBI), ni sous la dépense au repos.
+### Planchers caloriques
+
+**Ce que disent les références :** il n'existe **pas de seuil universel**.
+Les régimes hypocaloriques usuels sont de l'ordre de **1 200–1 500 kcal/j
+chez les femmes** et **1 500–1 800 kcal/j chez les hommes** (MedlinePlus) ;
+les besoins dépendent du poids, de la taille, de l'âge, du sexe, de
+l'activité et de l'état de santé. Un suivi professionnel est approprié pour
+les apports très bas, notamment **sous 800 kcal/j** (l'appli refuse déjà
+toute cible sous 800 kcal).
+
+**Choix de prudence de l'appli [À DÉCIDER] :** ne jamais **proposer**
+automatiquement moins de **1 500 kcal (homme)** ni **1 200 kcal (femme)**, ni
+moins que la dépense au repos. Ce sont des garde-fous de l'appli, présentés
+comme tels — pas des seuils médicaux. En dessous, l'écran renvoie vers
+Guillaume.
 
 ---
 
-## 7. Réajustement toutes les deux semaines **[À VALIDER]**
+## 7. Réajustement toutes les deux semaines
 
-Sur la moyenne des pesées de 7 jours (déjà calculée par l'écran Progrès) :
+**Validé comme règle opérationnelle.** Sur la moyenne des pesées de 7 jours
+(déjà calculée par l'écran Progrès) :
 
 | Constat sur 2 semaines | Proposition |
 |---|---|
@@ -154,15 +204,18 @@ Sur la moyenne des pesées de 7 jours (déjà calculée par l'écran Progrès) :
 | Maintien : écart de plus de 1 % | ± 100 kcal |
 | Moins de 4 pesées sur 7 jours | aucune proposition (« pèse-toi plus souvent ») |
 
-Les protéines suivent le poids, les autres ne bougent qu'avec les calories.
-Toujours une **proposition**, à accepter.
+Les **paliers de ± 100 kcal** sont un choix de conception de l'appli, simple
+et progressif — pas une valeur chiffrée issue des études citées. Les
+protéines suivent le poids ; le reste ne bouge qu'avec les calories.
+Toujours une proposition, à accepter.
 
 ---
 
 ## 8. Exemple calculé (homme, 34 ans, 180 cm, 82,5 kg)
 
 Réponses : assis, 5 000–8 000 pas, 4 séances de 45 à 75 min, perdre du
-poids à rythme modéré.
+poids à rythme modéré. Avec les valeurs proposées (protéines 2,0 g/kg,
+lipides 25 %) :
 
 | Étape | Calcul | Résultat |
 |---|---|---|
@@ -170,31 +223,34 @@ poids à rythme modéré.
 | Coefficient | 1,35 (assis, 5–8 k pas) + 4 × 0,035 | 1,49 |
 | Dépense totale | 1 785 × 1,49 | 2 660 kcal |
 | Objectif (perte modérée) | 2 660 × 0,85 | 2 261 → **2 250 kcal** |
-| Protéines | 2,0 × 82,5 | 165 g → **165 g** (660 kcal) |
-| Lipides | 25 % × 2 250 / 9 | 62,5 g → **60 g** (540 kcal) |
-| Glucides | (2 250 − 660 − 540) / 4 | 262,5 g → **265 g** (3,2 g/kg) |
+| Protéines | 2,0 × 82,5 | **165 g** (660 kcal) |
+| Lipides | 25 % × 2 250 / 9 = 62,5 | **60 g** (540 kcal) |
+| Glucides | (2 250 − 660 − 540) / 4 = 262,5 | **265 g** (3,2 g/kg) |
 
 Rythme attendu : environ 410 kcal de déficit par jour, soit environ
-0,37 kg par semaine (7 700 kcal ≈ 1 kg), c'est-à-dire **0,45 % du poids** —
-juste **sous** la fourchette de 0,5 à 1 % du §4. Deux lectures possibles :
-« modéré » à − 15 % est un peu lent pour ce profil (passer à − 20 % ?), ou
-c'est voulu et le réajustement du §7 corrigera après deux semaines de pesées.
-**[À VALIDER]**
+0,37 kg par semaine (7 700 kcal ≈ 1 kg), **0,45 % du poids** — juste **sous**
+la fourchette de 0,5 à 1 % (Helms 2014). Soit « modéré » à − 15 % est un peu
+lent pour ce profil, soit c'est voulu et le réajustement (§7) corrige après
+deux semaines.
 
 ---
 
-## 9. Les décisions de Guillaume, en une liste
+## 9. État des décisions
 
-1. Formule de Mifflin-St Jeor : oui / non.
-2. Grille d'activité du §3 : valider ou corriger les chiffres.
-3. Pourcentages du §4 (perte / prise selon le rythme).
-4. Protéines : 2,0 g/kg (2,2 en perte rapide) ; règle IMC ≥ 30.
-5. Lipides 25 %, plancher 0,6 g/kg ; glucides en complément.
-6. Jour de repos : option A (même cible) ou B (− 10 % sur les glucides).
-7. Exclusions et planchers du §6.
-8. Réajustement du §7 (rythme, pas de 100 kcal, 2 semaines).
-9. Familles concernées : POWER, FEMMES, programmes importés ; **MASS
-   CONGESTION garde ses principes sans chiffres** — à confirmer.
+| # | Sujet | État |
+|---|---|---|
+| 1 | Mifflin-St Jeor | **Validé** |
+| 2 | Grille d'activité (§3) | À décider |
+| 3 | Pourcentages déficit / surplus (§4) | À décider |
+| 4 | Protéines par défaut (1,6 à 2,0 g/kg) | À décider : une valeur |
+| 5 | Protéines en déficit (2,0 à 2,2 g/kg), et pour quels rythmes | À décider |
+| 6 | Protéines sur poids de référence si IMC ≥ 30 | **Validé** |
+| 7 | Lipides 25 %, plancher 0,6 g/kg ; glucides en complément | Validé comme choix de l'appli |
+| 8 | Jour de repos : A (identique) ou B (− 10 % glucides) | À décider |
+| 9 | Exclusions du §6 | À confirmer |
+| 10 | Planchers 1 200 / 1 500 kcal comme garde-fous de l'appli | À décider |
+| 11 | Réajustement toutes les 2 semaines, ± 100 kcal | **Validé** comme règle opérationnelle |
+| 12 | Familles concernées : POWER, FEMMES, importés ; MASS CONGESTION garde ses principes | À confirmer |
 
 ---
 
@@ -202,20 +258,21 @@ c'est voulu et le réajustement du §7 corrigera après deux semaines de pesées
 
 - Mifflin MD, St Jeor ST et al. *A new predictive equation for resting energy
   expenditure in healthy individuals.* Am J Clin Nutr, 1990.
-- Frankenfield D et al. *Comparison of predictive equations for resting
-  metabolic rate in healthy nonobese and obese adults.* J Am Diet Assoc, 2005.
 - FAO/OMS/UNU. *Human energy requirements*, 2004 (niveaux d'activité physique).
-- Jäger R et al. *ISSN Position Stand: protein and exercise*, JISSN, 2017.
-- Morton RW et al. *A systematic review, meta-analysis and meta-regression of
-  the effect of protein supplementation on resistance training-induced gains.*
-  Br J Sports Med, 2018.
+- Jäger R et al. *International Society of Sports Nutrition Position Stand:
+  protein and exercise.* JISSN, 2017 — 1,4 à 2,0 g/kg/j.
+- Morton RW et al. *Br J Sports Med*, 2018 — point de rupture autour de
+  1,6 g/kg/j.
+- Iraki J et al. *Nutrition recommendations for bodybuilders in the
+  off-season.* Sports, 2019 — 1,6 à 2,2 g/kg/j ; prise de 0,25 à 0,5 %/sem. ;
+  surplus de 10 à 20 %.
 - Helms ER, Aragon AA, Fitschen PJ. *Evidence-based recommendations for
   natural bodybuilding contest preparation: nutrition and supplementation.*
-  JISSN, 2014.
-- Iraki J et al. *Nutrition recommendations for bodybuilders in the
-  off-season.* Sports, 2019.
-- Thomas DT, Erdman KA, Burke LM. *ACSM / Academy of Nutrition and Dietetics /
-  Dietitians of Canada joint position: nutrition and athletic performance.*
-  2016.
-- NIH / NHLBI. Repères de planchers caloriques pour les régimes hypocaloriques
-  sans suivi médical.
+  JISSN, 2014 — perte de 0,5 à 1 %/sem.
+- Thomas DT, Erdman KA, Burke LM. *Nutrition and Athletic Performance.*
+  ACSM / Academy of Nutrition and Dietetics / Dietitians of Canada, 2016 —
+  lipides 20 à 35 % de l'énergie.
+- NHLBI. *Aim for a Healthy Weight* — déficit de 500 à 1 000 kcal/j pour 0,5 à
+  1 kg/sem.
+- MedlinePlus — régimes hypocaloriques usuels : 1 200–1 500 kcal/j (femmes),
+  1 500–1 800 kcal/j (hommes).
