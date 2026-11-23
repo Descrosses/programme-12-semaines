@@ -58,6 +58,12 @@
   transform-origin: left bottom;
 }
 
+/* FEMMES « Rosée Sculptée » : le titre de séance en rose profond, comme la
+   planche. Confiné au thème : POWER et MASS ne bougent pas. */
+:global([data-theme='femmes']) .title {
+  color: var(--accent-deep);
+}
+
 .titleRule {
   display: block;
   width: 64px;

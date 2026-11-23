@@ -166,16 +166,21 @@ visuelle.
 durées. Ces règles viennent de Guillaume ; le code les cite comme « §4 » (ne
 rien inventer) et « §15 » (identité visuelle à définir plus tard).
 
-**L'identité visuelle, elle, est désormais POSÉE** — le §15 est honoré.
-Guillaume a fourni des maquettes, et `[data-theme='femmes']` les transcrit :
-registre synthwave, nuit violette (`--bg: #160a26`), néon magenta. Ce n'est
-pas le « rose par défaut » que la règle refusait, c'est un parti pris fourni.
-
-Un point à ne pas « corriger » : `--accent` vaut `#d1006e` et non le `#ff2d95`
-des maquettes. Le fluo ne porte que **3,46:1** sous du texte blanc, sous le
-seuil de 4,5 ; `#d1006e` remonte à **5,34**. Le néon n'est pas perdu, il vit
-dans `--accent-bright` pour les lueurs et les bordures, jamais sous du petit
-texte. Les contrastes du bloc ont tous été mesurés et sont écrits en commentaire.
+**L'identité visuelle est « Rosée Sculptée »** (planche de Guillaume, 23
+novembre, « refonte complète ») — elle REMPLACE l'ancienne identité
+synthwave (nuit violette, néon magenta, `#d1006e`) : n'y revenir sous aucune
+forme. Thème CLAIR, rose poudré : fond `#fdf7f5`, cartes `#fff1f4`, rose
+`#c05a7a` (décors, grands boutons), Oswald (titres, italique synthétique) et
+Inter (texte), embarquées en local (`assets/fonts/`, OFL). Trois valeurs de
+la planche sont ASSOMBRIES pour le petit texte, et c'est voulu : bouton plein
+`#b14f6e` (blanc 4,98), rose écrit `#a8435f`, vert « faite » `#2e6b47` sur
+`#d5ecdd`. Seul thème clair : il redéfinit les couleurs d'état de POWER
+(orange, rouge, bleu, faites pour un fond sombre) et passe
+`color-scheme: light`. Le bandeau d'en-tête est un DÉGRADÉ rose tant que
+Guillaume n'a pas fourni de photo (`PHOTO_BANDEAU = null`, `Pieces.tsx`) ;
+le contenu de la planche (Bloc Congestion, 71-79 %…) est celui de POWER :
+seul le STYLE est repris, le contenu FEMMES ne bouge pas.
+`styles/themeFemmes.test.ts` mesure les contrastes et refuse le synthwave.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 

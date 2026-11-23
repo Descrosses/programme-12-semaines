@@ -107,6 +107,9 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
  *
  * `alt=""` : le décor n'apporte aucune information que le titre ne dise.
  */
+/** La photo du bandeau FEMMES (nom d'un visuel), ou `null` : dégradé rose. */
+const PHOTO_BANDEAU: Parameters<typeof visuelUrl>[0] | null = null;
+
 export function Bandeau({
   logo = false,
   surTitre,
@@ -127,12 +130,19 @@ export function Bandeau({
   retour?: string;
   onRetour?: () => void;
 }) {
-  const src = visuelUrl('horizonFemmes');
-  const srcSet = visuelSrcSet('horizonFemmes');
+  /*
+   * « Rosée Sculptée » : la photo du bandeau viendra des visuels de
+   * Guillaume ; en attendant, le panneau porte un dégradé rose (CSS). L'ancien
+   * ciel synthwave (`horizonFemmes`) n'est plus affiché. Un écran de détail
+   * (avec retour) n'a pas de panneau : titre rose sur fond clair.
+   */
+  const src = PHOTO_BANDEAU === null ? null : visuelUrl(PHOTO_BANDEAU);
+  const srcSet = PHOTO_BANDEAU === null ? null : visuelSrcSet(PHOTO_BANDEAU);
   const tailleCls = taille === 'xl' ? s.titreXl : taille === 'l' ? s.titreL : s.titreM;
+  const clair = retour !== undefined;
   return (
-    <div className={s.hero}>
-      {src !== null && (
+    <div className={`${s.hero} ${clair ? s.heroClair : ''}`}>
+      {!clair && src !== null && (
         <img src={src} {...(srcSet !== null ? { srcSet } : {})} sizes="100vw" alt="" />
       )}
       {logo ? (

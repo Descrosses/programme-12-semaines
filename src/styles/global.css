@@ -18,6 +18,12 @@ html {
   color-scheme: dark;
 }
 
+/* FEMMES (« Rosée Sculptée ») est le seul thème CLAIR : sans ça, les
+   commandes natives (date, liste, barre de défilement) restent sombres. */
+html[data-theme='femmes'] {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   /* Transparent sur FEMMES : sans ça le body recouvrirait le dégradé de html. */

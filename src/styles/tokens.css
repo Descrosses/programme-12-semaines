@@ -324,110 +324,92 @@
 }
 
 /*
- * ── FEMMES — l'identité est posée ──────────────────────────────────────────
+ * ── FEMMES — « Rosée Sculptée » ────────────────────────────────────────────
  *
- * Elle ne l'a pas été par supposition : Guillaume a fourni des maquettes, et
- * ce bloc les TRANSCRIT. Le §4 interdisait d'inventer une identité ; il
- * n'interdit pas de transcrire celle qui a été décidée. Le §15 est donc
- * honoré — l'identité a été choisie, puis écrite.
+ * Planche fournie par Guillaume le 23 novembre (« refonte complète »). Elle
+ * REMPLACE l'identité synthwave (nuit violette, néon magenta) : le §15 reste
+ * honoré, l'identité a été choisie par Guillaume, ce bloc la transcrit.
  *
- * Le registre est le synthwave : nuit violette, néon magenta, coucher de
- * soleil sur une ville de bord de mer. Rien à voir avec le « rose par
- * défaut » que ce bloc refusait : c'est un parti pris assumé, et il est
- * SOMBRE, ce qui le garde compatible avec la contrainte d'origine — lu à un
- * mètre, sous les néons d'une salle, écran peut-être mouillé.
- *
- * ── Les contrastes sont MESURÉS, comme partout ailleurs ────────────────────
- *
- *                      bg      surface   surface-2   surface-3
- *   --ink            17,5       15,4        13,5        11,6    AAA partout
- *   --ink-2          11,1        9,7         8,6         7,3    AAA partout
- *   --ink-3           7,5        6,6         5,8         5,0    AA+ partout
- *   --accent-ink      8,2        7,2         6,3         5,4    AA+ partout
- *
- * ── Pourquoi --accent n'est PAS le rose fluo des maquettes ─────────────────
- *
- * Le magenta #ff2d95 des maquettes ne porte que 3,46:1 sous du texte blanc —
- * sous le seuil de 4,5. Le descendre à #d1006e le remonte à 5,34 tout en
- * restant franchement magenta. Le fluo n'est pas perdu pour autant : il vit
- * dans --accent-bright, où il fait ce qu'il fait le mieux — les lueurs, les
- * bordures actives, les dégradés — sans jamais passer sous du petit texte.
- *
- * Les couleurs d'état sont héritées de POWER sans modification : mesurées sur
- * ce violet, elles donnent 10,6 / 9,3 / 6,2 / 7,6 sur le fond. Les redéfinir
- * aurait été du zèle.
+ * Contrairement aux autres univers, ce thème est CLAIR : il redéfinit donc
+ * aussi les couleurs d'état, faites pour un fond sombre. Tous les contrastes
+ * sont mesurés et relus par `themeFemmes.test.ts`.
  */
 [data-theme='femmes'] {
-  /* --------------------------------------------------------------- fonds */
   /*
-   * ÉCHANTILLONNÉS dans la planche de référence, pas choisis à l'œil.
+   * ── « ROSÉE SCULPTÉE » — design system de Guillaume (23 novembre) ──────
    *
-   * La version précédente descendait à #160a26, un violet presque noir.
-   * Guillaume l'a jugée « trop sombre, trop terne » : les relevés lui
-   * donnent raison, la référence vit entre #250c44 et #462271 — un violet
-   * profond mais SATURÉ, qui laisse les cartes se détacher sans les
-   * éclaircir.
+   * Remplace l'identité synthwave (nuit violette, néon magenta) : un thème
+   * CLAIR, doux, rose poudré. Les valeurs sont celles de la planche « MAJK
+   * Programme Femme · Design system » ; trois sont ASSOMBRIES pour le texte,
+   * parce que la planche ne tient pas 4,5:1 sous du petit texte (mesuré) :
+   *
+   * - primaire #c05a7a : blanc dessus 4,21, sur le fond 3,97. Il reste pour
+   *   les grands boutons (texte gras ≥ 19 px, seuil 3:1) et les décors ;
+   *   le bouton plein prend #b14f6e (blanc 4,98) ;
+   * - rose ÉCRIT : #a8435f (5,45 sur le fond, 5,27 sur la carte) ;
+   * - succès #a8d5b9 : texte vert dessus 3,89 → pastille #d5ecdd, texte
+   *   #2e6b47 (5,1).
+   *
+   * Texte #2b1f24 sur fond : 14,95. Secondaire #6e5a63 : 5,99 / 5,79 carte.
    */
-  /*
-   * ── Les cartes sont plus CLAIRES que le fond, pas plus sombres ─────────
-   *
-   * C'était le défaut central de la version précédente, et il se mesure :
-   * son fond dominait à #2A0D51 et ses cartes à #1E073D — donc plus
-   * sombres que la page. La référence fait l'inverse, fond #2F0E50 et
-   * cartes #50206B. D'où l'impression, juste, d'une interface « terne » :
-   * les surfaces s'enfonçaient au lieu de se détacher.
-   *
-   * Valeurs relevées sur l'écran 4 de la planche fournie.
-   */
-  --bg: #2e0b55;
-  --bg-2: #3a1460;
-  --surface: #3b1763;
-  --surface-2: #5c2a78;
-  --surface-3: #692d93;
+  /* Les polices de la planche : Oswald (titres), Inter (texte). Sous ce thème
+     seulement — les écrans partagés avec POWER (séance) les prennent aussi. */
+  --font: 'Inter Femmes', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-cond: 'Oswald Femmes', 'Arial Narrow', var(--font);
 
-  --line: #8b35a3;
-  /* 3,63:1 sur la carte : au-dessus des 3,0 exigés d'un contour de contrôle. */
-  --line-strong: #9a5cc8;
+  --bg: #fdf7f5;
+  --bg-2: #faeef0;
+  --surface: #fff1f4;
+  --surface-2: #fbe6ec;
+  --surface-3: #f5d9e2;
 
-  /* --------------------------------------------------------------- texte */
-  --ink: #ffffff;
-  --ink-2: #d9c2ef;
-  --ink-3: #b795d8;
+  --line: #efd3dc;
+  /* Contour de commande : 3,52:1 sur la carte. */
+  --line-strong: #ad7086;
+
+  --ink: #2b1f24;
+  --ink-2: #6e5a63;
+  /* 4,84 sur le fond, 4,68 sur la carte. */
+  --ink-3: #7d6871;
   --ink-on-accent: #ffffff;
 
-  /* ----------------------------------------------------- couleur d'action */
-  --accent: #f7017f;
-  --accent-bright: #fc3ec4;
-  --accent-deep: #c4006a;
-  --accent-dim: #3d0a33;
-  /* Le magenta qu'on ÉCRIT : 7,3:1 sur le fond, 5,1 sur la carte la plus claire. */
-  --accent-ink: #ff79c8;
-  --accent-ink-fort: #ff79c8;
+  --accent: #b14f6e;
+  --accent-bright: #c05a7a;
+  --accent-deep: #9e3f5b;
+  --accent-dim: #f8e1e8;
+  --accent-ink: #a8435f;
+  --accent-ink-fort: #9e3f5b;
 
-  /* Le cyan des commandes secondaires : 9,2:1 sur la carte. */
-  --cyan-femmes: #38d6ef;
+  /* Secondaire (mauve) : décors et contours des commandes secondaires. */
+  --cyan-femmes: #a16b82;
+  --rose-or: #e4b7a7;
 
-  --ink-fort: #ffffff;
-  --voile: 37 12 68;
-  --ombre-titre: 0 1px 8px rgb(37 12 68 / 85%);
+  --vert: #2e6b47;
+  --vert-fond: #d5ecdd;
+  --vert-bord: #a8d5b9;
 
-  /*
-   * ── Les DÉGRADÉS, relevés point par point ──────────────────────────────
-   *
-   * Ils n'existent QUE sur ce thème : partout où ils servent, ils s'écrivent
-   * `var(--grad-x, <la valeur plate d'avant>)`. POWER et MASS prennent le
-   * repli et ne bougent pas — vérifié à 0 pixel près sur cinq écrans.
-   */
-  /* Relevé sur la planche : #2e0b55 entre les cartes, #200842 en bas de page. */
-  --grad-fond: linear-gradient(to bottom, #2e0b55 0%, #2a0a4f 55%, #200842 100%);
+  /* Couleurs d'état : celles de POWER sont faites pour un fond SOMBRE
+     (orange #ff9f1c : 1,9:1 sur ce fond). Assombries ici, mesurées :
+     fond / carte. Les couleurs des macros (remplissages, seuil 3:1) passent
+     telles quelles : 3,4 / 3,3 au plus bas. */
+  --orange: #9a5200; /* 5,53 / 5,35 */
+  --rouge: #b3261e; /* 6,16 / 5,96 */
+  --bleu: #2f6aa8; /* blanc dessus 5,6 */
+  --bleu-ink: #2a5f96; /* 6,23 / 6,03 */
+  --bloc-test: #2f7d62; /* filet : 4,68 / 4,52 */
+  --shadow-card: 0 8px 24px rgb(192 90 122 / 12%);
+  --shadow-action: 0 6px 16px rgb(177 79 110 / 28%);
 
-  /* Bouton d'action : dégradé VERTICAL, comme la référence. */
-  --grad-accent: linear-gradient(to bottom, #fc3ec4 0%, #fa1691 45%, #f7017f 100%);
+  --ink-fort: #2b1f24;
+  --voile: 92 40 58;
+  --ombre-titre: 0 1px 8px rgb(92 40 58 / 45%);
+  /* L'ombre douce des cartes de la planche (0 8 24, rose à 12 %). */
+  --ombre-carte: 0 8px 24px rgb(192 90 122 / 12%);
 
-  /* Relevé sur la planche : #4d1a6f en haut de carte, #33165e en bas. */
-  --grad-surface: linear-gradient(to bottom, #4d1a6f 0%, #3b1763 42%, #31145a 100%);
+  --grad-fond: linear-gradient(to bottom, #fdf7f5 0%, #fbf0f1 100%);
+  --grad-accent: linear-gradient(to bottom, #c05a7a 0%, #b14f6e 100%);
+  --grad-surface: linear-gradient(to bottom, #fff7f9 0%, #fff1f4 100%);
 
-  /* Le fondu du bandeau : les 48 derniers pour cent se dissolvent dans la page. */
   --masque-fond: linear-gradient(
     to bottom,
     #000 0%,

@@ -3,13 +3,12 @@
  *
  * ── La règle de ce fichier ────────────────────────────────────────────────
  *
- * C'est une COPIE de la planche à quatre écrans fournie par Guillaume.
- * Chaque cote vient d'un relevé : la planche a été agrandie trois fois sous
- * une grille graduée, et les positions lues au pixel (1 px de planche =
- * 1,018 px d'écran à 390 de large). Les tailles de texte sont réglées pour
- * que la LARGEUR des titres égale celle de la planche.
- *
- * Avant de « corriger » une valeur : rouvrir la planche et mesurer.
+ * Thème « ROSÉE SCULPTÉE » (design system de Guillaume, 23 novembre) : il
+ * remplace la planche synthwave. Fond clair rose poudré, cartes à ombre
+ * douce (r = 20), boutons r = 16, Oswald pour les titres, Inter pour le
+ * texte. Les couleurs vivent dans les jetons `[data-theme='femmes']` de
+ * `tokens.css` (contrastes mesurés là-bas) : ici, presque plus aucune
+ * valeur en dur.
  *
  * Rien ici ne peut atteindre POWER ni MASS : les classes sont locales au
  * module, la police « Barlow Femmes » n'est demandée qu'ici, et les jetons
@@ -17,10 +16,10 @@
  */
 
 .page {
-  --f: 'Barlow Femmes', var(--font-cond);
-  --t: 'Barlow Femmes Texte', var(--font);
-  --texte: #f6effc;
-  --filet: rgb(176 110 220 / 60%);
+  --f: 'Oswald Femmes', var(--font-cond);
+  --t: 'Inter Femmes', var(--font);
+  --texte: var(--ink-2);
+  --filet: var(--line);
 
   min-height: 100vh;
   padding-bottom: calc(72px + env(safe-area-inset-bottom));
@@ -47,47 +46,98 @@
  * `env(safe-area-inset-top)` dans chaque hauteur.
  */
 .hero {
+  /* Le bandeau « Rosée Sculptée » : un panneau photo (ou, en attendant les
+     photos, un dégradé rose), texte blanc posé en bas à gauche. */
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: calc(env(safe-area-inset-top) + 188px);
+  padding: calc(env(safe-area-inset-top) + 14px) 22px 20px;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(125deg, #8f4561 0%, #b9647f 42%, #dda3a6 78%, #ecc3b5 100%);
 }
 
 .hero img {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: calc(env(safe-area-inset-top) + 106px);
+  height: 100%;
   object-fit: cover;
-  object-position: 50% 38%;
-  -webkit-mask-image: var(--masque-fond, none);
-  mask-image: var(--masque-fond, none);
+  object-position: 70% 30%;
 }
 
 /* Écran 1 : la photo descend jusqu'aux pastilles, le logo vit dedans. */
+/* Le voile : le texte blanc reste lisible sur n'importe quelle photo. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    100deg,
+    rgb(var(--voile) / 70%) 0%,
+    rgb(var(--voile) / 32%) 55%,
+    rgb(var(--voile) / 0%) 85%
+  );
+}
+
+/* Écrans de détail (avec retour) : pas de photo, titre rose sur fond clair,
+   court trait sous le titre — comme l'écran séance de la planche. */
+.heroClair {
+  min-height: 0;
+  padding: calc(env(safe-area-inset-top) + 8px) 20px 2px;
+  background: none;
+  color: var(--ink);
+}
+
+.heroClair::after {
+  display: none;
+}
+
+.heroClair .titre {
+  color: var(--accent-deep);
+  text-shadow: none;
+}
+
+.heroClair .titre::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+}
+
+.heroClair .surTitre,
+.heroClair .surTitreRose,
+.heroClair .sousTitre {
+  color: var(--ink-2);
+}
+
 .hero:has(.logo) img {
-  height: calc(env(safe-area-inset-top) + 128px);
+  object-position: 70% 25%;
 }
 
 /* « MAJK FEMMES » : deux lignes penchées, blanc à tranche rose.
    Relevé : « FEMMES » fait 163 px de large, capitales de 43 px. */
 .logo {
-  position: absolute;
-  left: 19px;
-  top: calc(env(safe-area-inset-top) + 15px);
+  position: relative;
+  z-index: 2;
   margin: 0;
   display: flex;
   flex-direction: column;
-  transform: rotate(-8deg);
-  transform-origin: left center;
   font-family: var(--f);
   font-style: italic;
-  font-weight: 800;
-  font-size: 60px;
-  line-height: 0.83;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: #fff;
-  text-shadow:
-    1px 2px 0 #f58bd0,
-    2px 3px 0 rgb(170 40 140 / 90%),
-    0 8px 18px rgb(32 8 66 / 80%);
+  text-shadow: var(--ombre-titre);
 }
 
 /*
@@ -97,13 +147,11 @@
  */
 .heroTexte {
   position: relative;
-  z-index: 1;
-  margin-top: -7px;
-  padding: 0 16px 0 27px;
+  z-index: 2;
 }
 
 .heroTexte:has(.retourLien) {
-  margin-top: -41px;
+  margin-top: 0;
 }
 
 .retourLien {
@@ -111,80 +159,89 @@
   align-items: center;
   gap: 8px;
   height: 44px;
-  margin: 0 0 -1px -3px;
+  margin: 0 0 2px -3px;
   padding: 0 12px 0 0;
   background: none;
   border: 0;
   font-family: var(--f);
-  font-weight: 700;
-  font-size: 21px;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--accent-ink);
   cursor: pointer;
-  text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
 }
 
 .surTitre {
   display: block;
-  margin-left: 4px;
-  font-size: 14.5px;
+  font-family: var(--f);
+  font-size: 14px;
   line-height: 18px;
-  font-weight: 500;
-  letter-spacing: 0.125em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink);
-  text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
+  color: rgb(255 255 255 / 88%);
 }
 
 .surTitreRose {
   display: block;
-  margin-left: 3px;
   font-family: var(--f);
-  font-style: italic;
+  font-size: 14px;
+  line-height: 18px;
   font-weight: 600;
-  font-size: 23px;
-  line-height: 24px;
-  color: var(--accent-ink);
-  text-shadow: 0 1px 8px rgb(32 8 66 / 90%);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 88%);
 }
 
 .titre {
-  margin: 0;
+  margin: 2px 0 0;
   font-family: var(--f);
   font-style: italic;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
   color: #fff;
-  text-shadow:
-    0 2px 0 rgb(32 8 66 / 80%),
-    0 4px 16px rgb(32 8 66 / 85%);
+  text-shadow: var(--ombre-titre);
 }
 
 /* « SEMAINE 1 » : 193 px de large sur la planche. */
 .titreXl {
-  margin-top: -3px;
-  font-size: 54px;
+  font-size: 52px;
 }
 
 /* « Séance 1 » : 134 px de large. */
 .titreL {
-  margin: 4px 0 0 8px;
-  font-size: 43px;
+  font-size: 42px;
 }
 
 /* « Squat au poids du corps » : 303 px de large. */
 .titreM {
-  margin: 5px 0 2px -4px;
-  font-size: 35px;
+  font-size: 34px;
+}
+
+.sousTitre::before {
+  content: '';
+  flex: none;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rose-or);
 }
 
 .sousTitre {
-  display: block;
-  margin: 0 0 0 -1px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
   font-family: var(--f);
   font-weight: 600;
-  font-size: 22px;
-  line-height: 24px;
-  color: var(--ink);
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 92%);
 }
 
 /* --------------------------------------------------------------- pastilles */
@@ -200,28 +257,27 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 31px;
-  padding: 0 11px;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
   border-radius: 999px;
-  background: rgb(30 8 60 / 55%);
-  border: 1.5px solid rgb(226 200 255 / 80%);
-  box-shadow: 0 0 8px rgb(200 150 255 / 22%);
-  font-family: var(--f);
-  font-size: 14.5px;
-  font-weight: 700;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-family: var(--t);
+  font-size: 13px;
+  font-weight: 600;
   color: var(--ink);
   white-space: nowrap;
 }
 
 /* Sur la planche, les deux dernières pastilles tirent sur le bleu. */
 .chip:nth-child(n + 3) {
-  border-color: rgb(130 200 240 / 80%);
+  border-color: var(--line);
 }
 
 .chipCaps {
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 
 /* ------------------------------------------------------------ mise en page */
@@ -240,16 +296,11 @@
 }
 
 .carte {
-  border-radius: 14px;
-  border: 2px solid rgb(205 80 220 / 78%);
+  border-radius: 20px;
+  border: 1px solid var(--line);
   background: var(--grad-surface, var(--surface));
-  box-shadow:
-    0 0 14px rgb(215 70 230 / 30%),
-    inset 0 0 16px rgb(215 70 230 / 8%),
-    inset 0 1px 0 rgb(255 255 255 / 8%);
-  /* 17 à gauche, 14 à droite : c'est ce qui laisse tenir « …remettre le
-     corps » sur la première ligne, comme sur la planche. */
-  padding: 10px 11px 10px 17px;
+  box-shadow: var(--ombre-carte);
+  padding: 14px 16px;
 }
 
 /* « Objectif de la semaine » : 105 de haut sur la planche. */
@@ -270,10 +321,7 @@
 
 /* La bordure rose : la carte qui appelle une action. */
 .carteRose {
-  border-color: rgb(252 62 196 / 92%);
-  box-shadow:
-    0 0 16px rgb(252 62 196 / 42%),
-    inset 0 0 18px rgb(252 62 196 / 10%);
+  border-left: 4px solid var(--accent-bright);
 }
 
 /* La carte d'action de l'accueil : 217 de haut, bouton à 9 px des bords. */
@@ -297,25 +345,29 @@
 }
 
 .icoRose {
-  display: inline-flex;
-  color: var(--accent-bright);
-  filter: drop-shadow(0 0 6px rgb(252 62 196 / 55%));
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--accent-dim);
+  color: var(--accent-ink);
 }
 
 /* « Semaine 1 · Réactivation » : 287 px de large. */
 .carteTitre {
   margin: 0;
   font-family: var(--f);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 33px;
-  line-height: 34px;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 30px;
+  text-transform: uppercase;
   color: var(--ink);
 }
 
 .carteIcone .carteTitre {
-  font-size: 25px;
-  line-height: 28px;
+  font-size: 21px;
+  line-height: 25px;
 }
 
 /* « Objectif de la semaine » : 189 px de large, pictogramme de 34. */
@@ -330,7 +382,7 @@
 
 .carteTexte {
   margin-top: 4px;
-  font-size: 16.3px;
+  font-size: 15.5px;
   line-height: 21px;
   color: var(--texte);
 }
@@ -366,25 +418,26 @@
 }
 
 .carteBarreGauche {
-  font-size: 15.5px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-family: var(--f);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--ink-2);
 }
 
 /* La pastille « Maison » : contour rose, texte rose, 27 de haut. */
 .lieu {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 27px;
-  padding: 0 13px;
+  gap: 7px;
+  height: 28px;
+  padding: 0 12px;
   border-radius: 999px;
-  border: 1.5px solid var(--accent-bright);
-  font-family: var(--f);
-  font-size: 17px;
-  font-weight: 700;
+  background: var(--accent-dim);
+  font-family: var(--t);
+  font-size: 14px;
+  font-weight: 600;
   color: var(--accent-ink);
   white-space: nowrap;
 }
@@ -394,16 +447,16 @@
   margin: 0;
   font-family: var(--f);
   font-style: italic;
-  font-weight: 800;
-  font-size: 41px;
+  font-weight: 700;
+  font-size: 38px;
   line-height: 40px;
+  text-transform: uppercase;
   color: var(--ink);
-  text-shadow: 0 0 16px rgb(252 62 196 / 40%);
 }
 
 .carteAction .gros {
-  font-size: 47px;
-  line-height: 42px;
+  font-size: 44px;
+  line-height: 46px;
 }
 
 .grosCaps {
@@ -419,17 +472,15 @@
   justify-content: center;
   gap: 12px;
   width: 100%;
-  min-height: 61px;
-  border: 1.5px solid rgb(255 170 228 / 85%);
-  border-radius: 14px;
+  min-height: 58px;
+  border: 0;
+  border-radius: 16px;
   background: var(--grad-accent, var(--accent));
-  box-shadow:
-    0 0 18px rgb(247 1 127 / 40%),
-    inset 0 2px 0 rgb(255 255 255 / 22%);
+  box-shadow: 0 8px 20px rgb(177 79 110 / 28%);
   font-family: var(--f);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 26px;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-on-accent);
   cursor: pointer;
@@ -440,11 +491,8 @@
   width: auto;
   min-height: 50px;
   margin: -2px 8px 0;
-  border-radius: 13px;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 26px;
-  text-transform: none;
+  border-radius: 16px;
+  font-size: 20px;
 }
 
 /* Écran 4 : 14 entre le champ et le bouton. */
@@ -457,8 +505,8 @@
 }
 
 .cta svg {
-  width: 27px;
-  height: 27px;
+  width: 22px;
+  height: 22px;
   flex: 0 0 auto;
 }
 
@@ -467,26 +515,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  min-height: 49px;
+  min-height: 50px;
   margin-top: 6px;
-  border-radius: 12px;
-  border: 2px solid var(--cyan-femmes);
-  background: #201d50;
-  box-shadow:
-    0 0 14px rgb(56 214 239 / 38%),
-    inset 0 0 12px rgb(56 214 239 / 10%);
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: var(--ombre-carte);
   font-family: var(--f);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
 .secondaire svg {
-  width: 27px;
-  height: 27px;
+  width: 22px;
+  height: 22px;
   flex: 0 0 auto;
 }
 
@@ -501,28 +549,27 @@
 
 /* 81 de haut, texte à 20 du bord gauche. */
 .tuile {
-  border-radius: 14px;
-  border: 2px solid rgb(205 80 220 / 70%);
-  background: linear-gradient(to bottom, #3a1a5c 0%, #2d124f 100%);
-  box-shadow: 0 0 12px rgb(215 70 230 / 24%);
-  padding: 8px 12px 10px 19px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--grad-surface, var(--surface));
+  box-shadow: var(--ombre-carte);
+  padding: 12px 14px 12px 16px;
   text-align: left;
 }
 
 .tuileValeur {
-  font-family: var(--f);
-  font-weight: 700;
-  font-size: 37px;
-  line-height: 38px;
-  letter-spacing: -0.01em;
-  word-spacing: -0.12em;
+  font-family: var(--t);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 36px;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .tuileLabel {
   margin-top: 2px;
-  font-size: 16.5px;
-  line-height: 20px;
+  font-size: 14.5px;
+  line-height: 19px;
   color: var(--texte);
 }
 
@@ -538,23 +585,24 @@
 }
 
 .sem {
-  height: 44px;
+  height: 46px;
   padding: 0;
-  border-radius: 9px;
-  border: 2px solid rgb(84 150 214 / 85%);
-  background: #2e1051;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(192 90 122 / 8%);
   font-family: var(--f);
   font-weight: 700;
-  font-size: 25px;
+  font-size: 22px;
   color: var(--ink);
   cursor: pointer;
 }
 
 .semActive {
-  border-color: rgb(255 170 228 / 90%);
+  border-color: transparent;
   background: var(--grad-accent, var(--accent));
   color: var(--ink-on-accent);
-  box-shadow: 0 0 14px rgb(252 62 196 / 55%);
+  box-shadow: 0 6px 14px rgb(177 79 110 / 28%);
 }
 
 /* ------------------------------------------------- bascule maison / salle */
@@ -572,13 +620,13 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
-  min-height: 44px;
-  border-radius: 10px;
-  border: 2px solid rgb(84 160 222 / 90%);
-  background: #241055;
+  min-height: 46px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
   font-family: var(--f);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 600;
   color: var(--ink);
   cursor: pointer;
 }
@@ -589,24 +637,23 @@
 
 .basculeOn,
 .basculeOnSalle {
-  border-color: rgb(255 170 228 / 90%);
+  border-color: transparent;
   background: var(--grad-accent, var(--accent));
   color: var(--ink-on-accent);
-  box-shadow:
-    0 0 14px rgb(252 62 196 / 40%),
-    inset 0 2px 0 rgb(255 255 255 / 22%);
+  box-shadow: 0 6px 14px rgb(177 79 110 / 25%);
 }
 
 /* ------------------------------------------------------ lignes du circuit */
 
 /* « Circuit · 5 exercices à enchaîner » : 280 px de large. */
 .titreSection {
-  margin: -3px 0 -9px 10px;
+  margin: 0 0 -6px 2px;
   font-family: var(--f);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 26px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--ink);
 }
 
@@ -624,10 +671,9 @@
 }
 
 .ligne {
-  border-radius: 10px;
-  border: 1.5px solid var(--filet);
-  background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
   overflow: hidden;
 }
 
@@ -660,16 +706,15 @@
 
 /* La ligne EST le bouton : `.ligneTete` remet bordure et fond à zéro. */
 .lignesSerrees .ligneTete {
-  border: 1.5px solid var(--filet);
-  border-radius: 10px;
-  background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
 }
 
 .introNom {
   font-family: var(--f);
-  font-weight: 700;
-  font-size: 24px;
+  font-weight: 600;
+  font-size: 20px;
   color: var(--ink);
 }
 
@@ -679,27 +724,25 @@
   width: 33px;
   height: 33px;
   border-radius: 50%;
-  border: 1.5px solid rgb(190 150 225 / 55%);
-  background: #4a2a68;
+  background: var(--accent-dim);
   font-family: var(--f);
   font-weight: 700;
-  font-size: 20px;
-  color: var(--ink);
+  font-size: 17px;
+  color: var(--accent-ink);
 }
 
 .ligneNom {
-  /* `block` : sans ça le nom et la dose se collent sur une ligne. */
   display: block;
-  font-family: var(--f);
-  font-weight: 700;
-  font-size: 20px;
+  font-family: var(--t);
+  font-weight: 600;
+  font-size: 16.5px;
   line-height: 21px;
   color: var(--ink);
 }
 
 .ligneDose {
   display: block;
-  font-size: 17px;
+  font-size: 14.5px;
   line-height: 19px;
   font-weight: 500;
   color: var(--accent-ink);
@@ -708,7 +751,7 @@
 .chevron {
   width: 18px;
   height: 18px;
-  color: var(--ink);
+  color: var(--ink-3);
   transition: transform 0.15s ease;
 }
 
@@ -725,23 +768,20 @@
 
 .consignes {
   margin: 0;
-  padding: 11px 17px 15px 24px;
-  border-radius: 14px;
-  border: 2px solid rgb(215 90 225 / 80%);
-  box-shadow:
-    0 0 14px rgb(215 70 230 / 30%),
-    inset 0 0 16px rgb(215 70 230 / 8%),
-    inset 0 1px 0 rgb(255 255 255 / 8%);
+  padding: 14px 18px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: var(--ombre-carte);
   background: var(--grad-surface, var(--surface));
 }
 
 .consignesTitre {
   margin: 0;
   font-family: var(--f);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 26px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  text-transform: uppercase;
   color: var(--ink);
 }
 
@@ -758,7 +798,7 @@
   display: grid;
   grid-template-columns: 20px 1fr;
   gap: 11px;
-  font-size: 16.5px;
+  font-size: 15.5px;
   line-height: 20px;
   color: var(--texte);
 }
@@ -772,12 +812,11 @@
 
 /* « En salle : charge légère. » : 36 de haut. */
 .notePetite {
-  margin: 10px 0 0 -6px;
-  padding: 7px 15px;
-  border-radius: 9px;
-  background: #432360;
-  border: 1.5px solid var(--filet);
-  font-size: 16.5px;
+  margin: 10px 0 0;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  font-size: 15px;
   line-height: 19px;
   color: var(--texte);
 }
@@ -788,12 +827,13 @@
 
 .blocLabel {
   margin: -2px 0 -5px;
-  font-size: 15.5px;
+  font-family: var(--f);
+  font-size: 14px;
   line-height: 18px;
-  font-weight: 500;
-  letter-spacing: 0.093em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--ink-2);
   text-align: center;
 }
 
@@ -802,30 +842,30 @@
   display: grid;
   grid-template-columns: 65px 1fr 65px;
   align-items: stretch;
-  height: 48px;
+  height: 50px;
   margin: 0 9px;
-  border-radius: 10px;
-  border: 1.5px solid var(--filet);
-  background: #2a0a4a;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
   overflow: hidden;
 }
 
 .compteurBtn {
   min-height: 44px;
-  background: #441969;
+  background: var(--surface-2);
   border: 0;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 500;
   line-height: 1;
-  color: var(--ink);
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
 .compteurValeur {
   align-self: center;
-  font-family: var(--f);
-  font-weight: 700;
-  font-size: 29px;
+  font-family: var(--t);
+  font-weight: 600;
+  font-size: 24px;
   text-align: center;
   color: var(--ink);
 }
@@ -840,30 +880,28 @@
 
 .ressentiBtn {
   min-height: 46px;
-  border-radius: 11px;
-  border: 2px solid rgb(176 110 220 / 70%);
-  background: #2b1248;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
   font-family: var(--f);
-  font-size: 21px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--ink);
   cursor: pointer;
 }
 
 .ressentiOn {
-  border-color: rgb(255 170 228 / 90%);
+  border-color: transparent;
   background: var(--grad-accent, var(--accent));
   color: var(--ink-on-accent);
-  box-shadow:
-    0 0 14px rgb(252 62 196 / 40%),
-    inset 0 2px 0 rgb(255 255 255 / 22%);
+  box-shadow: 0 6px 14px rgb(177 79 110 / 25%);
 }
 
 .remarqueLabel {
-  margin: 3px 0 -9px 9px;
-  font-size: 17px;
+  margin: 3px 0 -9px 4px;
+  font-size: 15px;
   line-height: 20px;
-  color: var(--ink);
+  color: var(--ink-2);
 }
 
 /* Champ : 50 de haut, une ligne. */
@@ -873,17 +911,17 @@
   min-height: 50px;
   margin: 0;
   padding: 13px 14px;
-  border-radius: 12px;
-  border: 1.5px solid var(--filet);
-  background: #1e0839;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
   color: var(--ink);
-  font-size: 16.5px;
+  font-size: 15.5px;
   line-height: 20px;
   resize: none;
 }
 
 .remarque::placeholder {
-  color: #e3d3f3;
+  color: var(--ink-3);
 }
 
 /* ------------------------------------------------------- liste des séances */
@@ -895,67 +933,81 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 56px;
-  padding: 4px 9px 4px 17px;
-  border-radius: 12px;
-  border: 1.5px solid rgb(252 62 196 / 75%);
-  background: linear-gradient(to bottom, #3a1a5c 0%, #2f1450 100%);
-  box-shadow:
-    inset 2px 0 0 var(--accent-bright),
-    0 0 10px rgb(252 62 196 / 16%);
+  min-height: 62px;
+  padding: 6px 12px 6px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: var(--ombre-carte);
   text-align: left;
   color: inherit;
   cursor: pointer;
 }
 
 .jourCode {
+  position: relative;
+  padding-left: 12px;
   font-family: var(--f);
   font-style: italic;
-  font-weight: 800;
-  font-size: 23px;
+  font-weight: 700;
+  font-size: 19px;
   color: var(--ink);
+}
+
+.jourCode::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+  transform: skewX(-14deg);
 }
 
 .jourNom {
   display: block;
-  font-family: var(--f);
-  font-weight: 700;
-  font-size: 21px;
+  font-family: var(--t);
+  font-weight: 600;
+  font-size: 16.5px;
   line-height: 21px;
   color: var(--ink);
 }
 
 .jourDetail {
   display: block;
-  margin-top: 1px;
-  font-size: 15.5px;
+  margin-top: 2px;
+  font-size: 14px;
   line-height: 18px;
-  color: #e3d3f3;
+  color: var(--ink-2);
 }
 
 /* « À faire » : contour et texte roses. « Prévue » : verts. 27 de haut. */
 .etat {
   display: inline-flex;
   align-items: center;
-  height: 27px;
-  padding: 0 11px;
+  height: 28px;
+  padding: 0 12px;
   border-radius: 999px;
-  border: 1.5px solid var(--accent-bright);
+  background: var(--accent-dim);
   font-family: var(--f);
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--accent-ink);
   white-space: nowrap;
 }
 
 .etatPrevu {
-  border-color: var(--vert);
+  background: var(--vert-fond);
   color: var(--vert);
 }
 
 .jourChevron {
   display: inline-flex;
-  color: var(--accent-bright);
+  color: var(--ink-3);
 }
 
 /* ------------------------------------------------------------- navigation */
@@ -968,8 +1020,9 @@
   bottom: 0;
   display: flex;
   padding: 0 6px env(safe-area-inset-bottom);
-  background: rgb(36 10 70 / 97%);
-  border-top: 1px solid rgb(176 110 220 / 45%);
+  background: rgb(255 255 255 / 94%);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 20px rgb(192 90 122 / 8%);
   backdrop-filter: blur(10px);
   z-index: 20;
 }
@@ -991,7 +1044,7 @@
   font-size: 11px;
   font-weight: 500;
   letter-spacing: -0.02em;
-  color: #f3eafb;
+  color: var(--ink-2);
   position: relative;
   cursor: pointer;
 }
@@ -1002,29 +1055,28 @@
 }
 
 .navOn {
-  color: var(--accent-bright);
+  color: var(--accent-ink);
 }
 
 .navOn::before {
   content: '';
   position: absolute;
-  top: -2px;
+  top: -1px;
   left: 50%;
   width: 32px;
   height: 3px;
   margin-left: -16px;
   border-radius: 3px;
   background: var(--accent-bright);
-  box-shadow: 0 0 8px rgb(252 62 196 / 70%);
 }
 
 /* ------------------------------------------------ séances faites, profil */
 
 /* « Faite » : le même vert que « Prévue », plein plutôt que cerclé. */
 .etatFaite {
-  border-color: var(--vert);
-  background: var(--vert);
-  color: #160a26;
+  background: var(--vert-fond);
+  color: var(--vert);
+  box-shadow: inset 0 0 0 1px var(--vert-bord);
 }
 
 /* Une carte qui se choisit (niveau). Le bouton garde la carte telle quelle. */
@@ -1039,7 +1091,9 @@
 
 .choixOn {
   border-color: var(--accent-bright);
-  box-shadow: 0 0 14px rgb(252 62 196 / 35%);
+  box-shadow:
+    0 0 0 2px var(--accent-dim),
+    var(--ombre-carte);
 }
 
 /* Oui / Non : deux boutons du même gabarit que le ressenti. */
@@ -1058,8 +1112,8 @@
 /* « Non faite » : passée sans être faite. Gris, jamais vert — ce n'est pas
    une réussite, et ce n'est pas une faute non plus. */
 .etatSautee {
-  border-color: rgb(255 255 255 / 35%);
-  color: rgb(255 255 255 / 70%);
+  background: var(--surface-2);
+  color: var(--ink-2);
 }
 
 /* -------------------------------------- séance façon POWER (SeanceFemmes) */
