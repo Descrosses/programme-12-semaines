@@ -18,6 +18,33 @@ html {
   color-scheme: dark;
 }
 
+/* FEMMES (« Rosée Sculptée ») est le seul thème CLAIR : sans ça, les
+   commandes natives (date, liste, barre de défilement) restent sombres. */
+html[data-theme='femmes'] {
+  color-scheme: light;
+}
+
+/*
+ * La barre d'état de l'iPhone, sous FEMMES. L'appli installée l'écrit en
+ * BLANC (`black-translucent`, index.html), un réglage lu au lancement et
+ * commun à toutes les familles : il ne peut pas basculer en noir pour le
+ * seul thème clair. Sans fond, l'heure et la batterie disparaissaient sur
+ * l'écran Séance et dès qu'un écran défilait sous elles. Une bande rose
+ * foncé, fixe, tient donc la zone de l'heure : blanc dessus 6,58:1.
+ * Hauteur nulle sans encoche (ordinateur, Android) : rien ne change.
+ */
+html[data-theme='femmes'] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--barre-etat);
+  pointer-events: none;
+}
+
 body {
   margin: 0;
   /* Transparent sur FEMMES : sans ça le body recouvrirait le dégradé de html. */

@@ -69,6 +69,10 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
       />
     ),
     coche: <path d="M20 6L9 17l-5-5" {...trait} strokeWidth={2.6} />,
+    /* La carte de phase de l'écran Semaine (planche « Rosée Sculptée »). */
+    haltere: (
+      <path d="M7 7.5v9M4.5 9.5v5M17 7.5v9M19.5 9.5v5M7 12h10" {...trait} strokeWidth={2.2} />
+    ),
     cible: (
       <>
         <circle cx="11" cy="13" r="8" {...trait} strokeWidth={2.2} />
@@ -107,6 +111,9 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
  *
  * `alt=""` : le décor n'apporte aucune information que le titre ne dise.
  */
+/** La photo du bandeau FEMMES (nom d'un visuel), ou `null` : dégradé rose. */
+const PHOTO_BANDEAU: Parameters<typeof visuelUrl>[0] | null = null;
+
 export function Bandeau({
   logo = false,
   surTitre,
@@ -123,16 +130,24 @@ export function Bandeau({
   surTitreRose?: boolean;
   titre: string;
   taille?: 'xl' | 'l' | 'm';
-  sousTitre?: string;
+  /** Une ligne, ou plusieurs (écran Semaine : deux lignes sous un seul trait). */
+  sousTitre?: string | readonly string[];
   retour?: string;
   onRetour?: () => void;
 }) {
-  const src = visuelUrl('horizonFemmes');
-  const srcSet = visuelSrcSet('horizonFemmes');
+  /*
+   * « Rosée Sculptée » : la photo du bandeau viendra des visuels de
+   * Guillaume ; en attendant, le panneau porte un dégradé rose (CSS). L'ancien
+   * ciel synthwave (`horizonFemmes`) n'est plus affiché. Un écran de détail
+   * (avec retour) n'a pas de panneau : titre rose sur fond clair.
+   */
+  const src = PHOTO_BANDEAU === null ? null : visuelUrl(PHOTO_BANDEAU);
+  const srcSet = PHOTO_BANDEAU === null ? null : visuelSrcSet(PHOTO_BANDEAU);
   const tailleCls = taille === 'xl' ? s.titreXl : taille === 'l' ? s.titreL : s.titreM;
+  const clair = retour !== undefined;
   return (
-    <div className={s.hero}>
-      {src !== null && (
+    <div className={`${s.hero} ${clair ? s.heroClair : ''}`}>
+      {!clair && src !== null && (
         <img src={src} {...(srcSet !== null ? { srcSet } : {})} sizes="100vw" alt="" />
       )}
       {logo ? (
@@ -152,7 +167,18 @@ export function Bandeau({
             <span className={surTitreRose ? s.surTitreRose : s.surTitre}>{surTitre}</span>
           )}
           <h1 className={`${s.titre} ${tailleCls}`}>{titre}</h1>
-          {sousTitre !== undefined && <span className={s.sousTitre}>{sousTitre}</span>}
+          {typeof sousTitre === 'string' && <span className={s.sousTitre}>{sousTitre}</span>}
+          {Array.isArray(sousTitre) && (
+            <span className={`${s.sousTitre} ${s.sousTitreLignes}`}>
+              <span>
+                {sousTitre.map((l) => (
+                  <span key={l} className={s.sousTitreLigne}>
+                    {l}
+                  </span>
+                ))}
+              </span>
+            </span>
+          )}
         </div>
       )}
     </div>

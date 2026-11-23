@@ -112,3 +112,51 @@
   font-display: swap;
   src: url('../assets/fonts/barlow-500-latin.woff2') format('woff2');
 }
+
+/*
+ * FEMMES « Rosée Sculptée » (design system de Guillaume, 23 novembre) :
+ * Oswald pour les titres, sections et numéros, Inter pour le texte, les
+ * libellés et les chiffres. Embarquées, jamais chargées depuis Google Fonts :
+ * l'appli fonctionne hors ligne. Sous-ensemble latin (Fontsource 5.1.1).
+ * Licences SIL OFL 1.1 : src/assets/fonts/OFL-Oswald.txt, OFL-Inter.txt.
+ * Oswald n'a pas d'italique : les titres penchés sont un oblique synthétique.
+ */
+@font-face {
+  font-family: 'Oswald Femmes';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/oswald-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Oswald Femmes';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/oswald-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Femmes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Femmes';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/inter-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Femmes';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/inter-latin-600-normal.woff2') format('woff2');
+}

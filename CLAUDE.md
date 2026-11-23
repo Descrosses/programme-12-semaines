@@ -166,16 +166,45 @@ visuelle.
 durées. Ces règles viennent de Guillaume ; le code les cite comme « §4 » (ne
 rien inventer) et « §15 » (identité visuelle à définir plus tard).
 
-**L'identité visuelle, elle, est désormais POSÉE** — le §15 est honoré.
-Guillaume a fourni des maquettes, et `[data-theme='femmes']` les transcrit :
-registre synthwave, nuit violette (`--bg: #160a26`), néon magenta. Ce n'est
-pas le « rose par défaut » que la règle refusait, c'est un parti pris fourni.
-
-Un point à ne pas « corriger » : `--accent` vaut `#d1006e` et non le `#ff2d95`
-des maquettes. Le fluo ne porte que **3,46:1** sous du texte blanc, sous le
-seuil de 4,5 ; `#d1006e` remonte à **5,34**. Le néon n'est pas perdu, il vit
-dans `--accent-bright` pour les lueurs et les bordures, jamais sous du petit
-texte. Les contrastes du bloc ont tous été mesurés et sont écrits en commentaire.
+**L'identité visuelle est « Rosée Sculptée »** (planche de Guillaume, 23
+novembre, « refonte complète ») — elle REMPLACE l'ancienne identité
+synthwave (nuit violette, néon magenta, `#d1006e`) : n'y revenir sous aucune
+forme. Thème CLAIR, rose poudré : fond `#fdf7f5`, cartes `#fff1f4`, rose
+`#c05a7a` (décors, grands boutons), Oswald (titres, italique synthétique) et
+Inter (texte), embarquées en local (`assets/fonts/`, OFL). Trois valeurs de
+la planche sont ASSOMBRIES pour le petit texte, et c'est voulu : bouton plein
+`#b14f6e` (blanc 4,98), rose écrit `#a8435f`, vert « faite » `#2e6b47` sur
+`#d5ecdd`. Seul thème clair : il redéfinit les couleurs d'état de POWER
+(orange, rouge, bleu, faites pour un fond sombre) et passe
+`color-scheme: light`. Le bandeau d'en-tête est un DÉGRADÉ rose tant que
+Guillaume n'a pas fourni de photo (`PHOTO_BANDEAU = null`, `Pieces.tsx`) ;
+le contenu de la planche (Bloc Congestion, 71-79 %…) est celui de POWER :
+seul le STYLE est repris, le contenu FEMMES ne bouge pas.
+`styles/themeFemmes.test.ts` mesure les contrastes et refuse le synthwave.
+**Écran Semaine — lot 1/6 FAIT** (référence iPhone + planche, « go
+semaine ») : bandeau « PHASE n · NOM » + deux lignes (séances · durée,
+tours × exercices · repos), cases de semaine défilantes (numéro, nom de la
+phase, trait rose-or / mauve / rose par phase, choisie = contour 2 px),
+carte de phase (filet rose, haltère, objectif), lignes « Séance n » avec
+« ≈ durée » et la date SEULEMENT une fois faite ou passée (pas de date
+prévue : la séance du jour est la première non faite). États réels : Faite
+(vert), Non faite (gris), Prévue (rose plein), À faire (contour). Les
+textes de la référence (Bloc Congestion, Jambes & Fessiers, DIM…) sont des
+exemples POWER, jamais repris : `screens/femmes/semaineFemmes.test.tsx`.
+Écart voulu : le bandeau passe SOUS l'heure de l'iPhone (barre d'état
+`black-translucent`, heure blanche, réglage commun lu au lancement).
+**Barre d'état FEMMES** : une bande fixe `--barre-etat` #8f4561 (blanc
+6,58:1) tient la zone de l'heure sur TOUS les écrans FEMMES
+(`html[data-theme='femmes'] body::before`, `global.css`) — sans elle,
+l'heure disparaissait sur la Séance et dès qu'un écran défilait. Hauteur
+nulle sans encoche. `themeFemmes.test.ts`.
+**Alignement des autres écrans sur Semaine — FAIT** (« go alignement
+FEMMES », sans maquette par écran) : titres de carte 22 px, texte 14,5 px ;
+Aujourd'hui reprend la carte de phase de Semaine (haltère, filet rose) ;
+Profil : niveau choisi = filet + pastille « CHOISI » (jamais la couleur
+seule) ; séance : le circuit perd son double contour épais (filet rose à
+gauche, sous `:global([data-theme='femmes'])` dans `Session.module.css`,
+POWER et MASS inchangés). Les cinq autres écrans : lots 2 à 6.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 
