@@ -348,8 +348,12 @@ export function NutritionScreen({
         */}
         <section className={styles.card}>
           <h2 className={styles.cardTitle}>Ce que j’ai mangé</h2>
+          <p className={styles.cardSub}>
+            Ton journal du jour : note ce que tu manges vraiment. C’est ce total qui se compare à ta
+            cible — ton plan, lui, n’est pas compté.
+          </p>
           {extras.length === 0 ? (
-            <p className={styles.cardSub}>Rien de noté aujourd’hui.</p>
+            <p className={styles.fieldHint}>Rien de noté aujourd’hui.</p>
           ) : (
             <>
               <div className={styles.keyStat}>
