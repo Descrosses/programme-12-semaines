@@ -1,3 +1,4 @@
+import { MonteeEnCharge } from './MonteeEnCharge';
 import { useEffect, useState } from 'react';
 import { PropositionsExercice } from './PropositionsExercice';
 import { TempoChip } from './TempoChip';
@@ -425,6 +426,10 @@ export function ExerciseCard({
             ))}
           </div>
         </div>
+      )}
+
+      {!hideSets && ex.monteeEnCharge === true && savedSets.length === 0 && (
+        <MonteeEnCharge chargeTravail={plannedKg} pas={ex.load.step} timer={timer} />
       )}
 
       {!hideSets && ex.sets > 0 && (

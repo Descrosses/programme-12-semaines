@@ -134,6 +134,12 @@ export interface ResolvedExercise {
    * rien à la séance.
    */
   alignable?: boolean;
+  /**
+   * Montée en charge avant ce mouvement (§6 du .md, §2 bis de MASS FORCE) :
+   * le PREMIER mouvement lourd polyarticulaire de la séance. Quatre paliers
+   * d'approche, calculés sur la charge de travail (`engine/monteeEnCharge`).
+   */
+  monteeEnCharge?: boolean;
   notes: string[];
   /** S9-11 : l'explosif intercalé entre les séries. */
   contrast?: ContrastSpec;
@@ -387,6 +393,19 @@ export function getSession(
       what: 'Sauts en baisse',
       why: 'Lifts principaux ramenés à 3 séries, conditioning supprimé (§11 cas 7).',
     });
+  }
+
+  /*
+   * 8. Montée en charge (§6) : le premier lift principal de la
+   * séance, même précédé d'un explosif. Jamais en semaine 0 ni 12 : les tests
+   * de 1RM ont leurs propres paliers. Le combiné intermédiaire (S8) la garde :
+   * son deadlift de deload vient après les tests, sans paliers.
+   */
+  if (week !== 0 && week !== 12) {
+    // Dans POWER, le premier lift principal d'une séance est toujours à la
+    // barre (squat, pin squat, bench, push press, deadlift) : le test le fige.
+    const premierLourd = finalExercises.find((e) => e.def.role === 'main');
+    if (premierLourd) premierLourd.monteeEnCharge = true;
   }
 
   const warmup = blueprint.warmup ? WARMUPS[blueprint.warmup] : null;

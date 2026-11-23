@@ -36,10 +36,14 @@
  *     papier ; personne ne fait un max de tractions puis un max de leg raise
  *     dans la foulée.
  *
- * Ce que le modèle ignore : les montées de charge entre deux exercices
- * lourds, et le temps de discuter avec le voisin de rack.
+ *   - La montée en charge du premier mouvement lourd (§6) compte : 20 s par
+ *     palier, plus sa minute de repos.
+ *
+ * Ce que le modèle ignore : les séries d'approche d'un DEUXIÈME mouvement
+ * lourd, et le temps de discuter avec le voisin de rack.
  */
 
+import { PALIERS_MONTEE, REPOS_MONTEE_SEC } from '../data/monteeEnCharge';
 import type { Work } from '../data/types';
 
 const SEC_PAR_REP = 4;
@@ -53,7 +57,8 @@ const SEC_READINESS = 4 * 60;
 export function secondesParSerie(work: Work): number {
   switch (work.kind) {
     case 'reps': {
-      const n = work.reps === 'max' ? 12 : typeof work.reps === 'number' ? work.reps : work.reps.max;
+      const n =
+        work.reps === 'max' ? 12 : typeof work.reps === 'number' ? work.reps : work.reps.max;
       const un = Math.max(SEC_MIN_PAR_SERIE, n * SEC_PAR_REP);
       return work.perSide ? un * 2 : un;
     }
@@ -93,11 +98,19 @@ export interface SeanceMesurable {
     restSec: number;
     /** Paliers d'un test 1RM (§12) : du travail qui ne figure dans aucune série. */
     ramp?: readonly unknown[] | undefined;
+    /** Montée en charge avant le premier mouvement lourd (§6) : 4 paliers d'approche. */
+    monteeEnCharge?: boolean | undefined;
   }[];
 }
 
 /** Temps d'un palier de montée de charge : le soulever, puis récupérer. */
 const SEC_PAR_PALIER = 20;
+/**
+ * La montée en charge (§6) : chaque palier se soulève puis récupère sa minute.
+ * Quatre paliers : environ 5 minutes.
+ */
+export const SEC_MONTEE_EN_CHARGE = PALIERS_MONTEE.length * (SEC_PAR_PALIER + REPOS_MONTEE_SEC);
+
 /** Récupération plancher après un effort maximal, repos écrit ou non. */
 const SEC_RECUP_MAX = 180;
 
@@ -110,6 +123,7 @@ export function dureeEstimeeMin(s: SeanceMesurable): number {
     const repos = maximal ? Math.max(ex.restSec, SEC_RECUP_MAX) : ex.restSec;
     sec += ex.sets * (secondesParSerie(ex.work) + repos);
     if (ex.ramp) sec += ex.ramp.length * (SEC_PAR_PALIER + ex.restSec);
+    if (ex.monteeEnCharge) sec += SEC_MONTEE_EN_CHARGE;
   }
   return Math.round(sec / 60);
 }

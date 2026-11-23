@@ -15,7 +15,7 @@ export const WARMUP_LOWER: Warmup = {
     { id: 'wl-adductor', label: 'Adductor rockback', detail: '× 8' },
     { id: 'wl-glute', label: 'Glute bridge', detail: '× 10' },
     { id: 'wl-squat', label: 'Squat poids du corps', detail: '× 10' },
-    { id: 'wl-ramp', label: 'Montées de charge', detail: 'jusqu’à la charge du jour' },
+    { id: 'wl-ramp', label: 'Montée en charge', detail: 'sur la carte du 1er mouvement lourd' },
   ],
 };
 
@@ -28,7 +28,7 @@ export const WARMUP_UPPER: Warmup = {
     { id: 'wu-scap', label: 'Scap push-up', detail: '× 10' },
     { id: 'wu-rotext', label: 'Rotation externe câble', detail: '12 / côté' },
     { id: 'wu-pompes', label: 'Pompes', detail: '× 8' },
-    { id: 'wu-ramp', label: 'Montées de charge', detail: 'jusqu’à la charge du jour' },
+    { id: 'wu-ramp', label: 'Montée en charge', detail: 'sur la carte du 1er mouvement lourd' },
   ],
 };
 

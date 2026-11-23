@@ -43,6 +43,7 @@ import {
   type ProfilSaisi,
 } from './FemmesScreens';
 import type { OngletFemmes } from './Pieces';
+import { sauvegardeAuto } from '../../cloud/sauvegarde';
 import s from './Femmes.module.css';
 
 export type VueFemmes = 'aujourdhui' | 'semaine' | 'seance' | 'exercice' | 'securite';
@@ -253,6 +254,8 @@ export function EcransFemmes({
           onTerminer: async () => {
             timer.skip();
             await terminer();
+            // Compte en ligne : la séance part en sauvegarde, sans rien attendre.
+            sauvegardeAuto();
           },
           onRouvrir: async () => {
             await rouvrirSeanceFemmes(cible);

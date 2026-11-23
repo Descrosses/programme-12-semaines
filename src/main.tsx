@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { demarrerSauvegardeAuto } from './cloud/sauvegarde';
 import { hydraterProgrammesImportes } from './db/programmesImportes';
 import './styles/global.css';
 
@@ -24,6 +25,8 @@ async function demarrer(): Promise<void> {
       <App />
     </StrictMode>,
   );
+  // Compte en ligne (facultatif) : envoi dû à l'ouverture, et au retour du réseau.
+  demarrerSauvegardeAuto();
 }
 
 void demarrer();

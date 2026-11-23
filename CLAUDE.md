@@ -1,7 +1,9 @@
 # Dcross-fit — notes pour Claude Code
 
-Application web installable (PWA) de préparation physique. Hors ligne à 100 %,
-aucune donnée ne quitte l'appareil : pas de compte, pas de serveur.
+Application web installable (PWA) de préparation physique. Hors ligne à 100 %.
+Sans compte, aucune donnée ne quitte l'appareil. Depuis le lot 1 du compte en
+ligne (23 novembre), un compte **facultatif** sauvegarde une copie en ligne
+(voir plus bas).
 
 Interlocuteur : **Guillaume**, 34 ans, père de famille, peu de temps, débutant
 en IA. **Réponds toujours en français.**
@@ -206,7 +208,28 @@ matériel et la durée avant d'écrire la moindre séance.
 
 ## Ce qui est volontaire et n'est pas à « corriger »
 
-- Pas de comptes utilisateurs — tout est local, par choix.
+- **Compte en ligne : FACULTATIF, lot 1 FAIT (décision de Guillaume, 23
+  novembre).** Remplace l'ancien « pas de compte, tout local ». Supabase
+  (région Francfort), configuré par `src/cloud/config.ts` : deux valeurs
+  publiques ; vides = aucune carte, aucune requête, appli d'avant. Mise en
+  route : `docs/compte-en-ligne.md` + `supabase/setup.sql` (un dossier
+  privé par compte, `supprimer_mon_compte`). Connexion par CODE e-mail (un
+  lien ouvrirait Safari, pas la PWA), consentement explicite (données de
+  santé, RGPD). Ce qui part = l'export « Exporter mes données » tel quel,
+  SANS photos ni vidéos ; la restauration passe par la même confirmation
+  que le fichier. Déclencheurs : « Séance terminée » (POWER/MASS/importés
+  et FEMMES), ouverture si dernière réussite > 24 h ou envoi en attente,
+  retour du réseau. **Règles à ne pas « corriger »** (`cloud/regles.ts`) :
+  une base vierge n'est JAMAIS envoyée, même forcée ; moins de données que
+  le compte = rien n'est envoyé, l'écran propose « Restaurer » ou
+  « Remplacer quand même » ; la précédente est gardée à côté. Une
+  sauvegarde ratée ne bloque jamais une séance (« en attente », repart
+  seule). État local (`state/cloudEtat.ts`) en `localStorage`, jamais en
+  base. Pas de synchronisation multi-appareils (les clés `++id` l'
+  interdisent sans renuméroter toute la base) ; pas d'admin (question RGPD /
+  HDS à trancher d'abord). Le client Supabase est un chunk à part
+  (`supabase-*.js`), hors pré-cache. Tests : `cloud/regles.test.ts`,
+  `cloud/sauvegarde.test.ts`, `components/compteCloud.test.tsx`.
 - Le Zercher March est **déprogrammé mais conservé au catalogue** : « on ne
   supprime pas d'exercices existants ».
 - Le Bear Crawl est **déprogrammé dès la semaine 1 mais conservé au catalogue**,
@@ -328,9 +351,10 @@ matériel et la durée avant d'écrire la moindre séance.
   empêchent de rester explosif jusqu'au bout ». Broad Jump 3 × 2 (deload :
   2), Hang High Pull 3 × 3 (tous blocs), Lateral Bound 3, Farmer Carry 3,
   **Jump Squat GARDÉ à 3 séries** (3 × 4 S1-8, 3 × 3 S9-11 ; 2 en deload),
-  Push Press et Speed Squat à 4 (§9 ET `mainLiftTable.ts`). Vendredi : 72
-  (S1-3), 75 (S5-7), 73 (S9-11), 53-54 en deload ; « 50-75 min » au §3 =
-  `durationLabel` du code (testé). `data/vendrediPlafond.test.ts`.
+  Push Press et Speed Squat à 4 (§9 ET `mainLiftTable.ts`). Vendredi : 77
+  (S1-3), 81 (S5-7), 79 (S9-11), 59 en deload, montée en charge comprise ;
+  « 55-85 min » au §3 = `durationLabel` du code (testé).
+  `data/vendrediPlafond.test.ts` (81 au plus).
 - **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
   squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
   n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
@@ -348,6 +372,19 @@ matériel et la durée avant d'écrire la moindre séance.
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.
   `components/alignementApplique.test.tsx`.
+- **Montée en charge avant le PREMIER mouvement lourd de la séance**
+  (Guillaume, 23 novembre ; §6 du `.md` POWER, §2 bis de MASS FORCE, même
+  tableau) : 5 reps à 50 %, 3 à 70 %, 2-3 à 85 %, 2 à 90-95 % de la charge
+  de travail, 1 min de repos. Données `data/monteeEnCharge.ts`, kilos
+  arrondis au pas par `engine/monteeEnCharge.ts` (sans charge connue : des
+  %, jamais un kilo). POWER : le premier lift `main` de la séance (squat,
+  Pin Squat en S5-7, bench, push press, deadlift — même APRÈS un explosif),
+  combiné S8 compris, jamais en S0 ni S12. MASS FORCE : le mouvement évalué
+  qui ouvre chaque séance. Jamais MASS CONGESTION, FEMMES ni importés. Bloc
+  `MonteeEnCharge` en tête de carte, retiré à la 1re série de travail ;
+  « Fait → 1 min » lance le chrono ; RIEN n'est enregistré. Compté dans les
+  durées (`SEC_MONTEE_EN_CHARGE`, ~5 min) : §3 relevé à 50-85 / 55-85 /
+  55-85 / 45-85. `components/monteeEnCharge.test.tsx`.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

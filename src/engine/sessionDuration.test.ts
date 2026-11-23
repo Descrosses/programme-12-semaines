@@ -143,10 +143,11 @@ describe('ce que la séance affiche', () => {
   it('la durée vient du calcul, plus de la trame', () => {
     // Le vendredi du bloc puissance : la trame annonçait 60 min pour tout le
     // programme. Le calcul en donnait 97 ; plafonné à 4 séries et sans Jump
-    // Squat (décision de Guillaume, 22 novembre), il en donne 73.
+    // Squat (décision de Guillaume, 22 novembre), il en donne 73 ; avec la
+    // montée en charge du Push Press (§6, 23 novembre), 79.
     const s = getSession(9 as WeekIndex, 4 as DayIndex, CTX)!;
     expect(s.durationLabel).toMatch(/^≈ \d+ min$/);
-    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBe(73);
+    expect(Number(s.durationLabel.replace(/\D/g, ''))).toBe(79);
   });
 
   it('un deload est visiblement plus court que la semaine pleine', () => {

@@ -45,10 +45,10 @@ Ratio hebdomadaire retenu : **3 jours durs (lundi, mercredi, samedi) + 1 jour ne
 
 | Jour | Séance | Durée | Charge |
 |---|---|---|---|
-| Lundi | Lower Strength — squat | 45-80 min | DUR |
-| Mercredi | Upper Strength — bench + tractions | 50-80 min | DUR |
-| Vendredi | Total Body Power — sauts, vitesse | 50-75 min | RAPIDE, peu de fatigue |
-| Samedi | Posterior Chain — deadlift | 45-80 min | DUR |
+| Lundi | Lower Strength — squat | 50-85 min | DUR |
+| Mercredi | Upper Strength — bench + tractions | 55-85 min | DUR |
+| Vendredi | Total Body Power — sauts, vitesse | 55-85 min | RAPIDE, peu de fatigue |
+| Samedi | Posterior Chain — deadlift | 45-85 min | DUR |
 | Dimanche | Upper Athletic + tronc + conditioning | 30-70 min | MODÉRÉ |
 
 **Ces durées sont des fourchettes, et l'application affiche le chiffre réel.** Les anciennes étiquettes — « 60 min » le vendredi, « 65 min » le mercredi — avaient été écrites une fois au début du programme et jamais recalculées. Trois cycles de modifications plus tard, le vendredi durait quatre-vingts minutes sous une étiquette de soixante. L'appli calcule maintenant la durée à partir des séries, des répétitions et des repos réellement prescrits, et l'affiche en tête de séance (« ≈ 74 min »). Un test vérifie que chacune des soixante séances tombe dans la fourchette annoncée ici : l'écart ne peut plus se creuser en silence.
@@ -59,11 +59,11 @@ La borne basse de chaque fourchette correspond aux semaines de deload, la borne 
 
 | Jour | Disponible | Pic réel | Bloc concerné |
 |---|---|---|---|
-| Lundi | 60-70 min | **75 min** | Force maximale (S5-7) |
-| Mercredi | 60-70 min | **78 min** | Force maximale (S5-7) |
-| Vendredi | ~60 min | **75 min** | Force maximale (S5-7) |
+| Lundi | 60-70 min | **82 min** | Force maximale (S5-7) |
+| Mercredi | 60-70 min | **84 min** | Force maximale (S5-7) |
+| Vendredi | ~60 min | **81 min** | Force maximale (S5-7) |
 
-Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat (§7). L'Explosive Cable Row et le Jump Squat restent ; le vendredi passe de 85-97 min à 72-75 min.
+Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat (§7). L'Explosive Cable Row et le Jump Squat restent ; le vendredi passe de 85-97 min à 72-75 min. **Le 23 novembre**, la montée en charge du §6 ajoute environ 5 minutes à chaque séance qui porte un mouvement lourd à la barre : le vendredi monte à 77-81 min, et Guillaume l'assume.
 
 Pourquoi cet ordre : vendredi (neuronal, peu de dommages) potentialise samedi ; dimanche = haut du corps pour que les jambes récupèrent entre le deadlift du samedi et le squat du lundi.
 
@@ -91,9 +91,20 @@ Tu arrêtes l'exercice quand : la distance ou la hauteur baisse d'environ 5 %, l
 
 ## 6. Échauffements
 
-**Avant Lower (8-10 min)** : 3 min vélo, ankle rocks × 10/côté, 90/90 hip switch × 8, adductor rockback × 8, glute bridge × 10, squat poids du corps × 10, puis montées de charge.
+**Avant Lower (8-10 min)** : 3 min vélo, ankle rocks × 10/côté, 90/90 hip switch × 8, adductor rockback × 8, glute bridge × 10, squat poids du corps × 10, puis montée en charge (ci-dessous).
 
-**Avant Upper (7-9 min)** : 3 min rameur, band pull-apart × 15, scap push-up × 10, rotation externe câble × 12, pompes × 8, puis montées de charge.
+**Avant Upper (7-9 min)** : 3 min rameur, band pull-apart × 15, scap push-up × 10, rotation externe câble × 12, pompes × 8, puis montée en charge (ci-dessous).
+
+**Montée en charge — avant le premier mouvement lourd polyarticulaire de la séance** (décision de Guillaume, 23 novembre). Sur le premier lift principal à la barre de chaque séance — squat, bench, push press ou deadlift selon le jour, même quand un mouvement explosif le précède —, plusieurs séries d'approche mènent à la charge de travail :
+
+| Palier | Répétitions | Charge |
+|---|---|---|
+| 1 | 5 | 50 % de la charge de travail |
+| 2 | 3 | 70 % de la charge de travail |
+| 3 | 2-3 | 85 % de la charge de travail |
+| 4 | 2 | 90-95 % de la charge de travail |
+
+1 min de repos entre ces séries, puis les séries de travail. Le but : générer progressivement une tension et un stress musculaire et tendineux suffisants pour être prêt pour les vraies séries de travail. Ces séries d'approche ne comptent pas dans les séries prescrites et ne s'enregistrent pas. Pas de montée en charge en semaine 0 ni en semaine 12 : les tests ont leurs propres paliers (§12). Elle ajoute environ 5 minutes aux séances concernées, comptées dans les durées du §3.
 
 ---
 
