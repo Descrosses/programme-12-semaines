@@ -46,32 +46,55 @@
  * `env(safe-area-inset-top)` dans chaque hauteur.
  */
 .hero {
-  /* Le bandeau « Rosée Sculptée » : un panneau photo (ou, en attendant les
-     photos, un dégradé rose), texte blanc posé en bas à gauche. */
+  /*
+   * Le bandeau « Rosée Sculptée », titré comme la planche des six bandeaux
+   * de Guillaume : titre et sous-titre centrés à gauche, sujet à droite.
+   *
+   * Il REMONTE jusqu'en haut de l'écran : `.app` (App.module.css) réserve
+   * déjà la hauteur de la barre d'état ; la marge négative l'annule, et le
+   * bandeau passe dessous (retour de Guillaume, 23 novembre : un vide
+   * doublait l'encoche au-dessus de la photo).
+   */
+  --haut: env(safe-area-inset-top, 0px);
+
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: calc(env(safe-area-inset-top) + 188px);
-  padding: calc(env(safe-area-inset-top) + 14px) 22px 20px;
+  justify-content: center;
+  margin-top: calc(-1 * var(--haut));
+  min-height: calc(var(--haut) + 176px);
+  padding: calc(var(--haut) + 12px) 22px 14px;
   overflow: hidden;
   color: #fff;
   background: linear-gradient(125deg, #8f4561 0%, #b9647f 42%, #dda3a6 78%, #ecc3b5 100%);
 }
 
 .hero img {
-  /* La photo commence SOUS la barre d'état : la bande fixe de l'heure
-     (global.css) couvrirait sinon le haut des têtes. */
+  /* La photo nette commence SOUS la barre d'état (les têtes sont en haut
+     des fichiers : l'heure et l'îlot les couvriraient) ; elle s'y fond par
+     un masque doux, au-dessus de son double flouté (`.heroFlou`). */
   position: absolute;
-  top: env(safe-area-inset-top, 0px);
+  top: var(--haut);
   left: 0;
   width: 100%;
-  height: calc(100% - env(safe-area-inset-top, 0px));
+  height: calc(100% - var(--haut));
+  mask-image: linear-gradient(to bottom, transparent 0, #000 26px);
   object-fit: cover;
   object-position: 70% 30%;
 }
 
 /* Le voile : le texte blanc reste lisible sur n'importe quelle photo. */
+/* Derrière la barre d'état : la même photo, floutée, pour que le bandeau
+   remonte d'un seul tenant jusqu'en haut (aucun octet de plus : même
+   fichier). */
+.hero .heroFlou {
+  top: 0;
+  height: calc(var(--haut) + 40px);
+  filter: blur(14px) saturate(1.05);
+  transform: scale(1.2);
+  mask-image: none;
+}
+
 .hero::after {
   content: '';
   position: absolute;
@@ -88,6 +111,7 @@
 /* Écrans de détail (avec retour) : pas de photo, titre rose sur fond clair,
    court trait sous le titre — comme l'écran séance de la planche. */
 .heroClair {
+  margin-top: 0;
   min-height: 0;
   padding: calc(env(safe-area-inset-top) + 8px) 20px 2px;
   background: none;
@@ -206,7 +230,7 @@
 
 /* « SEMAINE 1 » : 193 px de large sur la planche. */
 .titreXl {
-  font-size: 52px;
+  font-size: 48px;
 }
 
 /* « Séance 1 » : 134 px de large. */
@@ -222,35 +246,36 @@
 .sousTitre::before {
   content: '';
   flex: none;
-  width: 26px;
-  height: 3px;
+  width: 30px;
+  height: 4px;
   border-radius: 2px;
-  background: var(--rose-or);
+  /* Le trait rose de la planche des bandeaux. */
+  background: #f3a6bb;
 }
 
 .sousTitre {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 12px;
   font-family: var(--f);
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 13px;
   line-height: 18px;
-  letter-spacing: 0.14em;
+  /* Les lettres très espacées de la planche (« M A  S É A N C E … »). */
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 92%);
+  color: rgb(255 255 255 / 94%);
+  text-shadow: 0 1px 6px rgb(60 20 35 / 45%);
 }
 
 /* Écran Semaine : deux lignes sous UN trait, posé à hauteur de la première. */
 .sousTitreLignes {
   align-items: flex-start;
-  font-size: 13px;
-  letter-spacing: 0.12em;
 }
 
 .sousTitreLignes::before {
-  margin-top: 8px;
+  margin-top: 7px;
 }
 
 .sousTitreLigne {
@@ -1080,6 +1105,19 @@
   font-size: 14px;
   line-height: 19px;
   color: var(--ink-2);
+}
+
+.carteBlocDetail {
+  display: flex;
+  flex-direction: column;
+  margin: 6px 0 0;
+  font-family: var(--f);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 17px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
 }
 
 .lignesSemaine {
