@@ -69,7 +69,7 @@ export function SupersetCard({
   timer: RestTimer;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   /**
-   * Les fiches d'exercice, une par station, rendues sous les tours.
+   * Les fiches d'exercice, une par station, rendues AVANT les tours.
    *
    * Passées en `ReactNode` plutôt que construites ici : elles portent la
    * remarque, le suivi de douleur, le remplacement et les consignes, c'est-à-
@@ -192,6 +192,13 @@ export function SupersetCard({
         <div className={styles.supersetPropositions}>{propositions}</div>
       )}
 
+      {/*
+        Les fiches AVANT les tours (Guillaume, 23 novembre : « les fiches
+        explicatives doivent être placées avant le superset d'abdos ») : on
+        lit le geste, puis on le fait — comme sur une carte seule.
+      */}
+      <div className={styles.supersetFiches}>{fiches}</div>
+
       {Array.from({ length: tours }, (_, i) => {
         const ouvert = i === actif;
         return (
@@ -259,8 +266,6 @@ export function SupersetCard({
           </div>
         );
       })}
-
-      <div className={styles.supersetFiches}>{fiches}</div>
     </section>
   );
 }
@@ -309,7 +314,7 @@ function Station({
       {/*
         Le nom, et rien d'autre. Répéter « 3 × 8 — poids du corps » à chaque
         tour écrivait trois fois une prescription qui ne change pas, juste
-        au-dessus du champ qui, lui, change. La fiche du mouvement est en bas
+        au-dessus du champ qui, lui, change. La fiche du mouvement est en tête
         du bloc, et le curseur de charge dit déjà ce qu'on porte.
       */}
       <div className={styles.stationNom}>

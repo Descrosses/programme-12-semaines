@@ -394,6 +394,15 @@ matériel et la durée avant d'écrire la moindre séance.
   vide = pas de section, « C'est compris — aux séries » referme la fiche. La
   section CSS est AVANT le bloc MASS de `FicheMouvement.module.css`
   (`confinementMass.test.ts`). `musclesErreursPower12.test.tsx`.
+- **Retours du 23 novembre (séance POWER).** La **montée en charge est
+  REPLIÉE par défaut** : une ligne (« 5 · 3 · 2-3 · 2 reps · 1 min entre
+  chaque », puis « n/4 faits ») ; on l'ouvre pour les kilos et les boutons,
+  replier ne perd rien (`monteeEnCharge.test.tsx`). Le **tempo chiffré se
+  touche** (« Tempo 3-1-X-1 ? ») et s'explique dessous, phase par phase
+  (`expliquerTempo`, `engine/tempo.ts` : descente, arrêt en bas, montée, arrêt
+  en haut, X = le plus vite possible) ; un tempo en mots reste une pastille
+  (`tempoExplique.test.tsx`). Les **fiches d'un superset sont AVANT les
+  tours** (« Tour 1 »), après les questions (`propositionsSuperset.test.tsx`).
 - **Alignement des reps** : la question n'est posée que sur un exercice
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.

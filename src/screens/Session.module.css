@@ -426,6 +426,36 @@
   font-size: 0.875rem;
 }
 
+/* Le tempo chiffré se touche : il s'explique juste dessous. */
+.tempoBouton {
+  min-height: 32px;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.tempoAide {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.tempoExplication {
+  flex-basis: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
 /* Les questions des stations, en tête de superset, avant les tours. */
 .supersetPropositions {
   padding-top: 4px;
@@ -2523,6 +2553,43 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink);
+}
+
+.monteeEntete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.monteeEnteteTexte {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monteeResume {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.monteeChevron {
+  flex: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--ink-2);
+  transition: transform 0.2s ease;
+}
+
+.monteeChevronOuvert {
+  transform: rotate(180deg);
 }
 
 .monteeTexte {
