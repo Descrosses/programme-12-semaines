@@ -123,9 +123,15 @@ export const VISUELS = {
    * Calés sur leur BORD HAUT (`… 0%`) : les têtes sont en haut des
    * fichiers, et un recadrage par le haut les coupait (iPhone de Guillaume).
    * Sauf Nutrition (bol et smoothie, 23 novembre, aucune tête) : calé vers
-   * le bas, pour garder le bol entier. Ils ne
-   * servent qu'aux écrans FEMMES (`Bandeau`, `Pieces.tsx`) : jamais dans
-   * POWER ni MASS (`bandeaux.test.ts`). Mêmes réserves de droits que le
+   * le bas, pour garder le bol entier.
+   *
+   * UNE IMAGE REMPLACÉE CHANGE DE NOM DE FICHIER. Les images sont servies en
+   * `CacheFirst` pour 180 jours (vite.config.ts) : remplacée sous le même
+   * nom, l'ancienne restait sur l'iPhone (vu le 23 novembre avec le bol,
+   * d'abord livré sous `52_femmes_nutrition_*`).
+   *
+   * Ils ne servent qu'aux écrans FEMMES (`Bandeau`, `Pieces.tsx`) : jamais
+   * dans POWER ni MASS (`bandeaux.test.ts`). Mêmes réserves de droits que le
    * reste : des générations d'IA.
    */
   femmesAujourdhui: {
@@ -147,8 +153,8 @@ export const VISUELS = {
     usage: 'Bandeau d’en-tête FEMMES : Semaine.',
   },
   femmesNutrition: {
-    display: '52_femmes_nutrition_display.webp',
-    mobile: '52_femmes_nutrition_mobile.webp',
+    display: '55_femmes_nutrition_bol_display.webp',
+    mobile: '55_femmes_nutrition_bol_mobile.webp',
     largeurs: { display: 1200, mobile: 640 },
     description:
       'Bol de saumon, quinoa, avocat, tomates et salade, smoothie aux fruits rouges, fond rose.',
