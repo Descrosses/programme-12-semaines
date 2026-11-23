@@ -32,12 +32,24 @@ describe('aller-retour', () => {
     expect(texte).not.toContain('\n');
   });
 
-  it('n’écrit pas une journée incomplète', () => {
-    // Écrire « 2400,150,, » obligerait le lecteur à deviner.
+  it('une journée sans macros s’écrit avec des tirets, jamais des cases vides', () => {
+    // Depuis le 23 novembre, seules les calories sont obligatoires. Une case
+    // vide serait lue « 0 g » par une version plus ancienne ; « - » est refusé.
     const texte = genererFiche({
       cibles: {
         train: CIBLES.train,
         rest: { kcal: 2100, proteinG: null, carbsG: null, fatG: null },
+      },
+      aliments: [],
+    });
+    expect(texte).toBe('MAJK1 C=2400,150,260,80 R=2100,-,-,-');
+  });
+
+  it('une journée sans calories ne s’écrit pas', () => {
+    const texte = genererFiche({
+      cibles: {
+        train: CIBLES.train,
+        rest: { kcal: null, proteinG: 150, carbsG: null, fatG: null },
       },
       aliments: [],
     });

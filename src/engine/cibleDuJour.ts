@@ -20,8 +20,8 @@
  * Pur : aucun React, aucune base.
  */
 
-import type { CiblesNutrition } from '../data/ciblesNutrition';
-import { macrosValides } from '../data/ciblesNutrition';
+import type { CiblesMacros, CiblesNutrition, CibleSaisie } from '../data/ciblesNutrition';
+import { cibleSaisie } from '../data/ciblesNutrition';
 import {
   NUTRITION_TARGETS,
   type DayKind,
@@ -39,10 +39,15 @@ export interface SourceCible {
 
 export type OrigineCible = 'menus' | 'saisie';
 
-export interface CibleResolue {
-  cible: NutritionTarget;
-  origine: OrigineCible;
+/** La cible posée par la personne : les calories, et les macros qu'elle a posées. */
+export interface CibleSaisieDuJour extends CibleSaisie {
+  kind: DayKind;
+  label: string;
 }
+
+export type CibleResolue =
+  | { cible: NutritionTarget; origine: 'menus' }
+  | { cible: CibleSaisieDuJour; origine: 'saisie' };
 
 const LIBELLES: Record<DayKind, string> = {
   train: 'Jour d’entraînement',
@@ -57,20 +62,70 @@ export function cibleDuJour(
   if (source.menus) {
     return { cible: targetForPhase(NUTRITION_TARGETS[kind], phase), origine: 'menus' };
   }
-  const saisie = source.cibles?.[kind];
-  if (!macrosValides(saisie)) return null;
+  // Les calories suffisent (décision du 23 novembre) ; les macros sont facultatives.
+  const saisie = cibleSaisie(source.cibles?.[kind]);
+  if (saisie === null) return null;
+  return { cible: { kind, label: LIBELLES[kind], ...saisie }, origine: 'saisie' };
+}
+
+// ------------------------------------------------------- ce qu'il reste --
+
+export interface Ecart {
+  kcal: number;
+  /** `null` quand la macro n'est pas posée : rien à comparer, rien à dire. */
+  proteinG: number | null;
+  carbsG: number | null;
+  fatG: number | null;
+}
+
+interface MacrosMangees {
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+/** Cible moins ce qui est compté, arrondi. Une macro non posée reste `null`. */
+export function ecartCible(cible: CibleSaisie, compte: MacrosMangees): Ecart {
+  const d = (c: number | null, m: number) => (c === null ? null : Math.round(c - m));
   return {
-    cible: {
-      kind,
-      label: LIBELLES[kind],
-      kcal: saisie.kcal,
-      proteinG: saisie.proteinG,
-      carbsG: saisie.carbsG,
-      fatG: saisie.fatG,
-      // Pas de repas : c'est précisément ce qui distingue ce cas de l'autre.
-      meals: [],
-      note: '',
-    },
-    origine: 'saisie',
+    kcal: Math.round(cible.kcal - compte.kcal),
+    proteinG: d(cible.proteinG, compte.proteinG),
+    carbsG: d(cible.carbsG, compte.carbsG),
+    fatG: d(cible.fatG, compte.fatG),
   };
+}
+
+/** « a », « a et b », « a, b et c ». */
+export function listeFr(items: readonly string[]): string {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} et ${items[items.length - 1]}`;
+}
+
+/** Le journal du jour : « Il reste 1 160 kcal, 74 g de protéines… pour atteindre ta cible. » */
+export function phraseReste(e: Ecart): string {
+  if (e.kcal <= 0)
+    return `Tu dépasses ta cible de ${Math.abs(e.kcal).toLocaleString('fr-FR')} kcal.`;
+  const items = [`${e.kcal.toLocaleString('fr-FR')} kcal`];
+  if (e.proteinG !== null) items.push(`${String(e.proteinG)} g de protéines`);
+  if (e.carbsG !== null) items.push(`${String(e.carbsG)} g de glucides`);
+  if (e.fatG !== null) items.push(`${String(e.fatG)} g de lipides`);
+  return `Il reste ${listeFr(items)} pour atteindre ta cible.`;
+}
+
+/**
+ * Ce que l'encart des Réglages dit d'une journée en cours de saisie, ou
+ * `null` quand il n'y a rien à dire (tout est posé).
+ */
+export function messageCibles(v: CiblesMacros): string | null {
+  const macrosManquantes = [v.proteinG, v.carbsG, v.fatG].filter((x) => x === null).length;
+  if (v.kcal === null) {
+    return macrosManquantes === 3
+      ? 'Rien de posé pour cette journée.'
+      : 'Il manque les calories : c’est le seul chiffre nécessaire pour afficher une cible.';
+  }
+  if (macrosManquantes > 0) {
+    return 'Calories posées : la cible s’affiche. Les macros sont facultatives.';
+  }
+  return null;
 }

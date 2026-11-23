@@ -35,6 +35,7 @@ export type Route =
   | { name: 'settings' }
   /** Outils de coach, sans aucun lien dans l'app (voir `AdminScreen`). */
   | { name: 'admin' }
+  | { name: 'questionnaire' }
   /*
    * Les écrans FEMMES 8, sous un préfixe à eux.
    *
@@ -88,6 +89,8 @@ export function parseRoute(hash: string): Route {
       return { name: 'settings' };
     case 'admin':
       return { name: 'admin' };
+    case 'questionnaire':
+      return { name: 'questionnaire' };
     default:
       /*
        * L'ancre vide ouvre la plateforme, plus la séance du jour.

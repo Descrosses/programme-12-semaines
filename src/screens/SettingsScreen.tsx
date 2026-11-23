@@ -1,3 +1,6 @@
+import { messageCibles } from '../engine/cibleDuJour';
+import { lireResume } from '../engine/lireResumeQuestionnaire';
+import { CalculCoach } from '../components/CalculCoach';
 import { cloudDisponible } from '../cloud/sauvegarde';
 import { CompteCloud } from '../components/CompteCloud';
 import { useEffect, useRef, useState } from 'react';
@@ -806,12 +809,12 @@ export function SettingsScreen({
 }
 
 /**
- * Les quatre nombres d'une journée.
+ * Les nombres d'une journée : les calories (obligatoires), puis les trois
+ * macros (facultatives depuis le lot 1 de la nutrition, 23 novembre).
  *
  * Chaque champ s'enregistre seul, dès qu'il change : une journée à moitié
- * remplie survit à un changement d'écran, et on peut poser ses chiffres en
- * deux fois. Tant que les quatre n'y sont pas, l'encart le dit — sans rien
- * corriger sous les doigts.
+ * remplie survit à un changement d'écran. L'encart dit ce qui manque — sans
+ * rien corriger sous les doigts.
  */
 function CiblesDuJour({
   kind,
@@ -836,6 +839,7 @@ function CiblesDuJour({
   const completes = macrosValides(valeurs);
   const manquants = champs.filter((c) => valeurs[c.cle] === null).length;
   const ecart = completes ? ecartKcal(valeurs) : 0;
+  const message = messageCibles(valeurs);
 
   return (
     <>
@@ -854,13 +858,7 @@ function CiblesDuJour({
           />
         </div>
       ))}
-      {manquants > 0 && (
-        <p className={styles.fieldHint}>
-          {manquants === 4
-            ? 'Rien de posé pour cette journée.'
-            : `Il manque ${String(manquants)} valeur${manquants > 1 ? 's' : ''} : les quatre sont nécessaires pour afficher une cible.`}
-        </p>
-      )}
+      {manquants > 0 && message !== null && <p className={styles.fieldHint}>{message}</p>}
       {completes && ecart > ECART_TOLERE && (
         <p className={styles.fieldHint} style={{ color: 'var(--accent-ink)' }}>
           {/*
@@ -941,6 +939,21 @@ function CarteFiche({
           Rien à envoyer pour l’instant : pose des cibles ci-dessus, ou colle une fiche reçue.
         </p>
       )}
+
+      <a
+        className={styles.secondary}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          margin: '12px 0 0',
+          textDecoration: 'none',
+        }}
+        href="#/questionnaire"
+      >
+        Remplir le questionnaire alimentaire
+      </a>
 
       <h3 className={styles.sectionTitle}>Coller une fiche reçue</h3>
       <textarea
@@ -1065,10 +1078,15 @@ export function CarteFichePour() {
   const [collage, setCollage] = useState('');
   const [copie, setCopie] = useState(false);
 
-  // Les aliments se lisent dans ce qu'on colle : le même analyseur que pour
-  // une fiche reçue, donc les deux dialectes d'identifiants sont acceptés.
+  // Ce qu'on colle se lit de deux façons : une fiche MAJK1 (même analyseur
+  // que pour une fiche reçue) et le résumé du questionnaire (profil pour le
+  // calcul, aliments de la ligne IDENTIFIANTS). La fiche MAJK1 l'emporte
+  // pour les aliments quand elle est là.
   const lu = collage.trim() === '' ? null : lireFiche(collage);
-  const aliments = lu?.aliments ?? [];
+  const questionnaire = collage.trim() === '' ? null : lireResume(collage);
+  const parQuestionnaire = lu !== null && !lu.trouvee && questionnaire?.trouve === true;
+  const aliments = parQuestionnaire ? questionnaire.aliments : (lu?.aliments ?? []);
+  const inconnus = parQuestionnaire ? questionnaire.inconnus : (lu?.inconnus ?? []);
 
   const fiche = genererFiche({ cibles, aliments });
   const prete = fiche.includes('=');
@@ -1080,9 +1098,48 @@ export function CarteFichePour() {
         Pour un client. <b>Rien n’est enregistré ici</b> — ni dans tes réglages, ni en base. Tu
         remplis, tu copies, tu envoies, et l’écran oublie tout.
       </p>
+      <h3 className={styles.sectionTitle}>Son message</h3>
+      <textarea
+        className={styles.ficheZone}
+        value={collage}
+        onChange={(e) => {
+          setCollage(e.target.value);
+          setCopie(false);
+        }}
+        placeholder={`Colle son questionnaire « Votre plan alimentaire », ou sa ligne ${MARQUEUR}.`}
+        rows={4}
+      />
+      {lu !== null && (
+        <p className={styles.fieldHint}>
+          {/*
+            Distinguer « rien de lisible » de « lu, aucun aliment connu » : le
+            premier cas se corrige en recollant le bon message, le second en
+            complétant le catalogue. Un seul message pour les deux renverrait
+            Guillaume chercher la mauvaise cause.
+          */}
+          {!lu.trouvee && !parQuestionnaire
+            ? `Ni questionnaire ni ligne ${MARQUEUR} dans ce texte.`
+            : aliments.length > 0
+              ? `${String(aliments.length)} aliment${aliments.length > 1 ? 's' : ''} reconnu${aliments.length > 1 ? 's' : ''}.`
+              : 'Message lu, mais aucun aliment reconnu.'}
+          {inconnus.length > 0 && ` Non reconnus : ${inconnus.join(', ')}.`}
+        </p>
+      )}
+      {questionnaire?.trouve === true && (
+        <CalculCoach
+          lecture={questionnaire}
+          onReprendre={(r) => {
+            const m = { kcal: r.kcal, proteinG: r.proteinG, carbsG: r.carbsG, fatG: r.fatG };
+            setCibles({ train: m, rest: { ...m } });
+            setCopie(false);
+          }}
+        />
+      )}
+
+      <h3 className={styles.sectionTitle}>Ses cibles</h3>
       <p className={styles.fieldHint}>
-        MAJK ne calcule pas ses calories. Son poids, sa taille et son objectif sont dans son
-        questionnaire : c’est toi qui lis, et toi qui décides.
+        Seules les calories sont nécessaires. Le calcul de l’appli n’est qu’une proposition : tu
+        peux tout changer.
       </p>
 
       {(['train', 'rest'] as const).map((kind) => (
@@ -1093,34 +1150,6 @@ export function CarteFichePour() {
           onChange={(suivantes) => setCibles({ ...cibles, [kind]: suivantes })}
         />
       ))}
-
-      <h3 className={styles.sectionTitle}>Ses aliments (facultatif)</h3>
-      <textarea
-        className={styles.ficheZone}
-        value={collage}
-        onChange={(e) => {
-          setCollage(e.target.value);
-          setCopie(false);
-        }}
-        placeholder={`Colle son message. La ligne ${MARQUEUR} y suffit.`}
-        rows={3}
-      />
-      {lu !== null && (
-        <p className={styles.fieldHint}>
-          {/*
-            Distinguer « pas de ligne MAJK1 » de « ligne lue, aucun aliment
-            connu » : le premier cas se corrige en recollant le bon message,
-            le second en complétant le catalogue. Un seul message pour les
-            deux renverrait Guillaume chercher la mauvaise cause.
-          */}
-          {!lu.trouvee
-            ? `Pas de ligne ${MARQUEUR} dans ce texte : c’est elle qui porte les aliments.`
-            : aliments.length > 0
-              ? `${String(aliments.length)} aliment${aliments.length > 1 ? 's' : ''} reconnu${aliments.length > 1 ? 's' : ''}.`
-              : 'Ligne lue, mais aucun aliment reconnu.'}
-          {lu.inconnus.length > 0 && ` Non reconnus : ${lu.inconnus.join(', ')}.`}
-        </p>
-      )}
 
       {prete ? (
         <>
@@ -1157,7 +1186,7 @@ export function CarteFichePour() {
         </>
       ) : (
         <p className={styles.fieldHint}>
-          Il faut les quatre valeurs d’au moins une des deux journées pour produire une fiche.
+          Il faut au moins les calories d’une des deux journées pour produire une fiche.
         </p>
       )}
     </section>

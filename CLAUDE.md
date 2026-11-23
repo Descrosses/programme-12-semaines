@@ -21,6 +21,26 @@ réinterprète pas.**
   été retiré, voir plus bas.
 - `plan-alimentaire-12-semaines.md` — le plan alimentaire personnel de
   Guillaume.
+- `regles-cibles-nutrition.md` — les règles de calcul des cibles
+  nutritionnelles (validées le 23 novembre, **codées côté coach seulement**) : Mifflin-St
+  Jeor, grille d'activité, objectif (perte −15/−20/−25 %, prise +5/+10/+15 %),
+  protéines 1,8 g/kg (2,2 en perte), lipides 25 % (≥ 0,6 g/kg), glucides le
+  reste, même cible repos/entraînement, exclusions et planchers, réajustement
+  ±100 kcal toutes les 2 semaines. Chaque section sépare les études des choix
+  de l'appli : ne pas présenter un choix de l'appli comme une recommandation
+  scientifique.
+  **Calcul coach — FAIT** (« go calcul coach ») : valeurs dans
+  `data/reglesCiblesNutrition.ts` (relues dans le `.md` tableau par tableau,
+  exemple du §8 rejoué : `reglesCiblesNutrition.test.ts`), moteur pur
+  `engine/calculCibles.ts` (étapes détaillées, exclusions §6, plancher →
+  `proposable: false`, chiffres TOUJOURS calculés pour que le coach décide).
+  `engine/lireResumeQuestionnaire.ts` relit le résumé du questionnaire collé
+  tel quel (message entier, apostrophes typographiques) ; un libellé inconnu
+  = donnée manquante, jamais devinée (aller-retour sur 400 profils depuis
+  `resume()`). Écran : `components/CalculCoach.tsx` dans la carte
+  « Préparer une fiche » de `#/admin` ; « Reprendre ces chiffres » remplit
+  les DEUX journées avec la même cible (§5). Rien n'est enregistré. Côté
+  utilisateur (profil en base, proposition, réajustement §7) : pas fait.
 
 Des tests **relisent ces `.md`** et comparent case par case (`mainLiftTable.test.ts`,
 `program.test.ts`). Si le code et le `.md` divergent, le déploiement échoue.
@@ -187,19 +207,18 @@ vendredi en levier court) sont **gardées telles quelles**. Des tests
 2. **Le plan alimentaire** (`plan-alimentaire-12-semaines.md`) est le sien.
 3. **Les objectifs du §13**, calculés sur ses 1RM à lui.
 
-**L'avertissement, corrigé.** Une première version de ces notes affirmait que
-« programme femme » n'est pas une catégorie physiologique. **C'est faux dans le
-cas qui nous occupe**, et la correction compte : le programme retenu pour le
-cycle 1 est un programme POST-PARTUM. Le diastasis des grands droits et la
-rééducation périnéale sont des réalités physiologiques précises, qui
-interdisent des exercices nommés et en imposent d'autres. Ce n'est pas du
-marketing, c'est de la sécurité.
+**FEMMES 8 n'est PAS un programme post-partum** (Guillaume, 23 novembre :
+« supprime cette donnée »). Sa base d'origine l'était ; les questions datées
+(visite post-natale, diastasis, rééducation périnéale) ont été retirées et
+`femmes.test.ts` interdit tout retour de « post-partum », « accouchement » ou
+« grossesse » dans ses textes. Ne jamais le présenter, le commenter ni le
+calibrer comme une reprise post-partum.
 
-Ce qui reste vrai : un programme ne se justifie pas par le sexe seul. Il se
-justifie par sa **structure** — ici, des circuits en tours, du matériel léger à
-domicile, un questionnaire de sécurité bloquant et des substitutions
-automatiques. Rien de tout cela n'existe dans POWER 12, et c'est bien pour ça
-que le programme a lieu d'être.
+Un programme ne se justifie pas par le sexe seul. Il se justifie par sa
+**structure** — ici, des circuits en tours, du matériel léger à domicile, une
+question de sécurité (gêne du périnée à l'effort, non bloquante) et des
+substitutions automatiques. Rien de tout cela n'existe dans POWER 12, et c'est
+bien pour ça que le programme a lieu d'être.
 
 Demande à Guillaume le niveau visé, l'objectif, les jours disponibles, le
 matériel et la durée avant d'écrire la moindre séance.
@@ -385,6 +404,38 @@ matériel et la durée avant d'écrire la moindre séance.
   « Fait → 1 min » lance le chrono ; RIEN n'est enregistré. Compté dans les
   durées (`SEC_MONTEE_EN_CHARGE`, ~5 min) : §3 relevé à 50-85 / 55-85 /
   55-85 / 45-85. `components/monteeEnCharge.test.tsx`.
+- **Questionnaire « Votre plan alimentaire » dans l'appli** (Guillaume, 23
+  novembre : « une appli, pas dix liens »). Route `#/questionnaire`, ouverte
+  depuis « Mon plan » vide et Réglages → Partager une fiche. Source FIGÉE :
+  `docs/questionnaires/plan-alimentaire/` (copies exactes du site) ; texte
+  transcrit mot pour mot (« vous », apostrophes droites) dans
+  `data/questionnairePlanAlimentaire.ts`, logique dans
+  `engine/questionnairePlanAlimentaire.ts`. Le test EXÉCUTE le code du site
+  et compare erreurs et résumé sur 400 profils : le résumé envoyé est le
+  même au caractère près (Guillaume et ses outils le relisent). Un seul
+  écart voulu : AUCUNE valeur nutritionnelle sur les cartes (celles du site
+  sont « non vérifiées », celles du catalogue comptent 5 aliments à
+  l'unité) — la phrase « Valeurs moyennes pour 100 g » n'est pas reprise.
+  Réponses en `localStorage` (`state/questionnairePlan.ts`), jamais en base,
+  ni export ni cloud. Seul geste propre à l'appli, à la fin : « Utiliser ces
+  N aliments dans Mon plan » (`alimentsPreferes`, traduits par
+  `alimentPour`) ; une liste existante est annoncée avant d'être remplacée ;
+  les aliments ajoutés à la main restent dans le résumé seulement.
+  Aucun calcul de cibles : le questionnaire recueille, Guillaume décide.
+- **Nutrition, lot 1 — un objectif en CALORIES suffit** (Guillaume, 23
+  novembre). `cibleSaisie` (`data/ciblesNutrition.ts`) : calories dans les
+  bornes OBLIGATOIRES, protéines / glucides / lipides FACULTATIFS un par un ;
+  une macro absente reste `null`, JAMAIS 0 ; une macro hors bornes rend la
+  journée inutilisable. `macrosValides` garde son sens (les 4 chiffres) et ne
+  sert plus qu'à la barre de répartition (`macrosPosees`) et au contrôle
+  d'écart kcal/macros. Le reste à manger et l'écart de « Mon plan » ne citent
+  que les macros posées (`ecartCible`, `phraseReste` : avec les 4 chiffres,
+  la phrase d'avant mot pour mot). FICHE : une macro absente s'écrit « - »
+  (`C=2400,-,-,-`), JAMAIS une case vide — l'ancienne lecture prenait « »
+  pour 0 ; l'ancien format à 4 nombres se relit tel quel. Les deux journées
+  restent exigées par la fiche. `engine/caloriesSeules.test.tsx`. Lots 2 et
+  3 (écran du choix, mises en place, écran du jour fusionné : maquettes du
+  23 novembre) attendent les maquettes de la refonte visuelle.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

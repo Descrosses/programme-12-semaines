@@ -160,7 +160,7 @@ const LIST: ExerciseDef[] = [
     name: 'Pont fessier unilatéral',
     fn: 'glute',
     version: 'maison',
-    intent: 'Une jambe à la fois : révèle et corrige l’asymétrie post-grossesse.',
+    intent: 'Une jambe à la fois : révèle et corrige l’asymétrie entre les deux côtés.',
     cues: ['Bassin à l’horizontale, il ne doit pas basculer', 'Expire en montant'],
   },
 

@@ -1,0 +1,361 @@
+/*
+ * Le questionnaire « Votre plan alimentaire » dans l'appli. Jetons du thème
+ * courant seulement : il s'habille comme l'écran Nutrition d'où on vient.
+ * Toutes les cibles tactiles font au moins 44 px.
+ */
+
+.ecran {
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) var(--pad) 120px;
+}
+
+.barre {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 calc(-1 * var(--pad)) 12px;
+  padding: 10px var(--pad);
+  background: var(--bg);
+}
+
+.barreTexte {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.barreTexte b {
+  color: var(--ink);
+}
+
+.jauge {
+  height: 4px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.jaugePleine {
+  height: 100%;
+  background: var(--accent);
+}
+
+.titre {
+  margin: 8px 0 6px;
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.chapeau {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.feuille {
+  padding: var(--pad);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.champ {
+  margin-top: 18px;
+}
+
+.champ:first-child {
+  margin-top: 0;
+}
+
+.champErreur .libelle {
+  color: var(--rouge);
+}
+
+.libelle {
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.facultatif {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.aide {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.erreur {
+  margin: 8px 0 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--rouge);
+}
+
+.note {
+  margin: 18px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  color: var(--ink);
+}
+
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.puce {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.puceOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.ligneNombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.nombre {
+  width: 7em;
+}
+
+.unite {
+  color: var(--ink-2);
+}
+
+.texte {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.outils {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.outil {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.aliments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.aliment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-align: left;
+}
+
+.alimentOn {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-2));
+}
+
+.coche {
+  flex: 0 0 auto;
+  color: var(--accent-bright, var(--accent));
+  font-weight: 800;
+}
+
+.ajouterOuvrir {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.ligneAjout {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ligneAjout .texte {
+  margin-top: 0;
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.principal,
+.principalCourt,
+.secondaire,
+.fantome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.principal {
+  flex: 1;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.principalCourt {
+  flex: none;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.secondaire {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.fantome {
+  flex: 1;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+}
+
+.rec + .rec {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.recTete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.recTete h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.recTete button {
+  min-height: 44px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--accent-ink, var(--ink));
+  font-weight: 700;
+}
+
+.compte {
+  margin-left: 8px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.pilules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pilule {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 0.8125rem;
+  color: var(--ink);
+}
+
+.vide {
+  margin: 6px 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+
+.resume {
+  width: 100%;
+  min-height: 220px;
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.statut {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.monPlan {
+  margin-top: 18px;
+  padding: var(--pad);
+  border: 1px solid var(--accent-dim, var(--line));
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.monPlanTitre {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--ink);
+}

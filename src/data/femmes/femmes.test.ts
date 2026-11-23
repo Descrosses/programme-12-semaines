@@ -26,6 +26,9 @@
 import { describe, expect, it } from 'vitest';
 import { EXERCISES, getExercise } from './exercises';
 import { ECHAUFFEMENT, PHASES, phaseOf } from './phases';
+import * as exercices from './exercises';
+import * as phases from './phases';
+import * as programme from './programme';
 import { SAFETY_CHECKS, TOTAL_SESSIONS, WEEK_DAYS } from './programme';
 import { RESTRICTION_GATE, RESTRICTION_REASON, WEEKS, type WeekIndex } from './types';
 import { EMPTY_SAFETY } from '../../engine/femmes/types';
@@ -151,6 +154,22 @@ describe('FEMMES 8 — la sécurité', () => {
       .toLowerCase();
     for (const mot of ['post-natal', 'post-partum', 'accouch', 'grossesse', 'sage-femme']) {
       expect(texte, `« ${mot} » suppose une grossesse`).not.toContain(mot);
+    }
+  });
+
+  it('aucune donnée FEMMES ne parle de post-partum (Guillaume, 23 novembre)', () => {
+    // Le test du dessus ne lisait que les questions de sécurité : la phrase de
+    // la pesée (« le poids post-partum fluctue… ») lui avait échappé.
+    const texte = JSON.stringify([programme, phases, exercices]).toLowerCase();
+    for (const mot of [
+      'post-partum',
+      'postpartum',
+      'post-natal',
+      'accouch',
+      'grossesse',
+      'sage-femme',
+    ]) {
+      expect(texte, mot).not.toContain(mot);
     }
   });
 

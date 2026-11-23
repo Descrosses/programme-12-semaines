@@ -83,7 +83,7 @@ function recent(history: HistoryIndex, exerciseId: string, n: number): ExerciseR
  * Charge proposée aujourd'hui.
  *
  * Monter uniquement après DEUX séances faciles d'affilée, cible atteinte. Une
- * seule bonne séance ne prouve rien, et à 5 mois post-partum le coût d'une
+ * seule bonne séance ne prouve rien, et le coût d'une
  * charge trop lourde est plus élevé que celui d'une semaine de trop en dessous.
  */
 export function suggestLoad(

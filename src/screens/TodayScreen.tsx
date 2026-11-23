@@ -402,7 +402,11 @@ export function TodayScreen({
                 ? 'Des principes, pas de calories ni de grammes'
                 : cibleNutrition === null
                   ? 'Pose tes cibles dans les Réglages'
-                  : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal · ${String(cibleNutrition.proteinG)} g de protéines`}
+                  : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal${
+                      cibleNutrition.proteinG === null
+                        ? ''
+                        : ` · ${String(cibleNutrition.proteinG)} g de protéines`
+                    }`}
             </span>
           </span>
           <span className={styles.nutriChevron} aria-hidden="true">
