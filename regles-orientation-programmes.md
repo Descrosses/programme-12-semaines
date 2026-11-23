@@ -1,6 +1,8 @@
 # Orienter vers un programme à partir du bilan sportif
 
-> **Statut : BROUILLON du 23 novembre 2026 — rien n'est codé.**
+> **Statut : BROUILLON révision 2 (23 novembre 2026) — rien n'est codé.**
+> Réponses de Guillaume intégrées (A, B, C, D, E, F, G) ; une question reste
+> ouverte sur la branche MASS (§3).
 > À corriger par Guillaume. Une fois validé, ce fichier deviendra la source
 > de vérité : le code le transcrira et des tests le reliront, comme pour
 > `regles-cibles-nutrition.md`.
@@ -56,12 +58,9 @@ FORCE). Guillaume les lit dans le résumé.
 |---|---|
 | ROUGE | Rien : le questionnaire s'est déjà arrêté (écran « Avant de poursuivre »). |
 | Hors périmètre (grossesse, moins de 18 ans, post-partum, reprise après blessure, senior) | Rien : le questionnaire s'est déjà arrêté. |
-| **ORANGE** | **Aucune suggestion.** À la place : *« Une de tes réponses demande l'avis de Guillaume avant de choisir un programme. Il te répondra après avoir lu ton bilan. »* |
+| **ORANGE** | **Aucune suggestion** (Guillaume, réponse A). À la place : *« Une de tes réponses demande l'avis de Guillaume avant de choisir un programme. Il te répondra après avoir lu ton bilan. »* |
 | VERT | Les suggestions du §3. |
 
-**Proposition de Claude (question A) :** pas de suggestion en orange.
-Montrer un programme à quelqu'un qui a déclaré une douleur ou un traitement,
-c'est l'inviter à le démarrer avant que tu aies lu son bilan.
 
 ---
 
@@ -78,35 +77,59 @@ Si plus de deux programmes passent, on garde l'ordre du tableau.
 | Objectif | « Devenir plus fort », « Améliorer explosivité / vitesse / qualités athlétiques » ou « Préparation à un sport ou une épreuve » | catalogue (objectifs : force maximale, explosivité) |
 | Niveau | Intermédiaire, Confirmé ou Avancé | catalogue : « Technique maîtrisée sur les trois barres » |
 | Exercices maîtrisés | Squat avec barre **et** Développé couché **et** Soulevé de terre | catalogue : « Technique maîtrisée sur les trois barres » |
-| Séances par semaine | 4 ou plus | catalogue : « Quatre à cinq séances par semaine » |
-| Disponibilités | au moins 4 jours à 60 min ou plus | **proposition de Claude** (§3 du programme : séances de 45 à 85 min) — question B |
+| Séances par semaine | 5 ou plus | Guillaume (réponse B) |
+| Disponibilités | au moins 5 jours à 60 min ou plus (séances visées : 60 à 75 min) | Guillaume (réponse B) |
 | Lieu | Salle ou Plusieurs lieux | **proposition de Claude** (barres, rack, ceinture de lest) |
+
+**À savoir (réponse B) :** le §3 de POWER annonce des séances de 45 à
+85 min, et l'appli calcule jusqu'à 81 min le vendredi en S5-7. Quelqu'un
+qui a 75 min tout juste dépassera certains jours. La règle reste la tienne :
+c'est une indication, pas un verrou.
+
+### La famille MASS — chemin conseillé : HYPERTROPHIE → FORCE → CONGESTION
+
+**Décision de Guillaume (réponses C et D) :** la suggestion suit le chemin
+déjà écrit au catalogue. Le point de départ du chemin MASS, et le programme
+des débutants, est **MASS HYPERTROPHIE 1.0** (`mass8`, pas encore créé).
+MASS FORCE peut être suggéré même en version de travail.
+
+**Question H (ouverte) :** tant que HYPERTROPHIE n'existe pas, que montre
+l'écran à quelqu'un qui veut prendre du muscle ? Proposition de Claude :
+« MASS HYPERTROPHIE — le point de départ conseillé, bientôt disponible »,
+et en attendant le programme disponible qui suit sur le chemin.
 
 ### MASS CONGESTION (`mass4`)
 
 | Condition | Valeur | Source |
 |---|---|---|
 | Objectif | « Prendre du muscle » | catalogue : « Prise de masse musculaire et congestion » |
-| Niveau | Débutant (moins d'1 an), Intermédiaire ou Confirmé | catalogue : « Niveau débutant avancé ou intermédiaire, déjà entraîné » — question C |
+| Niveau | Débutant (moins d'1 an), Intermédiaire ou Confirmé ; « Jamais pratiqué » écarté | catalogue + Guillaume (réponse C) |
 | Séances par semaine | 4 ou plus | catalogue : « Quatre séances par semaine » |
 | Disponibilités | au moins 4 jours à 60 min ou plus | catalogue : « environ 60 minutes » |
 | Lieu | Salle ou Plusieurs lieux | catalogue : « Smith machine, poulies, machines guidées et haltères » |
 
 ### MASS FORCE (`mass-force`)
 
-**Proposition de Claude (question D) : jamais suggéré tant que c'est une
-version de travail** (seule la semaine 1 est écrite). Le suggérer, c'est
-envoyer quelqu'un sur un programme qui s'arrête au bout de 7 jours.
+**Suggéré, même en version de travail** (Guillaume, réponse D : « programme
+à compléter, mais chemin déjà écrit comme ça »). Ses conditions dépendent de
+la question H.
 
-### MASS HYPERTROPHIE, transitions, cycles suivants
+### MASS HYPERTROPHIE (`mass8`)
 
-Jamais suggérés : « à venir », ils ne se démarrent pas.
+Le point de départ du chemin MASS et le programme des débutants (réponse C).
+Ses conditions s'écriront avec le programme ; d'ici là, voir la question H.
+
+### Transitions et cycles suivants (POWER, FEMMES)
+
+Jamais suggérés : « à venir », ils ne se démarrent pas, et le parcours les
+ouvre après l'étape précédente.
 
 ### FEMMES CYCLE 1 (`femmes8`)
 
 | Condition | Valeur | Source |
 |---|---|---|
-| Objectif | « Me renforcer musculairement (sans viser la prise de masse) », « Reprendre le sport », « Santé / bien-être » ou « Améliorer condition physique / endurance » | catalogue : « Reprendre ou construire une base de force complète, sans matériel lourd » — question E |
+| Objectif | « Me renforcer musculairement (sans viser la prise de masse) », « Reprendre le sport », « Santé / bien-être », « Améliorer condition physique / endurance » ou « Prendre du muscle » (prise de masse, volume des fessiers) | Guillaume (réponse E) |
+| Sexe | Femme | Guillaume (réponses E et F) |
 | Séances par semaine | 3 ou plus | catalogue : « Trois créneaux… par semaine » |
 | Disponibilités | au moins 3 jours à 20 min ou plus | catalogue : « de 20 à 45 minutes » |
 | Lieu | n'importe lequel | catalogue : « Un tapis, une paire d'haltères légers et un kettlebell — ou une salle de sport » |
@@ -132,30 +155,29 @@ CYCLE 3, « à venir ».
 
 ---
 
-## 5. Le sexe ne décide jamais
+## 5. Le sexe : seulement pour FEMMES
 
-Ni pour suggérer, ni pour écarter, conformément à ton site (« sexe :
-information, ne décide jamais seul ») et à la règle du dépôt (« un programme
-ne se justifie pas par le sexe seul »).
+**Décision de Guillaume (réponses E et F) :** FEMMES CYCLE 1 n'est suggéré
+qu'à une personne qui a répondu « Femme ». Pour POWER et MASS, le sexe ne
+compte jamais.
 
-**Conséquence à trancher (question F) :** un homme dont les réponses
-correspondent à FEMMES CYCLE 1 (reprise, 3 séances courtes, maison) se le
-verra suggérer. **Proposition de Claude :** le garder. C'est la structure
-du programme qui correspond (circuits courts, matériel léger), et le nom de
-la famille est une étiquette.
+C'est un écart assumé à la phrase du site (« sexe : information, ne décide
+jamais seul ») : ici il ne décide pas seul non plus, puisque l'objectif, les
+séances et les disponibilités doivent aussi correspondre. « Autre » et
+« Préfère ne pas répondre » ne reçoivent pas FEMMES (lecture stricte de « si
+c'est une femme »).
 
 ---
 
-## 6. Questions pour Guillaume
+## 6. Réponses de Guillaume (23 novembre)
 
-Chaque question a une proposition ; réponds « ok » ou corrige.
-
-| | Question | Proposition de Claude |
+| | Question | Réponse |
 |---|---|---|
-| A | Orange : suggérer quand même, ou rien ? | Rien, message « Guillaume te répondra » |
-| B | POWER : combien de jours, combien de minutes ? | 4 jours à 60 min ou plus |
-| C | MASS CONGESTION : « Débutant (moins d'1 an) » suffit-il pour « débutant avancé » ? | Oui ; « Jamais pratiqué » écarté |
-| D | MASS FORCE en version de travail : suggéré ? | Non, tant que S2-S4 ne sont pas écrites |
-| E | FEMMES CYCLE 1 : quels objectifs ? | Renforcement, reprise, santé, condition physique |
-| F | FEMMES CYCLE 1 suggéré à un homme qui correspond ? | Oui, le sexe ne décide jamais |
-| G | Au plus deux suggestions : le bon nombre ? | Oui |
+| A | Orange : suggérer quand même ? | Non |
+| B | POWER : jours et minutes ? | 5 jours à 60-75 min |
+| C | MASS CONGESTION : « Débutant (moins d'1 an) » suffit ? | Oui, mais départ MASS et débutants → HYPERTROPHIE 1.0 (à créer) |
+| D | MASS FORCE en version de travail : suggéré ? | Oui, le chemin est déjà écrit ainsi |
+| E | FEMMES CYCLE 1 : quels objectifs ? | Renforcement, reprise, santé, condition physique, et prise de masse / volume des fessiers si c'est une femme |
+| F | FEMMES CYCLE 1 à un homme qui correspond ? | Non |
+| G | Au plus deux suggestions ? | Oui |
+| H | MASS tant que HYPERTROPHIE n'existe pas ? | **Ouverte** (§3) |
