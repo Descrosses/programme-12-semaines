@@ -942,6 +942,21 @@ function CarteFiche({
         </p>
       )}
 
+      <a
+        className={styles.secondary}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          margin: '12px 0 0',
+          textDecoration: 'none',
+        }}
+        href="#/questionnaire"
+      >
+        Remplir le questionnaire alimentaire
+      </a>
+
       <h3 className={styles.sectionTitle}>Coller une fiche reçue</h3>
       <textarea
         className={styles.ficheZone}

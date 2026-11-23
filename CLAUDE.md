@@ -385,6 +385,24 @@ matériel et la durée avant d'écrire la moindre séance.
   « Fait → 1 min » lance le chrono ; RIEN n'est enregistré. Compté dans les
   durées (`SEC_MONTEE_EN_CHARGE`, ~5 min) : §3 relevé à 50-85 / 55-85 /
   55-85 / 45-85. `components/monteeEnCharge.test.tsx`.
+- **Questionnaire « Votre plan alimentaire » dans l'appli** (Guillaume, 23
+  novembre : « une appli, pas dix liens »). Route `#/questionnaire`, ouverte
+  depuis « Mon plan » vide et Réglages → Partager une fiche. Source FIGÉE :
+  `docs/questionnaires/plan-alimentaire/` (copies exactes du site) ; texte
+  transcrit mot pour mot (« vous », apostrophes droites) dans
+  `data/questionnairePlanAlimentaire.ts`, logique dans
+  `engine/questionnairePlanAlimentaire.ts`. Le test EXÉCUTE le code du site
+  et compare erreurs et résumé sur 400 profils : le résumé envoyé est le
+  même au caractère près (Guillaume et ses outils le relisent). Un seul
+  écart voulu : AUCUNE valeur nutritionnelle sur les cartes (celles du site
+  sont « non vérifiées », celles du catalogue comptent 5 aliments à
+  l'unité) — la phrase « Valeurs moyennes pour 100 g » n'est pas reprise.
+  Réponses en `localStorage` (`state/questionnairePlan.ts`), jamais en base,
+  ni export ni cloud. Seul geste propre à l'appli, à la fin : « Utiliser ces
+  N aliments dans Mon plan » (`alimentsPreferes`, traduits par
+  `alimentPour`) ; une liste existante est annoncée avant d'être remplacée ;
+  les aliments ajoutés à la main restent dans le résumé seulement.
+  Aucun calcul de cibles : le questionnaire recueille, Guillaume décide.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
 - Le programme ne propose **aucune quantité alimentaire** : il additionne et

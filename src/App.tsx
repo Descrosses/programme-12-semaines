@@ -6,6 +6,7 @@ import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
 import { EcransFemmes } from './screens/femmes/EcransFemmes';
 import { AdminScreen } from './screens/AdminScreen';
+import { QuestionnairePlanScreen } from './screens/QuestionnairePlanScreen';
 import { EvaluationScreen } from './screens/EvaluationScreen';
 import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
@@ -521,6 +522,16 @@ function renderScreen(
 
     case 'admin':
       return <AdminScreen onRetour={() => navigate({ name: 'accueil' })} />;
+
+    case 'questionnaire':
+      return (
+        <QuestionnairePlanScreen
+          onRetour={() => {
+            refresh();
+            navigate({ name: 'nutrition' });
+          }}
+        />
+      );
 
     case 'parcours':
       return (

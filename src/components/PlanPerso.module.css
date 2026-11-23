@@ -455,3 +455,17 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* « Mon plan » sans aliments : le questionnaire, en un geste. */
+.lienQuestionnaire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}

@@ -144,9 +144,13 @@ export function PlanPerso({
       <section className={styles.carte}>
         <h2 className={styles.titre}>Mon plan</h2>
         <p className={styles.sousTitre}>
-          Il faut d’abord tes aliments. Colle le récapitulatif de ton questionnaire dans Réglages →
-          Partager une fiche, et tes cinq repas s’ouvriront avec ta liste à toi.
+          Il faut d’abord tes aliments. Réponds au questionnaire (environ 2 minutes) : tes cinq
+          repas s’ouvriront avec ta liste à toi. Une fiche reçue se colle toujours dans Réglages →
+          Partager une fiche.
         </p>
+        <a className={styles.lienQuestionnaire} href="#/questionnaire">
+          Remplir le questionnaire alimentaire
+        </a>
       </section>
     );
   }
