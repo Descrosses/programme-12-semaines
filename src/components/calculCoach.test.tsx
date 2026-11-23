@@ -60,7 +60,9 @@ describe('le calcul montré au coach', () => {
     }
     expect(texte(h)).toContain('2 150 kcal · 180 g P · 225 g G · 60 g L');
     expect(texte(h)).toContain('Une estimation, pas une mesure');
-    expect(h).toContain('Reprendre ces chiffres pour les deux journées');
+    expect(h).toContain('>Utiliser cette cible<');
+    expect(h).not.toContain('les deux journées');
+    expect(h).not.toMatch(/>Valider</);
     expect(h).not.toContain('ne le proposerait pas');
   });
 
@@ -69,7 +71,7 @@ describe('le calcul montré au coach', () => {
     expect(h).toContain('data-calcul="a-voir"');
     expect(h).toContain('L’appli ne le proposerait pas à la personne');
     expect(h).toContain('Maladie ou traitement');
-    expect(h).toContain('Reprendre ces chiffres');
+    expect(h).toContain('Utiliser cette cible');
   });
 
   it('un profil incomplet : ce qui manque, aucun chiffre', () => {
