@@ -471,3 +471,34 @@
   font-weight: 600;
   letter-spacing: 0.02em;
 }
+
+/* Le bilan sportif, sous le titre : une porte vers le questionnaire, pas un choix de programme. */
+.bilan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  margin: 0 var(--pad) 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg, 18px);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.bilanTexte {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bilanTitre {
+  font-weight: 700;
+}
+
+.bilanAide {
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}

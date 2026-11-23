@@ -954,6 +954,20 @@ function CarteFiche({
       >
         Remplir le questionnaire alimentaire
       </a>
+      <a
+        className={styles.secondary}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          margin: '10px 0 0',
+          textDecoration: 'none',
+        }}
+        href="#/bilan"
+      >
+        Remplir le bilan sportif
+      </a>
 
       <h3 className={styles.sectionTitle}>Coller une fiche reçue</h3>
       <textarea

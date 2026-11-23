@@ -1,0 +1,76 @@
+/*
+ * Ce que le « Bilan sportif et nutrition » ajoute aux styles du questionnaire
+ * alimentaire (`Questionnaire.module.css`, partagé) : encadré d'avertissement,
+ * accord, zones de texte, grilles de champs, échelle de 1 à 10.
+ * Jetons du thème courant seulement ; cibles tactiles d'au moins 44 px.
+ */
+
+.avertissement {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.accord {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.accord input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+}
+
+.zone {
+  width: 100%;
+  min-height: 88px;
+  margin-top: 8px;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.groupe {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  margin-top: 8px;
+}
+
+.large {
+  grid-column: 1 / -1;
+}
+
+.etiquette {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.echelle {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.echelle button {
+  padding: 0;
+}

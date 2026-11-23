@@ -6,6 +6,7 @@ import { AccueilScreen } from './screens/AccueilScreen';
 import { CatalogueScreen } from './screens/CatalogueScreen';
 import { EcransFemmes } from './screens/femmes/EcransFemmes';
 import { AdminScreen } from './screens/AdminScreen';
+import { QuestionnaireBilanScreen } from './screens/QuestionnaireBilanScreen';
 import { QuestionnairePlanScreen } from './screens/QuestionnairePlanScreen';
 import { EvaluationScreen } from './screens/EvaluationScreen';
 import { ParcoursScreen } from './screens/ParcoursScreen';
@@ -532,6 +533,9 @@ function renderScreen(
           }}
         />
       );
+
+    case 'bilan':
+      return <QuestionnaireBilanScreen onRetour={() => navigate({ name: 'catalogue' })} />;
 
     case 'parcours':
       return (
