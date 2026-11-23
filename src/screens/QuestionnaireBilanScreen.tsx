@@ -36,6 +36,8 @@ import {
   type Arret,
   type EtatBilan,
 } from '../engine/questionnaireBilanSportif';
+import { TEXTES_ORIENTATION } from '../data/orientationProgrammes';
+import { orienter } from '../engine/orientation';
 import { ecrireBilan, lireBilan } from '../state/questionnaireBilan';
 import q from './Questionnaire.module.css';
 import b from './QuestionnaireBilan.module.css';
@@ -617,6 +619,7 @@ function Fin({
   return (
     <div>
       <h1 className={q.titre}>{`${TEXTES.finDebut}${etat.name.trim()}${TEXTES.finFin}`}</h1>
+      <Orientation etat={etat} />
       <p className={q.chapeau}>{liens.complet ? TEXTES.finComplet : TEXTES.finCourt}</p>
       <textarea className={q.resume} readOnly aria-label="Résumé de tes réponses" value={texte} />
       <div className={q.actions}>
@@ -659,5 +662,48 @@ function Fin({
         </button>
       </div>
     </div>
+  );
+}
+
+// ----------------------------------------------------------- orientation --
+
+/**
+ * « Les programmes qui te correspondent » (`regles-orientation-programmes.md`).
+ * Une indication : le bouton ouvre la fiche au catalogue, il ne démarre rien.
+ * Propre à l'appli : le résumé envoyé, lui, reste celui du site.
+ */
+function Orientation({ etat }: { etat: EtatBilan }) {
+  const o = orienter(etat);
+  if (o.type === 'arret') return null;
+  return (
+    <section
+      className={b.orientation}
+      aria-label={TEXTES_ORIENTATION.titre}
+      data-orientation={o.type}
+    >
+      <h2 className={b.orientationTitre}>{TEXTES_ORIENTATION.titre}</h2>
+      {o.type === 'orange' ? (
+        <p className={q.chapeau}>{TEXTES_ORIENTATION.orange}</p>
+      ) : (
+        <>
+          {o.suggestions.length === 0 && !o.bientot && (
+            <p className={q.chapeau}>{TEXTES_ORIENTATION.aucune}</p>
+          )}
+          {o.bientot && <p className={b.bientot}>{TEXTES_ORIENTATION.bientot}</p>}
+          {o.suggestions.map((s) => (
+            <div key={s.programme} className={b.suggestion}>
+              <p className={b.suggestionNom}>{s.nom}</p>
+              <p className={q.aide}>{s.raisons.join(' · ')}</p>
+              <a className={q.secondaire} href={`#/catalogue/${s.famille}`}>
+                {TEXTES_ORIENTATION.voir}
+              </a>
+            </div>
+          ))}
+          {(o.suggestions.length > 0 || o.bientot) && (
+            <p className={q.aide}>{TEXTES_ORIENTATION.phrase}</p>
+          )}
+        </>
+      )}
+    </section>
   );
 }

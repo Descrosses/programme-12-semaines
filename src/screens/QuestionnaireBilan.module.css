@@ -74,3 +74,43 @@
 .echelle button {
   padding: 0;
 }
+
+/* « Les programmes qui te correspondent », à la fin du bilan. */
+.orientation {
+  margin: 4px 0 16px;
+  padding: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.orientationTitre {
+  margin: 0 0 8px;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.suggestion + .suggestion,
+.bientot + .suggestion {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.suggestionNom {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.suggestion a {
+  margin-top: 10px;
+}
+
+.bientot {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
