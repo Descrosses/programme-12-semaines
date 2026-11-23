@@ -36,7 +36,7 @@ const niveauxDu = (v: string) =>
 const SECTIONS_MD = {
   power12: '### POWER CYCLE 1',
   'mass-force': '### Conditions de la famille MASS',
-  femmes8: '### FEMMES CYCLE 1',
+  femmes8: '### LADIES CYCLE 1',
 } as const;
 
 describe('le .md, tableau par tableau', () => {
@@ -133,7 +133,7 @@ describe('les réponses de Guillaume, rejouées', () => {
     expect(ids(bilan({ ...POWER, q3: 'Prendre du muscle', q14: 'Maison' }))).toEqual([]);
   });
 
-  it('E, F — FEMMES CYCLE 1 : une femme seulement ; prise de muscle comprise', () => {
+  it('E, F — LADIES CYCLE 1 : une femme seulement ; prise de muscle comprise', () => {
     const reprise = { q3: 'Reprendre le sport', q12: '3', q13: semaine(3, 30), q14: 'Maison' };
     expect(ids(bilan({ ...reprise, q2: { sexe: 'Femme' } }))).toEqual(['femmes8']);
     expect(ids(bilan({ ...reprise, q2: { sexe: 'Homme' } }))).toEqual([]);

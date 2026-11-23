@@ -154,8 +154,16 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 |---|---|
 | POWER | Disponible — c'est le programme de ce dépôt |
 | MASS | Trois programmes indépendants, ordre conseillé SANS verrou : HYPERTROPHIE (`mass8`, à venir) → FORCE (`mass-force`, **disponible en version de travail, S1 seule** — ouvert à la demande de Guillaume) → CONGESTION (`mass4`, disponible) |
-| FEMMES | Parcours de 8 étapes. Le cycle 1 (FEMMES 8) est **disponible** ; les 7 autres `a-venir` |
+| LADIES (ex-FEMMES) | Parcours de 8 étapes. Le cycle 1 (FEMMES 8, affiché LADIES CYCLE 1) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
+
+**Renommée LADIES** (Guillaume, 23 novembre, « go ladies ») : seuls les
+NOMS affichés changent (famille « LADIES », étapes « LADIES CYCLE n » /
+« LADIES TRANSITION n », aussi dans `regles-orientation-programmes.md`).
+L'identifiant `femmes`, `femmes8`, les routes `#/femmes/*`, le thème
+`[data-theme='femmes']`, les tables et le code gardent « femmes », comme
+MASS 4 devenu MASS CONGESTION. Le badge retire le préfixe LADIES
+(`engine/acces.ts`). `acces.test.ts` fige le nom.
 
 **La place de FEMMES est déjà faite** : l'identifiant existe, l'entrée du
 catalogue existe, le bloc de thème `[data-theme='femmes']` existe dans

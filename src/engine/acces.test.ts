@@ -165,6 +165,16 @@ describe('le parcours FEMMES', () => {
     expect(accesProgramme(p('femmes-transition4'), []).badge).toBe('Se débloque après le cycle 4');
   });
 
+  it('la famille s’appelle LADIES (Guillaume, « go ladies »), ses étapes aussi', () => {
+    const famille = familleParId('femmes')!;
+    expect(famille.nom).toBe('LADIES');
+    for (const pr of famille.programmes) {
+      expect(pr.nom).toMatch(/^LADIES (CYCLE|TRANSITION) [1-4]$/);
+    }
+    // Seuls les noms ont changé : l'identifiant du cycle 1 reste `femmes8`.
+    expect(p('femmes8').nom).toBe('LADIES CYCLE 1');
+  });
+
   it('les résumés reprennent l’organigramme', () => {
     // Le cycle 1 est le programme en circuits (décision de Guillaume), pas
     // la « prise de masse » que l'organigramme lui donnait.
