@@ -9,7 +9,7 @@
  * code divergent, c'est la planche qui gagne.
  */
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { VISUELS, visuelSrcSet, visuelUrl, type VisuelNom } from '../../data/visuels';
 import s from './Femmes.module.css';
 
@@ -145,16 +145,51 @@ export function Bandeau({
   const srcSet = photo === undefined ? null : visuelSrcSet(photo);
   const tailleCls = taille === 'xl' ? s.titreXl : taille === 'l' ? s.titreL : s.titreM;
   const clair = retour !== undefined;
+  const avecPhoto = !clair && src !== null;
+
+  /*
+   * La bande fixe derrière l'heure (global.css) s'efface en haut d'un écran à
+   * photo — la photo passe sous l'heure — et revient dès qu'on fait défiler,
+   * quand le contenu clair remonte sous l'horloge.
+   */
+  useEffect(() => {
+    if (!avecPhoto) return;
+    const html = document.documentElement;
+    html.dataset.bandeauPhoto = '';
+    const suivre = () => {
+      if (window.scrollY > 8) html.dataset.defile = '';
+      else delete html.dataset.defile;
+    };
+    suivre();
+    window.addEventListener('scroll', suivre, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', suivre);
+      delete html.dataset.bandeauPhoto;
+      delete html.dataset.defile;
+    };
+  }, [avecPhoto]);
+
   return (
     <div className={`${s.hero} ${clair ? s.heroClair : ''}`}>
-      {!clair && src !== null && (
-        <img
-          src={src}
-          {...(srcSet !== null ? { srcSet } : {})}
-          sizes="100vw"
-          alt=""
-          style={{ objectPosition: VISUELS[photo!].focus }}
-        />
+      {avecPhoto && (
+        <>
+          {/* Le double flouté, sous l'heure (même fichier, déjà chargé). */}
+          <img
+            className={s.heroFlou}
+            src={src}
+            {...(srcSet !== null ? { srcSet } : {})}
+            sizes="100vw"
+            alt=""
+            style={{ objectPosition: `${VISUELS[photo!].focus.split(' ')[0]} 0%` }}
+          />
+          <img
+            src={src}
+            {...(srcSet !== null ? { srcSet } : {})}
+            sizes="100vw"
+            alt=""
+            style={{ objectPosition: VISUELS[photo!].focus }}
+          />
+        </>
       )}
       {logo ? (
         <h1 className={s.logo}>

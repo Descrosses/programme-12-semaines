@@ -83,13 +83,14 @@ describe('écran Semaine FEMMES — branché sur le programme, pas sur la planch
     for (const w of WEEKS) expect(ecran(w).html).not.toMatch(/>DIM</);
   });
 
-  it('le bandeau et la carte disent la phase, ses tours, son repos et son objectif', () => {
+  it('la carte dit la semaine, sa phase, ses tours, son repos et son objectif', () => {
     for (const w of [1, 4, 7] as WeekIndex[]) {
       const { html } = ecran(w);
       const p = phaseOf(w);
       const se = getSession(w, 0, 'maison', EMPTY_CONTEXT, ETAT_INITIAL.niveau);
-      expect(html).toContain(`Phase ${p.id} · ${p.name}`);
-      expect(html).toContain(`SEMAINE ${w}`);
+      // Le bandeau dit « Semaine » (planche des bandeaux) ; la carte dit laquelle.
+      expect(html).toMatch(/<h1[^>]*>Semaine<\/h1>/);
+      expect(html).toMatch(new RegExp(`Semaine (<!-- -->)?${w}(<!-- -->)? · (<!-- -->)?${p.name}`));
       expect(html).toContain(`${se.tours} tours × ${se.slots.length}`);
       expect(html).toContain(p.objective.replace(/’/g, '&#x27;').replace(/'/g, '&#x27;'));
     }

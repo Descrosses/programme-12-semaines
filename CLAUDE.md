@@ -180,8 +180,18 @@ la planche sont ASSOMBRIES pour le petit texte, et c'est voulu : bouton plein
 SANS texte) : `Bandeau photo=…` — Aujourd'hui `femmesAujourdhui` (squat),
 Semaine `femmesSemaine` (kettlebell), Nutrition `femmesNutrition`, Profil
 `femmesReglages` (téléphone) ; `femmesMesures` (carnet) attend l'écran
-Mesures. La photo commence SOUS la barre d'état (la bande de l'heure
-couvrirait les têtes) ; le dégradé rose reste dessous. Jamais hors des
+Mesures. **Titres = planche des six bandeaux** (« AUJOURD'HUI / Ma séance
+du jour », « SEMAINE / Mon programme · semaine par semaine », « NUTRITION /
+Mon suivi nutritionnel », « RÉGLAGES / Mon compte, mes préférences · et mon
+programme ») ; le numéro de semaine et la phase passent dans la carte de
+Semaine. **Le bandeau REMONTE jusqu'en haut** : `.app` réserve déjà
+l'encoche, `.hero` l'annule (marge négative) — sinon un vide doublait
+l'encoche (vu sur iPhone). La photo nette commence sous l'heure (têtes en
+haut des fichiers), son double flouté passe dessous ; la bande `--barre-etat`
+est transparente en haut d'un écran à photo et revient au défilement
+(`data-bandeau-photo` / `data-defile`, posés par `Bandeau`). Sur iOS 26
+l'heure est NOIRE sur un voile clair posé par le système (captures de
+Guillaume) : ne pas compter sur `black-translucent`. Jamais hors des
 écrans FEMMES. Pas de Progrès FEMMES pour l'instant (décision de Guillaume) ;
 le menu dit « Mesures », pas « Combiné ».
 **Nutrition FEMMES** (`#/femmes/nutrition`, `NutritionFemmes.tsx`) : l'écran

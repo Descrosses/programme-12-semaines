@@ -107,7 +107,13 @@ export function FemmesAujourdhui({
 
   return (
     <div className={s.page}>
-      <Bandeau logo titre="MAJK FEMMES" photo="femmesAujourdhui" />
+      {/* Les titres des bandeaux : ceux de la planche de Guillaume. */}
+      <Bandeau
+        photo="femmesAujourdhui"
+        titre="Aujourd’hui"
+        taille="xl"
+        sousTitre="Ma séance du jour"
+      />
 
       {/* Les quatre pastilles de la planche : niveau, semaine, jour, durée. */}
       <div className={`${s.chips} ${s.chipsAccueil}`}>
@@ -253,13 +259,9 @@ export function FemmesSemaine({
     <div className={s.page}>
       <Bandeau
         photo="femmesSemaine"
-        surTitre={`Phase ${phase.id} · ${phase.name}`}
-        titre={`SEMAINE ${etat.semaine}`}
+        titre="Semaine"
         taille="xl"
-        sousTitre={[
-          `${jours.length} séances · ${phase.durationLabel}`,
-          `${seance.tours} tours × ${seance.slots.length} · repos ${restLabel(seance.restSec)}`,
-        ]}
+        sousTitre={['Mon programme', 'semaine par semaine']}
       />
 
       <div className={s.semaines} ref={rangee}>
@@ -289,8 +291,16 @@ export function FemmesSemaine({
             <Ico nom="haltere" taille={34} />
           </span>
           <span>
-            <h2 className={s.carteBlocTitre}>{phase.name}</h2>
+            {/* La semaine choisie et sa phase : le bandeau dit « Semaine »
+                (planche), la carte dit laquelle. */}
+            <h2 className={s.carteBlocTitre}>
+              Semaine {etat.semaine} · {phase.name}
+            </h2>
             <p className={s.carteBlocTexte}>{phase.objective}</p>
+            <p className={s.carteBlocDetail}>
+              <span>{`${jours.length} séances · ${phase.durationLabel}`}</span>
+              <span>{`${seance.tours} tours × ${seance.slots.length} · repos ${restLabel(seance.restSec)}`}</span>
+            </p>
           </span>
         </section>
 
@@ -399,8 +409,11 @@ export function FemmesProfil({
     <div className={s.page}>
       <Bandeau
         photo="femmesReglages"
-        surTitre={depart ? 'Avant de commencer' : 'Réglages'}
-        titre={depart ? 'Ton départ' : 'Profil'}
+        titre={depart ? 'Ton départ' : 'Réglages'}
+        taille="xl"
+        sousTitre={
+          depart ? 'Avant de commencer' : ['Mon compte, mes préférences', 'et mon programme']
+        }
       />
       <div className={s.corps}>
         <h2 className={s.titreSection}>Ton niveau</h2>

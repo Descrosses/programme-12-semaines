@@ -43,6 +43,14 @@ html[data-theme='femmes'] body::before {
   height: env(safe-area-inset-top, 0px);
   background: var(--barre-etat);
   pointer-events: none;
+  transition: background-color 0.2s;
+}
+
+/* Sur un écran à bandeau photo, en haut de page, la bande s'efface : c'est
+   la photo qui passe sous l'heure. Elle revient dès qu'on fait défiler
+   (attributs posés par `Bandeau`, Pieces.tsx). */
+html[data-theme='femmes'][data-bandeau-photo]:not([data-defile]) body::before {
+  background: transparent;
 }
 
 body {

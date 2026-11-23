@@ -82,6 +82,29 @@ describe('bandeaux FEMMES', () => {
     expect(lire('./NutritionFemmes.tsx')).toContain('photo="femmesNutrition"');
   });
 
+  it('les titres sont ceux de la planche des six bandeaux de Guillaume', () => {
+    const ecrans = lire('./FemmesScreens.tsx').replace(/\s+/g, ' ');
+    expect(ecrans).toContain('titre="Aujourd’hui" taille="xl" sousTitre="Ma séance du jour"');
+    expect(ecrans).toContain(
+      'titre="Semaine" taille="xl" sousTitre={[\'Mon programme\', \'semaine par semaine\']}',
+    );
+    expect(ecrans).toContain("['Mon compte, mes préférences', 'et mon programme']");
+    expect(lire('./NutritionFemmes.tsx').replace(/\s+/g, ' ')).toContain(
+      'titre="Nutrition" taille="xl" sousTitre="Mon suivi nutritionnel"',
+    );
+  });
+
+  it('le bandeau remonte sous l’heure, la photo nette commence dessous', () => {
+    const css = lire('./Femmes.module.css');
+    // `.app` réserve déjà l'encoche : la marge négative l'annule (sinon un
+    // vide doublait l'encoche au-dessus de la photo, vu sur iPhone).
+    expect(css).toMatch(/\.hero \{[^}]*margin-top: calc\(-1 \* var\(--haut\)\);/);
+    expect(css).toMatch(/\.hero img \{[^}]*top: var\(--haut\);/);
+    expect(lire('../../styles/global.css')).toMatch(
+      /\[data-bandeau-photo\]:not\(\[data-defile\]\) body::before \{\s*background: transparent;/,
+    );
+  });
+
   it('aucun bandeau FEMMES hors des écrans FEMMES', () => {
     for (const f of [
       '../NutritionScreen.tsx',
