@@ -42,6 +42,9 @@ réinterprète pas.**
   les DEUX journées avec la même cible (§5). Rien n'est enregistré. Côté
   utilisateur (profil en base, proposition, réajustement §7) : pas fait.
 
+- `regles-orientation-programmes.md` — orienter vers un programme à partir du
+  bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
+
 Des tests **relisent ces `.md`** et comparent case par case (`mainLiftTable.test.ts`,
 `program.test.ts`). Si le code et le `.md` divergent, le déploiement échoue.
 Quand tu changes une prescription, change les deux.
@@ -439,8 +442,21 @@ matériel et la durée avant d'écrire la moindre séance.
   désignent AUCUN programme de l'appli. Le « max estimé ≈ » du résumé est la
   formule du site (Epley), affichée au coach seulement : elle ne doit jamais
   servir à une charge (règle « aucune formule validée » de MASS FORCE).
-  Orienter vers un programme de l'appli à partir des réponses : PAS FAIT,
-  demande une table écrite par Guillaume (ne rien inventer).
+  **Orientation — FAIT** (« go brouillon orientation », réponses A à H de
+  Guillaume) : `regles-orientation-programmes.md` (VALIDÉ, source de vérité)
+  → `data/orientationProgrammes.ts` (relu tableau par tableau par
+  `orientationProgrammes.test.ts`, qui rejoue chaque réponse) →
+  `engine/orientation.ts`. Encart « Les programmes qui te correspondent » en
+  tête de l'écran de fin du bilan, JAMAIS dans le résumé envoyé. Une
+  indication : « Voir le programme » ouvre le catalogue, rien ne démarre ni
+  ne se verrouille. Toutes les conditions doivent passer, programme
+  `disponible` seulement, au plus deux. Orange = aucune suggestion ; rouge
+  et hors périmètre = rien. POWER : 5 séances, 5 jours à 60 min, salle, trois
+  barres maîtrisées, intermédiaire+. MASS : MASS FORCE en attendant
+  HYPERTROPHIE (mention « bientôt disponible »), CONGESTION jamais au départ.
+  FEMMES CYCLE 1 : seulement « Femme » (décision de Guillaume, écart assumé
+  au « le sexe ne décide jamais » du site, écrit au §5 du `.md`). Perte de
+  poids, mobilité, Pilates : aucune suggestion (aucun programme).
 - **Nutrition, lot 1 — un objectif en CALORIES suffit** (Guillaume, 23
   novembre). `cibleSaisie` (`data/ciblesNutrition.ts`) : calories dans les
   bornes OBLIGATOIRES, protéines / glucides / lipides FACULTATIFS un par un ;

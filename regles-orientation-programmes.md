@@ -1,11 +1,9 @@
 # Orienter vers un programme à partir du bilan sportif
 
-> **Statut : BROUILLON révision 2 (23 novembre 2026) — rien n'est codé.**
-> Réponses de Guillaume intégrées (A, B, C, D, E, F, G) ; une question reste
-> ouverte sur la branche MASS (§3).
-> À corriger par Guillaume. Une fois validé, ce fichier deviendra la source
-> de vérité : le code le transcrira et des tests le reliront, comme pour
-> `regles-cibles-nutrition.md`.
+> **Statut : VALIDÉ par Guillaume le 23 novembre 2026 — source de vérité.**
+> Le code le transcrit (`src/data/orientationProgrammes.ts`,
+> `src/engine/orientation.ts`) et `orientationProgrammes.test.ts` relit ses
+> tableaux. Pour changer une règle : changer ce fichier ET le code.
 >
 > Chaque règle cite **d'où elle vient** : la fiche du programme au catalogue
 > (`src/data/catalogue.ts`, ses « prérequis »), le `.md` du programme, ou
@@ -43,7 +41,7 @@
 | Séances par semaine | 12 | prérequis |
 | Disponibilités jour par jour | 13 | prérequis (durée des séances) |
 | Lieu | 14 | prérequis (matériel) |
-| Sexe | 2 | **jamais utilisé** (§5) |
+| Sexe | 2 | FEMMES seulement (§5) |
 
 **Non utilisés, volontairement :** le matériel (question 15) et l'objectif
 chiffré (4) sont du texte libre ; l'appli ne les interprète pas. Les repères
@@ -68,7 +66,8 @@ FORCE). Guillaume les lit dans le résumé.
 
 Un programme est **suggéré** quand **toutes** ses conditions sont remplies.
 Pas de score, pas de pondération : chaque raison s'affiche telle quelle.
-Si plus de deux programmes passent, on garde l'ordre du tableau.
+Au plus deux suggestions (réponse G), dans l'ordre de ce paragraphe :
+POWER, MASS, FEMMES.
 
 ### POWER CYCLE 1 (`power12`)
 
@@ -93,31 +92,40 @@ déjà écrit au catalogue. Le point de départ du chemin MASS, et le programme
 des débutants, est **MASS HYPERTROPHIE 1.0** (`mass8`, pas encore créé).
 MASS FORCE peut être suggéré même en version de travail.
 
-**Question H (ouverte) :** tant que HYPERTROPHIE n'existe pas, que montre
-l'écran à quelqu'un qui veut prendre du muscle ? Proposition de Claude :
-« MASS HYPERTROPHIE — le point de départ conseillé, bientôt disponible »,
-et en attendant le programme disponible qui suit sur le chemin.
+**Tant que HYPERTROPHIE n'existe pas (réponse H) :** l'écran affiche
+*« MASS HYPERTROPHIE — le point de départ conseillé, bientôt disponible »*
+(une mention, pas une suggestion : elle ne compte pas dans les deux), et
+suggère en attendant le programme disponible qui suit sur le chemin :
+**MASS FORCE**. MASS CONGESTION, troisième étape, n'est pas suggéré au
+départ.
 
-### MASS CONGESTION (`mass4`)
+La famille MASS correspond quand **toutes** les conditions du tableau
+ci-dessous sont remplies. Ce sont les prérequis du catalogue de MASS
+CONGESTION, le seul programme MASS qui en a d'écrits ; ils valent pour toute
+la famille tant que HYPERTROPHIE et FORCE n'ont pas les leurs.
+
+### Conditions de la famille MASS
 
 | Condition | Valeur | Source |
 |---|---|---|
 | Objectif | « Prendre du muscle » | catalogue : « Prise de masse musculaire et congestion » |
-| Niveau | Débutant (moins d'1 an), Intermédiaire ou Confirmé ; « Jamais pratiqué » écarté | catalogue + Guillaume (réponse C) |
+| Niveau | Débutant, Intermédiaire, Confirmé ou Avancé (« Jamais pratiqué » écarté) | catalogue + Guillaume (réponse C) |
 | Séances par semaine | 4 ou plus | catalogue : « Quatre séances par semaine » |
 | Disponibilités | au moins 4 jours à 60 min ou plus | catalogue : « environ 60 minutes » |
 | Lieu | Salle ou Plusieurs lieux | catalogue : « Smith machine, poulies, machines guidées et haltères » |
 
 ### MASS FORCE (`mass-force`)
 
-**Suggéré, même en version de travail** (Guillaume, réponse D : « programme
-à compléter, mais chemin déjà écrit comme ça »). Ses conditions dépendent de
-la question H.
+**Suggéré quand la famille MASS correspond, même en version de travail**
+(Guillaume, réponse D : « programme à compléter, mais chemin déjà écrit
+comme ça » ; réponse H).
 
 ### MASS HYPERTROPHIE (`mass8`)
 
 Le point de départ du chemin MASS et le programme des débutants (réponse C).
-Ses conditions s'écriront avec le programme ; d'ici là, voir la question H.
+Mentionné « bientôt disponible » quand la famille MASS correspond ; il
+deviendra LA suggestion MASS quand il existera (ce fichier sera alors
+révisé).
 
 ### Transitions et cycles suivants (POWER, FEMMES)
 
@@ -180,4 +188,4 @@ c'est une femme »).
 | E | FEMMES CYCLE 1 : quels objectifs ? | Renforcement, reprise, santé, condition physique, et prise de masse / volume des fessiers si c'est une femme |
 | F | FEMMES CYCLE 1 à un homme qui correspond ? | Non |
 | G | Au plus deux suggestions ? | Oui |
-| H | MASS tant que HYPERTROPHIE n'existe pas ? | **Ouverte** (§3) |
+| H | MASS tant que HYPERTROPHIE n'existe pas ? | HYPERTROPHIE « bientôt disponible » + MASS FORCE en attendant |

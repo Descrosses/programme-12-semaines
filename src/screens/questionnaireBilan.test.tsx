@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { TEXTES_ORIENTATION } from '../data/orientationProgrammes';
 import { SECTIONS, TEXTES } from '../data/questionnaireBilanSportif';
 import {
   etatVide,
@@ -124,5 +125,45 @@ describe('le bilan sportif dans l’appli', () => {
       const src = readFileSync(new URL(f, import.meta.url), 'utf8');
       expect(src, f).not.toMatch(/bilan-sportif|questionnaireBilan/);
     }
+  });
+
+  it('la fin : l’encart d’orientation, sans toucher au résumé envoyé', () => {
+    const semaine = Object.fromEntries(
+      ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'].map((d) => [d, '70']),
+    );
+    const e = etatVide();
+    e.name = 'Karim';
+    e.profil = 'sportif';
+    e.consent = '23/11/2026';
+    e.step = 99;
+    e.A = {
+      h1: 'Non',
+      h2: 'Non',
+      h3: 'Non',
+      h4: 'Non',
+      h5: 'Non',
+      h6: 'Non',
+      q6: 'Non',
+      q3: 'Devenir plus fort',
+      q9: 'Confirmé (3 à 5 ans)',
+      q11: ['Squat avec barre', 'Développé couché', 'Soulevé de terre'],
+      q12: '5',
+      q13: semaine,
+      q14: 'Salle',
+    };
+    const h = html(e);
+    expect(h).toContain('data-orientation="suggestions"');
+    expect(h).toContain(TEXTES_ORIENTATION.titre);
+    expect(h).toContain('POWER CYCLE 1');
+    expect(h).toContain('href="#/catalogue/power"');
+    expect(h).toContain(TEXTES_ORIENTATION.phrase);
+    expect(h).not.toMatch(/Démarrer/);
+    expect(h).toContain(resume(e));
+    expect(resume(e)).not.toContain(TEXTES_ORIENTATION.titre);
+
+    const orange = html({ ...e, A: { ...e.A, q6: 'Oui', q6b: 'genou' } });
+    expect(orange).toContain('data-orientation="orange"');
+    expect(orange).toContain(TEXTES_ORIENTATION.orange);
+    expect(orange).not.toContain('POWER CYCLE 1');
   });
 });
