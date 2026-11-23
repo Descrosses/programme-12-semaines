@@ -20,7 +20,7 @@
  * `EcransFemmes`, qui détient le cycle.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FemmesSeanceRow } from '../../db/db';
 import {
   NIVEAU_DEFS,
@@ -193,6 +193,26 @@ export function FemmesAujourdhui({
 
 /* ═══════════════════════════════════════════════════ 2 — SEMAINE ═══════ */
 
+/** « 14 septembre » : la date d'une séance faite (ou passée). */
+function dateCourte(iso: string): string | null {
+  const d = new Date(`${iso}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+}
+
+/** La couleur du trait d'une case de semaine : une par phase. */
+const TRAIT_PHASE = { 1: s.semTrait1, 2: s.semTrait2, 3: s.semTrait3 } as const;
+
+/**
+ * L'écran Semaine, planche « Rosée Sculptée » (lot 1/6, 23 novembre).
+ *
+ * Tout ce qui s'affiche vient du programme : la phase, ses tours, son repos,
+ * son objectif, les jours de la semaine et l'état RÉEL de chaque séance. Les
+ * textes de la planche (« Bloc Congestion », « Jambes & Fessiers »…) sont des
+ * exemples de POWER : aucun n'est repris. Une séance FEMMES n'a pas de date
+ * prévue (la séance du jour est la première non faite) : la date ne s'écrit
+ * qu'une fois la séance faite ou passée.
+ */
 export function FemmesSemaine({
   etat,
   donnees,
@@ -211,76 +231,94 @@ export function FemmesSemaine({
   const prochaine = donnees.avance.prochaine;
   const jours = WEEK_DAYS[etat.semaine];
 
+  /* La semaine choisie reste visible dans la rangée qui défile. */
+  const rangee = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const r = rangee.current;
+    const c = r?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!r || !c) return;
+    r.scrollLeft = c.offsetLeft - (r.clientWidth - c.offsetWidth) / 2;
+  }, [etat.semaine]);
+
   return (
     <div className={s.page}>
       <Bandeau
-        surTitre="Programme"
-        surTitreRose
+        surTitre={`Phase ${phase.id} · ${phase.name}`}
         titre={`SEMAINE ${etat.semaine}`}
         taille="xl"
-        sousTitre={`Phase ${phase.id} · ${phase.name}`}
+        sousTitre={[
+          `${jours.length} séances · ${phase.durationLabel}`,
+          `${seance.tours} tours × ${seance.slots.length} · repos ${restLabel(seance.restSec)}`,
+        ]}
       />
 
-      <div className={s.semaines}>
-        {WEEKS.map((w) => (
-          <button
-            key={w}
-            type="button"
-            className={`${s.sem} ${w === etat.semaine ? s.semActive : ''}`}
-            onClick={() => onSemaine(w)}
-            aria-current={w === etat.semaine ? 'true' : undefined}
-          >
-            {w}
-          </button>
-        ))}
+      <div className={s.semaines} ref={rangee}>
+        {WEEKS.map((w) => {
+          const p = phaseOf(w);
+          const choisie = w === etat.semaine;
+          return (
+            <button
+              key={w}
+              type="button"
+              className={`${s.sem} ${choisie ? s.semActive : ''}`}
+              onClick={() => onSemaine(w)}
+              aria-current={choisie ? 'true' : undefined}
+              aria-label={`Semaine ${w}, phase ${p.id} · ${p.name}`}
+            >
+              <span className={s.semNum}>{w}</span>
+              <span className={s.semPhase}>{p.name}</span>
+              <span className={`${s.semTrait} ${TRAIT_PHASE[p.id]}`} />
+            </button>
+          );
+        })}
       </div>
 
       <div className={s.corps}>
-        <section className={s.carte}>
-          <h2 className={`${s.carteTitre} ${s.carteTitreIcone}`}>
-            <span className={s.icoRose}>
-              <Ico nom="cible" taille={37} />
-            </span>
-            Objectif de la semaine
-          </h2>
-          <p className={s.carteTexte}>{phase.objective}</p>
+        <section className={s.carteBloc}>
+          <span className={s.carteBlocIco}>
+            <Ico nom="haltere" taille={34} />
+          </span>
+          <span>
+            <h2 className={s.carteBlocTitre}>{phase.name}</h2>
+            <p className={s.carteBlocTexte}>{phase.objective}</p>
+          </span>
         </section>
 
-        <section className={s.carte}>
-          <p className={`${s.gros} ${s.grosCaps}`}>
-            {seance.tours} tours × {seance.slots.length}
-          </p>
-          <p className={s.carteTexte}>
-            {jours.length} séances de {phase.durationLabel}, repos {restLabel(seance.restSec)} entre
-            les tours.
-          </p>
-        </section>
-
-        <div className={s.lignes}>
-          {jours.map((d, i) => (
-            <button key={d} type="button" className={s.jour} onClick={() => onJour(d)}>
-              <span className={s.jourCode}>{CODES[i]}</span>
-              <span>
-                <span className={s.jourNom}>{NOMS[i]}</span>
-                <span className={s.jourDetail}>
-                  Séance {i + 1} · {phase.durationLabel}
+        <div className={s.lignesSemaine}>
+          {jours.map((d, i) => {
+            const ligne = donnees.seances.find((r) => r.semaine === etat.semaine && r.jour === d);
+            const faite = estFaite(donnees.seances, etat.semaine, d);
+            const sautee = !faite && estSautee(donnees.seances, etat.semaine, d);
+            const date = (faite || sautee) && ligne ? dateCourte(ligne.date) : null;
+            return (
+              <button
+                key={d}
+                type="button"
+                className={s.jour}
+                onClick={() => onJour(d)}
+                aria-label={`${NOMS[i]}, séance ${i + 1}`}
+              >
+                <span className={s.jourCode}>{CODES[i]}</span>
+                <span>
+                  <span className={s.jourNom}>Séance {i + 1}</span>
+                  <span className={s.jourDetail}>
+                    <Ico nom="chrono" taille={15} />≈ {phase.durationLabel}
+                    {date !== null && ` · ${date}`}
+                  </span>
                 </span>
-              </span>
-              {/* Faite, prévue (la prochaine à faire), ou à faire. */}
-              {estFaite(donnees.seances, etat.semaine, d) ? (
-                <span className={`${s.etat} ${s.etatFaite}`}>Faite</span>
-              ) : estSautee(donnees.seances, etat.semaine, d) ? (
-                <span className={`${s.etat} ${s.etatSautee}`}>Non faite</span>
-              ) : prochaine?.semaine === etat.semaine && prochaine.jour === d ? (
-                <span className={`${s.etat} ${s.etatPrevu}`}>Prévue</span>
-              ) : (
-                <span className={s.etat}>À faire</span>
-              )}
-              <span className={s.jourChevron}>
-                <Ico nom="chevron" taille={22} />
-              </span>
-            </button>
-          ))}
+                {/* Faite, non faite, prévue (la prochaine à faire), ou à faire. */}
+                {faite ? (
+                  <span className={`${s.etat} ${s.etatFaite}`}>Faite</span>
+                ) : sautee ? (
+                  <span className={`${s.etat} ${s.etatSautee}`}>Non faite</span>
+                ) : prochaine?.semaine === etat.semaine && prochaine.jour === d ? (
+                  <span className={`${s.etat} ${s.etatPrevu}`}>Prévue</span>
+                ) : (
+                  <span className={`${s.etat} ${s.etatAFaire}`}>À faire</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 

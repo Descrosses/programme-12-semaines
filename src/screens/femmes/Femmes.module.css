@@ -244,6 +244,22 @@
   color: rgb(255 255 255 / 92%);
 }
 
+/* Écran Semaine : deux lignes sous UN trait, posé à hauteur de la première. */
+.sousTitreLignes {
+  align-items: flex-start;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.sousTitreLignes::before {
+  margin-top: 8px;
+}
+
+.sousTitreLigne {
+  display: block;
+  line-height: 19px;
+}
+
 /* --------------------------------------------------------------- pastilles */
 
 /* Badges d'information, pas des commandes : ils n'ont pas à faire 44 px. */
@@ -290,9 +306,12 @@
 }
 
 /* Pastilles → première carte, et cases de semaine → première carte : 22. */
-.chipsAccueil + .corps,
-.semaines + .corps {
+.chipsAccueil + .corps {
   padding-top: 22px;
+}
+
+.semaines + .corps {
+  padding-top: 6px;
 }
 
 .carte {
@@ -575,34 +594,103 @@
 
 /* -------------------------------------------- sélecteur des huit semaines */
 
+/*
+ * Planche « Rosée Sculptée », écran Semaine : des cases à numéro, nom de la
+ * phase et trait de couleur, qui DÉFILENT (cinq visibles sur la planche).
+ * Le défilement reste dans la rangée : la page ne déborde jamais.
+ */
 .semaines {
-  /* Huit cases visibles d'un coup. minmax(0, 1fr) : sans le zéro, une piste
-     refuse de descendre sous son contenu et la rangée déborde à 375 px. */
-  display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 4px;
-  padding: 14px 16px 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  /* La place de l'ombre des cases, que le défilement couperait sinon. */
+  padding: 14px 16px 10px;
+}
+
+.semaines::-webkit-scrollbar {
+  display: none;
 }
 
 .sem {
-  height: 46px;
-  padding: 0;
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 84px;
+  height: 70px;
+  padding: 0 4px 6px;
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: #fff;
-  box-shadow: 0 2px 8px rgb(192 90 122 / 8%);
-  font-family: var(--f);
-  font-weight: 700;
-  font-size: 22px;
+  background: linear-gradient(to bottom, #fffdfc 0%, #fff8f9 100%);
+  box-shadow: 0 4px 12px rgb(192 90 122 / 10%);
   color: var(--ink);
+  scroll-snap-align: center;
   cursor: pointer;
 }
 
+.semNum {
+  font-family: var(--f);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 30px;
+}
+
+.semPhase {
+  max-width: 100%;
+  font-family: var(--t);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* Le trait du bas : une couleur par phase (rose-or, mauve, rose). */
+.semTrait {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 7px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.semTrait1 {
+  background: var(--rose-or);
+}
+
+.semTrait2 {
+  background: var(--cyan-femmes);
+}
+
+.semTrait3 {
+  background: var(--accent-bright);
+}
+
+/* La semaine choisie : contour rose de 2 px, case soulevée, numéro rose —
+   jamais la couleur seule (le contour double et l'ombre la disent aussi). */
 .semActive {
-  border-color: transparent;
-  background: var(--grad-accent, var(--accent));
-  color: var(--ink-on-accent);
-  box-shadow: 0 6px 14px rgb(177 79 110 / 28%);
+  border: 2px solid var(--accent-bright);
+  background: #fff;
+  box-shadow: 0 8px 18px rgb(177 79 110 / 22%);
+}
+
+.semActive .semNum {
+  color: var(--accent-ink);
+}
+
+.semActive .semTrait {
+  left: 8px;
+  right: 8px;
+  height: 4px;
 }
 
 /* ------------------------------------------------- bascule maison / salle */
@@ -926,19 +1014,94 @@
 
 /* ------------------------------------------------------- liste des séances */
 
-/* Lignes de jour : 56 de haut, 13 d'écart, bord gauche rose appuyé. */
+/* La carte de phase : filet rose à gauche, carré à icône, motif diagonal. */
+.carteBloc {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px 14px 16px;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent-bright);
+  background: linear-gradient(115deg, rgb(255 247 249 / 92%) 0%, rgb(251 230 236 / 80%) 100%);
+  box-shadow: var(--ombre-carte);
+}
+
+/* Le motif de la planche : quelques traits clairs, en biais, à droite. */
+.carteBloc::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 42%;
+  background: repeating-linear-gradient(
+    120deg,
+    transparent 0 22px,
+    rgb(255 255 255 / 55%) 22px 24px,
+    transparent 24px 40px
+  );
+  mask-image: linear-gradient(to right, transparent, #000 60%);
+  pointer-events: none;
+}
+
+.carteBlocIco {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-dim);
+  box-shadow: inset 0 0 0 1px rgb(192 90 122 / 14%);
+  color: var(--accent-deep);
+}
+
+.carteBloc > span:last-child {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.carteBlocTitre {
+  margin: 0;
+  font-family: var(--f);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 26px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.carteBlocTexte {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--ink-2);
+}
+
+.lignesSemaine {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Une séance : code du jour, nom et durée, état. Toute la carte s'ouvre. */
 .jour {
   display: grid;
-  grid-template-columns: 54px 1fr auto 12px;
+  grid-template-columns: 58px 1fr auto;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  min-height: 62px;
-  padding: 6px 12px 6px 16px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: #fff;
-  box-shadow: var(--ombre-carte);
+  min-height: 64px;
+  padding: 8px 14px 8px 14px;
+  border-radius: 16px;
+  border: 1px solid rgb(239 211 220 / 70%);
+  background: rgb(255 255 255 / 78%);
+  box-shadow: 0 4px 14px rgb(192 90 122 / 9%);
   text-align: left;
   color: inherit;
   cursor: pointer;
@@ -946,11 +1109,11 @@
 
 .jourCode {
   position: relative;
-  padding-left: 12px;
+  padding-left: 14px;
   font-family: var(--f);
   font-style: italic;
   font-weight: 700;
-  font-size: 19px;
+  font-size: 18px;
   color: var(--ink);
 }
 
@@ -958,8 +1121,8 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 12%;
-  bottom: 12%;
+  top: 8%;
+  bottom: 8%;
   width: 3px;
   border-radius: 2px;
   background: var(--accent-bright);
@@ -970,44 +1133,51 @@
   display: block;
   font-family: var(--t);
   font-weight: 600;
-  font-size: 16.5px;
-  line-height: 21px;
+  font-size: 16px;
+  line-height: 20px;
   color: var(--ink);
 }
 
 .jourDetail {
-  display: block;
-  margin-top: 2px;
-  font-size: 14px;
-  line-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 17px;
   color: var(--ink-2);
 }
 
-/* « À faire » : contour et texte roses. « Prévue » : verts. 27 de haut. */
+.jourDetail svg {
+  flex: none;
+}
+
+/* Les états : chacun a son mot, jamais la couleur seule. */
 .etat {
   display: inline-flex;
   align-items: center;
   height: 28px;
   padding: 0 12px;
-  border-radius: 999px;
-  background: var(--accent-dim);
+  border-radius: 20px;
   font-family: var(--f);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent-ink);
   white-space: nowrap;
 }
 
+/* « Prévue » : la prochaine à faire, rose plein (blanc dessus : 4,98). */
 .etatPrevu {
-  background: var(--vert-fond);
-  color: var(--vert);
+  background: var(--accent);
+  color: var(--ink-on-accent);
 }
 
-.jourChevron {
-  display: inline-flex;
-  color: var(--ink-3);
+/* « À faire » : discret, un contour. */
+.etatAFaire {
+  background: transparent;
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 
 /* ------------------------------------------------------------- navigation */
@@ -1072,7 +1242,7 @@
 
 /* ------------------------------------------------ séances faites, profil */
 
-/* « Faite » : le même vert que « Prévue », plein plutôt que cerclé. */
+/* « Faite » : vert doux, texte vert foncé (5,1:1 sur sa pastille). */
 .etatFaite {
   background: var(--vert-fond);
   color: var(--vert);

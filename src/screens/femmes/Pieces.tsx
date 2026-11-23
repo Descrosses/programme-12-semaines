@@ -69,6 +69,10 @@ export function Ico({ nom, taille = 20 }: { nom: string; taille?: number }) {
       />
     ),
     coche: <path d="M20 6L9 17l-5-5" {...trait} strokeWidth={2.6} />,
+    /* La carte de phase de l'écran Semaine (planche « Rosée Sculptée »). */
+    haltere: (
+      <path d="M7 7.5v9M4.5 9.5v5M17 7.5v9M19.5 9.5v5M7 12h10" {...trait} strokeWidth={2.2} />
+    ),
     cible: (
       <>
         <circle cx="11" cy="13" r="8" {...trait} strokeWidth={2.2} />
@@ -126,7 +130,8 @@ export function Bandeau({
   surTitreRose?: boolean;
   titre: string;
   taille?: 'xl' | 'l' | 'm';
-  sousTitre?: string;
+  /** Une ligne, ou plusieurs (écran Semaine : deux lignes sous un seul trait). */
+  sousTitre?: string | readonly string[];
   retour?: string;
   onRetour?: () => void;
 }) {
@@ -162,7 +167,18 @@ export function Bandeau({
             <span className={surTitreRose ? s.surTitreRose : s.surTitre}>{surTitre}</span>
           )}
           <h1 className={`${s.titre} ${tailleCls}`}>{titre}</h1>
-          {sousTitre !== undefined && <span className={s.sousTitre}>{sousTitre}</span>}
+          {typeof sousTitre === 'string' && <span className={s.sousTitre}>{sousTitre}</span>}
+          {Array.isArray(sousTitre) && (
+            <span className={`${s.sousTitre} ${s.sousTitreLignes}`}>
+              <span>
+                {sousTitre.map((l) => (
+                  <span key={l} className={s.sousTitreLigne}>
+                    {l}
+                  </span>
+                ))}
+              </span>
+            </span>
+          )}
         </div>
       )}
     </div>

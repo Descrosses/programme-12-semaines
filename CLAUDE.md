@@ -181,6 +181,18 @@ Guillaume n'a pas fourni de photo (`PHOTO_BANDEAU = null`, `Pieces.tsx`) ;
 le contenu de la planche (Bloc Congestion, 71-79 %…) est celui de POWER :
 seul le STYLE est repris, le contenu FEMMES ne bouge pas.
 `styles/themeFemmes.test.ts` mesure les contrastes et refuse le synthwave.
+**Écran Semaine — lot 1/6 FAIT** (référence iPhone + planche, « go
+semaine ») : bandeau « PHASE n · NOM » + deux lignes (séances · durée,
+tours × exercices · repos), cases de semaine défilantes (numéro, nom de la
+phase, trait rose-or / mauve / rose par phase, choisie = contour 2 px),
+carte de phase (filet rose, haltère, objectif), lignes « Séance n » avec
+« ≈ durée » et la date SEULEMENT une fois faite ou passée (pas de date
+prévue : la séance du jour est la première non faite). États réels : Faite
+(vert), Non faite (gris), Prévue (rose plein), À faire (contour). Les
+textes de la référence (Bloc Congestion, Jambes & Fessiers, DIM…) sont des
+exemples POWER, jamais repris : `screens/femmes/semaineFemmes.test.tsx`.
+Écart voulu : le bandeau passe SOUS l'heure de l'iPhone (barre d'état
+`black-translucent`, heure blanche). Les cinq autres écrans : lots 2 à 6.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 
