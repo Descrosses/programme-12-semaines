@@ -400,6 +400,9 @@
   --shadow-card: 0 8px 24px rgb(192 90 122 / 12%);
   --shadow-action: 0 6px 16px rgb(177 79 110 / 28%);
 
+  /* La bande fixe derrière l'heure de l'iPhone (global.css) : blanc 6,58. */
+  --barre-etat: #8f4561;
+
   --ink-fort: #2b1f24;
   --voile: 92 40 58;
   --ombre-titre: 0 1px 8px rgb(92 40 58 / 45%);

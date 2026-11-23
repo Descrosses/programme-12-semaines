@@ -76,6 +76,19 @@ describe('thème FEMMES — Rosée Sculptée', () => {
     );
   });
 
+  it('tient l’heure de l’iPhone lisible : bande fixe derrière la barre d’état', () => {
+    // L'heure est BLANCHE (black-translucent) : sans fond foncé, elle
+    // disparaît sur un écran clair.
+    expect(readFileSync(new URL('../../index.html', import.meta.url), 'utf8')).toContain(
+      'content="black-translucent"',
+    );
+    const g = lire('./global.css');
+    expect(g).toMatch(
+      /html\[data-theme='femmes'\] body::before \{[^}]*position: fixed;[^}]*height: env\(safe-area-inset-top, 0px\);[^}]*background: var\(--barre-etat\);/,
+    );
+    expect(contraste('#ffffff', jeton('barre-etat'))).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('embarque Oswald et Inter (aucune police chargée en ligne)', () => {
     const polices = lire('./fonts.css');
     expect(bloc).toContain("'Inter Femmes'");

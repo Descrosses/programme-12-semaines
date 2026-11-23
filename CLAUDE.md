@@ -192,7 +192,12 @@ prévue : la séance du jour est la première non faite). États réels : Faite
 textes de la référence (Bloc Congestion, Jambes & Fessiers, DIM…) sont des
 exemples POWER, jamais repris : `screens/femmes/semaineFemmes.test.tsx`.
 Écart voulu : le bandeau passe SOUS l'heure de l'iPhone (barre d'état
-`black-translucent`, heure blanche). Les cinq autres écrans : lots 2 à 6.
+`black-translucent`, heure blanche, réglage commun lu au lancement).
+**Barre d'état FEMMES** : une bande fixe `--barre-etat` #8f4561 (blanc
+6,58:1) tient la zone de l'heure sur TOUS les écrans FEMMES
+(`html[data-theme='femmes'] body::before`, `global.css`) — sans elle,
+l'heure disparaissait sur la Séance et dès qu'un écran défilait. Hauteur
+nulle sans encoche. `themeFemmes.test.ts`. Les cinq autres écrans : lots 2 à 6.
 
 ### Décision prise : le programme FEMMES sera GÉNÉRIQUE
 
