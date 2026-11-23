@@ -377,9 +377,12 @@ matériel et la durée avant d'écrire la moindre séance.
   (S1-3), 81 (S5-7), 79 (S9-11), 59 en deload, montée en charge comprise ;
   « 55-85 min » au §3 = `durationLabel` du code (testé).
   `data/vendrediPlafond.test.ts` (81 au plus).
-- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 4 min »
-  squat, « ≈ 3 min 30 » bench et deadlift, §10), plus le repos de base qui
-  n'a pas cours. Le chrono suivait déjà la séquence. `enteteContraste.test.tsx`.
+- **Contraste S9-11 : l'en-tête de carte dit le cycle** (« Cycle ≈ 3 min 30 »
+  sur les trois jours, §10), plus le repos de base qui n'a pas cours. Le
+  chrono suivait déjà la séquence. **Repos : 1 min 30 lourd → explosif, 2 min
+  explosif → lourd, squat, bench ET deadlift** (Guillaume, 23 novembre : « 1'30
+  après le mouvement lourd et 2' après mouvement explosif » ; le squat du lundi
+  était à 2 / 2). `enteteContraste.test.tsx`, `program.test.ts` (relit le §8).
 - **Muscles et erreurs sous les 38 planches POWER** (repris du lot 6 de
   MAJK, 22 novembre). Texte transcrit tel quel du tableau « MAJK — Fiches
   techniques POWER 12 » (révision 5, toutes lignes « Validé » par Guillaume)
@@ -390,6 +393,24 @@ matériel et la durée avant d'écrire la moindre séance.
   vide = pas de section, « C'est compris — aux séries » referme la fiche. La
   section CSS est AVANT le bloc MASS de `FicheMouvement.module.css`
   (`confinementMass.test.ts`). `musclesErreursPower12.test.tsx`.
+- **Retours du 23 novembre (séance POWER).** La **montée en charge est
+  REPLIÉE par défaut** : une ligne (« 5 · 3 · 2-3 · 2 reps · 1 min entre
+  chaque », puis « n/4 faits ») ; on l'ouvre pour les kilos et les boutons,
+  replier ne perd rien (`monteeEnCharge.test.tsx`). Le **tempo chiffré
+  s'affiche en QUATRE CASES** (variante TB, choix de Guillaume) : « 2
+  descente · 1 en bas · X montée · 0 en haut » (`phasesTempo`,
+  `engine/tempo.ts`), en ivoire DOUX `--ivoire-doux` #d8d1c3 (« pas un blanc
+  trop blanc, que ça reste discret »), case X rouge ; le lecteur d'écran lit
+  la phrase complète (`expliquerTempo`). Un tempo en mots reste une pastille
+  (`tempoExplique.test.tsx`). Les **fiches d'un superset sont AVANT les
+  tours** (« Tour 1 »), après les questions (`propositionsSuperset.test.tsx`).
+- **Choix visuels du 23 novembre** (planches de variantes, Guillaume) :
+  **N3** — l'onglet actif du menu du bas porte une pastille IVOIRE, encre
+  sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
+  rouge ni de trait au-dessus ; **M2** — l'encadré « Montée en charge » a un
+  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé.
+  `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
+  23 novembre (séance POWER) »).
 - **Alignement des reps** : la question n'est posée que sur un exercice
   marqué `alignable` par la séance POWER (MASS, importé, remplacé : jamais),
   et les curseurs des séries non validées suivent l'attendu accepté.

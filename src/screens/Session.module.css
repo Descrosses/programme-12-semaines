@@ -426,6 +426,69 @@
   font-size: 0.875rem;
 }
 
+/*
+ * Le tempo chiffré en quatre cases (variante TB, Guillaume, 23 novembre) :
+ * ivoire DOUX, pas un blanc éclatant, pour rester discret sur la carte.
+ * Mesuré : encre #151a22 sur #d8d1c3 = 11,5:1, libellé #4a5260 = 5,2:1 ; blanc sur le rouge
+ * d'action = 5,4:1.
+ */
+.tempoCases {
+  display: flex;
+  flex-basis: 100%;
+  width: 100%;
+  align-items: stretch;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tempoCasesTitre {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  font-family: var(--font-cond);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.tempoCase {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 48px;
+  padding: 5px 2px;
+  border-radius: var(--radius-sm);
+  background: var(--ivoire-doux);
+  color: var(--encre);
+}
+
+.tempoCaseValeur {
+  font-family: var(--font-cond);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tempoCaseLibelle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #4a5260;
+}
+
+.tempoCaseX {
+  background: var(--accent);
+  color: #fff;
+}
+
+.tempoCaseX .tempoCaseLibelle {
+  color: rgb(255 255 255 / 85%);
+}
+
 /* Les questions des stations, en tête de superset, avant les tours. */
 .supersetPropositions {
   padding-top: 4px;
@@ -2513,7 +2576,9 @@
   padding: 12px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
-  border: 1px solid var(--accent-dim);
+  /* Variante M2 (Guillaume, 23 novembre) : filet rouge à gauche, comme
+     l'encadré « Contraste » ; plus de contour rouge foncé sur le bleu. */
+  border-left: 4px solid var(--accent);
 }
 
 .monteeTitre {
@@ -2523,6 +2588,38 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink);
+}
+
+.monteeEntete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.monteeEnteteTexte {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monteeResume {
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.monteeChevron {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
 }
 
 .monteeTexte {

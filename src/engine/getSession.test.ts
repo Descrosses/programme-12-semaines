@@ -281,7 +281,7 @@ describe('bloc puissance (S9-11) — contraste', () => {
     expect(ids(s.exercises)).not.toContain('box-jump');
     const squat = find(s, 'back-squat');
     expect(squat.contrast?.explosive).toBe('box-jump');
-    expect(squat.contrast?.restAfterHeavySec).toBe(120);
+    expect(squat.contrast?.restAfterHeavySec).toBe(90);
     expect(squat.loadLine).toBe('4 × 2 × 92,5 kg');
   });
 

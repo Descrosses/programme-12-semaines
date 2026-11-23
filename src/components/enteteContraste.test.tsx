@@ -46,13 +46,13 @@ const entete = (ex: ResolvedExercise) => {
 };
 
 describe('en contraste, l’en-tête dit le cycle du §10, pas le repos de base', () => {
-  it('back squat S9 : « Cycle ≈ 4 min », plus de « Repos 3 min 30 »', () => {
+  it('back squat S9 : « Cycle ≈ 3 min 30 », plus de « Repos 4 min »', () => {
     const h = entete(exo(9, 0, 'back-squat'));
-    expect(h).toContain('Cycle ≈ 4 min');
+    expect(h).toContain('Cycle ≈ 3 min 30');
     expect(h).not.toContain('Repos');
   });
 
-  it('bench et deadlift S10 : « Cycle ≈ 3 min 30 »', () => {
+  it('bench et deadlift S10 : « Cycle ≈ 3 min 30 » (1 min 30 → explosif → 2 min, les trois jours)', () => {
     expect(entete(exo(10, 2, 'bench-press'))).toContain('Cycle ≈ 3 min 30');
     expect(entete(exo(10, 5, 'deadlift'))).toContain('Cycle ≈ 3 min 30');
   });

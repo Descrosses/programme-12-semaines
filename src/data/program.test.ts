@@ -941,7 +941,8 @@ describe('§8 S9-11 — les repos du contraste sont ceux du .md', () => {
     }
   });
 
-  it('samedi : 1 min 30 après le deadlift, 2 min après les broad jumps (décision de Guillaume)', () => {
-    expect(CONTRAST_BY_DAY[5]).toMatchObject({ restAfterHeavySec: 90, restAfterExplosiveSec: 120 });
+  it('1 min 30 après la série lourde, 2 min après l’explosif, sur les trois jours (Guillaume, 23 novembre)', () => {
+    for (const d of [0, 2, 5] as const)
+      expect(CONTRAST_BY_DAY[d]).toMatchObject({ restAfterHeavySec: 90, restAfterExplosiveSec: 120 });
   });
 });

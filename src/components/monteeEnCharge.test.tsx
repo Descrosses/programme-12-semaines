@@ -182,6 +182,16 @@ describe('à l’écran', () => {
     expect(carte(rdl)).not.toContain('Montée en charge');
   });
 
+  it('repliée par défaut : une ligne résume les paliers, les kilos sont derrière (Guillaume, 23 novembre)', () => {
+    const html = renderToStaticMarkup(
+      <MonteeEnCharge chargeTravail={100} pas={2.5} timer={timer} />,
+    );
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).toContain('5 · 3 · 2-3 · 2 reps · 1 min entre chaque');
+    expect(html).toMatch(/<div id="montee-paliers" hidden="">/);
+    expect(html.indexOf('montee-paliers" hidden')).toBeLessThan(html.indexOf('Fait → 1 min'));
+  });
+
   it('charge inconnue : pourcentages et une consigne, jamais un kilo', () => {
     const html = renderToStaticMarkup(
       <MonteeEnCharge chargeTravail={null} pas={2.5} timer={timer} />,

@@ -453,7 +453,7 @@ export function SessionScreen({
    */
   /**
    * Les questions d'une station de superset, posées en tête de bloc (voir
-   * `PropositionsExercice`). La carte de la station, rangée sous les tours,
+   * `PropositionsExercice`). La carte de la station, rangée avant les tours,
    * ne les répète pas.
    */
   function propositions(ex: ResolvedExercise) {

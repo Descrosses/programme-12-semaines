@@ -492,3 +492,19 @@
   --mass-puce-on-bord: #c5262c;
   --mass-puce-on-halo: 0 0 16px rgb(226 10 17 / 45%);
 }
+
+/*
+ * La touche de clair (Guillaume, 23 novembre : « une touche de clair dans
+ * les menus, pas grand chose, de bon goût »). L'ivoire marque ce qui est
+ * ACTIF ou EXPLICATIF — l'onglet du menu du bas, et rien d'autre pour
+ * l'instant. Sur :root : toutes les familles le lisent.
+ * Mesuré : encre #151a22 sur ivoire #f4f1ea = 15,5:1 ; ivoire sur le fond
+ * de barre POWER ≈ 15:1.
+ */
+:root {
+  --ivoire: #f4f1ea;
+  /* L'ivoire en sourdine : pour les cases du tempo (« pas un blanc trop
+     blanc, que ça reste discret »). */
+  --ivoire-doux: #d8d1c3;
+  --encre: #151a22;
+}

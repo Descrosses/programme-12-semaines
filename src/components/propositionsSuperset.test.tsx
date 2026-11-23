@@ -81,14 +81,17 @@ describe('superset : la question avant les tours', () => {
         overrides={{}}
         timer={timer}
         onSaveSet={async () => {}}
-        fiches={<p>FICHES-DU-BAS</p>}
+        fiches={<p>FICHES-DES-STATIONS</p>}
         propositions={<>{circuit.exs.map((e) => questions(e))}</>}
       />,
     );
     const question = html.indexOf('Aligner l’attendu sur 10 reps');
     expect(question).toBeGreaterThan(-1);
     expect(question).toBeLessThan(html.indexOf('Tour 1 sur'));
-    expect(question).toBeLessThan(html.indexOf('FICHES-DU-BAS'));
+    expect(question).toBeLessThan(html.indexOf('FICHES-DES-STATIONS'));
+    // Les fiches se lisent AVANT les tours (Guillaume, 23 novembre).
+    expect(html.indexOf('FICHES-DES-STATIONS')).toBeGreaterThan(-1);
+    expect(html.indexOf('FICHES-DES-STATIONS')).toBeLessThan(html.indexOf('Tour 1 sur'));
     // Le nom de la station dit à qui s'adresse la question.
     expect(html).toContain('Roman Side Bench');
   });
