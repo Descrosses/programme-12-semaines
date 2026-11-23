@@ -363,3 +363,44 @@
 .ecartDown {
   color: var(--rouge);
 }
+
+/* « Mon avant · après » : l'aperçu de l'image à publier (4:5). */
+.comparatifApercu {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+
+.comparatifPhotos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.comparatifBouton {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.comparatifPartager {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+}

@@ -11,6 +11,7 @@ import {
 import { fr } from '../engine/format';
 import { LOWER_IS_BETTER, SANS_JUGEMENT, ecartCombine } from '../engine/combineEcart';
 import { allCombines, getSettingsRow, saveCombine } from '../db/repo';
+import { ComparatifPartage } from '../components/ComparatifPartage';
 import type { CombinePhase, CombineRow } from '../db/db';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
@@ -272,6 +273,9 @@ export function CombineScreen() {
           <div className={styles.keyStatLabel}>{gapLabel(byPhase, gapInitial, gapFinal)}</div>
         </div>
       </section>
+
+      {/* --- L'image à publier (Guillaume, 23 novembre) ------------------ */}
+      <ComparatifPartage rows={rows} />
 
       {/* --- Comparaison des trois combines -------------------------------- */}
       <section className={styles.card}>
