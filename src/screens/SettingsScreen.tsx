@@ -1,3 +1,5 @@
+import { cloudDisponible } from '../cloud/sauvegarde';
+import { CompteCloud } from '../components/CompteCloud';
 import { useEffect, useRef, useState } from 'react';
 import { Stepper, stepValue } from '../components/Stepper';
 import {
@@ -238,10 +240,16 @@ export function SettingsScreen({
       <ScreenHeader
         eyebrow={programme.reglages.eyebrow}
         title="Réglages"
-        subtitle="Tout reste sur ce téléphone"
+        subtitle={
+          cloudDisponible() ? 'Sur ce téléphone, et sur ton compte' : 'Tout reste sur ce téléphone'
+        }
         {...(bandeauReglages === undefined ? {} : { visuel: bandeauReglages })}
       >
-        <p className={styles.lead}>Tout est stocké sur ce téléphone. Rien ne part sur internet.</p>
+        <p className={styles.lead}>
+          {cloudDisponible()
+            ? 'Tout est stocké sur ce téléphone. Avec un compte (facultatif), une copie est sauvegardée en ligne, sans les photos.'
+            : 'Tout est stocké sur ce téléphone. Rien ne part sur internet.'}
+        </p>
       </ScreenHeader>
 
       {message && (
@@ -503,6 +511,29 @@ export function SettingsScreen({
         </p>
       </section>
 
+      {/* ------------------------------------------ compte (facultatif) -- */}
+      <CompteCloud
+        onRestaurer={(texte) => {
+          // Même confirmation que pour un fichier : on montre, puis on attend.
+          try {
+            setMessage(null);
+            setARestaurer(parseAnyExport(texte));
+            setTimeout(
+              () =>
+                document
+                  .getElementById('confirmer-restauration')
+                  ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+              50,
+            );
+          } catch (e) {
+            setMessage({
+              text: e instanceof Error ? e.message : 'Sauvegarde en ligne illisible.',
+              kind: 'erreur',
+            });
+          }
+        }}
+      />
+
       {/* ----------------------------------------------- export / import -- */}
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Sauvegarde</h2>
@@ -546,7 +577,11 @@ export function SettingsScreen({
           (() => {
             const r = resumeImport(aRestaurer);
             return (
-              <div role="alertdialog" aria-label="Confirmer la restauration">
+              <div
+                id="confirmer-restauration"
+                role="alertdialog"
+                aria-label="Confirmer la restauration"
+              >
                 <p className={styles.fieldHint}>{r.contenu}</p>
                 <p className={styles.fieldHint} style={{ color: 'var(--rouge)', fontWeight: 700 }}>
                   {r.remplace} Irréversible.

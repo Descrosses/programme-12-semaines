@@ -58,6 +58,7 @@ import type { RestTimer } from '../state/useRestTimer';
 import { useSessionData } from '../state/useSessionData';
 import { etiquetteRole, progressionSeance, recapAjustements } from '../engine/apercuSeance';
 import styles from './Session.module.css';
+import { sauvegardeAuto } from '../cloud/sauvegarde';
 
 /**
  * Écran séance.
@@ -412,6 +413,8 @@ export function SessionScreen({
       incompleteExerciseIds,
     });
     if (finishing) {
+      // Compte en ligne : la séance part en sauvegarde, sans rien attendre.
+      sauvegardeAuto();
       timer.skip();
       onBack();
       return;

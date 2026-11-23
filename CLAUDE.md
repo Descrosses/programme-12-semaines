@@ -1,7 +1,9 @@
 # Dcross-fit — notes pour Claude Code
 
-Application web installable (PWA) de préparation physique. Hors ligne à 100 %,
-aucune donnée ne quitte l'appareil : pas de compte, pas de serveur.
+Application web installable (PWA) de préparation physique. Hors ligne à 100 %.
+Sans compte, aucune donnée ne quitte l'appareil. Depuis le lot 1 du compte en
+ligne (23 novembre), un compte **facultatif** sauvegarde une copie en ligne
+(voir plus bas).
 
 Interlocuteur : **Guillaume**, 34 ans, père de famille, peu de temps, débutant
 en IA. **Réponds toujours en français.**
@@ -206,7 +208,28 @@ matériel et la durée avant d'écrire la moindre séance.
 
 ## Ce qui est volontaire et n'est pas à « corriger »
 
-- Pas de comptes utilisateurs — tout est local, par choix.
+- **Compte en ligne : FACULTATIF, lot 1 FAIT (décision de Guillaume, 23
+  novembre).** Remplace l'ancien « pas de compte, tout local ». Supabase
+  (région Francfort), configuré par `src/cloud/config.ts` : deux valeurs
+  publiques ; vides = aucune carte, aucune requête, appli d'avant. Mise en
+  route : `docs/compte-en-ligne.md` + `supabase/setup.sql` (un dossier
+  privé par compte, `supprimer_mon_compte`). Connexion par CODE e-mail (un
+  lien ouvrirait Safari, pas la PWA), consentement explicite (données de
+  santé, RGPD). Ce qui part = l'export « Exporter mes données » tel quel,
+  SANS photos ni vidéos ; la restauration passe par la même confirmation
+  que le fichier. Déclencheurs : « Séance terminée » (POWER/MASS/importés
+  et FEMMES), ouverture si dernière réussite > 24 h ou envoi en attente,
+  retour du réseau. **Règles à ne pas « corriger »** (`cloud/regles.ts`) :
+  une base vierge n'est JAMAIS envoyée, même forcée ; moins de données que
+  le compte = rien n'est envoyé, l'écran propose « Restaurer » ou
+  « Remplacer quand même » ; la précédente est gardée à côté. Une
+  sauvegarde ratée ne bloque jamais une séance (« en attente », repart
+  seule). État local (`state/cloudEtat.ts`) en `localStorage`, jamais en
+  base. Pas de synchronisation multi-appareils (les clés `++id` l'
+  interdisent sans renuméroter toute la base) ; pas d'admin (question RGPD /
+  HDS à trancher d'abord). Le client Supabase est un chunk à part
+  (`supabase-*.js`), hors pré-cache. Tests : `cloud/regles.test.ts`,
+  `cloud/sauvegarde.test.ts`, `components/compteCloud.test.tsx`.
 - Le Zercher March est **déprogrammé mais conservé au catalogue** : « on ne
   supprime pas d'exercices existants ».
 - Le Bear Crawl est **déprogrammé dès la semaine 1 mais conservé au catalogue**,

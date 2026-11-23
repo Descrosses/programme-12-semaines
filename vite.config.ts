@@ -71,7 +71,12 @@ export default defineConfig({
          * conditionnel, pour économiser un téléchargement unique.
          */
         globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}', 'fiches/*.webp'],
-        globIgnores: ['**/icons/**'],
+        /*
+         * Le client du compte en ligne (`supabase-*.js`, ~60 Ko compressés)
+         * n'est PAS pré-caché : il ne sert qu'en ligne, et qui n'a pas de
+         * compte ne doit pas le télécharger. Il se charge au premier usage.
+         */
+        globIgnores: ['**/icons/**', '**/supabase-*.js'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -140,4 +145,14 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Un nom stable pour le client du compte en ligne : `globIgnores` le
+        // reconnaît ainsi, et le sort du pré-cache.
+        manualChunks: (id: string) =>
+          id.includes('node_modules/@supabase/') ? 'supabase' : undefined,
+      },
+    },
+  },
 });
