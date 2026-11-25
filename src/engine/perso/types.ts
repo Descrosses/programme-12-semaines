@@ -134,7 +134,14 @@ export type CodeErreur =
   | 'version-inconnue'
   | 'structure-invalide'
   | 'identifiant-duplique'
-  | 'prescription-incompatible';
+  | 'prescription-incompatible'
+  // Les illustrations d'une archive (`illustrations.ts`, `media/archive.ts`).
+  | 'programme-different'
+  | 'exercice-inconnu'
+  | 'fichier-manquant'
+  | 'illustration-inutilisee'
+  | 'archive-invalide'
+  | 'image-invalide';
 
 export interface ErreurValidation {
   code: CodeErreur;
