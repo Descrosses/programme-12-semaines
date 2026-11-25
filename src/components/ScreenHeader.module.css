@@ -328,55 +328,35 @@
 }
 
 /*
- * MASS : le « // » rouge après le titre, relevé dans les maquettes de
- * Guillaume (14 novembre). Décoratif : masqué aux lecteurs d'écran par
- * `content … / ""`, et réservé au thème MASS.
- */
-:global([data-theme='mass']) .title::after {
-  content: '\00a0//' / '';
-  color: var(--accent-bright);
-}
-
-/*
- * La marque : « MASS // » en argent, très gros, au-dessus du titre du jour.
- * Relevé sur la maquette de l'Accueil : capitales de 50 px de haut (corps
- * ≈ 72 px), dégradé du blanc #f3f4f5 au gris #878887. Le « // » passe du
- * titre à la marque. L'ombre est un `drop-shadow` : un `text-shadow` se
- * peindrait PAR-DESSUS un dégradé découpé dans le texte.
+ * MASS « SCULPTED » (maquette de Guillaume, 25 novembre) : plus de « // »
+ * après les titres, nulle part. Il REMPLACE les maquettes du 14 novembre.
+ *
+ * La marque : « MASS » en étiquette bordeaux-rose DEVANT le sur-titre
+ * (« MASS · mercredi 18 novembre »), plus en très gros au-dessus du titre.
+ * `--accent-ink` et non le bordeaux plein : c'est du petit texte (7,2:1).
  */
 .marque {
+  color: var(--accent-ink);
+}
+
+/* Le nom du cycle (« MASS CONGESTION ») : le GRAND titre de l'Accueil, sur
+   deux lignes, vrai italique extra-gras, blanc chaud comme les autres. */
+.title.titreSecond {
   width: fit-content;
-  margin: 4px 0 2px;
-  font-family: var(--font-cond);
-  font-size: clamp(3.5rem, 18vw, 4.5rem);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  transform: skewX(-8deg);
-  transform-origin: left bottom;
-  background: linear-gradient(180deg, #f3f4f5 0%, #d6d7d8 42%, #878887 100%);
+  max-width: 72%;
+  margin-top: 4px;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: clamp(2.4rem, 11.4vw, 2.875rem);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 0.95;
+  transform: none;
+  background: var(--mass-argent) 0 0 / 100% 0.95em repeat-y;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 55%));
-}
-
-.marque::after {
-  content: '\00a0//' / '';
-  color: var(--accent-bright);
-}
-
-/* Le titre du jour, en seconde ligne : 22 px de capitales sur la maquette. */
-.title.titreSecond {
-  max-width: 74%;
-  font-size: clamp(1.75rem, 8.2vw, 2.0625rem);
-  line-height: 1.02;
-  color: #e3e4e6;
-}
-
-:global([data-theme='mass']) .title.titreSecond::after {
-  content: none;
+  text-shadow: none;
+  filter: var(--mass-ombre-titre);
 }
 
 /*
@@ -511,7 +491,7 @@
   width: 108px;
   height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #e3141c 0%, #e3141c 52%, rgb(227 20 28 / 0%) 100%);
+  background: linear-gradient(90deg, var(--mass-rouge) 0%, var(--mass-rouge) 52%, transparent 100%);
   box-shadow: var(--mass-halo-trait);
 }
 
@@ -636,12 +616,10 @@
 }
 
 /*
- * MASS — retours de Guillaume du 15 novembre (captures d'iPhone).
- *
- * 1. Un seul trait rouge sous le titre, celui de Semaine et du Combiné :
- *    court, il s'éteint vers la droite. Plus de ligne de sous-titre entre
- *    deux traits ; le sous-titre (« Semaine 1 / 4 », « Contenu à venir »…)
- *    reste, en dessous du trait.
+ * MASS — le sous-titre. D'abord (15 novembre) un trait rouge seul sur sa
+ * ligne, sous-titre dessous. Maquette SCULPTED (25 novembre) : le trait est
+ * COURT et COLLÉ au sous-titre, sur la même ligne — la grammaire de POWER et
+ * de LADIES. Semaine et Combiné (`.argent`) gardent leur trait sous le titre.
  */
 :global([data-theme='mass']) .header:not(.argent) .ruleLeft,
 :global([data-theme='mass']) .header:not(.argent) .ruleRight {
@@ -649,20 +627,35 @@
 }
 
 :global([data-theme='mass']) .header:not(.argent) .subtitleRow {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 14px;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
 }
 
-:global([data-theme='mass']) .header:not(.argent) .subtitleRow::before {
+/* Lettres très espacées, comme sur la maquette (« S E M A I N E  1 / 4 »). */
+:global([data-theme='mass']) .header:not(.argent) .subtitle {
+  letter-spacing: 0.2em;
+}
+
+/*
+ * Les photos des bandeaux restent celles en place (décision de Guillaume,
+ * 25 novembre) : seules leur LUMINOSITÉ et leur COULEUR sont accordées au
+ * thème. Un filtre, pas de nouveaux fichiers : leur rouge vif tire vers le
+ * bordeaux et l'image gagne un peu de lumière. Rien à re-télécharger.
+ */
+:global([data-theme='mass']) .hero .fond {
+  filter: hue-rotate(-9deg) saturate(0.8) brightness(1.14);
+}
+
+/* Sans sous-titre (ligne vide, `aria-hidden`), pas de trait orphelin. */
+:global([data-theme='mass']) .header:not(.argent) .subtitleRow:not([aria-hidden])::before {
   content: '';
   flex: none;
-  width: 108px;
+  width: 30px;
   height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #e3141c 0%, #e3141c 52%, rgb(227 20 28 / 0%) 100%);
-  box-shadow: var(--mass-halo-trait);
+  background: var(--mass-rouge);
 }
 
 /*

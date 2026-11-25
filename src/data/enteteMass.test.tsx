@@ -2,8 +2,8 @@
  * Les en-têtes MASS (maquettes de Guillaume, 14 novembre).
  *
  * 1. Les quatre photos d'en-tête existent et ne servent qu'à MASS.
- * 2. L'Accueil MASS a un en-tête PERMANENT : « MASS », le nom exact du cycle,
- *    « Semaine X / Y ». Jamais l'état du jour (« Ça commence bientôt »).
+ * 2. L'Accueil MASS a un en-tête PERMANENT : « MASS · date », le nom exact du
+ *    cycle en grand titre, « Semaine X / Y ». Jamais l'état du jour.
  * 3. POWER et FEMMES ne reçoivent rien de tout cela.
  */
 import { existsSync } from 'node:fs';
@@ -85,7 +85,12 @@ describe('l’en-tête permanent de l’Accueil MASS', () => {
         marque={e.marque}
       />,
     );
-    expect(html).toMatch(/<p class="[^"]*marque[^"]*">MASS<\/p>/);
+    // SCULPTED (25 novembre) : « MASS » est une étiquette DEVANT la date,
+    // dans le sur-titre — plus un « MASS // » en très gros.
+    expect(html).toMatch(
+      /<p class="[^"]*eyebrow[^"]*"><span class="[^"]*marque[^"]*">MASS<\/span> · samedi 14 novembre<\/p>/,
+    );
+    expect(html).not.toMatch(/<p class="[^"]*marque/);
     expect(html).toMatch(/<h1[^>]*>MASS FORCE<\/h1>/);
     expect(html).toContain('Semaine 1 / 4');
     expect(html).not.toMatch(/bientôt/i);

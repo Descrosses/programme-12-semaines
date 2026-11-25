@@ -261,66 +261,67 @@
  */
 [data-theme='mass'] {
   /*
-   * ── MASS — l'identité des maquettes de Guillaume (14 novembre) ──────────
+   * ── MASS — « SCULPTED » (maquette de Guillaume, 25 novembre) ─────────────
    *
-   * Sombre, presque noir, et rouge : « Accueil / Semaine / Séance / Combiné
-   * MASS ». Le thème clair d'ardoise qu'il remplace n'avait pas été dessiné,
-   * celui-ci l'est. Il vaut pour TOUTE la famille (FORCE et CONGESTION) :
-   * seul l'habillage change, aucun contenu sportif.
+   * Toujours sombre, mais plus chaud et moins dur : le noir bleuté devient
+   * un noir brun, le rouge vif (#d71f26) un BORDEAUX, le blanc un blanc
+   * chaud. Elle REMPLACE les maquettes du 14 novembre pour toute la famille
+   * (FORCE et CONGESTION) ; seul l'habillage change, aucun contenu sportif.
+   * Les photos des bandeaux restent celles en place (décision de Guillaume).
    *
-   * Contrastes MESURÉS :
+   * Contrastes MESURÉS (`themeMass.test.ts`) :
    *
    *                      bg      surface   surface-2   surface-3
-   *   --ink            17,9       16,3        15,0        13,6    AAA partout
-   *   --ink-2          10,4        9,4         8,7         7,9    AAA partout
-   *   --ink-3           6,6        6,0         5,6         5,0    AA+ partout
-   *   --accent-ink      7,1        6,5         6,0         5,4    AA+ partout
-   *   --rouge           6,4        5,8         5,4         4,9    AA partout
+   *   --ink            16,3       15,4        14,4        13,2
+   *   --ink-2           9,9        9,3         8,7         8,0
+   *   --ink-3           6,8        6,5         6,1         5,5
+   *   --accent-ink      7,2        6,8         6,3         5,8
+   *   --rouge           6,9        6,5         6,1         5,5
    *
-   * Blanc sur --accent (boutons) : 5,11. Le rouge plein ne porte jamais de
-   * petit texte sur le fond (3,85:1) : il trace les filets, les bordures et
-   * les « // » des titres ; le texte rouge passe par --accent-ink.
+   * Blanc sur --accent (boutons) : 6,75. Le bordeaux plein ne porte jamais
+   * de petit texte sur le fond (3,6:1 au mieux) : il trace les filets et les
+   * bordures ; le texte « rouge » passe par --accent-ink (vieux rose).
    */
-  --bg: #0b0b0d;
-  --bg-2: #111214;
-  --surface: #16171a;
-  --surface-2: #1d1f23;
-  --surface-3: #25272c;
+  --bg: #141212;
+  --bg-2: #181515;
+  --surface: #1b1818;
+  --surface-2: #221e1e;
+  --surface-3: #2a2525;
 
-  --line: #2e3036;
-  --line-strong: #464953;
+  --line: #332d2d;
+  --line-strong: #4f4646;
 
-  --ink: #f4f4f5;
-  --ink-2: #b9bcc4;
-  --ink-3: #9196a0; /* libellés non essentiels — 5,0:1 au pire */
+  --ink: #f3efec;
+  --ink-2: #c2bbb7;
+  --ink-3: #a39b97;
   --ink-on-accent: #ffffff;
 
-  --accent: #d71f26;
-  --accent-bright: #ff2b33;
-  --accent-deep: #a3161c;
-  --accent-dim: #3a0d10;
+  --accent: #a5313f;
+  --accent-bright: #c23c50;
+  --accent-deep: #561520;
+  --accent-dim: #2e1016;
 
-  --accent-ink: #ff6b70;
-  --accent-ink-fort: #ff6b70;
+  --accent-ink: #ee7f8f;
+  --accent-ink-fort: #ee7f8f;
 
-  /* Couleurs d'état : celles de POWER, mesurées ici (ligne --rouge ci-dessus). */
+  /* Couleurs d'état : le rouge d'alerte s'adoucit avec le thème. */
   --vert: #3ddc84;
   --orange: #ff9f1c;
-  --rouge: #ff5a4d;
+  --rouge: #ff6f63;
   --bleu: #3478c0;
   --bleu-ink: #6fb0ef;
 
   --macro-glucides: #3d8dc9;
   --macro-proteines: #cf5a86;
   --macro-lipides: #a87b22;
-  --bloc-test: #d71f26;
+  --bloc-test: #c23c50;
 
   --ink-fort: #ffffff;
-  --voile: 11 11 13;
+  --voile: 20 18 18;
   --ombre-titre: 0 2px 12px rgb(0 0 0 / 55%);
 
-  --shadow-card: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 6px 18px rgb(0 0 0 / 45%);
-  --shadow-action: 0 6px 18px rgb(215 31 38 / 35%);
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 6px 18px rgb(0 0 0 / 40%);
+  --shadow-action: 0 6px 18px rgb(165 49 63 / 32%);
 }
 
 /*
@@ -443,39 +444,42 @@
  * Seuls les styles MASS les lisent ; POWER et FEMMES les ignorent.
  */
 :root {
-  /* Titres : argent poli, blanc en haut, cassure grise sous le milieu. */
-  --mass-argent: linear-gradient(180deg, #ffffff 0%, #f1f1f1 44%, #a3a4a5 56%, #c9cacb 100%);
+  /* Titres : blanc chaud, à peine ombré vers le bas (SCULPTED : plus de
+     cassure argentée). Le nom du jeton reste, les styles le lisent. */
+  --mass-argent: linear-gradient(180deg, #ffffff 0%, #f6f1ed 55%, #ddd5cf 100%);
   --mass-ombre-titre: drop-shadow(0 2px 6px rgb(0 0 0 / 60%));
 
-  /* Le rouge des accents (traits, icônes, bords d'alerte) et son halo. */
-  --mass-rouge: #e3141c;
-  --mass-halo-trait: 0 0 8px rgb(227 20 28 / 40%);
+  /* Le bordeaux des accents (traits, icônes, bords d'alerte) et son halo. */
+  --mass-rouge: #c23c50;
+  --mass-halo-trait: 0 0 8px rgb(194 60 80 / 35%);
 
   /* Boutons d'action (Démarrer, fiche) et choix actifs (Combiné). */
-  --mass-rouge-bord: #ff3b42;
-  --mass-degrade-action: linear-gradient(180deg, #e0121c 0%, #b40b16 50%, #7d070e 100%);
-  --mass-degrade-choix: linear-gradient(180deg, #d8121c 0%, #a50c15 55%, #7d070e 100%);
+  --mass-rouge-bord: #c9485a;
+  --mass-degrade-action: linear-gradient(180deg, #a5313f 0%, #7c2130 52%, #561520 100%);
+  --mass-degrade-choix: linear-gradient(180deg, #a5313f 0%, #7c2130 55%, #561520 100%);
+  /* Le halo doux des boutons d'action. */
+  --mass-halo-action: 0 0 18px rgb(165 49 63 / 38%);
   --mass-liseret-action: inset 0 1px 0 rgb(255 255 255 / 22%);
   --mass-liseret-choix: inset 0 1px 0 rgb(255 255 255 / 18%);
 
   /* Cartes anthracite, et le liseré lumineux de leur bord haut. */
-  --mass-carte-fond: linear-gradient(180deg, #1b1b1c 0%, #111112 100%);
-  --mass-carte-bord: #3c3d3e;
+  --mass-carte-fond: linear-gradient(180deg, #211d1d 0%, #171414 100%);
+  --mass-carte-bord: #403838;
   --mass-liseret: inset 0 1px 0 rgb(255 255 255 / 7%);
 
   /* Choix inactifs, curseurs et champs : sombres, bordés. */
-  --mass-sombre-fond: linear-gradient(180deg, #262627 0%, #121213 100%);
-  --mass-sombre-bord: #5b5c5d;
-  --mass-curseur-fond: linear-gradient(180deg, #2a2a2b 0%, #151516 100%);
-  --mass-curseur-bord: #4a4b4c;
-  --mass-champ-fond: linear-gradient(180deg, #1d1d1e 0%, #121213 100%);
+  --mass-sombre-fond: linear-gradient(180deg, #2a2525 0%, #171414 100%);
+  --mass-sombre-bord: #5e5454;
+  --mass-curseur-fond: linear-gradient(180deg, #2e2828 0%, #1a1616 100%);
+  --mass-curseur-bord: #4f4646;
+  --mass-champ-fond: linear-gradient(180deg, #221e1e 0%, #171414 100%);
 
   /* Puces de choix (semaines, débuts/fins) : écran Semaine validé. */
-  --mass-puce-fond: linear-gradient(180deg, #242424 0%, #111 100%);
-  --mass-puce-bord: #3a3a3b;
-  --mass-puce-on-fond: linear-gradient(180deg, #570e11 0%, #8e0c13 55%, #d0111a 100%);
-  --mass-puce-on-bord: #c5262c;
-  --mass-puce-on-halo: 0 0 16px rgb(226 10 17 / 45%);
+  --mass-puce-fond: linear-gradient(180deg, #282323 0%, #161313 100%);
+  --mass-puce-bord: #3e3636;
+  --mass-puce-on-fond: linear-gradient(180deg, #561520 0%, #7c2130 55%, #a5313f 100%);
+  --mass-puce-on-bord: #c9485a;
+  --mass-puce-on-halo: 0 0 16px rgb(165 49 63 / 40%);
 }
 
 /*

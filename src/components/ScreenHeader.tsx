@@ -52,8 +52,10 @@ export function ScreenHeader({
   /** Sous le titre, encadré de deux traits rouges. */
   subtitle?: string;
   /**
-   * Le nom de la famille en très gros au-dessus du titre (« MASS »). Le titre
-   * passe alors en seconde ligne, plus petit. Maquette MASS de Guillaume.
+   * Le nom de la famille, en étiquette DEVANT le sur-titre (« MASS · mercredi
+   * 18 novembre ») ; le titre reste le grand titre. Maquette SCULPTED de
+   * Guillaume (25 novembre) — avant, « MASS // » s'écrivait en très gros
+   * au-dessus d'un titre réduit.
    */
   marque?: string;
   /**
@@ -87,8 +89,13 @@ export function ScreenHeader({
       <YardLines className={styles.yard} />
 
       <div className={styles.content}>
-        {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
-        {marque !== undefined && <p className={styles.marque}>{marque}</p>}
+        {(eyebrow || marque !== undefined) && (
+          <p className={styles.eyebrow}>
+            {marque !== undefined && <span className={styles.marque}>{marque}</span>}
+            {marque !== undefined && eyebrow ? ' · ' : ''}
+            {eyebrow}
+          </p>
+        )}
         <h1 className={`${styles.title} ${marque !== undefined ? styles.titreSecond : ''}`}>
           {title}
         </h1>
