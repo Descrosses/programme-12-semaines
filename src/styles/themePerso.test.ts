@@ -255,7 +255,12 @@ describe('ME, MYSELF & I — les en-têtes et leurs bandeaux', () => {
     expect(VISUELS.persoAujourdhui.focus).toMatch(/ 0%$/);
   });
 
-  it('la photo tient la droite et se fond : aucun voile clair sur le sujet, titre sur l’ivoire', () => {
+  it('la photo tient la droite et se fond LARGEMENT : le fondu choisi par Guillaume', () => {
+    // Deux versions lui ont été montrées ; il a gardé celle où le titre mord
+    // sur la photo, « parce qu'on voit mieux le bandeau ».
+    expect(lire('../components/ScreenHeader.module.css')).toMatch(
+      /:global\(\[data-theme='perso'\]\) \.hero \.fond \{[^}]*\n  mask-image:\s*linear-gradient\(104deg, transparent 14%, rgb\(0 0 0 \/ 22%\) 34%, #000 58%\)/,
+    );
     const entete = lire('../components/ScreenHeader.module.css');
     expect(entete).toMatch(
       /:global\(\[data-theme='perso'\]\) \.hero \.fond \{[^}]*inset: 0 0 0 auto;[^}]*mask-image:/,
