@@ -387,6 +387,47 @@ matériel et la durée avant d'écrire la moindre séance.
   22 novembre : les mêmes séances écrivent les mêmes lignes en base avant et
   après les lots 1-5. Un seul PDF réel éprouvé (Training 1) : pas de second
   programme fourni.
+- **ME, MYSELF & I illustré — lots 1 à 6 FAITS** (architecture validée par
+  Guillaume, 25 novembre). Un programme illustré arrive en **.zip** :
+  `programme.json` (le format de toujours, INCHANGÉ), `majk-illustrations.json`
+  (fichier de liens : exercice → illustration de l'archive, `{ "majk":
+  "power12:…" }` ou `null` déclaré) et les images (PNG, JPEG, WebP). Un .json
+  seul s'importe comme avant ; un .zip SANS `programme.json` complète la
+  version la plus récente du programme désigné par `programmeUid`. Règles à
+  ne pas « corriger » :
+  - association par IDENTIFIANT seulement ; tout défaut refuse l'archive en
+    entier, toutes les erreurs d'un coup (`engine/perso/illustrations.ts`) ;
+    fichier inattendu dans l'archive = refusé et nommé (`media/archive.ts`) ;
+  - bombe zip : tailles DÉCLARÉES lues et plafonnées avant extraction
+    (2 Mo/image, 15 Mo au total, archive 20 Mo, 4096 px) ; type lu dans les
+    octets (`media/enteteImage.ts`) ; image décodée puis ré-enregistrée par le
+    navigateur (`media/illustration.ts`) ; `fflate` 0.8.2 figé ;
+  - base v26 : table `illustrations`, UNE image par empreinte SHA-256 du
+    fichier d'origine ; liens sur la ligne du programme (`illustrations`, non
+    indexé) ; import en UNE transaction (`db/programmesImportes.ts`) ; images
+    orphelines retirées après suppression ou remplacement ; ajouter des
+    illustrations ne crée pas de version 2, en remplacer se confirme ;
+  - affichage (`FicheTechnique.tsx`) : fiche déposée à la main > illustration
+    importée > fiche de MAJK > rien. Sous ME, MYSELF & I : fond blanc, sans
+    voile. La prescription ne bouge pas ;
+  - **fiches retrouvées « peu importe le programme »** (`db/fichesRetrouvees.ts`)
+    : fiches livrées, illustrations des autres programmes importés, fiches
+    ajoutées à la main (LADIES compris). PROPOSÉES dans l'aperçu, cases
+    COCHÉES avec l'image, à décocher : nom STRICTEMENT identique (accents et
+    casse mis à part) et une seule planche possible, sinon rien. Un exercice
+    que le fichier de liens mentionne (même `null`) n'est jamais proposé ;
+  - sauvegarde : images dans le fichier de PHOTOS (relues avant tout
+    effacement ; un ancien fichier n'y touche pas), JAMAIS dans le fichier de
+    données qui part en ligne ;
+  - **contenus tiers** : les illustrations du Top Body Challenge (Sonia Tlev,
+    extraites du livre) ne vont NI dans le dépôt, NI dans l'appli publiée, NI
+    en ligne (décision de Guillaume : « c'est juste un test »). Les tests
+    utilisent des images FABRIQUÉES (`media/imagesFactices.ts`). Jamais de
+    fiche importée versée à la bibliothèque native.
+  Tests : `illustrations.test.ts` (moteur et base), `archive.test.ts`,
+  `archiveIllustree.test.ts`, `importIllustre.test.tsx`, `module.test.ts`.
+  À vérifier sur iPhone : choisir un .zip dans Fichiers, et le format
+  ré-enregistré (PNG si Safari n'écrit pas le WebP).
 - **Identité ME, MYSELF & I = « ivoire · chocolat · champagne »** (maquette
   de Guillaume, 25 novembre). Troisième identité de la plateforme, CLAIRE :
   `[data-theme='perso']` — ivoire `#f5f0e6` (fonds), chocolat `#49352b`
