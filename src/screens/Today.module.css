@@ -498,6 +498,18 @@
   margin-top: 4px;
 }
 
+/* ME, MYSELF & I : le nom du programme importé et la semaine, sous le
+   bandeau (le bandeau dit « Ma séance du jour »). Une étiquette, pas un titre. */
+.detailProgramme {
+  margin: 0 0 8px;
+  color: var(--accent-ink);
+  font-family: var(--font-cond);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
 /*
  * ME, MYSELF & I (maquette du 25 novembre) : bouton chocolat en italique,
  * numéros du programme en doré foncé (`--accent-ink`, 4,8:1 au pire).

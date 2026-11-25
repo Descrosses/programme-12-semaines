@@ -304,7 +304,9 @@ export function TodayScreen({
   return (
     <div className={styles.screen}>
       <ScreenHeader
-        eyebrow={humanDate(new Date().toISOString().slice(0, 10))}
+        {...(enteteFixe?.detail === undefined
+          ? { eyebrow: humanDate(new Date().toISOString().slice(0, 10)) }
+          : {})}
         title={enteteFixe?.titre ?? entete.titre}
         subtitle={enteteFixe === null ? entete.sous : enteteFixe.sous}
         {...(enteteFixe !== null ? { marque: enteteFixe.marque } : {})}
@@ -315,6 +317,9 @@ export function TodayScreen({
             : {})}
         prioritaire
       >
+        {enteteFixe?.detail !== undefined && (
+          <p className={styles.detailProgramme}>{enteteFixe.detail}</p>
+        )}
         {enteteFixe !== null && <h2 className={styles.titreJour}>{entete.titre}</h2>}
 
         {today.kind === 'session' && (

@@ -13,16 +13,22 @@ import styles from './Screens.module.css';
 export function AVenirScreen({
   titre,
   visuel,
+  surTitre,
+  sousTitre,
 }: {
   titre: string;
+  /** Le sur-titre et le sous-titre du bandeau de la famille (ME, MYSELF & I). */
+  surTitre?: string;
+  sousTitre?: string;
   /** Le bandeau de la famille pour cet onglet (MASS), s'il existe. */
   visuel?: VisuelNom;
 }) {
   return (
     <div className={styles.screen}>
       <ScreenHeader
+        {...(surTitre === undefined ? {} : { eyebrow: surTitre })}
         title={titre}
-        subtitle="Contenu à venir"
+        subtitle={sousTitre ?? 'Contenu à venir'}
         {...(visuel === undefined ? {} : { visuel })}
       />
       <section className={styles.card}>

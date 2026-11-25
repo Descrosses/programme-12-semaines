@@ -70,7 +70,7 @@ export function EvaluationScreen({ onRetour }: { onRetour?: () => void }) {
   return (
     <div className={styles.screen}>
       <header className={`${styles.header} ${local.entete}`}>
-        {dansCycle && HABILLAGE.mass.entetes !== undefined && (
+        {dansCycle && HABILLAGE.mass.entetes?.combine !== undefined && (
           <Visuel
             nom={HABILLAGE.mass.entetes.combine}
             className={`${styles.enteteFond} ${local.photo}`}

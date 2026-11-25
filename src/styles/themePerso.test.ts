@@ -3,11 +3,19 @@
  * Guillaume, 25 novembre). CLAIR, chaud, et LISIBLE. Ce test relit
  * `tokens.css`, mesure les contrastes WCAG et vérifie ce qui ne se voit pas
  * à l'œil : les commandes natives en clair, l'heure de l'iPhone lisible, le
- * menu inversé, et le bloc fiche qui ne montre plus une photo sombre délavée.
+ * menu inversé, le bloc fiche qui ne montre plus une photo sombre délavée,
+ * et les quatre bandeaux photo de Guillaume, chacun à son écran.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { enteteAccueilFixe, HABILLAGE } from '../data/famillesVisuel';
+import {
+  enteteAccueilFixe,
+  enteteDe,
+  HABILLAGE,
+  titresBandeauDe,
+  type EcranEntete,
+} from '../data/famillesVisuel';
+import { VISUELS, type VisuelNom } from '../data/visuels';
 import { validerProgramme } from '../engine/perso/valider';
 import type { ProgrammeImporteRow } from '../db/db';
 import { remplirMemoire, viderMemoire } from '../programmes/perso/memoire';
@@ -147,13 +155,9 @@ describe('thème ME, MYSELF & I — ivoire, chocolat, champagne', () => {
       /:global\(\[data-theme='perso'\]\) \.ficheImage \+ \.ficheVoile \{\s*background: rgb\(var\(--voile\) \/ 45%\);/,
     );
   });
-
-  it('n’emprunte aucune photo : pas de bandeau tant que Guillaume n’en a pas fourni', () => {
-    expect(HABILLAGE.perso?.entetes).toBeUndefined();
-  });
 });
 
-describe('en-tête de l’Accueil ME, MYSELF & I', () => {
+describe('ME, MYSELF & I — les en-têtes et leurs bandeaux', () => {
   const TEXTE = lire('../engine/perso/__fixtures__/training1.json');
   const CLE = 'perso-training1guillaume201005-1';
   const ligne = (): ProgrammeImporteRow => {
@@ -171,27 +175,100 @@ describe('en-tête de l’Accueil ME, MYSELF & I', () => {
       reponses: { dureeSemaines: 8 },
     };
   };
+  const PHOTOS: VisuelNom[] = ['persoAujourdhui', 'persoSemaine', 'persoProgres', 'persoReglages'];
 
   afterEach(() => viderMemoire());
 
-  it('le titre est l’onglet, comme sur la maquette ; le nom du programme passe dessous', () => {
+  it('Accueil : le titre et le sous-titre du bandeau, le nom du programme dessous', () => {
     remplirMemoire([ligne()]);
     expect(enteteAccueilFixe(CLE, 8, 1)).toEqual({
       marque: 'ME, MYSELF & I',
       titre: 'Aujourd’hui',
+      sous: 'Ma séance du jour',
       // Le nom importé est écrit tel quel (texte verbatim).
-      sous: 'Training 1 · semaine 1 / 8',
+      detail: 'Training 1 · semaine 1 / 8',
     });
   });
 
   it('avant le début du cycle : le nom seul, jamais « semaine null »', () => {
     remplirMemoire([ligne()]);
-    expect(enteteAccueilFixe(CLE, 8, null)?.sous).toBe('Training 1');
+    expect(enteteAccueilFixe(CLE, 8, null)?.detail).toBe('Training 1');
   });
 
   it('MASS garde le nom du cycle en titre, POWER et LADIES n’ont pas cet en-tête', () => {
-    expect(enteteAccueilFixe('mass-force', 4, 1)?.titre).toBe('MASS FORCE');
+    expect(enteteAccueilFixe('mass-force', 4, 1)).toEqual({
+      marque: 'MASS',
+      titre: 'MASS FORCE',
+      sous: 'Semaine 1 / 4',
+    });
     expect(enteteAccueilFixe('power12', 12, 4)).toBeNull();
     expect(enteteAccueilFixe('femmes8', 8, 1)).toBeNull();
+  });
+
+  it('les sous-titres sont ceux des bandeaux de Guillaume, mot pour mot', () => {
+    remplirMemoire([ligne()]);
+    const sous = (e: EcranEntete) => titresBandeauDe(CLE, e);
+    expect(sous('semaine')).toEqual({ marque: 'ME, MYSELF & I', sous: 'Mon programme' });
+    expect(sous('progres')).toEqual({ marque: 'ME, MYSELF & I', sous: 'Mes évolutions' });
+    expect(sous('reglages')).toEqual({ marque: 'ME, MYSELF & I', sous: 'Mon programme' });
+    // Les autres familles gardent leurs sous-titres.
+    for (const id of ['power12', 'mass4', 'mass-force', 'femmes8']) {
+      for (const e of ['accueil', 'semaine', 'progres', 'reglages'] as const) {
+        expect({ id, e, t: titresBandeauDe(id, e) }).toEqual({ id, e, t: null });
+      }
+    }
+  });
+
+  it('quatre bandeaux, chacun à son écran ; la séance n’en a pas (aucun fourni)', () => {
+    remplirMemoire([ligne()]);
+    expect(enteteDe(CLE, 'accueil')).toBe('persoAujourdhui');
+    expect(enteteDe(CLE, 'semaine')).toBe('persoSemaine');
+    expect(enteteDe(CLE, 'progres')).toBe('persoProgres');
+    expect(enteteDe(CLE, 'reglages')).toBe('persoReglages');
+    expect(enteteDe(CLE, 'seance')).toBeUndefined();
+  });
+
+  it('les deux tailles de chacun existent, sous un nom à elles', () => {
+    for (const nom of PHOTOS) {
+      for (const f of [VISUELS[nom].display, VISUELS[nom].mobile]) {
+        expect(f).toMatch(/^6\d_perso_/);
+        expect(existsSync(new URL(`../../public/visuels/${f}`, import.meta.url)), f!).toBe(true);
+      }
+    }
+  });
+
+  it('une image ne passe jamais d’une famille à l’autre', () => {
+    for (const famille of ['power', 'mass', 'femmes'] as const) {
+      const autres = Object.values(HABILLAGE[famille].entetes ?? {});
+      for (const nom of PHOTOS) expect(autres).not.toContain(nom);
+    }
+    const siennes = Object.values(HABILLAGE.perso.entetes ?? {});
+    expect([...siennes].sort()).toEqual([...PHOTOS].sort());
+    for (const id of ['power12', 'mass4', 'mass-force', 'femmes8']) {
+      for (const e of ['accueil', 'semaine', 'progres', 'reglages'] as const) {
+        expect(PHOTOS).not.toContain(enteteDe(id, e));
+      }
+    }
+  });
+
+  it('la tête de l’athlète reste entière : photo calée en haut', () => {
+    expect(VISUELS.persoAujourdhui.focus).toMatch(/ 0%$/);
+  });
+
+  it('la photo tient la droite et se fond : aucun voile clair sur le sujet, titre sur l’ivoire', () => {
+    const entete = lire('../components/ScreenHeader.module.css');
+    expect(entete).toMatch(
+      /:global\(\[data-theme='perso'\]\) \.hero \.fond \{[^}]*inset: 0 0 0 auto;[^}]*mask-image:/,
+    );
+    // Le fondu brun de l'heure passe AU-DESSUS de la photo.
+    expect(entete).toMatch(
+      /:global\(\[data-theme='perso'\]\) \.hero \.voile \{[^}]*rgb\(107 85 72\) 0/,
+    );
+  });
+
+  it('la Semaine ne prend pas la variante MASS (titre blanc) parce qu’elle a une photo', () => {
+    expect(lire('../screens/WeekScreen.tsx').replace(/\s+/g, ' ')).toContain(
+      "programmeParId(programme.id)?.familleId === 'mass' && enteteDe(programme.id, 'semaine') !== undefined",
+    );
   });
 });
