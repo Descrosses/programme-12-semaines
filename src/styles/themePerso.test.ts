@@ -167,6 +167,24 @@ describe('thème ME, MYSELF & I — ivoire, chocolat, champagne', () => {
     expect(contraste(jeton('accent'), bouton![1]!)).toBeGreaterThanOrEqual(4.5);
   });
 
+  it('la barre « repos terminé » est champagne et chocolat, plus le vert de POWER', () => {
+    // Retour de Guillaume : le vert jurait sur l'ivoire et le chocolat.
+    const css = lire('../components/RestBar.module.css');
+    const fin = /:global\(\[data-theme='perso'\]\) \.bar\.over \{([^}]*)\}/.exec(css);
+    expect(fin).not.toBeNull();
+    expect(fin![1]).toContain('var(--champagne)');
+    expect(fin![1]).not.toContain('var(--vert)');
+    // Texte chocolat sur le champagne, jusque dans le haut éclairci du dégradé.
+    expect(contraste(jeton('accent'), jeton('champagne'))).toBeGreaterThanOrEqual(4.5);
+    expect(contraste(jeton('accent'), '#d4b886')).toBeGreaterThanOrEqual(4.5);
+    // Avant les règles MASS : leur test de confinement lit jusqu'à la fin du fichier.
+    expect(css.indexOf("[data-theme='perso']) .bar.over")).toBeLessThan(
+      css.indexOf('MASS (lot D)'),
+    );
+    // Les couleurs de POWER et de MASS ne bougent pas.
+    expect(css).toMatch(/\.bar\.over \{\s*background: var\(--vert\);/);
+  });
+
   it('le bloc « Ajouter la fiche » ne montre pas la photo sombre de la famille', () => {
     // `cartePerso` est sombre : sous le voile ivoire elle virait au gris.
     const seance = lire('../screens/Session.module.css');
