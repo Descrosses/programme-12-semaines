@@ -5,6 +5,7 @@
  * fichier JSON contient l'intégralité de l'historique, lisible et réimportable.
  */
 
+import { EMPREINTE } from '../engine/perso/illustrations';
 import { blobToDataUrl, dataUrlToBlob } from '../media/photo';
 import { noterExport } from '../state/dernierExport';
 import { hydraterProgrammesImportes, programmesDeSauvegarde } from './programmesImportes';
@@ -25,6 +26,7 @@ import {
   type NoteRow,
   type PainLogRow,
   type FemmesSeanceRow,
+  type IllustrationRow,
   type ProgrammeImporteRow,
   type ReferenceForceRow,
   type SessionExerciseRow,
@@ -81,7 +83,15 @@ export const TABLES_SAUVEGARDEES = [
 ] as const;
 
 /** Les tables du second fichier, celui des images. */
-export const TABLES_PHOTOS = ['progressPhotos', 'exerciseMedia', 'exerciseReference'] as const;
+export const TABLES_PHOTOS = [
+  'progressPhotos',
+  'exerciseMedia',
+  'exerciseReference',
+  // Illustrations des programmes importés (v26) : des images, donc ici, et
+  // JAMAIS dans le fichier de données — c'est lui qui part sur le compte en
+  // ligne, et ces images sont des contenus tiers.
+  'illustrations',
+] as const;
 
 export interface ExportFile {
   format: 'programme-12-semaines';
@@ -210,6 +220,17 @@ export interface PhotoExportFile {
     width: number;
     height: number;
   }>;
+  /**
+   * Illustrations des programmes importés (v26), une par empreinte. Absentes
+   * des exports antérieurs : un ancien fichier ne touche pas à celles en place.
+   */
+  illustrations?: Array<{
+    empreinte: string;
+    ajouteLe: string;
+    dataUrl: string;
+    largeur: number;
+    hauteur: number;
+  }>;
 }
 
 export async function exportAll(): Promise<ExportFile> {
@@ -290,10 +311,11 @@ export async function exportAll(): Promise<ExportFile> {
 
 /** Le fichier de photos, construit à la demande. */
 export async function exportPhotos(): Promise<PhotoExportFile> {
-  const [photos, media, references] = await Promise.all([
+  const [photos, media, references, illustrations] = await Promise.all([
     db.progressPhotos.toArray(),
     db.exerciseMedia.toArray(),
     db.exerciseReference.toArray(),
+    db.illustrations.toArray(),
   ]);
   return {
     format: 'programme-12-semaines-photos',
@@ -326,6 +348,15 @@ export async function exportPhotos(): Promise<PhotoExportFile> {
         width: r.width,
         height: r.height,
         dataUrl: await blobToDataUrl(r.blob),
+      })),
+    ),
+    illustrations: await Promise.all(
+      illustrations.map(async (i) => ({
+        empreinte: i.empreinte,
+        ajouteLe: i.ajouteLe,
+        largeur: i.largeur,
+        hauteur: i.hauteur,
+        dataUrl: await blobToDataUrl(i.blob),
       })),
     ),
   };
@@ -404,6 +435,8 @@ export interface PhotoImportReport {
   progressPhotos: number;
   exerciseMedia: number;
   exerciseReference: number;
+  /** `null` : le fichier, antérieur aux illustrations, n'y a pas touché. */
+  illustrations: number | null;
 }
 
 /** Ce que contient un fichier déposé — l'import s'adapte au lieu d'exiger. */
@@ -435,10 +468,47 @@ export function parseAnyExport(text: string): AnyExportFile {
         progressPhotos: f.progressPhotos ?? [],
         exerciseMedia: f.exerciseMedia ?? [],
         exerciseReference: f.exerciseReference ?? [],
+        ...(Array.isArray(f.illustrations) ? { illustrations: f.illustrations } : {}),
       },
     };
   }
   return { kind: 'données', file: parseExport(text) };
+}
+
+const TYPES_ILLUSTRATION = new Set(['image/png', 'image/jpeg', 'image/webp']);
+
+/** Relit les illustrations d'un fichier de photos ; lève à la première illisible. */
+async function illustrationsDuFichier(
+  brutes: NonNullable<PhotoExportFile['illustrations']>,
+): Promise<IllustrationRow[]> {
+  const vues = new Set<string>();
+  const sortie: IllustrationRow[] = [];
+  for (const [i, b] of brutes.entries()) {
+    const ici = `Illustration n° ${String(i + 1)}`;
+    if (typeof b.empreinte !== 'string' || !EMPREINTE.test(b.empreinte) || vues.has(b.empreinte)) {
+      throw new Error(`${ici} : empreinte illisible ou en double.`);
+    }
+    if (typeof b.dataUrl !== 'string') throw new Error(`${ici} : image absente.`);
+    const blob = await dataUrlToBlob(b.dataUrl);
+    if (!TYPES_ILLUSTRATION.has(blob.type) || blob.size === 0 || blob.size > 10_000_000) {
+      throw new Error(`${ici} : ce n’est pas une image PNG, JPEG ou WebP.`);
+    }
+    const dims = [b.largeur, b.hauteur];
+    if (!dims.every((n) => Number.isInteger(n) && n >= 1 && n <= 4096)) {
+      throw new Error(`${ici} : dimensions impossibles.`);
+    }
+    vues.add(b.empreinte);
+    sortie.push({
+      empreinte: b.empreinte,
+      blob,
+      type: blob.type,
+      octets: blob.size,
+      largeur: b.largeur,
+      hauteur: b.hauteur,
+      ajouteLe: typeof b.ajouteLe === 'string' ? b.ajouteLe : '',
+    });
+  }
+  return sortie;
 }
 
 /** Remplace les photos par celles du fichier. Ne touche à aucune autre table. */
@@ -495,9 +565,14 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
     }),
   );
 
+  // Les illustrations, relues AVANT d'effacer quoi que ce soit : une seule
+  // illisible et le fichier entier est refusé.
+  const illustrations =
+    file.illustrations === undefined ? null : await illustrationsDuFichier(file.illustrations);
+
   await db.transaction(
     'rw',
-    [db.progressPhotos, db.exerciseMedia, db.exerciseReference],
+    [db.progressPhotos, db.exerciseMedia, db.exerciseReference, db.illustrations],
     async () => {
       await Promise.all([
         db.progressPhotos.clear(),
@@ -507,6 +582,10 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
       await db.progressPhotos.bulkAdd(progress);
       await db.exerciseMedia.bulkAdd(media);
       await db.exerciseReference.bulkAdd(references);
+      if (illustrations !== null) {
+        await db.illustrations.clear();
+        await db.illustrations.bulkAdd(illustrations);
+      }
     },
   );
 
@@ -514,6 +593,7 @@ export async function importPhotos(file: PhotoExportFile): Promise<PhotoImportRe
     progressPhotos: progress.length,
     exerciseMedia: media.length,
     exerciseReference: references.length,
+    illustrations: illustrations === null ? null : illustrations.length,
   };
 }
 

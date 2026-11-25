@@ -189,7 +189,7 @@ export function SettingsScreen({
         setUsage(await photoUsage());
         setARestaurer(null);
         annoncerPuisRecharger({
-          text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice, ${report.exerciseReference} fiche${report.exerciseReference > 1 ? 's' : ''} technique${report.exerciseReference > 1 ? 's' : ''}. L’historique d’entraînement n’a pas été touché.`,
+          text: `Photos importées : ${report.progressPhotos} de suivi, ${report.exerciseMedia} d’exercice, ${report.exerciseReference} fiche${report.exerciseReference > 1 ? 's' : ''} technique${report.exerciseReference > 1 ? 's' : ''}${report.illustrations === null ? '' : `, ${String(report.illustrations)} illustration${report.illustrations > 1 ? 's' : ''} de programme importé`}. L’historique d’entraînement n’a pas été touché.`,
           kind: 'ok',
         });
         return;

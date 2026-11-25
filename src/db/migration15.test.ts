@@ -155,7 +155,7 @@ describe("migration v14 → v15", () => {
 
     const apres = ouvrirComplete();
     await apres.open();
-    expect(apres.verno).toBe(25);
+    expect(apres.verno).toBe(26);
 
     expect(await apres.sessions.count()).toBe(2);
     expect(await apres.sets.count()).toBe(2);
