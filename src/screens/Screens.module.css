@@ -1647,6 +1647,25 @@
   letter-spacing: 0.01em;
 }
 
+/* Nutrition MASS (SCULPTED, 25 novembre) : chaque principe porte un trait
+   bordeaux penché, celui des jours de l'écran Semaine. */
+:global([data-theme='mass']) .principe {
+  position: relative;
+  padding-left: 16px;
+}
+
+:global([data-theme='mass']) .principe::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 3px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--mass-rouge);
+  transform: skewX(-12deg);
+}
+
 /* Le paragraphe d'ouverture de Mesures touchait le bord de l'écran. */
 :global([data-theme='mass']) .screen > .lead {
   padding: 0 var(--pad);
@@ -1664,9 +1683,7 @@
   font-weight: 800;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  box-shadow:
-    var(--mass-liseret-action),
-    0 0 18px rgb(226 10 17 / 50%);
+  box-shadow: var(--mass-liseret-action), var(--mass-halo-action);
 }
 
 :global([data-theme='mass']) .primary:disabled {

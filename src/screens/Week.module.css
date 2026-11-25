@@ -333,7 +333,10 @@
 }
 
 /*
- * MASS — l'écran Semaine d'après la référence de Guillaume (14 novembre).
+ * MASS — l'écran Semaine. Dimensions : la référence de Guillaume du
+ * 14 novembre. COULEURS et cartes : la maquette SCULPTED du 25 novembre
+ * (jetons `--mass-*` bordeaux, une carte par séance) — les teintes citées
+ * ci-dessous sont celles d'origine, gardées pour l'histoire.
  * Valeurs relevées sur la capture (1 px de référence = 1,336 px CSS) :
  *
  * - puces : 70 × 71, pas de 80 ; inactives #242424 → #111, bord #3a3a3b ;
@@ -363,7 +366,7 @@
 
 :global([data-theme='mass']) .weekNum {
   font-size: 2.25rem;
-  color: #f2f2f2;
+  color: var(--ink);
 }
 
 :global([data-theme='mass']) .weekOn {
@@ -380,28 +383,33 @@
 }
 
 :global([data-theme='mass']) .days {
+  /* SCULPTED (25 novembre) : UNE CARTE PAR SÉANCE, comme POWER et LADIES —
+     plus un seul bloc à séparateurs. */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 20px;
-  border-color: #343535;
-  border-radius: 12px;
-  background: #1a1a1b;
-}
-
-/* Séparateurs en retrait de 12 px de chaque côté, comme sur la référence. */
-:global([data-theme='mass']) .dayRow {
-  min-height: 76px;
-  padding-block: 10px;
-  border-top: 0;
-  background: linear-gradient(#2a2b2c, #2a2b2c) 12px 0 / calc(100% - 24px) 1px no-repeat;
-}
-
-:global([data-theme='mass']) .dayRow:first-child {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+:global([data-theme='mass']) .dayRow {
+  min-height: 72px;
+  padding: 10px 14px;
+  border: 1px solid var(--mass-carte-bord);
+  border-radius: 14px;
+  background: var(--mass-carte-fond);
+  box-shadow: var(--mass-liseret);
 }
 
 :global([data-theme='mass']) .dayName::before {
   top: -5px;
   bottom: -5px;
-  background: #e3141c;
+  background: var(--mass-rouge);
   transform: skewX(-12deg);
 }
 
@@ -414,22 +422,20 @@
 
 /* Seul « À faire » change de teinte : Faite, Sautée, Aujourd'hui gardent la leur. */
 :global([data-theme='mass']) .status:not(.statusDone, .statusSkipped, .statusToday) {
-  border-color: #4b4b4b;
-  color: #f0f0f0;
+  border-color: var(--mass-sombre-bord);
+  color: var(--ink);
 }
 
 :global([data-theme='mass']) .cta {
   min-height: 56px;
-  border: 1px solid #ef2a33;
-  background: linear-gradient(180deg, #e0121c 0%, #c00a17 48%, #8a030d 100%);
+  border: 1px solid var(--mass-rouge-bord);
+  background: var(--mass-degrade-action);
   font-family: 'Barlow Mass', var(--font-cond);
   font-size: 1.5625rem;
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.01em;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 25%),
-    0 0 16px rgb(217 2 21 / 30%);
+  box-shadow: var(--mass-liseret-action), var(--mass-halo-action);
 }
 
 :global([data-theme='mass']) .cta svg {

@@ -699,7 +699,27 @@ matériel et la durée avant d'écrire la moindre séance.
      initial, « N semaines bouclées », raccourci Nutrition) passent par
      `programmes/textesCycle.ts`. POWER ne change pas d'un mot — des tests
      (`OnboardingScreen.test.tsx`, `textesCycle.test.ts`) le figent.
-  9. **Identité MASS = maquettes sombres de Guillaume (14 novembre)**, pour
+  9. **Identité MASS = « SCULPTED » (maquette de Guillaume, 25 novembre)** —
+     elle REMPLACE celle du 14 novembre décrite ci-dessous, pour toute la
+     famille. Toujours sombre, mais noir chaud (`--bg` #141212), BORDEAUX
+     (`--accent` #a5313f, dégradé #a5313f → #561520) à la place du rouge
+     vif, blanc chaud, texte « rouge » en vieux rose (`--accent-ink`
+     #ee7f8f). Décisions du 14-15 novembre RENVERSÉES, ne pas y revenir :
+     plus AUCUN « // » ; « MASS » est une étiquette devant la date de
+     l'Accueil (« MASS · mercredi 18 novembre »), le nom du cycle est le
+     grand titre ; le trait est court et COLLÉ au sous-titre (sauf Semaine
+     et Combiné) ; titres blanc chaud (`--mass-argent` n'est plus argenté) ;
+     Semaine : UNE CARTE PAR SÉANCE ; numéros « Au programme » en chiffres
+     vieux rose ; Nutrition : un trait bordeaux par principe. Les PHOTOS
+     des bandeaux restent celles en place (« les bandeaux sont déjà bons ») :
+     un `filter` CSS accorde leur teinte et leur lumière, aucun fichier
+     nouveau. Boutons toujours en italique (maquette), menu ivoire inchangé.
+     Plus de rouge vif en dur : tout passe par les jetons `--mass-*`
+     (`themeMass.test.ts` le refuse, comme le « // »). Essais NON retenus,
+     à ne pas ressortir : FORGE, ivoire et rouge, ivoire-chocolat-champagne,
+     bandeaux bronze. Ce qui suit décrit l'ANCIENNE identité (dimensions et
+     confinement toujours valables, couleurs et « // » périmés) :
+     **Maquettes sombres de Guillaume (14 novembre)**, pour
      toute la famille (FORCE et CONGESTION) : `[data-theme='mass']` presque
      noir et rouge, « // » rouge après les titres, semaine choisie rouge.
      Elle REMPLACE la palette claire ardoise (décision antérieure, renversée

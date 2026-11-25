@@ -445,38 +445,32 @@
 }
 
 /*
- * MASS — relevés sur la maquette de l'Accueil (14 novembre).
- *
- * Bouton : dégradé du rouge #d90215 au bordeaux #86030d, liseré clair en haut
- * et lueur rouge autour. Blanc sur le plus clair des deux : 5,5:1.
+ * MASS — le bouton de l'Accueil, aux jetons SCULPTED (25 novembre) : dégradé
+ * bordeaux, liseré clair en haut, halo doux. Blanc dessus : 6,75:1 au plus
+ * clair.
  */
 :global([data-theme='mass']) .primary {
-  border: 1px solid #e8303a;
-  background: linear-gradient(180deg, #d90215 0%, #bd0717 45%, #86030d 100%);
+  border: 1px solid var(--mass-rouge-bord);
+  background: var(--mass-degrade-action);
   font-style: italic;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 22%),
-    0 0 18px rgb(217 2 21 / 45%),
-    0 6px 16px rgb(0 0 0 / 50%);
+    var(--mass-liseret-action),
+    var(--mass-halo-action),
+    0 6px 16px rgb(0 0 0 / 45%);
 }
 
 :global([data-theme='mass']) .primary:active {
-  background: #86030d;
+  background: var(--accent-deep);
 }
 
-/* Les numéros : blancs dans un pavé rouge incliné, plus des chiffres rouges. */
+/* Les numéros : des chiffres penchés, en vieux rose (SCULPTED, 25 novembre)
+   — plus de pavé rouge. `--accent-ink` : du petit texte, 5,8:1 au pire. */
 :global([data-theme='mass']) .apercuNumero {
-  display: grid;
-  place-items: center;
   width: 28px;
-  height: 22px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #d90215 0%, #a3060f 100%);
-  color: #fff;
-  font-size: 1rem;
+  color: var(--accent-ink);
+  font-size: 1.0625rem;
   font-style: italic;
   line-height: 1;
-  transform: skewX(-8deg);
 }
 
 :global([data-theme='mass']) .apercuTitre {

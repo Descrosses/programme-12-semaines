@@ -2547,12 +2547,6 @@
   line-height: 1.45;
 }
 
-/* MASS : même « // » rouge que les en-têtes (ScreenHeader.module.css). */
-:global([data-theme='mass']) .title::after {
-  content: '\00a0//' / '';
-  color: var(--accent-bright);
-}
-
 /*
  * MASS : la photo d'en-tête des maquettes de Guillaume (14 novembre), sur la
  * séance et le combiné. Sujet à droite, titre à gauche : le masque l'éteint
@@ -2730,6 +2724,8 @@
 }
 
 :global([data-theme='mass']) .ecranSeance .enteteSeance .enteteFond {
+  /* Même accord de teinte que les bandeaux (ScreenHeader.module.css). */
+  filter: hue-rotate(-9deg) saturate(0.8) brightness(1.14);
   height: calc(250px + var(--haut-ecran) * 0.5);
   -webkit-mask-image:
     linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 75%) 45%, #000 80%),
@@ -2795,7 +2791,7 @@
 /* « DUR » : bord rouge, fond rouge sombre, sans la pastille de couleur. */
 :global([data-theme='mass']) .ecranSeance .enteteSeance .tag {
   border-color: var(--mass-rouge);
-  background: linear-gradient(180deg, rgb(160 12 20 / 45%) 0%, rgb(90 6 10 / 45%) 100%);
+  background: linear-gradient(180deg, rgb(165 49 63 / 45%) 0%, rgb(86 21 32 / 45%) 100%);
 }
 
 :global([data-theme='mass']) .ecranSeance .enteteSeance .tag::before {
@@ -2853,9 +2849,7 @@
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.01em;
-  box-shadow:
-    var(--mass-liseret-action),
-    0 0 18px rgb(226 10 17 / 50%);
+  box-shadow: var(--mass-liseret-action), var(--mass-halo-action);
 }
 
 /* La carte d'exercice. */
@@ -2978,17 +2972,15 @@
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.01em;
-  box-shadow:
-    var(--mass-liseret-action),
-    0 0 14px rgb(226 10 17 / 40%);
+  box-shadow: var(--mass-liseret-action), var(--mass-halo-action);
 }
 
 /* La série en cours : colonne de gauche teintée de rouge, rang rouge. */
 :global([data-theme='mass']) .ecranSeance .setCourante {
   background: linear-gradient(
     90deg,
-    rgb(150 10 16 / 38%) 0,
-    rgb(80 6 10 / 30%) 30px,
+    rgb(165 49 63 / 38%) 0,
+    rgb(86 21 32 / 30%) 30px,
     transparent 30px
   );
 }
@@ -3033,9 +3025,7 @@
   font-style: italic;
   font-weight: 800;
   text-transform: uppercase;
-  box-shadow:
-    var(--mass-liseret-action),
-    0 0 14px rgb(226 10 17 / 40%);
+  box-shadow: var(--mass-liseret-action), var(--mass-halo-action);
 }
 
 :global([data-theme='mass']) .ecranSeance .tiroir,

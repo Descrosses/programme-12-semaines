@@ -130,7 +130,7 @@ export function NutritionPrincipesScreen({
           six règles sont tout le plan alimentaire du programme.
         </p>
         {PRINCIPES.map((p) => (
-          <div key={p.titre} className={styles.field}>
+          <div key={p.titre} className={`${styles.field} ${styles.principe}`}>
             <b>{p.titre}</b>
             <p className={styles.fieldHint}>{p.texte}</p>
           </div>

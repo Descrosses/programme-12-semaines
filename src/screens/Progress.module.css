@@ -239,9 +239,7 @@
 :global([data-theme='mass']) .liftOn {
   border-color: var(--mass-rouge-bord);
   background: var(--mass-degrade-choix);
-  box-shadow:
-    0 0 14px rgb(226 10 17 / 45%),
-    var(--mass-liseret-choix);
+  box-shadow: var(--mass-halo-action), var(--mass-liseret-choix);
 }
 
 :global([data-theme='mass']) .liftOn::after {
