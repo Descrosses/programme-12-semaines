@@ -80,6 +80,8 @@ describe('importPhotos', () => {
       progressPhotos: 1,
       exerciseMedia: 0,
       exerciseReference: 0,
+      // Un fichier d'avant les illustrations ne touche pas à celles en place.
+      illustrations: null,
     });
     const [photo] = await db.progressPhotos.toArray();
     expect(photo).toMatchObject({ cycleId, week: 1, date: '2026-11-01', width: 1, height: 1 });

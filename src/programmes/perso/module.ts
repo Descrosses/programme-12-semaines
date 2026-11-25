@@ -26,6 +26,7 @@ import type { ResolvedLoad } from '../../engine/loadResolver';
 import { workLabel } from '../../engine/format';
 import type { SessionContext } from '../../engine/types';
 import type { ModuleProgramme } from '../types';
+import { ficheNative } from './fichesNatives';
 import { idExerciceImporte } from './ids';
 
 const SANS_CHARGE: ResolvedLoad = { kg: null, shape: 'none', step: 2.5, source: 'aucune' };
@@ -71,8 +72,19 @@ function exerciceDe(
   const repere = derniereCharge(ctx, id);
   if (repere !== null) notes.push(`Dernière fois : ${String(repere).replace('.', ',')} kg`);
 
+  // L'illustration : une image importée (par empreinte), ou une fiche de
+  // MAJK désignée par sa clé — si elle existe toujours.
+  const lien = row.illustrations?.liens[ligne.exerciceId];
+  const fiche = lien !== undefined && 'majk' in lien ? ficheNative(lien.majk) : undefined;
   const commun = {
-    def: { id, name: nom, fn: 'libre' as const, role: 'accessory' as const },
+    def: {
+      id,
+      name: nom,
+      fn: 'libre' as const,
+      role: 'accessory' as const,
+      ...(lien !== undefined && 'empreinte' in lien ? { illustration: lien.empreinte } : {}),
+      ...(fiche === undefined ? {} : { fiche }),
+    },
     id,
     name: nom,
     targetRPE: null,

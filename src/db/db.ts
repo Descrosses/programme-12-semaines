@@ -12,6 +12,7 @@ import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
 import Dexie, { type Table } from 'dexie';
 import type { ProgrammeNormalise } from '../engine/perso/types';
+import type { IllustrationsProgramme } from '../engine/perso/illustrations';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
 import type { PlanPerso } from '../data/planPerso';
 import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
@@ -634,6 +635,37 @@ export interface ProgrammeImporteRow {
    * quand le document fixe lui-même sa durée : la question n'a pas été posée.
    */
   reponses: { dureeSemaines: number | null };
+  /**
+   * Les illustrations de cette version : exercice (id local) → image de la
+   * table `illustrations` (par empreinte) ou fiche de MAJK. Absent = aucune.
+   * Non indexé : ajouté sans migration (v26).
+   */
+  illustrations?: IllustrationsProgramme;
+}
+
+/**
+ * Une image d'illustration d'un programme importé (v26).
+ *
+ * Rangée par son EMPREINTE (SHA-256 du fichier d'origine) : la même image
+ * utilisée par 12 exercices, par deux versions ou par deux programmes n'est
+ * stockée qu'une fois. Elle n'appartient à aucun cycle ; elle vit tant
+ * qu'une version de programme importé la désigne, et le nettoyage
+ * (`programmesImportes.ts`) retire les orphelines.
+ *
+ * Contenu propre au programme importé : jamais versée à la bibliothèque des
+ * fiches de MAJK, jamais dans la sauvegarde envoyée en ligne.
+ */
+export interface IllustrationRow {
+  id?: number;
+  empreinte: string;
+  /** L'image ré-enregistrée par le navigateur. */
+  blob: Blob;
+  type: string;
+  octets: number;
+  largeur: number;
+  hauteur: number;
+  /** `YYYY-MM-DD`. */
+  ajouteLe: string;
 }
 
 export interface ProfilFemmes {
@@ -692,6 +724,7 @@ export class ProgrammeDB extends Dexie {
   femmesSeances!: Table<FemmesSeanceRow, number>;
   referencesForce!: Table<ReferenceForceRow, number>;
   programmesImportes!: Table<ProgrammeImporteRow, number>;
+  illustrations!: Table<IllustrationRow, number>;
   extraFoods!: Table<ExtraFoodRow, number>;
   dayKind!: Table<DayKindRow, number>;
   notes!: Table<NoteRow, number>;
@@ -1213,6 +1246,15 @@ export class ProgrammeDB extends Dexie {
      * rattachée à un cycle : supprimer un cycle ne l'emporte jamais.
      */
     this.version(25).stores({ programmesImportes: '++id, &cle, uid' });
+
+    /*
+     * v26 — les illustrations des programmes importés.
+     *
+     * Une table neuve, rien d'autre : aucune ligne existante n'est lue ni
+     * modifiée. Les liens « exercice → image » vivent sur la ligne du
+     * programme (champ non indexé, sans migration).
+     */
+    this.version(26).stores({ illustrations: '++id, &empreinte' });
 
     this.version(19).upgrade(async (tx) => {
       const existing = (await tx.table('settings').get(1)) as SettingsRow | undefined;

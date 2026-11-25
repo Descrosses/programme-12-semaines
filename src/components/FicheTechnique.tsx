@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ExerciseDef, InfosFiche } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
+import { illustration } from '../db/programmesImportes';
 import { referenceForExercise } from '../db/repo';
 import { Icon } from './Icon';
 import { useObjectUrl } from './PhotoCapture';
@@ -17,9 +18,15 @@ import styles from '../screens/Session.module.css';
  *
  * 1. la fiche DÉPOSÉE par la personne (« + Documenter » → « Ajouter la
  *    fiche »), rangée en base et propre à l'exercice ;
- * 2. la planche livrée avec le programme (`def.fiche`, MASS 4 et une partie de POWER 12) ;
- * 3. aucune : le bloc montre la photo d'ambiance du programme, et le bouton
+ * 2. l'illustration IMPORTÉE avec un programme ME, MYSELF & I
+ *    (`def.illustration`, une image de la table `illustrations`) ;
+ * 3. la planche livrée avec le programme (`def.fiche`, MASS 4 et une partie
+ *    de POWER 12 — ou une fiche de MAJK qu'un programme importé désigne) ;
+ * 4. aucune : le bloc montre la photo d'ambiance du programme, et le bouton
  *    ouvre le panneau où l'on dépose la fiche.
+ *
+ * La fiche déposée passe en premier : c'est le choix de la personne. La
+ * retirer fait réapparaître l'illustration importée.
  *
  * Quand une fiche existe, toucher le bloc l'ouvre en plein écran, et toucher
  * l'image l'agrandit encore — le même geste que la planche de MASS, avec la
@@ -55,17 +62,22 @@ export function FicheTechnique({
 
   useEffect(() => {
     let vivant = true;
-    void referenceForExercise(def.id).then((r) => {
-      if (vivant) setBlob(r?.blob ?? null);
-    });
+    const empreinte = def.illustration;
+    void (async () => {
+      const deposee = await referenceForExercise(def.id);
+      const image =
+        deposee?.blob ?? (empreinte === undefined ? null : (await illustration(empreinte))?.blob);
+      if (vivant) setBlob(image ?? null);
+    })();
     return () => {
       vivant = false;
     };
-  }, [def.id, version]);
+  }, [def.id, def.illustration, version]);
 
-  const deposee = useObjectUrl(blob);
+  // L'image lue en base : la fiche déposée, sinon l'illustration importée.
+  const enBase = useObjectUrl(blob);
   const livree = def.fiche === undefined ? null : `${import.meta.env.BASE_URL}${def.fiche}`;
-  const src = deposee ?? livree;
+  const src = enBase ?? livree;
 
   return (
     <>

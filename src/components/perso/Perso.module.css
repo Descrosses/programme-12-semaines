@@ -208,3 +208,87 @@
   color: var(--ink-2);
   font-size: var(--fs-small);
 }
+
+/* ---- Illustrations d'une archive, fiches retrouvées (aperçu d'import). */
+
+.illustrations {
+  margin-top: 12px;
+}
+
+.galerie {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.galerie li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  color: var(--ink-3);
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Une image entière, sur blanc, sans déformation. */
+.vignette {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.vignette img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.propositions {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.propositions li + li {
+  border-top: 1px solid var(--line);
+}
+
+.propositions label {
+  display: grid;
+  grid-template-columns: 24px 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap, 48px);
+  padding: 8px 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.propositions input {
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+  appearance: auto;
+  -webkit-appearance: checkbox;
+}
+
+.propositions b {
+  color: var(--ink);
+}

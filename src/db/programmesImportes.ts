@@ -17,14 +17,33 @@
  *
  * Ce module ne joue aucune séance : le moteur des programmes importés est le
  * lot 4.
+ *
+ * ── Les illustrations (v26) ───────────────────────────────────────────────
+ *
+ * Les liens « exercice → image » vivent sur la ligne de la version ; les
+ * images, dans la table `illustrations`, une par EMPREINTE. Tout s'écrit
+ * dans UNE transaction : un import qui échoue ne laisse ni programme sans
+ * ses images, ni image sans programme. Après chaque suppression ou
+ * remplacement, les images que plus aucune version ne désigne sont retirées.
+ * Les liens n'entrent pas dans l'empreinte d'un programme : ajouter des
+ * illustrations ne fabrique pas une nouvelle version.
  */
 
 import { formeCanonique } from '../engine/perso/canonique';
 import { LIMITES, type ErreurValidation, type RapportCompatibilite } from '../engine/perso/types';
 import { validerProgramme } from '../engine/perso/valider';
+import {
+  EMPREINTE,
+  empreintesDe,
+  relireLiensStockes,
+  type IllustrationsProgramme,
+  type LienStocke,
+} from '../engine/perso/illustrations';
+import type { ProgrammeNormalise } from '../engine/perso/types';
+import { clesFichesNatives } from '../programmes/perso/fichesNatives';
 import { clePerso, lireCle, PREFIXE_PERSO } from '../programmes/perso/ids';
 import { memoireEnErreur, remplirMemoire } from '../programmes/perso/memoire';
-import { db, type ProgrammeImporteRow } from './db';
+import { db, type IllustrationRow, type ProgrammeImporteRow } from './db';
 
 export { PREFIXE_PERSO, clePerso, idExerciceImporte, lireCle } from '../programmes/perso/ids';
 
@@ -60,7 +79,25 @@ export type ResultatImport =
       actuelle: { cle: string; nom: string };
       nom: string;
     }
-  | { statut: 'importe'; cle: string; rapport: RapportCompatibilite };
+  | { statut: 'importe'; cle: string; rapport: RapportCompatibilite }
+  /** Le programme était déjà là, identique : ses illustrations ont été posées. */
+  | { statut: 'illustrations-ajoutees'; cle: string }
+  /** Le programme a déjà d'AUTRES illustrations : la personne confirme le remplacement. */
+  | { statut: 'illustrations-a-remplacer'; cle: string; nom: string };
+
+/** Une image prête à entrer en base (ré-enregistrée par le navigateur). */
+export interface ImageAEnregistrer {
+  empreinte: string;
+  blob: Blob;
+  type: string;
+  largeur: number;
+  hauteur: number;
+}
+
+/** Les types d'image qu'une illustration peut avoir en base. */
+const TYPES_IMAGE = new Set(['image/png', 'image/jpeg', 'image/webp']);
+/** Une image ré-enregistrée peut grossir (un PNG redessiné) : 10 Mo au plus. */
+const OCTETS_IMAGE_EN_BASE = 10_000_000;
 
 export interface OptionsImport {
   /** La réponse au questionnaire, quand le document ne fixe pas la durée. */
@@ -69,6 +106,132 @@ export interface OptionsImport {
   confirmerNouvelleVersion?: boolean;
   /** Pour les tests. `YYYY-MM-DD`. */
   aujourdhui?: string;
+  /**
+   * Les illustrations : exercice (id local) → empreinte ou fiche de MAJK.
+   * Ce sont les liens de l'archive ET les fiches retrouvées que la personne
+   * a laissées cochées dans l'aperçu.
+   */
+  liens?: Readonly<Record<string, LienStocke>>;
+  /** Les images nouvelles que ces liens désignent. */
+  images?: readonly ImageAEnregistrer[];
+  /** La personne a confirmé le remplacement des illustrations existantes. */
+  remplacerIllustrations?: boolean;
+}
+
+/**
+ * Contrôle des liens et des images AVANT toute écriture. Rend le message
+ * d'erreur, ou `null` si tout est cohérent avec ce programme.
+ */
+function erreurIllustrations(
+  doc: ProgrammeNormalise,
+  liens: Readonly<Record<string, LienStocke>>,
+  images: readonly ImageAEnregistrer[],
+): string | null {
+  const exercices = new Set(doc.exercices.map((e) => e.id));
+  const natives = clesFichesNatives();
+  const designees = new Set<string>();
+  for (const [exercice, lien] of Object.entries(liens)) {
+    if (!exercices.has(exercice)) return `« ${exercice} » n’est pas un exercice de ce programme.`;
+    if ('empreinte' in lien) {
+      if (!EMPREINTE.test(lien.empreinte)) return `Lien illisible pour « ${exercice} ».`;
+      designees.add(lien.empreinte);
+    } else if (!natives.has(lien.majk)) {
+      return `« ${lien.majk} » n’est pas une fiche de MAJK.`;
+    }
+  }
+  const vues = new Set<string>();
+  for (const i of images) {
+    if (!designees.has(i.empreinte)) return 'Une image ne correspond à aucun exercice.';
+    if (vues.has(i.empreinte)) return 'Une image est fournie deux fois.';
+    vues.add(i.empreinte);
+    if (!TYPES_IMAGE.has(i.type) || !TYPES_IMAGE.has(i.blob.type)) {
+      return 'Une image n’est ni en PNG, ni en JPEG, ni en WebP.';
+    }
+    if (i.blob.size === 0 || i.blob.size > OCTETS_IMAGE_EN_BASE)
+      return 'Une image est trop lourde.';
+    if (![i.largeur, i.hauteur].every((n) => Number.isInteger(n) && n >= 1 && n <= 4096)) {
+      return 'Une image a des dimensions impossibles.';
+    }
+  }
+  return null;
+}
+
+/**
+ * Dans la transaction : écrit les images qui manquent, vérifie que chaque
+ * empreinte désignée existe. Lève si une image désignée n'existe nulle part
+ * (la transaction est alors annulée en entier).
+ */
+async function ecrireImages(
+  liens: Readonly<Record<string, LienStocke>>,
+  images: readonly ImageAEnregistrer[],
+  aujourdhui: string,
+): Promise<void> {
+  for (const i of images) {
+    if ((await db.illustrations.where('empreinte').equals(i.empreinte).count()) > 0) continue;
+    const row: IllustrationRow = {
+      empreinte: i.empreinte,
+      blob: i.blob,
+      type: i.blob.type,
+      octets: i.blob.size,
+      largeur: i.largeur,
+      hauteur: i.hauteur,
+      ajouteLe: aujourdhui,
+    };
+    await db.illustrations.add(row);
+  }
+  for (const h of empreintesDe({ liens })) {
+    if ((await db.illustrations.where('empreinte').equals(h).count()) === 0) {
+      throw new ImageAbsente();
+    }
+  }
+}
+
+class ImageAbsente extends Error {}
+
+/**
+ * Retire les images que plus aucune version de programme ne désigne. Dans la
+ * transaction de l'écriture qui a pu les rendre orphelines.
+ */
+async function nettoyerIllustrations(): Promise<void> {
+  const utiles = new Set<string>();
+  for (const r of await db.programmesImportes.toArray()) {
+    for (const h of empreintesDe(r.illustrations)) utiles.add(h);
+  }
+  await db.illustrations.filter((i) => !utiles.has(i.empreinte)).delete();
+}
+
+const memesLiens = (
+  a: IllustrationsProgramme | undefined,
+  b: IllustrationsProgramme | undefined,
+) => {
+  const forme = (x: IllustrationsProgramme | undefined) =>
+    JSON.stringify(Object.entries(x?.liens ?? {}).sort(([p], [q]) => p.localeCompare(q)));
+  return forme(a) === forme(b);
+};
+
+const avecLiens = (liens: Readonly<Record<string, LienStocke>>) =>
+  Object.keys(liens).length > 0 ? { illustrations: { liens: { ...liens } } } : {};
+
+/** Pose des illustrations sur une version existante, dans la transaction appelante. */
+async function poserSur(
+  row: ProgrammeImporteRow,
+  liens: Readonly<Record<string, LienStocke>>,
+  images: readonly ImageAEnregistrer[],
+  options: OptionsImport,
+  aujourdhui: string,
+): Promise<ResultatImport> {
+  const nouvelles = Object.keys(liens).length > 0 ? { liens: { ...liens } } : undefined;
+  if (memesLiens(row.illustrations, nouvelles)) {
+    return { statut: 'illustrations-ajoutees', cle: row.cle };
+  }
+  const existantes = Object.keys(row.illustrations?.liens ?? {}).length > 0;
+  if (existantes && options.remplacerIllustrations !== true) {
+    return { statut: 'illustrations-a-remplacer', cle: row.cle, nom: row.nom };
+  }
+  await ecrireImages(liens, images, aujourdhui);
+  await db.programmesImportes.update(row.id!, { illustrations: nouvelles });
+  await nettoyerIllustrations();
+  return { statut: 'illustrations-ajoutees', cle: row.cle };
 }
 
 export async function importerProgramme(
@@ -94,45 +257,126 @@ export async function importerProgramme(
 
   const candidat = { document: doc, reponses: { dureeSemaines: reponse } };
   const cible = empreinte(candidat);
+  const liens = options.liens ?? {};
+  const images = options.images ?? [];
+  const aujourdhui = options.aujourdhui ?? new Date().toISOString().slice(0, 10);
+  const defaut = erreurIllustrations(doc, liens, images);
+  if (defaut !== null) {
+    return {
+      statut: 'refuse',
+      erreurs: [{ code: 'fichier-manquant', chemin: 'illustrations', message: defaut }],
+    };
+  }
+  const illustre = Object.keys(liens).length > 0;
 
-  const resultat = await db.transaction(
-    'rw',
-    db.programmesImportes,
-    async (): Promise<ResultatImport> => {
-      const versions = await db.programmesImportes.where('uid').equals(doc.uid).toArray();
-      const identique = versions.find((r) => empreinte(r) === cible);
-      if (identique) return { statut: 'deja-importe', cle: identique.cle };
+  const resultat = await db
+    .transaction(
+      'rw',
+      [db.programmesImportes, db.illustrations],
+      async (): Promise<ResultatImport> => {
+        const versions = await db.programmesImportes.where('uid').equals(doc.uid).toArray();
+        const identique = versions.find((r) => empreinte(r) === cible);
+        if (identique) {
+          // Sans illustrations : rien à faire. Avec : elles se posent sur la
+          // version déjà là, sans en créer une nouvelle.
+          if (!illustre) return { statut: 'deja-importe', cle: identique.cle };
+          return poserSur(identique, liens, images, options, aujourdhui);
+        }
 
-      const derniere = versions.reduce<ProgrammeImporteRow | null>(
-        (max, r) => (max === null || r.rev > max.rev ? r : max),
-        null,
-      );
-      if (derniere !== null && options.confirmerNouvelleVersion !== true) {
-        return {
-          statut: 'nouvelle-version-a-confirmer',
-          actuelle: { cle: derniere.cle, nom: derniere.nom },
+        const derniere = versions.reduce<ProgrammeImporteRow | null>(
+          (max, r) => (max === null || r.rev > max.rev ? r : max),
+          null,
+        );
+        if (derniere !== null && options.confirmerNouvelleVersion !== true) {
+          return {
+            statut: 'nouvelle-version-a-confirmer',
+            actuelle: { cle: derniere.cle, nom: derniere.nom },
+            nom: doc.nom,
+          };
+        }
+
+        const rev = derniere === null ? 1 : derniere.rev + 1;
+        const cle = clePerso(doc.uid, rev);
+        await ecrireImages(liens, images, aujourdhui);
+        await db.programmesImportes.add({
+          cle,
+          uid: doc.uid,
+          rev,
           nom: doc.nom,
-        };
-      }
-
-      const rev = derniere === null ? 1 : derniere.rev + 1;
-      const cle = clePerso(doc.uid, rev);
-      await db.programmesImportes.add({
-        cle,
-        uid: doc.uid,
-        rev,
-        nom: doc.nom,
-        importeLe: options.aujourdhui ?? new Date().toISOString().slice(0, 10),
-        archive: false,
-        texte: contenu,
-        document: doc,
-        reponses: candidat.reponses,
-      });
-      return { statut: 'importe', cle, rapport: v.rapport };
-    },
-  );
-  if (resultat.statut === 'importe') await hydraterProgrammesImportes();
+          importeLe: aujourdhui,
+          archive: false,
+          texte: contenu,
+          document: doc,
+          reponses: candidat.reponses,
+          ...avecLiens(liens),
+        });
+        return { statut: 'importe', cle, rapport: v.rapport };
+      },
+    )
+    .catch((e: unknown): ResultatImport => {
+      if (e instanceof ImageAbsente) return refusImageAbsente();
+      throw e;
+    });
+  if (resultat.statut === 'importe' || resultat.statut === 'illustrations-ajoutees') {
+    await hydraterProgrammesImportes();
+  }
   return resultat;
+}
+
+const refusImageAbsente = (): ResultatImport => ({
+  statut: 'refuse',
+  erreurs: [
+    {
+      code: 'fichier-manquant',
+      chemin: 'illustrations',
+      message: 'Une image désignée n’est ni dans l’archive, ni déjà dans MAJK.',
+    },
+  ],
+});
+
+/**
+ * Pose des illustrations sur un programme DÉJÀ importé (archive sans
+ * programme.json) : sur sa version la plus récente.
+ */
+export async function completerIllustrations(
+  uid: string,
+  options: Pick<OptionsImport, 'liens' | 'images' | 'remplacerIllustrations' | 'aujourdhui'>,
+): Promise<ResultatImport | { statut: 'introuvable' }> {
+  const liens = options.liens ?? {};
+  const images = options.images ?? [];
+  const aujourdhui = options.aujourdhui ?? new Date().toISOString().slice(0, 10);
+  const resultat = await db
+    .transaction(
+      'rw',
+      [db.programmesImportes, db.illustrations],
+      async (): Promise<ResultatImport | { statut: 'introuvable' }> => {
+        const versions = await db.programmesImportes.where('uid').equals(uid).toArray();
+        const derniere = versions.reduce<ProgrammeImporteRow | null>(
+          (max, r) => (max === null || r.rev > max.rev ? r : max),
+          null,
+        );
+        if (derniere === null) return { statut: 'introuvable' };
+        const defaut = erreurIllustrations(derniere.document, liens, images);
+        if (defaut !== null) {
+          return {
+            statut: 'refuse',
+            erreurs: [{ code: 'fichier-manquant', chemin: 'illustrations', message: defaut }],
+          };
+        }
+        return poserSur(derniere, liens, images, options, aujourdhui);
+      },
+    )
+    .catch((e: unknown): ResultatImport => {
+      if (e instanceof ImageAbsente) return refusImageAbsente();
+      throw e;
+    });
+  if (resultat.statut === 'illustrations-ajoutees') await hydraterProgrammesImportes();
+  return resultat;
+}
+
+/** Les images d'illustration, par empreinte (pour l'affichage en séance). */
+export async function illustration(empreinte: string): Promise<IllustrationRow | null> {
+  return (await db.illustrations.where('empreinte').equals(empreinte).first()) ?? null;
 }
 
 /** Toutes les versions, archivées comprises, rangées par programme puis par version. */
@@ -163,7 +407,7 @@ export type ResultatSuppression = 'supprime' | 'utilise-par-un-cycle' | 'introuv
 export async function supprimerProgramme(cle: string): Promise<ResultatSuppression> {
   const resultat = await db.transaction(
     'rw',
-    [db.programmesImportes, db.cycles, db.exerciseReference],
+    [db.programmesImportes, db.cycles, db.exerciseReference, db.illustrations],
     async () => {
       const row = await db.programmesImportes.where('cle').equals(cle).first();
       if (!row) return 'introuvable';
@@ -172,6 +416,8 @@ export async function supprimerProgramme(cle: string): Promise<ResultatSuppressi
       }
       await db.exerciseReference.where('exerciseId').startsWith(`${cle}-`).delete();
       await db.programmesImportes.where('cle').equals(cle).delete();
+      // Ses images partent avec elle, sauf celles qu'une autre version désigne.
+      await nettoyerIllustrations();
       return 'supprime' as const;
     },
   );
@@ -219,6 +465,16 @@ export function programmesDeSauvegarde(
           duree <= LIMITES.semainesMax
         : duree === null;
     if (!dureeValide) throw new Error(`${ici} (${r.cle}) : durée choisie incohérente.`);
+    let illustrations: IllustrationsProgramme | undefined;
+    if (r.illustrations !== undefined) {
+      const relues = relireLiensStockes(
+        r.illustrations,
+        new Set(v.programme.exercices.map((e) => e.id)),
+        clesFichesNatives(),
+      );
+      if (relues === null) throw new Error(`${ici} (${r.cle}) : illustrations illisibles.`);
+      illustrations = relues;
+    }
     cles.add(r.cle);
     sortie.push({
       cle: r.cle,
@@ -230,6 +486,7 @@ export function programmesDeSauvegarde(
       texte: r.texte,
       document: v.programme,
       reponses: { dureeSemaines: duree as number | null },
+      ...(illustrations === undefined ? {} : { illustrations }),
     });
   });
 
