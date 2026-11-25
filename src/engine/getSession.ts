@@ -153,6 +153,17 @@ export interface ResolvedExercise {
   /** Minutes allouées au bloc entier, quand le programme en impose. */
   blocMinutes?: number;
   /**
+   * Repos après le DERNIER tour du bloc, quand il diffère de celui entre deux
+   * tours (« 20 s entre les exercices, 2 min entre deux circuits »). Porté par
+   * la dernière station. Programmes importés seulement.
+   */
+  restApresBlocSec?: number;
+  /**
+   * Le passage tel que le document l'écrit (« 20 lentes + 20 rapides »),
+   * affiché à la place du libellé calculé. Programmes importés seulement.
+   */
+  travailAffiche?: string;
+  /**
    * Dernière charge réellement enregistrée sur cet exercice, ou `null`.
    *
    * Sert UNIQUEMENT à pré-remplir le champ de saisie, jamais la ligne de plan :

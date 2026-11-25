@@ -373,7 +373,10 @@ describe('un circuit de trois stations et plus', () => {
   it('nomme « Circuit » au-delà de deux, « Superset » à deux', () => {
     expect(titreRythme('enchaine', 2)).toBe('Superset');
     expect(titreRythme('enchaine', 3)).toBe('Circuit');
-    expect(titreRythme('alterne', 3)).toBe('Alternance');
+    // Trois mouvements ou plus : « Circuit », quel que soit le rythme — c'est
+    // le mot de la feuille (« circuit 1 », Top Body Challenge, 25 novembre).
+    expect(titreRythme('alterne', 3)).toBe('Circuit');
+    expect(titreRythme('alterne', 2)).toBe('Alternance');
   });
 
   it('écrit la consigne avec le bon nombre et le bon mot', () => {
@@ -404,7 +407,23 @@ describe('un circuit de trois stations et plus', () => {
     ])[0] as Circuit;
     expect(c.rythme).toBe('alterne');
     expect(c.restSec).toBe(20);
-    expect(consigneRythme(c)).toBe('Une série de chaque, 20 s entre les stations.');
+    expect(consigneRythme(c)).toBe('Un passage de chaque, 20 s entre les exercices.');
+    expect(c.reposApresBloc).toBeNull();
+  });
+
+  it('le repos après le DERNIER tour se distingue de celui entre deux tours', () => {
+    // « 20 s entre chaque exercice, 2 min entre deux circuits. »
+    const c = groupSupersets([
+      ex('a', { superset: 'x', restSec: 20 }),
+      ex('b', { superset: 'x', restSec: 20 }),
+      ex('c', { superset: 'x', restSec: 20, restApresBlocSec: 120 }),
+    ])[0] as Circuit;
+    expect(c.rythme).toBe('alterne');
+    expect(c.restSec).toBe(20);
+    expect(c.reposApresBloc).toBe(120);
+    expect(consigneRythme(c)).toBe(
+      'Un passage de chaque, 20 s entre les exercices. Repos 2 min après le dernier tour.',
+    );
   });
 
   it('compte l’avancement sur toutes les stations, pas sur deux', () => {

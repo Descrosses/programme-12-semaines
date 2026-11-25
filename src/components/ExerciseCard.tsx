@@ -227,6 +227,11 @@ export function ExerciseCard({
         {repere !== null && <p className={styles.exRepere}>{repere}</p>}
         <div className={styles.exName}>{ex.name}</div>
         <div className={`${styles.loadLine} tnum`}>{shownLoadLine}</div>
+        {/* Le passage tel que le document l'écrit, quand le grand chiffre ne le
+            dit pas (programmes importés : « 30 min : alterner 5 min marche… »). */}
+        {ex.travailAffiche !== undefined && !shownLoadLine.includes(ex.travailAffiche) && (
+          <p className={styles.travailAffiche}>{ex.travailAffiche}</p>
+        )}
         {ex.chargeCible !== undefined && <ChargeCibleBloc charge={ex.chargeCible} />}
         {ex.conseilProgression !== undefined && (
           <p className={styles.conseilProgression}>{ex.conseilProgression}</p>
@@ -470,7 +475,9 @@ export function ExerciseCard({
       )}
 
       {hideSets && ex.sets > 0 && (
-        <div className={styles.setsAilleurs}>Séries saisies dans l’alternance, au-dessus.</div>
+        // Les fiches d'un bloc sont AVANT ses tours (retours du 23 novembre) :
+        // les séries se saisissent plus bas, quel que soit le mot du bloc.
+        <div className={styles.setsAilleurs}>Séries saisies tour par tour, plus bas.</div>
       )}
 
       {/*
@@ -751,6 +758,7 @@ export function SetEntry({
   timer,
   onSave,
   libelleRepos,
+  reposSec,
   onAttenteExplosif,
 }: {
   ex: ResolvedExercise;
@@ -764,6 +772,11 @@ export function SetEntry({
   onAttenteExplosif?: (enAttente: boolean) => void;
   /** Le libellé du chrono, quand ce n'est pas un repos (transition de superset). */
   libelleRepos?: string;
+  /**
+   * Le repos à lancer, quand ce n'est pas celui de l'exercice : la dernière
+   * station du dernier tour d'un circuit (« 2 min entre deux circuits »).
+   */
+  reposSec?: number;
   saved: SetRow | null;
   /** La série à faire maintenant : elle seule est mise en avant. */
   courante?: boolean;
@@ -929,11 +942,12 @@ export function SetEntry({
       return;
     }
     setEditing(false);
-    if (ex.restSec > 0) {
+    const repos = reposSec ?? ex.restSec;
+    if (repos > 0) {
       const label = ex.contrast
         ? `→ ${nomExplosif} × ${ex.contrast.explosiveReps}`
         : (libelleRepos ?? `${ex.name} — série ${index + 1}`);
-      timer.start(ex.contrast?.restAfterHeavySec ?? ex.restSec, label);
+      timer.start(ex.contrast?.restAfterHeavySec ?? repos, label);
     }
     if (ex.contrast) {
       setAttenteExplosif(true);
