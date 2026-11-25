@@ -171,10 +171,11 @@ describe('thème ME, MYSELF & I — ivoire, chocolat, champagne', () => {
     // `cartePerso` est sombre : sous le voile ivoire elle virait au gris.
     const seance = lire('../screens/Session.module.css');
     expect(seance).toMatch(/:global\(\[data-theme='perso'\]\) \.ficheAmbiance \{\s*display: none;/);
-    // Une fiche DÉPOSÉE garde son voile : c'est lui qui détache le bouton.
-    expect(seance).toMatch(
-      /:global\(\[data-theme='perso'\]\) \.ficheImage \+ \.ficheVoile \{\s*background: rgb\(var\(--voile\) \/ 45%\);/,
-    );
+    // Une fiche (déposée ou importée) : fond blanc, aucun voile — le voile
+    // ivoire délavait les dessins importés (Top Body Challenge, 25 novembre).
+    expect(seance).toMatch(/:global\(\[data-theme='perso'\]\) \.ficheVoile \{\s*background: none;/);
+    expect(seance).toMatch(/:global\(\[data-theme='perso'\]\) \.ficheImage \{\s*background: #fff;/);
+    expect(seance).not.toContain('.ficheImage + .ficheVoile');
   });
 });
 

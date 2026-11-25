@@ -414,6 +414,12 @@ export interface ExerciseDef {
    */
   fiche?: string;
   /**
+   * L'illustration IMPORTÉE avec un programme ME, MYSELF & I : l'empreinte
+   * de son image dans la table `illustrations`. Passe avant `fiche`, après
+   * une fiche déposée à la main (`FicheTechnique.tsx`).
+   */
+  illustration?: string;
+  /**
    * Muscles sollicités et erreurs à éviter, affichés sous la planche quand on
    * l'ouvre. Rempli pour les planches de POWER 12 seulement
    * (`musclesErreursPower12.ts`, validé par Guillaume) ; absent ailleurs, et

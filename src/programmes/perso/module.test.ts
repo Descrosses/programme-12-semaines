@@ -238,3 +238,47 @@ describe('ce que Training 1 ne contient pas', () => {
     expect(m.getSession(2, 4, EMPTY_CONTEXT)!.sansBloc).toBeUndefined();
   });
 });
+
+describe('les illustrations d’un programme importé', () => {
+  const H = 'a'.repeat(64);
+  const illustre = creerModuleImporte({
+    ...ROW,
+    illustrations: {
+      liens: {
+        'oiseau-poulie-haute': { empreinte: H },
+        'militaire-smith': { majk: 'power12:back-squat' },
+        arnold: { majk: 'power12:fiche-retiree-depuis' },
+      },
+    },
+  });
+  const defs = () => {
+    const s = illustre.getSession(1, 0, EMPTY_CONTEXT)!;
+    return Object.fromEntries(s.exercises.map((e) => [e.def.id.slice(CLE.length + 1), e.def]));
+  };
+
+  it('une image importée se pose par son empreinte, une fiche de MAJK par son chemin', () => {
+    const d = defs();
+    expect(d['oiseau-poulie-haute']!.illustration).toBe(H);
+    expect(d['oiseau-poulie-haute']!.fiche).toBeUndefined();
+    expect(d['militaire-smith']!.fiche).toMatch(/^fiches\/.+\.webp$/);
+    expect(d['militaire-smith']!.illustration).toBeUndefined();
+  });
+
+  it('une fiche de MAJK qui n’existe plus ne casse rien : pas d’image, c’est tout', () => {
+    expect(defs()['arnold']).not.toHaveProperty('fiche');
+  });
+
+  it('la prescription ne bouge pas d’un caractère', () => {
+    const sans = M.getSession(1, 0, EMPTY_CONTEXT)!;
+    const avec = illustre.getSession(1, 0, EMPTY_CONTEXT)!;
+    const sansDef = (s: typeof sans) =>
+      JSON.stringify(s.exercises.map(({ def: _def, ...reste }) => reste));
+    expect(sansDef(avec)).toBe(sansDef(sans));
+  });
+
+  it('sans illustrations, l’exercice reste exactement celui d’avant', () => {
+    for (const e of M.getSession(1, 0, EMPTY_CONTEXT)!.exercises) {
+      expect(Object.keys(e.def).sort()).toEqual(['fn', 'id', 'name', 'role']);
+    }
+  });
+});
