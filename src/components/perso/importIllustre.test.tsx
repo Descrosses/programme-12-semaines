@@ -95,3 +95,38 @@ describe('les fiches retrouvées', () => {
     ).toBe('');
   });
 });
+
+describe('l’aperçu reste court (Guillaume, 25 novembre : « un utilisateur n’en a que faire »)', () => {
+  it('le détail de l’import et la galerie sont REPLIÉS, une consigne répétée s’écrit une fois', async () => {
+    const { ApercuImport } = await import('./ImportProgramme');
+    const { validerProgramme } = await import('../../engine/perso/valider');
+    const o = JSON.parse(T1);
+    // Deux lignes hors groupe (une ligne de groupe doit garder son repos).
+    const libres = o.semaines[0].seances
+      .flatMap((s: { lignes: Record<string, unknown>[] }) => s.lignes)
+      .filter((l: Record<string, unknown>) => l.groupe === undefined)
+      .slice(0, 2);
+    for (const l of libres) {
+      delete l.prescription;
+      l.texteOriginal = '20 lentes + 20 rapides';
+    }
+    const v = validerProgramme(JSON.stringify(o));
+    if (!v.ok) throw new Error('fichier');
+    const html = renderToStaticMarkup(
+      <ApercuImport
+        validation={v}
+        duree={8}
+        onDuree={() => {}}
+        resultat={null}
+        onImporter={() => {}}
+        onAnnuler={() => {}}
+      />,
+    );
+    expect(html).toMatch(/<details[^>]*><summary>Voir le détail de l’import<\/summary>/);
+    expect(html).not.toMatch(/<details[^>]* open/);
+    expect(html.match(/20 lentes \+ 20 rapides/g)).toHaveLength(1);
+    expect(html).toContain('20 lentes + 20 rapides (× 2)');
+    // Ni le nom du PDF ni le nombre de lignes : ils n'aident pas à décider.
+    expect(html).not.toMatch(/exercices<\/p>/);
+  });
+});
