@@ -403,9 +403,11 @@ matériel et la durée avant d'écrire la moindre séance.
   Séance n'en a pas (aucun fourni, dégradé champagne rayé). Ses fichiers
   portaient le titre INCRUSTÉ : seule la partie PHOTO est servie
   (`60_`–`63_perso_*`), l'appli écrit le titre. La photo tient la DROITE de
-  l'en-tête et se fond en biais vers l'ivoire (masque CSS) — pas de voile
-  clair sur le sujet, le titre chocolat reste sur l'ivoire ; tête de
-  l'athlète calée en haut (`focus … 0%`). **Titres = ceux des bandeaux** :
+  l'en-tête et se fond LARGEMENT vers l'ivoire (masque CSS, opaque dès
+  58 %) : choix de Guillaume entre deux captures — « même si le titre mord
+  sur le bandeau, on voit mieux le bandeau » ; ne pas reculer la photo
+  derrière le titre. Pas de voile clair sur le sujet ; tête de l'athlète
+  calée en haut (`focus … 0%`). **Titres = ceux des bandeaux** :
   sur-titre « ME, MYSELF & I », sous-titres « Ma séance du jour », « Mon
   programme », « Mes évolutions », « Mon programme » (`sousTitres`,
   `titresBandeauDe`) ; sur l'Accueil, le nom du programme importé (verbatim)
