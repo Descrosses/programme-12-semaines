@@ -113,6 +113,42 @@
 }
 
 /*
+ * ME, MYSELF & I (retour de Guillaume, 25 novembre : « bandeau vert pas très
+ * adapté au programme »). Le vert de POWER, fait pour un fond sombre, jurait
+ * sur l'ivoire et le chocolat. Repos terminé = la barre passe au CHAMPAGNE,
+ * texte chocolat (5,0:1), bouton chocolat ; la jauge se vide en chocolat. Le
+ * sens reste « c'est fait, repars » : une barre pleine et chaude, qui ne
+ * ressemble ni à la barre en cours (ivoire) ni aux boutons (chocolat).
+ * L'ombre noire de la barre, trop lourde sur fond clair, devient brune.
+ */
+:global([data-theme='perso']) .bar {
+  box-shadow: 0 -8px 24px rgb(73 53 43 / 18%);
+}
+
+:global([data-theme='perso']) .bar.over {
+  background: linear-gradient(180deg, #d4b886 0%, var(--champagne) 100%);
+  border-top-color: var(--line-strong);
+  color: var(--accent);
+}
+
+:global([data-theme='perso']) .bar.over .track {
+  background: rgb(73 53 43 / 22%);
+}
+
+:global([data-theme='perso']) .bar.over .fill {
+  background: var(--accent);
+}
+
+:global([data-theme='perso']) .bar.over .label {
+  color: var(--accent);
+}
+
+:global([data-theme='perso']) .bar.over .action {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+/*
  * MASS (lot D) : la barre de repos prend la carte anthracite, le chiffre en
  * vrai italique extra-gras, la jauge rouge et des boutons sombres bordés.
  * Le vert de fin de repos (`.over`) garde son sens : le repos est FAIT.
