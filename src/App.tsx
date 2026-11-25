@@ -29,7 +29,7 @@ import { FEMMES_PROGRAMME_ID } from './db/femmesRepo';
 import type { ModuleProgramme, OngletProgramme } from './programmes/types';
 import { MARQUE_CAPITALES } from './data/marque';
 import { themePour } from './state/theme';
-import { enteteDe, type EcranEntete } from './data/famillesVisuel';
+import { enteteDe, titresBandeauDe, type EcranEntete } from './data/famillesVisuel';
 import type { VisuelNom } from './data/visuels';
 import { useAppUpdate } from './state/useAppUpdate';
 import { useRestTimer } from './state/useRestTimer';
@@ -665,6 +665,7 @@ function renderScreen(
             : onglet?.route === 'progress'
               ? visuelFamille(programme.id, 'progres')
               : {})}
+          {...(onglet?.route === 'progress' ? titresAVenir(programme.id, 'progres') : {})}
         />
       );
 
@@ -677,6 +678,15 @@ function renderScreen(
     default:
       return todayPorte;
   }
+}
+
+/** Sur-titre et sous-titre du bandeau de la famille, pour un onglet « à venir ». */
+function titresAVenir(
+  programmeId: string,
+  ecran: EcranEntete,
+): { surTitre?: string; sousTitre?: string } {
+  const t = titresBandeauDe(programmeId, ecran);
+  return t === null ? {} : { surTitre: t.marque, sousTitre: t.sous };
 }
 
 /** Le bandeau de la famille du programme pour cet écran, prêt à étaler en props. */

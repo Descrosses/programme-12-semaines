@@ -510,6 +510,142 @@
 
 /* ===================================================================== */
 /*
+ * ME, MYSELF & I — l'en-tête de la maquette du 25 novembre : clair, titre
+ * chocolat, trait court collé au sous-titre (la grammaire commune de MAJK).
+ *
+ * Sans photo (la Séance, un onglet sans bandeau), le bandeau est un dégradé
+ * ivoire → champagne rayé de fines diagonales claires. Les quatre photos de
+ * Guillaume se branchent par `HABILLAGE.perso.entetes` (règles `.hero` plus
+ * bas). Jamais une photo d'une autre famille (`bandeaux.test.ts`).
+ */
+/* Le haut reprend la bande de l'heure (`--barre-etat`, #6b5548) et s'éteint
+   en 72 px : sur la maquette, le bandeau est sombre sous l'heure puis
+   s'éclaircit. Sans ce fondu, la bande s'arrêtait net sur l'ivoire. */
+:global([data-theme='perso']) .header {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(107 85 72) 0,
+      rgb(107 85 72 / 46%) 22px,
+      rgb(107 85 72 / 14%) 48px,
+      rgb(107 85 72 / 0%) 72px
+    ),
+    linear-gradient(180deg, transparent 62%, var(--bg) 100%),
+    linear-gradient(105deg, var(--bg) 0%, #efe6d6 52%, #e2d1b4 100%);
+}
+
+:global([data-theme='perso']) .header::after {
+  background: repeating-linear-gradient(
+    120deg,
+    transparent 0 22px,
+    rgb(255 255 255 / 38%) 22px 24px,
+    transparent 24px 46px
+  );
+  -webkit-mask-image: linear-gradient(90deg, transparent 42%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 42%, #000 100%);
+}
+
+/*
+ * Les bandeaux PHOTO (Guillaume, 25 novembre). Ses fichiers portaient le
+ * titre incrusté : seule la partie photo est servie, et c'est ici qu'elle
+ * rejoint l'ivoire.
+ * - La photo tient la DROITE de l'en-tête et se fond vers la gauche, en
+ *   biais (le sens des rayures du bandeau) : en haut elle s'avance, à la
+ *   hauteur du titre elle recule. Le titre chocolat reste sur l'ivoire — pas
+ *   de voile clair posé sur la photo, il délavait le sujet.
+ * - Calée EN HAUT (`focus` en `… 0%` pour l'athlète) : sa tête est en haut
+ *   du fichier, comme sur les bandeaux LADIES.
+ * - Le fondu brun du haut (la bande de l'heure qui s'éteint) passe AU-DESSUS
+ *   de la photo : il est porté par `.voile`, pas par le fond de l'en-tête.
+ */
+:global([data-theme='perso']) .hero .fond {
+  inset: 0 0 0 auto;
+  width: 74%;
+  -webkit-mask-image:
+    linear-gradient(40deg, transparent 44%, rgb(0 0 0 / 30%) 52%, #000 62%),
+    linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(40deg, transparent 44%, rgb(0 0 0 / 30%) 52%, #000 62%),
+    linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+  mask-composite: intersect;
+}
+
+:global([data-theme='perso']) .hero .voile {
+  background: linear-gradient(
+    180deg,
+    rgb(107 85 72) 0,
+    rgb(107 85 72 / 46%) 22px,
+    rgb(107 85 72 / 14%) 48px,
+    rgb(107 85 72 / 0%) 72px
+  );
+}
+
+/* Le bas de la photo est déjà fondu par son masque. */
+:global([data-theme='perso']) .hero .voile::after {
+  display: none;
+}
+
+/* Avec une photo, les rayures ne restent qu'à gauche, sous le titre. */
+:global([data-theme='perso']) .hero::after {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 46%);
+  mask-image: linear-gradient(90deg, #000 0%, transparent 46%);
+  opacity: 0.6;
+}
+
+:global([data-theme='perso']) .header .lueur,
+:global([data-theme='perso']) .header .yard {
+  display: none;
+}
+
+:global([data-theme='perso']) .content::before {
+  background: none;
+}
+
+:global([data-theme='perso']) .eyebrow {
+  color: var(--ink-2);
+  letter-spacing: 0.26em;
+}
+
+/* « ME, MYSELF & I » devant la date : même encre que le sur-titre. */
+:global([data-theme='perso']) .marque {
+  color: var(--ink);
+}
+
+/* Le titre de l'Accueil (« Aujourd'hui ») : celui des autres écrans, pas le
+   titre blanc de MASS que porte `.titreSecond`. */
+:global([data-theme='perso']) .title.titreSecond {
+  max-width: none;
+  margin-top: 2px;
+  font-family: var(--font-cond);
+  font-size: var(--fs-display);
+  font-style: normal;
+  font-weight: 700;
+  transform: skewX(-6deg);
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--ink);
+  filter: none;
+}
+
+:global([data-theme='perso']) .ruleRight {
+  display: none;
+}
+
+:global([data-theme='perso']) .ruleLeft {
+  width: 32px;
+}
+
+:global([data-theme='perso']) .subtitleRow {
+  gap: 14px;
+}
+
+:global([data-theme='perso']) .subtitle {
+  letter-spacing: 0.2em;
+}
+
+/*
  * MASS — en-têtes SANS photo (porte de MASS FORCE, Progrès, Nutrition,
  * Mesures, Réglages). Harmonisation validée par Guillaume (audit du
  * 14 novembre), à partir des écrans validés :

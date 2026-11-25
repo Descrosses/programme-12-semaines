@@ -217,6 +217,49 @@ export const VISUELS = {
     usage: 'Carte de la famille ME, MYSELF & I : page Programmes et tuile de l’accueil.',
   },
   /*
+   * Les quatre bandeaux de ME, MYSELF & I (Guillaume, 25 novembre). Ses
+   * fichiers portaient le titre incrusté (« AUJOURD'HUI », « SEMAINE »…) :
+   * seule la partie PHOTO est gardée, recadrée par la gauche ; l'appli écrit
+   * le titre. Le fondu vers l'ivoire est posé par le code
+   * (ScreenHeader.module.css), pas dans les fichiers.
+   */
+  persoAujourdhui: {
+    display: '60_perso_aujourdhui_display.webp',
+    mobile: '60_perso_aujourdhui_mobile.webp',
+    largeurs: { display: 947, mobile: 640 },
+    description: 'Athlète de profil, barre sur les épaules, en bas de squat ; salle sépia.',
+    cadrage: 'cover',
+    focus: '52% 0%',
+    usage: 'Bandeau d’en-tête ME, MYSELF & I : Aujourd’hui.',
+  },
+  persoSemaine: {
+    display: '61_perso_semaine_display.webp',
+    mobile: '61_perso_semaine_mobile.webp',
+    largeurs: { display: 1000, mobile: 640 },
+    description: 'Disques de fonte de 20 kg sur une barre, gros plan sépia.',
+    cadrage: 'cover',
+    focus: '70% 40%',
+    usage: 'Bandeau d’en-tête ME, MYSELF & I : Semaine.',
+  },
+  persoProgres: {
+    display: '62_perso_progres_display.webp',
+    mobile: '62_perso_progres_mobile.webp',
+    largeurs: { display: 809, mobile: 640 },
+    description: 'Sommet de montagne dans une lumière dorée, brume en bas.',
+    cadrage: 'cover',
+    focus: '70% 12%',
+    usage: 'Bandeau d’en-tête ME, MYSELF & I : Progrès.',
+  },
+  persoReglages: {
+    display: '63_perso_reglages_display.webp',
+    mobile: '63_perso_reglages_mobile.webp',
+    largeurs: { display: 1000, mobile: 640 },
+    description: 'Shaker noir, serviette pliée et haltère, lumière douce.',
+    cadrage: 'cover',
+    focus: '80% 60%',
+    usage: 'Bandeau d’en-tête ME, MYSELF & I : Réglages.',
+  },
+  /*
    * Les quatre photos d'en-tête de MASS, fournies par Guillaume (14 novembre)
    * en une planche de 1774 × 887 : chacune fait 885 px de large, pas 1200.
    * On ne les agrandit pas. Sujet à DROITE, noir à gauche : le titre se pose

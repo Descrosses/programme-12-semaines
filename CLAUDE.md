@@ -387,6 +387,39 @@ matériel et la durée avant d'écrire la moindre séance.
   22 novembre : les mêmes séances écrivent les mêmes lignes en base avant et
   après les lots 1-5. Un seul PDF réel éprouvé (Training 1) : pas de second
   programme fourni.
+- **Identité ME, MYSELF & I = « ivoire · chocolat · champagne »** (maquette
+  de Guillaume, 25 novembre). Troisième identité de la plateforme, CLAIRE :
+  `[data-theme='perso']` — ivoire `#f5f0e6` (fonds), chocolat `#49352b`
+  (boutons, titres), champagne `#c5a775` (filets, décors). **Le champagne ne
+  porte JAMAIS de texte** (2,0:1 sur l'ivoire) : le texte doré passe par
+  `--accent-ink` `#7a5a2c`. Nuances ajustées à sa demande : texte courant
+  `#3f2d24`, vert olive `#3f6b3a` pour « fait », couleurs d'état redéfinies
+  (celles de POWER sont faites pour un fond sombre), `color-scheme: light`.
+  Le menu du bas S'INVERSE (`:root[data-theme='perso']` : pastille chocolat,
+  écrite en ivoire). Bande de l'heure `--barre-etat` `#6b5548`, prolongée en
+  fondu par le haut de l'en-tête. **Quatre bandeaux photo** (Guillaume, 25
+  novembre) : Aujourd'hui `persoAujourdhui`, Semaine `persoSemaine`, Progrès
+  `persoProgres`, Réglages `persoReglages` (`HABILLAGE.perso.entetes`) ; la
+  Séance n'en a pas (aucun fourni, dégradé champagne rayé). Ses fichiers
+  portaient le titre INCRUSTÉ : seule la partie PHOTO est servie
+  (`60_`–`63_perso_*`), l'appli écrit le titre. La photo tient la DROITE de
+  l'en-tête et se fond en biais vers l'ivoire (masque CSS) — pas de voile
+  clair sur le sujet, le titre chocolat reste sur l'ivoire ; tête de
+  l'athlète calée en haut (`focus … 0%`). **Titres = ceux des bandeaux** :
+  sur-titre « ME, MYSELF & I », sous-titres « Ma séance du jour », « Mon
+  programme », « Mes évolutions », « Mon programme » (`sousTitres`,
+  `titresBandeauDe`) ; sur l'Accueil, le nom du programme importé (verbatim)
+  et la semaine descendent SOUS le bandeau (`detail`), la date n'y est plus.
+  La Semaine ne prend PAS la variante `argent` (réservée à MASS). Jamais une
+  photo
+  d'une autre famille. Le bloc « Ajouter la fiche technique » est un aplat
+  champagne (la seule image de la famille, `cartePerso`, est sombre et
+  virait au gris sous le voile clair). Les règles du thème, dans les
+  fichiers partagés, sont sous `:global([data-theme='perso'])` et placées
+  AVANT les blocs MASS (les tests de confinement MASS lisent jusqu'à la fin
+  du fichier). Le contenu de la maquette (Bench Press, Semaine 11,
+  Nutrition) est celui de POWER : seul le STYLE est repris.
+  `styles/themePerso.test.ts`.
 - **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
   carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
   superset. Champ `tempo` (`TempoPrescrit` : texte, semaines?, jours?) sur

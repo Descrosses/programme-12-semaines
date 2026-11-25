@@ -20,7 +20,7 @@ import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { enteteDe } from '../data/famillesVisuel';
+import { enteteDe, marqueDe, titresBandeauDe } from '../data/famillesVisuel';
 import { programmeParId } from '../data/catalogue';
 import { DiagonalStripes } from '../components/Decor';
 import styles from './Week.module.css';
@@ -151,7 +151,8 @@ export function WeekScreen({
       <ScreenHeader
         eyebrow={
           importe
-            ? (blocCourant ?? undefined)
+            ? // Maquette du 25 novembre : la famille en sur-titre, à défaut de bloc.
+              (blocCourant ?? marqueDe(programme.id))
             : week === 0
               ? 'Avant le programme'
               : block === null
@@ -162,13 +163,18 @@ export function WeekScreen({
                 : `Bloc ${block.name}`
         }
         title={week === 0 ? 'Combine initial' : `Semaine ${week}`}
-        subtitle={block?.objective}
+        subtitle={block?.objective ?? titresBandeauDe(programme.id, 'semaine')?.sous}
         {...(programme.id === 'power12'
           ? ({ visuel: 'semainePower' } as const)
           : enteteDe(programme.id, 'semaine') !== undefined
             ? { visuel: enteteDe(programme.id, 'semaine')! }
             : {})}
-        argent={programme.id !== 'power12' && enteteDe(programme.id, 'semaine') !== undefined}
+        // `argent` est la variante MASS (titre blanc chaud, trait sous le
+        // titre) : ME, MYSELF & I a un bandeau photo sans la prendre.
+        argent={
+          programmeParId(programme.id)?.familleId === 'mass' &&
+          enteteDe(programme.id, 'semaine') !== undefined
+        }
         prioritaire
       />
 

@@ -49,7 +49,7 @@ import {
 } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { enteteDe } from '../data/famillesVisuel';
+import { enteteDe, titresBandeauDe } from '../data/famillesVisuel';
 import type { ModuleProgramme } from '../programmes/types';
 import styles from './Screens.module.css';
 
@@ -237,14 +237,20 @@ export function SettingsScreen({
 
   /* La photo du programme (POWER : `athlete`), sinon celle de sa famille (MASS). */
   const bandeauReglages = programme.reglages.visuel ?? enteteDe(programme.id, 'reglages');
+  /* ME, MYSELF & I : sur-titre et sous-titre de son bandeau. La phrase « tout
+     reste sur ce téléphone » reste écrite juste dessous. */
+  const titresBandeau = titresBandeauDe(programme.id, 'reglages');
 
   return (
     <div className={styles.screen}>
       <ScreenHeader
-        eyebrow={programme.reglages.eyebrow}
+        eyebrow={titresBandeau?.marque ?? programme.reglages.eyebrow}
         title="Réglages"
         subtitle={
-          cloudDisponible() ? 'Sur ce téléphone, et sur ton compte' : 'Tout reste sur ce téléphone'
+          titresBandeau?.sous ??
+          (cloudDisponible()
+            ? 'Sur ce téléphone, et sur ton compte'
+            : 'Tout reste sur ce téléphone')
         }
         {...(bandeauReglages === undefined ? {} : { visuel: bandeauReglages })}
       >

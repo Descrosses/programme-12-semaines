@@ -18,9 +18,14 @@ html {
   color-scheme: dark;
 }
 
-/* FEMMES (« Rosée Sculptée ») est le seul thème CLAIR : sans ça, les
-   commandes natives (date, liste, barre de défilement) restent sombres. */
+/* FEMMES (« Rosée Sculptée ») et ME, MYSELF & I sont les thèmes CLAIRS : sans
+   ça, les commandes natives (date, liste, barre de défilement) restent
+   sombres. Deux règles et non une liste : chaque thème a son test. */
 html[data-theme='femmes'] {
+  color-scheme: light;
+}
+
+html[data-theme='perso'] {
   color-scheme: light;
 }
 
@@ -44,6 +49,21 @@ html[data-theme='femmes'] body::before {
   background: var(--barre-etat);
   pointer-events: none;
   transition: background-color 0.2s;
+}
+
+/* ME, MYSELF & I, l'autre thème clair : la même bande, chocolat doux
+   (`--barre-etat` #6b5548, blanc 6,96:1). Le haut de l'en-tête la prolonge
+   en fondu (ScreenHeader.module.css). */
+html[data-theme='perso'] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--barre-etat);
+  pointer-events: none;
 }
 
 /* Sur un écran à bandeau photo, en haut de page, la bande s'efface : c'est

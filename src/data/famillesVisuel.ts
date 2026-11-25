@@ -38,9 +38,22 @@ export interface HabillageFamille {
    * Les photos d'en-tête de la famille, écran par écran. Absent : les écrans
    * gardent leur comportement d'origine (POWER choisit les siennes lui-même).
    */
-  readonly entetes?: Readonly<Record<EcranEntete, VisuelNom>>;
-  /** Le nom de la famille s'affiche en très gros sur l'Accueil (maquette MASS). */
+  readonly entetes?: Readonly<Partial<Record<EcranEntete, VisuelNom>>>;
+  /**
+   * Les sous-titres de la planche de bandeaux de la famille, écran par écran
+   * (ME, MYSELF & I, bandeaux de Guillaume du 25 novembre). Absent : chaque
+   * écran garde le sien.
+   */
+  readonly sousTitres?: Readonly<Partial<Record<EcranEntete, string>>>;
+  /** Le nom de la famille s'affiche devant la date de l'Accueil (MASS, ME, MYSELF & I). */
   readonly marqueAccueil?: true;
+  /**
+   * Le grand titre de l'Accueil. `cycle` (défaut, MASS) : le nom du cycle,
+   * « Semaine X / Y » dessous. `onglet` (ME, MYSELF & I, maquette du
+   * 25 novembre) : « Aujourd'hui », et le nom du programme importé passe
+   * dans le sous-titre avec la semaine.
+   */
+  readonly titreAccueil?: 'cycle' | 'onglet';
 }
 
 /** Les quatre écrans d'un cycle qui portent une photo d'en-tête. */
@@ -89,13 +102,50 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
    * distingue du bleu, du rouge et du rose, et répond à la lumière dorée de
    * la photo.
    */
-  perso: { photo: 'cartePerso', teinte: '#c08b2c' },
+  perso: {
+    photo: 'cartePerso',
+    teinte: '#c08b2c',
+    marqueAccueil: true,
+    titreAccueil: 'onglet',
+    /*
+     * Les quatre bandeaux de Guillaume (25 novembre). Ses fichiers portaient
+     * le titre INCRUSTÉ : seule la partie photo est reprise, le titre est
+     * écrit par l'appli. La séance n'a pas de bandeau (aucun fourni).
+     */
+    entetes: {
+      accueil: 'persoAujourdhui',
+      semaine: 'persoSemaine',
+      progres: 'persoProgres',
+      reglages: 'persoReglages',
+    },
+    // Mot pour mot ceux des bandeaux.
+    sousTitres: {
+      accueil: 'Ma séance du jour',
+      semaine: 'Mon programme',
+      progres: 'Mes évolutions',
+      reglages: 'Mon programme',
+    },
+  },
 };
 
 /** La photo d'en-tête d'un écran pour ce programme, si sa famille en a une. */
 export function enteteDe(programmeId: string, ecran: EcranEntete): VisuelNom | undefined {
   const def = programmeParId(programmeId);
   return def === null ? undefined : HABILLAGE[def.familleId]?.entetes?.[ecran];
+}
+
+/**
+ * Le sur-titre et le sous-titre du bandeau d'un écran, pour une famille qui
+ * a sa planche de bandeaux (ME, MYSELF & I) ; `null` ailleurs.
+ */
+export function titresBandeauDe(
+  programmeId: string,
+  ecran: EcranEntete,
+): { marque: string; sous: string } | null {
+  const def = programmeParId(programmeId);
+  const sous = def === null ? undefined : HABILLAGE[def.familleId]?.sousTitres?.[ecran];
+  const marque = def === null ? undefined : familleParId(def.familleId)?.nom;
+  return sous === undefined || marque === undefined ? null : { marque, sous };
 }
 
 /** Le nom de famille à afficher en marque sur l'Accueil, lu au catalogue. */
@@ -117,9 +167,27 @@ export function enteteAccueilFixe(
   programmeId: string,
   dureeSemaines: number,
   semaine: number | null,
-): { marque: string; titre: string; sous: string | undefined } | null {
+): {
+  marque: string;
+  titre: string;
+  sous: string | undefined;
+  /** Le nom du programme et la semaine, écrits SOUS l'en-tête (ME, MYSELF & I). */
+  detail?: string;
+} | null {
   const marque = marqueDe(programmeId);
   if (marque === undefined) return null;
+  const def = programmeParId(programmeId);
+  if (def !== null && HABILLAGE[def.familleId]?.titreAccueil === 'onglet') {
+    // Le bandeau dit « Ma séance du jour » ; le nom du programme importé
+    // (écrit tel quel, texte verbatim) et la semaine descendent dessous.
+    const semaineTexte = semaine === null ? null : `semaine ${semaine} / ${dureeSemaines}`;
+    return {
+      marque,
+      titre: 'Aujourd’hui',
+      sous: HABILLAGE[def.familleId]?.sousTitres?.accueil,
+      detail: [def.nom, semaineTexte].filter((x) => x !== null).join(' · '),
+    };
+  }
   return {
     marque,
     titre: programmeParId(programmeId)?.nom ?? marque,
