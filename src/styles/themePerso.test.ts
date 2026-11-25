@@ -131,6 +131,7 @@ describe('thème ME, MYSELF & I — ivoire, chocolat, champagne', () => {
       '../screens/Today.module.css',
       '../screens/Week.module.css',
       '../screens/Session.module.css',
+      '../components/Stepper.module.css',
     ]) {
       const source = lire(f);
       expect({ f, present: source.includes("[data-theme='perso']") }).toEqual({
@@ -144,6 +145,26 @@ describe('thème ME, MYSELF & I — ivoire, chocolat, champagne', () => {
         nu: /(^|[^(])\[data-theme='perso'\]/m.test(source),
       }).toEqual({ f, nu: false });
     }
+  });
+
+  it('les sélecteurs (charge, reps, pesée) se détachent de la série en cours', () => {
+    // iPhone de Guillaume, 25 novembre : gris beige sur champagne, 1,1:1.
+    const stepper = lire('../components/Stepper.module.css');
+    const cadre =
+      /:global\(\[data-theme='perso'\]\) \.controls \{[^}]*border: 1px solid (#[0-9a-f]{6});/.exec(
+        stepper,
+      );
+    expect(cadre).not.toBeNull();
+    // La rangée de la série en cours : champagne à 20 % sur la carte.
+    const rangee = '#f0e8d9';
+    // Un contour de commande tient 3:1 (WCAG 1.4.11) sur la rangée et la carte.
+    expect(contraste(cadre![1]!, rangee)).toBeGreaterThanOrEqual(3);
+    expect(contraste(cadre![1]!, jeton('surface'))).toBeGreaterThanOrEqual(3);
+    // Le signe − / + reste lisible sur son bouton champagne.
+    const bouton =
+      /:global\(\[data-theme='perso'\]\) \.button \{\s*background: (#[0-9a-f]{6});/.exec(stepper);
+    expect(bouton).not.toBeNull();
+    expect(contraste(jeton('accent'), bouton![1]!)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('le bloc « Ajouter la fiche » ne montre pas la photo sombre de la famille', () => {

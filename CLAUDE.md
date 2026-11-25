@@ -421,6 +421,10 @@ matériel et la durée avant d'écrire la moindre séance.
   AVANT les blocs MASS (les tests de confinement MASS lisent jusqu'à la fin
   du fichier). Le contenu de la maquette (Bench Press, Semaine 11,
   Nutrition) est celui de POWER : seul le STYLE est repris.
+  **Sélecteurs** (charge, reps, pesée ; `Stepper.module.css`) : cadre brun
+  doré `#9a7d4f` (3,2:1 sur la série en cours), valeur sur fond clair,
+  boutons − / + champagne `#e2cfa9` — gris beige, ils se perdaient (iPhone
+  de Guillaume, 25 novembre).
   `styles/themePerso.test.ts`.
 - **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
   carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
