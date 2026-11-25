@@ -2698,6 +2698,48 @@
   white-space: nowrap;
 }
 
+/* ME, MYSELF & I (maquette du 25 novembre) : boutons d'action en italique,
+   comme sur l'Accueil et la Semaine. */
+:global([data-theme='perso']) .demarrer {
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+/*
+ * Le bloc « Ajouter la fiche technique ». La seule image de la famille
+ * (`cartePerso`) est SOMBRE : sous le voile ivoire elle virait au gris sale.
+ * Sans fiche, le bloc est donc un aplat champagne rayé, comme le bandeau.
+ * Une fiche déposée garde son voile : c'est lui qui détache le bouton.
+ */
+:global([data-theme='perso']) .fiche {
+  background:
+    repeating-linear-gradient(
+      120deg,
+      transparent 0 22px,
+      rgb(255 255 255 / 34%) 22px 24px,
+      transparent 24px 46px
+    ),
+    linear-gradient(105deg, var(--surface-2) 0%, #e2d1b4 100%);
+}
+
+:global([data-theme='perso']) .ficheAmbiance {
+  display: none;
+}
+
+:global([data-theme='perso']) .ficheVoile {
+  background: none;
+}
+
+:global([data-theme='perso']) .ficheImage + .ficheVoile {
+  background: rgb(var(--voile) / 45%);
+}
+
+/* La série en cours : un voile champagne. Le chocolat à 7 % grisait l'ivoire. */
+:global([data-theme='perso']) .setCourante {
+  background: color-mix(in srgb, var(--champagne) 20%, transparent);
+}
+
 /*
  * SÉANCE MASS — d'après la référence de Guillaume (14 novembre), mesurée sur
  * sa capture d'iPhone (849 px = 402 px CSS). Tout est sous le thème MASS ET

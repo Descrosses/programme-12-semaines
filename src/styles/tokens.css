@@ -425,13 +425,84 @@
 }
 
 /*
- * PERSONNALISÉ — volontairement vide, comme FEMMES, mais pas pour la même
- * raison : un programme apporté par quelqu'un d'autre n'a pas d'identité
- * visuelle à lui. Hériter du thème de la plateforme est le bon défaut, et
- * ce bloc existe pour qu'on sache où poser autre chose si on change d'avis.
+ * ME, MYSELF & I — « ivoire · chocolat · champagne » (maquette de Guillaume,
+ * 25 novembre). Le bloc est longtemps resté vide : un programme apporté par
+ * quelqu'un d'autre héritait du bleu nuit de POWER. Il a maintenant SON
+ * identité, claire et chaude, la troisième de la plateforme après POWER
+ * (sombre) et LADIES (rose clair).
+ *
+ * Trois couleurs fournies par Guillaume : ivoire #F5F0E6 (fonds), chocolat
+ * #49352B (texte, actions), champagne #C5A775 (décors). Le champagne ne
+ * porte JAMAIS de texte sur l'ivoire (2,0:1) ni de texte blanc (2,3:1) :
+ * il trace les filets ; le texte doré passe par --accent-ink (#7a5a2c).
+ *
+ * Nuances ajustées, à sa demande (« si tu penses qu'il y a des ajustements
+ * de nuances… fais-le ») : le texte courant est un chocolat un peu plus
+ * profond (#3f2d24) que celui des boutons, pour la lecture ; le vert « fait »
+ * devient un vert olive qui tient avec les bruns ; rouge et orange d'alerte
+ * sont des tons terre. Contrastes MESURÉS (`themePerso.test.ts`) :
+ *
+ *                      bg      surface   surface-2   surface-3
+ *   --ink            11,5       12,3        10,9         9,8
+ *   --ink-2           7,3        7,8         7,0         6,3
+ *   --ink-3           5,5        5,9         5,2         4,7
+ *   --accent-ink      5,6        6,0         5,3         4,8
+ *   --vert            5,5        5,9         5,2         4,7
+ *
+ * Ivoire sur --accent (boutons chocolat) : 10,1.
  */
 [data-theme='perso'] {
-  /* Hérite du thème de base. */
+  --bg: #f5f0e6;
+  --bg-2: #efe8da;
+  --surface: #fbf8f2;
+  --surface-2: #f1eadd;
+  --surface-3: #e8dfcd;
+
+  --line: #e0d4bd;
+  /* Contour de commande : 3,1:1 sur la carte. */
+  --line-strong: #a68a5c;
+
+  --ink: #3f2d24;
+  --ink-2: #5e4a3f;
+  --ink-3: #725d4c;
+  --ink-on-accent: #f5f0e6;
+
+  --accent: #49352b;
+  /* Chocolat au lait : haut des boutons, traits des titres (5,6:1 sur
+     l'ivoire). Le champagne, plus clair, vit dans --champagne. */
+  --accent-bright: #7a5846;
+  --champagne: #c5a775;
+  --accent-deep: #35261e;
+  --accent-dim: #eadfca;
+
+  --accent-ink: #7a5a2c;
+  --accent-ink-fort: #7a5a2c;
+
+  /* États, en tons qui tiennent avec les bruns. */
+  --vert: #3f6b3a;
+  --orange: #8f4d00;
+  --rouge: #a8322a;
+  --bleu: #2f6aa8;
+  --bleu-ink: #2f5f8a;
+
+  --macro-glucides: #3f4a66;
+  --macro-proteines: #a8674e;
+  --macro-lipides: #c5a775;
+  --bloc-test: #7a5a2c;
+
+  --ink-fort: #3f2d24;
+  --voile: 245 240 230;
+  --ombre-titre: none;
+
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 80%) inset, 0 6px 18px rgb(73 53 43 / 9%);
+  --shadow-action: 0 8px 20px rgb(73 53 43 / 25%);
+
+  /* Le dégradé des boutons pleins (lu par la séance). */
+  --grad-accent: linear-gradient(to bottom, #7a5846 0%, #49352b 100%);
+
+  /* La bande fixe derrière l'heure de l'iPhone (global.css), comme sur
+     LADIES : blanc dessus 6,9:1. */
+  --barre-etat: #6b5548;
 }
 
 /*
@@ -496,4 +567,16 @@
      blanc, que ça reste discret »). */
   --ivoire-doux: #d8d1c3;
   --encre: #151a22;
+}
+
+/*
+ * ME, MYSELF & I est clair : la « touche de clair » y serait invisible. La
+ * pastille de l'onglet actif et les cases du tempo y sont donc CHOCOLAT,
+ * écrites en ivoire. `:root[…]` : plus précis que le `:root` ci-dessus, qui
+ * vient après le bloc du thème.
+ */
+:root[data-theme='perso'] {
+  --ivoire: #49352b;
+  --ivoire-doux: #5e4a3f;
+  --encre: #f5f0e6;
 }

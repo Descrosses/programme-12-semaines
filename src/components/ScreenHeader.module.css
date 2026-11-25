@@ -510,6 +510,95 @@
 
 /* ===================================================================== */
 /*
+ * ME, MYSELF & I — l'en-tête de la maquette du 25 novembre : clair, titre
+ * chocolat, trait court collé au sous-titre (la grammaire commune de MAJK).
+ *
+ * La maquette montre des photos sépia. Aucune n'a été fournie : en attendant,
+ * le bandeau est un dégradé ivoire → champagne rayé de fines diagonales
+ * claires (le motif des cartes de phase). Une photo se branchera par
+ * `HABILLAGE.perso.entetes`, sans toucher à ces règles de texte. Jamais une
+ * photo d'une autre famille (`bandeaux.test.ts`).
+ */
+/* Le haut reprend la bande de l'heure (`--barre-etat`, #6b5548) et s'éteint
+   en 72 px : sur la maquette, le bandeau est sombre sous l'heure puis
+   s'éclaircit. Sans ce fondu, la bande s'arrêtait net sur l'ivoire. */
+:global([data-theme='perso']) .header {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(107 85 72) 0,
+      rgb(107 85 72 / 46%) 22px,
+      rgb(107 85 72 / 14%) 48px,
+      rgb(107 85 72 / 0%) 72px
+    ),
+    linear-gradient(180deg, transparent 62%, var(--bg) 100%),
+    linear-gradient(105deg, var(--bg) 0%, #efe6d6 52%, #e2d1b4 100%);
+}
+
+:global([data-theme='perso']) .header::after {
+  background: repeating-linear-gradient(
+    120deg,
+    transparent 0 22px,
+    rgb(255 255 255 / 38%) 22px 24px,
+    transparent 24px 46px
+  );
+  -webkit-mask-image: linear-gradient(90deg, transparent 42%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 42%, #000 100%);
+}
+
+:global([data-theme='perso']) .header .lueur,
+:global([data-theme='perso']) .header .yard {
+  display: none;
+}
+
+:global([data-theme='perso']) .content::before {
+  background: none;
+}
+
+:global([data-theme='perso']) .eyebrow {
+  color: var(--ink-2);
+  letter-spacing: 0.26em;
+}
+
+/* « ME, MYSELF & I » devant la date : même encre que le sur-titre. */
+:global([data-theme='perso']) .marque {
+  color: var(--ink);
+}
+
+/* Le titre de l'Accueil (« Aujourd'hui ») : celui des autres écrans, pas le
+   titre blanc de MASS que porte `.titreSecond`. */
+:global([data-theme='perso']) .title.titreSecond {
+  max-width: none;
+  margin-top: 2px;
+  font-family: var(--font-cond);
+  font-size: var(--fs-display);
+  font-style: normal;
+  font-weight: 700;
+  transform: skewX(-6deg);
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--ink);
+  filter: none;
+}
+
+:global([data-theme='perso']) .ruleRight {
+  display: none;
+}
+
+:global([data-theme='perso']) .ruleLeft {
+  width: 32px;
+}
+
+:global([data-theme='perso']) .subtitleRow {
+  gap: 14px;
+}
+
+:global([data-theme='perso']) .subtitle {
+  letter-spacing: 0.2em;
+}
+
+/*
  * MASS — en-têtes SANS photo (porte de MASS FORCE, Progrès, Nutrition,
  * Mesures, Réglages). Harmonisation validée par Guillaume (audit du
  * 14 novembre), à partir des écrans validés :

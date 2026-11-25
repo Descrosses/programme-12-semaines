@@ -442,3 +442,42 @@
   width: 28px;
   height: 28px;
 }
+
+/*
+ * ME, MYSELF & I (maquette du 25 novembre).
+ * - La semaine choisie : case CHOCOLAT, chiffre ivoire (10,1:1) — pas
+ *   seulement un contour, sur un fond aussi clair il se perdrait.
+ * - « Faite » : pastille chocolat pleine, comme sur la maquette. Le mot le
+ *   dit, la couleur ne porte rien seule.
+ * - Le bouton du bas : chocolat, italique.
+ */
+:global([data-theme='perso']) .weekOn {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--accent-bright) 0%, var(--accent) 100%);
+  box-shadow: 0 8px 18px rgb(73 53 43 / 28%);
+}
+
+:global([data-theme='perso']) .weekOn .weekNum,
+:global([data-theme='perso']) .weekOn .weekTag {
+  color: var(--ink-on-accent);
+}
+
+/* Le trait sous chaque case : champagne (maquette), ivoire sur la choisie. */
+:global([data-theme='perso']) .week::after {
+  background: var(--champagne);
+}
+
+:global([data-theme='perso']) .weekOn::after {
+  background: var(--ink-on-accent);
+}
+
+:global([data-theme='perso']) .statusDone {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+:global([data-theme='perso']) .cta {
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}

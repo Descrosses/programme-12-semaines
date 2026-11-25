@@ -387,6 +387,29 @@ matériel et la durée avant d'écrire la moindre séance.
   22 novembre : les mêmes séances écrivent les mêmes lignes en base avant et
   après les lots 1-5. Un seul PDF réel éprouvé (Training 1) : pas de second
   programme fourni.
+- **Identité ME, MYSELF & I = « ivoire · chocolat · champagne »** (maquette
+  de Guillaume, 25 novembre). Troisième identité de la plateforme, CLAIRE :
+  `[data-theme='perso']` — ivoire `#f5f0e6` (fonds), chocolat `#49352b`
+  (boutons, titres), champagne `#c5a775` (filets, décors). **Le champagne ne
+  porte JAMAIS de texte** (2,0:1 sur l'ivoire) : le texte doré passe par
+  `--accent-ink` `#7a5a2c`. Nuances ajustées à sa demande : texte courant
+  `#3f2d24`, vert olive `#3f6b3a` pour « fait », couleurs d'état redéfinies
+  (celles de POWER sont faites pour un fond sombre), `color-scheme: light`.
+  Le menu du bas S'INVERSE (`:root[data-theme='perso']` : pastille chocolat,
+  écrite en ivoire). Bande de l'heure `--barre-etat` `#6b5548`, prolongée en
+  fondu par le haut de l'en-tête. Accueil : « ME, MYSELF & I · date », grand
+  titre « Aujourd'hui », le nom du programme importé (verbatim) dessous
+  (`titreAccueil: 'onglet'`, `famillesVisuel.ts`). **Pas de photo de
+  bandeau** : aucune n'a été fournie, le bandeau est un dégradé champagne
+  rayé ; une photo se branchera par `HABILLAGE.perso.entetes`, jamais celle
+  d'une autre famille. Le bloc « Ajouter la fiche technique » est un aplat
+  champagne (la seule image de la famille, `cartePerso`, est sombre et
+  virait au gris sous le voile clair). Les règles du thème, dans les
+  fichiers partagés, sont sous `:global([data-theme='perso'])` et placées
+  AVANT les blocs MASS (les tests de confinement MASS lisent jusqu'à la fin
+  du fichier). Le contenu de la maquette (Bench Press, Semaine 11,
+  Nutrition) est celui de POWER : seul le STYLE est repris.
+  `styles/themePerso.test.ts`.
 - **Retours du 22 novembre (toute l'appli).** Le TEMPO s'affiche en tête de
   carte, pastille à droite de « RPE · Repos » (`TempoChip`), et en tête de
   superset. Champ `tempo` (`TempoPrescrit` : texte, semaines?, jours?) sur

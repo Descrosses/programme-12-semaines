@@ -20,7 +20,7 @@ import type { SessionRow } from '../db/db';
 import { defilementPourCentrer } from '../state/weekStrip';
 import { Icon } from '../components/Icon';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { enteteDe } from '../data/famillesVisuel';
+import { enteteDe, marqueDe } from '../data/famillesVisuel';
 import { programmeParId } from '../data/catalogue';
 import { DiagonalStripes } from '../components/Decor';
 import styles from './Week.module.css';
@@ -151,7 +151,8 @@ export function WeekScreen({
       <ScreenHeader
         eyebrow={
           importe
-            ? (blocCourant ?? undefined)
+            ? // Maquette du 25 novembre : la famille en sur-titre, à défaut de bloc.
+              (blocCourant ?? marqueDe(programme.id))
             : week === 0
               ? 'Avant le programme'
               : block === null

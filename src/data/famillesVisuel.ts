@@ -39,8 +39,15 @@ export interface HabillageFamille {
    * gardent leur comportement d'origine (POWER choisit les siennes lui-même).
    */
   readonly entetes?: Readonly<Record<EcranEntete, VisuelNom>>;
-  /** Le nom de la famille s'affiche en très gros sur l'Accueil (maquette MASS). */
+  /** Le nom de la famille s'affiche devant la date de l'Accueil (MASS, ME, MYSELF & I). */
   readonly marqueAccueil?: true;
+  /**
+   * Le grand titre de l'Accueil. `cycle` (défaut, MASS) : le nom du cycle,
+   * « Semaine X / Y » dessous. `onglet` (ME, MYSELF & I, maquette du
+   * 25 novembre) : « Aujourd'hui », et le nom du programme importé passe
+   * dans le sous-titre avec la semaine.
+   */
+  readonly titreAccueil?: 'cycle' | 'onglet';
 }
 
 /** Les quatre écrans d'un cycle qui portent une photo d'en-tête. */
@@ -89,7 +96,7 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
    * distingue du bleu, du rouge et du rose, et répond à la lumière dorée de
    * la photo.
    */
-  perso: { photo: 'cartePerso', teinte: '#c08b2c' },
+  perso: { photo: 'cartePerso', teinte: '#c08b2c', marqueAccueil: true, titreAccueil: 'onglet' },
 };
 
 /** La photo d'en-tête d'un écran pour ce programme, si sa famille en a une. */
@@ -120,6 +127,16 @@ export function enteteAccueilFixe(
 ): { marque: string; titre: string; sous: string | undefined } | null {
   const marque = marqueDe(programmeId);
   if (marque === undefined) return null;
+  const def = programmeParId(programmeId);
+  if (def !== null && HABILLAGE[def.familleId]?.titreAccueil === 'onglet') {
+    // Le nom du programme importé est écrit tel quel (texte verbatim).
+    const semaineTexte = semaine === null ? null : `semaine ${semaine} / ${dureeSemaines}`;
+    return {
+      marque,
+      titre: 'Aujourd’hui',
+      sous: [def.nom, semaineTexte].filter((x) => x !== null).join(' · '),
+    };
+  }
   return {
     marque,
     titre: programmeParId(programmeId)?.nom ?? marque,
