@@ -117,7 +117,8 @@ export function SupersetCard({
           ))}
         </h3>
         <div className={`${styles.supersetFormat} tnum`}>
-          {tours} tour{tours > 1 ? 's' : ''} · {exs.map((e) => travailCourt(e.work)).join(' · ')}
+          {tours} tour{tours > 1 ? 's' : ''} ·{' '}
+          {exs.map((e) => e.travailAffiche ?? travailCourt(e.work)).join(' · ')}
         </div>
         <p className={styles.supersetConsigne}>{consigneRythme(circuit)}</p>
         {/* Le tempo de chaque station qui en a un, en tête de bloc comme sur
@@ -260,6 +261,14 @@ export function SupersetCard({
                   {...(rythme === 'transition' && station < exs.length - 1
                     ? { libelleRepos: `Transition → ${exs[station + 1]!.name}` }
                     : {})}
+                  {...(i === tours - 1 &&
+                  station === exs.length - 1 &&
+                  circuit.reposApresBloc !== null
+                    ? {
+                        reposSec: circuit.reposApresBloc,
+                        libelleRepos: `Repos — fin du ${titre.toLowerCase()}`,
+                      }
+                    : {})}
                 />
               </Fragment>
             ))}
@@ -289,9 +298,12 @@ function Station({
   timer,
   onSaveSet,
   libelleRepos,
+  reposSec,
 }: {
   /** Rythme « transition » : le chrono dit transition, pas repos (§2 MASS FORCE). */
   libelleRepos?: string;
+  /** Le repos d'après le DERNIER tour, quand il diffère de celui entre deux tours. */
+  reposSec?: number;
   ex: ResolvedExercise;
   /** A, B, C… — fournie par `lettreStation`, pas devinée ici. */
   lettre: string;
@@ -321,6 +333,11 @@ function Station({
         <span className={styles.stationLettre}>{lettre}</span>
         {ex.name}
       </div>
+      {/* Un passage que le chiffre ne dit pas (« 20 lentes + 20 rapides ») :
+          la consigne est lue là où l'on agit, à chaque tour. */}
+      {ex.travailAffiche !== undefined && (
+        <div className={styles.stationTravail}>{ex.travailAffiche}</div>
+      )}
       <SetEntry
         ex={ex}
         index={index}
@@ -331,6 +348,7 @@ function Station({
         timer={timer}
         onSave={onSaveSet}
         {...(libelleRepos === undefined ? {} : { libelleRepos })}
+        {...(reposSec === undefined ? {} : { reposSec })}
       />
     </div>
   );

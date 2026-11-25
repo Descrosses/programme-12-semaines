@@ -47,6 +47,13 @@ export interface PrescriptionNormalisee {
   cote: 'côté' | 'jambe' | null;
   /** `0` = écrit « sans repos » par le document ; `null` = non précisé. */
   reposSec: number | null;
+  /**
+   * Comment le document ÉCRIT un passage, quand le chiffre du moteur ne le
+   * dit pas : « 20 lentes + 20 rapides », « 3 × 20 s, 20 s de repos entre ».
+   * Affiché à la place du libellé calculé ; l'objectif reste ce que le champ
+   * de saisie propose. Absent des fichiers qui n'en ont pas besoin.
+   */
+  affichage?: string;
 }
 
 /**
@@ -66,6 +73,13 @@ export interface LigneNormalisee {
   groupe: string | null;
   prescription: PrescriptionNormalisee | null;
   etat: EtatLigne;
+  /** Minutes allouées au groupe entier (« circuit : 10 min ») : sur sa PREMIÈRE ligne. */
+  minutesBloc?: number;
+  /**
+   * Repos après le DERNIER tour du groupe (« 2 min entre deux circuits »),
+   * distinct du repos entre deux tours : sur sa DERNIÈRE ligne.
+   */
+  reposApresBloc?: number;
 }
 
 export interface SeanceNormalisee {

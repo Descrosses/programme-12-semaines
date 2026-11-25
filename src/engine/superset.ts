@@ -82,6 +82,12 @@ export interface Circuit {
    * la première gagne, et c'est celle qu'on lit sur la feuille.
    */
   minutesBloc: number | null;
+  /**
+   * Le repos après le DERNIER tour, quand le programme le distingue de celui
+   * entre deux tours (programmes importés : « 2 min entre deux circuits »).
+   * `null` : le dernier tour finit sur le repos ordinaire.
+   */
+  reposApresBloc: number | null;
 }
 
 export interface Solo {
@@ -147,6 +153,7 @@ export function groupSupersets(exercises: ResolvedExercise[]): Bloc[] {
           // bloc. Alterné : celui d'entre deux stations.
           restSec: rythme === 'alterne' ? ex.restSec : exs[exs.length - 1]!.restSec,
           minutesBloc: exs.find((e) => e.blocMinutes !== undefined)?.blocMinutes ?? null,
+          reposApresBloc: exs[exs.length - 1]!.restApresBlocSec ?? null,
         });
         i = fin - 1; // les stations suivantes sont déjà consommées
         continue;
@@ -183,7 +190,9 @@ export function enToutesLettres(n: number): string {
  * la personne cherchera des yeux sur sa feuille.
  */
 export function titreRythme(rythme: Rythme, stations = 2): string {
-  if (rythme === 'alterne') return 'Alternance';
+  // Trois mouvements ou plus : c'est un circuit, quel que soit son rythme —
+  // « une série de chaque, 20 s entre » reste le circuit de la feuille.
+  if (rythme === 'alterne') return stations > 2 ? 'Circuit' : 'Alternance';
   // Une transition reste un superset : les mouvements vont ensemble.
   return stations > 2 ? 'Circuit' : 'Superset';
 }
@@ -192,15 +201,20 @@ export function titreRythme(rythme: Rythme, stations = 2): string {
 export function consigneRythme(c: Circuit): string {
   const n = c.exs.length;
   const bloc = n > 2 ? 'circuit' : 'duo';
-  if (c.rythme === 'transition') {
-    const transitions = [...new Set(c.exs.slice(0, -1).map((e) => restLabel(e.restSec)))];
-    return `Transition de ${transitions.join(' / ')} entre les mouvements, puis repos ${restLabel(
-      c.restSec,
-    )} après le ${bloc}.`;
-  }
-  return c.rythme === 'enchaine'
-    ? `Les ${enToutesLettres(n)} enchaînés, sans repos. Repos ${restLabel(c.restSec)} après le ${bloc}.`
-    : `Une série de chaque, ${restLabel(c.restSec)} entre les stations.`;
+  const transitions = [...new Set(c.exs.slice(0, -1).map((e) => restLabel(e.restSec)))];
+  const base =
+    c.rythme === 'transition'
+      ? `Transition de ${transitions.join(' / ')} entre les mouvements, puis repos ${restLabel(
+          c.restSec,
+        )} après le ${bloc}.`
+      : c.rythme === 'enchaine'
+        ? `Les ${enToutesLettres(n)} enchaînés, sans repos. Repos ${restLabel(c.restSec)} après le ${bloc}.`
+        : n > 2
+          ? `Un passage de chaque, ${restLabel(c.restSec)} entre les exercices.`
+          : `Une série de chaque, ${restLabel(c.restSec)} entre les stations.`;
+  return c.reposApresBloc === null || c.reposApresBloc <= 0
+    ? base
+    : `${base} Repos ${restLabel(c.reposApresBloc)} après le dernier tour.`;
 }
 
 /** La lettre d'une station : A, B, C… Au-delà de Z, le rang en chiffres. */

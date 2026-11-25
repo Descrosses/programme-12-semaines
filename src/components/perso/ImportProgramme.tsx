@@ -40,7 +40,7 @@ import { lireMemoire } from '../../programmes/perso/memoire';
 import { ApercuIllustrations, cleProposition, exercicesDe, FichesProposees } from './Illustrations';
 import styles from '../../screens/Screens.module.css';
 import local from './Perso.module.css';
-import { lignesDe, phraseSuivi } from './suivi';
+import { phraseSuivi } from './suivi';
 
 /** Les sujets des décisions, dits en français. */
 export const SUJETS: Record<string, string> = {
@@ -346,6 +346,13 @@ export function ImportProgramme({ onImporte }: { onImporte: (cle: string) => voi
   );
 }
 
+/** Chaque texte une fois, avec son nombre d'apparitions, dans l'ordre. */
+function compter(textes: readonly string[]): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const t of textes) m.set(t, (m.get(t) ?? 0) + 1);
+  return m;
+}
+
 /**
  * Ce que contient le fichier, AVANT l'enregistrement. Le bouton d'import
  * reste désactivé tant que la durée manque : aucune réponse n'est proposée
@@ -381,32 +388,48 @@ export function ApercuImport({
     <div className={local.apercu}>
       <p className={local.nom}>{p.nom}</p>
       <p className={local.meta}>
-        {p.source.document} · {p.semaines[0]?.seances.length ?? 0} séance
-        {(p.semaines[0]?.seances.length ?? 0) > 1 ? 's' : ''} par semaine · {lignesDe(p).length}{' '}
-        exercices
+        {p.semaines[0]?.seances.length ?? 0} séance
+        {(p.semaines[0]?.seances.length ?? 0) > 1 ? 's' : ''} par semaine
       </p>
       <p className={v.rapport.suiviComplet ? local.complet : local.partiel}>{phraseSuivi(p)}</p>
-      {v.rapport.consultables.length > 0 && (
-        <>
-          <p className={local.sous}>À lire, hors suivi :</p>
-          <ul className={local.puces}>
-            {v.rapport.consultables.map((c) => (
-              <li key={c.chemin}>{c.texteOriginal}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {p.decisions.length > 0 && (
-        <>
-          <p className={local.sous}>Ce que le document ne disait pas :</p>
-          <ul className={local.puces}>
-            {p.decisions.map((d, i) => (
-              <li key={i}>
-                <b>{SUJETS[d.sujet] ?? d.sujet}</b> — {d.texte}
-              </li>
-            ))}
-          </ul>
-        </>
+      {/*
+        Le détail de la conversion — consignes hors suivi, choix faits à la
+        place du document — reste consultable, mais REPLIÉ : à l'import, la
+        personne veut savoir si le programme se suit, pas relire 89 lignes
+        (retour de Guillaume, 25 novembre). Une consigne répétée ne s'écrit
+        qu'une fois, avec son nombre.
+      */}
+      {(v.rapport.consultables.length > 0 || p.decisions.length > 0) && (
+        <details className={local.replie}>
+          <summary>Voir le détail de l’import</summary>
+          {v.rapport.consultables.length > 0 && (
+            <>
+              <p className={local.sous}>À lire, hors suivi :</p>
+              <ul className={local.puces}>
+                {[...compter(v.rapport.consultables.map((c) => c.texteOriginal))].map(
+                  ([texte, n]) => (
+                    <li key={texte}>
+                      {texte}
+                      {n > 1 ? ` (× ${String(n)})` : ''}
+                    </li>
+                  ),
+                )}
+              </ul>
+            </>
+          )}
+          {p.decisions.length > 0 && (
+            <>
+              <p className={local.sous}>Ce que le document ne disait pas :</p>
+              <ul className={local.puces}>
+                {p.decisions.map((d, i) => (
+                  <li key={i}>
+                    <b>{SUJETS[d.sujet] ?? d.sujet}</b> — {d.texte}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </details>
       )}
 
       {extra}

@@ -292,3 +292,18 @@
 .propositions b {
   color: var(--ink);
 }
+
+/* Le détail d'un import : replié, une ligne qu'on touche pour l'ouvrir. */
+.replie {
+  margin-top: 10px;
+}
+
+.replie summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap, 48px);
+  color: var(--accent-ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  cursor: pointer;
+}

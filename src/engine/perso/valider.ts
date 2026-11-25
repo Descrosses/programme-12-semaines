@@ -249,7 +249,7 @@ function prescription(v: unknown, chemin: string, e: Erreurs): PrescriptionNorma
   const o = objetStrict(
     v,
     chemin,
-    ['series', 'objectif', 'chargeKg', 'detail', 'cote', 'reposSec'],
+    ['series', 'objectif', 'chargeKg', 'detail', 'cote', 'reposSec', 'affichage'],
     [],
     e,
   );
@@ -322,7 +322,9 @@ function prescription(v: unknown, chemin: string, e: Erreurs): PrescriptionNorma
   }
 
   const reposSec = entier(lire(o, 'reposSec'), sous(chemin, 'reposSec'), e, 0);
-  return series === null ? null : { series, cote, reposSec };
+  const affichage = texte(lire(o, 'affichage'), sous(chemin, 'affichage'), e);
+  if (series === null) return null;
+  return { series, cote, reposSec, ...(affichage === null ? {} : { affichage }) };
 }
 
 // ----------------------------------------------------------------- séances --
@@ -336,7 +338,15 @@ function ligneDe(
   const o = objetStrict(
     v,
     chemin,
-    ['exerciceId', 'section', 'texteOriginal', 'prescription', 'groupe'],
+    [
+      'exerciceId',
+      'section',
+      'texteOriginal',
+      'prescription',
+      'groupe',
+      'minutesBloc',
+      'reposApresBloc',
+    ],
     ['exerciceId', 'texteOriginal'],
     e,
   );
@@ -354,6 +364,21 @@ function ligneDe(
   const groupe = idLocal(lire(o, 'groupe'), sous(chemin, 'groupe'), e);
   const brute = lire(o, 'prescription');
   const presc = brute === undefined ? null : prescription(brute, sous(chemin, 'prescription'), e);
+  const minutesBloc = entier(lire(o, 'minutesBloc'), sous(chemin, 'minutesBloc'), e, 1, 120);
+  const reposApresBloc = entier(
+    lire(o, 'reposApresBloc'),
+    sous(chemin, 'reposApresBloc'),
+    e,
+    0,
+    1800,
+  );
+  if ((minutesBloc !== null || reposApresBloc !== null) && groupe === null) {
+    e.ajoute(
+      'structure-invalide',
+      chemin,
+      '« minutesBloc » et « reposApresBloc » ne s’écrivent que sur une ligne d’un groupe.',
+    );
+  }
   if (exerciceId === null || texteOriginal === null) return null;
   return {
     exerciceId,
@@ -362,6 +387,8 @@ function ligneDe(
     groupe,
     prescription: presc,
     etat: presc === null ? 'consultable' : 'compatible',
+    ...(minutesBloc === null ? {} : { minutesBloc }),
+    ...(reposApresBloc === null ? {} : { reposApresBloc }),
   };
 }
 
@@ -397,8 +424,22 @@ function verifierGroupes(
         `Les lignes du groupe « ${groupe} » doivent se suivre.`,
       );
     }
-    for (const i of pos) {
+    for (const [rang, i] of pos.entries()) {
       const l = lignes[i];
+      if (l?.minutesBloc !== undefined && rang !== 0) {
+        e.ajoute(
+          'structure-invalide',
+          `${chemin}[${String(i)}].minutesBloc`,
+          `Dans le groupe « ${groupe} », la durée du bloc s’écrit sur sa première ligne.`,
+        );
+      }
+      if (l?.reposApresBloc !== undefined && rang !== pos.length - 1) {
+        e.ajoute(
+          'structure-invalide',
+          `${chemin}[${String(i)}].reposApresBloc`,
+          `Dans le groupe « ${groupe} », le repos après le bloc s’écrit sur sa dernière ligne.`,
+        );
+      }
       if (l && l.prescription?.reposSec == null) {
         e.ajoute(
           'structure-invalide',

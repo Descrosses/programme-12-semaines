@@ -95,6 +95,8 @@ function exerciceDe(
     ...(ligne.section === null ? {} : { section: ligne.section }),
     // Le groupe n'existe que dans sa séance : deux séances peuvent réutiliser un nom.
     ...(ligne.groupe === null ? {} : { superset: `${seance.id}-${ligne.groupe}` }),
+    ...(ligne.minutesBloc === undefined ? {} : { blocMinutes: ligne.minutesBloc }),
+    ...(ligne.reposApresBloc === undefined ? {} : { restApresBlocSec: ligne.reposApresBloc }),
   };
 
   const p = ligne.prescription;
@@ -131,8 +133,11 @@ function exerciceDe(
         )
         .join(' / ');
 
+  // Le passage écrit par le document passe avant le chiffre calculé.
+  const affiche = p.affichage;
   return {
     ...commun,
+    ...(affiche === undefined ? {} : { travailAffiche: affiche }),
     sets: series.length,
     work: premiere.work,
     load:
@@ -142,7 +147,14 @@ function exerciceDe(
     // `null` = repos non écrit : aucun chrono proposé. Le validateur interdit
     // ce cas dans un groupe, où 0 voudrait dire « enchaîner ».
     restSec: p.reposSec ?? 0,
-    loadLine,
+    // Dans un circuit, le passage écrit REMPLACE le chiffre (« 2 × 20 lentes +
+    // 20 rapides » plutôt que « 2 × 40 ») ; seul, il s'affiche sous le chiffre.
+    loadLine:
+      affiche === undefined || ligne.groupe === null
+        ? loadLine
+        : series.length > 1
+          ? `${String(series.length)} × ${affiche}`
+          : affiche,
     notes,
     planKg: uniforme ? premiere.kg : null,
     ...(uniforme ? {} : { objectifsParSerie: series }),

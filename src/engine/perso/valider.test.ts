@@ -368,3 +368,87 @@ describe('isolement', () => {
     }
   });
 });
+
+describe('circuits minutés (Top Body Challenge, 25 novembre) — champs FACULTATIFS', () => {
+  /** Un circuit de deux lignes : squat puis gainage. */
+  function circuit(premiere: Record<string, unknown>, derniere: Record<string, unknown>) {
+    const o = base();
+    const lignes = [
+      {
+        exerciceId: 'squat',
+        texteOriginal: '20 lentes + 20 rapides',
+        groupe: 'circuit-1',
+        prescription: { series: 2, objectif: { type: 'reps', reps: 40 }, reposSec: 20 },
+        ...premiere,
+      },
+      {
+        exerciceId: 'gainage',
+        texteOriginal: '3 reps / 20 SEC (20sec repos entre)',
+        groupe: 'circuit-1',
+        prescription: { series: 2, objectif: { type: 'duree', secondes: 60 }, reposSec: 20 },
+        ...derniere,
+      },
+    ];
+    o.semaines[0].seances[0].lignes = lignes;
+    return o;
+  }
+
+  it('durée du circuit sur la 1re ligne, repos après le dernier tour sur la dernière, passage écrit', () => {
+    const r = valider(
+      circuit(
+        {
+          minutesBloc: 10,
+          prescription: {
+            series: 2,
+            objectif: { type: 'reps', reps: 40 },
+            reposSec: 20,
+            affichage: '20 lentes + 20 rapides',
+          },
+        },
+        { reposApresBloc: 120 },
+      ),
+    );
+    const lignes = accepte(r).programme.semaines[0]!.seances[0]!.lignes;
+    expect(lignes[0]).toMatchObject({ minutesBloc: 10 });
+    expect(lignes[0]!.prescription!.affichage).toBe('20 lentes + 20 rapides');
+    expect(lignes[1]).toMatchObject({ reposApresBloc: 120 });
+  });
+
+  it('absents, ils n’apparaissent pas : un ancien fichier garde EXACTEMENT sa forme', () => {
+    const lignes = accepte(valider(circuit({}, {}))).programme.semaines[0]!.seances[0]!.lignes;
+    for (const l of lignes) {
+      expect(l).not.toHaveProperty('minutesBloc');
+      expect(l).not.toHaveProperty('reposApresBloc');
+      expect(l.prescription).not.toHaveProperty('affichage');
+    }
+    // Training 1 (importé avant ces champs) : même forme canonique qu'avant.
+    const t1 = validerProgramme(TRAINING1);
+    expect(t1.ok && formeCanonique(t1.programme)).not.toContain('minutesBloc');
+  });
+
+  it('mal placés ou hors d’un groupe : refusé', () => {
+    expect(codes(valider(circuit({ reposApresBloc: 120 }, {})))).toContain('structure-invalide');
+    expect(codes(valider(circuit({}, { minutesBloc: 10 })))).toContain('structure-invalide');
+    const seul = base();
+    seul.semaines[0].seances[0].lignes[0].minutesBloc = 10;
+    expect(codes(valider(seul))).toContain('structure-invalide');
+    expect(codes(valider(circuit({ minutesBloc: 0 }, {})))).toContain('structure-invalide');
+    expect(
+      codes(
+        valider(
+          circuit(
+            {
+              prescription: {
+                series: 2,
+                objectif: { type: 'reps', reps: 40 },
+                reposSec: 20,
+                affichage: '',
+              },
+            },
+            {},
+          ),
+        ),
+      ),
+    ).toContain('structure-invalide');
+  });
+});

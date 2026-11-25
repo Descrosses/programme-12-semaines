@@ -1979,6 +1979,22 @@
   font-weight: 700;
 }
 
+/* Le passage écrit par le document, sous le grand chiffre (programmes importés). */
+.travailAffiche {
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
+/* Le passage écrit par le document, sous le nom (programmes importés). */
+.stationTravail {
+  padding: 0 var(--pad) 4px calc(var(--pad) + 28px);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.35;
+}
+
 .stationLettre {
   flex: none;
   min-width: 20px;

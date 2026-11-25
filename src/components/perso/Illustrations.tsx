@@ -69,20 +69,23 @@ export function ApercuIllustrations({ analyse }: { analyse: ArchiveAnalysee }) {
   );
   return (
     <div className={local.illustrations}>
-      <p className={local.sous}>Illustrations</p>
       <p className={local.complet}>
         {pluriel(analyse.illustrations.length, 'illustration')} pour{' '}
         {pluriel(illustres, 'exercice')}
         {sans.length > 0 ? ` · sans illustration : ${sans.join(', ')}` : ''}
       </p>
-      <ul className={local.galerie} aria-label="Illustrations de l’archive">
-        {blobs.map((b) => (
-          <li key={b.id}>
-            <Vignette source={b.blob} alt={b.nom} />
-            <span>{b.nom}</span>
-          </li>
-        ))}
-      </ul>
+      {/* Les images une à une : repliées, comme le détail de l'import. */}
+      <details className={local.replie}>
+        <summary>Voir les illustrations</summary>
+        <ul className={local.galerie} aria-label="Illustrations de l’archive">
+          {blobs.map((b) => (
+            <li key={b.id}>
+              <Vignette source={b.blob} alt={b.nom} />
+              <span>{b.nom}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
     </div>
   );
 }

@@ -282,3 +282,83 @@ describe('les illustrations d’un programme importé', () => {
     }
   });
 });
+
+describe('circuit minuté d’un programme importé', () => {
+  const texte = JSON.stringify({
+    format: 'majk-programme',
+    schemaVersion: 1,
+    programme: {
+      uid: 'circuitminute01',
+      nom: 'Circuit',
+      source: { document: 'c.pdf' },
+      dureeSemaines: 1,
+    },
+    exercices: [
+      { id: 'bridge', nom: 'Bridge' },
+      { id: 'ab-bikes', nom: 'AB bikes' },
+      { id: 'planche', nom: 'Planche' },
+    ],
+    semaines: [
+      {
+        numeros: [1],
+        seances: [
+          {
+            id: 'lundi',
+            jour: 0,
+            titre: 'Abdos',
+            lignes: [
+              {
+                exerciceId: 'bridge',
+                texteOriginal: '20 lentes + 20 rapides',
+                groupe: 'c1',
+                minutesBloc: 10,
+                prescription: {
+                  series: 2,
+                  objectif: { type: 'reps', reps: 40 },
+                  reposSec: 20,
+                  affichage: '20 lentes + 20 rapides',
+                },
+              },
+              {
+                exerciceId: 'ab-bikes',
+                texteOriginal: '20 REPS',
+                groupe: 'c1',
+                prescription: { series: 2, objectif: { type: 'reps', reps: 20 }, reposSec: 20 },
+              },
+              {
+                exerciceId: 'planche',
+                texteOriginal: '3 reps / 20 SEC (20sec repos entre)',
+                groupe: 'c1',
+                reposApresBloc: 120,
+                prescription: {
+                  series: 2,
+                  objectif: { type: 'duree', secondes: 60 },
+                  reposSec: 20,
+                  affichage: '3 × 20 s, 20 s de repos entre',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  const m = creerModuleImporte(ligneDe(texte, null, 'perso-circuitminute01-1'));
+  const s = m.getSession(1, 0, EMPTY_CONTEXT)!;
+  const bloc = groupSupersets(s.exercises)[0]!;
+
+  it('un circuit de 3, 2 tours, minuté 10 min, 2 min après le dernier tour', () => {
+    expect(bloc).toMatchObject({ kind: 'circuit', tours: 2, rythme: 'alterne', restSec: 20 });
+    expect(bloc.kind === 'circuit' && bloc.minutesBloc).toBe(10);
+    expect(bloc.kind === 'circuit' && bloc.reposApresBloc).toBe(120);
+  });
+
+  it('le passage s’affiche comme le document l’écrit, l’objectif reste saisissable', () => {
+    const [bridge, bikes, planche] = s.exercises;
+    expect(bridge!.travailAffiche).toBe('20 lentes + 20 rapides');
+    expect(bridge!.loadLine).toBe('2 × 20 lentes + 20 rapides');
+    expect(bridge!.work).toMatchObject({ kind: 'reps', reps: 40 });
+    expect(bikes).not.toHaveProperty('travailAffiche');
+    expect(planche!.travailAffiche).toBe('3 × 20 s, 20 s de repos entre');
+  });
+});

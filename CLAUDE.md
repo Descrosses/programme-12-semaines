@@ -428,6 +428,23 @@ matériel et la durée avant d'écrire la moindre séance.
   `archiveIllustree.test.ts`, `importIllustre.test.tsx`, `module.test.ts`.
   À vérifier sur iPhone : choisir un .zip dans Fichiers, et le format
   ré-enregistré (PNG si Safari n'écrit pas le WebP).
+- **Circuits minutés des programmes importés** (Top Body Challenge, 25
+  novembre : « 3 circuits de 3 exercices, circuits 1 & 2 deux fois, 10 min
+  chacun, 20 s entre les exercices, 1 à 2 min entre les circuits »). Trois
+  champs FACULTATIFS du format (un ancien fichier garde exactement sa forme
+  canonique) : `minutesBloc` sur la 1re ligne d'un groupe (minuteur du bloc,
+  `useBlocMinute`), `reposApresBloc` sur sa dernière ligne (repos après le
+  DERNIER tour, distinct de celui entre deux tours ; `SetEntry` reçoit
+  `reposSec`), `prescription.affichage` (le passage tel que le document
+  l'écrit : « 20 lentes + 20 rapides » ; dans un groupe il remplace le
+  chiffre, seul il s'affiche dessous ; l'objectif reste le total du passage).
+  Trois mouvements ou plus = « Circuit », même en alternance
+  (`titreRythme`, « Un passage de chaque, 20 s entre les exercices »). Sous
+  la fiche d'un bloc : « Séries saisies tour par tour, plus bas » (les fiches
+  sont AVANT les tours). Le Top Body Challenge converti (hors dépôt) : 75
+  exercices (un par mouvement et par circuit : un même mouvement ne peut
+  figurer deux fois dans une séance), 348 lignes, suivi complet, consignes =
+  descriptions du livre.
 - **Identité ME, MYSELF & I = « ivoire · chocolat · champagne »** (maquette
   de Guillaume, 25 novembre). Troisième identité de la plateforme, CLAIRE :
   `[data-theme='perso']` — ivoire `#f5f0e6` (fonds), chocolat `#49352b`
