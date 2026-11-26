@@ -180,6 +180,21 @@ réinterprète pas.**
   « Journal » hors mode semaine. `components/journalNutrition.test.tsx`,
   `engine/semaineRepas.test.ts`.
 
+  **Couleurs des macros « Relief »** (Guillaume, 27 novembre, planche de 3
+  variantes, « go B, MASS suit aussi » : bleu, rose et jaune « paraissaient
+  ternes »). POWER et MASS : glucides `#45a6ff`, protéines `#ff5e9c`,
+  lipides `#f2c230`, léger dégradé + liseré (comme les boutons rouges),
+  barre de 10 px. Tout passe par des JETONS (`--macro-*-relief`,
+  `--macro-liseret`, `--macro-epaisseur`… sur `:root`) : aucune règle de
+  thème dans les écrans. LADIES, ME, MYSELF & I et la plateforme restent À
+  PLAT avec leur palette — leurs blocs remettent chaque jeton relief à zéro,
+  et LADIES écrit désormais ses trois teintes (elle héritait de POWER ; le
+  jaune vif tombe à 1,5:1 sur fond clair). Le jaune est proche de `--orange`
+  : il ne sert qu'à un remplissage, et un DÉPASSEMENT (`.progressOver`) est
+  maintenant hachuré. Variantes non retenues : A (à plat), C (pastilles).
+  MASS n'affiche aujourd'hui aucune barre de macros : le réglage attend sa
+  nutrition. `styles/macrosRelief.test.ts`.
+
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 

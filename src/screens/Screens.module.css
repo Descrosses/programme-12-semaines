@@ -1158,27 +1158,34 @@
  */
 .macroTrack {
   display: flex;
-  gap: 2px; /* le fond passe entre les segments : ils ne se touchent jamais */
-  height: 8px;
+  /* le fond passe entre les segments : ils ne se touchent jamais */
+  gap: var(--macro-espace, 2px);
+  height: var(--macro-epaisseur, 8px);
   border-radius: 999px;
   overflow: hidden;
 }
 
+/*
+ * Épaisseur, liseré et dégradé viennent des jetons `--macro-*` du thème
+ * (`tokens.css`) : POWER et MASS ont le relief, les autres restent à plat.
+ * Aucune règle de thème ici.
+ */
 .macroFill {
   height: 100%;
   border-radius: 2px;
+  box-shadow: var(--macro-liseret, none);
 }
 
 .macro_carbs {
-  background: var(--macro-glucides);
+  background: var(--macro-glucides-relief, var(--macro-glucides));
 }
 
 .macro_protein {
-  background: var(--macro-proteines);
+  background: var(--macro-proteines-relief, var(--macro-proteines));
 }
 
 .macro_fat {
-  background: var(--macro-lipides);
+  background: var(--macro-lipides-relief, var(--macro-lipides));
 }
 
 /*
@@ -1263,9 +1270,10 @@
  * qui distingue « où j'en suis » de « de quoi c'est fait », sans un mot.
  */
 .progressTrack {
-  height: 8px;
+  height: var(--macro-epaisseur, 8px);
   border-radius: 999px;
   background: var(--surface-3);
+  box-shadow: var(--macro-piste-ombre, none);
   overflow: hidden;
 }
 
@@ -1273,11 +1281,21 @@
   display: block;
   height: 100%;
   border-radius: 999px;
+  box-shadow: var(--macro-liseret, none);
 }
 
-/* Un dépassement ne se ravale pas à « plein » : il change de couleur. */
+/*
+ * Un dépassement ne se ravale pas à « plein » : il change de couleur ET de
+ * motif. Les hachures datent du 27 novembre : sous POWER et MASS le jaune des
+ * lipides est devenu proche de cet orange, la couleur seule ne suffisait
+ * plus à distinguer « plein » de « dépassé ».
+ */
 .progressOver {
-  background: var(--orange);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--orange) 0 6px,
+    color-mix(in srgb, var(--orange) 62%, #000) 6px 9px
+  );
 }
 
 /* --- Carte « Aujourd'hui » et coche d'un repas ----------------------------- */

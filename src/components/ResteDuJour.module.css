@@ -77,29 +77,32 @@
 
 .piste {
   display: block;
-  height: 8px;
+  height: var(--macro-epaisseur, 8px);
   overflow: hidden;
   border-radius: 9px;
   background: var(--surface-3);
+  box-shadow: var(--macro-piste-ombre, none);
 }
 
+/* Le relief (dégradé, liseré) vient des jetons `--macro-*` du thème. */
 .rempli {
   display: block;
   height: 100%;
   border-radius: 9px;
   background: var(--accent);
+  box-shadow: var(--macro-liseret, none);
 }
 
 .rempli[data-ton='proteines'] {
-  background: var(--macro-proteines);
+  background: var(--macro-proteines-relief, var(--macro-proteines));
 }
 
 .rempli[data-ton='glucides'] {
-  background: var(--macro-glucides);
+  background: var(--macro-glucides-relief, var(--macro-glucides));
 }
 
 .rempli[data-ton='lipides'] {
-  background: var(--macro-lipides);
+  background: var(--macro-lipides-relief, var(--macro-lipides));
 }
 
 /* POWER : la barre des calories prend le dégradé des boutons rouges. */
