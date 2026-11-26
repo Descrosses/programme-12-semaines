@@ -158,6 +158,7 @@ export function ChoixRepas({
           repas={detail}
           catalogue={catalogue}
           preferes={preferes}
+          {...(ajuster ? { legende: 'Ingrédients · quantités ajustées à ta cible' } : {})}
           onChoisir={() => {
             const r = detail;
             setDetail(null);

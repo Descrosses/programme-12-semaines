@@ -49,10 +49,17 @@ export function FicheRepas({
   preferes,
   onChoisir,
   onFermer,
+  legende = 'Ingrédients · quantités de référence',
 }: {
   repas: RepasBibliotheque;
   catalogue: Catalogue;
   preferes: readonly string[];
+  /**
+   * Ce que disent les quantités montrées. Semaine automatique : « ajustées
+   * à ta cible » (bibliothèque) ou « de ton repas » (repas posé) — jamais
+   * « de référence » pour des quantités qui ne le sont pas.
+   */
+  legende?: string;
   /** Absent quand la fiche est ouverte depuis un repas déjà posé. */
   onChoisir?: () => void;
   onFermer: () => void;
@@ -98,7 +105,7 @@ export function FicheRepas({
           </p>
           <MacroBar macros={m} />
 
-          <h3 className={styles.sousTitre}>Ingrédients · quantités de référence</h3>
+          <h3 className={styles.sousTitre}>{legende}</h3>
           <ul className={styles.liste}>
             {repas.lignes.map((l) => {
               const f = catalogue[l.foodId];

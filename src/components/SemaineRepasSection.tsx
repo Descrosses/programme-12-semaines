@@ -27,6 +27,7 @@ import {
   type CibleRepas,
   type SemaineRepas,
 } from '../engine/semaineRepas';
+import { ListeCourses } from './ListeCourses';
 import { PlanPerso } from './PlanPerso';
 import styles from './SemaineRepasSection.module.css';
 
@@ -88,6 +89,8 @@ export function SemaineRepasSection({
 }) {
   const [jour, setJour] = useState(jourInitial);
   const [confirme, setConfirme] = useState<Confirmation>(null);
+  /** « Ma liste de courses » ouverte en plein écran (lot 3). */
+  const [courses, setCourses] = useState(false);
   const change = cibleAChange(semaine, cibleActuelle);
   const nomJour = JOURS_SEMAINE[jour] ?? JOURS_SEMAINE[0];
 
@@ -182,6 +185,9 @@ export function SemaineRepasSection({
           confirmation()
         ) : (
           <>
+            <button type="button" className={styles.principal} onClick={() => setCourses(true)}>
+              Ma liste de courses
+            </button>
             {!change && (
               <button
                 type="button"
@@ -201,6 +207,9 @@ export function SemaineRepasSection({
           </>
         )}
       </section>
+      {courses && (
+        <ListeCourses semaine={semaine} catalogue={catalogue} onFermer={() => setCourses(false)} />
+      )}
     </>
   );
 }

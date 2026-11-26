@@ -1,0 +1,192 @@
+/* « Ma liste de courses » — même gabarit plein écran que la fiche d'un plat
+   (FicheRepas.module.css) ; jetons du thème seulement. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.barre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) var(--pad) 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.barreTitre {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.fermer {
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.defilement {
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.corps {
+  padding: 14px var(--pad) 24px;
+}
+
+.texte {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.note {
+  margin: 0 0 10px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.rayon {
+  margin-top: 14px;
+  padding: 4px var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.rayonNom {
+  margin: 10px 0 4px;
+  font-family: var(--font-cond);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.articles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article + .article {
+  border-top: 1px solid var(--line);
+}
+
+.ligne {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+  cursor: pointer;
+}
+
+/* Case dessinée : le style commun des champs (global.css) l'étirait en
+   grand rectangle et cachait la coche. */
+.case {
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 26px;
+  min-width: 0;
+  height: 26px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--line-strong);
+  border-radius: 7px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.case:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.case:checked::after {
+  content: '';
+  width: 7px;
+  height: 13px;
+  margin-top: -3px;
+  border: solid var(--ink-on-accent);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.nom {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-body);
+  color: var(--ink);
+}
+
+.quantite {
+  flex: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Coché : barré et adouci, jamais retiré — un doigt qui glisse se rattrape. */
+.article[data-coche] .nom,
+.article[data-coche] .quantite {
+  color: var(--ink-3);
+  text-decoration: line-through;
+}
+
+.conserve {
+  margin: -6px 0 8px 34px;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.pied {
+  padding: 10px var(--pad) calc(env(safe-area-inset-bottom, 0px) + 10px);
+  border-top: 1px solid var(--line);
+}
+
+.partager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.statut {
+  min-height: 1em;
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+.statut:empty {
+  display: none;
+}

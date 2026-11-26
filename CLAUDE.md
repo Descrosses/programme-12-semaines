@@ -71,8 +71,25 @@ réinterprète pas.**
   semaine ; à 1 200 kcal une seule collation tient sa part (elle revient 6
   jours sur 7) ; l'omelette peut monter à 7 œufs (levier × 2).
   `engine/semaineRepas.test.ts`, `components/semaineRepas.test.tsx`.
-  Reste : lot 3 (courses en poids CRU, coefficients à valider dans un
-  `.md`), lot 4 (profil en base, réajustement §7).
+  **Lot 3 — FAIT** (« go lot 3 », facteurs validés par Guillaume le 26
+  novembre) : « Ma liste de courses » sous les repas de la semaine
+  (`components/ListeCourses.tsx`, plein écran). Source de vérité :
+  `regles-courses.md` (VALIDÉ), relu par `data/reglesCourses.test.ts`. Facteurs
+  de rendement (cuit ÷ cru) de Bognár 2002 (BFE-R-02-03), ligne citée pour
+  chacun ; semoule = rapport des calories (choix de l'appli), courgette et
+  aubergine = données faibles (ragoût avec ingrédients, n = 3), saumon = la
+  ligne du poisson blanc. Poids PRÊT À CUIRE (épluchures en plus, l'écran
+  le dit) ; arrondi VERS LE HAUT (10, puis 50 dès 1 000) ; rayons fixes,
+  œufs à la crèmerie, pain à la boulangerie ; légumineuses : aussi « en
+  conserve, égouttées » (≈ cuit). Coches en `localStorage`
+  (`state/coursesCochees.ts`) pour UNE semaine composée (`creeLe`), jamais
+  en base. Partage : feuille de partage, sinon presse-papiers. Un test
+  refuse tout aliment pesé cuit des repas sans facteur. Les cases à cocher
+  sont DESSINÉES (le style commun des champs les étirait). Corrigé au
+  passage (lot 2) : en mode semaine, la fiche d'un plat montre les
+  quantités DU REPAS (« quantités de ton repas »), plus celles de
+  référence. `engine/courses.test.ts`, `components/listeCourses.test.tsx`.
+  Reste : lot 4 (profil en base, réajustement §7).
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
