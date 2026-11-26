@@ -8,8 +8,9 @@
  *
  * Le verso ne dit que ce que le catalogue dit déjà, mot pour mot : le
  * sous-titre et le résumé de la famille, puis les OBJECTIFS écrits de chaque
- * programme qui en a (« Ce que tu développes »). Un programme sans objectifs
- * écrits (MASS FORCE, les étapes à venir) n'en reçoit pas ; ME, MYSELF & I,
+ * programme qui en a (« Ce que tu développes »), CHACUN SOUS SON NOM : un
+ * objectif est celui d'un cycle, pas de la famille. Un programme sans
+ * objectifs écrits (les étapes à venir) n'en reçoit pas ; ME, MYSELF & I,
  * dont le contenu vient de la personne, n'a que son résumé.
  *
  * ── Le mouvement ───────────────────────────────────────────────────────────
@@ -29,8 +30,12 @@ import { Icon } from './Icon';
 import { Visuel } from './Visuel';
 import local from './FamilleRetournee.module.css';
 
-/** La durée du demi-tour, en millisecondes (le CSS porte la même). */
-export const DUREE_RETOURNEMENT = 560;
+/**
+ * La durée du demi-tour, en millisecondes. À 560 ms la carte s'ouvrait « un
+ * peu vite » et l'effet se perdait (iPhone de Guillaume, 26 novembre). Le CSS
+ * la reçoit par `--duree` : une seule valeur à régler.
+ */
+export const DUREE_RETOURNEMENT = 950;
 
 export interface Rectangle {
   top: number;
@@ -133,6 +138,7 @@ export function FamilleRetournee({
   return createPortal(
     <div
       className={`${local.fond} ${phase === 'ouverte' ? local.fondVisible : ''}`}
+      style={{ '--duree': `${String(DUREE_RETOURNEMENT)}ms` } as CSSProperties}
       onClick={refermer}
     >
       <div
@@ -203,7 +209,10 @@ export function FamilleRetournee({
                 <h3 className={local.rubrique}>Ce que tu développes</h3>
                 {qualites.map((q) => (
                   <section key={q.nom} className={local.programme}>
-                    {qualites.length > 1 && <h4 className={local.nomProgramme}>{q.nom}</h4>}
+                    {/* Toujours le NOM du programme : un objectif est celui d'un
+                        cycle, pas de toute la famille (« sans recherche de force
+                        maximale » est vrai de MASS CONGESTION, pas de MASS). */}
+                    <h4 className={local.nomProgramme}>{q.nom}</h4>
                     <ul className={local.liste}>
                       {q.objectifs.map((o) => (
                         <li key={o}>{o}</li>

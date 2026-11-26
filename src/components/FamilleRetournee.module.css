@@ -4,7 +4,7 @@
  * Le rectangle (top, left, width, height) vient du composant : il part de la
  * tuile touchée et va presque à la taille de l'écran. Le CSS anime ce
  * rectangle ET le demi-tour en même temps, sur la même durée
- * (`DUREE_RETOURNEMENT`, 560 ms).
+ * (`DUREE_RETOURNEMENT`, reçue par `--duree`).
  */
 
 .fond {
@@ -12,7 +12,7 @@
   inset: 0;
   z-index: 2000;
   background: rgb(0 0 0 / 0%);
-  transition: background-color 0.56s ease;
+  transition: background-color var(--duree, 950ms) ease;
   perspective: 1400px;
 }
 
@@ -23,12 +23,13 @@
 .carte {
   position: absolute;
   transform-style: preserve-3d;
+  /* Départ et arrivée en douceur : le demi-tour se LIT, au lieu de claquer. */
   transition:
-    top 0.56s cubic-bezier(0.3, 0.8, 0.3, 1),
-    left 0.56s cubic-bezier(0.3, 0.8, 0.3, 1),
-    width 0.56s cubic-bezier(0.3, 0.8, 0.3, 1),
-    height 0.56s cubic-bezier(0.3, 0.8, 0.3, 1),
-    transform 0.56s cubic-bezier(0.3, 0.8, 0.3, 1);
+    top var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1),
+    left var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1),
+    width var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1),
+    height var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1),
+    transform var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1);
 }
 
 .retournee {
