@@ -26,6 +26,7 @@ const FEMMES: VisuelNom[] = [
   'femmesNutrition',
   'femmesMesures',
   'femmesReglages',
+  'femmesProgres',
 ];
 
 describe('Nutrition FEMMES', () => {
