@@ -641,6 +641,20 @@ matériel et la durée avant d'écrire la moindre séance.
   (le poids du corps est une valeur : `emptyIsValue`, `loadEntry.ts`).
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
+- **Police du TEXTE = Barlow Semi Condensed** (Guillaume, 26 novembre,
+  planche de 8 réglages, « go police E » : le texte, qui prenait la police
+  du téléphone, était « trop fade »). `--font` sur `:root`, donc plateforme,
+  POWER, MASS et ME, MYSELF & I ; **LADIES garde Inter** (sa planche). Les
+  titres (`--font-cond`) et les gros chiffres ne bougent pas. Trois réglages
+  de la planche vivent dans `fonts.css`, sans toucher une règle d'écran :
+  PAS de coupe 400 (la 500 couvre 400-500 : le texte courant sort « un cran
+  plus gras »), la 700 couvre 700-900, `size-adjust: 107%` (« légèrement
+  agrandi » : une police étroite paraît plus petite). Sous POWER seulement,
+  `--ink-2` éclairci (#aebecd → #cdd8e3) ; MASS et ME, MYSELF & I gardent
+  leurs couleurs de maquette. +69 Ko (3 fichiers, OFL, même projet que
+  Barlow Condensed). Les capitales des petits libellés et les noms
+  d'exercice de la planche existaient déjà dans l'appli. Réglages NON
+  retenus : Barlow, Archivo, Saira, Exo 2, Kanit. `styles/policeTexte.test.ts`.
 - **Accueil : les cartes « ressortent »** (Guillaume, 26 novembre, capture de
   référence). Les photos des cartes (programme en cours, familles) sont à
   PLEINE opacité — toute photo d'ambiance est à 38 % (`.visuelCover`,

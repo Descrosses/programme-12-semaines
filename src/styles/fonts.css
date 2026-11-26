@@ -29,6 +29,54 @@
 }
 
 /*
+ * Barlow Semi Condensed — la police du TEXTE (réglage « E — Serré », choisi
+ * par Guillaume sur planche le 26 novembre : « trop fade »). Jusque-là le
+ * texte prenait la police du téléphone. Même famille que les titres, en
+ * plus étroit : plateforme, POWER, MASS et ME, MYSELF & I. LADIES garde
+ * Inter (sa planche).
+ *
+ * Trois réglages de la planche vivent ICI, pour ne toucher à aucune règle
+ * d'écran :
+ * - « un cran plus gras » : il n'y a PAS de coupe 400. La coupe 500 couvre
+ *   400 à 500, donc le texte courant sort en 500 partout, sans qu'une seule
+ *   règle `font-weight` ait changé ;
+ * - 700 couvre 700 à 900 (le texte demandait parfois 800, que la police du
+ *   téléphone avait et que celle-ci n'embarque pas) ;
+ * - « légèrement agrandi » : `size-adjust` grossit le dessin de 7 % (une
+ *   police étroite paraît plus petite à corps égal), sans changer une
+ *   taille écrite. Un navigateur qui l'ignore affiche le texte tel quel.
+ *
+ * Même sous-ensemble « latin » et même licence OFL que Barlow Condensed
+ * (même projet, Jeremy Tribby) : src/assets/fonts/OFL.txt.
+ */
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  size-adjust: 107%;
+  src: url('../assets/fonts/barlow-semi-condensed-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  size-adjust: 107%;
+  src: url('../assets/fonts/barlow-semi-condensed-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+  size-adjust: 107%;
+  src: url('../assets/fonts/barlow-semi-condensed-latin-700-normal.woff2') format('woff2');
+}
+
+/*
  * « Barlow Femmes » — les coupes que la planche FEMMES réclame.
  *
  * La planche est composée en VRAI italique extra-gras. L'application n'en

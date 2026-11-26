@@ -54,7 +54,9 @@
 
   /* ----------------------------------------------------------------- texte */
   --ink: #f5f7fa;
-  --ink-2: #aebecd;
+  /* Texte courant éclairci avec la police du 26 novembre (planche E, « plus
+     clair ») : #aebecd → #cdd8e3. Les libellés (--ink-3) ne bougent pas. */
+  --ink-2: #cdd8e3;
   --ink-3: #8fa6bc; /* libellés non essentiels — 5,8:1, reste lisible */
   --ink-on-accent: #ffffff;
 
@@ -134,7 +136,10 @@
   --bloc-test: #7ac4a0;
 
   /* -------------------------------------------------------- typographie */
-  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Barlow Semi Condensed, embarqué (styles/fonts.css) : la police du texte,
+     choisie par Guillaume le 26 novembre. La police du téléphone reste le
+     repli, pour les signes qu'elle n'a pas (→, ≈) et tant qu'elle charge. */
+  --font: 'Barlow Semi Condensed', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   /* Barlow Condensed est embarqué dans le projet (voir styles/fonts.css) :
      sans réseau, le repli système garde la mise en page lisible. */
   --font-cond: 'Barlow Condensed', 'Roboto Condensed', 'Arial Narrow', var(--font);
