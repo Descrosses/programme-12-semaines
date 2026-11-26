@@ -621,6 +621,14 @@ matériel et la durée avant d'écrire la moindre séance.
   (le poids du corps est une valeur : `emptyIsValue`, `loadEntry.ts`).
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
+- **Accueil : les cartes « ressortent »** (Guillaume, 26 novembre, capture de
+  référence). Les photos des cartes (programme en cours, familles) sont à
+  PLEINE opacité — toute photo d'ambiance est à 38 % (`.visuelCover`,
+  `Decor.module.css`), c'est ce qui les éteignait ; ailleurs elle le reste.
+  Voile ramené à mi-hauteur, bord et halo à la couleur de la famille, nom
+  centré, barres en bas à droite ; dégradé sur « Prochaine séance » et « Mon
+  parcours » ; fumée légère en fond (bruit SVG `feTurbulence`, aucun
+  fichier). `Accueil.module.css` seulement ; `styles/accueilCartes.test.ts`.
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,
   maquette B2 thème POWER, « go comparatif »). Carte de l'écran Combine
   (`components/ComparatifPartage.tsx`) : combine INITIAL (S0) face aux tests
