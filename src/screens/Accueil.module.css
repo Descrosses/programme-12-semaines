@@ -16,7 +16,28 @@
  * leur contenu hors de l'écran.
  */
 .ecran {
+  position: relative;
+  isolation: isolate;
   padding: 0 0 var(--bottom-space);
+}
+
+/*
+ * Une fumée LÉGÈRE sur le noir (Guillaume, 26 novembre : « j'apprécie l'effet
+ * léger de fumée sur le fond noir »). Aucune image de plus : un bruit SVG
+ * (`feTurbulence`) dessiné par le navigateur, en volutes claires très
+ * transparentes, qui naît sous l'en-tête. Le contenu passe devant.
+ */
+.ecran::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.009' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.1 0 0 0 -0.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size: 720px 720px;
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 220px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 220px);
 }
 
 .corps {
@@ -92,11 +113,13 @@
   min-height: 160px;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg, 18px);
   background: var(--surface);
   text-align: left;
-  box-shadow: var(--shadow-card);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 7%),
+    var(--shadow-card);
 }
 
 .enCoursPhoto {
@@ -108,11 +131,20 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /*
+   * La photo à PLEINE opacité (Guillaume, 26 novembre : « trop sombres »).
+   * Toute photo d'ambiance de l'appli est posée à 38 % (`.visuelCover`,
+   * Decor.module.css) : sur le noir, c'est ce qui les éteignait. Ici, le voile
+   * de la carte suffit à garder le texte lisible ; les autres écrans gardent
+   * leurs 38 %.
+   */
+  opacity: 1;
 }
 
 /*
- * Le voile part du bas et s'éclaircit vers le haut : le texte occupe la
- * gauche et le bas de la carte, la photo reste lisible à droite.
+ * Le voile tient le texte à GAUCHE et libère la photo à DROITE (référence de
+ * Guillaume, 26 novembre : la carte « ressort »). Il était opaque presque
+ * partout (96 → 20 %, plus un second voile par le bas) et éteignait l'athlète.
  */
 .enCoursVoile {
   position: absolute;
@@ -120,11 +152,11 @@
   background:
     linear-gradient(
       90deg,
-      rgb(var(--voile) / 96%) 0%,
-      rgb(var(--voile) / 70%) 58%,
-      rgb(var(--voile) / 20%) 100%
+      rgb(var(--voile) / 94%) 0%,
+      rgb(var(--voile) / 62%) 40%,
+      rgb(var(--voile) / 0%) 78%
     ),
-    linear-gradient(0deg, rgb(var(--voile) / 85%) 0%, rgb(var(--voile) / 0%) 70%);
+    linear-gradient(0deg, rgb(var(--voile) / 55%) 0%, rgb(var(--voile) / 0%) 45%);
 }
 
 .enCoursCorps {
@@ -233,9 +265,13 @@
   min-height: 72px;
   margin-top: 12px;
   padding: 12px var(--pad);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  background: var(--surface);
+  /* Un dégradé léger, plus clair en haut à gauche, et un liseré en haut :
+     la carte se détache du fond au lieu de s'y fondre (référence du
+     26 novembre). */
+  background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface) 55%, var(--bg-2) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
   text-align: left;
 }
 
@@ -301,7 +337,13 @@
   width: 46px;
   height: 46px;
   border-radius: var(--radius-sm);
-  background: var(--accent);
+  background: linear-gradient(
+    180deg,
+    var(--accent-bright) 0%,
+    var(--accent) 55%,
+    var(--accent-deep) 100%
+  );
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 22%);
   color: var(--ink-on-accent);
 }
 
@@ -368,10 +410,15 @@
   aspect-ratio: 3 / 4;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  /* Le bord et un halo à la couleur de la famille : la carte « ressort »
+     (référence de Guillaume, 26 novembre). */
+  border: 1px solid color-mix(in srgb, var(--teinte) 75%, transparent);
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: var(--bg);
   text-align: left;
+  box-shadow:
+    0 0 14px color-mix(in srgb, var(--teinte) 28%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
 }
 
 .famillePhoto {
@@ -383,6 +430,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /*
+   * La photo à PLEINE opacité (Guillaume, 26 novembre : « trop sombres »).
+   * Toute photo d'ambiance de l'appli est posée à 38 % (`.visuelCover`,
+   * Decor.module.css) : sur le noir, c'est ce qui les éteignait. Ici, le voile
+   * de la carte suffit à garder le texte lisible ; les autres écrans gardent
+   * leurs 38 %.
+   */
+  opacity: 1;
 }
 
 /*
@@ -395,9 +450,19 @@
 .familleVoile {
   position: absolute;
   inset: 0;
+  /*
+   * Le haut de la photo reste NET : le voile ne monte plus qu'à mi-hauteur,
+   * sous le texte (il couvrait 94 % → 25 % de bas en haut, et éteignait les
+   * photos). La teinte de la famille colore le pied de la carte.
+   */
   background:
-    linear-gradient(0deg, rgb(var(--voile) / 94%) 8%, rgb(var(--voile) / 25%) 72%),
-    linear-gradient(0deg, color-mix(in srgb, var(--teinte) 52%, transparent), transparent 85%);
+    linear-gradient(
+      0deg,
+      rgb(var(--voile) / 86%) 0%,
+      rgb(var(--voile) / 42%) 32%,
+      rgb(var(--voile) / 0%) 58%
+    ),
+    linear-gradient(0deg, color-mix(in srgb, var(--teinte) 55%, transparent) 0%, transparent 52%);
 }
 
 .familleBadge {
@@ -418,22 +483,25 @@
 
 .familleTexte {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
+  right: 8px;
+  bottom: 22px;
+  left: 8px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 2px;
+  text-align: center;
 }
 
 .familleNom {
   font-family: var(--font-cond);
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   font-style: italic;
   font-weight: 800;
   line-height: 1;
   color: var(--ink);
   text-transform: uppercase;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 60%);
 }
 
 /* Un nom long tient dans la tuile au lieu d'en sortir. Voir AccueilScreen. */
@@ -443,9 +511,10 @@
 }
 
 .familleSous {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   line-height: 1.2;
-  color: var(--ink-2);
+  color: var(--ink);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 70%);
 }
 
 /*
@@ -456,15 +525,17 @@
  * cas de FEMMES aujourd'hui.
  */
 .barres {
+  position: absolute;
+  right: -2px;
+  bottom: -16px;
   display: flex;
-  gap: 3px;
-  margin-top: 6px;
+  gap: 4px;
 }
 
 .barres i {
   display: block;
-  width: 11px;
-  height: 5px;
+  width: 14px;
+  height: 6px;
   border-radius: 1px;
   background: var(--teinte, var(--accent));
   transform: skewX(-24deg);
