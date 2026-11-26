@@ -628,7 +628,12 @@ matériel et la durée avant d'écrire la moindre séance.
   Voile ramené à mi-hauteur, bord et halo à la couleur de la famille, nom
   centré, barres en bas à droite ; dégradé sur « Prochaine séance » et « Mon
   parcours » ; fumée légère en fond (bruit SVG `feTurbulence`, aucun
-  fichier). `Accueil.module.css` seulement ; `styles/accueilCartes.test.ts`.
+  fichier). **Programmes et Parcours, même traitement** (« également ») :
+  bannières de famille et carte de cycle à pleine opacité, voile à gauche
+  seulement, bord et halo à la couleur de la famille, dégradé sur le bilan
+  sportif et les rubriques ; la fumée vit dans `styles/plateforme.module.css`
+  (`.fumee`), prise par les trois écrans de la plateforme, jamais par ceux
+  d'un programme. `styles/accueilCartes.test.ts`.
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,
   maquette B2 thème POWER, « go comparatif »). Carte de l'écran Combine
   (`components/ComparatifPartage.tsx`) : combine INITIAL (S0) face aux tests

@@ -47,9 +47,58 @@ describe('l’Accueil ressort', () => {
   });
 
   it('une fumée légère sur le fond, sans image de plus', () => {
-    const fumee = regle('.ecran::before');
+    const plateforme = lire('./plateforme.module.css');
+    const i = plateforme.indexOf('\n.fumee::before {');
+    const fumee = plateforme.slice(i, plateforme.indexOf('}', i));
     expect(fumee).toContain('feTurbulence');
     expect(fumee).toMatch(/opacity: 0\.1\d;/);
     expect(fumee).toContain('pointer-events: none');
+    expect(regle('.ecran')).toContain("composes: fumee from '../styles/plateforme.module.css'");
+  });
+});
+
+describe('Programmes et Parcours : le même traitement (« également »)', () => {
+  const catalogue = lire('../screens/Catalogue.module.css');
+  const parcours = lire('../screens/Parcours.module.css');
+  const dans = (source: string, sel: string) => {
+    const i = source.indexOf(`\n${sel} {`);
+    expect(i, sel).toBeGreaterThan(-1);
+    return source.slice(i, source.indexOf('}', i));
+  };
+
+  it('les deux écrans prennent la fumée ; les écrans d’un programme, jamais', () => {
+    for (const f of ['../screens/CatalogueScreen.tsx', '../screens/ParcoursScreen.tsx'])
+      expect(lire(f)).toContain('${styles.screen} ${plateforme.fumee}');
+    for (const f of [
+      '../screens/TodayScreen.tsx',
+      '../screens/WeekScreen.tsx',
+      '../screens/SessionScreen.tsx',
+    ])
+      expect(lire(f)).not.toContain('plateforme.module.css');
+  });
+
+  it('photos pleines, voile à gauche seulement', () => {
+    expect(dans(catalogue, '.bannierePhoto img')).toContain('opacity: 1;');
+    expect(dans(parcours, '.cyclePhoto img')).toContain('opacity: 1;');
+    expect(dans(catalogue, '.banniereVoile')).toMatch(/rgb\(var\(--voile\) \/ 0%\) 78%/);
+    expect(dans(parcours, '.cycleVoile')).toMatch(/rgb\(var\(--voile\) \/ 0%\) 78%/);
+  });
+
+  it('bannière de famille : bord et halo à sa couleur, texte blanc ombré', () => {
+    const famille = dans(catalogue, '.famille');
+    expect(famille).toContain(
+      'border: 1px solid color-mix(in srgb, var(--teinte) 75%, transparent)',
+    );
+    expect(famille).toMatch(/0 0 14px color-mix\(in srgb, var\(--teinte\)/);
+    const sous = dans(catalogue, '.banniereTexte .sousTitre');
+    expect(sous).toContain('color: var(--ink);');
+    expect(sous).toContain('text-shadow');
+  });
+
+  it('dégradé sur le bilan sportif et sur les rubriques du Parcours', () => {
+    const degrade =
+      'background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface) 55%, var(--bg-2) 100%)';
+    expect(dans(catalogue, '.bilan')).toContain(degrade);
+    expect(dans(parcours, '.rubrique')).toContain(degrade);
   });
 });

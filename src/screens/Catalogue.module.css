@@ -324,9 +324,14 @@
      l'écran : un peu d'air, et jamais sous la barre d'état de l'iPhone. */
   scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 14px);
   overflow: hidden;
-  border: 1px solid var(--line);
+  /* Le bord et un halo à la couleur de la famille, comme les cartes de
+     l'Accueil (26 novembre). */
+  border: 1px solid color-mix(in srgb, var(--teinte) 75%, transparent);
   border-radius: var(--radius-lg, 18px);
   background: var(--surface);
+  box-shadow:
+    0 0 14px color-mix(in srgb, var(--teinte) 24%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
 }
 
 /*
@@ -357,19 +362,23 @@
   height: 100%;
   object-fit: cover;
   object-position: 70% center;
+  /* Pleine opacité, comme sur l'Accueil : à 38 % (`.visuelCover`), la photo
+     s'éteignait sur le noir. Le voile garde le texte lisible. */
+  opacity: 1;
 }
 
 .banniereVoile {
   position: absolute;
   inset: 0;
   background:
+    /* Le voile tient le texte à GAUCHE et libère la photo à DROITE. */
     linear-gradient(
       90deg,
-      rgb(var(--voile) / 97%) 10%,
-      rgb(var(--voile) / 55%) 62%,
-      rgb(var(--voile) / 10%) 100%
+      rgb(var(--voile) / 94%) 0%,
+      rgb(var(--voile) / 62%) 40%,
+      rgb(var(--voile) / 0%) 78%
     ),
-    linear-gradient(90deg, color-mix(in srgb, var(--teinte) 40%, transparent), transparent 80%);
+    linear-gradient(90deg, color-mix(in srgb, var(--teinte) 40%, transparent), transparent 70%);
 }
 
 .banniereTexte {
@@ -390,11 +399,15 @@
   line-height: 1;
   color: var(--ink);
   text-transform: uppercase;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 60%);
 }
 
 .banniereTexte .sousTitre {
   font-size: var(--fs-small);
-  color: var(--ink-2);
+  /* Blanc et ombré : la photo, à pleine opacité, passe sous la fin du texte
+     (le t-shirt clair de MASS). */
+  color: var(--ink);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 80%);
 }
 
 .barres {
@@ -480,9 +493,11 @@
   min-height: 64px;
   margin: 0 var(--pad) 14px;
   padding: 12px 14px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg, 18px);
-  background: var(--surface);
+  /* Le dégradé léger et le liseré de « Mon parcours » (Accueil). */
+  background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface) 55%, var(--bg-2) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
   color: var(--ink);
   text-decoration: none;
 }

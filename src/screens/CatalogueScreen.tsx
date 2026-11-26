@@ -42,6 +42,7 @@ import persoStyles from '../components/perso/Perso.module.css';
 import { useProgrammesImportes } from '../state/useProgrammesImportes';
 import styles from './Screens.module.css';
 import local from './Catalogue.module.css';
+import plateforme from '../styles/plateforme.module.css';
 
 /** Ce que l'utilisateur peut faire d'un programme, ici et maintenant. */
 type Action = 'reprendre' | 'commencer' | 'recommencer' | 'aucune';
@@ -149,7 +150,7 @@ export function CatalogueScreen({
   const ligneImportee = (cle: string) => memoire.programmes.find((r) => r.cle === cle) ?? null;
 
   return (
-    <div className={styles.screen}>
+    <div className={`${styles.screen} ${plateforme.fumee}`}>
       <EnTetePlateforme />
 
       <div className={local.titreEcran}>

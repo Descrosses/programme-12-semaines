@@ -220,10 +220,12 @@
   margin-bottom: 12px;
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  /* Comme la carte « En cours » de l'Accueil (26 novembre). */
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg, 18px);
   background: var(--surface);
   text-align: left;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
 }
 
 .cyclePhoto {
@@ -236,19 +238,24 @@
   height: 100%;
   object-fit: cover;
   object-position: 72% center;
+  /* Pleine opacité, comme sur l'Accueil : à 38 % (`.visuelCover`), la photo
+     s'éteignait sur le noir. Le voile garde le texte lisible. */
+  opacity: 1;
 }
 
 .cycleVoile {
   position: absolute;
   inset: 0;
   background:
+    /* Le voile tient le texte à GAUCHE et libère la photo à DROITE. */
     linear-gradient(
       90deg,
-      rgb(var(--voile) / 97%) 8%,
-      rgb(var(--voile) / 62%) 58%,
-      rgb(var(--voile) / 12%) 100%
+      rgb(var(--voile) / 94%) 0%,
+      rgb(var(--voile) / 62%) 40%,
+      rgb(var(--voile) / 0%) 78%
     ),
-    linear-gradient(90deg, color-mix(in srgb, var(--teinte) 34%, transparent), transparent 78%);
+    linear-gradient(0deg, rgb(var(--voile) / 55%) 0%, rgb(var(--voile) / 0%) 45%),
+    linear-gradient(90deg, color-mix(in srgb, var(--teinte) 34%, transparent), transparent 70%);
 }
 
 .cycleCorps {
@@ -308,9 +315,11 @@
   min-height: 72px;
   margin-top: 12px;
   padding: 12px var(--pad);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  background: var(--surface);
+  /* Le dégradé léger et le liseré de « Mon parcours » (Accueil). */
+  background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface) 55%, var(--bg-2) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
   text-align: left;
 }
 
@@ -450,8 +459,14 @@
   font-size: var(--fs-small);
   cursor: pointer;
 }
-.supprimerCycle:disabled { opacity: .5; cursor: wait; }
-.supprimerCycle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.supprimerCycle:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.supprimerCycle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* Action compacte dans la zone inférieure droite de la carte. */
 .cycleAvecAction {
@@ -478,5 +493,11 @@
   font-weight: 600;
   cursor: pointer;
 }
-.supprimerDansCarte:disabled { opacity: .5; cursor: wait; }
-.supprimerDansCarte:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.supprimerDansCarte:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.supprimerDansCarte:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
