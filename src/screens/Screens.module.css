@@ -183,6 +183,21 @@
   color: var(--rouge);
 }
 
+/* « Faire calculer ma cible » — la carte « Aucune cible posée » mène au
+   questionnaire, qui propose la cible calculée (nutrition auto, lot 1). */
+.lienCible {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  margin-top: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .alert {
   margin: var(--gap) var(--pad);
   padding: 12px var(--pad);
