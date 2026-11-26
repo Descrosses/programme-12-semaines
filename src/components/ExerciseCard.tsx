@@ -9,7 +9,7 @@ import type { ChargeCible, ResolvedExercise } from '../engine/getSession';
 import { humanDateShort } from '../engine/calendar';
 import type { RestTimer } from '../state/useRestTimer';
 import { ExerciseMediaButton, type MediaContext } from './ExerciseMedia';
-import { FicheTechnique } from './FicheTechnique';
+import { annoncerFicheChangee, FicheTechnique } from './FicheTechnique';
 import { ExerciseNote, type NoteContext } from './ExerciseNote';
 import { Icon } from './Icon';
 import { Stepper, stepValue } from './Stepper';
@@ -379,6 +379,9 @@ export function ExerciseCard({
         {...(ambiance === undefined ? {} : { ambiance })}
         version={ficheVersion}
         onAjouter={() => setOpenMedia(true)}
+        // Dans un circuit, l'image est dans le tour, collée aux boutons de
+        // saisie (« fiche collée ») : ici, seulement de quoi en déposer une.
+        {...(hideSets ? { affichage: 'ajout' as const } : {})}
         {...(explosifContraste !== undefined ? { titre: ex.name } : {})}
       />
 
@@ -605,7 +608,10 @@ export function ExerciseCard({
           context={media}
           ouvert={openMedia}
           sansBouton
-          onFicheChange={() => setFicheVersion((v) => v + 1)}
+          onFicheChange={() => {
+            setFicheVersion((v) => v + 1);
+            annoncerFicheChangee(ex.def.id);
+          }}
         />
       )}
 

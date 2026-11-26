@@ -565,8 +565,15 @@ matériel et la durée avant d'écrire la moindre séance.
   `engine/tempo.ts`), en ivoire DOUX `--ivoire-doux` #d8d1c3 (« pas un blanc
   trop blanc, que ça reste discret »), case X rouge ; le lecteur d'écran lit
   la phrase complète (`expliquerTempo`). Un tempo en mots reste une pastille
-  (`tempoExplique.test.tsx`). Les **fiches d'un superset sont AVANT les
+  (`tempoExplique.test.tsx`). Les **cartes d'un superset sont AVANT les
   tours** (« Tour 1 »), après les questions (`propositionsSuperset.test.tsx`).
+  **« Fiche collée »** (Guillaume, 26 novembre, tous programmes) : leur IMAGE
+  n'y est plus — elle est dans la station du tour EN COURS, entre le nom et
+  les boutons de saisie (le bloc fini : au dernier tour). En haut, la carte ne
+  garde que « Ajouter la fiche technique » quand il n'y a pas de fiche
+  (`FicheTechnique` `affichage` : `complet` / `image` / `ajout`). Déposer une
+  fiche prévient les deux endroits (`annoncerFicheChangee`).
+  `components/ficheCollee.test.tsx`.
 - **Choix visuels du 23 novembre** (planches de variantes, Guillaume) :
   **N3** — l'onglet actif du menu du bas porte une pastille IVOIRE, encre
   sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
