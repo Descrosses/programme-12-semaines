@@ -28,9 +28,9 @@ const empreinte = (f: string) =>
     .digest('hex');
 
 describe('planches POWER : relues, sans marque d’un tiers', () => {
-  it('chaque planche livrée est une planche relue (39 au 26 novembre)', () => {
+  it('chaque planche livrée est une planche relue (42 au 26 novembre)', () => {
     expect(planches).toEqual(Object.keys(relues).sort());
-    expect(planches.length).toBeGreaterThanOrEqual(39);
+    expect(planches.length).toBeGreaterThanOrEqual(42);
   });
 
   it('aucune n’a changé depuis sa relecture', () => {

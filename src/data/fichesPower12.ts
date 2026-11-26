@@ -153,6 +153,27 @@ export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
       'Barbell bent over row',
     ],
   },
+  /*
+   * Planches fournies par Guillaume le 26 novembre, « garde-les dans la
+   * bibliothèque dès que ce mouvement fera partie d'un programme ». Vérifiées
+   * à l'œil : geste, matériel, aucun logo NFL (virgule Nike sur les
+   * chaussures, comme toutes les planches POWER).
+   */
+  {
+    nom: 'Landmine press assis',
+    fichier: 'power12-landmine-press-assis.webp', // assis au sol, jambes tendues, un bras
+    alias: ['Landmine press assise', 'Seated landmine press', 'Landmine press seated'],
+  },
+  {
+    nom: 'Wall ball',
+    fichier: 'power12-wall-ball.webp', // squat, poussée, lancer vers la cible
+    alias: ['Wall balls', 'Wall ball shot', 'Wall ball shots'],
+  },
+  {
+    nom: 'Copenhague plank',
+    fichier: 'power12-copenhague-plank.webp', // gainage latéral sur avant-bras, pied sur le banc
+    alias: ['Copenhagen plank', 'Copenhague planche', 'Copenhagen planche'],
+  },
 ];
 
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */

@@ -9,6 +9,7 @@
   "power12-cable-external-rotation.webp": "2cd402e314f78770bb0affe4a0b1e059bbada08a47f4f572ca6c1d430ecf06f5",
   "power12-chest-supported-row.webp": "b7eff0e6c8c0be4a2fb86cba9f9856f8de70579a69dab3d07c1af0be123ccb63",
   "power12-copenhagen-plank.webp": "3de06b1045acb6d5cc2e9d307eeaf1fb9ea9c8a87a289ece7513091e7183b70a",
+  "power12-copenhague-plank.webp": "878f6c7fa06ba9a192ae6406599c7527392daa96ad6c21d46f5deb0de5124569",
   "power12-dead-bug-cable.webp": "1bf9f74d046f928f9a35580bf6c55d35fd51b2a0ba38119a54a8cc1cdef618d5",
   "power12-deadlift.webp": "d3744c31b733f45675b8736aa58f8e5525a4e0d1d8becf58ce14d306da6750a3",
   "power12-explosive-cable-row.webp": "069c1ea55fbe5b642f3816098550a8249901e4bc7962bcd446477616012f5b79",
@@ -20,6 +21,7 @@
   "power12-hip-thrust.webp": "8ac6083de6baad3c8ff854a5ce894b5820f205bf9f35bfedf59cb454f9ad8081",
   "power12-incline-db-press.webp": "784a0f3d9b1456e3225fa1c2e917ffdd5c64f60418cc6e9cb76ed2194ba9cf14",
   "power12-jump-squat-db.webp": "763fd005adc7a679eb091946c2f7e82ad9f75ee61e790862aa7611c5c2d1c67b",
+  "power12-landmine-press-assis.webp": "59bac648313958a186a444c4197e61694eef6eeadd87f564cf36a54c2c9fe62b",
   "power12-landmine-press-kneeling.webp": "4ae5fc615c77904fb162ba0d7e24481ad219de580616eaf459c4077be1fe3851",
   "power12-landmine-press-standing.webp": "08e407c8067abf7812cc95f55818a91f98f04e19e8a0f411b9bd6bdb354818d0",
   "power12-lateral-bound.webp": "44bb014833bd2d123dc60888d892735ec0c878725b851dd58702c72c9271f29e",
@@ -37,5 +39,6 @@
   "power12-strict-pullup.webp": "23ad65635f353bf4c33f2bed278c353ac0412b72610e987a0d4e60a62e0f5c51",
   "power12-suitcase-carry.webp": "1299ecfa781a390f643505bab6ae237eceafc36aac141b57fdddefd3b3776836",
   "power12-vertical-jump.webp": "7ab8de05d84a92b9827627347af469c33ee7be450cb0c3a7417b5bd0643dce02",
+  "power12-wall-ball.webp": "c564e96f70fe49fa714a64e835baff45d2c305002794e578f358349182514fb5",
   "power12-weighted-pullup.webp": "6f890df5344a4b5a0ac14c9997cfa732453460367819829f87ad1abf67d34a41"
 }
