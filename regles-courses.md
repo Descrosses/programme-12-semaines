@@ -1,7 +1,7 @@
 # Règles de la liste de courses
 
-> **Statut : PROPOSÉ le 26 novembre 2026 — à valider par Guillaume.**
-> Tant que ce statut n'est pas « VALIDÉ », la liste n'est pas déployée.
+> **Statut : VALIDÉ par Guillaume le 26 novembre 2026 (« facteurs validés,
+> déploie ») — source de vérité.**
 > Source de vérité : le code transcrit ce fichier, un test relit ses tableaux
 > (`data/reglesCourses.test.ts`). Pour changer un chiffre : changer ce
 > fichier ET le code.

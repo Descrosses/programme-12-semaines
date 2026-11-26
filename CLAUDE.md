@@ -71,11 +71,10 @@ réinterprète pas.**
   semaine ; à 1 200 kcal une seule collation tient sa part (elle revient 6
   jours sur 7) ; l'omelette peut monter à 7 œufs (levier × 2).
   `engine/semaineRepas.test.ts`, `components/semaineRepas.test.tsx`.
-  **Lot 3 — CODÉ, en attente de la validation des facteurs** (« go lot
-  3 », 26 novembre) : « Ma liste de courses » sous les repas de la semaine
+  **Lot 3 — FAIT** (« go lot 3 », facteurs validés par Guillaume le 26
+  novembre) : « Ma liste de courses » sous les repas de la semaine
   (`components/ListeCourses.tsx`, plein écran). Source de vérité :
-  `regles-courses.md` (statut PROPOSÉ tant que Guillaume ne l'a pas validé —
-  NE PAS déployer avant), relu par `data/reglesCourses.test.ts`. Facteurs
+  `regles-courses.md` (VALIDÉ), relu par `data/reglesCourses.test.ts`. Facteurs
   de rendement (cuit ÷ cru) de Bognár 2002 (BFE-R-02-03), ligne citée pour
   chacun ; semoule = rapport des calories (choix de l'appli), courgette et
   aubergine = données faibles (ragoût avec ingrédients, n = 3), saumon = la
