@@ -608,6 +608,19 @@
 }
 
 /*
+ * LADIES, l'autre thème clair : le menu du bas commun (celui d'un programme
+ * importé au thème LADIES ; les écrans LADIES ont leur propre menu) aurait
+ * un onglet actif écrit en ivoire sur le rose poudré, invisible. Pastille et
+ * libellé ROSE ÉCRIT (#a8435f : 5,45:1 sur le fond), icône blanche dedans
+ * (5,6:1). Les cases du tempo (`--ivoire-doux`) : rose foncé, texte blanc.
+ */
+:root[data-theme='femmes'] {
+  --ivoire: #a8435f;
+  --ivoire-doux: #8f4561;
+  --encre: #ffffff;
+}
+
+/*
  * ME, MYSELF & I est clair : la « touche de clair » y serait invisible. La
  * pastille de l'onglet actif et les cases du tempo y sont donc CHOCOLAT,
  * écrites en ivoire. `:root[…]` : plus précis que le `:root` ci-dessus, qui

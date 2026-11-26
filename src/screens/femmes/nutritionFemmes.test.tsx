@@ -123,7 +123,19 @@ describe('bandeaux FEMMES', () => {
     expect(Number(fondu?.[1])).toBeLessThanOrEqual(10);
   });
 
-  it('aucun bandeau FEMMES hors des écrans FEMMES', () => {
+  /*
+   * Une seule exception (Guillaume, 26 novembre, thème lot 2) : un programme
+   * IMPORTÉ dont la personne a choisi le thème LADIES prend ses bandeaux.
+   * Elle vit dans `BANDEAUX_IMPORTES` et nulle part ailleurs : on la retire
+   * de la source avant de chercher, et `themesImportes.test.tsx` vérifie que
+   * POWER, MASS et LADIES gardent leurs photos.
+   */
+  it('aucun bandeau FEMMES hors des écrans FEMMES (sauf thème choisi d’un programme importé)', () => {
+    const sansException = (source: string) => {
+      const debut = source.indexOf('export const BANDEAUX_IMPORTES');
+      if (debut < 0) return source;
+      return source.slice(0, debut) + source.slice(source.indexOf('\n};', debut) + 3);
+    };
     for (const f of [
       '../NutritionScreen.tsx',
       '../SettingsScreen.tsx',
@@ -131,7 +143,7 @@ describe('bandeaux FEMMES', () => {
       '../CombineScreen.tsx',
       '../../data/famillesVisuel.ts',
     ]) {
-      const source = lire(f);
+      const source = sansException(lire(f));
       for (const nom of FEMMES)
         expect({ f, nom, present: source.includes(nom) }).toEqual({
           f,

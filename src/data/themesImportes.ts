@@ -14,7 +14,7 @@
  * Aucune logique ici : la liste, ses mots et les couleurs de l'aperçu.
  */
 
-export type ThemeImporte = 'perso' | 'power' | 'mass';
+export type ThemeImporte = 'perso' | 'power' | 'mass' | 'femmes';
 
 /** Le thème d'un programme importé qui n'en a pas choisi. */
 export const THEME_IMPORTE_DEFAUT: ThemeImporte = 'perso';
@@ -45,6 +45,12 @@ export const THEMES_IMPORTES: readonly ChoixTheme[] = [
     nom: 'MASS',
     description: 'Noir chaud et bordeaux',
     apercu: ['#141212', '#a5313f', '#f6f1ed'],
+  },
+  {
+    id: 'femmes',
+    nom: 'LADIES',
+    description: 'Rose poudré',
+    apercu: ['#fdf7f5', '#b14f6e', '#e4b7a7'],
   },
 ];
 
