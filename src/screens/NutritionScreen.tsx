@@ -70,6 +70,13 @@ const MEAL_LIBRE = 'libre';
 import { cibleSaisie, macrosPosees, type CiblesNutrition } from '../data/ciblesNutrition';
 import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
+import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepasSection';
+import {
+  cibleDeSemaine,
+  composerSemaine,
+  jourDeSemaine,
+  type SemaineRepas,
+} from '../engine/semaineRepas';
 import { MacroBar } from '../components/MacroBar';
 import { MacroProgress } from '../components/MacroProgress';
 import { shareOfDay } from '../engine/macroBar';
@@ -134,6 +141,8 @@ export function NutritionScreen({
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
   const [cibles, setCibles] = useState<CiblesNutrition | null>(null);
   const [plan, setPlan] = useState<PlanPerso | null>(null);
+  /** La semaine de repas automatique, ou `null` : « Mon plan » s'affiche. */
+  const [semaine, setSemaine] = useState<SemaineRepas | null>(null);
   const [preferes, setPreferes] = useState<readonly string[]>([]);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
@@ -163,6 +172,7 @@ export function NutritionScreen({
     setLegacyPlan(sansPlanHistorique ? false : settings.legacyNutritionPlan);
     setCibles(settings.ciblesNutrition);
     setPlan(settings.planPerso);
+    setSemaine(settings.semaineRepas);
     setPreferes(settings.alimentsPreferes ?? []);
     const all = await allMeasurements();
     setRows(
@@ -229,6 +239,38 @@ export function NutritionScreen({
      */
     const planCourant = plan ?? PLAN_PERSO_VIDE;
     const journeeCourante = planCourant[kind];
+
+    const cibleSemaine = cibleDeSemaine(cibles);
+    const ciblePlan =
+      cibleJour === null
+        ? null
+        : {
+            kcal: cibleJour.kcal,
+            proteinG: cibleJour.proteinG,
+            carbsG: cibleJour.carbsG,
+            fatG: cibleJour.fatG,
+          };
+    const creerCustom = (food: LibraryFood) =>
+      void (async () => {
+        await saveCustomFood({
+          foodId: food.id,
+          label: food.label,
+          unit: food.unit,
+          per: food.per,
+          kcal: food.kcal,
+          proteinG: food.proteinG,
+          carbsG: food.carbsG,
+          fatG: food.fatG,
+          referenceState: food.referenceState,
+          category: food.category,
+          addedAt: new Date().toISOString().slice(0, 10),
+        });
+        setCustoms(await chargerCustoms());
+      })();
+    async function enregistreSemaine(suivante: SemaineRepas | null) {
+      setSemaine(suivante);
+      await saveSettings({ semaineRepas: suivante });
+    }
 
     async function enregistrePlan(suivant: PlanPerso) {
       setPlan(suivant);
@@ -316,50 +358,61 @@ export function NutritionScreen({
           journal : on compose son plan, puis on note ce qu'on a vraiment
           mangé. L'ordre de l'écran suit l'ordre des gestes.
         */}
-        <PlanPersoSection
-          kind={kind}
-          journee={journeeCourante}
-          preferes={preferes}
-          catalogue={catalogue}
-          customs={customs}
-          onCreateCustom={(food) =>
-            void (async () => {
-              await saveCustomFood({
-                foodId: food.id,
-                label: food.label,
-                unit: food.unit,
-                per: food.per,
-                kcal: food.kcal,
-                proteinG: food.proteinG,
-                carbsG: food.carbsG,
-                fatG: food.fatG,
-                referenceState: food.referenceState,
-                category: food.category,
-                addedAt: new Date().toISOString().slice(0, 10),
-              });
-              setCustoms(await chargerCustoms());
-            })()
-          }
-          cible={
-            cibleJour === null
-              ? null
-              : {
-                  kcal: cibleJour.kcal,
-                  proteinG: cibleJour.proteinG,
-                  carbsG: cibleJour.carbsG,
-                  fatG: cibleJour.fatG,
-                }
-          }
-          onChange={(suivante) => void enregistrePlan({ ...planCourant, [kind]: suivante })}
-          onCopier={
-            journeeVide(planCourant[kind === 'train' ? 'rest' : 'train'])
-              ? null
-              : () =>
-                  void enregistrePlan(
-                    copierJournee(planCourant, kind === 'train' ? 'rest' : 'train', kind),
+        {/*
+          LA SEMAINE AUTOMATIQUE (lot 2 de la nutrition automatique) prend la
+          place de « Mon plan » quand elle existe ; sinon, avec une cible,
+          une carte propose de la composer au-dessus de « Mon plan ».
+          « Mon plan » n'est jamais effacé.
+        */}
+        {semaine !== null ? (
+          <SemaineRepasSection
+            semaine={semaine}
+            cibleActuelle={cibleSemaine}
+            jourInitial={jourDeSemaine(todayIso)}
+            cible={ciblePlan}
+            preferes={preferes}
+            catalogue={catalogue}
+            customs={customs}
+            onCreateCustom={creerCustom}
+            onChange={(suivante) => void enregistreSemaine(suivante)}
+            onRecomposer={() =>
+              cibleSemaine !== null &&
+              void enregistreSemaine(composerSemaine(cibleSemaine, preferes, catalogue, todayIso))
+            }
+            onQuitter={() => void enregistreSemaine(null)}
+          />
+        ) : (
+          <>
+            {cibleSemaine !== null && (
+              <ProposerSemaine
+                cible={cibleSemaine}
+                onComposer={() =>
+                  void enregistreSemaine(
+                    composerSemaine(cibleSemaine, preferes, catalogue, todayIso),
                   )
-          }
-        />
+                }
+              />
+            )}
+            <PlanPersoSection
+              kind={kind}
+              journee={journeeCourante}
+              preferes={preferes}
+              catalogue={catalogue}
+              customs={customs}
+              onCreateCustom={creerCustom}
+              cible={ciblePlan}
+              onChange={(suivante) => void enregistrePlan({ ...planCourant, [kind]: suivante })}
+              onCopier={
+                journeeVide(planCourant[kind === 'train' ? 'rest' : 'train'])
+                  ? null
+                  : () =>
+                      void enregistrePlan(
+                        copierJournee(planCourant, kind === 'train' ? 'rest' : 'train', kind),
+                      )
+              }
+            />
+          </>
+        )}
 
         {/*
           Ce qui a été mangé, et ce qu'il reste.

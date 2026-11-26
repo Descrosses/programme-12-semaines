@@ -95,6 +95,7 @@ export function PlanPerso({
   cible,
   onChange,
   onCopier,
+  semaine,
 }: {
   kind: DayKind;
   journee: JourneePerso;
@@ -109,6 +110,16 @@ export function PlanPerso({
   onChange: (suivante: JourneePerso) => void;
   /** Recopier l'autre journée ici. `null` quand il n'y a rien à copier. */
   onCopier: (() => void) | null;
+  /**
+   * La semaine automatique (`regles-repas-automatiques.md`) : le jour
+   * affiché, et l'ajustement d'un repas de la bibliothèque à la part de son
+   * créneau (`undefined` pour un créneau que l'appli ne compose pas). Absent :
+   * « Mon plan », inchangé.
+   */
+  semaine?: {
+    jour: string;
+    ajusteur: (creneau: RepasId) => ((r: RepasBibliotheque) => RepasBibliotheque) | undefined;
+  };
 }) {
   /** Le repas déplié. Un seul à la fois : l'écran tient dans un pouce. */
   const [ouvert, setOuvert] = useState<RepasId | null>(null);
@@ -135,7 +146,8 @@ export function PlanPerso({
   // Une macro non posée dans la cible n'a pas d'écart : elle reste absente.
   const reste = cible === null ? null : ecartCible(cible, total);
 
-  if (preferes.length === 0) {
+  // La semaine automatique pose ses repas elle-même : elle n'attend pas la liste.
+  if (preferes.length === 0 && semaine === undefined) {
     return (
       <section className={styles.carte}>
         <h2 className={styles.titre}>Mon plan</h2>
@@ -154,21 +166,28 @@ export function PlanPerso({
   return (
     <section className={styles.carte}>
       <div className={styles.entete}>
-        <h2 className={styles.titre}>Mon plan</h2>
-        {onCopier !== null && (
+        <h2 className={styles.titre}>{semaine ? `Mes repas · ${semaine.jour}` : 'Mon plan'}</h2>
+        {onCopier !== null && semaine === undefined && (
           <button type="button" className={styles.copier} onClick={onCopier}>
             Copier l’autre journée
           </button>
         )}
       </div>
-      <p className={styles.sousTitre}>
-        Cinq repas, tes aliments, tes quantités.{' '}
-        {/*
-          Dire que l'appli ne proposera rien évite d'attendre une suggestion
-          qui ne viendra pas.
-        */}
-        MAJK additionne et affiche l’écart — il ne décide d’aucune quantité à ta place.
-      </p>
+      {semaine ? (
+        <p className={styles.sousTitre} data-semaine-auto>
+          Quantités ajustées à ta cible. Tout reste modifiable : touche un repas pour le changer ou
+          régler une quantité.
+        </p>
+      ) : (
+        <p className={styles.sousTitre}>
+          Cinq repas, tes aliments, tes quantités.{' '}
+          {/*
+            Dire que l'appli ne proposera rien évite d'attendre une suggestion
+            qui ne viendra pas.
+          */}
+          MAJK additionne et affiche l’écart — il ne décide d’aucune quantité à ta place.
+        </p>
+      )}
 
       {/* --- Le compteur, en haut, pour l'avoir sous les yeux en remplissant -- */}
       <div className={styles.compteur}>
@@ -326,6 +345,9 @@ export function PlanPerso({
                     nomCreneau={repas.nom}
                     preferes={preferes}
                     catalogue={catalogue}
+                    {...(semaine?.ajusteur(repas.id)
+                      ? { ajuster: semaine.ajusteur(repas.id)! }
+                      : {})}
                     onChoisir={(r) => {
                       onChange(poserRepas(journee, repas.id, r.lignes));
                       setBiblio(null);
@@ -440,7 +462,7 @@ export function PlanPerso({
                     className={styles.biblioSecondaire}
                     onClick={() => setBiblio(repas.id)}
                   >
-                    Choisir un autre repas
+                    {semaine ? 'Changer ce repas' : 'Choisir un autre repas'}
                   </button>
                 )}
               </div>
@@ -456,12 +478,18 @@ export function PlanPerso({
           onFermer={() => setFiche(null)}
         />
       )}
-      <p className={styles.note}>
-        {kind === 'train'
-          ? 'Ce plan est celui de tes jours d’entraînement.'
-          : 'Ce plan est celui de tes jours de repos.'}{' '}
-        L’autre journée a le sien — bascule avec le sélecteur au-dessus.
-      </p>
+      {semaine ? (
+        <p className={styles.note}>
+          Les repas du {semaine.jour.toLowerCase()}. Chaque jour a les siens — choisis-le au-dessus.
+        </p>
+      ) : (
+        <p className={styles.note}>
+          {kind === 'train'
+            ? 'Ce plan est celui de tes jours d’entraînement.'
+            : 'Ce plan est celui de tes jours de repos.'}{' '}
+          L’autre journée a le sien — bascule avec le sélecteur au-dessus.
+        </p>
+      )}
     </section>
   );
 }

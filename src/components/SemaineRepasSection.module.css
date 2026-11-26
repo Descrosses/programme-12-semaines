@@ -1,0 +1,122 @@
+/* La semaine de repas automatique — jetons du thème seulement : la même
+   section se repeint sous POWER, LADIES et ME, MYSELF & I. */
+
+.carte {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad);
+  padding: 16px var(--pad);
+}
+
+.titre {
+  composes: carteTitre from '../styles/cartes.module.css';
+}
+
+.texte {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.texte b {
+  color: var(--ink);
+}
+
+/* Lun → Dim : sept cases sur toute la largeur, aucune ne défile. */
+.jours {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: var(--gap) var(--pad) 0;
+}
+
+.jour {
+  position: relative;
+  min-height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Aujourd'hui : un point sous le nom, jamais la couleur seule. */
+.jour[data-aujourdhui]::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.jourOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.bandeau {
+  margin: var(--gap) var(--pad) 0;
+  padding: 14px var(--pad);
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.actions {
+  display: grid;
+  gap: 8px;
+  margin: 0 var(--pad) var(--gap);
+}
+
+.confirmation {
+  display: grid;
+  gap: 8px;
+}
+
+.principal,
+.secondaire,
+.fantome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--tap);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.principal {
+  border: 0;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.secondaire {
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}
+
+.fantome {
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-transform: none;
+  letter-spacing: 0;
+}

@@ -24,7 +24,12 @@ import { programmeParId, type FamilleId } from '../data/catalogue';
 import type { CiblesNutrition, MacrosCompletes } from '../data/ciblesNutrition';
 import { cycleActif, getSettingsRow, saveSettings } from '../db/repo';
 import { macrosDe, proposerCible, type PropositionCible } from '../engine/cibleProposee';
-import type { EtatQuestionnaire } from '../engine/questionnairePlanAlimentaire';
+import { FOOD_LIBRARY } from '../data/foodLibrary';
+import { composerSemaine } from '../engine/semaineRepas';
+import {
+  alimentsPourMonPlan,
+  type EtatQuestionnaire,
+} from '../engine/questionnairePlanAlimentaire';
 import styles from './CibleCalculee.module.css';
 
 const kcalFr = (n: number) => n.toLocaleString('fr-FR');
@@ -44,11 +49,14 @@ export function CibleCalculee({
   proposition,
   actuelle,
   planHistoriqueAffiche,
+  semaineExiste = false,
   onUtiliser,
 }: {
   proposition: PropositionCible;
   actuelle: CiblesNutrition | null;
   planHistoriqueAffiche: boolean;
+  /** Une semaine de repas existe déjà (lot 2) : elle n'est pas recomposée ici. */
+  semaineExiste?: boolean;
   onUtiliser: (m: MacrosCompletes) => void;
 }) {
   if (proposition.cas === 'sans-objet') return null;
@@ -131,7 +139,8 @@ export function CibleCalculee({
 
       {enregistree ? (
         <p className={styles.fait} role="status">
-          ✓ Ta cible est enregistrée : l’onglet Nutrition s’en sert. Tu peux la modifier quand tu
+          ✓ Ta cible est enregistrée : l’onglet Nutrition s’en sert
+          {semaineExiste ? ', et ta semaine de repas t’y attend' : ''}. Tu peux la modifier quand tu
           veux dans la carte « Mes cibles nutritionnelles ».
         </p>
       ) : (
@@ -145,6 +154,11 @@ export function CibleCalculee({
             <p className={styles.texte}>
               <b>Ton plan nutritionnel sera masqué</b> : c’est cette cible qui pilotera l’onglet
               Nutrition. Rien n’est effacé, tu peux rallumer le plan dans tes réglages.
+            </p>
+          )}
+          {!semaineExiste && (
+            <p className={styles.texte}>
+              MAJK composera aussi ta semaine de repas sur cette cible, dans l’onglet Nutrition.
             </p>
           )}
           <button type="button" className={styles.bouton} onClick={() => onUtiliser(m)}>
@@ -168,6 +182,8 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
     famille: FamilleId | null;
     actuelle: CiblesNutrition | null;
     planHistorique: boolean;
+    semaine: boolean;
+    preferes: string[] | null;
   } | null>(null);
   const [version, setVersion] = useState(0);
 
@@ -183,6 +199,8 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
         actuelle: row.ciblesNutrition,
         // LADIES n'affiche jamais le plan historique (`sansPlanHistorique`).
         planHistorique: famille !== 'femmes' && row.legacyNutritionPlan,
+        semaine: row.semaineRepas !== null,
+        preferes: row.alimentsPreferes,
       });
     })();
     return () => {
@@ -196,11 +214,30 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
       proposition={proposerCible(etat, lu.famille)}
       actuelle={lu.actuelle}
       planHistoriqueAffiche={lu.planHistorique}
+      semaineExiste={lu.semaine}
       onUtiliser={(m) =>
         void (async () => {
+          // Les aliments du questionnaire : repris seulement s'il n'y a pas
+          // déjà une liste (la remplacer s'annonce, avec son propre bouton).
+          const aliments = alimentsPourMonPlan(etat);
+          const sansListe = (lu.preferes ?? []).length === 0 && aliments.length > 0;
+          const aujourdhui = new Date().toISOString().slice(0, 10);
           await saveSettings({
             ciblesNutrition: { train: { ...m }, rest: { ...m } },
             ...(lu.planHistorique ? { legacyNutritionPlan: false } : {}),
+            // Lot 2 : la semaine se compose UNE fois, à l'acceptation ; une
+            // semaine existante n'est jamais écrasée ici.
+            ...(lu.semaine
+              ? {}
+              : {
+                  semaineRepas: composerSemaine(
+                    { kcal: m.kcal, proteinG: m.proteinG },
+                    aliments,
+                    FOOD_LIBRARY,
+                    aujourdhui,
+                  ),
+                }),
+            ...(sansListe ? { alimentsPreferes: aliments } : {}),
           });
           setVersion((v) => v + 1);
         })()
