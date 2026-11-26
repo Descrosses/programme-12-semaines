@@ -27,6 +27,7 @@ import {
   type RepasBibliotheque,
 } from '../data/bibliothequeRepas';
 import type { RepasId } from '../data/planPerso';
+import { repasExclu } from '../engine/exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from '../engine/planPersoTotaux';
 import styles from './ChoixRepas.module.css';
 
@@ -45,6 +46,7 @@ export function ChoixRepas({
   onChoisir,
   onFermer,
   ajuster,
+  exclus,
 }: {
   creneau: RepasId;
   nomCreneau: string;
@@ -59,8 +61,18 @@ export function ChoixRepas({
    * quantités de référence, comme avant.
    */
   ajuster?: (repas: RepasBibliotheque) => RepasBibliotheque;
+  /**
+   * Ce que la personne ne mange pas (`regles-repas-automatiques.md` §4) :
+   * un repas qui en contient un seul aliment n'est pas proposé. Une
+   * exception assumée à « les cartes s'affichent toujours » : c'est de la
+   * sécurité, pas un goût.
+   */
+  exclus?: ReadonlySet<string>;
 }) {
-  const repas = repasPourCreneau(creneau).map((r) => (ajuster ? ajuster(r) : r));
+  const tous = repasPourCreneau(creneau);
+  const permis = exclus ? tous.filter((r) => !repasExclu(r, exclus)) : tous;
+  const ecartes = tous.length - permis.length;
+  const repas = permis.map((r) => (ajuster ? ajuster(r) : r));
   /** Le plat dont la fiche (grande photo, composition) est ouverte. */
   const [detail, setDetail] = useState<RepasBibliotheque | null>(null);
 
@@ -77,6 +89,13 @@ export function ChoixRepas({
           ? 'Les quantités sont déjà ajustées à ta cible pour ce repas. Tu peux toujours les régler ensuite.'
           : 'Une carte pose le repas entier avec ses quantités de référence. Tu ajustes ensuite — c’est un point de départ, pas une prescription.'}
       </p>
+      {ecartes > 0 && (
+        <p className={styles.sous} data-ecartes={ecartes}>
+          {ecartes === 1
+            ? '1 repas n’est pas proposé : il contient un aliment que tu ne manges pas.'
+            : `${String(ecartes)} repas ne sont pas proposés : ils contiennent un aliment que tu ne manges pas.`}
+        </p>
+      )}
 
       <ul className={styles.liste}>
         {repas.map((r) => {

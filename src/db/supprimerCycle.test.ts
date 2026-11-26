@@ -117,6 +117,7 @@ describe('suppression securisee des cycles prevus', () => {
       planPerso: null,
       semaineRepas: null,
       profilNutrition: null,
+      exclusionsRepas: null,
     });
     expect(await supprimerCycleNonCommence(id)).toBe(true);
     expect((await db.settings.get(1))?.cycleActifId).toBe(autre);
@@ -145,6 +146,7 @@ describe('suppression securisee des cycles prevus', () => {
       planPerso: null,
       semaineRepas: null,
       profilNutrition: null,
+      exclusionsRepas: null,
     });
     expect(await supprimerCycleNonCommence(id)).toBe(false);
     expect(await db.cycles.get(id)).toBeDefined();

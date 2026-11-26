@@ -10,6 +10,7 @@ import type { Niveau } from '../data/femmes/niveaux';
 import type { DayIndex as JourFemmes, Version as VersionFemmes } from '../data/femmes/types';
 import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
+import type { ExclusionId } from '../data/exclusionsRepas';
 import type { ProfilNutrition } from '../engine/reajustement';
 import type { SemaineRepas } from '../engine/semaineRepas';
 import Dexie, { type Table } from 'dexie';
@@ -483,6 +484,13 @@ export interface SettingsRow {
    * sécurité. Non indexé : pas de migration.
    */
   profilNutrition: ProfilNutrition | null;
+  /**
+   * Ce que la personne ne mange pas (`regles-repas-automatiques.md` §4) :
+   * écarte des repas de la semaine et de « Changer ce repas ». Cochée par la
+   * personne ; ses allergies écrites pré-cochent ce qu'elles nomment.
+   * `null` = jamais réglé. Non indexé : pas de migration.
+   */
+  exclusionsRepas: ExclusionId[] | null;
 }
 
 /**
@@ -1412,6 +1420,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   planPerso: null,
   semaineRepas: null,
   profilNutrition: null,
+  exclusionsRepas: null,
 };
 
 /**

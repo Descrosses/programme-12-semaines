@@ -25,6 +25,13 @@ import type { CiblesNutrition, MacrosCompletes } from '../data/ciblesNutrition';
 import { cycleActif, getSettingsRow, saveSettings } from '../db/repo';
 import { macrosDe, proposerCible, type PropositionCible } from '../engine/cibleProposee';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
+import { EXCLUSIONS, type ExclusionId } from '../data/exclusionsRepas';
+import {
+  alimentsExclus,
+  lireAllergies,
+  nomExclusion,
+  type LectureAllergies,
+} from '../engine/exclusionsRepas';
 import { profilAGarder } from '../engine/reajustement';
 import { composerSemaine } from '../engine/semaineRepas';
 import {
@@ -54,7 +61,14 @@ export function CibleCalculee({
   suiviActif = true,
   onSuivre,
   onUtiliser,
+  allergies,
 }: {
+  /**
+   * Les allergies écrites, lues (`regles-repas-automatiques.md` §4) : ce
+   * qu'elles écarteront de la semaine, et ce qui n'est pas reconnu — dit
+   * AVANT le bouton, mot pour mot.
+   */
+  allergies?: LectureAllergies;
   proposition: PropositionCible;
   actuelle: CiblesNutrition | null;
   planHistoriqueAffiche: boolean;
@@ -191,6 +205,20 @@ export function CibleCalculee({
               MAJK composera aussi ta semaine de repas sur cette cible, dans l’onglet Nutrition.
             </p>
           )}
+          {allergies && allergies.exclusions.length > 0 && (
+            <p className={styles.texte} data-allergies="reconnues">
+              D’après tes allergies, les repas avec{' '}
+              <b>{allergies.exclusions.map(nomExclusion).join(', ').toLowerCase()}</b> seront
+              écartés de ta semaine. Tu pourras le changer dans Nutrition, « Je ne mange pas ».
+            </p>
+          )}
+          {allergies && allergies.nonReconnus.length > 0 && (
+            <p className={styles.alerte} data-allergies="non-reconnues">
+              Non reconnu dans tes allergies :{' '}
+              {allergies.nonReconnus.map((m) => `« ${m} »`).join(', ')}. MAJK ne sait pas les
+              écarter : vérifie la composition de chaque repas.
+            </p>
+          )}
           <p className={styles.texte}>
             Ensuite, toutes les 2 semaines, MAJK fait le point sur tes pesées et te propose
             d’ajuster ta cible si besoin.
@@ -219,6 +247,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
     semaine: boolean;
     preferes: string[] | null;
     suivi: boolean;
+    exclusions: ExclusionId[] | null;
   } | null>(null);
   const [version, setVersion] = useState(0);
 
@@ -237,6 +266,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
         semaine: row.semaineRepas !== null,
         preferes: row.alimentsPreferes,
         suivi: row.profilNutrition !== null,
+        exclusions: row.exclusionsRepas,
       });
     })();
     return () => {
@@ -250,9 +280,16 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
   // Lot 4 : le profil du calcul, gardé pour le point des deux semaines.
   const profil =
     proposition.cas === 'proposee' ? profilAGarder(proposition.profil, aujourdhui) : null;
+  // §4 — les allergies écrites pré-cochent ce qu'elles nomment ; ce que la
+  // personne avait déjà écarté reste écarté (jamais retiré ici).
+  const allergies = lireAllergies(etat.profile.allergies);
+  const exclusions = EXCLUSIONS.filter(
+    (e) => (lu.exclusions ?? []).includes(e.id) || allergies.exclusions.includes(e.id),
+  ).map((e) => e.id);
   return (
     <CibleCalculee
       proposition={proposition}
+      allergies={allergies}
       suiviActif={lu.suivi}
       onSuivre={() =>
         void (async () => {
@@ -272,6 +309,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
           await saveSettings({
             ciblesNutrition: { train: { ...m }, rest: { ...m } },
             ...(profil !== null ? { profilNutrition: profil } : {}),
+            exclusionsRepas: exclusions,
             ...(lu.planHistorique ? { legacyNutritionPlan: false } : {}),
             // Lot 2 : la semaine se compose UNE fois, à l'acceptation ; une
             // semaine existante n'est jamais écrasée ici.
@@ -283,6 +321,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
                     aliments,
                     FOOD_LIBRARY,
                     aujourdhui,
+                    alimentsExclus(exclusions),
                   ),
                 }),
             ...(sansListe ? { alimentsPreferes: aliments } : {}),

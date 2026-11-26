@@ -127,6 +127,25 @@ réinterprète pas.**
   à manger dessous. Hors semaine (« Mon plan », plan historique) : rien ne
   change. `cleRepasFait`, `repasFaits`, `mangeDesRepas`
   (`engine/semaineRepas.ts`).
+  **Exclusions — « Je ne mange pas »** (Guillaume, 26 novembre, « go
+  exclusion » : la semaine ignorait les allergies écrites). Source de
+  vérité : §4 de `regles-repas-automatiques.md` (7 familles : viande,
+  poisson, œufs, laitiers, arachide, fruits à coque, gluten — avoine
+  comprise), transcrit dans `data/exclusionsRepas.ts`, relu par
+  `exclusionsRepas.test.ts`. Le questionnaire (copie du site) n'a PAS de
+  question « régime » : l'appli ne devine rien, la personne COCHE ; ses
+  allergies écrites PRÉ-COCHENT ce qu'elles nomment à « Utiliser cette
+  cible » (jamais ne décochent), et le non reconnu est dit mot pour mot
+  (`lireAllergies`). Réglage `exclusionsRepas` (non indexé, pas de
+  migration). Un repas avec UN aliment écarté n'entre ni dans la semaine
+  (même pour remplir : le créneau reste VIDE et c'est dit) ni dans
+  « Changer ce repas » / « Choisir un repas », les DEUX modes (seule
+  exception à « les cartes s'affichent toujours » : c'est de la sécurité).
+  Carte repliable « Je ne mange pas » sous les jours ; phrase de prudence
+  TOUJOURS affichée ; changer ses exclusions ne recompose rien (bandeau
+  « Ta semaine contient encore… » + « Recomposer »). Limites mesurées : en
+  végétalien, 98 g de protéines pour 180 visés ; sans gluten ni laitiers,
+  aucun petit-déjeuner ni collation (−40 %). `components/exclusionsRepas.test.tsx`.
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).

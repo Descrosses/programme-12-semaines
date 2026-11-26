@@ -83,6 +83,8 @@ import {
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepasSection';
 import { aujourdhuiLocal } from '../state/dernierExport';
+import type { ExclusionId } from '../data/exclusionsRepas';
+import { alimentsExclus } from '../engine/exclusionsRepas';
 import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
 import { pointDesDeuxSemaines, type ProfilNutrition } from '../engine/reajustement';
 import {
@@ -162,6 +164,8 @@ export function NutritionScreen({
   const [semaine, setSemaine] = useState<SemaineRepas | null>(null);
   /** Le profil du calcul des cibles (lot 4) : `null` = pas de point des 2 semaines. */
   const [profil, setProfil] = useState<ProfilNutrition | null>(null);
+  /** §4 des règles de la semaine : ce que la personne ne mange pas. */
+  const [exclusions, setExclusions] = useState<ExclusionId[]>([]);
   const [preferes, setPreferes] = useState<readonly string[]>([]);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
@@ -193,6 +197,7 @@ export function NutritionScreen({
     setPlan(settings.planPerso);
     setSemaine(settings.semaineRepas);
     setProfil(settings.profilNutrition);
+    setExclusions(settings.exclusionsRepas ?? []);
     setPreferes(settings.alimentsPreferes ?? []);
     const all = await allMeasurements();
     setRows(
@@ -278,6 +283,7 @@ export function NutritionScreen({
     const journeeCourante = planCourant[kind];
 
     const cibleSemaine = cibleDeSemaine(cibles);
+    const exclus = alimentsExclus(exclusions);
     // Lot 4 — le point des deux semaines : seulement avec un profil ET une cible.
     const point =
       profil !== null && cibleSemaine !== null && rows !== null
@@ -451,9 +457,18 @@ export function NutritionScreen({
             onChange={(suivante) => void enregistreSemaine(suivante)}
             onRecomposer={() =>
               cibleSemaine !== null &&
-              void enregistreSemaine(composerSemaine(cibleSemaine, preferes, catalogue, todayIso))
+              void enregistreSemaine(
+                composerSemaine(cibleSemaine, preferes, catalogue, todayIso, exclus),
+              )
             }
             onQuitter={() => void enregistreSemaine(null)}
+            exclusions={exclusions}
+            onExclusions={(suivantes) =>
+              void (async () => {
+                setExclusions(suivantes);
+                await saveSettings({ exclusionsRepas: suivantes });
+              })()
+            }
           />
         ) : (
           <>
@@ -462,12 +477,13 @@ export function NutritionScreen({
                 cible={cibleSemaine}
                 onComposer={() =>
                   void enregistreSemaine(
-                    composerSemaine(cibleSemaine, preferes, catalogue, todayIso),
+                    composerSemaine(cibleSemaine, preferes, catalogue, todayIso, exclus),
                   )
                 }
               />
             )}
             <PlanPersoSection
+              exclus={exclus}
               kind={kind}
               journee={journeeCourante}
               preferes={preferes}
