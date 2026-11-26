@@ -58,7 +58,9 @@ describe('la bibliothèque', () => {
   });
 
   it('chaque repas a au moins un créneau, et tous existent', () => {
-    const connus = new Set(REPAS_PERSO.map((r) => r.id));
+    // Les repas de la bibliothèque se rangent dans les cinq créneaux de « Mon
+    // plan » ; la collation du soir (6e repas) emprunte ceux de l'après-midi.
+    const connus = new Set<string>(REPAS_PERSO.map((r) => r.id));
     for (const r of BIBLIOTHEQUE_REPAS) {
       expect(r.creneaux.length, r.id).toBeGreaterThan(0);
       for (const c of r.creneaux) expect(connus.has(c), `${r.id} → ${c}`).toBe(true);

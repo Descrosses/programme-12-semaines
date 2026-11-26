@@ -90,7 +90,10 @@ describe('le câblage', () => {
 
   it('en mode semaine, la fiche d’un plat montre les quantités du repas', () => {
     const src = readFileSync(new URL('./PlanPerso.tsx', import.meta.url), 'utf8');
-    expect(src).toContain('setFiche(semaine ? { ...plat, lignes } : plat)');
+    // La frise de la semaine ouvre la fiche sur les lignes DU REPAS ; « Mon
+    // plan » garde l'assiette de référence.
+    expect(src).toContain('onClick={() => setFiche({ ...plat, lignes })}');
+    expect(src).toContain('onClick={() => setFiche(plat)}');
     expect(src).toContain("legende: 'Ingrédients · quantités de ton repas'");
   });
 });

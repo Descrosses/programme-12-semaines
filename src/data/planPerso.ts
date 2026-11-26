@@ -47,7 +47,17 @@ export const REPAS_PERSO = [
   { id: 'diner', nom: 'Dîner' },
 ] as const;
 
-export type RepasId = (typeof REPAS_PERSO)[number]['id'];
+/**
+ * Le 6e repas — celui de la SEMAINE AUTOMATIQUE seulement, quand la personne
+ * mange 6 fois par jour (`regles-repas-automatiques.md`, §1). « Mon plan »
+ * garde ses cinq repas : il n'affiche pas celui-ci.
+ */
+export const REPAS_DU_SOIR = { id: 'collation3', nom: 'Collation du soir' } as const;
+
+/** Tous les repas qu'une journée peut porter, dans l'ordre de la journée. */
+export const REPAS_JOURNEE = [...REPAS_PERSO, REPAS_DU_SOIR] as const;
+
+export type RepasId = (typeof REPAS_JOURNEE)[number]['id'];
 
 /**
  * Les quatre groupes d'un repas, et les familles du catalogue qu'ils
@@ -261,7 +271,7 @@ export function quantiteDe(journee: JourneePerso, repas: RepasId, foodId: string
 
 /** Y a-t-il quoi que ce soit dans cette journée ? */
 export function journeeVide(journee: JourneePerso): boolean {
-  return REPAS_PERSO.every((r) => (journee[r.id]?.length ?? 0) === 0);
+  return REPAS_JOURNEE.every((r) => (journee[r.id]?.length ?? 0) === 0);
 }
 
 /**

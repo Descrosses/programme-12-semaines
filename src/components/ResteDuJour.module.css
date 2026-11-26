@@ -1,0 +1,108 @@
+/* « Il te reste aujourd'hui » — jetons du thème seulement : la même carte se
+   repeint sous POWER, LADIES et ME, MYSELF & I. */
+
+.carte {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad) 0;
+  padding: 18px var(--pad) 16px;
+  border-radius: var(--radius-lg);
+}
+
+.label {
+  margin: 0;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Le chiffre de la journée : la même voix que les grands chiffres de séance. */
+.gros {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 2.875rem;
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.gros small {
+  margin-left: 6px;
+  color: var(--ink-3);
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.compte {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
+.aide {
+  margin: 6px 0 0;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.barres {
+  margin-top: 14px;
+}
+
+.ligne {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.ligne b {
+  min-width: 88px;
+  color: var(--ink);
+  font-weight: 700;
+  text-align: right;
+}
+
+.piste {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--surface-3);
+}
+
+.rempli {
+  display: block;
+  height: 100%;
+  border-radius: 9px;
+  background: var(--accent);
+}
+
+.rempli[data-ton='proteines'] {
+  background: var(--macro-proteines);
+}
+
+.rempli[data-ton='glucides'] {
+  background: var(--macro-glucides);
+}
+
+.rempli[data-ton='lipides'] {
+  background: var(--macro-lipides);
+}
+
+/* POWER : la barre des calories prend le dégradé des boutons rouges. */
+:global([data-theme='power']) .rempli[data-ton='kcal'] {
+  background: var(--power-degrade-action);
+}

@@ -141,6 +141,7 @@ describe('une semaine composée AVANT une exclusion', () => {
           semaine={semaine}
           cibleActuelle={{ kcal: 2150, proteinG: 180 }}
           jourInitial={3}
+          aujourdhui="2026-11-26"
           cible={null}
           preferes={[]}
           catalogue={FOOD_LIBRARY}
@@ -161,8 +162,12 @@ describe('une semaine composée AVANT une exclusion', () => {
       new URL('../screens/NutritionScreen.tsx', import.meta.url),
       'utf8',
     );
+    // Composer ET recomposer passent les exclusions (la recomposition porte
+    // en plus le nombre de repas, §1).
     expect(
-      nutrition.match(/composerSemaine\(cibleSemaine, preferes, catalogue, todayIso, exclus\)/g),
+      nutrition.match(
+        /composerSemaine\(\s*cibleSemaine,\s*preferes,\s*catalogue,\s*todayIso,\s*exclus\b/g,
+      ),
     ).toHaveLength(2);
     expect(nutrition).toContain('exclus={exclus}');
   });

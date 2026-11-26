@@ -35,6 +35,7 @@ const section = (cibleActuelle = CIBLE) =>
       semaine={SEMAINE}
       cibleActuelle={cibleActuelle}
       jourInitial={3}
+      aujourdhui="2026-11-26"
       cible={{ kcal: 2150, proteinG: 180, carbsG: 225, fatG: 60 }}
       preferes={['poulet']}
       catalogue={FOOD_LIBRARY}
@@ -50,10 +51,12 @@ describe('la semaine de repas, à l’écran', () => {
   it('sept jours, ouverte sur aujourd’hui, les repas du jour', () => {
     const h = section();
     expect(h.match(/aria-pressed=/g)).toHaveLength(7);
-    const jours = [...h.matchAll(/<button[^>]*aria-label="(\w+)"[^>]*>/g)].map((m) => m[0]);
-    const jeudi = jours.find((b) => b.includes('aria-label="Jeudi"'))!;
+    // Sept pastilles (aria-pressed) : les tuiles et les repas n'en portent pas.
+    const jours = [...h.matchAll(/<button[^>]*aria-pressed="[^"]*"[^>]*>/g)].map((m) => m[0]);
+    const jeudi = jours.find((b) => b.includes('aria-label="Jeudi (aujourd’hui)"'))!;
     expect(jeudi).toContain('aria-pressed="true"');
     expect(jeudi).toContain('data-aujourdhui');
+    expect(jours.filter((b) => b.includes('data-aujourdhui'))).toHaveLength(1);
     expect(texte(h)).toContain('Mes repas · Jeudi');
     expect(h).toContain('data-semaine-auto');
     expect(texte(h)).not.toContain('il ne décide d’aucune quantité');
@@ -191,6 +194,7 @@ describe('cocher un repas mangé (semaine automatique)', () => {
         onCopier={null}
         semaine={{
           jour: 'Jeudi',
+          creneaux: ['pdej', 'dejeuner', 'collation2', 'diner'],
           ajusteur: () => undefined,
           ...(faits ? { faits: { pris: faits.pris, onBasculer: () => {} } } : {}),
         }}
@@ -217,8 +221,13 @@ describe('cocher un repas mangé (semaine automatique)', () => {
     expect(section).toContain('...(faits && jour === jourInitial ? { faits } : {})');
     const ecran = readFileSync(new URL('../screens/NutritionScreen.tsx', import.meta.url), 'utf8');
     expect(ecran).toContain('setMealEaten(todayIso, cleRepasFait(repas), !faits.has(repas))');
-    // Le journal ne se ressaisit plus : il devient le compte du jour.
-    expect(ecran).toContain("semaine !== null ? 'Mon compte du jour' : 'Ce que j’ai mangé'");
+    // Le journal ne se ressaisit plus : en mode semaine, la carte « Il te
+    // reste aujourd'hui » fait le compte (repas cochés + aliments en plus), et
+    // « Ce que j'ai mangé » ne s'affiche plus que hors semaine.
+    expect(ecran).toMatch(/\{semaine !== null && \(\s*<ResteDuJour/);
+    expect(ecran).toMatch(
+      /\{semaine === null && \(\s*<section className=\{styles\.card\}>\s*<h2 className=\{styles\.cardTitle\}>Ce que j’ai mangé/,
+    );
     expect(ecran).toContain('+ Ajouter un aliment hors de mes repas');
   });
 });

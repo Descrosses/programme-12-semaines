@@ -42,6 +42,7 @@ import { repasReconnu } from '../engine/repasReconnu';
 import { FoodSwapSheet } from './FoodSwapSheet';
 import {
   GROUPES_REPAS,
+  REPAS_JOURNEE,
   REPAS_PERSO,
   choisirAliment,
   poserQuantite,
@@ -50,6 +51,7 @@ import {
   retirerAliment,
   type GroupeId,
   type JourneePerso,
+  type LignePerso,
   type RepasId,
 } from '../data/planPerso';
 import {
@@ -83,6 +85,26 @@ function Macro({ m }: { m: Macros }) {
       {m.proteinG} g P · {m.carbsG} g G · {m.fatG} g L
     </span>
   );
+}
+
+/** Le moment de la journée, devant le nom du repas (frise de la semaine). */
+const MOMENT: Record<RepasId, string> = {
+  pdej: 'Matin',
+  collation1: 'Matinée',
+  dejeuner: 'Midi',
+  collation2: 'Après-midi',
+  diner: 'Soir',
+  collation3: 'Soirée',
+};
+
+/** « Skyr nature 385 g », « Banane ×1 » : un aliment et sa quantité, en une ligne. */
+function enMots(l: LignePerso, catalogue: Catalogue): string {
+  const f = catalogue[l.foodId];
+  if (!f) return l.foodId;
+  if (l.qty === null) return f.label;
+  return f.unit === 'unité'
+    ? `${f.label} ×${String(l.qty)}`
+    : `${f.label} ${String(l.qty)} ${f.unit}`;
 }
 
 export function PlanPerso({
@@ -121,6 +143,11 @@ export function PlanPerso({
   exclus?: ReadonlySet<string>;
   semaine?: {
     jour: string;
+    /**
+     * Les repas que la semaine compose (§1 : 4, 5 ou 6), dans l'ordre de la
+     * journée. Un autre repas ne s'affiche que s'il porte déjà quelque chose.
+     */
+    creneaux: readonly RepasId[];
     ajusteur: (creneau: RepasId) => ((r: RepasBibliotheque) => RepasBibliotheque) | undefined;
     /**
      * Les repas cochés « mangé » — passé seulement quand le jour affiché est
@@ -171,22 +198,49 @@ export function PlanPerso({
     );
   }
 
+  /*
+   * LES REPAS AFFICHÉS. « Mon plan » : ses cinq repas, toujours. Semaine :
+   * ceux qu'elle compose (4, 5 ou 6), plus un repas hors de ce nombre s'il
+   * porte déjà quelque chose — rien de posé ne disparaît de l'écran.
+   */
+  const repasAffiches = semaine
+    ? REPAS_JOURNEE.filter(
+        (r) => semaine.creneaux.includes(r.id) || (journee[r.id]?.length ?? 0) > 0,
+      )
+    : REPAS_PERSO;
+
   return (
-    <section className={styles.carte}>
-      <div className={styles.entete}>
-        <h2 className={styles.titre}>{semaine ? `Mes repas · ${semaine.jour}` : 'Mon plan'}</h2>
-        {onCopier !== null && semaine === undefined && (
-          <button type="button" className={styles.copier} onClick={onCopier}>
-            Copier l’autre journée
-          </button>
-        )}
-      </div>
+    <section className={semaine ? styles.journal : styles.carte}>
+      {!semaine && (
+        <div className={styles.entete}>
+          <h2 className={styles.titre}>Mon plan</h2>
+          {onCopier !== null && (
+            <button type="button" className={styles.copier} onClick={onCopier}>
+              Copier l’autre journée
+            </button>
+          )}
+        </div>
+      )}
       {semaine ? (
-        <p className={styles.sousTitre} data-semaine-auto>
-          {semaine.faits
-            ? 'Quantités ajustées à ta cible. Coche un repas quand il est mangé ; touche-le pour le changer ou régler une quantité.'
-            : 'Quantités ajustées à ta cible. Tout reste modifiable : touche un repas pour le changer ou régler une quantité.'}
-        </p>
+        /*
+          REFONTE « JOURNAL » (Guillaume, 26 novembre) : la journée se lit en
+          frise, du matin au soir. Ce que le jour PRÉVOIT tient en une ligne —
+          ce qui a été MANGÉ est dans la carte du haut de l'écran.
+        */
+        <>
+          <h2 className={styles.prevuTitre}>Mes repas · {semaine.jour}</h2>
+          <p className={styles.prevu} data-semaine-auto data-prevu>
+            <b className="tnum">{total.kcal.toLocaleString('fr-FR')} kcal</b> prévues
+            {cible !== null && <> sur {cible.kcal.toLocaleString('fr-FR')}</>} <Macro m={total} />
+          </p>
+          {aPoser > 0 && (
+            <p className={styles.aPoser}>
+              {aPoser === 1
+                ? '1 quantité reste à poser.'
+                : `${String(aPoser)} quantités restent à poser.`}
+            </p>
+          )}
+        </>
       ) : (
         <p className={styles.sousTitre}>
           Cinq repas, tes aliments, tes quantités.{' '}
@@ -199,314 +253,386 @@ export function PlanPerso({
       )}
 
       {/* --- Le compteur, en haut, pour l'avoir sous les yeux en remplissant -- */}
-      <div className={styles.compteur}>
-        <div className={styles.compteurValeur}>
-          <b className="tnum">{total.kcal.toLocaleString('fr-FR')}</b>
-          <span> kcal</span>
-          {cible !== null && (
-            <span className={styles.compteurCible}> / {cible.kcal.toLocaleString('fr-FR')}</span>
+      {!semaine && (
+        <div className={styles.compteur}>
+          <div className={styles.compteurValeur}>
+            <b className="tnum">{total.kcal.toLocaleString('fr-FR')}</b>
+            <span> kcal</span>
+            {cible !== null && (
+              <span className={styles.compteurCible}> / {cible.kcal.toLocaleString('fr-FR')}</span>
+            )}
+          </div>
+          <Macro m={total} />
+          {aPoser > 0 && (
+            /*
+             * Le dire UNE fois en haut plutôt que cinq fois dans les repas.
+             * C'est la seule chose qui sépare un plan posé par la
+             * bibliothèque d'un plan fini, et elle doit se lire d'un coup.
+             */
+            <p className={styles.aPoser}>
+              {aPoser === 1
+                ? '1 quantité reste à poser.'
+                : `${String(aPoser)} quantités restent à poser.`}
+            </p>
+          )}
+          {reste !== null && (
+            /*
+             * « IL MANQUE », PAS « IL RESTE ». Le journal du jour, plus bas,
+             * dit déjà « il reste tant à manger » — c'est l'écart entre la
+             * cible et ce qui est passé dans l'assiette. Ici on parle d'autre
+             * chose : l'écart entre la cible et le PLAN. Le même mot pour les
+             * deux ferait lire un seul chiffre là où il y en a deux.
+             */
+            <p className={`${styles.ecart} ${reste.kcal < 0 ? styles.ecartHaut : ''}`}>
+              {reste.kcal === 0
+                ? 'Ton plan tombe pile sur ta cible.'
+                : reste.kcal > 0
+                  ? `Il manque ${reste.kcal.toLocaleString('fr-FR')} kcal à ton plan${[
+                      [reste.proteinG, 'P'],
+                      [reste.carbsG, 'G'],
+                      [reste.fatG, 'L'],
+                    ]
+                      .filter((x): x is [number, string] => x[0] !== null)
+                      .map(([g, l]) => ` · ${fr(g)} g ${l}`)
+                      .join('')}`
+                  : `Ton plan dépasse ta cible de ${Math.abs(reste.kcal).toLocaleString('fr-FR')} kcal.`}
+            </p>
           )}
         </div>
-        <Macro m={total} />
-        {aPoser > 0 && (
-          /*
-           * Le dire UNE fois en haut plutôt que cinq fois dans les repas.
-           * C'est la seule chose qui sépare un plan posé par la
-           * bibliothèque d'un plan fini, et elle doit se lire d'un coup.
-           */
-          <p className={styles.aPoser}>
-            {aPoser === 1
-              ? '1 quantité reste à poser.'
-              : `${String(aPoser)} quantités restent à poser.`}
-          </p>
-        )}
-        {reste !== null && (
-          /*
-           * « IL MANQUE », PAS « IL RESTE ». Le journal du jour, plus bas,
-           * dit déjà « il reste tant à manger » — c'est l'écart entre la
-           * cible et ce qui est passé dans l'assiette. Ici on parle d'autre
-           * chose : l'écart entre la cible et le PLAN. Le même mot pour les
-           * deux ferait lire un seul chiffre là où il y en a deux.
-           */
-          <p className={`${styles.ecart} ${reste.kcal < 0 ? styles.ecartHaut : ''}`}>
-            {reste.kcal === 0
-              ? 'Ton plan tombe pile sur ta cible.'
-              : reste.kcal > 0
-                ? `Il manque ${reste.kcal.toLocaleString('fr-FR')} kcal à ton plan${[
-                    [reste.proteinG, 'P'],
-                    [reste.carbsG, 'G'],
-                    [reste.fatG, 'L'],
-                  ]
-                    .filter((x): x is [number, string] => x[0] !== null)
-                    .map(([g, l]) => ` · ${fr(g)} g ${l}`)
-                    .join('')}`
-                : `Ton plan dépasse ta cible de ${Math.abs(reste.kcal).toLocaleString('fr-FR')} kcal.`}
-          </p>
-        )}
-      </div>
+      )}
 
       {/* --- Les cinq repas ------------------------------------------------- */}
-      {REPAS_PERSO.map((repas) => {
-        const m = arrondirMacros(macrosDeRepas(journee, repas.id, catalogue));
-        const lignes = journee[repas.id] ?? [];
-        const estOuvert = ouvert === repas.id;
-        const plat = repasReconnu(repas.id, lignes);
-        return (
-          <div key={repas.id} className={styles.repas}>
-            {/*
+      <div className={semaine ? styles.frise : undefined}>
+        {repasAffiches.map((repas) => {
+          const m = arrondirMacros(macrosDeRepas(journee, repas.id, catalogue));
+          const lignes = journee[repas.id] ?? [];
+          const estOuvert = ouvert === repas.id;
+          // La collation du soir emprunte les plats de celle de l'après-midi.
+          const plat = repasReconnu(repas.id === 'collation3' ? 'collation2' : repas.id, lignes);
+          const mange = semaine?.faits?.pris.has(repas.id) ?? false;
+          const basculer = () => {
+            setOuvert(estOuvert ? null : repas.id);
+            setLigneOuverte(null);
+            setAjout(null);
+          };
+          return (
+            <div
+              key={repas.id}
+              className={semaine ? styles.etape : styles.repas}
+              {...(semaine && mange ? { 'data-mange': '' } : {})}
+            >
+              {semaine && (
+                <>
+                  <p className={styles.etapeNom}>
+                    {MOMENT[repas.id]} · {repas.nom}
+                    {mange && ' · mangé'}
+                  </p>
+                  <div className={styles.etapeCarte}>
+                    {plat !== null && (
+                      <button
+                        type="button"
+                        className={styles.repasPhotoBouton}
+                        onClick={() => setFiche({ ...plat, lignes })}
+                        aria-label={`Voir le plat en grand : ${plat.nom}`}
+                      >
+                        <img
+                          className={styles.repasPhoto}
+                          src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
+                          alt=""
+                          width={600}
+                          height={600}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.etapeTete}
+                      onClick={basculer}
+                      aria-expanded={estOuvert}
+                      aria-label={`${repas.nom} — ${estOuvert ? 'replier' : 'changer ou régler'}`}
+                    >
+                      {lignes.length === 0 ? (
+                        <span className={styles.etapeVide}>Vide — choisir un repas</span>
+                      ) : (
+                        <>
+                          <span className={styles.etapeTexte}>
+                            <span className={styles.etapeTitre}>
+                              {plat?.nom ??
+                                lignes
+                                  .map((l) => catalogue[l.foodId]?.label ?? l.foodId)
+                                  .join(', ')}
+                            </span>
+                            <span className={styles.etapeDetail}>
+                              {lignes.map((l) => enMots(l, catalogue)).join(' · ')}
+                            </span>
+                          </span>
+                          <span className={`${styles.etapeKcal} tnum`}>
+                            {m.kcal.toLocaleString('fr-FR')}
+                            <small>kcal</small>
+                          </span>
+                        </>
+                      )}
+                    </button>
+                    {semaine.faits && lignes.length > 0 && (
+                      /*
+                      « MANGÉ » — une coche par repas, à droite de sa carte.
+                      Le bouton fait 48 px pour le pouce, la pastille 30 pour
+                      l'œil. Hors du bouton du repas : cocher ne déplie rien.
+                    */
+                      <button
+                        type="button"
+                        className={styles.fait}
+                        aria-pressed={mange}
+                        aria-label={`${repas.nom} — ${mange ? 'mangé' : 'pas encore mangé'}`}
+                        onClick={() => semaine.faits?.onBasculer(repas.id)}
+                      >
+                        <span
+                          className={`${styles.faitPastille} ${mange ? styles.faitOn : ''}`}
+                          aria-hidden="true"
+                        >
+                          {mange && <Icon name="check" size="16px" />}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+              {!semaine && (
+                <>
+                  {/*
               L'EN-TÊTE, COMME LES « REPAS TYPES » DU PLAN HISTORIQUE : le nom,
               ce que le repas pèse (kcal) et sa part de la journée. La barre
               des macros est dessous, hors du bouton — un bloc ne se glisse
               pas dans un <button>.
             */}
-            <div className={styles.repasLigne}>
-              {semaine?.faits && lignes.length > 0 && (
-                /*
-                  « MANGÉ » — une coche par repas, à gauche comme sur une
-                  liste. Le bouton fait 48 px pour le pouce, la pastille 26
-                  pour l'œil. Hors du bouton du repas : cocher ne déplie rien.
-                */
-                <button
-                  type="button"
-                  className={styles.fait}
-                  aria-pressed={semaine.faits.pris.has(repas.id)}
-                  aria-label={`${repas.nom} — ${semaine.faits.pris.has(repas.id) ? 'mangé' : 'pas encore mangé'}`}
-                  onClick={() => semaine.faits?.onBasculer(repas.id)}
-                >
-                  <span
-                    className={`${styles.faitPastille} ${
-                      semaine.faits.pris.has(repas.id) ? styles.faitOn : ''
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {semaine.faits.pris.has(repas.id) && <Icon name="check" size="16px" />}
-                  </span>
-                </button>
-              )}
-              {plat !== null && (
-                /*
+                  <div className={styles.repasLigne}>
+                    {plat !== null && (
+                      /*
                   LA PHOTO DU PLAT, tant que le repas EST ce plat : tous ses
                   ingrédients présents (`repasReconnu`). Un ingrédient
                   remplacé ou retiré, et elle disparaît — elle montrerait une
                   assiette qui n'est plus la sienne. Hors du bouton du repas :
                   la toucher ouvre la fiche en grand.
                 */
-                <button
-                  type="button"
-                  className={styles.repasPhotoBouton}
-                  onClick={() =>
-                    // Semaine : la fiche montre les quantités DE CE REPAS
-                    // (ajustées, retouchées), pas l'assiette de référence.
-                    setFiche(semaine ? { ...plat, lignes } : plat)
-                  }
-                  aria-label={`Voir le plat en grand : ${plat.nom}`}
-                >
-                  <img
-                    className={styles.repasPhoto}
-                    src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
-                    alt=""
-                    width={600}
-                    height={600}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </button>
-              )}
-              <button
-                type="button"
-                className={styles.repasTete}
-                onClick={() => {
-                  setOuvert(estOuvert ? null : repas.id);
-                  setLigneOuverte(null);
-                  setAjout(null);
-                }}
-                aria-expanded={estOuvert}
-              >
-                <span className={styles.repasNom}>{repas.nom}</span>
-                <span className={styles.repasKcal}>
-                  {lignes.length === 0 ? (
-                    <span className={styles.vide}>vide</span>
-                  ) : (
-                    <span className={`${styles.repasChiffres} tnum`}>
-                      <span>{m.kcal.toLocaleString('fr-FR')} kcal</span>
-                      {/*
+                      <button
+                        type="button"
+                        className={styles.repasPhotoBouton}
+                        onClick={() => setFiche(plat)}
+                        aria-label={`Voir le plat en grand : ${plat.nom}`}
+                      >
+                        <img
+                          className={styles.repasPhoto}
+                          src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
+                          alt=""
+                          width={600}
+                          height={600}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.repasTete}
+                      onClick={basculer}
+                      aria-expanded={estOuvert}
+                    >
+                      <span className={styles.repasNom}>{repas.nom}</span>
+                      <span className={styles.repasKcal}>
+                        {lignes.length === 0 ? (
+                          <span className={styles.vide}>vide</span>
+                        ) : (
+                          <span className={`${styles.repasChiffres} tnum`}>
+                            <span>{m.kcal.toLocaleString('fr-FR')} kcal</span>
+                            {/*
                         La part de la CIBLE, pas du plan : tant que le plan est
                         incomplet, « 64 % du plan » ne dirait rien de ce qu'il
                         reste à manger. Sans cible posée, on retombe sur le
                         total du plan.
                       */}
-                      <span className={styles.repasPart}>
-                        {shareOfDay(m.kcal, cible?.kcal ?? total.kcal)} %
+                            <span className={styles.repasPart}>
+                              {shareOfDay(m.kcal, cible?.kcal ?? total.kcal)} %
+                            </span>
+                          </span>
+                        )}
+                        <Icon name={estOuvert ? 'chevron-up' : 'chevron-down'} size="18px" />
                       </span>
-                    </span>
+                    </button>
+                  </div>
+
+                  {lignes.length > 0 && m.kcal > 0 && (
+                    <div className={styles.repasBarre}>
+                      <MacroBar macros={m} />
+                    </div>
                   )}
-                  <Icon name={estOuvert ? 'chevron-up' : 'chevron-down'} size="18px" />
-                </span>
-              </button>
-            </div>
 
-            {lignes.length > 0 && m.kcal > 0 && (
-              <div className={styles.repasBarre}>
-                <MacroBar macros={m} />
-              </div>
-            )}
+                  {/* Replié, on lit quand même ce qu'il y a dedans. */}
+                  {!estOuvert && lignes.length > 0 && (
+                    <p className={styles.resume}>
+                      {lignes.map((l) => catalogue[l.foodId]?.label ?? l.foodId).join(', ')}
+                    </p>
+                  )}
+                </>
+              )}
 
-            {/* Replié, on lit quand même ce qu'il y a dedans. */}
-            {!estOuvert && lignes.length > 0 && (
-              <p className={styles.resume}>
-                {lignes.map((l) => catalogue[l.foodId]?.label ?? l.foodId).join(', ')}
-              </p>
-            )}
-
-            {estOuvert && (
-              <div className={styles.corps}>
-                {/*
+              {estOuvert && (
+                <div className={semaine ? styles.etapeCorps : styles.corps}>
+                  {semaine && lignes.length > 0 && m.kcal > 0 && (
+                    // La répartition du repas : seulement une fois ouvert.
+                    <div className={styles.repasBarre}>
+                      <MacroBar macros={m} />
+                    </div>
+                  )}
+                  {/*
                   Devant un repas VIDE, la bibliothèque passe avant tout : c'est
                   le geste qu'on attend. Une fois le repas posé, ce sont ses
                   aliments qui comptent, et « choisir un autre repas » descend
                   sous la liste.
                 */}
-                {lignes.length === 0 && biblio !== repas.id && (
-                  <button
-                    type="button"
-                    className={styles.biblio}
-                    onClick={() => setBiblio(repas.id)}
-                  >
-                    Choisir un repas
-                  </button>
-                )}
-                {biblio === repas.id && (
-                  <ChoixRepas
-                    creneau={repas.id}
-                    nomCreneau={repas.nom}
-                    preferes={preferes}
-                    catalogue={catalogue}
-                    {...(semaine?.ajusteur(repas.id)
-                      ? { ajuster: semaine.ajusteur(repas.id)! }
-                      : {})}
-                    {...(exclus ? { exclus } : {})}
-                    onChoisir={(r) => {
-                      onChange(poserRepas(journee, repas.id, r.lignes));
-                      setBiblio(null);
-                      setLigneOuverte(null);
-                    }}
-                    onFermer={() => setBiblio(null)}
-                  />
-                )}
+                  {lignes.length === 0 && biblio !== repas.id && (
+                    <button
+                      type="button"
+                      className={styles.biblio}
+                      onClick={() => setBiblio(repas.id)}
+                    >
+                      Choisir un repas
+                    </button>
+                  )}
+                  {biblio === repas.id && (
+                    <ChoixRepas
+                      creneau={repas.id}
+                      nomCreneau={repas.nom}
+                      preferes={preferes}
+                      catalogue={catalogue}
+                      {...(semaine?.ajusteur(repas.id)
+                        ? { ajuster: semaine.ajusteur(repas.id)! }
+                        : {})}
+                      {...(exclus ? { exclus } : {})}
+                      onChoisir={(r) => {
+                        onChange(poserRepas(journee, repas.id, r.lignes));
+                        setBiblio(null);
+                        setLigneOuverte(null);
+                      }}
+                      onFermer={() => setBiblio(null)}
+                    />
+                  )}
 
-                {lignes.length > 0 && (
-                  /*
-                   * CE QUI EST DANS LE REPAS S'AFFICHE, DÉCLARÉ OU NON — dans
-                   * l'ordre du repas, sans titre de groupe. Un aliment du
-                   * repas choisi dans la bibliothèque n'est pas toujours dans
-                   * le questionnaire ; il compte dans l'addition, donc il se
-                   * voit. La liste du questionnaire ne décide que des
-                   * pastilles : ce qu'on peut AJOUTER.
-                   */
-                  <ul className={styles.foodList}>
-                    {lignes.map((x) => {
-                      const f = catalogue[x.foodId];
-                      if (!f) return null;
-                      const cle = `${repas.id}|${x.foodId}`;
-                      return (
-                        <LigneAliment
-                          key={x.foodId}
-                          food={f}
-                          qty={x.qty}
-                          kcal={Math.round(macrosDeLigne(x, catalogue).kcal)}
-                          horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
-                          ouverte={ligneOuverte === cle}
-                          onToggle={() => setLigneOuverte(ligneOuverte === cle ? null : cle)}
-                          onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
-                          onRetirer={() => {
-                            onChange(retirerAliment(journee, repas.id, x.foodId));
-                            setLigneOuverte(null);
-                          }}
-                          ouvertEnRemplacement={remplace === cle}
-                          onRemplacer={() => setRemplace(cle)}
-                          customs={customs}
-                          onCreateCustom={onCreateCustom}
-                          onChoisi={(nouveau) => {
-                            onChange(
-                              remplacerAliment(
-                                journee,
-                                repas.id,
-                                x.foodId,
-                                nouveau,
-                                catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
-                              ),
-                            );
-                            setRemplace(null);
-                            setLigneOuverte(`${repas.id}|${nouveau}`);
-                          }}
-                          onFermerRemplacement={() => setRemplace(null)}
-                        />
-                      );
-                    })}
-                  </ul>
-                )}
+                  {lignes.length > 0 && (
+                    /*
+                     * CE QUI EST DANS LE REPAS S'AFFICHE, DÉCLARÉ OU NON — dans
+                     * l'ordre du repas, sans titre de groupe. Un aliment du
+                     * repas choisi dans la bibliothèque n'est pas toujours dans
+                     * le questionnaire ; il compte dans l'addition, donc il se
+                     * voit. La liste du questionnaire ne décide que des
+                     * pastilles : ce qu'on peut AJOUTER.
+                     */
+                    <ul className={styles.foodList}>
+                      {lignes.map((x) => {
+                        const f = catalogue[x.foodId];
+                        if (!f) return null;
+                        const cle = `${repas.id}|${x.foodId}`;
+                        return (
+                          <LigneAliment
+                            key={x.foodId}
+                            food={f}
+                            qty={x.qty}
+                            kcal={Math.round(macrosDeLigne(x, catalogue).kcal)}
+                            horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
+                            ouverte={ligneOuverte === cle}
+                            onToggle={() => setLigneOuverte(ligneOuverte === cle ? null : cle)}
+                            onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
+                            onRetirer={() => {
+                              onChange(retirerAliment(journee, repas.id, x.foodId));
+                              setLigneOuverte(null);
+                            }}
+                            ouvertEnRemplacement={remplace === cle}
+                            onRemplacer={() => setRemplace(cle)}
+                            customs={customs}
+                            onCreateCustom={onCreateCustom}
+                            onChoisi={(nouveau) => {
+                              onChange(
+                                remplacerAliment(
+                                  journee,
+                                  repas.id,
+                                  x.foodId,
+                                  nouveau,
+                                  catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
+                                ),
+                              );
+                              setRemplace(null);
+                              setLigneOuverte(`${repas.id}|${nouveau}`);
+                            }}
+                            onFermerRemplacement={() => setRemplace(null)}
+                          />
+                        );
+                      })}
+                    </ul>
+                  )}
 
-                {/*
+                  {/*
                   « + AJOUTER UN ALIMENT » remplace les pastilles qui étaient
                   toujours dépliées sous chaque groupe : elles occupaient plus
                   de place que le repas lui-même. Elles apparaissent à la
                   demande, rangées par groupe.
                 */}
-                {GROUPES_REPAS.some((g) =>
-                  parGroupe[g.id as GroupeId].some((f) => !lignes.some((x) => x.foodId === f.id)),
-                ) && (
-                  <button
-                    type="button"
-                    className={styles.ajouter}
-                    aria-expanded={ajout === repas.id}
-                    onClick={() => setAjout(ajout === repas.id ? null : repas.id)}
-                  >
-                    {ajout === repas.id ? 'Fermer' : '+ Ajouter un aliment'}
-                  </button>
-                )}
-                {ajout === repas.id &&
-                  GROUPES_REPAS.map((groupe) => {
-                    const restants = parGroupe[groupe.id as GroupeId].filter(
-                      (f) => !lignes.some((x) => x.foodId === f.id),
-                    );
-                    if (restants.length === 0) return null;
-                    return (
-                      <div key={groupe.id} className={styles.groupe}>
-                        <h3 className={styles.groupeNom}>{groupe.nom}</h3>
-                        <div className={styles.pastilles}>
-                          {restants.map((f) => (
-                            <button
-                              key={f.id}
-                              type="button"
-                              className={styles.pastille}
-                              onClick={() => {
-                                onChange(choisirAliment(journee, repas.id, f.id));
-                                setAjout(null);
-                                setLigneOuverte(`${repas.id}|${f.id}`);
-                              }}
-                            >
-                              + {f.label}
-                            </button>
-                          ))}
+                  {GROUPES_REPAS.some((g) =>
+                    parGroupe[g.id as GroupeId].some((f) => !lignes.some((x) => x.foodId === f.id)),
+                  ) && (
+                    <button
+                      type="button"
+                      className={styles.ajouter}
+                      aria-expanded={ajout === repas.id}
+                      onClick={() => setAjout(ajout === repas.id ? null : repas.id)}
+                    >
+                      {ajout === repas.id ? 'Fermer' : '+ Ajouter un aliment'}
+                    </button>
+                  )}
+                  {ajout === repas.id &&
+                    GROUPES_REPAS.map((groupe) => {
+                      const restants = parGroupe[groupe.id as GroupeId].filter(
+                        (f) => !lignes.some((x) => x.foodId === f.id),
+                      );
+                      if (restants.length === 0) return null;
+                      return (
+                        <div key={groupe.id} className={styles.groupe}>
+                          <h3 className={styles.groupeNom}>{groupe.nom}</h3>
+                          <div className={styles.pastilles}>
+                            {restants.map((f) => (
+                              <button
+                                key={f.id}
+                                type="button"
+                                className={styles.pastille}
+                                onClick={() => {
+                                  onChange(choisirAliment(journee, repas.id, f.id));
+                                  setAjout(null);
+                                  setLigneOuverte(`${repas.id}|${f.id}`);
+                                }}
+                              >
+                                + {f.label}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
 
-                {lignes.length > 0 && biblio !== repas.id && (
-                  <button
-                    type="button"
-                    className={styles.biblioSecondaire}
-                    onClick={() => setBiblio(repas.id)}
-                  >
-                    {semaine ? 'Changer ce repas' : 'Choisir un autre repas'}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
+                  {lignes.length > 0 && biblio !== repas.id && (
+                    <button
+                      type="button"
+                      className={styles.biblioSecondaire}
+                      onClick={() => setBiblio(repas.id)}
+                    >
+                      {semaine ? 'Changer ce repas' : 'Choisir un autre repas'}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
       {fiche !== null && (
         <FicheRepas
           repas={fiche}
@@ -518,7 +644,9 @@ export function PlanPerso({
       )}
       {semaine ? (
         <p className={styles.note}>
-          Les repas du {semaine.jour.toLowerCase()}. Chaque jour a les siens — choisis-le au-dessus.
+          {semaine.faits
+            ? 'Coche un repas quand il est mangé ; touche-le pour le changer ou régler une quantité.'
+            : `Les repas du ${semaine.jour.toLowerCase()} : on ne coche que ceux d’aujourd’hui. Touche un repas pour le changer ou régler une quantité.`}
         </p>
       ) : (
         <p className={styles.note}>

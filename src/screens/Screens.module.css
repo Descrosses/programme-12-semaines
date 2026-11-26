@@ -1377,6 +1377,39 @@
   color: var(--accent-ink);
 }
 
+/*
+ * « Hors de mes repas » — mode semaine de repas (refonte « Journal ») : les
+ * aliments mangés en plus, puis le bouton en pointillés, sous la frise.
+ */
+.horsRepas {
+  margin: var(--gap) var(--pad) 0;
+}
+
+.horsRepasTitre {
+  margin: 0 0 4px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.horsRepasAjout {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  margin-top: 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .extraList {
   margin: 8px 0 0;
   padding: 0;

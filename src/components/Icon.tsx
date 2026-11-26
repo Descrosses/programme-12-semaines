@@ -57,7 +57,10 @@ export type IconName =
   | 'helmet'
   | 'ruler'
   | 'profil'
-  | 'home';
+  | 'home'
+  | 'panier'
+  | 'interdit'
+  | 'balance';
 
 /** Les tracés, sur une grille de 24. Trait de 2, extrémités rondes. */
 const PATHS: Record<IconName, string> = {
@@ -108,6 +111,10 @@ const PATHS: Record<IconName, string> = {
   /* L'accueil de la plateforme. Un toit, pas un casque : le §13 interdit
      toute référence au football américain hors de l'univers POWER. */
   home: 'M3 11l9-7 9 7M5.5 9.5V20h13V9.5M10 20v-6h4v6',
+  /* Les outils de la semaine de repas : courses, exclusions, point des 2 semaines. */
+  panier: 'M3 5h2l2.2 10.2a2 2 0 002 1.6h7.6a2 2 0 002-1.5L21 8H6M10 20.5h.01M17 20.5h.01',
+  interdit: 'M12 20.5a8.5 8.5 0 100-17 8.5 8.5 0 000 17zM6 6l12 12',
+  balance: 'M5 20h14M12 4v16M5 8h14M5 8l-3 6a3 3 0 006 0zM19 8l-3 6a3 3 0 006 0z',
 };
 
 /**
