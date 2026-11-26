@@ -174,7 +174,10 @@ describe('la cible proposée à la fin du questionnaire', () => {
   it('la même cible les deux jours (§5), écrite au bouton seulement', () => {
     const src = readFileSync(new URL('./CibleCalculee.tsx', import.meta.url), 'utf8');
     expect(src).toContain('ciblesNutrition: { train: { ...m }, rest: { ...m } }');
-    expect(src.match(/saveSettings\(/g)).toHaveLength(1);
+    // Deux écritures, chacune derrière SON bouton : « Utiliser cette cible »
+    // et « Activer le point des 2 semaines » (lot 4).
+    expect(src.match(/saveSettings\(/g)).toHaveLength(2);
+    expect(src).toContain('onSuivre={() =>');
     expect(src).toContain('onUtiliser={(m) =>');
   });
 

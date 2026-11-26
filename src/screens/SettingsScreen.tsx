@@ -899,7 +899,7 @@ export function CartesNutrition({
             type="button"
             className={styles.secondary}
             style={{ width: '100%', margin: '12px 0 0' }}
-            onClick={() => void patch({ ciblesNutrition: null })}
+            onClick={() => void patch({ ciblesNutrition: null, profilNutrition: null })}
           >
             Effacer mes cibles
           </button>

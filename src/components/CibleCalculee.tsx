@@ -25,6 +25,7 @@ import type { CiblesNutrition, MacrosCompletes } from '../data/ciblesNutrition';
 import { cycleActif, getSettingsRow, saveSettings } from '../db/repo';
 import { macrosDe, proposerCible, type PropositionCible } from '../engine/cibleProposee';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
+import { profilAGarder } from '../engine/reajustement';
 import { composerSemaine } from '../engine/semaineRepas';
 import {
   alimentsPourMonPlan,
@@ -50,6 +51,8 @@ export function CibleCalculee({
   actuelle,
   planHistoriqueAffiche,
   semaineExiste = false,
+  suiviActif = true,
+  onSuivre,
   onUtiliser,
 }: {
   proposition: PropositionCible;
@@ -57,6 +60,13 @@ export function CibleCalculee({
   planHistoriqueAffiche: boolean;
   /** Une semaine de repas existe déjà (lot 2) : elle n'est pas recomposée ici. */
   semaineExiste?: boolean;
+  /**
+   * Le profil du calcul est-il gardé (lot 4 : point des deux semaines) ?
+   * Faux seulement pour une cible acceptée AVANT le lot 4 : l'écran propose
+   * alors d'activer le suivi (`onSuivre`).
+   */
+  suiviActif?: boolean;
+  onSuivre?: () => void;
   onUtiliser: (m: MacrosCompletes) => void;
 }) {
   if (proposition.cas === 'sans-objet') return null;
@@ -144,6 +154,26 @@ export function CibleCalculee({
           veux dans la carte « Mes cibles nutritionnelles ».
         </p>
       ) : (
+        <></>
+      )}
+      {enregistree && suiviActif && (
+        <p className={styles.note}>
+          Toutes les 2 semaines, MAJK fait le point sur tes pesées et te propose d’ajuster ta cible
+          si besoin.
+        </p>
+      )}
+      {enregistree && !suiviActif && onSuivre && (
+        <>
+          <p className={styles.texte}>
+            Nouveau : toutes les 2 semaines, MAJK peut faire le point sur tes pesées et te proposer
+            d’ajuster ta cible de 100 kcal. Rien n’est changé sans ton accord.
+          </p>
+          <button type="button" className={styles.bouton} onClick={onSuivre}>
+            Activer le point des 2 semaines
+          </button>
+        </>
+      )}
+      {enregistree ? null : (
         <>
           {ancienneKcal !== null && (
             <p className={styles.texte}>
@@ -161,6 +191,10 @@ export function CibleCalculee({
               MAJK composera aussi ta semaine de repas sur cette cible, dans l’onglet Nutrition.
             </p>
           )}
+          <p className={styles.texte}>
+            Ensuite, toutes les 2 semaines, MAJK fait le point sur tes pesées et te propose
+            d’ajuster ta cible si besoin.
+          </p>
           <button type="button" className={styles.bouton} onClick={() => onUtiliser(m)}>
             Utiliser cette cible
           </button>
@@ -184,6 +218,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
     planHistorique: boolean;
     semaine: boolean;
     preferes: string[] | null;
+    suivi: boolean;
   } | null>(null);
   const [version, setVersion] = useState(0);
 
@@ -201,6 +236,7 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
         planHistorique: famille !== 'femmes' && row.legacyNutritionPlan,
         semaine: row.semaineRepas !== null,
         preferes: row.alimentsPreferes,
+        suivi: row.profilNutrition !== null,
       });
     })();
     return () => {
@@ -209,9 +245,21 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
   }, [version]);
 
   if (lu === null) return null;
+  const proposition = proposerCible(etat, lu.famille);
+  const aujourdhui = new Date().toISOString().slice(0, 10);
+  // Lot 4 : le profil du calcul, gardé pour le point des deux semaines.
+  const profil =
+    proposition.cas === 'proposee' ? profilAGarder(proposition.profil, aujourdhui) : null;
   return (
     <CibleCalculee
-      proposition={proposerCible(etat, lu.famille)}
+      proposition={proposition}
+      suiviActif={lu.suivi}
+      onSuivre={() =>
+        void (async () => {
+          if (profil !== null) await saveSettings({ profilNutrition: profil });
+          setVersion((v) => v + 1);
+        })()
+      }
       actuelle={lu.actuelle}
       planHistoriqueAffiche={lu.planHistorique}
       semaineExiste={lu.semaine}
@@ -221,9 +269,9 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
           // déjà une liste (la remplacer s'annonce, avec son propre bouton).
           const aliments = alimentsPourMonPlan(etat);
           const sansListe = (lu.preferes ?? []).length === 0 && aliments.length > 0;
-          const aujourdhui = new Date().toISOString().slice(0, 10);
           await saveSettings({
             ciblesNutrition: { train: { ...m }, rest: { ...m } },
+            ...(profil !== null ? { profilNutrition: profil } : {}),
             ...(lu.planHistorique ? { legacyNutritionPlan: false } : {}),
             // Lot 2 : la semaine se compose UNE fois, à l'acceptation ; une
             // semaine existante n'est jamais écrasée ici.

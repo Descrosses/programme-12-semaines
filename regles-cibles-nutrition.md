@@ -200,6 +200,36 @@ Les paliers de ± 100 kcal sont un choix de conception, pas une valeur des
 les calories. Les planchers du §6 s'appliquent aussi au réajustement.
 Toujours une proposition, à accepter.
 
+### Précisions de calcul
+
+> **Statut : PROPOSÉ le 26 novembre 2026 — à valider par Guillaume**
+> (« go lot 4 »). Ce que le tableau ci-dessus ne disait pas.
+
+- **Quand** : 14 jours après la cible acceptée, puis 14 jours après chaque
+  point (proposition acceptée, refusée ou « on ne change rien »).
+- **Les deux moyennes** : semaine récente = les 7 derniers jours (aujourd'hui
+  compris) ; semaine précédente = les 7 jours d'avant. Il faut **au moins 4
+  pesées dans chacune**, sinon aucune proposition.
+- **Le rythme** : (moyenne récente − moyenne précédente) ÷ moyenne
+  précédente, en % par semaine. Entre les deux bornes de l'objectif, bornes
+  comprises : on ne change rien.
+- **Maintien** : poids monté de plus de 1 % → − 100 kcal ; descendu de plus
+  de 1 % → + 100 kcal.
+- **La nouvelle cible** : les calories actuelles ± 100, puis la répartition
+  du §5 refaite sur ces calories et sur le **poids moyen de la semaine
+  récente** (protéines en g/kg, lipides 25 % avec leur plancher, glucides le
+  reste, mêmes arrondis). La même les deux jours.
+- **Sécurité** : si la nouvelle cible passe sous un plancher du §6 (calculé
+  sur le poids actuel), ou si une perte est en cours avec un IMC passé sous
+  18,5, l'appli ne propose rien et renvoie vers Guillaume, sans chiffre.
+- **Le profil** gardé en base (§1) : sexe, âge et date de la réponse, taille,
+  travail, pas, séances, durée, objectif, rythme, date du dernier point.
+  Enregistré quand la cible calculée est acceptée — jamais les réponses de
+  sécurité. Sans profil (cible posée à la main ou par Guillaume) : pas de
+  point.
+- **Pas encore fait** : le contrôle de cohérence avec la tendance déclarée
+  sur 4 semaines (§1).
+
 ---
 
 ## 8. Exemple calculé (homme, 34 ans, 180 cm, 82,5 kg)

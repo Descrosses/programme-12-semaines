@@ -133,6 +133,21 @@ export function exclusions(p: ProfilCalcul): string[] {
 const SIGNES = (x: number) =>
   x > 0 ? `+ ${fr(x * 100, 0)} %` : x < 0 ? `− ${fr(-x * 100, 0)} %` : '0 %';
 
+/**
+ * §5 — la répartition des macros pour des calories et un poids de référence
+ * donnés. Sert au calcul de départ ET au réajustement du §7 (mêmes règles,
+ * mêmes arrondis).
+ */
+export function repartir(kcal: number, ref: number, objectif: Objectif) {
+  const gKgProt = objectif === 'perte' ? PROTEINES_G_KG.perte : PROTEINES_G_KG.defaut;
+  const proteinG = arrondi(gKgProt * ref, ARRONDI.macroG);
+  const lipPart = (LIPIDES.part * kcal) / 9;
+  const lipMin = LIPIDES.minGKg * ref;
+  const fatG = arrondi(Math.max(lipPart, lipMin), ARRONDI.macroG);
+  const carbsG = arrondi((kcal - proteinG * 4 - fatG * 9) / 4, ARRONDI.macroG);
+  return { gKgProt, proteinG, lipPart, lipMin, fatG, carbsG };
+}
+
 /** Le calcul complet, étape par étape. */
 export function calculerCibles(p: ProfilCalcul): ResultatCibles {
   const repos = depenseAuRepos(p);
@@ -143,12 +158,7 @@ export function calculerCibles(p: ProfilCalcul): ResultatCibles {
 
   const ref = poidsDeReference(p);
   const surRef = ref !== p.poidsKg;
-  const gKgProt = p.objectif === 'perte' ? PROTEINES_G_KG.perte : PROTEINES_G_KG.defaut;
-  const proteinG = arrondi(gKgProt * ref, ARRONDI.macroG);
-  const lipPart = (LIPIDES.part * kcal) / 9;
-  const lipMin = LIPIDES.minGKg * ref;
-  const fatG = arrondi(Math.max(lipPart, lipMin), ARRONDI.macroG);
-  const carbsG = arrondi((kcal - proteinG * 4 - fatG * 9) / 4, ARRONDI.macroG);
+  const { gKgProt, proteinG, lipPart, lipMin, fatG, carbsG } = repartir(kcal, ref, p.objectif);
 
   const poidsLu = surRef
     ? `${fr(ref)} kg (poids de référence : IMC ${fr(imc(p))} ≥ ${IMC_POIDS_REFERENCE.seuil})`

@@ -222,6 +222,12 @@ export interface PatchFiche {
   ciblesNutrition?: CiblesNutrition;
   alimentsPreferes?: string[];
   legacyNutritionPlan?: false;
+  /**
+   * Une cible posée par une fiche (coach) arrête le point des deux semaines
+   * (`regles-cibles-nutrition.md` §7) : l'appli n'ajuste pas la cible de
+   * quelqu'un d'autre.
+   */
+  profilNutrition?: null;
 }
 
 export function patchDeFiche(lecture: LectureFiche): PatchFiche {
@@ -229,5 +235,6 @@ export function patchDeFiche(lecture: LectureFiche): PatchFiche {
     ...(lecture.cibles !== null ? { ciblesNutrition: lecture.cibles } : {}),
     ...(lecture.aliments.length > 0 ? { alimentsPreferes: lecture.aliments } : {}),
     ...(lecture.cibles !== null ? { legacyNutritionPlan: false as const } : {}),
+    ...(lecture.cibles !== null ? { profilNutrition: null } : {}),
   };
 }

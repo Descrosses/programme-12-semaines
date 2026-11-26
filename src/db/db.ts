@@ -10,6 +10,7 @@ import type { Niveau } from '../data/femmes/niveaux';
 import type { DayIndex as JourFemmes, Version as VersionFemmes } from '../data/femmes/types';
 import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
+import type { ProfilNutrition } from '../engine/reajustement';
 import type { SemaineRepas } from '../engine/semaineRepas';
 import Dexie, { type Table } from 'dexie';
 import type { ProgrammeNormalise } from '../engine/perso/types';
@@ -474,6 +475,14 @@ export interface SettingsRow {
    * les réglages.
    */
   semaineRepas: SemaineRepas | null;
+  /**
+   * Le profil du calcul des cibles (`regles-cibles-nutrition.md` §1 et §7,
+   * lot 4) : enregistré quand la cible CALCULÉE est acceptée, il porte aussi
+   * la date du dernier point des deux semaines. `null` = cible posée à la
+   * main ou par le coach : pas de réajustement. Jamais les réponses de
+   * sécurité. Non indexé : pas de migration.
+   */
+  profilNutrition: ProfilNutrition | null;
 }
 
 /**
@@ -1402,6 +1411,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   alimentsPreferes: null,
   planPerso: null,
   semaineRepas: null,
+  profilNutrition: null,
 };
 
 /**

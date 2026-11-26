@@ -21,7 +21,7 @@
 
 import type { FamilleId } from '../data/catalogue';
 import type { MacrosCompletes } from '../data/ciblesNutrition';
-import { calculerCibles, type ResultatCibles } from './calculCibles';
+import { calculerCibles, type ProfilCalcul, type ResultatCibles } from './calculCibles';
 import { lireResume } from './lireResumeQuestionnaire';
 import { resume, type EtatQuestionnaire } from './questionnairePlanAlimentaire';
 
@@ -29,7 +29,7 @@ export type PropositionCible =
   | { cas: 'sans-objet' }
   | { cas: 'incomplet'; manquants: string[] }
   | { cas: 'coach' }
-  | { cas: 'proposee'; resultat: ResultatCibles };
+  | { cas: 'proposee'; resultat: ResultatCibles; profil: ProfilCalcul };
 
 /** §0 — les familles à qui l'appli propose une cible calculée. */
 export const FAMILLES_AVEC_CALCUL: readonly FamilleId[] = ['power', 'femmes', 'perso'];
@@ -44,7 +44,7 @@ export function proposerCible(
   const resultat = calculerCibles(lecture.profil);
   // §6 : exclusion ou sous un plancher → c'est Guillaume qui pose la cible.
   if (!resultat.proposable) return { cas: 'coach' };
-  return { cas: 'proposee', resultat };
+  return { cas: 'proposee', resultat, profil: lecture.profil };
 }
 
 /** Les quatre nombres à enregistrer : la MÊME cible les deux jours (§5). */

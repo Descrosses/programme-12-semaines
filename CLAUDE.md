@@ -89,7 +89,32 @@ réinterprète pas.**
   passage (lot 2) : en mode semaine, la fiche d'un plat montre les
   quantités DU REPAS (« quantités de ton repas »), plus celles de
   référence. `engine/courses.test.ts`, `components/listeCourses.test.tsx`.
-  Reste : lot 4 (profil en base, réajustement §7).
+  **Lot 4 — CODÉ, en attente de validation des « Précisions de calcul »
+  du §7** (« go lot 4 », 26 novembre ; NE PAS déployer avant) : le point
+  des deux semaines. Le §7 validé donnait le tableau ; ses précisions
+  (statut PROPOSÉ dans `regles-cibles-nutrition.md`) fixent le reste :
+  14 jours après la cible acceptée puis après chaque point ; moyenne des 7
+  derniers jours contre les 7 d'avant, 4 pesées au moins dans CHACUNE ;
+  bornes comprises = on ne change rien ; nouvelle cible = calories ± 100
+  puis répartition du §5 refaite (`repartir`, `calculCibles.ts`) sur le
+  poids moyen récent ; plancher ou IMC < 18,5 en perte → « vu avec
+  Guillaume », sans chiffre. Moteur pur `engine/reajustement.ts`, valeurs
+  `REAJUSTEMENT` (`data/reglesCiblesNutrition.ts`, relues dans le .md).
+  Réglage `profilNutrition` (non indexé, pas de migration) : enregistré à
+  « Utiliser cette cible », JAMAIS les réponses de sécurité ; il porte la
+  date du dernier point. Sans profil : pas de point. Une fiche du coach
+  avec des cibles (`patchDeFiche`) ou « Effacer mes cibles » le remet à
+  `null` — l'appli n'ajuste pas la cible de quelqu'un d'autre. Écran
+  (`components/PointDeuxSemaines.tsx`, sous la cible de Nutrition) : une
+  ligne tant que ce n'est pas dû ; le constat AVANT la proposition ;
+  « Accepter cette cible » / « Garder ma cible » referment TOUS LES DEUX le
+  point pour 2 semaines (un refus n'est pas redemandé chaque jour).
+  Accepter écrit la cible les deux jours ; la semaine de repas affiche
+  alors « Ta cible a changé » (lot 2), jamais recomposée seule. Cible
+  acceptée avant le lot 4 : bouton « Activer le point des 2 semaines » à
+  la fin du questionnaire. Pas fait : le contrôle de cohérence avec la
+  tendance déclarée sur 4 semaines (§1).
+  `engine/reajustement.test.ts`, `components/pointDeuxSemaines.test.tsx`.
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
