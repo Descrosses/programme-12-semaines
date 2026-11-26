@@ -89,10 +89,10 @@ réinterprète pas.**
   passage (lot 2) : en mode semaine, la fiche d'un plat montre les
   quantités DU REPAS (« quantités de ton repas »), plus celles de
   référence. `engine/courses.test.ts`, `components/listeCourses.test.tsx`.
-  **Lot 4 — CODÉ, en attente de validation des « Précisions de calcul »
-  du §7** (« go lot 4 », 26 novembre ; NE PAS déployer avant) : le point
-  des deux semaines. Le §7 validé donnait le tableau ; ses précisions
-  (statut PROPOSÉ dans `regles-cibles-nutrition.md`) fixent le reste :
+  **Lot 4 — FAIT** (« go lot 4 », précisions validées par Guillaume le 26
+  novembre) : le point des deux semaines. Le §7 donnait le tableau ; ses
+  « Précisions de calcul » (VALIDÉES, `regles-cibles-nutrition.md`) fixent
+  le reste :
   14 jours après la cible acceptée puis après chaque point ; moyenne des 7
   derniers jours contre les 7 d'avant, 4 pesées au moins dans CHACUNE ;
   bornes comprises = on ne change rien ; nouvelle cible = calories ± 100

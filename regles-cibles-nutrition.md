@@ -4,10 +4,10 @@
 > Le code transcrit ce fichier, il ne le réinterprète pas ; des tests le
 > relisent. Pour changer une règle : changer ce fichier ET le code.
 > **Codé côté coach** (`#/admin`, 23 novembre) : moteur `engine/calculCibles.ts`,
-> valeurs `data/reglesCiblesNutrition.ts`. **Côté utilisateur, lot 1 (26
+> valeurs `data/reglesCiblesNutrition.ts`. **Côté utilisateur (26
 > novembre)** : la cible est proposée à la fin du questionnaire (§0, §6),
-> `engine/cibleProposee.ts`. Pas encore : le profil en base et le
-> réajustement (§1, §7).
+> `engine/cibleProposee.ts` ; le profil en base et le réajustement (§1,
+> §7), `engine/reajustement.ts`.
 >
 > Chaque section sépare **ce que disent les études** (référence exacte et son
 > contexte) des **choix de l'appli** (valeurs de conception validées par
@@ -202,8 +202,8 @@ Toujours une proposition, à accepter.
 
 ### Précisions de calcul
 
-> **Statut : PROPOSÉ le 26 novembre 2026 — à valider par Guillaume**
-> (« go lot 4 »). Ce que le tableau ci-dessus ne disait pas.
+> **Statut : VALIDÉ par Guillaume le 26 novembre 2026** (« précisions
+> validées, déploie »). Ce que le tableau ci-dessus ne disait pas.
 
 - **Quand** : 14 jours après la cible acceptée, puis 14 jours après chaque
   point (proposition acceptée, refusée ou « on ne change rien »).
