@@ -16,6 +16,7 @@ import type { IllustrationsProgramme } from '../engine/perso/illustrations';
 import type { CiblesNutrition } from '../data/ciblesNutrition';
 import type { PlanPerso } from '../data/planPerso';
 import { LEGACY_DAY_MAP, type DayIndex } from '../data/types';
+import type { ThemeImporte } from '../data/themesImportes';
 
 export type SessionStatus = 'planned' | 'done' | 'skipped';
 
@@ -641,6 +642,12 @@ export interface ProgrammeImporteRow {
    * Non indexé : ajouté sans migration (v26).
    */
   illustrations?: IllustrationsProgramme;
+  /**
+   * Le thème choisi pour ce programme (couleurs et bandeaux). Absent = celui
+   * de ME, MYSELF & I. Non indexé : ajouté sans migration. Une nouvelle
+   * version du même programme le reprend.
+   */
+  theme?: Exclude<ThemeImporte, 'perso'>;
 }
 
 /**

@@ -56,6 +56,11 @@ export interface LoadEntry {
   step: number;
   emptyLabel: string;
   /**
+   * « PDC » est une VALEUR (le corps), pas une case vide : il s'écrit comme
+   * un chiffre, jamais en petit gris comme « — » ou « à poser ».
+   */
+  emptyIsValue: boolean;
+  /**
    * Valeur de départ du champ : la charge planifiée quand le programme en
    * donne une, sinon la dernière réellement enregistrée sur cet exercice.
    */
@@ -67,6 +72,7 @@ export function loadEntryFor(ex: ResolvedExercise, saved?: number | null): LoadE
   return {
     step: stepForShape(ex.load.shape),
     emptyLabel: emptyLabelForShape(ex.load.shape),
+    emptyIsValue: emptyLabelForShape(ex.load.shape) === 'PDC',
     initialKg: saved ?? ex.load.kg ?? ex.lastKg ?? null,
   };
 }

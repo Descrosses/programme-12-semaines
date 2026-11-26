@@ -40,6 +40,7 @@ import { currentWeek, locateToday } from './engine/calendar';
 import { cycleActif, dayKindOverride, getSettingsRow } from './db/repo';
 import type { DayKind } from './data/nutrition';
 import styles from './App.module.css';
+import { programmeParId } from './data/catalogue';
 
 type PlateformeName = 'accueil' | 'catalogue' | 'parcours';
 
@@ -281,6 +282,18 @@ export function App() {
         dansPlateforme,
         ecranFemmes ? 'femmes' : undefined,
       );
+      /*
+       * Un programme importé peut porter le thème de POWER ou de MASS : ses
+       * illustrations (dessins sur fond blanc) gardent pourtant leur fond
+       * blanc sans voile. Ce repère le dit aux styles, quel que soit le thème.
+       */
+      const importe =
+        !dansPlateforme &&
+        !ecranFemmes &&
+        cycle !== null &&
+        programmeParId(cycle.programmeId)?.familleId === 'perso';
+      if (importe) document.documentElement.dataset.importe = '';
+      else delete document.documentElement.dataset.importe;
     })();
     return () => {
       vivant = false;

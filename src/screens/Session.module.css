@@ -2755,6 +2755,23 @@
 }
 
 /*
+ * Un programme IMPORTÉ, quel que soit le thème choisi (POWER, MASS) : ses
+ * illustrations sont des dessins sur fond blanc. Elles gardent le fond blanc
+ * et aucun voile, comme sous ME, MYSELF & I. Sans image (photo d'ambiance et
+ * bouton « Ajouter »), le voile du thème reste : il porte le bouton.
+ * Spécificité plus forte que la règle de la Séance MASS (`.ecranSeance`).
+ */
+:global([data-importe][data-theme]) .ecranSeance .ficheImage,
+:global([data-importe][data-theme]) .fiche .ficheImage {
+  background: #fff;
+}
+
+:global([data-importe][data-theme]) .ecranSeance .fiche:has(> .ficheImage) .ficheVoile,
+:global([data-importe][data-theme]) .fiche:has(> .ficheImage) .ficheVoile {
+  background: none;
+}
+
+/*
  * Le bloc « Ajouter la fiche technique ». La seule image de la famille
  * (`cartePerso`) est SOMBRE : sous le voile ivoire elle virait au gris sale.
  * Sans fiche, le bloc est donc un aplat champagne rayé, comme le bandeau.

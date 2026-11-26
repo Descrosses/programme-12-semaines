@@ -1,0 +1,73 @@
+/* « Thème de ce programme » : une ligne par thème, l'aperçu à gauche. */
+
+.liste {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.choix {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  text-align: left;
+}
+
+/* Le choix en cours : contour épais à l'accent ET le mot « Choisi ». */
+.choisi {
+  border: 2px solid var(--accent-ink);
+  padding: 7px 11px;
+}
+
+/* Trois bandes : fond, action, accent du thème. Bord fin : l'ivoire se voit
+   sur un fond clair comme sur un fond sombre. */
+.apercu {
+  display: flex;
+  flex: none;
+  overflow: hidden;
+  width: 54px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+}
+
+.apercu > span {
+  flex: 1;
+}
+
+.texte {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.texte b {
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  letter-spacing: 0.02em;
+}
+
+.texte > span {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.pastille {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

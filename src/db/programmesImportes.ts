@@ -44,6 +44,7 @@ import { clesFichesNatives } from '../programmes/perso/fichesNatives';
 import { clePerso, lireCle, PREFIXE_PERSO } from '../programmes/perso/ids';
 import { memoireEnErreur, remplirMemoire } from '../programmes/perso/memoire';
 import { db, type IllustrationRow, type ProgrammeImporteRow } from './db';
+import { lireThemeImporte, type ThemeImporte } from '../data/themesImportes';
 
 export { PREFIXE_PERSO, clePerso, idExerciceImporte, lireCle } from '../programmes/perso/ids';
 
@@ -309,6 +310,8 @@ export async function importerProgramme(
           document: doc,
           reponses: candidat.reponses,
           ...avecLiens(liens),
+          // Le thème choisi suit le programme d'une version à la suivante.
+          ...(derniere?.theme === undefined ? {} : { theme: derniere.theme }),
         });
         return { statut: 'importe', cle, rapport: v.rapport };
       },
@@ -390,6 +393,23 @@ export async function programmeImporte(cle: string): Promise<ProgrammeImporteRow
 }
 
 /** Le seul champ qui change après l'import. `false` si la version n'existe pas. */
+/**
+ * Le thème d'un programme importé (couleurs et bandeaux). `perso` retire le
+ * champ : l'absence EST le thème de ME, MYSELF & I.
+ */
+export async function choisirTheme(cle: string, theme: ThemeImporte): Promise<boolean> {
+  const trouve =
+    (await db.programmesImportes
+      .where('cle')
+      .equals(cle)
+      .modify((r) => {
+        if (theme === 'perso') delete r.theme;
+        else r.theme = theme;
+      })) > 0;
+  if (trouve) await hydraterProgrammesImportes();
+  return trouve;
+}
+
 export async function archiverProgramme(cle: string, archive: boolean): Promise<boolean> {
   const trouve = (await db.programmesImportes.where('cle').equals(cle).modify({ archive })) > 0;
   if (trouve) await hydraterProgrammesImportes();
@@ -475,6 +495,7 @@ export function programmesDeSauvegarde(
       if (relues === null) throw new Error(`${ici} (${r.cle}) : illustrations illisibles.`);
       illustrations = relues;
     }
+    const theme = lireThemeImporte(r.theme);
     cles.add(r.cle);
     sortie.push({
       cle: r.cle,
@@ -487,6 +508,8 @@ export function programmesDeSauvegarde(
       document: v.programme,
       reponses: { dureeSemaines: duree as number | null },
       ...(illustrations === undefined ? {} : { illustrations }),
+      // Un thème inconnu (fichier retouché, version future) : celui par défaut.
+      ...(theme === undefined || theme === 'perso' ? {} : { theme }),
     });
   });
 

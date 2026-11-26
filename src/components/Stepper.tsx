@@ -35,6 +35,7 @@ export function Stepper({
   max,
   unit,
   emptyLabel = '—',
+  emptyIsValue = false,
   onStep,
   onCommit,
   onCommitText,
@@ -53,6 +54,12 @@ export function Stepper({
    * a le corps — et le champ sert à noter un lest.
    */
   emptyLabel?: string;
+  /**
+   * Le libellé vide est une VALEUR (« PDC ») : il s'écrit comme un chiffre.
+   * Sinon (« — », « à poser », « aucun »), la case est marquée vide
+   * (`data-vide`) et les thèmes au grand chiffre l'écrivent en petit gris.
+   */
+  emptyIsValue?: boolean;
   onStep: (delta: number) => void;
   /** Fourni = saisie clavier possible sur la valeur. Absent = steppers seuls. */
   onCommit?: (value: number | null) => void;
@@ -146,7 +153,7 @@ export function Stepper({
             className={`${styles.value} ${styles.valueEditable} tnum`}
             // Vide (« — », « à poser ») : les thèmes au grand chiffre l'écrivent
             // en petit, pour qu'une case vide ne crie pas plus qu'une valeur.
-            data-vide={value === null ? '' : undefined}
+            data-vide={value === null && !emptyIsValue ? '' : undefined}
             onClick={open}
             aria-label={`${label} — saisir la valeur au clavier`}
           >
@@ -159,7 +166,7 @@ export function Stepper({
           <output
             className={`${styles.value} tnum`}
             aria-labelledby={`lbl-${label}`}
-            data-vide={value === null ? '' : undefined}
+            data-vide={value === null && !emptyIsValue ? '' : undefined}
           >
             {value === null ? emptyLabel : fr(value)}
           </output>
