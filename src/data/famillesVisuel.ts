@@ -157,6 +157,11 @@ export const BANDEAUX_IMPORTES: Readonly<
     progres: 'massProgres',
     reglages: 'massReglages',
   },
+  femmes: {
+    accueil: 'femmesAujourdhui',
+    semaine: 'femmesSemaine',
+    reglages: 'femmesReglages',
+  },
 };
 
 /** Le fond du bloc fiche d'un exercice sans fiche, selon le thème choisi. */
@@ -164,6 +169,7 @@ const AMBIANCE_IMPORTES: Readonly<Record<ThemeImporte, VisuelNom>> = {
   perso: 'cartePerso',
   power: 'sprint',
   mass: 'massSalle',
+  femmes: 'carteFemmes',
 };
 
 /** Le thème choisi pour un programme importé ; `null` pour les autres programmes. */

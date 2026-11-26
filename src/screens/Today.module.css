@@ -456,6 +456,12 @@
   background: var(--accent-deep);
 }
 
+/* LADIES sur un programme importé : le voile mauve sous un texte foncé ne
+   se lisait pas. Les pastilles prennent le blanc rosé des cartes LADIES. */
+:global([data-theme='femmes']) .metaItem {
+  background: var(--surface);
+}
+
 /*
  * MASS — le bouton de l'Accueil, aux jetons SCULPTED (25 novembre) : dégradé
  * bordeaux, liseré clair en haut, halo doux. Blanc dessus : 6,75:1 au plus

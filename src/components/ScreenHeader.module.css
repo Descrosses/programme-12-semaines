@@ -648,6 +648,104 @@
 }
 
 /*
+ * LADIES sur un programme IMPORTÉ (thème choisi, lot 2 du 26 novembre).
+ * Les écrans LADIES ont leur propre bandeau (`Femmes.module.css`) ; un
+ * programme importé passe par celui-ci. On y reprend la planche des
+ * bandeaux LADIES : voile mauve HORIZONTAL (opaque sous le texte, nul sur
+ * le sujet), titre blanc en italique, sur-titre blanc, sous-titre espacé
+ * après un court trait rose. Le bas de la photo fond déjà dans le fond de
+ * page (`--masque-fond`). Sans photo, le titre est rose foncé sur le clair,
+ * comme les écrans de détail LADIES.
+ */
+:global([data-theme='femmes']) .header::after,
+:global([data-theme='femmes']) .header .lueur,
+:global([data-theme='femmes']) .header .yard,
+:global([data-theme='femmes']) .content::before {
+  display: none;
+}
+
+:global([data-theme='femmes']) .hero {
+  background: linear-gradient(125deg, #8f4561 0%, #b9647f 42%, #dda3a6 78%, #ecc3b5 100%);
+}
+
+:global([data-theme='femmes']) .hero .voile {
+  background: linear-gradient(
+    100deg,
+    rgb(var(--voile) / 70%) 0%,
+    rgb(var(--voile) / 32%) 55%,
+    rgb(var(--voile) / 0%) 85%
+  );
+}
+
+:global([data-theme='femmes']) .hero .voile::after {
+  display: none;
+}
+
+:global([data-theme='femmes']) .eyebrow,
+:global([data-theme='femmes']) .marque {
+  color: var(--ink-2);
+  letter-spacing: 0.16em;
+}
+
+:global([data-theme='femmes']) .hero .eyebrow,
+:global([data-theme='femmes']) .hero .marque {
+  color: rgb(255 255 255 / 88%);
+}
+
+:global([data-theme='femmes']) .title,
+:global([data-theme='femmes']) .title.titreSecond {
+  max-width: none;
+  margin-top: 2px;
+  font-family: var(--font-cond);
+  font-size: var(--fs-display);
+  font-style: italic;
+  font-weight: 700;
+  transform: none;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--accent-deep);
+  text-shadow: none;
+  filter: none;
+}
+
+:global([data-theme='femmes']) .hero .title,
+:global([data-theme='femmes']) .hero .title.titreSecond {
+  color: #fff;
+  text-shadow: var(--ombre-titre);
+}
+
+:global([data-theme='femmes']) .subtitleRow {
+  gap: 16px;
+}
+
+:global([data-theme='femmes']) .ruleRight {
+  display: none;
+}
+
+:global([data-theme='femmes']) .ruleLeft {
+  width: 30px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+}
+
+:global([data-theme='femmes']) .hero .ruleLeft {
+  background: #f3a6bb;
+}
+
+:global([data-theme='femmes']) .subtitle {
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+}
+
+:global([data-theme='femmes']) .hero .subtitle {
+  color: rgb(255 255 255 / 94%);
+  text-shadow: 0 1px 6px rgb(60 20 35 / 45%);
+}
+
+/*
  * MASS — en-têtes SANS photo (porte de MASS FORCE, Progrès, Nutrition,
  * Mesures, Réglages). Harmonisation validée par Guillaume (audit du
  * 14 novembre), à partir des écrans validés :

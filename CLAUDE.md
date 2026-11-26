@@ -440,9 +440,16 @@ matériel et la durée avant d'écrire la moindre séance.
   « chaque image reste dans son programme » : un programme importé, sur
   choix explicite ; POWER, MASS et LADIES gardent leurs photos. Repère
   `data-importe` sur la page : les illustrations restent sur fond blanc sans
-  voile sous tout thème. Lot 2 (LADIES) : pas fait — son identité vit dans
-  ses propres écrans, posée telle quelle elle donnerait un « POWER en rose ».
-  `data/themesImportes.test.tsx`.
+  voile sous tout thème. **Lot 2 — LADIES, FAIT** (« go thème lot 2 ») :
+  ses bandeaux Aujourd'hui / Semaine / Réglages (pas de Progrès, LADIES n'en
+  a pas) ; l'en-tête commun reprend la planche des bandeaux LADIES sous
+  `[data-theme='femmes']` (voile mauve horizontal, titre blanc italique,
+  trait rose `#f3a6bb`), les pastilles d'Aujourd'hui passent sur le fond
+  des cartes, et le menu du bas commun a son onglet actif en rose écrit
+  (`:root[data-theme='femmes']` redéfinit `--ivoire` / `--encre`). Les
+  écrans LADIES eux-mêmes n'ont pas bougé (comparés au pixel). Le test
+  « aucun bandeau FEMMES hors des écrans FEMMES » n'admet que
+  `BANDEAUX_IMPORTES`. `data/themesImportes.test.tsx`.
 - **Circuits minutés des programmes importés** (Top Body Challenge, 25
   novembre : « 3 circuits de 3 exercices, circuits 1 & 2 deux fois, 10 min
   chacun, 20 s entre les exercices, 1 à 2 min entre les circuits »). Trois
