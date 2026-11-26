@@ -116,8 +116,47 @@ Aucun hasard : les mêmes réponses donnent la même semaine.
 
 ---
 
-## 4. Ce qui n'est pas encore fait
+## 4. Ce que la personne ne mange pas (exclusions)
 
-- La liste de courses (lot 3) : elle demande des coefficients cru → cuit
-  validés.
-- Le réajustement toutes les deux semaines (lot 4).
+> **Choix de l'appli, 26 novembre 2026** (Guillaume : « go exclusion »).
+> Une question de sécurité : la liste ci-dessous se relit avant chaque
+> déploiement qui la touche.
+
+Le questionnaire n'a pas de question « régime » (il est la copie du site, son
+résumé ne bouge pas) ; il a un champ libre « Allergies ou intolérances ».
+L'appli ne devine donc rien : **la personne coche elle-même ce qu'elle ne
+mange pas**, dans l'onglet Nutrition. Ses allergies écrites **pré-cochent**
+les cases qu'elles nomment, au moment où elle accepte sa cible ; ce qui
+n'est pas reconnu lui est dit, mot pour mot.
+
+| Exclusion | Aliments écartés | Mots reconnus dans les allergies |
+|---|---|---|
+| Viande | poulet, dinde, bœuf | végétarien, végétalien, vegan |
+| Poisson | poisson blanc, saumon, thon | poisson, saumon, thon, cabillaud, végétarien, végétalien, vegan |
+| Œufs | œuf | œuf, oeuf, végétalien, vegan |
+| Produits laitiers | lait, skyr, fromage blanc, fromage frais, yaourt grec | lactose, lait, laitier, laitiers, plv, végétalien, vegan |
+| Arachide | beurre de cacahuète | arachide, arachides, cacahuète, cacahuètes |
+| Fruits à coque | amandes | fruits à coque, fruit à coque, noix, amande, amandes, noisette, noisettes |
+| Gluten | pain complet, pâtes, semoule, flocons d'avoine, flocons croustillants | gluten, blé, coeliaque, cœliaque, maladie coeliaque |
+
+- Un repas qui contient **un seul** aliment écarté n'entre plus dans la
+  semaine, ni dans « Changer ce repas » (les deux modes : semaine et « Mon
+  plan »).
+- Un mot des allergies est reconnu s'il **contient** un mot du tableau
+  (casse et accents ignorés) ; « aucune », « rien », « non » et « RAS » ne
+  sont pas des allergies. Le reste est montré comme **non reconnu**.
+- L'avoine est rangée avec le gluten : sans mention « certifiée sans
+  gluten », elle n'est pas sûre pour une personne cœliaque.
+- L'écran le redit toujours : **les exclusions ne couvrent que ces familles ;
+  avec une allergie, vérifie la composition de chaque repas.**
+- Changer ses exclusions ne recompose rien : si la semaine contient un
+  aliment écarté, un bandeau le dit et propose « Recomposer ».
+- Si un créneau n'a plus aucun repas possible, il reste vide (jamais un
+  repas écarté pour le remplir) : l'écart à la cible se voit.
+
+---
+
+## 5. Ce qui n'est pas encore fait
+
+- Les régimes au-delà du tableau (sans porc : la bibliothèque n'a pas de
+  porc ; halal, casher : à décider par Guillaume).

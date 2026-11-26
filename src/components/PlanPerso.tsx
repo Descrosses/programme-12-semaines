@@ -96,6 +96,7 @@ export function PlanPerso({
   onChange,
   onCopier,
   semaine,
+  exclus,
 }: {
   kind: DayKind;
   journee: JourneePerso;
@@ -116,6 +117,8 @@ export function PlanPerso({
    * créneau (`undefined` pour un créneau que l'appli ne compose pas). Absent :
    * « Mon plan », inchangé.
    */
+  /** Ce que la personne ne mange pas : écarté de « Choisir un repas ». */
+  exclus?: ReadonlySet<string>;
   semaine?: {
     jour: string;
     ajusteur: (creneau: RepasId) => ((r: RepasBibliotheque) => RepasBibliotheque) | undefined;
@@ -381,6 +384,7 @@ export function PlanPerso({
                     {...(semaine?.ajusteur(repas.id)
                       ? { ajuster: semaine.ajusteur(repas.id)! }
                       : {})}
+                    {...(exclus ? { exclus } : {})}
                     onChoisir={(r) => {
                       onChange(poserRepas(journee, repas.id, r.lignes));
                       setBiblio(null);

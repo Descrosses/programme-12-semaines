@@ -72,6 +72,71 @@
   background: var(--surface);
 }
 
+/* « Je ne mange pas » (§4). */
+.exclusions {
+  margin: var(--gap) var(--pad) 0;
+  padding: 10px var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.exclusionsTete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.exclusionsTete .texte {
+  margin: 0;
+}
+
+.lien {
+  flex: none;
+  min-height: var(--tap);
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 10px;
+}
+
+.puce {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Écartée : barrée ET pleine — jamais la couleur seule. */
+.puceOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  text-decoration: line-through;
+}
+
+.note {
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
 .actions {
   display: grid;
   gap: 8px;

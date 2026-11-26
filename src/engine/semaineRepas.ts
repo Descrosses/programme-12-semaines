@@ -28,6 +28,7 @@ import {
   type RepasId,
 } from '../data/planPerso';
 import { ARRONDIS, CRENEAUX_AUTO, LEVIERS, TOLERANCE_PART } from '../data/reglesRepasAutomatiques';
+import { repasExclu } from './exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from './planPersoTotaux';
 
 /** Ce que les quantités visent : calories obligatoires, protéines si posées. */
@@ -203,6 +204,8 @@ export function choisirRepasSemaine(
   preferes: readonly string[],
   cible: CibleRepas,
   catalogue: Catalogue,
+  /** §4 — les aliments que la personne ne mange pas. */
+  exclus: ReadonlySet<string> = new Set(),
 ): readonly Partial<Record<RepasId, string>>[] {
   const aime = new Set(preferes);
   const servis = new Map<string, number>();
@@ -217,7 +220,8 @@ export function choisirRepasSemaine(
       // Un repas qui ne tient pas sa part n'entre pas dans la semaine (il
       // reste dans la bibliothèque) ; à défaut, on relâche les règles une à
       // une plutôt que de laisser le créneau vide.
-      const tous = repasPourCreneau(creneau);
+      // §4 — un repas écarté n'entre jamais, même pour remplir un créneau.
+      const tous = repasPourCreneau(creneau).filter((r) => !repasExclu(r, exclus));
       const tenus = tous.filter((r) =>
         tientSaPart(ajusterRepas(r, part, cible, catalogue), part, cible, catalogue),
       );
@@ -253,9 +257,10 @@ export function composerSemaine(
   preferes: readonly string[],
   catalogue: Catalogue,
   aujourdhui: string,
+  exclus: ReadonlySet<string> = new Set(),
 ): SemaineRepas {
   const parId = new Map(BIBLIOTHEQUE_REPAS.map((r) => [r.id, r]));
-  const jours = choisirRepasSemaine(preferes, cible, catalogue).map((choix) => {
+  const jours = choisirRepasSemaine(preferes, cible, catalogue, exclus).map((choix) => {
     const journee: Partial<Record<RepasId, readonly LignePerso[]>> = {};
     for (const { repas: creneau, part } of CRENEAUX_AUTO) {
       const r = parId.get(choix[creneau] ?? '');

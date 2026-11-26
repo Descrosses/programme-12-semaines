@@ -11,14 +11,27 @@
  *   le dit et propose de recomposer ;
  * - recomposer et revenir à « Mon plan » demandent une confirmation : ils
  *   jettent les changements faits à la main dans la semaine. « Mon plan »
- *   lui-même n'est jamais effacé.
+ *   lui-même n'est jamais effacé ;
+ * - « Je ne mange pas » (§4) : une ligne repliée au-dessus des jours, qui
+ *   dit ce qui est écarté ; dépliée, une case par famille, et TOUJOURS la
+ *   phrase « vérifie la composition de chaque repas ». Changer ses
+ *   exclusions ne recompose rien : un bandeau dit ce qui reste à écarter.
  */
 
 import { useState } from 'react';
 import type { CibleSaisie } from '../data/ciblesNutrition';
 import type { LibraryFood } from '../data/foodLibrary';
 import type { JourneePerso, RepasId } from '../data/planPerso';
-import { JOURS_SEMAINE } from '../data/reglesRepasAutomatiques';
+import { repasPourCreneau } from '../data/bibliothequeRepas';
+import { EXCLUSIONS, type ExclusionId } from '../data/exclusionsRepas';
+import { CRENEAUX_AUTO, JOURS_SEMAINE } from '../data/reglesRepasAutomatiques';
+import { REPAS_PERSO } from '../data/planPerso';
+import {
+  alimentsExclus,
+  exclusDansSemaine,
+  nomExclusion,
+  repasExclu,
+} from '../engine/exclusionsRepas';
 import type { Catalogue } from '../engine/planPersoTotaux';
 import {
   ajusterRepas,
@@ -57,7 +70,83 @@ export function ProposerSemaine({
   );
 }
 
-type Confirmation = null | { action: 'recomposer' | 'quitter'; ou: 'haut' | 'bas' };
+type Confirmation = null | {
+  action: 'recomposer' | 'quitter';
+  ou: 'haut' | 'bas' | 'exclus';
+};
+
+/**
+ * « Je ne mange pas » (§4) — repliée, une ligne ; dépliée, une case par
+ * famille. La phrase de prudence est toujours là, dépliée ou non.
+ */
+export function JeNeMangePas({
+  exclusions,
+  onChange,
+  ouvertParDefaut = false,
+}: {
+  exclusions: readonly ExclusionId[];
+  onChange: (suivantes: ExclusionId[]) => void;
+  ouvertParDefaut?: boolean;
+}) {
+  const [ouvert, setOuvert] = useState(ouvertParDefaut);
+  const set = alimentsExclus(exclusions);
+  // Les créneaux que la bibliothèque ne peut plus remplir du tout.
+  const vides = CRENEAUX_AUTO.filter((c) =>
+    repasPourCreneau(c.repas).every((r) => repasExclu(r, set)),
+  ).map((c) => REPAS_PERSO.find((r) => r.id === c.repas)!.nom.toLowerCase());
+  return (
+    <section className={styles.exclusions} aria-label="Je ne mange pas" data-exclusions>
+      <div className={styles.exclusionsTete}>
+        <p className={styles.texte}>
+          <b>Je ne mange pas :</b>{' '}
+          {exclusions.length === 0 ? 'rien d’écarté' : exclusions.map(nomExclusion).join(', ')}
+        </p>
+        <button
+          type="button"
+          className={styles.lien}
+          aria-expanded={ouvert}
+          onClick={() => setOuvert(!ouvert)}
+        >
+          {ouvert ? 'Terminé' : 'Modifier'}
+        </button>
+      </div>
+      {ouvert && (
+        <div className={styles.puces} role="group" aria-label="Familles écartées">
+          {EXCLUSIONS.map((e) => {
+            const on = exclusions.includes(e.id);
+            return (
+              <button
+                key={e.id}
+                type="button"
+                className={`${styles.puce} ${on ? styles.puceOn : ''}`}
+                aria-pressed={on}
+                onClick={() =>
+                  onChange(
+                    EXCLUSIONS.filter((x) => (x.id === e.id ? !on : exclusions.includes(x.id))).map(
+                      (x) => x.id,
+                    ),
+                  )
+                }
+              >
+                {e.nom}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {vides.length > 0 && (
+        <p className={styles.texte} data-creneaux-vides>
+          Avec ces exclusions, la bibliothèque n’a aucun repas pour : {vides.join(', ')}. Ces repas
+          restent vides : compose-les à la main.
+        </p>
+      )}
+      <p className={styles.note}>
+        Les exclusions ne couvrent que ces familles. Avec une allergie, vérifie toujours la
+        composition de chaque repas.
+      </p>
+    </section>
+  );
+}
 
 export function SemaineRepasSection({
   semaine,
@@ -72,6 +161,8 @@ export function SemaineRepasSection({
   onRecomposer,
   onQuitter,
   faits,
+  exclusions = [],
+  onExclusions,
 }: {
   semaine: SemaineRepas;
   /** La cible d'aujourd'hui dans les réglages, pour dire si elle a changé. */
@@ -89,8 +180,13 @@ export function SemaineRepasSection({
   onQuitter: () => void;
   /** Les repas d'AUJOURD'HUI cochés « mangé », et le geste pour en cocher un. */
   faits?: { pris: ReadonlySet<RepasId>; onBasculer: (repas: RepasId) => void };
+  /** §4 — ce que la personne ne mange pas. */
+  exclusions?: readonly ExclusionId[];
+  onExclusions?: (suivantes: ExclusionId[]) => void;
 }) {
   const [jour, setJour] = useState(jourInitial);
+  const exclus = alimentsExclus(exclusions);
+  const restants = exclusDansSemaine(semaine, exclus).map((id) => catalogue[id]?.label ?? id);
   const [confirme, setConfirme] = useState<Confirmation>(null);
   /** « Ma liste de courses » ouverte en plein écran (lot 3). */
   const [courses, setCourses] = useState(false);
@@ -141,6 +237,28 @@ export function SemaineRepasSection({
         ))}
       </div>
 
+      {onExclusions && <JeNeMangePas exclusions={exclusions} onChange={onExclusions} />}
+
+      {restants.length > 0 && (
+        <section className={styles.bandeau} role="note" data-semaine="exclus-restants">
+          <p className={styles.texte}>
+            <b>Ta semaine contient encore</b> un aliment que tu ne manges pas :{' '}
+            {restants.join(', ')}.
+          </p>
+          {confirme?.ou === 'exclus' ? (
+            confirmation()
+          ) : (
+            <button
+              type="button"
+              className={styles.principal}
+              onClick={() => setConfirme({ action: 'recomposer', ou: 'exclus' })}
+            >
+              Recomposer ma semaine
+            </button>
+          )}
+        </section>
+      )}
+
       {change && cibleActuelle !== null && (
         <section className={styles.bandeau} role="note" data-semaine="cible-changee">
           <p className={styles.texte}>
@@ -173,6 +291,7 @@ export function SemaineRepasSection({
           onChange({ ...semaine, jours: semaine.jours.map((j, i) => (i === jour ? suivante : j)) })
         }
         onCopier={null}
+        exclus={exclus}
         semaine={{
           jour: nomJour,
           // On ne coche que les repas du jour : la semaine est un modèle.
