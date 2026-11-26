@@ -36,11 +36,13 @@ import { validerProgramme } from '../../engine/perso/valider';
 import { estUneArchive } from '../../media/archive';
 import { preparerIllustration } from '../../media/illustration';
 import { analyserArchive, type ResultatAnalyse } from '../../programmes/perso/archiveIllustree';
-import { lireMemoire } from '../../programmes/perso/memoire';
+import { lireMemoire, programmeEnMemoire } from '../../programmes/perso/memoire';
+import { THEME_IMPORTE_DEFAUT, type ThemeImporte } from '../../data/themesImportes';
 import { ApercuIllustrations, cleProposition, exercicesDe, FichesProposees } from './Illustrations';
 import styles from '../../screens/Screens.module.css';
 import local from './Perso.module.css';
 import { phraseSuivi } from './suivi';
+import { ThemeProgramme } from './ThemeProgramme';
 
 /** Les sujets des décisions, dits en français. */
 export const SUJETS: Record<string, string> = {
@@ -76,6 +78,14 @@ export function ImportProgramme({ onImporte }: { onImporte: (cle: string) => voi
   const [propositions, setPropositions] = useState<Proposition[]>([]);
   const [choisies, setChoisies] = useState<ReadonlySet<string>>(new Set());
   const [enCours, setEnCours] = useState(false);
+  /*
+   * Le programme qu'on vient d'importer, et son thème. Guillaume (26
+   * novembre) : « annoncer la possibilité de choisir son thème dès le début,
+   * juste après avoir importé son programme ». Le choix est PROPOSÉ ici, pas
+   * imposé : sans geste, le programme garde son thème (ME, MYSELF & I, ou
+   * celui de la version précédente), et ses Réglages le changent ensuite.
+   */
+  const [importe, setImporte] = useState<{ cle: string; theme: ThemeImporte } | null>(null);
 
   // Le programme et les exercices déjà illustrés de ce qu'on vient de lire.
   const lecture = useMemo(() => {
@@ -183,6 +193,10 @@ export function ImportProgramme({ onImporte }: { onImporte: (cle: string) => voi
       const nom = lecture.programme.nom;
       if (r.statut === 'importe') {
         setMessage(`« ${nom} » est importé.`);
+        setImporte({
+          cle: r.cle,
+          theme: programmeEnMemoire(r.cle)?.theme ?? THEME_IMPORTE_DEFAUT,
+        });
         setLu(null);
         onImporte(r.cle);
       } else if (r.statut === 'deja-importe') {
@@ -282,6 +296,7 @@ export function ImportProgramme({ onImporte }: { onImporte: (cle: string) => voi
           onChange={(e) => {
             const f = e.target.files?.[0];
             e.target.value = '';
+            setImporte(null);
             if (f) void lire(f);
           }}
         />
@@ -291,6 +306,24 @@ export function ImportProgramme({ onImporte }: { onImporte: (cle: string) => voi
         <p className={local.ok} role="status">
           {message}
         </p>
+      )}
+
+      {importe !== null && (
+        <div className={local.themeApresImport}>
+          <p className={local.annonceTheme}>
+            Choisis dès maintenant son thème. Tu pourras le changer quand tu veux dans ses Réglages.
+          </p>
+          <ThemeProgramme
+            cle={importe.cle}
+            actuel={importe.theme}
+            onChange={() =>
+              setImporte({
+                cle: importe.cle,
+                theme: programmeEnMemoire(importe.cle)?.theme ?? THEME_IMPORTE_DEFAUT,
+              })
+            }
+          />
+        </div>
       )}
 
       {refus !== null && (

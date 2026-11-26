@@ -48,6 +48,28 @@
   font-size: var(--fs-small);
 }
 
+/* Le thème proposé juste après l'import (Guillaume, 26 novembre). */
+.themeApresImport {
+  margin-top: 12px;
+}
+
+/* La carte du thème, déjà dans le panneau d'import : pas de second cadre. */
+.themeApresImport > section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  /* La carte coupe ce qui dépasse : sans marge, le bas du dernier choix. */
+  overflow: visible;
+}
+
+.annonceTheme {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
 .refus {
   margin-top: 12px;
   padding: 10px 12px;
