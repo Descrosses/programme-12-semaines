@@ -229,6 +229,38 @@ describe('une case VIDE ne crie pas (« à poser », « — ») — POWER et LAD
     expect(rendu(2400, () => {})).not.toContain('data-vide');
   });
 
+  it('« PDC » est une VALEUR (le poids du corps) : jamais marquée vide', async () => {
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { createElement } = await import('react');
+    const { Stepper } = await import('../components/Stepper');
+    const { loadEntryFor } = await import('../engine/loadEntry');
+    const { moduleParId } = await import('../programmes/registre');
+    const { EMPTY_CONTEXT } = await import('../engine/types');
+    // Le Plyo Push-up du mercredi : poids du corps.
+    const plyo = moduleParId('power12')!
+      .getSession(1, 2, EMPTY_CONTEXT)!
+      .exercises.find((e) => e.load.shape === 'bodyweight')!;
+    const entry = loadEntryFor(plyo);
+    expect(entry).toMatchObject({ emptyLabel: 'PDC', emptyIsValue: true, initialKg: null });
+    const html = renderToStaticMarkup(
+      createElement(Stepper, {
+        label: 'Charge',
+        value: null,
+        step: entry.step,
+        min: 0,
+        max: 300,
+        emptyLabel: entry.emptyLabel,
+        emptyIsValue: entry.emptyIsValue,
+        onStep: () => {},
+        onCommit: () => {},
+      }),
+    );
+    expect(html).toContain('PDC');
+    expect(html).not.toContain('data-vide');
+    // Et la carte d'exercice transmet bien l'information au sélecteur.
+    expect(lire('../components/ExerciseCard.tsx')).toContain('emptyIsValue={entry.emptyIsValue}');
+  });
+
   it('en petit, droit, gris — sous POWER et LADIES seulement', () => {
     const css = lire('../components/Stepper.module.css');
     const r = /([^{}]*\.value\[data-vide\])\s*\{([^}]*)\}/.exec(

@@ -23,6 +23,8 @@
 
 import { familleParId, programmeParId, type FamilleId } from './catalogue';
 import type { VisuelNom } from './visuels';
+import { programmeEnMemoire } from '../programmes/perso/memoire';
+import { THEME_IMPORTE_DEFAUT, type ThemeImporte } from './themesImportes';
 
 export interface HabillageFamille {
   /**
@@ -128,10 +130,66 @@ export const HABILLAGE: Record<FamilleId, HabillageFamille> = {
   },
 };
 
+/*
+ * ME, MYSELF & I — les bandeaux d'un programme importé selon le THÈME choisi
+ * (lot 1 du 26 novembre). C'est la SEULE exception à la règle « chaque image
+ * reste dans son programme » : elle ne vaut que pour un programme importé,
+ * et seulement sur le choix explicite de la personne. POWER et MASS, eux,
+ * gardent exactement leurs photos (`HABILLAGE` n'est pas touché).
+ *
+ * POWER n'a pas de bandeaux de famille : ce sont ceux que POWER 12 affiche
+ * (stade, semaine, sprint, athlète). La séance d'un programme importé n'a
+ * pas de bandeau, quel que soit le thème.
+ */
+export const BANDEAUX_IMPORTES: Readonly<
+  Record<ThemeImporte, Readonly<Partial<Record<EcranEntete, VisuelNom>>>>
+> = {
+  perso: HABILLAGE.perso.entetes ?? {},
+  power: {
+    accueil: 'stade',
+    semaine: 'semainePower',
+    progres: 'sprint',
+    reglages: 'athlete',
+  },
+  mass: {
+    accueil: 'massAthlete',
+    semaine: 'massDisque',
+    progres: 'massProgres',
+    reglages: 'massReglages',
+  },
+};
+
+/** Le fond du bloc fiche d'un exercice sans fiche, selon le thème choisi. */
+const AMBIANCE_IMPORTES: Readonly<Record<ThemeImporte, VisuelNom>> = {
+  perso: 'cartePerso',
+  power: 'sprint',
+  mass: 'massSalle',
+};
+
+/** Le thème choisi pour un programme importé ; `null` pour les autres programmes. */
+export function themeImporteDe(programmeId: string): ThemeImporte | null {
+  if (programmeParId(programmeId)?.familleId !== 'perso') return null;
+  return programmeEnMemoire(programmeId)?.theme ?? THEME_IMPORTE_DEFAUT;
+}
+
+/**
+ * La famille dont l'écran prend les COULEURS : la sienne, sauf pour un
+ * programme importé, qui prend le thème choisi. Les textes (sur-titre
+ * « ME, MYSELF & I », nom du programme) restent ceux de sa famille.
+ */
+export function familleVisuelle(programmeId: string): FamilleId | null {
+  const def = programmeParId(programmeId);
+  if (def === null) return null;
+  return themeImporteDe(programmeId) ?? def.familleId;
+}
+
 /** La photo d'en-tête d'un écran pour ce programme, si sa famille en a une. */
 export function enteteDe(programmeId: string, ecran: EcranEntete): VisuelNom | undefined {
   const def = programmeParId(programmeId);
-  return def === null ? undefined : HABILLAGE[def.familleId]?.entetes?.[ecran];
+  if (def === null) return undefined;
+  const theme = themeImporteDe(programmeId);
+  if (theme !== null) return BANDEAUX_IMPORTES[theme][ecran];
+  return HABILLAGE[def.familleId]?.entetes?.[ecran];
 }
 
 /**
@@ -211,6 +269,8 @@ const AMBIANCE_FICHE: Readonly<Record<string, VisuelNom>> = {
 export function ambianceFicheDe(programmeId: string): VisuelNom | null {
   const propre = AMBIANCE_FICHE[programmeId];
   if (propre !== undefined) return propre;
+  const theme = themeImporteDe(programmeId);
+  if (theme !== null) return AMBIANCE_IMPORTES[theme];
   const def = programmeParId(programmeId);
   return def === null ? null : (HABILLAGE[def.familleId]?.photo ?? null);
 }

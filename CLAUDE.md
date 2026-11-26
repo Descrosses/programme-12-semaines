@@ -428,6 +428,21 @@ matériel et la durée avant d'écrire la moindre séance.
   `archiveIllustree.test.ts`, `importIllustre.test.tsx`, `module.test.ts`.
   À vérifier sur iPhone : choisir un .zip dans Fichiers, et le format
   ré-enregistré (PNG si Safari n'écrit pas le WebP).
+- **Thème d'un programme importé — lot 1 FAIT** (Guillaume, 26 novembre,
+  « go thème lot 1 »). Carte « Thème de ce programme » dans ses Réglages :
+  ME, MYSELF & I (défaut), POWER, MASS (`data/themesImportes.ts`,
+  `components/perso/ThemeProgramme.tsx`). Le thème = couleurs (`data-theme`)
+  ET bandeaux (`BANDEAUX_IMPORTES`, `familleVisuelle`, `themeImporteDe`) ;
+  les textes (« ME, MYSELF & I », sous-titres, nom du programme) ne bougent
+  pas, la séance n'a jamais de bandeau. Rangé sur la ligne du programme
+  (`theme`, non indexé, absent = défaut), repris par une nouvelle version,
+  relu à la restauration (thème inconnu ignoré). **Seule exception** à
+  « chaque image reste dans son programme » : un programme importé, sur
+  choix explicite ; POWER, MASS et LADIES gardent leurs photos. Repère
+  `data-importe` sur la page : les illustrations restent sur fond blanc sans
+  voile sous tout thème. Lot 2 (LADIES) : pas fait — son identité vit dans
+  ses propres écrans, posée telle quelle elle donnerait un « POWER en rose ».
+  `data/themesImportes.test.tsx`.
 - **Circuits minutés des programmes importés** (Top Body Challenge, 25
   novembre : « 3 circuits de 3 exercices, circuits 1 & 2 deux fois, 10 min
   chacun, 20 s entre les exercices, 1 à 2 min entre les circuits »). Trois
@@ -595,7 +610,8 @@ matériel et la durée avant d'écrire la moindre séance.
   bordés, fond blanc → rose, grand chiffre en italique Oswald. « Séance
   terminée » reste vert, le choix Maison / Salle n'est pas touché. Une case
   VIDE (« à poser », « — ») s'écrit en petit, droit et gris sous POWER et
-  LADIES (`data-vide` posé par `Stepper`).
+  LADIES (`data-vide` posé par `Stepper`) ; « PDC » n'est PAS une case vide
+  (le poids du corps est une valeur : `emptyIsValue`, `loadEntry.ts`).
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,

@@ -49,7 +49,8 @@ import {
 } from '../db/repo';
 import type { SettingsRow } from '../db/db';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { enteteDe, titresBandeauDe } from '../data/famillesVisuel';
+import { enteteDe, themeImporteDe, titresBandeauDe } from '../data/famillesVisuel';
+import { ThemeProgramme } from '../components/perso/ThemeProgramme';
 import type { ModuleProgramme } from '../programmes/types';
 import styles from './Screens.module.css';
 
@@ -240,6 +241,8 @@ export function SettingsScreen({
   /* ME, MYSELF & I : sur-titre et sous-titre de son bandeau. La phrase « tout
      reste sur ce téléphone » reste écrite juste dessous. */
   const titresBandeau = titresBandeauDe(programme.id, 'reglages');
+  /* Le thème choisi d'un programme importé ; `null` pour les autres programmes. */
+  const themeImporte = themeImporteDe(programme.id);
 
   return (
     <div className={styles.screen}>
@@ -267,6 +270,11 @@ export function SettingsScreen({
         >
           {message.text}
         </p>
+      )}
+
+      {/* ME, MYSELF & I : le thème du programme importé (lot 1, 26 novembre). */}
+      {themeImporte !== null && (
+        <ThemeProgramme cle={programme.id} actuel={themeImporte} onChange={onChanged} />
       )}
 
       {/* ------------------------------------------------ date de début -- */}

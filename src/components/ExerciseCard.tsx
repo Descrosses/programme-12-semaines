@@ -1058,6 +1058,7 @@ export function SetEntry({
       label={ex.load.shape === 'added' ? 'Lest kg' : 'Charge kg'}
       value={kg}
       emptyLabel={entry.emptyLabel}
+      emptyIsValue={entry.emptyIsValue}
       step={entry.step}
       min={KG_MIN}
       max={KG_MAX}

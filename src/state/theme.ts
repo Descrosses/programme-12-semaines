@@ -24,7 +24,8 @@
  * signale et qu'on ne remarque qu'en ouvrant l'écran concerné.
  */
 
-import { programmeParId, type FamilleId } from '../data/catalogue';
+import type { FamilleId } from '../data/catalogue';
+import { familleVisuelle } from '../data/famillesVisuel';
 
 /**
  * Les univers graphiques possibles : les trois familles, plus celui de la
@@ -67,5 +68,6 @@ export function themePour(
   if (familleDeLEcran !== undefined) return familleDeLEcran;
   if (dansPlateforme) return THEME_PLATEFORME;
   if (programmeId === null) return THEME_PLATEFORME;
-  return programmeParId(programmeId)?.familleId ?? THEME_PLATEFORME;
+  // Un programme importé prend le thème choisi (lot 1 du 26 novembre).
+  return familleVisuelle(programmeId) ?? THEME_PLATEFORME;
 }
