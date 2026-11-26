@@ -97,6 +97,30 @@ describe('le geste', () => {
   });
 });
 
+describe('l’écriture ne bouge pas pendant le demi-tour (vidéo de Guillaume, 26 novembre)', () => {
+  it('le verso est dessiné à sa taille FINALE, puis mis à l’échelle de la carte', () => {
+    const src = lire('./FamilleRetournee.tsx');
+    expect(src).toContain('const echelle = cible.width / final.width;');
+    expect(src).toMatch(/width: final\.width,\s*height: final\.height,/);
+    expect(src).toContain('transform: `scale(${String(echelle)})`');
+    const css = lire('./FamilleRetournee.module.css');
+    const interieur = css.slice(css.indexOf('\n.versoInterieur {'));
+    expect(interieur).toMatch(/transform-origin: 0 0;/);
+    // Même durée et même courbe que la carte : l'échelle suit sa largeur.
+    expect(interieur).toMatch(
+      /transition: transform var\(--duree, 950ms\) cubic-bezier\(0\.45, 0, 0\.2, 1\)/,
+    );
+    expect(css).toMatch(/width var\(--duree, 950ms\) cubic-bezier\(0\.45, 0, 0\.2, 1\)/);
+  });
+
+  it('les photos de la carte se chargent tout de suite (jamais noires pendant le pivot)', () => {
+    const src = lire('./FamilleRetournee.tsx');
+    const photos = [...src.matchAll(/<Visuel [^>]*\/>/g)].map((m) => m[0]);
+    expect(photos).toHaveLength(2);
+    for (const v of photos) expect(v).toContain('prioritaire');
+  });
+});
+
 describe('le bouton « Voir les programmes » se lit pour les quatre familles', () => {
   const lum = (r: number, g: number, b: number) => {
     const c = [r, g, b].map((v) => {
