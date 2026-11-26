@@ -10,6 +10,7 @@ import type { Niveau } from '../data/femmes/niveaux';
 import type { DayIndex as JourFemmes, Version as VersionFemmes } from '../data/femmes/types';
 import type { ExerciseRecord, SafetyAnswers } from '../engine/femmes/types';
 import type { DecisionAlignement } from '../engine/alignementReps';
+import type { SemaineRepas } from '../engine/semaineRepas';
 import Dexie, { type Table } from 'dexie';
 import type { ProgrammeNormalise } from '../engine/perso/types';
 import type { IllustrationsProgramme } from '../engine/perso/illustrations';
@@ -465,6 +466,14 @@ export interface SettingsRow {
    * encore vides dans l'autre.
    */
   planPerso: PlanPerso | null;
+  /**
+   * La semaine de repas composée par l'appli (`regles-repas-automatiques.md`,
+   * lot 2 de la nutrition automatique) : 7 journées, quantités ajustées à
+   * la cible. `null` = pas de semaine ; « Mon plan » (`planPerso`) s'affiche.
+   * Non indexé : pas de migration, l'export et la sauvegarde la portent avec
+   * les réglages.
+   */
+  semaineRepas: SemaineRepas | null;
 }
 
 /**
@@ -1392,6 +1401,7 @@ export const DEFAULT_SETTINGS_ROW: SettingsRow = {
   ciblesNutrition: null,
   alimentsPreferes: null,
   planPerso: null,
+  semaineRepas: null,
 };
 
 /**

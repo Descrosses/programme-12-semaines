@@ -44,6 +44,7 @@ export function ChoixRepas({
   catalogue,
   onChoisir,
   onFermer,
+  ajuster,
 }: {
   creneau: RepasId;
   nomCreneau: string;
@@ -51,8 +52,15 @@ export function ChoixRepas({
   catalogue: Catalogue;
   onChoisir: (repas: RepasBibliotheque) => void;
   onFermer: () => void;
+  /**
+   * Semaine automatique : chaque carte est ajustée à la part de ce repas
+   * (`regles-repas-automatiques.md` §2) AVANT d'être montrée — la carte, sa
+   * fiche et le repas posé disent les mêmes quantités. Absent : les
+   * quantités de référence, comme avant.
+   */
+  ajuster?: (repas: RepasBibliotheque) => RepasBibliotheque;
 }) {
-  const repas = repasPourCreneau(creneau);
+  const repas = repasPourCreneau(creneau).map((r) => (ajuster ? ajuster(r) : r));
   /** Le plat dont la fiche (grande photo, composition) est ouverte. */
   const [detail, setDetail] = useState<RepasBibliotheque | null>(null);
 
@@ -65,8 +73,9 @@ export function ChoixRepas({
         </button>
       </div>
       <p className={styles.sous}>
-        Une carte pose le repas entier avec ses quantités de référence. Tu ajustes ensuite — c’est
-        un point de départ, pas une prescription.
+        {ajuster
+          ? 'Les quantités sont déjà ajustées à ta cible pour ce repas. Tu peux toujours les régler ensuite.'
+          : 'Une carte pose le repas entier avec ses quantités de référence. Tu ajustes ensuite — c’est un point de départ, pas une prescription.'}
       </p>
 
       <ul className={styles.liste}>

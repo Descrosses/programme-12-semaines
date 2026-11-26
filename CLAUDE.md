@@ -50,11 +50,29 @@ réinterprète pas.**
   « Utiliser cette cible » → `ciblesNutrition` les deux jours ; cible en
   place annoncée, plan historique masqué annoncé (même règle que la fiche).
   « Aucune cible posée » (Nutrition) mène au questionnaire. Rien avant le
-  bouton. `components/cibleCalculee.test.tsx`. Reste : lot 2 (journée et
-  semaine de repas aux quantités ajustées — la règle « aucune quantité »
-  est levée pour les programmes sans plan propre), lot 3 (courses en poids
-  CRU, coefficients à valider dans un `.md`), lot 4 (profil en base,
-  réajustement §7).
+  bouton. `components/cibleCalculee.test.tsx`.
+  **Côté utilisateur, lot 2 — FAIT** (« go lot 2 », 26 novembre) : la
+  semaine de repas. Source de vérité : `regles-repas-automatiques.md`
+  (choix de l'appli, relu par `data/reglesRepasAutomatiques.test.ts`) :
+  4 repas (25/30/15/30 %), deux leviers bornés, calories d'abord, pièces
+  arrondies puis aliments pesés, ± 10 % par repas, PROTÉINES AVANT LA
+  VARIÉTÉ (mesuré : sinon un jour sur deux rate ses protéines d'un quart à
+  un tiers), aucun hasard. Moteur `engine/semaineRepas.ts` ; réglage
+  `semaineRepas` (non indexé, pas de migration). Composée UNE fois : à
+  « Utiliser cette cible » (si aucune semaine ; reprend les aliments du
+  questionnaire si la liste est vide) ou par « Composer ma semaine »
+  (Nutrition). Elle REMPLACE l'affichage de « Mon plan » (`planPerso`
+  jamais effacé) : rangée Lun → Dim ouverte sur aujourd'hui, `PlanPerso`
+  en mode `semaine`, « Changer ce repas » = bibliothèque déjà ajustée
+  (`ChoixRepas` `ajuster`). Cible changée = bandeau + « Recomposer »,
+  jamais seule ; recomposer et « Revenir à mon plan » se confirment.
+  Mesuré sur 7 profils (1 200 à 4 000 kcal) : chaque jour entre − 5 et
+  + 5 % des calories, protéines à quelques grammes ; 9 à 14 plats par
+  semaine ; à 1 200 kcal une seule collation tient sa part (elle revient 6
+  jours sur 7) ; l'omelette peut monter à 7 œufs (levier × 2).
+  `engine/semaineRepas.test.ts`, `components/semaineRepas.test.tsx`.
+  Reste : lot 3 (courses en poids CRU, coefficients à valider dans un
+  `.md`), lot 4 (profil en base, réajustement §7).
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
@@ -828,8 +846,11 @@ matériel et la durée avant d'écrire la moindre séance.
   23 novembre) attendent les maquettes de la refonte visuelle.
 - Le chrono de sprint est un **indicateur de transfert**, pas un objectif :
   aucune séance ne fait sprinter.
-- Le programme ne propose **aucune quantité alimentaire** : il additionne et
-  affiche l'écart. Proposer un gramme serait une prescription.
+- **Quantités alimentaires** : « Mon plan » n'en propose AUCUNE (il
+  additionne et affiche l'écart). **Exception décidée par Guillaume (26
+  novembre)** : la semaine de repas automatique, pour les programmes sans
+  plan propre (voir « Côté utilisateur, lot 2 »). Le plan historique et MASS
+  ne sont pas concernés.
 - **FEMMES 8 n'est pas un module, il a ses propres écrans.** L'App aiguille
   tout cycle `femmes8` vers `#/femmes/*` (et renvoie au catalogue un
   `#/femmes/*` sans cycle FEMMES). Ses séances vivent dans `femmesSeances`
