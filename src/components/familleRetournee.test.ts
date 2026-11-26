@@ -14,7 +14,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { FAMILLES } from '../data/catalogue';
 import { HABILLAGE } from '../data/famillesVisuel';
-import { qualitesDe, rectangleOuvert } from './FamilleRetournee';
+import { DUREE_RETOURNEMENT, qualitesDe, rectangleOuvert } from './FamilleRetournee';
 
 const lire = (f: string) => readFileSync(new URL(f, import.meta.url), 'utf8');
 const famille = (id: string) => FAMILLES.find((f) => f.id === id)!;
@@ -28,10 +28,27 @@ describe('le verso : le catalogue, mot pour mot', () => {
     expect(power12.objectifs.length).toBeGreaterThan(0);
   });
 
-  it('MASS : MASS FORCE n’a pas d’objectifs écrits, il n’en reçoit pas', () => {
+  it('MASS : FORCE puis CONGESTION, chacun sous son nom (la force n’est pas absente de MASS)', () => {
     const q = qualitesDe(famille('mass'));
-    expect(q.map((x) => x.nom)).toEqual(['MASS CONGESTION']);
-    expect(famille('mass').programmes.find((p) => p.id === 'mass-force')!.objectifs).toEqual([]);
+    expect(q.map((x) => x.nom)).toEqual(['MASS FORCE', 'MASS CONGESTION']);
+    // Les mots de Guillaume pour le cycle de force.
+    expect(q[0]!.objectifs).toEqual([
+      'Devenir plus fort et continuer de progresser, sans se blesser',
+    ]);
+    // MASS HYPERTROPHIE est à venir : aucun objectif écrit, il n'en reçoit pas.
+    expect(famille('mass').programmes.find((p) => p.id === 'mass8')!.objectifs).toEqual([]);
+  });
+
+  it('POWER : aucun objectif personnel (« c’était uniquement pour moi »)', () => {
+    const tous = FAMILLES.flatMap((f) => f.programmes.flatMap((p) => p.objectifs)).join(' | ');
+    expect(tous).not.toMatch(/chaîne postérieure|Rattraper l’écart/);
+    expect(qualitesDe(famille('power'))[0]!.objectifs).toHaveLength(2);
+  });
+
+  it('chaque liste d’objectifs porte le NOM de son programme, même seule', () => {
+    const src = lire('./FamilleRetournee.tsx');
+    expect(src).toContain('<h4 className={local.nomProgramme}>{q.nom}</h4>');
+    expect(src).not.toMatch(/qualites\.length > 1 &&/);
   });
 
   it('LADIES : LADIES CYCLE 1 ; ME, MYSELF & I : son résumé seul', () => {
@@ -71,6 +88,11 @@ describe('le geste', () => {
     expect(src).toContain('aria-modal="true"');
     const css = lire('./FamilleRetournee.module.css');
     expect(css).toMatch(/backface-visibility: hidden/);
+    // Une seule durée, portée par le composant ; assez lente pour se lire.
+    expect(DUREE_RETOURNEMENT).toBeGreaterThanOrEqual(900);
+    expect(DUREE_RETOURNEMENT).toBeLessThanOrEqual(1200);
+    expect(css).not.toMatch(/0\.56s/);
+    expect(src).toContain("'--duree': `${String(DUREE_RETOURNEMENT)}ms`");
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*transition: none/);
   });
 });

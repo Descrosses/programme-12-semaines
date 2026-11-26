@@ -163,7 +163,9 @@ export const FAMILLES: readonly Famille[] = [
         objectifs: [
           'Force maximale sur squat, bench, deadlift et tractions lestées',
           'Explosivité : sauts, sprints, travail en contraste',
-          'Rattraper l’écart entre la chaîne postérieure et le squat',
+          // « Rattraper l'écart entre la chaîne postérieure et le squat » a été
+          // RETIRÉ (Guillaume, 26 novembre : « c'était uniquement pour moi »).
+          // Le programme est générique : aucun objectif personnel ici.
         ],
         prerequis: [
           'Technique maîtrisée sur les trois barres',
@@ -328,7 +330,14 @@ export const FAMILLES: readonly Famille[] = [
         combineAvant: true,
         resume:
           'Quatre semaines, quatre séances : pectoraux et triceps, dos et biceps, jambes, épaules. Démarre après un combiné d’évaluation. Version de travail : seule la semaine 1 est écrite, la progression est en cours de validation.',
-        objectifs: [],
+        /*
+         * Les mots de Guillaume (26 novembre) : « un cycle de force de 4
+         * semaines afin de continuer de progresser, devenir plus fort sans se
+         * blesser ». La force n'est pas le but premier de MASS, mais ce cycle
+         * la travaille bien : la carte de la famille ne doit pas dire le
+         * contraire.
+         */
+        objectifs: ['Devenir plus fort et continuer de progresser, sans se blesser'],
         prerequis: [],
       },
       {

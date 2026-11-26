@@ -640,8 +640,15 @@ matériel et la durée avant d'écrire la moindre séance.
   de l'écran (`components/FamilleRetournee.tsx`, rendue dans `body` : sinon
   le menu du bas passait devant). Le verso ne dit QUE le catalogue, mot pour
   mot : sous-titre, résumé, puis « Ce que tu développes » = les `objectifs`
-  ÉCRITS de chaque programme (`qualitesDe`) — MASS FORCE n'en a pas, il n'en
-  reçoit pas ; ME, MYSELF & I n'a que son résumé. N'en inventer aucun.
+  ÉCRITS de chaque programme (`qualitesDe`), CHACUN SOUS SON NOM (un
+  objectif est celui d'un cycle, pas de la famille) ; ME, MYSELF & I n'a que
+  son résumé. N'en inventer aucun. Retours du 26 novembre : demi-tour
+  ralenti à 950 ms (`DUREE_RETOURNEMENT`, passée au CSS par `--duree`) ;
+  l'objectif POWER « rattraper l'écart chaîne postérieure / squat » est
+  RETIRÉ du catalogue (personnel à Guillaume) ; MASS FORCE a son objectif,
+  dans ses mots (« devenir plus fort et continuer de progresser, sans se
+  blesser ») — la force n'est pas le but premier de MASS, mais elle n'en
+  est pas absente.
   « Voir les programmes » mène au catalogue sur la famille (ce que faisait
   la tuile). Échap et ✕ ferment ; mouvement réduit = sans animation.
   `components/familleRetournee.test.ts`.
