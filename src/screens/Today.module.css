@@ -444,6 +444,18 @@
   font-size: var(--fs-small);
 }
 
+/* POWER — bouton d'action en relief (26 novembre), sous son thème seulement. */
+:global([data-theme='power']) .primary {
+  border: 1px solid var(--power-rouge-bord);
+  background: var(--power-degrade-action);
+  box-shadow: var(--power-liseret-action), var(--power-halo-action);
+  font-weight: 800;
+}
+
+:global([data-theme='power']) .primary:active {
+  background: var(--accent-deep);
+}
+
 /*
  * MASS — le bouton de l'Accueil, aux jetons SCULPTED (25 novembre) : dégradé
  * bordeaux, liseré clair en haut, halo doux. Blanc dessus : 6,75:1 au plus

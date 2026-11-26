@@ -2766,6 +2766,40 @@
 }
 
 /*
+ * POWER — boutons d'action en relief (26 novembre) : la forme de MASS, le
+ * rouge et la police droite de POWER. Sous le thème POWER seulement.
+ */
+:global([data-theme='power']) .validate,
+:global([data-theme='power']) .ficheBouton,
+:global([data-theme='power']) .demarrer {
+  border: 1px solid var(--power-rouge-bord);
+  background: var(--power-degrade-action);
+  font-family: var(--font-cond);
+  font-weight: 800;
+  text-transform: uppercase;
+  box-shadow: var(--power-liseret-action), var(--power-halo-action);
+}
+
+:global([data-theme='power']) .validate {
+  border-radius: 12px;
+  font-size: 1.25rem;
+  letter-spacing: 0.03em;
+}
+
+:global([data-theme='power']) .ficheBouton {
+  padding: 0 22px;
+  border-radius: 14px;
+  font-size: 1.3125rem;
+  letter-spacing: 0.03em;
+}
+
+:global([data-theme='power']) .validate:active,
+:global([data-theme='power']) .ficheBouton:active,
+:global([data-theme='power']) .demarrer:active {
+  background: var(--accent-deep);
+}
+
+/*
  * SÉANCE MASS — d'après la référence de Guillaume (14 novembre), mesurée sur
  * sa capture d'iPhone (849 px = 402 px CSS). Tout est sous le thème MASS ET
  * sous `.ecranSeance` : POWER, FEMMES et le combiné MASS, qui partagent ces

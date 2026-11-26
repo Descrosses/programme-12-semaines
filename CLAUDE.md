@@ -578,11 +578,17 @@ matériel et la durée avant d'écrire la moindre séance.
   **N3** — l'onglet actif du menu du bas porte une pastille IVOIRE, encre
   sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
   rouge ni de trait au-dessus ; **M2** — l'encadré « Montée en charge » a un
-  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé. **D** (26 novembre) : les sélecteurs de POWER (charge,
-  reps, RPE, pesée, poids de corps) ont la valeur sur `--ivoire`, les
-  boutons − / + en `--ivoire-doux`, signes et chiffre à `--encre` ; l'appui
-  reste rouge. Sous `[data-theme='power']` seulement (MASS, LADIES, ME,
-  MYSELF & I inchangés).
+  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé. **M + boutons en relief** (26 novembre, « le même aspect que
+  ceux de MASS, avec l'identité POWER ») : la FORME vient de MASS, la couleur
+  et la police restent POWER. Sélecteurs (charge, reps, RPE, pesée) : cadre
+  fin, dégradé bleu, grand chiffre blanc en italique extra-gras (jetons
+  `--power-curseur-*`). Boutons rouges (Valider, Fiche technique, Démarrer,
+  Ouvrir la séance, Fermer, C'est compris…) : dégradé rouge POWER, bord
+  clair, liseré, halo, police DROITE (`--power-degrade-action`, 4,76:1 au
+  plus clair). Tout sous `[data-theme='power']`. **L'essai ivoire « D » n'a
+  PAS été retenu** : ne pas y revenir. À trois sélecteurs, le chiffre se règle
+  sur la largeur de l'écran (`clamp`) : à taille fixe, « 102,5 » poussait le
+  bouton + hors du cadre.
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,

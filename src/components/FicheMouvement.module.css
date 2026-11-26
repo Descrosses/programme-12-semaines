@@ -228,6 +228,19 @@
   font-weight: 700;
 }
 
+/* POWER — boutons d'action en relief (26 novembre), sous son thème seulement. */
+:global([data-theme='power']) .fermer,
+:global([data-theme='power']) .compris {
+  border: 1px solid var(--power-rouge-bord);
+  background: var(--power-degrade-action);
+  box-shadow: var(--power-liseret-action), var(--power-halo-action);
+}
+
+:global([data-theme='power']) .fermer:active,
+:global([data-theme='power']) .compris:active {
+  background: var(--accent-deep);
+}
+
 /* MASS (lot D) : « Fermer » prend l'action rouge des écrans validés. */
 :global([data-theme='mass']) .fermer {
   border: 1px solid var(--mass-rouge-bord);

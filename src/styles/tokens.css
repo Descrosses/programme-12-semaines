@@ -570,6 +570,24 @@
 }
 
 /*
+ * POWER — les boutons d'action « en relief » (Guillaume, 26 novembre : « les
+ * boutons rouges comme ceux de MASS, mais avec l'identité visuelle POWER »).
+ * La FORME vient de MASS (dégradé, bord clair, liseré en haut, halo) ; la
+ * COULEUR est le rouge de POWER et la police reste droite. Blanc dessus :
+ * 4,76:1 au plus clair du dégradé, 6,4:1 à mi-hauteur.
+ */
+:root {
+  --power-rouge-bord: #f0525f;
+  --power-degrade-action: linear-gradient(180deg, #e01f33 0%, #c00a1e 52%, #8e0615 100%);
+  --power-halo-action: 0 0 18px rgb(213 10 32 / 38%);
+  --power-liseret-action: inset 0 1px 0 rgb(255 255 255 / 22%);
+  /* Les sélecteurs (charge, reps, RPE) : le cadre et le dégradé de MASS, en bleu. */
+  --power-curseur-bord: #3b587c;
+  --power-curseur-fond: linear-gradient(180deg, #1d3450 0%, #0d1a2b 100%);
+  --power-curseur-bouton: #1c324c;
+}
+
+/*
  * ME, MYSELF & I est clair : la « touche de clair » y serait invisible. La
  * pastille de l'onglet actif et les cases du tempo y sont donc CHOCOLAT,
  * écrites en ivoire. `:root[…]` : plus précis que le `:root` ci-dessus, qui
