@@ -39,8 +39,22 @@ réinterprète pas.**
   = donnée manquante, jamais devinée (aller-retour sur 400 profils depuis
   `resume()`). Écran : `components/CalculCoach.tsx` dans la carte
   « Préparer une fiche » de `#/admin` ; « Utiliser cette cible » remplit
-  les DEUX journées avec la même cible (§5). Rien n'est enregistré. Côté
-  utilisateur (profil en base, proposition, réajustement §7) : pas fait.
+  les DEUX journées avec la même cible (§5). Rien n'est enregistré.
+  **Côté utilisateur, lot 1 — FAIT** (« go lot 1 », 26 novembre, nutrition
+  automatique) : à la fin du questionnaire, carte « Ta cible »
+  (`components/CibleCalculee.tsx`, moteur `engine/cibleProposee.ts`). Même
+  lecture que le coach (`lireResume(resume(etat))`), donc même chiffre.
+  POWER, LADIES et importés seulement (§0 ; MASS : rien). Cas du §6
+  (exclusion OU plancher) : « Ta cible sera posée par Guillaume », AUCUN
+  chiffre ni raison détaillée. Chiffre d'abord, calcul REPLIÉ, UN bouton
+  « Utiliser cette cible » → `ciblesNutrition` les deux jours ; cible en
+  place annoncée, plan historique masqué annoncé (même règle que la fiche).
+  « Aucune cible posée » (Nutrition) mène au questionnaire. Rien avant le
+  bouton. `components/cibleCalculee.test.tsx`. Reste : lot 2 (journée et
+  semaine de repas aux quantités ajustées — la règle « aucune quantité »
+  est levée pour les programmes sans plan propre), lot 3 (courses en poids
+  CRU, coefficients à valider dans un `.md`), lot 4 (profil en base,
+  réajustement §7).
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).

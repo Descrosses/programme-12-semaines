@@ -250,10 +250,14 @@ export function NutritionScreen({
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Aucune cible posée</h2>
             <p className={styles.cardSub}>
-              MAJK ne décide pas combien tu dois manger. Pose ton objectif de calories (les macros
-              sont facultatives) dans Réglages → Mes cibles nutritionnelles, et cet écran affichera
-              ta cible du jour, ce que tu as mangé et l’écart entre les deux.
+              Réponds au questionnaire « Votre plan alimentaire » : MAJK te proposera une cible
+              calculée à partir de tes réponses, que tu acceptes ou non. Tu as déjà tes chiffres ?
+              Pose-les dans Réglages → Mes cibles nutritionnelles. Cet écran affichera ensuite ta
+              cible du jour, ce que tu as mangé et l’écart entre les deux.
             </p>
+            <a className={styles.lienCible} href="#/questionnaire">
+              Faire calculer ma cible
+            </a>
             <p className={styles.fieldHint}>
               Tu peux déjà noter ce que tu manges et te peser ci-dessous : rien n’attend les cibles.
             </p>

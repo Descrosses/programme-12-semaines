@@ -862,9 +862,10 @@ export function CartesNutrition({
       <section className={styles.card}>
         <h2 className={styles.cardTitle}>Mes cibles nutritionnelles</h2>
         <p className={styles.cardSub}>
-          <b>Facultatif, et vide par défaut.</b> MAJK ne décide pas combien tu dois manger. Si tu as
-          des chiffres — d’un diététicien, d’un coach, ou les tiens — pose-les ici : l’onglet
-          Nutrition affichera tes barres de macros et l’écart du jour.
+          <b>Facultatif, et vide par défaut.</b> Le questionnaire « Votre plan alimentaire » peut te
+          proposer une cible calculée ; rien n’est imposé. Si tu as des chiffres — d’un diététicien,
+          d’un coach, ou les tiens — pose-les ici : l’onglet Nutrition affichera tes barres de
+          macros et l’écart du jour.
         </p>
         {avecPlanHistorique && row.legacyNutritionPlan && (
           <p className={styles.fieldHint}>

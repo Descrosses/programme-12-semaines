@@ -8,8 +8,10 @@
  * la logique de `engine/questionnairePlanAlimentaire.ts` ; les deux sont
  * vérifiés contre le site d'origine.
  *
- * Ce que l'appli ajoute, et seulement à la fin : reprendre les aliments
- * choisis dans « Mon plan ». Rien n'est écrit en base avant ce geste.
+ * Ce que l'appli ajoute, et seulement à la fin : la cible calculée
+ * (`CibleDuQuestionnaire`, lot 1 de la nutrition automatique) et reprendre
+ * les aliments choisis dans « Mon plan ». Rien n'est écrit en base avant
+ * l'un de ces deux boutons.
  */
 
 import { useEffect, useState } from 'react';
@@ -33,6 +35,7 @@ import {
   type CleProfil,
   type EtapeProfil,
 } from '../data/questionnairePlanAlimentaire';
+import { CibleDuQuestionnaire } from '../components/CibleCalculee';
 import { getSettingsRow, saveSettings } from '../db/repo';
 import {
   ajouter,
@@ -579,6 +582,7 @@ function Fin({
     <div>
       <h1 className={q.titre}>{TEXTES.finTitre}</h1>
       <p className={q.chapeau}>{phraseRetenus(etat.selected.length)}</p>
+      <CibleDuQuestionnaire etat={etat} />
       <p className={q.chapeau}>{TEXTES.fin2}</p>
       <textarea className={q.resume} readOnly aria-label="Résumé de vos réponses" value={texte} />
       <div className={q.actions}>

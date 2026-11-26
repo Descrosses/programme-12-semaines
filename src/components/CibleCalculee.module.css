@@ -1,0 +1,180 @@
+/* « Ta cible » à la fin du questionnaire — jetons du thème seulement : la
+   carte se repeint sous POWER, LADIES et ME, MYSELF & I. */
+
+.carte {
+  margin: 14px 0 18px;
+  padding: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.titre {
+  margin: 0 0 6px;
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.badge {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kcal {
+  margin: 0 0 10px;
+  font-family: var(--font-cond);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.kcal b {
+  margin-right: 6px;
+  font-size: 3rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.macros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.macros p {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.macros span {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.macros b {
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.texte {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.detail {
+  margin: 0 0 12px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.detail summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-weight: 600;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.etapes {
+  width: 100%;
+  margin-bottom: 8px;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.etapes th,
+.etapes td {
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.etapes th {
+  font-weight: 600;
+  text-align: left;
+  color: var(--ink);
+}
+
+.etapes th span {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.etapes td {
+  padding-left: 10px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.alerte {
+  margin: 0 0 8px;
+  font-size: 0.8125rem;
+  color: var(--accent-ink);
+}
+
+.bouton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: var(--font-cond);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fait {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.note {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
