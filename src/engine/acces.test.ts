@@ -184,5 +184,13 @@ describe('le parcours FEMMES', () => {
     expect(p('femmes-cycle3').resume).toMatch(/^Perte de poids/);
     expect(p('femmes-cycle4').resume).toMatch(/^Prise de masse/);
     expect(p('femmes-transition4').resume).toMatch(/^Bilan/);
+    // Le résumé de la FAMILLE annonce ces quatre cycles dans le même ordre :
+    // « prise de masse » n'y figure qu'une fois, pour le cycle 4 (il s'y
+    // lisait deux fois tant que le cycle 1 y était encore décrit ainsi).
+    const famille = familleParId('femmes')!.resume;
+    expect(famille).toContain(
+      '(renforcement en circuits, congestion, perte de poids, prise de masse)',
+    );
+    expect(famille.match(/prise de masse/g)).toHaveLength(1);
   });
 });

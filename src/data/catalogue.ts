@@ -386,8 +386,15 @@ export const FAMILLES: readonly Famille[] = [
      * n'est donc jamais un passage obligé pour avancer. Le mécanisme est le
      * même (`deblocage.apres`) : seul ce qu'on désigne comme « avant » change.
      */
+    /*
+     * Les quatre cycles, DANS L'ORDRE et tels qu'ils existent : le cycle 1
+     * est le programme en circuits (décision de Guillaume), pas la « prise
+     * de masse » que l'organigramme lui donnait. Le résumé l'annonçait
+     * encore ainsi, et « prise de masse » s'y lisait deux fois (Guillaume,
+     * 26 novembre). Seul le cycle 4 en est une.
+     */
     resume:
-      'Un parcours en huit étapes : quatre cycles de 8 semaines (prise de masse, congestion, perte de poids, prise de masse), chacun suivi d’une transition de 4 semaines pour travailler les points faibles. Terminer un cycle ouvre à la fois la transition qui le suit et le cycle suivant.',
+      'Un parcours en huit étapes : quatre cycles de 8 semaines (renforcement en circuits, congestion, perte de poids, prise de masse), chacun suivi d’une transition de 4 semaines pour travailler les points faibles. Terminer un cycle ouvre à la fois la transition qui le suit et le cycle suivant.',
     programmes: [
       {
         id: 'femmes8',

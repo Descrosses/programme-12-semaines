@@ -648,7 +648,9 @@ matériel et la durée avant d'écrire la moindre séance.
   RETIRÉ du catalogue (personnel à Guillaume) ; MASS FORCE a son objectif,
   dans ses mots (« devenir plus fort et continuer de progresser, sans se
   blesser ») — la force n'est pas le but premier de MASS, mais elle n'en
-  est pas absente.
+  est pas absente. Le résumé de LADIES annonce ses cycles tels qu'ils
+  existent (renforcement en circuits, congestion, perte de poids, prise de
+  masse) : le cycle 1 n'est pas une prise de masse (`acces.test.ts`).
   « Voir les programmes » mène au catalogue sur la famille (ce que faisait
   la tuile). Échap et ✕ ferment ; mouvement réduit = sans animation.
   `components/familleRetournee.test.ts`.
