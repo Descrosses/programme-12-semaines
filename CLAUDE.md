@@ -566,7 +566,15 @@ matériel et la durée avant d'écrire la moindre séance.
   reçoit sa planche — sous un cycle POWER seulement (`ficheLibrePower`, passé
   par `useSessionData`). Il est aussi proposé dans le panneau « Remplacer ».
   Première entrée : Rowing buste penché. « On étoffe la bibliothèque dès
-  qu'on peut » : chaque planche se vérifie avant d'entrer.
+  qu'on peut » : chaque planche se vérifie avant d'entrer. **La bibliothèque
+  sert aussi les programmes importés** (Guillaume, 26 novembre : « garde-les
+  dans la bibliothèque dès que ce mouvement fera partie d'un programme ») :
+  chaque entrée est une fiche native désignable (`power12-libre:<fichier>`,
+  `fichesNatives.ts`) et PROPOSÉE à l'import sous son nom ET ses alias (une
+  même image sous plusieurs noms reste une planche). Entrées du 26 novembre :
+  Landmine press assis, Wall ball, Copenhague plank (`bibliothequePlanches.test.ts`).
+  Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
+  (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
   avait le logo NFL en fond »). L'écusson était sur 35 planches sur 39 (102
   écussons, sur le mur du fond ; pas sur cable chop, rotation externe, lateral
@@ -576,7 +584,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des 39 planches relues
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (42 au 26 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de

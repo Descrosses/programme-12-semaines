@@ -13,6 +13,7 @@
  */
 
 import { EXERCISES } from '../../data/exercises';
+import { BIBLIOTHEQUE_LIBRE_POWER } from '../../data/fichesPower12';
 import type { FicheCandidate } from '../../engine/perso/illustrations';
 import { fichePour } from '../mass4/fiches';
 import { TOUS_LES_EXERCICES_MASS4 } from '../mass4/exercices';
@@ -27,6 +28,8 @@ export interface FicheNative {
   programme: string;
   /** Le chemin servi, ex. `fiches/back-squat.webp`. */
   fiche: string;
+  /** Autres noms sous lesquels l'aperçu d'un import la PROPOSE (bibliothèque libre). */
+  alias?: readonly string[];
 }
 
 function construire(): FicheNative[] {
@@ -41,6 +44,18 @@ function construire(): FicheNative[] {
     if (fiche !== undefined) {
       out.push({ cle: `mass4:${e.id}`, nom: e.nom, programme: 'MASS CONGESTION', fiche });
     }
+  }
+  // La bibliothèque des exercices LIBRES de POWER (Guillaume, 26 novembre :
+  // « garde-les dans la bibliothèque dès que ce mouvement fera partie d'un
+  // programme ») : UNE clé par mouvement, proposée sous son nom ET ses alias.
+  for (const e of BIBLIOTHEQUE_LIBRE_POWER) {
+    out.push({
+      cle: `power12-libre:${e.fichier.replace(/^power12-/, '').replace(/\.webp$/, '')}`,
+      nom: e.nom,
+      programme: 'POWER',
+      fiche: `fiches/${e.fichier}`,
+      ...(e.alias === undefined ? {} : { alias: e.alias }),
+    });
   }
   const vues = new Set<string>();
   for (const s of SEANCES_FORCE) {
@@ -76,10 +91,14 @@ export function ficheNative(cle: string): string | undefined {
 
 /** Les fiches natives comme candidates aux propositions de l'aperçu. */
 export function candidatesNatives(): FicheCandidate[] {
-  return fichesNatives().map((f) => ({
-    image: f.fiche,
-    nom: f.nom,
-    origine: f.programme,
-    lien: { majk: f.cle },
-  }));
+  // Un nom ou un alias = une candidate ; la même image sous plusieurs noms
+  // reste UNE planche pour `proposerFiches`.
+  return fichesNatives().flatMap((f) =>
+    [f.nom, ...(f.alias ?? [])].map((nom) => ({
+      image: f.fiche,
+      nom,
+      origine: f.programme,
+      lien: { majk: f.cle },
+    })),
+  );
 }
