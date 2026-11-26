@@ -1,0 +1,87 @@
+/* Le point des deux semaines — jetons du thème seulement. */
+
+.carte {
+  composes: carte from '../styles/cartes.module.css';
+  margin: var(--gap) var(--pad);
+  padding: 16px var(--pad);
+  border-left: 3px solid var(--accent);
+}
+
+.titre {
+  composes: carteTitre from '../styles/cartes.module.css';
+  margin-bottom: 8px;
+}
+
+.texte {
+  margin: 0 0 10px;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.texte b {
+  color: var(--ink);
+}
+
+.note {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+/* La ligne discrète, tant que le point n'est pas dû. */
+.prochain {
+  margin: 8px var(--pad) 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.cible {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.cible b {
+  font-family: var(--font-cond);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.principal,
+.secondaire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--tap);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-cond);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.principal {
+  margin-bottom: 8px;
+  border: 0;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+.secondaire {
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}

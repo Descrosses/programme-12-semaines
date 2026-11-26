@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { calculerCibles } from '../engine/calculCibles';
+import { sensDuPalier } from '../engine/reajustement';
 import {
   ACTIVITE_QUOTIDIENNE,
   AGE_MIN,
@@ -21,6 +22,7 @@ import {
   PAR_SEANCE,
   PLANCHERS_KCAL,
   PROTEINES_G_KG,
+  REAJUSTEMENT,
   SEANCES_MAX,
 } from './reglesCiblesNutrition';
 
@@ -128,5 +130,36 @@ describe('§8 — l’exemple du .md, rejoué par le moteur', () => {
     expect([r.kcal, r.proteinG, r.fatG, r.carbsG]).toEqual(gras);
     expect(r.etapes[0]!.resultat).toBe('1 785 kcal'.replace(' ', ' '));
     expect(r.proposable).toBe(true);
+  });
+});
+
+describe('§7 — le réajustement, relu dans le .md', () => {
+  const s7 = section('## 7.', '## 8.');
+  const pourcent = (re: RegExp) => nb(re.exec(s7)![1]!) / 100;
+
+  it('les bornes de rythme, le palier, les pesées, les 14 jours', () => {
+    expect(pourcent(/Perte : moins de ([\d,]+) %\/sem\./)).toBe(REAJUSTEMENT.perte.min);
+    expect(pourcent(/Perte : plus de ([\d,]+) %\/sem\./)).toBe(REAJUSTEMENT.perte.max);
+    expect(pourcent(/Prise : moins de ([\d,]+) %\/sem\./)).toBe(REAJUSTEMENT.prise.min);
+    expect(pourcent(/Prise : plus de ([\d,]+) %\/sem\./)).toBe(REAJUSTEMENT.prise.max);
+    expect(pourcent(/Maintien : écart de plus de ([\d,]+) %/)).toBe(REAJUSTEMENT.maintienEcart);
+    expect(s7).toContain(`| Moins de ${REAJUSTEMENT.peseesMin} pesées sur 7 jours |`);
+    expect(s7.replace(/\s+/g, ' ')).toContain(
+      `**au moins ${REAJUSTEMENT.peseesMin} pesées dans chacune**`,
+    );
+    expect(s7.match(/[−+±] 100 kcal/g)!.length).toBeGreaterThanOrEqual(5);
+    expect(REAJUSTEMENT.palierKcal).toBe(100);
+    expect(s7).toContain(`${REAJUSTEMENT.joursEntrePoints} jours après la cible acceptée`);
+  });
+
+  it('le sens de chaque ligne du tableau', () => {
+    const sens = (ligne: RegExp) => {
+      const signe = ligne.exec(s7)![1]!;
+      return signe === '−' ? -1 : 1;
+    };
+    expect(sensDuPalier('perte', -0.001)).toBe(sens(/Perte : moins de .*?\| ([−+]) 100 kcal/));
+    expect(sensDuPalier('perte', -0.02)).toBe(sens(/Perte : plus de .*?\| ([−+]) 100 kcal/));
+    expect(sensDuPalier('prise', 0.001)).toBe(sens(/Prise : moins de .*?\| ([−+]) 100 kcal/));
+    expect(sensDuPalier('prise', 0.02)).toBe(sens(/Prise : plus de .*?\| ([−+]) 100 kcal/));
   });
 });

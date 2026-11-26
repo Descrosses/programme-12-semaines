@@ -67,3 +67,18 @@ export const IMC_MIN_PERTE = 18.5;
 
 /** §6 — âge minimum (le questionnaire le refuse déjà). */
 export const AGE_MIN = 18;
+
+/** §7 — réajustement toutes les deux semaines. Rythmes en fraction du poids par semaine. */
+export const REAJUSTEMENT = {
+  palierKcal: 100,
+  /** En dessous du minimum : − 100 ; au-dessus du maximum : + 100. */
+  perte: { min: 0.005, max: 0.01 },
+  /** En dessous du minimum : + 100 ; au-dessus du maximum : − 100. */
+  prise: { min: 0.0025, max: 0.005 },
+  /** Maintien : écart toléré entre les deux moyennes. */
+  maintienEcart: 0.01,
+  /** Pesées nécessaires dans chacune des deux semaines. */
+  peseesMin: 4,
+  /** Jours entre deux points. */
+  joursEntrePoints: 14,
+} as const;

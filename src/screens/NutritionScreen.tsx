@@ -67,11 +67,18 @@ import { cibleDuJour, ecartCible, phraseReste } from '../engine/cibleDuJour';
  * de les distinguer un jour des ajouts faits à un vrai repas.
  */
 const MEAL_LIBRE = 'libre';
-import { cibleSaisie, macrosPosees, type CiblesNutrition } from '../data/ciblesNutrition';
+import {
+  cibleSaisie,
+  macrosPosees,
+  type CiblesNutrition,
+  type MacrosCompletes,
+} from '../data/ciblesNutrition';
 import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepasSection';
 import { aujourdhuiLocal } from '../state/dernierExport';
+import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
+import { pointDesDeuxSemaines, type ProfilNutrition } from '../engine/reajustement';
 import {
   cibleDeSemaine,
   composerSemaine,
@@ -144,6 +151,8 @@ export function NutritionScreen({
   const [plan, setPlan] = useState<PlanPerso | null>(null);
   /** La semaine de repas automatique, ou `null` : « Mon plan » s'affiche. */
   const [semaine, setSemaine] = useState<SemaineRepas | null>(null);
+  /** Le profil du calcul des cibles (lot 4) : `null` = pas de point des 2 semaines. */
+  const [profil, setProfil] = useState<ProfilNutrition | null>(null);
   const [preferes, setPreferes] = useState<readonly string[]>([]);
   const [overrides, setOverrides] = useState<FoodOverrides>({});
   /** Les aliments saisis par Guillaume, proposés au remplacement. */
@@ -174,6 +183,7 @@ export function NutritionScreen({
     setCibles(settings.ciblesNutrition);
     setPlan(settings.planPerso);
     setSemaine(settings.semaineRepas);
+    setProfil(settings.profilNutrition);
     setPreferes(settings.alimentsPreferes ?? []);
     const all = await allMeasurements();
     setRows(
@@ -242,6 +252,25 @@ export function NutritionScreen({
     const journeeCourante = planCourant[kind];
 
     const cibleSemaine = cibleDeSemaine(cibles);
+    // Lot 4 — le point des deux semaines : seulement avec un profil ET une cible.
+    const point =
+      profil !== null && cibleSemaine !== null && rows !== null
+        ? pointDesDeuxSemaines(profil, cibleSemaine.kcal, rows, todayIso)
+        : null;
+
+    /** Referme le point pour 2 semaines ; avec une cible, l'applique les deux jours. */
+    async function fermerPoint(nouvelle?: MacrosCompletes) {
+      if (profil === null) return;
+      const suivant = { ...profil, pointLe: todayIso };
+      setProfil(suivant);
+      if (nouvelle === undefined) {
+        await saveSettings({ profilNutrition: suivant });
+        return;
+      }
+      const c = { train: { ...nouvelle }, rest: { ...nouvelle } };
+      setCibles(c);
+      await saveSettings({ profilNutrition: suivant, ciblesNutrition: c });
+    }
     const ciblePlan =
       cibleJour === null
         ? null
@@ -325,6 +354,16 @@ export function NutritionScreen({
               />
             )}
           </section>
+        )}
+
+        {point !== null && profil !== null && cibleSemaine !== null && (
+          <PointDeuxSemaines
+            point={point}
+            objectif={profil.objectif}
+            kcalActuelles={cibleSemaine.kcal}
+            onAccepter={(c) => void fermerPoint(c)}
+            onGarder={() => void fermerPoint()}
+          />
         )}
 
         {/*

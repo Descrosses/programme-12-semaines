@@ -186,6 +186,9 @@ describe('appliquer une fiche', () => {
       'alimentsPreferes',
       'ciblesNutrition',
       'legacyNutritionPlan',
+      // Lot 4 : une cible posée par fiche arrête le point des deux semaines.
+      'profilNutrition',
     ]);
+    expect(p.profilNutrition).toBeNull();
   });
 });
