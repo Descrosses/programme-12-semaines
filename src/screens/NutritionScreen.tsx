@@ -71,6 +71,7 @@ import { cibleSaisie, macrosPosees, type CiblesNutrition } from '../data/ciblesN
 import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepasSection';
+import { aujourdhuiLocal } from '../state/dernierExport';
 import {
   cibleDeSemaine,
   composerSemaine,
@@ -368,7 +369,7 @@ export function NutritionScreen({
           <SemaineRepasSection
             semaine={semaine}
             cibleActuelle={cibleSemaine}
-            jourInitial={jourDeSemaine(todayIso)}
+            jourInitial={jourDeSemaine(aujourdhuiLocal())}
             cible={ciblePlan}
             preferes={preferes}
             catalogue={catalogue}

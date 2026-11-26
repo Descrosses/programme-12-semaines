@@ -262,7 +262,11 @@ export function PlanPerso({
                 <button
                   type="button"
                   className={styles.repasPhotoBouton}
-                  onClick={() => setFiche(plat)}
+                  onClick={() =>
+                    // Semaine : la fiche montre les quantités DE CE REPAS
+                    // (ajustées, retouchées), pas l'assiette de référence.
+                    setFiche(semaine ? { ...plat, lignes } : plat)
+                  }
                   aria-label={`Voir le plat en grand : ${plat.nom}`}
                 >
                   <img
@@ -475,6 +479,7 @@ export function PlanPerso({
           repas={fiche}
           catalogue={catalogue}
           preferes={preferes}
+          {...(semaine ? { legende: 'Ingrédients · quantités de ton repas' } : {})}
           onFermer={() => setFiche(null)}
         />
       )}
