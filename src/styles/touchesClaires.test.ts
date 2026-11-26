@@ -149,3 +149,101 @@ describe('POWER — boutons d’action en relief : la forme de MASS, le rouge de
     });
   }
 });
+
+describe('LADIES — les mêmes pièces en relief, en « Rosée Sculptée » (Guillaume, 26 novembre)', () => {
+  const t = lire('./tokens.css');
+  const F = ":global([data-theme='femmes'])";
+  const jeton = (n: string) => new RegExp(`--${n}: (#[0-9a-f]{6});`).exec(t)![1]!;
+  const FICHIERS: Array<[fichier: string, pieces: string[]]> = [
+    ['../screens/Session.module.css', ['.validate', '.demarrer']],
+    ['../screens/femmes/Femmes.module.css', ['.cta']],
+    ['../components/Stepper.module.css', ['.controls', '.button', '.value', '.label']],
+  ];
+
+  it('lisible : blanc sur tout le dégradé, bord, cadre, chiffre et signes', () => {
+    const d =
+      /--femmes-degrade-action: linear-gradient\(180deg, (#[0-9a-f]{6}) 0%, (#[0-9a-f]{6}) 52%, (#[0-9a-f]{6}) 100%\)/.exec(
+        t,
+      )!;
+    for (const couleur of d.slice(1)) expect(contraste('#ffffff', couleur)).toBeGreaterThan(4.5);
+    // Thème CLAIR : le bord est plus foncé que le bouton, et se voit sur la carte.
+    expect(contraste(jeton('femmes-action-bord'), '#fff1f4')).toBeGreaterThan(4.5);
+    expect(contraste(jeton('femmes-curseur-bord'), '#fff1f4')).toBeGreaterThan(3);
+    expect(contraste('#2b1f24', '#fbe6ec')).toBeGreaterThan(10);
+    expect(contraste('#9e3f5b', jeton('femmes-curseur-bouton'))).toBeGreaterThan(4.5);
+  });
+
+  it('les couleurs de LADIES : ni le rouge de POWER, ni le bordeaux de MASS', () => {
+    const bloc = t.slice(t.indexOf('--femmes-action-bord'), t.indexOf('--femmes-curseur-bouton'));
+    expect(bloc).not.toMatch(/#e01f33|#c00a1e|#8e0615|#a5313f|#561520|#7c2130|213 10 32/);
+  });
+
+  for (const [fichier, pieces] of FICHIERS) {
+    it(`${fichier} : ${pieces.join(', ')} — sous LADIES seulement`, () => {
+      const css = lire(fichier).replace(/\/\*[\s\S]*?\*\//g, '');
+      const blocs = css.split('}').filter((x) => /var\(--femmes-/.test(x));
+      expect(blocs.length).toBeGreaterThan(0);
+      const tous = css
+        .split('}')
+        .filter((x) => x.includes(F))
+        .flatMap((b) =>
+          b
+            .slice(0, b.indexOf('{'))
+            .split(',')
+            .map((x) => x.trim())
+            .filter(Boolean),
+        );
+      for (const b of blocs)
+        for (const s of b
+          .slice(0, b.indexOf('{'))
+          .split(',')
+          .map((x) => x.trim())
+          .filter(Boolean))
+          expect(s.startsWith(F), s).toBe(true);
+      for (const p of pieces) expect(tous, p).toContain(`${F} ${p}`);
+    });
+  }
+});
+
+describe('une case VIDE ne crie pas (« à poser », « — ») — POWER et LADIES', () => {
+  it('le composant marque la valeur vide, et seulement elle', async () => {
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { createElement } = await import('react');
+    const { Stepper } = await import('../components/Stepper');
+    const rendu = (value: number | null, onCommit?: (v: number | null) => void) =>
+      renderToStaticMarkup(
+        createElement(Stepper, {
+          label: 'Calories',
+          value,
+          step: 10,
+          min: 0,
+          max: 9000,
+          onStep: () => {},
+          emptyLabel: 'à poser',
+          ...(onCommit === undefined ? {} : { onCommit }),
+        }),
+      );
+    expect(rendu(null)).toMatch(/<output[^>]*data-vide=""[^>]*>à poser</);
+    expect(rendu(null, () => {})).toMatch(/<button[^>]*data-vide=""[^>]*>à poser/);
+    expect(rendu(2400)).not.toContain('data-vide');
+    expect(rendu(2400, () => {})).not.toContain('data-vide');
+  });
+
+  it('en petit, droit, gris — sous POWER et LADIES seulement', () => {
+    const css = lire('../components/Stepper.module.css');
+    const r = /([^{}]*\.value\[data-vide\])\s*\{([^}]*)\}/.exec(
+      css.replace(/\/\*[\s\S]*?\*\//g, ''),
+    )!;
+    expect(
+      r[1]!
+        .split(',')
+        .map((s) => s.trim())
+        .sort(),
+    ).toEqual([
+      ":global([data-theme='femmes']) .value[data-vide]",
+      ":global([data-theme='power']) .value[data-vide]",
+    ]);
+    expect(r[2]).toContain('font-style: normal');
+    expect(r[2]).toContain('color: var(--ink-3)');
+  });
+});

@@ -73,6 +73,32 @@
   color: var(--accent-deep);
 }
 
+/*
+ * LADIES — boutons d'action en relief (26 novembre) : la forme de MASS, le
+ * rose et la police (Oswald) de LADIES. « Valider » passe en capitales et à
+ * 20 px, comme « Démarrer ». « Séance terminée » reste vert.
+ */
+:global([data-theme='femmes']) .validate,
+:global([data-theme='femmes']) .demarrer {
+  border: 1px solid var(--femmes-action-bord);
+  background: var(--femmes-degrade-action);
+  font-family: var(--font-cond);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: var(--femmes-liseret-action), var(--femmes-halo-action);
+}
+
+:global([data-theme='femmes']) .validate {
+  border-radius: 12px;
+  font-size: 1.25rem;
+}
+
+:global([data-theme='femmes']) .validate:active,
+:global([data-theme='femmes']) .demarrer:active {
+  background: var(--accent-deep);
+}
+
 .titleRule {
   display: block;
   width: 64px;

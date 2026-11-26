@@ -144,6 +144,9 @@ export function Stepper({
           <button
             type="button"
             className={`${styles.value} ${styles.valueEditable} tnum`}
+            // Vide (« — », « à poser ») : les thèmes au grand chiffre l'écrivent
+            // en petit, pour qu'une case vide ne crie pas plus qu'une valeur.
+            data-vide={value === null ? '' : undefined}
             onClick={open}
             aria-label={`${label} — saisir la valeur au clavier`}
           >
@@ -153,7 +156,11 @@ export function Stepper({
             </span>
           </button>
         ) : (
-          <output className={`${styles.value} tnum`} aria-labelledby={`lbl-${label}`}>
+          <output
+            className={`${styles.value} tnum`}
+            aria-labelledby={`lbl-${label}`}
+            data-vide={value === null ? '' : undefined}
+          >
             {value === null ? emptyLabel : fr(value)}
           </output>
         )}

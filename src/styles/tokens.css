@@ -588,6 +588,26 @@
 }
 
 /*
+ * LADIES — les mêmes pièces « en relief » que POWER (Guillaume, 26 novembre :
+ * « fais la même chose pour les boutons de LADIES »). La FORME vient de MASS
+ * (dégradé, bord, liseré clair en haut, halo ; sélecteurs bordés au grand
+ * chiffre italique) ; les COULEURS restent celles de « Rosée Sculptée », un
+ * thème CLAIR : le bord est plus FONCÉ que le bouton (un bord plus clair
+ * disparaîtrait sur le fond poudré). Mesuré : blanc 4,61:1 au plus clair du
+ * dégradé ; bord 5,8:1 sur la carte ; cadre des sélecteurs 3,5:1 (contour de
+ * commande ≥ 3:1) ; chiffre 13:1 ; signes − / + 4,6:1.
+ */
+:root {
+  --femmes-action-bord: #9e3f5b;
+  --femmes-degrade-action: linear-gradient(180deg, #b85474 0%, #a8486a 52%, #8f4561 100%);
+  --femmes-halo-action: 0 6px 18px rgb(177 79 110 / 34%);
+  --femmes-liseret-action: inset 0 1px 0 rgb(255 255 255 / 28%);
+  --femmes-curseur-bord: #ad7086;
+  --femmes-curseur-fond: linear-gradient(180deg, #ffffff 0%, #fbe6ec 100%);
+  --femmes-curseur-bouton: #f3d3de;
+}
+
+/*
  * ME, MYSELF & I est clair : la « touche de clair » y serait invisible. La
  * pastille de l'onglet actif et les cases du tempo y sont donc CHOCOLAT,
  * écrites en ivoire. `:root[…]` : plus précis que le `:root` ci-dessus, qui

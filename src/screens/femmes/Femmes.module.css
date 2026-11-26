@@ -1344,6 +1344,18 @@
   cursor: default;
 }
 
+/* Les boutons d'action en relief (26 novembre) : la forme de MASS, le rose
+   et la police de LADIES. */
+:global([data-theme='femmes']) .cta {
+  border: 1px solid var(--femmes-action-bord);
+  background: var(--femmes-degrade-action);
+  box-shadow: var(--femmes-liseret-action), var(--femmes-halo-action);
+}
+
+:global([data-theme='femmes']) .cta:active {
+  background: var(--accent-deep);
+}
+
 /* « Non faite » : passée sans être faite. Gris, jamais vert — ce n'est pas
    une réussite, et ce n'est pas une faute non plus. */
 .etatSautee {
