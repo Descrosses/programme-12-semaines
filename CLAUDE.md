@@ -567,6 +567,20 @@ matériel et la durée avant d'écrire la moindre séance.
   par `useSessionData`). Il est aussi proposé dans le panneau « Remplacer ».
   Première entrée : Rowing buste penché. « On étoffe la bibliothèque dès
   qu'on peut » : chaque planche se vérifie avant d'entrer.
+- **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
+  avait le logo NFL en fond »). L'écusson était sur 35 planches sur 39 (102
+  écussons, sur le mur du fond ; pas sur cable chop, rotation externe, lateral
+  bound, rowing buste penché). Effacé par retouche locale du mur, mêmes noms
+  de fichier (les fiches sont dans le pré-cache, révisé à chaque version :
+  la règle « une image remplacée change de nom » ne vaut que pour
+  `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
+  passaient derrière un disque, un visage ou une main, protégés par un
+  contour tracé à la main. Vérifié par détection automatique : 0 restant.
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des 39 planches relues
+  (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
+  remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
+  non traité** : la virgule Nike sur les chaussettes et les chaussures de
+  presque toutes les planches (décision de Guillaume attendue).
 - **Contraste S9-11, carte du lourd** : elle porte AUSSI la planche du
   mouvement explosif (box jump, plyo push-up, broad jump), chaque bouton
   nommé (« Fiche — … ») ; elle ne se grise qu'une fois le saut de la DERNIÈRE
