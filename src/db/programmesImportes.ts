@@ -43,7 +43,7 @@ import type { ProgrammeNormalise } from '../engine/perso/types';
 import { clesFichesNatives } from '../programmes/perso/fichesNatives';
 import { clePerso, lireCle, PREFIXE_PERSO } from '../programmes/perso/ids';
 import { memoireEnErreur, remplirMemoire } from '../programmes/perso/memoire';
-import { db, type IllustrationRow, type ProgrammeImporteRow } from './db';
+import { db, TABLES_PAR_CYCLE, type IllustrationRow, type ProgrammeImporteRow } from './db';
 import { lireThemeImporte, type ThemeImporte } from '../data/themesImportes';
 
 export { PREFIXE_PERSO, clePerso, idExerciceImporte, lireCle } from '../programmes/perso/ids';
@@ -419,20 +419,86 @@ export async function archiverProgramme(cle: string, archive: boolean): Promise<
 export type ResultatSuppression = 'supprime' | 'utilise-par-un-cycle' | 'introuvable';
 
 /**
+ * Les tables où un cycle écrit (`cycleId`) : les onze de `TABLES_PAR_CYCLE`
+ * et les séances FEMMES — la même liste que `TABLES_DU_CYCLE` de `repo.ts`.
+ */
+const TABLES_D_UN_CYCLE = [...TABLES_PAR_CYCLE, 'femmesSeances'] as const;
+
+/** Ce que supprimer une version effacerait avec elle, pour le dire AVANT. */
+export interface BilanSuppression {
+  /** Les cycles qui suivent cette version (commencés, prévus ou terminés). */
+  cycles: number;
+  /** Les séances terminées de ces cycles. */
+  seances: number;
+  /** Les séries enregistrées dans ces cycles. */
+  series: number;
+}
+
+export async function bilanSuppression(cle: string): Promise<BilanSuppression> {
+  const ids = (await db.cycles.where('programmeId').equals(cle).toArray()).map((c) => c.id!);
+  let seances = 0;
+  let series = 0;
+  for (const id of ids) {
+    seances += await db.sessions
+      .where('cycleId')
+      .equals(id)
+      .filter((x) => x.status === 'done')
+      .count();
+    series += await db.sets.where('cycleId').equals(id).count();
+  }
+  return { cycles: ids.length, seances, series };
+}
+
+/**
  * Supprime une version et ses images de référence, en une transaction.
  *
- * Refusé si un cycle — commencé, prévu ou terminé — la désigne : ses séries
- * resteraient sans programme. Dans ce cas, l'archivage est la voie prévue.
+ * Par défaut, refusé si un cycle — commencé, prévu ou terminé — la désigne.
+ * `avecSesCycles` (Guillaume, 26 novembre : « après sa seconde
+ * confirmation, on supprime ») efface AUSSI ces cycles et tout ce qui y a
+ * été écrit. Les deux vont ensemble, jamais l'un sans l'autre : un cycle
+ * resté sans son programme rendrait TOUTE sauvegarde irrestaurable
+ * (`programmesDeSauvegarde` refuse un cycle dont le programme manque) —
+ * y compris la sauvegarde en ligne.
  */
-export async function supprimerProgramme(cle: string): Promise<ResultatSuppression> {
+export async function supprimerProgramme(
+  cle: string,
+  options: { avecSesCycles?: boolean } = {},
+): Promise<ResultatSuppression> {
   const resultat = await db.transaction(
     'rw',
-    [db.programmesImportes, db.cycles, db.exerciseReference, db.illustrations],
+    [
+      db.programmesImportes,
+      db.cycles,
+      db.settings,
+      db.exerciseReference,
+      db.illustrations,
+      ...TABLES_D_UN_CYCLE.map((t) => db.table(t)),
+    ],
     async () => {
       const row = await db.programmesImportes.where('cle').equals(cle).first();
       if (!row) return 'introuvable';
-      if ((await db.cycles.where('programmeId').equals(cle).count()) > 0) {
-        return 'utilise-par-un-cycle';
+      const cycles = await db.cycles.where('programmeId').equals(cle).toArray();
+      if (cycles.length > 0) {
+        if (options.avecSesCycles !== true) return 'utilise-par-un-cycle';
+        const ids = new Set(cycles.map((c) => c.id!));
+        for (const id of ids) {
+          for (const t of TABLES_D_UN_CYCLE) await db.table(t).where('cycleId').equals(id).delete();
+          await db.cycles.delete(id);
+        }
+        // Le cycle actif disparaît : on passe au plus récent des cycles en
+        // cours qui restent, ou à aucun (l'accueil dit alors « Aucun
+        // programme en cours »).
+        const reglages = await db.settings.get(1);
+        if (reglages !== undefined && ids.has(reglages.cycleActifId)) {
+          const restants = await db.cycles.where('statut').equals('en-cours').toArray();
+          const repli = restants.sort((a, b) => b.startDate.localeCompare(a.startDate))[0];
+          await db.settings.update(
+            1,
+            repli?.id === undefined
+              ? { cycleActifId: 0 }
+              : { cycleActifId: repli.id, startDate: repli.startDate },
+          );
+        }
       }
       await db.exerciseReference.where('exerciseId').startsWith(`${cle}-`).delete();
       await db.programmesImportes.where('cle').equals(cle).delete();

@@ -375,7 +375,18 @@ matériel et la durée avant d'écrire la moindre séance.
   pas ») ; une durée absente est demandée de 1 à 12 semaines, « Choisir »
   sélectionné et bouton désactivé tant qu'il manque — jamais de valeur par
   défaut. Archiver sort la version de la liste (section « Archivés ») ;
-  supprimer est refusé, avec la raison, tant qu'un cycle la suit. La famille
+  supprimer une version qu'un cycle suit passe par DEUX confirmations
+  (Guillaume, 26 novembre : « après sa seconde confirmation, on
+  supprime ») : la 1re dit ce qui part (`bilanSuppression` : cycles,
+  séances faites, séries), la 2de efface le programme ET ses cycles en une
+  transaction (`supprimerProgramme(cle, { avecSesCycles: true })`, toutes
+  les tables du cycle, `femmesSeances` comprise ; cycle actif → le plus
+  récent en cours, sinon 0). Jamais le programme seul : un cycle orphelin
+  rendrait la sauvegarde irrestaurable (`programmesDeSauvegarde`). Sans
+  l'option, toujours refusé. Après coup, le téléphone a moins de données
+  que le compte en ligne : l'envoi automatique s'arrête et propose
+  « Restaurer » / « Remplacer quand même » (règle existante).
+  `suppressionDouble.test.tsx`, `programmesImportes.test.ts`. La famille
   n'est jamais « À venir ». La restauration annonce les programmes importés
   qu'elle remplace. `components/perso/importPerso.test.tsx`.
   **Lot 6, non-régression (tests seulement)** : `db/nonRegressionV25.test.ts`

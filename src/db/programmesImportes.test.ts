@@ -17,7 +17,7 @@ import 'fake-indexeddb/auto';
 import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { deleteDB } from './testSchemas';
-import { ProgrammeDB, type CycleRow, type SetRow } from './db';
+import { DEFAULT_SETTINGS_ROW, ProgrammeDB, type CycleRow, type SetRow } from './db';
 
 const NOM = 'programmes-importes-test';
 const TRAINING1 = readFileSync(
@@ -266,6 +266,105 @@ describe('archiver et supprimer', () => {
     expect(await base.programmesImportes.count()).toBe(1);
     expect(await supprimerProgramme('perso-inconnu00-1')).toBe('introuvable');
     base.close();
+  });
+
+  /*
+   * Guillaume (26 novembre) : « après sa seconde confirmation, on supprime ».
+   * Avec `avecSesCycles`, le programme part AVEC ses cycles et tout ce qui y
+   * a été noté, en une transaction ; les autres programmes n'y perdent rien.
+   */
+  it('avec ses cycles : le programme, ses cycles et leurs lignes partent ensemble', async () => {
+    const base = await monterBaseJetable();
+    const { importerProgramme, supprimerProgramme, bilanSuppression } =
+      await import('./programmesImportes');
+    await importerProgramme(TRAINING1, { dureeSemaines: 8 });
+    await importerProgramme(AUTRE);
+    const cle = `perso-${UID_T1}-1`;
+    const c1 = (await base.cycles.add({ ...cycle(cle), statut: 'termine' })) as number;
+    const c2 = (await base.cycles.add(cycle(cle))) as number;
+    const autre = (await base.cycles.add(cycle('perso-autreprog01-1'))) as number;
+    const power = (await base.cycles.add({
+      ...cycle('power12'),
+      startDate: '2026-09-01',
+    })) as number;
+    const seance = (cycleId: number, status: 'done' | 'planned') => ({
+      cycleId,
+      week: 1,
+      day: 0 as const,
+      date: '2026-11-16',
+      status,
+      warmupChecked: [],
+      notes: '',
+    });
+    await base.sessions.bulkAdd([
+      seance(c1, 'done'),
+      { ...seance(c2, 'done'), day: 2 as const },
+      { ...seance(c2, 'planned'), day: 4 as const },
+      seance(autre, 'done'),
+    ] as never);
+    await base.sets.bulkAdd([
+      serie(c1, `${cle}-squat`),
+      { ...serie(c2, `${cle}-squat`), setIndex: 1 },
+      { ...serie(c2, `${cle}-squat`), setIndex: 2 },
+      serie(autre, 'perso-autreprog01-1-squat'),
+    ]);
+    await base.femmesSeances.add({ cycleId: c2, semaine: 1, jour: 0 } as never);
+    await base.settings.put({ ...DEFAULT_SETTINGS_ROW, id: 1, cycleActifId: c2 });
+
+    // Ce que la première confirmation annonce.
+    expect(await bilanSuppression(cle)).toEqual({ cycles: 2, seances: 2, series: 3 });
+
+    // Sans l'option : toujours refusé, rien ne bouge.
+    expect(await supprimerProgramme(cle)).toBe('utilise-par-un-cycle');
+    expect(await base.cycles.count()).toBe(4);
+
+    expect(await supprimerProgramme(cle, { avecSesCycles: true })).toBe('supprime');
+    expect((await base.programmesImportes.toArray()).map((p) => p.cle)).toEqual([
+      'perso-autreprog01-1',
+    ]);
+    expect((await base.cycles.toArray()).map((c) => c.id).sort()).toEqual([autre, power].sort());
+    expect((await base.sessions.toArray()).map((x) => x.cycleId)).toEqual([autre]);
+    expect((await base.sets.toArray()).map((x) => x.cycleId)).toEqual([autre]);
+    expect(await base.femmesSeances.count()).toBe(0);
+    // Le cycle actif est parti : le plus récent des cycles en cours prend sa place.
+    expect((await base.settings.get(1))?.cycleActifId).toBe(autre);
+    expect(await bilanSuppression(cle)).toEqual({ cycles: 0, seances: 0, series: 0 });
+    base.close();
+  });
+
+  it('plus aucun cycle en cours : le cycle actif revient à « aucun »', async () => {
+    const base = await monterBaseJetable();
+    const { importerProgramme, supprimerProgramme } = await import('./programmesImportes');
+    await importerProgramme(TRAINING1, { dureeSemaines: 8 });
+    const cle = `perso-${UID_T1}-1`;
+    const c = (await base.cycles.add(cycle(cle))) as number;
+    await base.settings.put({ ...DEFAULT_SETTINGS_ROW, id: 1, cycleActifId: c });
+    expect(await supprimerProgramme(cle, { avecSesCycles: true })).toBe('supprime');
+    expect(await base.cycles.count()).toBe(0);
+    expect((await base.settings.get(1))?.cycleActifId).toBe(0);
+    base.close();
+  });
+
+  it('après la suppression, la sauvegarde se restaure sur une base neuve', async () => {
+    const base = await monterBaseJetable();
+    const { importerProgramme, supprimerProgramme } = await import('./programmesImportes');
+    await importerProgramme(TRAINING1, { dureeSemaines: 8 });
+    await importerProgramme(AUTRE);
+    const cle = `perso-${UID_T1}-1`;
+    const c1 = (await base.cycles.add(cycle(cle))) as number;
+    const c2 = (await base.cycles.add(cycle('perso-autreprog01-1'))) as number;
+    await base.sets.bulkAdd([serie(c1, `${cle}-squat`), serie(c2, 'perso-autreprog01-1-squat')]);
+    expect(await supprimerProgramme(cle, { avecSesCycles: true })).toBe('supprime');
+
+    const { exportAll, importAll, parseExport } = await import('./export');
+    const fichier = JSON.stringify(await exportAll());
+    base.close();
+    const neuve = await monterBaseJetable();
+    const rapport = await importAll(parseExport(fichier));
+    expect(rapport.programmesImportes).toBe(1);
+    expect(rapport.cycles).toBe(1);
+    expect(rapport.sets).toBe(1);
+    neuve.close();
   });
 
   it('supprimer emporte ses images de référence, et seulement les siennes', async () => {
