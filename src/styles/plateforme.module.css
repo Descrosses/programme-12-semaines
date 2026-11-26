@@ -1,0 +1,27 @@
+/*
+ * Ce que les trois écrans de la PLATEFORME partagent (Accueil, Programmes,
+ * Parcours) — Guillaume, 26 novembre : « le changement doit s'appliquer dans
+ * les menus parcours et programmes également ».
+ *
+ * Une fumée LÉGÈRE sur le noir (« j'apprécie l'effet léger de fumée sur le
+ * fond noir »). Aucune image de plus : un bruit SVG (`feTurbulence`) dessiné
+ * par le navigateur, en volutes claires très transparentes, qui naît sous
+ * l'en-tête. Le contenu passe devant. Jamais sur les écrans d'un programme.
+ */
+.fumee {
+  position: relative;
+  isolation: isolate;
+}
+
+.fumee::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.009' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.1 0 0 0 -0.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size: 720px 720px;
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 220px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 220px);
+}

@@ -49,6 +49,7 @@ import { fr } from '../engine/format';
 import { lowerIsBetter } from '../engine/lastPerformance';
 import styles from './Screens.module.css';
 import local from './Parcours.module.css';
+import plateforme from '../styles/plateforme.module.css';
 
 interface Vue extends ResumeCycle {
   total: number;
@@ -199,7 +200,7 @@ export function ParcoursScreen({
   }
 
   return (
-    <div className={styles.screen}>
+    <div className={`${styles.screen} ${plateforme.fumee}`}>
       <EnTetePlateforme />
 
       <div className={local.titreEcran}>
