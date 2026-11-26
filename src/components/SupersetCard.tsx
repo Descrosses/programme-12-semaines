@@ -18,6 +18,7 @@ import { cleBloc, minutesSecondes } from '../timer/blocMinute';
 import { useBlocMinute } from '../state/useBlocMinute';
 import type { RestTimer } from '../state/useRestTimer';
 import { SetEntry, type SetPayload } from './ExerciseCard';
+import { FicheTechnique } from './FicheTechnique';
 import styles from '../screens/Session.module.css';
 
 /**
@@ -69,7 +70,8 @@ export function SupersetCard({
   timer: RestTimer;
   onSaveSet: (ex: ResolvedExercise, payload: SetPayload) => Promise<void>;
   /**
-   * Les fiches d'exercice, une par station, rendues AVANT les tours.
+   * Les cartes d'exercice, une par station, rendues AVANT les tours — sans
+   * leur image, qui est dans le tour en cours (`Station`).
    *
    * Passées en `ReactNode` plutôt que construites ici : elles portent la
    * remarque, le suivi de douleur, le remplacement et les consignes, c'est-à-
@@ -194,14 +196,17 @@ export function SupersetCard({
       )}
 
       {/*
-        Les fiches AVANT les tours (Guillaume, 23 novembre : « les fiches
-        explicatives doivent être placées avant le superset d'abdos ») : on
-        lit le geste, puis on le fait — comme sur une carte seule.
+        Les cartes des exercices AVANT les tours (Guillaume, 23 novembre) :
+        consignes, remarque, documenter, remplacer. Leur IMAGE n'y est plus
+        (« fiche collée », 26 novembre) : elle est dans le tour en cours,
+        au-dessus des boutons de saisie de son mouvement.
       */}
       <div className={styles.supersetFiches}>{fiches}</div>
 
       {Array.from({ length: tours }, (_, i) => {
         const ouvert = i === actif;
+        // La fiche suit le tour en cours ; le bloc fini, elle reste au dernier.
+        const avecFiche = i === Math.min(actif, tours - 1);
         return (
           <div
             key={i}
@@ -258,6 +263,7 @@ export function SupersetCard({
                   saved={serie(ex, i)}
                   timer={timer}
                   onSaveSet={onSaveSet}
+                  avecFiche={avecFiche}
                   {...(rythme === 'transition' && station < exs.length - 1
                     ? { libelleRepos: `Transition → ${exs[station + 1]!.name}` }
                     : {})}
@@ -299,7 +305,10 @@ function Station({
   onSaveSet,
   libelleRepos,
   reposSec,
+  avecFiche,
 }: {
+  /** La fiche du mouvement, collée aux boutons : dans UN tour, celui en cours. */
+  avecFiche: boolean;
   /** Rythme « transition » : le chrono dit transition, pas repos (§2 MASS FORCE). */
   libelleRepos?: string;
   /** Le repos d'après le DERNIER tour, quand il diffère de celui entre deux tours. */
@@ -326,8 +335,8 @@ function Station({
       {/*
         Le nom, et rien d'autre. Répéter « 3 × 8 — poids du corps » à chaque
         tour écrivait trois fois une prescription qui ne change pas, juste
-        au-dessus du champ qui, lui, change. La fiche du mouvement est en tête
-        du bloc, et le curseur de charge dit déjà ce qu'on porte.
+        au-dessus du champ qui, lui, change. Le curseur de charge dit déjà ce
+        qu'on porte.
       */}
       <div className={styles.stationNom}>
         <span className={styles.stationLettre}>{lettre}</span>
@@ -337,6 +346,12 @@ function Station({
           la consigne est lue là où l'on agit, à chaque tour. */}
       {ex.travailAffiche !== undefined && (
         <div className={styles.stationTravail}>{ex.travailAffiche}</div>
+      )}
+      {/* « Fiche collée » (Guillaume, 26 novembre) : le geste, juste au-dessus
+          des boutons qui le valident, dans le tour en cours seulement — trois
+          tours, c'était trois fois la même image. */}
+      {avecFiche && (
+        <FicheTechnique def={ex.def} version={0} onAjouter={() => {}} affichage="image" />
       )}
       <SetEntry
         ex={ex}

@@ -1995,6 +1995,12 @@
   line-height: 1.35;
 }
 
+/* « Fiche collée » : la fiche du mouvement, au-dessus de ses boutons de saisie. */
+.station .fiche {
+  height: 104px;
+  margin: 6px var(--pad) 8px;
+}
+
 .stationLettre {
   flex: none;
   min-width: 20px;
@@ -3017,6 +3023,11 @@
   height: 118px;
   margin: 8px 6px 0;
   border-radius: 12px;
+}
+
+:global([data-theme='mass']) .ecranSeance .station .fiche {
+  height: 104px;
+  margin: 6px var(--pad) 8px;
 }
 
 :global([data-theme='mass']) .ecranSeance .ficheVoile {

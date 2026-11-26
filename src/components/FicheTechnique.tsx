@@ -1,4 +1,15 @@
 import { useEffect, useState } from 'react';
+
+/**
+ * Une fiche vient d'être déposée ou retirée pour cet exercice. La carte et
+ * les stations du circuit montrent la MÊME fiche à deux endroits : chacune
+ * se relit à cet avis, sans que l'une connaisse l'autre.
+ */
+const FICHE_CHANGEE = 'majk:fiche-changee';
+
+export function annoncerFicheChangee(exerciseId: string): void {
+  window.dispatchEvent(new CustomEvent(FICHE_CHANGEE, { detail: exerciseId }));
+}
 import type { ExerciseDef, InfosFiche } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
 import { illustration } from '../db/programmesImportes';
@@ -38,6 +49,13 @@ import styles from '../screens/Session.module.css';
  * bouton dit « Ajouter la fiche technique », pas « Fiche technique ». Une
  * image de sprint sous un développé couché ne doit pas laisser croire qu'elle
  * montre le mouvement.
+ *
+ * ── Dans un circuit (« fiche collée », Guillaume, 26 novembre) ──────────────
+ *
+ * Superset, tri-set, circuit : l'image descend dans la station du tour en
+ * cours, collée à ses boutons de saisie (`affichage="image"`). La carte du
+ * haut du bloc ne garde que le bouton « Ajouter la fiche technique », et
+ * seulement quand il n'y a pas de fiche (`affichage="ajout"`).
  */
 export function FicheTechnique({
   def,
@@ -45,7 +63,13 @@ export function FicheTechnique({
   version,
   onAjouter,
   titre,
+  affichage = 'complet',
 }: {
+  /**
+   * `complet` : l'image, ou le bouton pour en ajouter une. `image` : l'image
+   * seule, rien sans fiche. `ajout` : le bouton d'ajout seul, rien avec fiche.
+   */
+  affichage?: 'complet' | 'image' | 'ajout';
   def: ExerciseDef;
   /** Le mouvement nommé sur le bouton, quand deux fiches se suivent (contraste). */
   titre?: string;
@@ -59,6 +83,18 @@ export function FicheTechnique({
   const [blob, setBlob] = useState<Blob | null>(null);
   const [ouverte, setOuverte] = useState(false);
   const [zoom, setZoom] = useState(false);
+  // Tant que la base n'a pas répondu, on ne sait pas s'il y a une fiche :
+  // `image` et `ajout` attendent, sinon l'un des deux clignoterait.
+  const [lu, setLu] = useState(false);
+  const [relue, setRelue] = useState(0);
+
+  useEffect(() => {
+    const relire = (e: Event) => {
+      if ((e as CustomEvent<string>).detail === def.id) setRelue((n) => n + 1);
+    };
+    window.addEventListener(FICHE_CHANGEE, relire);
+    return () => window.removeEventListener(FICHE_CHANGEE, relire);
+  }, [def.id]);
 
   useEffect(() => {
     let vivant = true;
@@ -67,17 +103,23 @@ export function FicheTechnique({
       const deposee = await referenceForExercise(def.id);
       const image =
         deposee?.blob ?? (empreinte === undefined ? null : (await illustration(empreinte))?.blob);
-      if (vivant) setBlob(image ?? null);
+      if (vivant) {
+        setBlob(image ?? null);
+        setLu(true);
+      }
     })();
     return () => {
       vivant = false;
     };
-  }, [def.id, def.illustration, version]);
+  }, [def.id, def.illustration, version, relue]);
 
   // L'image lue en base : la fiche déposée, sinon l'illustration importée.
   const enBase = useObjectUrl(blob);
   const livree = def.fiche === undefined ? null : `${import.meta.env.BASE_URL}${def.fiche}`;
   const src = enBase ?? livree;
+  const connue = src !== null || lu;
+  if (affichage === 'image' && src === null) return null;
+  if (affichage === 'ajout' && (src !== null || !connue)) return null;
 
   return (
     <>
