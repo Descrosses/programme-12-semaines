@@ -27,7 +27,17 @@ import {
   type LignePerso,
   type RepasId,
 } from '../data/planPerso';
-import { ARRONDIS, CRENEAUX_AUTO, LEVIERS, TOLERANCE_PART } from '../data/reglesRepasAutomatiques';
+import {
+  ARRONDIS,
+  CIBLE_MINIMALE,
+  CRENEAUX_PAR_NOMBRE,
+  LEVIERS,
+  NOMBRE_DE_REPAS_PAR_DEFAUT,
+  NOMBRES_DE_REPAS,
+  TOLERANCE_PART,
+  type Creneau,
+  type NombreRepas,
+} from '../data/reglesRepasAutomatiques';
 import { repasExclu } from './exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from './planPersoTotaux';
 
@@ -44,6 +54,36 @@ export interface SemaineRepas {
   cible: CibleRepas;
   /** AAAA-MM-JJ. */
   creeLe: string;
+  /**
+   * §1 — le nombre de repas par jour choisi (4, 5 ou 6). Absent : 4, les
+   * semaines composées avant que le choix existe.
+   */
+  repasParJour?: NombreRepas;
+}
+
+/** §1 — le nombre de repas d'une semaine (une valeur inconnue retombe sur 4). */
+export function nombreDeRepas(semaine: Pick<SemaineRepas, 'repasParJour'> | null): NombreRepas {
+  const n = semaine?.repasParJour;
+  return n !== undefined && NOMBRES_DE_REPAS.includes(n) ? n : NOMBRE_DE_REPAS_PAR_DEFAUT;
+}
+
+/** §1 — les nombres de repas proposables pour cette cible (seuils mesurés). */
+export function nombresPossibles(kcal: number): NombreRepas[] {
+  return NOMBRES_DE_REPAS.filter((n) => kcal >= CIBLE_MINIMALE[n]);
+}
+
+/**
+ * §1 — le nombre réellement composé : celui voulu s'il tient sous cette
+ * cible, sinon le plus grand qui tient (jamais moins de 4).
+ */
+export function nombreAdmis(voulu: NombreRepas, kcal: number): NombreRepas {
+  const possibles = nombresPossibles(kcal).filter((n) => n <= voulu);
+  return possibles[possibles.length - 1] ?? NOMBRE_DE_REPAS_PAR_DEFAUT;
+}
+
+/** §1 — les créneaux composés pour ce nombre de repas, dans l'ordre de la journée. */
+export function creneauxDe(nombre: NombreRepas): readonly Creneau[] {
+  return CRENEAUX_PAR_NOMBRE[nombre];
 }
 
 const borne = (x: number, b: { min: number; max: number }) => Math.min(Math.max(x, b.min), b.max);
@@ -55,8 +95,11 @@ export function cibleDeSemaine(cibles: CiblesNutrition | null): CibleRepas | nul
 }
 
 /** La part d'un créneau, ou `null` si l'appli ne le compose pas. */
-export function partDe(repas: RepasId): number | null {
-  return CRENEAUX_AUTO.find((c) => c.repas === repas)?.part ?? null;
+export function partDe(
+  repas: RepasId,
+  nombre: NombreRepas = NOMBRE_DE_REPAS_PAR_DEFAUT,
+): number | null {
+  return creneauxDe(nombre).find((c) => c.repas === repas)?.part ?? null;
 }
 
 function estProteique(foodId: string, catalogue: Catalogue): boolean {
@@ -206,6 +249,8 @@ export function choisirRepasSemaine(
   catalogue: Catalogue,
   /** §4 — les aliments que la personne ne mange pas. */
   exclus: ReadonlySet<string> = new Set(),
+  /** §1 — les créneaux à composer (4 repas par défaut). */
+  creneaux: readonly Creneau[] = creneauxDe(NOMBRE_DE_REPAS_PAR_DEFAUT),
 ): readonly Partial<Record<RepasId, string>>[] {
   const aime = new Set(preferes);
   const servis = new Map<string, number>();
@@ -215,7 +260,7 @@ export function choisirRepasSemaine(
   for (let j = 0; j < 7; j++) {
     const jour: Partial<Record<RepasId, string>> = {};
     const aujourdhui = new Set<string>();
-    for (const { repas: creneau, part } of CRENEAUX_AUTO) {
+    for (const { repas: creneau, part } of creneaux) {
       const veille = jours[j - 1]?.[creneau];
       // Un repas qui ne tient pas sa part n'entre pas dans la semaine (il
       // reste dans la bibliothèque) ; à défaut, on relâche les règles une à
@@ -258,17 +303,27 @@ export function composerSemaine(
   catalogue: Catalogue,
   aujourdhui: string,
   exclus: ReadonlySet<string> = new Set(),
+  /** §1 — 4, 5 ou 6 repas par jour. */
+  nombre: NombreRepas = NOMBRE_DE_REPAS_PAR_DEFAUT,
+  /** Pour mesurer d'autres répartitions : jamais passé par l'appli. */
+  creneaux: readonly Creneau[] = creneauxDe(nombre),
 ): SemaineRepas {
   const parId = new Map(BIBLIOTHEQUE_REPAS.map((r) => [r.id, r]));
-  const jours = choisirRepasSemaine(preferes, cible, catalogue, exclus).map((choix) => {
+  const jours = choisirRepasSemaine(preferes, cible, catalogue, exclus, creneaux).map((choix) => {
     const journee: Partial<Record<RepasId, readonly LignePerso[]>> = {};
-    for (const { repas: creneau, part } of CRENEAUX_AUTO) {
+    for (const { repas: creneau, part } of creneaux) {
       const r = parId.get(choix[creneau] ?? '');
       if (r !== undefined) journee[creneau] = ajusterRepas(r, part, cible, catalogue).lignes;
     }
     return journee as JourneePerso;
   });
-  return { jours, cible, creeLe: aujourdhui };
+  return {
+    jours,
+    cible,
+    creeLe: aujourdhui,
+    // 4 repas : le champ reste absent, la semaine garde sa forme d'avant.
+    ...(nombre === NOMBRE_DE_REPAS_PAR_DEFAUT ? {} : { repasParJour: nombre }),
+  };
 }
 
 /** La cible a-t-elle changé depuis que la semaine a été composée ? */

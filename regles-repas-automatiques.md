@@ -31,14 +31,48 @@
 
 ## 1. Les repas de la journée et leur part de la cible
 
-| Repas | Part des calories et des protéines |
-|---|---|
-| Petit-déjeuner | 25 % |
-| Déjeuner | 30 % |
-| Collation de l'après-midi | 15 % |
-| Dîner | 30 % |
+La personne choisit **4, 5 ou 6 repas par jour** (4 par défaut), dans
+l'onglet Nutrition (Guillaume, 26 novembre : « la possibilité d'ajouter un
+repas »). Changer ce nombre **recompose la semaine** : toutes les quantités
+changent avec les parts, et c'est dit avant.
 
-La collation du matin reste vide : on peut y poser un repas à la main.
+| Repas | 4 repas | 5 repas | 6 repas |
+|---|---|---|---|
+| Petit-déjeuner | 25 % | 20 % | 17,5 % |
+| Collation du matin | — | 15 % | 12,5 % |
+| Déjeuner | 30 % | 25 % | 22,5 % |
+| Collation de l'après-midi | 15 % | 15 % | 12,5 % |
+| Dîner | 30 % | 25 % | 22,5 % |
+| Collation du soir | — | — | 12,5 % |
+
+Un repas marqué « — » n'est pas composé, et l'écran ne l'affiche pas — sauf
+s'il porte déjà quelque chose (rien de posé ne disparaît). Pour en avoir un
+de plus : « + Ajouter un repas », sous le dernier repas de la journée.
+
+La collation du soir puise dans les mêmes repas de la bibliothèque que la
+collation de l'après-midi.
+
+### Cible minimale pour 5 et 6 repas
+
+| Nombre de repas | Cible minimale |
+|---|---|
+| 4 | aucune |
+| 5 | 1 500 kcal |
+| 6 | 1 900 kcal |
+
+Sous ce seuil, le choix n'est pas proposé, et l'écran dit pourquoi.
+
+**Pourquoi** (mesuré le 26 novembre, 24 cibles de 1 200 à 2 400 kcal, 7
+répartitions essayées) : une collation de la bibliothèque ne descend pas
+sous 150 à 200 kcal, même au plus bas de ses leviers. En dessous du seuil,
+les collations dépassent leur part et la journée avec : jusqu'à + 16 % à
+1 200 kcal en 5 repas, + 45 % en 6 repas. À partir du seuil, chaque jour
+tient entre − 5 % et + 5 % de ses calories. Des collations à 10 % de la
+journée ne tenaient qu'à partir de 2 600 kcal : elles sont à 12,5 % et 15 %.
+
+**Limite connue** : la bibliothèque compte 11 collations. À 5 et 6 repas,
+la même collation peut revenir tous les jours de la semaine ; « Changer ce
+repas » reste là.
 
 La cible utilisée est celle du **jour d'entraînement** (le calcul de l'appli
 donne la même les deux jours, §5 des règles des cibles).
@@ -86,7 +120,7 @@ Les totaux affichés sont **recalculés** sur les quantités arrondies : l'écar
 
 ## 3. Choisir les repas de la semaine
 
-Pour chaque jour, dans l'ordre des repas du §1, parmi les repas de la
+Pour chaque jour, dans l'ordre des repas du §1 (ceux du nombre choisi), parmi les repas de la
 bibliothèque prévus pour ce créneau **qui tiennent leur part à ± 10 % une
 fois ajustés** (les autres restent dans la bibliothèque) :
 

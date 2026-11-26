@@ -502,3 +502,199 @@
   font-weight: 700;
   text-decoration: none;
 }
+
+/* ------------------------------------------------------------------------
+ * LA JOURNÉE EN FRISE — la semaine de repas (refonte « Journal », Guillaume,
+ * 26 novembre). Du matin au soir : un point par repas, vert une fois mangé,
+ * le trait qui les relie, et une carte par repas (photo, plat, quantités,
+ * kcal, coche). Jetons du thème seulement : POWER, LADIES et ME, MYSELF & I
+ * la repeignent sans une règle de plus. « Mon plan » ne passe pas par ici.
+ * --------------------------------------------------------------------- */
+
+.journal {
+  margin: 18px var(--pad) 0;
+}
+
+.prevuTitre {
+  margin: 0 0 2px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.prevu {
+  margin: 0 0 14px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.prevu b {
+  color: var(--ink);
+}
+
+.etape {
+  position: relative;
+  padding: 0 0 14px 26px;
+}
+
+/* Le point du repas… */
+.etape::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* … et le trait jusqu'au repas suivant. */
+.etape::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: -2px;
+  left: 7px;
+  width: 2px;
+  background: var(--line);
+}
+
+.etape:last-child::after {
+  display: none;
+}
+
+.etape[data-mange]::before {
+  border-color: var(--vert);
+  background: var(--vert);
+}
+
+.etape[data-mange]::after {
+  background: var(--vert);
+}
+
+.etapeNom {
+  margin: 0 0 6px;
+  color: var(--ink-3);
+  font-family: var(--font-cond);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+/* « · mangé » est écrit : la couleur ne porte pas l'information seule. */
+.etape[data-mange] .etapeNom {
+  color: var(--vert);
+}
+
+.etapeCarte {
+  composes: carte from '../styles/cartes.module.css';
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+}
+
+.etapeTete {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.etapeTexte {
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.etapeTitre {
+  display: block;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.etapeDetail {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.etapeKcal {
+  flex: none;
+  font-family: var(--font-cond);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.etapeKcal small {
+  display: block;
+  color: var(--ink-3);
+  font-family: var(--font);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.etapeVide {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+
+/* La coche, à droite de la carte : 48 px au pouce, 30 à l'œil. */
+.etapeCarte .fait {
+  margin: 0 -8px 0 -8px;
+}
+
+.etapeCarte .faitPastille {
+  width: 30px;
+  height: 30px;
+}
+
+/* Le repas ouvert : ses aliments, « Changer ce repas ». */
+.etapeCorps {
+  margin-top: 8px;
+  padding: 4px 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.journal .note {
+  margin-top: 0;
+}
+
+/* Les macros du jour, sur leur ligne. */
+.prevu .macroLigne {
+  display: block;
+}

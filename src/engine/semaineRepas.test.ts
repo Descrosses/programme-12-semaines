@@ -12,13 +12,20 @@
 import { describe, expect, it } from 'vitest';
 import { BIBLIOTHEQUE_REPAS, repasPourCreneau } from '../data/bibliothequeRepas';
 import { FOOD_LIBRARY } from '../data/foodLibrary';
-import { CRENEAUX_AUTO, LEVIERS } from '../data/reglesRepasAutomatiques';
+import { journeeVide, type JourneePerso } from '../data/planPerso';
+import { CIBLE_MINIMALE, CRENEAUX_AUTO, LEVIERS } from '../data/reglesRepasAutomatiques';
+import { listeDeCourses } from './courses';
 import { macrosDeJournee } from './planPersoTotaux';
 import {
   ajusterRepas,
   choisirRepasSemaine,
   cleRepasFait,
+  creneauxDe,
   mangeDesRepas,
+  nombreAdmis,
+  nombreDeRepas,
+  nombresPossibles,
+  partDe,
   repasFaits,
   cibleAChange,
   cibleDeSemaine,
@@ -197,5 +204,144 @@ describe('les repas cochés « mangé »', () => {
     expect(m.kcal).toBeCloseTo(126 + 130 + 165, 6);
     // Un créneau coché mais vide (repas retiré depuis) pèse zéro.
     expect(mangeDesRepas(journee, new Set(['collation1'] as const), FOOD_LIBRARY).kcal).toBe(0);
+  });
+});
+
+/*
+ * §1 — 4, 5 ou 6 repas par jour (Guillaume, 26 novembre : « la possibilité
+ * d'ajouter un repas […] j'ai 5 repas, voire 6 »).
+ */
+describe('§1 — 5 et 6 repas par jour', () => {
+  const kcalDe = (j: JourneePerso) => macrosDeJournee(j, FOOD_LIBRARY).kcal;
+
+  it('4 repas : la semaine garde exactement sa forme d’avant (pas de champ en plus)', () => {
+    const s = composerSemaine({ kcal: 2150, proteinG: 180 }, [], FOOD_LIBRARY, '2026-11-26');
+    expect('repasParJour' in s).toBe(false);
+    expect(nombreDeRepas(s)).toBe(4);
+    expect(s).toEqual(
+      composerSemaine({ kcal: 2150, proteinG: 180 }, [], FOOD_LIBRARY, '2026-11-26', new Set(), 4),
+    );
+    expect(nombreDeRepas(null)).toBe(4);
+    // Une valeur inconnue (sauvegarde abîmée) retombe sur 4, jamais sur une erreur.
+    expect(nombreDeRepas({ repasParJour: 9 as never })).toBe(4);
+  });
+
+  for (const n of [5, 6] as const) {
+    it(`${String(n)} repas : chaque jour porte ses ${String(n)} créneaux, jamais deux fois le même plat`, () => {
+      const s = composerSemaine(
+        { kcal: 2600, proteinG: 170 },
+        [],
+        FOOD_LIBRARY,
+        '2026-11-26',
+        new Set(),
+        n,
+      );
+      expect(s.repasParJour).toBe(n);
+      expect(nombreDeRepas(s)).toBe(n);
+      const choix = choisirRepasSemaine(
+        [],
+        { kcal: 2600, proteinG: 170 },
+        FOOD_LIBRARY,
+        new Set(),
+        creneauxDe(n),
+      );
+      for (const [i, j] of s.jours.entries()) {
+        expect(Object.keys(j).sort(), `jour ${String(i)}`).toEqual(
+          creneauxDe(n)
+            .map((c) => c.repas)
+            .sort(),
+        );
+        const plats = Object.values(choix[i]!);
+        expect(new Set(plats).size, `jour ${String(i)}`).toBe(plats.length);
+      }
+    });
+
+    it(`${String(n)} repas : à partir du seuil, chaque jour tient entre − 5 % et + 5 % de ses calories`, () => {
+      const seuil = CIBLE_MINIMALE[n];
+      for (const kcal of [seuil, seuil + 100, 2150, 2600, 3200, 3770]) {
+        for (const proteinG of [Math.round(kcal * 0.06), Math.round(kcal * 0.085)]) {
+          const s = composerSemaine(
+            { kcal, proteinG },
+            [],
+            FOOD_LIBRARY,
+            '2026-11-26',
+            new Set(),
+            n,
+          );
+          for (const [i, j] of s.jours.entries()) {
+            const ecart = kcalDe(j) / kcal - 1;
+            expect(
+              Math.abs(ecart),
+              `${String(kcal)} kcal, ${String(proteinG)} g, jour ${String(i)}`,
+            ).toBeLessThanOrEqual(0.05);
+          }
+        }
+      }
+    });
+
+    it(`${String(n)} repas : sous le seuil, la journée dépasse — c’est pour ça qu’il n’est pas proposé`, () => {
+      const s = composerSemaine(
+        { kcal: 1200, proteinG: 100 },
+        [],
+        FOOD_LIBRARY,
+        '2026-11-26',
+        new Set(),
+        n,
+      );
+      expect(Math.max(...s.jours.map((j) => kcalDe(j) / 1200 - 1))).toBeGreaterThan(0.1);
+    });
+  }
+
+  it('le nombre proposé dépend de la cible ; un nombre refusé retombe sur le plus grand qui tient', () => {
+    expect(nombresPossibles(1400)).toEqual([4]);
+    expect(nombresPossibles(1499)).toEqual([4]);
+    expect(nombresPossibles(1500)).toEqual([4, 5]);
+    expect(nombresPossibles(1899)).toEqual([4, 5]);
+    expect(nombresPossibles(1900)).toEqual([4, 5, 6]);
+    expect(nombreAdmis(6, 2150)).toBe(6);
+    expect(nombreAdmis(6, 1850)).toBe(5);
+    expect(nombreAdmis(6, 1400)).toBe(4);
+    expect(nombreAdmis(5, 1400)).toBe(4);
+    expect(nombreAdmis(4, 1200)).toBe(4);
+  });
+
+  it('la part d’un repas se lit au nombre de repas de la semaine', () => {
+    expect(partDe('pdej')).toBe(0.25);
+    expect(partDe('pdej', 5)).toBe(0.2);
+    expect(partDe('pdej', 6)).toBe(0.175);
+    expect(partDe('collation1')).toBeNull();
+    expect(partDe('collation1', 5)).toBe(0.15);
+    expect(partDe('collation3', 5)).toBeNull();
+    expect(partDe('collation3', 6)).toBe(0.125);
+  });
+
+  it('la collation du soir compte partout : total du jour, repas cochés, courses', () => {
+    const s = composerSemaine(
+      { kcal: 2600, proteinG: 170 },
+      [],
+      FOOD_LIBRARY,
+      '2026-11-26',
+      new Set(),
+      6,
+    );
+    const jour = s.jours[0]!;
+    const soir = jour.collation3!;
+    expect(soir.length).toBeGreaterThan(0);
+    const sans: JourneePerso = { ...jour, collation3: [] };
+    const kcalSoir = kcalDe(jour) - kcalDe(sans);
+    expect(kcalSoir).toBeGreaterThan(200);
+    expect(mangeDesRepas(jour, new Set(['collation3'] as const), FOOD_LIBRARY).kcal).toBeCloseTo(
+      kcalSoir,
+      0,
+    );
+    expect(journeeVide({ collation3: soir })).toBe(false);
+    // Les courses : retirer la collation du soir des 7 jours retire des grammes.
+    const total = (x: typeof s) =>
+      listeDeCourses(x, FOOD_LIBRARY)
+        .rayons.flatMap((r) => r.articles)
+        .reduce((a, l) => a + l.quantite, 0);
+    expect(total(s)).toBeGreaterThan(
+      total({ ...s, jours: s.jours.map((j) => ({ ...j, collation3: [] })) }),
+    );
   });
 });

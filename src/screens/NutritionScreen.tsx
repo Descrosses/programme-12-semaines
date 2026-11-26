@@ -86,6 +86,7 @@ import { aujourdhuiLocal } from '../state/dernierExport';
 import type { ExclusionId } from '../data/exclusionsRepas';
 import { alimentsExclus } from '../engine/exclusionsRepas';
 import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
+import { ResteDuJour } from '../components/ResteDuJour';
 import { pointDesDeuxSemaines, type ProfilNutrition } from '../engine/reajustement';
 import {
   cibleDeSemaine,
@@ -93,6 +94,7 @@ import {
   composerSemaine,
   jourDeSemaine,
   mangeDesRepas,
+  nombreAdmis,
   repasFaits,
   type SemaineRepas,
 } from '../engine/semaineRepas';
@@ -339,13 +341,101 @@ export function NutritionScreen({
       await saveSettings({ planPerso: suivant });
     }
 
+    const retirerExtra = async (id: number) => {
+      await removeExtra(id);
+      setExtras(await extrasOn(todayIso));
+    };
+    /*
+     * MODE SEMAINE — le sélecteur de palier ne sert que si les deux journées
+     * ont des cibles différentes (une fiche de coach). La cible calculée par
+     * l'appli est la même les deux jours (§5) : le montrer ferait croire à un
+     * choix qui ne change rien.
+     */
+    const train = cibleSaisie(cibles?.train);
+    const repos = cibleSaisie(cibles?.rest);
+    const memeCibleLesDeuxJours =
+      train !== null &&
+      repos !== null &&
+      train.kcal === repos.kcal &&
+      train.proteinG === repos.proteinG &&
+      train.carbsG === repos.carbsG &&
+      train.fatG === repos.fatG;
+    /** Le point des 2 semaines, pas encore dû, descend en tuile sous la semaine. */
+    const pointEnTuile = semaine !== null && point?.cas === 'pas-du';
+    const dateCourte = (iso: string) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return new Date(Date.UTC(y!, m! - 1, d!)).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        timeZone: 'UTC',
+      });
+    };
+    /** Mode semaine : les aliments mangés hors des repas, sous la frise. */
+    const aliments = (
+      <section className={styles.horsRepas} data-hors-repas>
+        {extras.length > 0 && (
+          <>
+            <h2 className={styles.horsRepasTitre}>Hors de mes repas</h2>
+            <ExtrasDuRepas extras={extras} onRemove={retirerExtra} />
+          </>
+        )}
+        <button
+          type="button"
+          className={styles.horsRepasAjout}
+          onClick={() => setAjoutPour({ id: MEAL_LIBRE, name: 'Hors de mes repas' })}
+        >
+          + Ajouter un aliment hors de mes repas
+        </button>
+      </section>
+    );
+    const pesee = (
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>Pesée du matin</h2>
+        <div className={styles.field}>
+          <Stepper
+            label={`Poids — ${humanDate(todayIso)}`}
+            value={todayRow.weightKg}
+            step={0.1}
+            min={40}
+            max={160}
+            unit="kg"
+            tone="accent"
+            onStep={(d) => void patchToday({ weightKg: stepValue(todayRow.weightKg, d, 40, 160) })}
+            onCommit={(v) => void patchToday({ weightKg: v })}
+          />
+        </div>
+        <div className={styles.field}>
+          <Stepper
+            label="Tour de taille"
+            value={todayRow.waistCm}
+            step={0.5}
+            min={60}
+            max={150}
+            unit="cm"
+            tone="accent"
+            onStep={(d) => void patchToday({ waistCm: stepValue(todayRow.waistCm, d, 60, 150) })}
+            onCommit={(v) => void patchToday({ waistCm: v })}
+          />
+        </div>
+      </section>
+    );
+
     return (
       <div className={styles.screen}>
         {entete ?? (
           <ScreenHeader
             eyebrow="Suivi personnel"
             title="Nutrition"
-            subtitle={cibleJour === null ? 'Tes cibles restent à poser' : cibleJour.label}
+            subtitle={
+              cibleJour === null
+                ? 'Tes cibles restent à poser'
+                : semaine === null
+                  ? cibleJour.label
+                  : // Même cible les deux jours : le palier ne dit rien de plus.
+                    memeCibleLesDeuxJours
+                    ? humanDate(todayIso)
+                    : `${humanDate(todayIso)} · ${cibleJour.label}`
+            }
             visuel="nutritionPower"
           />
         )}
@@ -366,7 +456,7 @@ export function NutritionScreen({
               Tu peux déjà noter ce que tu manges et te peser ci-dessous : rien n’attend les cibles.
             </p>
           </section>
-        ) : (
+        ) : semaine !== null ? null : (
           <section className={styles.card}>
             <div className={styles.keyStat}>
               <div className={styles.keyStatLabel}>Ta cible aujourd’hui · {cibleJour.label}</div>
@@ -388,7 +478,26 @@ export function NutritionScreen({
           </section>
         )}
 
-        {point !== null && profil !== null && cibleSemaine !== null && (
+        {/*
+          REFONTE « JOURNAL » (maquette C de Guillaume, 26 novembre) — en mode
+          semaine de repas, UNE carte dit la journée : ce qu'il reste, ce qui
+          a été mangé, face à la cible. Elle remplace « Ta cible aujourd'hui »
+          et « Mon compte du jour ».
+        */}
+        {semaine !== null && (
+          <ResteDuJour
+            cible={ciblePlan}
+            mange={mange}
+            repas={{ faits: faits.size, prevus: repasPrevus }}
+            enPlus={extras.length}
+          />
+        )}
+
+        {/*
+          Le point des 2 semaines : tant qu'il n'est pas dû, en mode semaine,
+          il tient dans une tuile sous la journée. Dû, il monte ici en carte.
+        */}
+        {point !== null && profil !== null && cibleSemaine !== null && !pointEnTuile && (
           <PointDeuxSemaines
             point={point}
             objectif={profil.objectif}
@@ -404,25 +513,27 @@ export function NutritionScreen({
           mange comme une séance. Il s'affiche même sans cible posée — déclarer
           sa journée ne dépend pas d'avoir des chiffres.
         */}
-        <div className={styles.segment} role="group" aria-label="Palier alimentaire">
-          {(['train', 'rest'] as const).map((k) => (
-            <button
-              key={k}
-              type="button"
-              className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ''}`}
-              onClick={() =>
-                void (async () => {
-                  setKind(k);
-                  await setDayKindOverride(todayIso, k === todayKind ? null : k);
-                  onDayKindChange();
-                })()
-              }
-              aria-pressed={kind === k}
-            >
-              {k === 'train' ? 'Jour d’entraînement' : 'Jour de repos'}
-            </button>
-          ))}
-        </div>
+        {!(semaine !== null && memeCibleLesDeuxJours) && (
+          <div className={styles.segment} role="group" aria-label="Palier alimentaire">
+            {(['train', 'rest'] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                className={`${styles.segmentButton} ${kind === k ? styles.segmentOn : ''}`}
+                onClick={() =>
+                  void (async () => {
+                    setKind(k);
+                    await setDayKindOverride(todayIso, k === todayKind ? null : k);
+                    onDayKindChange();
+                  })()
+                }
+                aria-pressed={kind === k}
+              >
+                {k === 'train' ? 'Jour d’entraînement' : 'Jour de repos'}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/*
           MON PLAN — cinq repas composés par la personne elle-même.
@@ -441,6 +552,29 @@ export function NutritionScreen({
             semaine={semaine}
             cibleActuelle={cibleSemaine}
             jourInitial={jourAujourdhui}
+            aujourdhui={aujourdhuiLocal()}
+            apresRepas={
+              <>
+                {aliments}
+                {pesee}
+              </>
+            }
+            {...(pointEnTuile && point?.cas === 'pas-du' && profil !== null && cibleSemaine !== null
+              ? {
+                  point: {
+                    resume: `le ${dateCourte(point.prochainLe)}`,
+                    detail: (
+                      <PointDeuxSemaines
+                        point={point}
+                        objectif={profil.objectif}
+                        kcalActuelles={cibleSemaine.kcal}
+                        onAccepter={(c) => void fermerPoint(c)}
+                        onGarder={() => void fermerPoint()}
+                      />
+                    ),
+                  },
+                }
+              : {})}
             faits={{
               pris: faits,
               onBasculer: (repas) =>
@@ -455,10 +589,18 @@ export function NutritionScreen({
             customs={customs}
             onCreateCustom={creerCustom}
             onChange={(suivante) => void enregistreSemaine(suivante)}
-            onRecomposer={() =>
+            onRecomposer={(nombre) =>
               cibleSemaine !== null &&
               void enregistreSemaine(
-                composerSemaine(cibleSemaine, preferes, catalogue, todayIso, exclus),
+                composerSemaine(
+                  cibleSemaine,
+                  preferes,
+                  catalogue,
+                  todayIso,
+                  exclus,
+                  // §1 — jamais un nombre de repas que la cible ne tient pas.
+                  nombreAdmis(nombre, cibleSemaine.kcal),
+                ),
               )
             }
             onQuitter={() => void enregistreSemaine(null)}
@@ -505,57 +647,37 @@ export function NutritionScreen({
         )}
 
         {/*
-          Ce qui a été mangé, et ce qu'il reste.
+          Ce qui a été mangé, et ce qu'il reste — hors semaine de repas.
           Une seule liste, sans repas : il n'y en a pas à remplir.
         */}
-        <section
-          className={styles.card}
-          {...(semaine !== null ? { 'data-compte-du-jour': '' } : {})}
-        >
-          <h2 className={styles.cardTitle}>
-            {semaine !== null ? 'Mon compte du jour' : 'Ce que j’ai mangé'}
-          </h2>
-          {extras.length === 0 && faits.size === 0 ? (
-            <p className={styles.cardSub}>
-              {semaine !== null
-                ? 'Coche tes repas au fil de la journée : le compte se fait tout seul.'
-                : 'Rien de noté aujourd’hui.'}
-            </p>
-          ) : (
-            <>
-              <div className={styles.keyStat}>
-                <div className={styles.keyStatLabel}>Total du jour</div>
-                <div className={`${styles.keyStatValue} tnum`}>
-                  {Math.round(mange.kcal).toLocaleString('fr-FR')} <span>kcal</span>
+        {semaine === null && (
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Ce que j’ai mangé</h2>
+            {extras.length === 0 ? (
+              <p className={styles.cardSub}>Rien de noté aujourd’hui.</p>
+            ) : (
+              <>
+                <div className={styles.keyStat}>
+                  <div className={styles.keyStatLabel}>Total du jour</div>
+                  <div className={`${styles.keyStatValue} tnum`}>
+                    {Math.round(mange.kcal).toLocaleString('fr-FR')} <span>kcal</span>
+                  </div>
                 </div>
-              </div>
-              <MacroBar macros={mange} />
-              {semaine !== null && (
-                <p className={styles.fieldHint}>
-                  {faits.size} repas coché{faits.size > 1 ? 's' : ''} sur {repasPrevus}
-                  {extras.length > 0 &&
-                    ` · ${String(extras.length)} aliment${extras.length > 1 ? 's' : ''} en plus`}
-                </p>
-              )}
-              <ExtrasDuRepas
-                extras={extras}
-                onRemove={async (id: number) => {
-                  await removeExtra(id);
-                  setExtras(await extrasOn(todayIso));
-                }}
-              />
-            </>
-          )}
-          {reste !== null && <p className={styles.fieldHint}>{phraseReste(reste)}</p>}
-          <button
-            type="button"
-            className={styles.secondary}
-            style={{ width: '100%', margin: '12px 0 0' }}
-            onClick={() => setAjoutPour({ id: MEAL_LIBRE, name: 'Ce que j’ai mangé' })}
-          >
-            {semaine !== null ? '+ Ajouter un aliment hors de mes repas' : '+ Ajouter un aliment'}
-          </button>
-        </section>
+                <MacroBar macros={mange} />
+                <ExtrasDuRepas extras={extras} onRemove={retirerExtra} />
+              </>
+            )}
+            {reste !== null && <p className={styles.fieldHint}>{phraseReste(reste)}</p>}
+            <button
+              type="button"
+              className={styles.secondary}
+              style={{ width: '100%', margin: '12px 0 0' }}
+              onClick={() => setAjoutPour({ id: MEAL_LIBRE, name: 'Ce que j’ai mangé' })}
+            >
+              + Ajouter un aliment
+            </button>
+          </section>
+        )}
 
         {ajoutPour && (
           <AddFoodSheet
@@ -589,37 +711,7 @@ export function NutritionScreen({
             onClose={() => setAjoutPour(null)}
           />
         )}
-        <section className={styles.card}>
-          <h2 className={styles.cardTitle}>Pesée du matin</h2>
-          <div className={styles.field}>
-            <Stepper
-              label={`Poids — ${humanDate(todayIso)}`}
-              value={todayRow.weightKg}
-              step={0.1}
-              min={40}
-              max={160}
-              unit="kg"
-              tone="accent"
-              onStep={(d) =>
-                void patchToday({ weightKg: stepValue(todayRow.weightKg, d, 40, 160) })
-              }
-              onCommit={(v) => void patchToday({ weightKg: v })}
-            />
-          </div>
-          <div className={styles.field}>
-            <Stepper
-              label="Tour de taille"
-              value={todayRow.waistCm}
-              step={0.5}
-              min={60}
-              max={150}
-              unit="cm"
-              tone="accent"
-              onStep={(d) => void patchToday({ waistCm: stepValue(todayRow.waistCm, d, 60, 150) })}
-              onCommit={(v) => void patchToday({ waistCm: v })}
-            />
-          </div>
-        </section>
+        {semaine === null && pesee}
       </div>
     );
   }

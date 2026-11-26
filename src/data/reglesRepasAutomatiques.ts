@@ -5,13 +5,46 @@
 
 import type { RepasId } from './planPerso';
 
+/** §1 — le nombre de repas par jour que la semaine sait composer. */
+export const NOMBRES_DE_REPAS = [4, 5, 6] as const;
+export type NombreRepas = (typeof NOMBRES_DE_REPAS)[number];
+export const NOMBRE_DE_REPAS_PAR_DEFAUT: NombreRepas = 4;
+
+export type Creneau = { repas: RepasId; part: number };
+
 /** §1 — les repas composés, dans l'ordre de la journée, et leur part. */
-export const CRENEAUX_AUTO: readonly { repas: RepasId; part: number }[] = [
-  { repas: 'pdej', part: 0.25 },
-  { repas: 'dejeuner', part: 0.3 },
-  { repas: 'collation2', part: 0.15 },
-  { repas: 'diner', part: 0.3 },
-];
+export const CRENEAUX_PAR_NOMBRE: Readonly<Record<NombreRepas, readonly Creneau[]>> = {
+  4: [
+    { repas: 'pdej', part: 0.25 },
+    { repas: 'dejeuner', part: 0.3 },
+    { repas: 'collation2', part: 0.15 },
+    { repas: 'diner', part: 0.3 },
+  ],
+  5: [
+    { repas: 'pdej', part: 0.2 },
+    { repas: 'collation1', part: 0.15 },
+    { repas: 'dejeuner', part: 0.25 },
+    { repas: 'collation2', part: 0.15 },
+    { repas: 'diner', part: 0.25 },
+  ],
+  6: [
+    { repas: 'pdej', part: 0.175 },
+    { repas: 'collation1', part: 0.125 },
+    { repas: 'dejeuner', part: 0.225 },
+    { repas: 'collation2', part: 0.125 },
+    { repas: 'diner', part: 0.225 },
+    { repas: 'collation3', part: 0.125 },
+  ],
+};
+
+/**
+ * §1 — la cible (kcal) sous laquelle un nombre de repas n'est pas proposé :
+ * les collations de la bibliothèque dépasseraient leur part.
+ */
+export const CIBLE_MINIMALE: Readonly<Record<NombreRepas, number>> = { 4: 0, 5: 1500, 6: 1900 };
+
+/** Les 4 repas par défaut (les semaines composées avant le choix du nombre). */
+export const CRENEAUX_AUTO = CRENEAUX_PAR_NOMBRE[NOMBRE_DE_REPAS_PAR_DEFAUT];
 
 /** §2 — les bornes des deux leviers. */
 export const LEVIERS = {

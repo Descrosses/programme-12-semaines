@@ -15,7 +15,7 @@
 import { FOOD_LIBRARY, type LibraryFood } from '../data/foodLibrary';
 import {
   GROUPES_REPAS,
-  REPAS_PERSO,
+  REPAS_JOURNEE,
   groupeDeFamille,
   type GroupeId,
   type JourneePerso,
@@ -79,7 +79,7 @@ export function macrosDeRepas(journee: JourneePerso, repas: RepasId, catalogue: 
  */
 export function macrosDeJournee(journee: JourneePerso, catalogue: Catalogue): Macros {
   return arrondirMacros(
-    REPAS_PERSO.reduce((acc, r) => somme(acc, macrosDeRepas(journee, r.id, catalogue)), ZERO),
+    REPAS_JOURNEE.reduce((acc, r) => somme(acc, macrosDeRepas(journee, r.id, catalogue)), ZERO),
   );
 }
 
@@ -130,7 +130,7 @@ export function ecartACible(total: Macros, cible: Macros | null): Macros | null 
  * seule chose qui sépare un plan posé par la bibliothèque d'un plan fini.
  */
 export function quantitesAPoser(journee: JourneePerso): number {
-  return REPAS_PERSO.reduce(
+  return REPAS_JOURNEE.reduce(
     (n, r) => n + (journee[r.id] ?? []).filter((l) => l.qty === null).length,
     0,
   );

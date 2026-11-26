@@ -147,6 +147,39 @@ réinterprète pas.**
   végétalien, 98 g de protéines pour 180 visés ; sans gluten ni laitiers,
   aucun petit-déjeuner ni collation (−40 %). `components/exclusionsRepas.test.tsx`.
 
+  **Refonte « Journal » + nombre de repas** (Guillaume, 26 novembre, « go
+  refonte C avec la possibilité d'ajouter un repas » — maquette C parmi
+  trois). Mode SEMAINE de repas seulement : « Mon plan » et le plan
+  historique ne bougent pas. Écran : carte « Il te reste aujourd'hui »
+  (`components/ResteDuJour.tsx` : le reste en grand, une barre par chiffre
+  POSÉ, dépassement dit en mots) — elle REMPLACE « Ta cible aujourd'hui » et
+  « Mon compte du jour » ; sept pastilles DATÉES (semaine en cours,
+  aujourd'hui repéré par son contour) ; les repas en FRISE (`PlanPerso` mode
+  `semaine` : point vert + « · mangé », photo, plat, quantités, kcal, coche
+  à droite ; toucher la carte l'ouvre) ; « + Ajouter un aliment hors de mes
+  repas » ; pesée ; outils en TUILES (courses, « Je ne mange pas », point
+  des 2 semaines tant qu'il n'est pas dû — dû, il monte en carte en haut —,
+  recomposer). La phrase de prudence des exclusions reste TOUJOURS
+  affichée. Le sélecteur entraînement / repos ne s'affiche en mode semaine
+  que si les deux cibles DIFFÈRENT (fiche de coach) : la cible calculée est
+  la même les deux jours. **4, 5 ou 6 repas par jour** (§1 de
+  `regles-repas-automatiques.md`, relu par le test) : parts 25/30/15/30,
+  20/15/25/15/25, 17,5/12,5/22,5/12,5/22,5/12,5 ; 6e créneau `collation3`
+  « Collation du soir » (`REPAS_DU_SOIR`, `REPAS_JOURNEE` ; `REPAS_PERSO`
+  reste à CINQ pour « Mon plan »), qui puise dans les repas de la collation
+  de l'après-midi. **Seuils MESURÉS** (24 cibles, 7 répartitions) : 5 repas
+  dès 1 500 kcal, 6 dès 1 900 (`CIBLE_MINIMALE`) — en dessous les collations
+  dépassent leur part (jusqu'à + 16 % et + 45 % à 1 200 kcal) : le choix est
+  désactivé ET expliqué, `nombreAdmis` plafonne à la recomposition. Des
+  collations à 10 % ne tenaient qu'à 2 600 kcal : ne pas y revenir. Le
+  nombre vit sur la semaine (`repasParJour`, absent = 4 : une semaine à 4
+  repas garde sa forme d'avant) et se choisit EN RECOMPOSANT (tuile, ou
+  « + Ajouter un repas » sous le dernier repas) — jamais dans le
+  questionnaire, copie du site. Limite : 11 collations en bibliothèque, la
+  même peut revenir 7 jours sur 7 à 5-6 repas. Pas fait : le style
+  « Journal » hors mode semaine. `components/journalNutrition.test.tsx`,
+  `engine/semaineRepas.test.ts`.
+
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 

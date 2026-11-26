@@ -284,7 +284,10 @@ export function photoDe(id: string): string {
 
 /** Les repas proposables pour un créneau, dans l'ordre de la bibliothèque. */
 export function repasPourCreneau(creneau: RepasId): RepasBibliotheque[] {
-  return BIBLIOTHEQUE_REPAS.filter((r) => r.creneaux.includes(creneau));
+  // La collation du soir (6e repas de la semaine automatique) puise dans les
+  // repas de la collation de l'après-midi : `regles-repas-automatiques.md`, §1.
+  const lu = creneau === 'collation3' ? 'collation2' : creneau;
+  return BIBLIOTHEQUE_REPAS.filter((r) => r.creneaux.includes(lu));
 }
 
 /**
