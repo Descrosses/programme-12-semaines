@@ -451,7 +451,14 @@ matériel et la durée avant d'écrire la moindre séance.
   « chaque image reste dans son programme » : un programme importé, sur
   choix explicite ; POWER, MASS et LADIES gardent leurs photos. Repère
   `data-importe` sur la page : les illustrations restent sur fond blanc sans
-  voile sous tout thème. **Lot 2 — LADIES, FAIT** (« go thème lot 2 ») :
+  voile sous tout thème. **Proposé dès l'import** (Guillaume, 26 novembre,
+  « dès le début, juste après avoir importé son programme ») : sous
+  « « … » est importé. », la même carte `ThemeProgramme` pour CE programme,
+  sur son thème actuel, avec « Tu pourras le changer quand tu veux dans ses
+  Réglages ». Proposée, jamais imposée ; seulement après un import réussi ;
+  un autre fichier choisi la retire. Pas de second cadre dans le panneau
+  (`.themeApresImport`). `components/perso/themeApresImport.test.tsx`.
+  **Lot 2 — LADIES, FAIT** (« go thème lot 2 ») :
   ses bandeaux Aujourd'hui / Semaine / Réglages, et Progrès
   (`femmesProgres`, `56_femmes_progres_*`, image de Guillaume du 26
   novembre : LADIES n'a pas d'écran Progrès, ce bandeau ne sert qu'aux
