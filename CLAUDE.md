@@ -643,7 +643,12 @@ matériel et la durée avant d'écrire la moindre séance.
   ÉCRITS de chaque programme (`qualitesDe`), CHACUN SOUS SON NOM (un
   objectif est celui d'un cycle, pas de la famille) ; ME, MYSELF & I n'a que
   son résumé. N'en inventer aucun. Retours du 26 novembre : demi-tour
-  ralenti à 950 ms (`DUREE_RETOURNEMENT`, passée au CSS par `--duree`) ;
+  ralenti à 950 ms (`DUREE_RETOURNEMENT`, passée au CSS par `--duree`,
+  « la vitesse est parfaite ») ; le VERSO est dessiné à sa taille FINALE et
+  mis à l'échelle de la carte (`.versoInterieur`, même courbe) — dessiné à
+  la largeur du moment, son texte se recomposait à chaque image (« effet
+  bizarre ») ; photos de la carte en `prioritaire` (Safari laissait noire une
+  image différée dans la carte en 3D) ;
   l'objectif POWER « rattraper l'écart chaîne postérieure / squat » est
   RETIRÉ du catalogue (personnel à Guillaume) ; MASS FORCE a son objectif,
   dans ses mots (« devenir plus fort et continuer de progresser, sans se

@@ -126,9 +126,17 @@ export function FamilleRetournee({
     return () => window.removeEventListener('keydown', touche);
   });
 
-  const haut = hauteurEncoche();
-  const cible =
-    phase === 'ouverte' ? rectangleOuvert(window.innerWidth, window.innerHeight, haut) : depart;
+  const final = rectangleOuvert(window.innerWidth, window.innerHeight, hauteurEncoche());
+  const cible = phase === 'ouverte' ? final : depart;
+  /*
+   * Le verso est dessiné UNE FOIS, à sa taille finale, puis mis à l'échelle
+   * de la carte. Dessiné à la largeur du moment, il recomposait ses lignes à
+   * chaque image (un résumé sur une colonne de trois mots, puis de cinq…) :
+   * « l'écriture donne un effet bizarre » (vidéo de Guillaume, 26 novembre).
+   * La largeur et l'échelle suivent la même courbe : le texte grossit d'un
+   * bloc, comme un zoom, sans jamais changer de forme.
+   */
+  const echelle = cible.width / final.width;
 
   /*
    * Rendue dans `body`, hors de l'écran : l'Accueil isole son contenu (la
@@ -161,7 +169,9 @@ export function FamilleRetournee({
         <div className={local.recto} aria-hidden="true">
           {habillage.photo !== undefined && (
             <span className={local.photo}>
-              <Visuel nom={habillage.photo} sizes="420px" />
+              {/* Chargées tout de suite (`prioritaire`) : différées, Safari les
+                  laissait noires pendant le demi-tour (vidéo du 26 novembre). */}
+              <Visuel nom={habillage.photo} sizes="220px" prioritaire />
             </span>
           )}
           <span className={local.voileRecto} />
@@ -170,65 +180,74 @@ export function FamilleRetournee({
 
         {/* Verso : ce que la famille développe. */}
         <div className={local.verso}>
-          <div className={local.bandeau}>
-            {habillage.photo !== undefined && (
-              <span className={local.photo}>
-                <Visuel nom={habillage.photo} sizes="420px" />
-              </span>
-            )}
-            <span className={local.voileBandeau} />
-            <button
-              ref={fermer}
-              type="button"
-              className={local.fermer}
-              onClick={refermer}
-              aria-label="Fermer"
-            >
-              <Icon name="close" size="20px" />
-            </button>
-            <div className={local.titres}>
-              <h2 id={titreId} className={local.nom}>
-                {famille.nom}
-              </h2>
-              {famille.sousTitre !== undefined && (
-                <p className={local.sousTitre}>{famille.sousTitre}</p>
+          <div
+            className={local.versoInterieur}
+            style={{
+              width: final.width,
+              height: final.height,
+              transform: `scale(${String(echelle)})`,
+            }}
+          >
+            <div className={local.bandeau}>
+              {habillage.photo !== undefined && (
+                <span className={local.photo}>
+                  <Visuel nom={habillage.photo} sizes="420px" prioritaire />
+                </span>
               )}
-              <span className={local.barres} aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
+              <span className={local.voileBandeau} />
+              <button
+                ref={fermer}
+                type="button"
+                className={local.fermer}
+                onClick={refermer}
+                aria-label="Fermer"
+              >
+                <Icon name="close" size="20px" />
+              </button>
+              <div className={local.titres}>
+                <h2 id={titreId} className={local.nom}>
+                  {famille.nom}
+                </h2>
+                {famille.sousTitre !== undefined && (
+                  <p className={local.sousTitre}>{famille.sousTitre}</p>
+                )}
+                <span className={local.barres} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className={local.contenu}>
-            <p className={local.resume}>{famille.resume}</p>
+            <div className={local.contenu}>
+              <p className={local.resume}>{famille.resume}</p>
 
-            {qualites.length > 0 && (
-              <>
-                <h3 className={local.rubrique}>Ce que tu développes</h3>
-                {qualites.map((q) => (
-                  <section key={q.nom} className={local.programme}>
-                    {/* Toujours le NOM du programme : un objectif est celui d'un
+              {qualites.length > 0 && (
+                <>
+                  <h3 className={local.rubrique}>Ce que tu développes</h3>
+                  {qualites.map((q) => (
+                    <section key={q.nom} className={local.programme}>
+                      {/* Toujours le NOM du programme : un objectif est celui d'un
                         cycle, pas de toute la famille (« sans recherche de force
                         maximale » est vrai de MASS CONGESTION, pas de MASS). */}
-                    <h4 className={local.nomProgramme}>{q.nom}</h4>
-                    <ul className={local.liste}>
-                      {q.objectifs.map((o) => (
-                        <li key={o}>{o}</li>
-                      ))}
-                    </ul>
-                  </section>
-                ))}
-              </>
-            )}
-          </div>
+                      <h4 className={local.nomProgramme}>{q.nom}</h4>
+                      <ul className={local.liste}>
+                        {q.objectifs.map((o) => (
+                          <li key={o}>{o}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </>
+              )}
+            </div>
 
-          <div className={local.actions}>
-            <button type="button" className={local.voir} onClick={onVoir}>
-              Voir les programmes
-              <Icon name="arrow-right" size="18px" />
-            </button>
+            <div className={local.actions}>
+              <button type="button" className={local.voir} onClick={onVoir}>
+                Voir les programmes
+                <Icon name="arrow-right" size="18px" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

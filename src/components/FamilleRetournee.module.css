@@ -52,9 +52,20 @@
 }
 
 .verso {
+  transform: rotateY(180deg);
+}
+
+/*
+ * Le contenu du verso, à sa TAILLE FINALE (posée par le composant), mis à
+ * l'échelle de la carte depuis son coin haut gauche. Même durée et même
+ * courbe que la carte : l'échelle reste égale à largeur / largeur finale, et
+ * le texte ne se recompose jamais pendant le mouvement.
+ */
+.versoInterieur {
   display: flex;
   flex-direction: column;
-  transform: rotateY(180deg);
+  transform-origin: 0 0;
+  transition: transform var(--duree, 950ms) cubic-bezier(0.45, 0, 0.2, 1);
 }
 
 /* Les photos à pleine opacité, comme sur les tuiles (pas les 38 % communs). */
@@ -299,7 +310,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fond,
-  .carte {
+  .carte,
+  .versoInterieur {
     transition: none;
   }
 }
