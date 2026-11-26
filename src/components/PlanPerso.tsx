@@ -119,6 +119,11 @@ export function PlanPerso({
   semaine?: {
     jour: string;
     ajusteur: (creneau: RepasId) => ((r: RepasBibliotheque) => RepasBibliotheque) | undefined;
+    /**
+     * Les repas cochés « mangé » — passé seulement quand le jour affiché est
+     * AUJOURD'HUI : on ne coche pas le repas d'un autre jour.
+     */
+    faits?: { pris: ReadonlySet<RepasId>; onBasculer: (repas: RepasId) => void };
   };
 }) {
   /** Le repas déplié. Un seul à la fois : l'écran tient dans un pouce. */
@@ -175,8 +180,9 @@ export function PlanPerso({
       </div>
       {semaine ? (
         <p className={styles.sousTitre} data-semaine-auto>
-          Quantités ajustées à ta cible. Tout reste modifiable : touche un repas pour le changer ou
-          régler une quantité.
+          {semaine.faits
+            ? 'Quantités ajustées à ta cible. Coche un repas quand il est mangé ; touche-le pour le changer ou régler une quantité.'
+            : 'Quantités ajustées à ta cible. Tout reste modifiable : touche un repas pour le changer ou régler une quantité.'}
         </p>
       ) : (
         <p className={styles.sousTitre}>
@@ -251,6 +257,29 @@ export function PlanPerso({
               pas dans un <button>.
             */}
             <div className={styles.repasLigne}>
+              {semaine?.faits && lignes.length > 0 && (
+                /*
+                  « MANGÉ » — une coche par repas, à gauche comme sur une
+                  liste. Le bouton fait 48 px pour le pouce, la pastille 26
+                  pour l'œil. Hors du bouton du repas : cocher ne déplie rien.
+                */
+                <button
+                  type="button"
+                  className={styles.fait}
+                  aria-pressed={semaine.faits.pris.has(repas.id)}
+                  aria-label={`${repas.nom} — ${semaine.faits.pris.has(repas.id) ? 'mangé' : 'pas encore mangé'}`}
+                  onClick={() => semaine.faits?.onBasculer(repas.id)}
+                >
+                  <span
+                    className={`${styles.faitPastille} ${
+                      semaine.faits.pris.has(repas.id) ? styles.faitOn : ''
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {semaine.faits.pris.has(repas.id) && <Icon name="check" size="16px" />}
+                  </span>
+                </button>
+              )}
               {plat !== null && (
                 /*
                   LA PHOTO DU PLAT, tant que le repas EST ce plat : tous ses
