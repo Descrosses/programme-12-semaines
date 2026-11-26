@@ -160,6 +160,7 @@ export const BANDEAUX_IMPORTES: Readonly<
   femmes: {
     accueil: 'femmesAujourdhui',
     semaine: 'femmesSemaine',
+    progres: 'femmesProgres',
     reglages: 'femmesReglages',
   },
 };

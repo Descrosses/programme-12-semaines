@@ -452,8 +452,10 @@ matériel et la durée avant d'écrire la moindre séance.
   choix explicite ; POWER, MASS et LADIES gardent leurs photos. Repère
   `data-importe` sur la page : les illustrations restent sur fond blanc sans
   voile sous tout thème. **Lot 2 — LADIES, FAIT** (« go thème lot 2 ») :
-  ses bandeaux Aujourd'hui / Semaine / Réglages (pas de Progrès, LADIES n'en
-  a pas) ; l'en-tête commun reprend la planche des bandeaux LADIES sous
+  ses bandeaux Aujourd'hui / Semaine / Réglages, et Progrès
+  (`femmesProgres`, `56_femmes_progres_*`, image de Guillaume du 26
+  novembre : LADIES n'a pas d'écran Progrès, ce bandeau ne sert qu'aux
+  programmes importés) ; l'en-tête commun reprend la planche des bandeaux LADIES sous
   `[data-theme='femmes']` (voile mauve horizontal, titre blanc italique,
   trait rose `#f3a6bb`), les pastilles d'Aujourd'hui passent sur le fond
   des cartes, et le menu du bas commun a son onglet actif en rose écrit

@@ -162,6 +162,21 @@ export const VISUELS = {
     focus: '85% 72%',
     usage: 'Bandeau d’en-tête FEMMES : Nutrition.',
   },
+  /*
+   * Progrès (Guillaume, 26 novembre) : LADIES n'a pas d'écran Progrès ; ce
+   * bandeau sert au thème LADIES d'un programme importé (`BANDEAUX_IMPORTES`).
+   * Livré en 1672 × 941, sans texte. Sujet à DROITE, tête en haut du fichier.
+   */
+  femmesProgres: {
+    display: '56_femmes_progres_display.webp',
+    mobile: '56_femmes_progres_mobile.webp',
+    largeurs: { display: 1200, mobile: 640 },
+    description:
+      'Athlète de dos, yeux fermés, ciel rose, histogramme lumineux et flèche qui monte.',
+    cadrage: 'cover',
+    focus: '80% 0%',
+    usage: 'Bandeau d’en-tête LADIES : Progrès (thème LADIES d’un programme importé).',
+  },
   femmesMesures: {
     display: '53_femmes_mesures_display.webp',
     mobile: '53_femmes_mesures_mobile.webp',

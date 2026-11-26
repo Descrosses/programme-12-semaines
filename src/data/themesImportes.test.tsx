@@ -99,14 +99,15 @@ describe('les couleurs et les bandeaux suivent le thème choisi', () => {
     expect(ambianceFicheDe(CLE)).toBe('massSalle');
   });
 
-  it('LADIES choisi (lot 2) : couleurs et bandeaux LADIES, pas de bandeau Progrès', () => {
+  it('LADIES choisi (lot 2) : couleurs et bandeaux LADIES, Progrès compris', () => {
     remplirMemoire([ligne('femmes')]);
     expect(themePour(CLE, false)).toBe('femmes');
     expect(enteteDe(CLE, 'accueil')).toBe('femmesAujourdhui');
     expect(enteteDe(CLE, 'semaine')).toBe('femmesSemaine');
     expect(enteteDe(CLE, 'reglages')).toBe('femmesReglages');
-    // LADIES n'a pas d'écran Progrès (décision de Guillaume) : pas de bandeau.
-    expect(enteteDe(CLE, 'progres')).toBeUndefined();
+    // LADIES n'a pas d'écran Progrès, mais son thème a un bandeau Progrès
+    // pour les programmes importés (Guillaume, 26 novembre).
+    expect(enteteDe(CLE, 'progres')).toBe('femmesProgres');
     expect(ambianceFicheDe(CLE)).toBe('carteFemmes');
     expect(titresBandeauDe(CLE, 'accueil')?.marque).toBe('ME, MYSELF & I');
   });
