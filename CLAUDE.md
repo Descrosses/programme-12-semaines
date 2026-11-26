@@ -578,7 +578,11 @@ matériel et la durée avant d'écrire la moindre séance.
   **N3** — l'onglet actif du menu du bas porte une pastille IVOIRE, encre
   sombre (jetons `--ivoire` #f4f1ea / `--encre` #151a22 sur `:root`), plus de
   rouge ni de trait au-dessus ; **M2** — l'encadré « Montée en charge » a un
-  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé.
+  filet rouge à gauche (comme « Contraste »), plus de contour rouge foncé. **D** (26 novembre) : les sélecteurs de POWER (charge,
+  reps, RPE, pesée, poids de corps) ont la valeur sur `--ivoire`, les
+  boutons − / + en `--ivoire-doux`, signes et chiffre à `--encre` ; l'appui
+  reste rouge. Sous `[data-theme='power']` seulement (MASS, LADIES, ME,
+  MYSELF & I inchangés).
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,

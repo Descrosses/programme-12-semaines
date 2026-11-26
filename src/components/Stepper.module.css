@@ -204,6 +204,46 @@
 }
 
 /*
+ * POWER : variante D (Guillaume, 26 novembre — « une touche d'ivoire »).
+ * La valeur sur l'ivoire de la pastille du menu, les boutons − / + en ivoire
+ * doux (celui des cases du tempo), signes et chiffre à l'encre : 16:1 sur la
+ * valeur, 11:1 sur les boutons. L'appui garde le rouge de POWER.
+ */
+:global([data-theme='power']) .controls {
+  background: var(--ivoire);
+}
+
+:global([data-theme='power']) .button {
+  background: var(--ivoire-doux);
+  color: var(--encre);
+}
+
+:global([data-theme='power']) .button:active {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+:global([data-theme='power']) .value,
+:global([data-theme='power']) .accent .value,
+:global([data-theme='power']) .input,
+:global([data-theme='power']) .accent .input {
+  color: var(--encre);
+}
+
+:global([data-theme='power']) .input {
+  background: var(--ivoire);
+}
+
+:global([data-theme='power']) .valueEditable:active {
+  background: var(--ivoire-doux);
+}
+
+:global([data-theme='power']) .unit,
+:global([data-theme='power']) .pencil {
+  color: #4f5560;
+}
+
+/*
  * MASS : la valeur saisie est blanche sur la maquette (78,7 comme les kilos
  * de la séance), pas rouge. Le rouge y est réservé aux boutons et aux pavés.
  */
