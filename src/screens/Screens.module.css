@@ -1622,6 +1622,22 @@
 }
 
 /* ===================================================================== */
+/* POWER — bouton d'action en relief (26 novembre), sous son thème seulement. */
+:global([data-theme='power']) .primary {
+  border: 1px solid var(--power-rouge-bord);
+  background: var(--power-degrade-action);
+  box-shadow: var(--power-liseret-action), var(--power-halo-action);
+  font-family: var(--font-cond);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+:global([data-theme='power']) .primary:active {
+  background: var(--accent-deep);
+}
+
 /*
  * MASS — cartes, boutons, champs et sélecteurs des écrans communs
  * (Réglages, Mesures, Nutrition, Progrès, porte de MASS FORCE, « à venir »).

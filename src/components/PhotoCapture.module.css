@@ -72,6 +72,17 @@
   color: var(--ink-3);
 }
 
+/* POWER — bouton d'action en relief (26 novembre), sous son thème seulement. */
+:global([data-theme='power']) .primary {
+  border: 1px solid var(--power-rouge-bord);
+  background: var(--power-degrade-action);
+  box-shadow: var(--power-liseret-action), var(--power-halo-action);
+}
+
+:global([data-theme='power']) .primary:active {
+  background: var(--accent-deep);
+}
+
 /* MASS (lot D) : l'action rouge des écrans validés, la secondaire sombre et
    bordée. Sous le thème MASS seulement. */
 :global([data-theme='mass']) .primary {

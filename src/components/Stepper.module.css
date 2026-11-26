@@ -204,6 +204,70 @@
 }
 
 /*
+ * POWER : variante M (Guillaume, 26 novembre — « le même aspect que ceux de
+ * MASS », dans le bleu de POWER ; l'essai ivoire « D » n'a PAS été retenu).
+ * Le cadre fin, le fond en dégradé, le libellé clair et le grand chiffre
+ * blanc en italique extra-gras des sélecteurs de MASS. « Barlow Mass » est
+ * l'italique 800 de Barlow Condensed, la police de POWER : aucun fichier de
+ * plus. Blanc sur le haut du dégradé : 12:1. L'appui garde le rouge.
+ */
+:global([data-theme='power']) .label {
+  color: #f0f0f0;
+  font-size: 0.8125rem;
+}
+
+:global([data-theme='power']) .controls {
+  border: 1px solid var(--power-curseur-bord);
+  background: var(--power-curseur-fond);
+}
+
+:global([data-theme='power']) .button {
+  background: var(--power-curseur-bouton);
+}
+
+:global([data-theme='power']) .button:active {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+:global([data-theme='power']) .value,
+:global([data-theme='power']) .accent .value,
+:global([data-theme='power']) .input,
+:global([data-theme='power']) .accent .input {
+  color: #fff;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.75rem;
+  font-style: italic;
+}
+
+/*
+ * Trois sélecteurs côte à côte (charge, reps, RPE) : le chiffre se règle sur
+ * la largeur de l'écran, pour que « 102,5 » ne pousse JAMAIS le bouton + hors
+ * du cadre (à 28 px fixes, il disparaissait à 402 px). 302 px = ce que la
+ * rangée ne donne pas aux chiffres (marges, six boutons, écarts) ; le
+ * diviseur 4 laisse de quoi écrire « 102,5 », « 12 » et « 7 ». Les espaces
+ * autour de la valeur sont rendus au chiffre.
+ */
+:global([data-theme='power']) .compact .value,
+:global([data-theme='power']) .compact .input {
+  font-size: clamp(1.125rem, calc((100vw - 302px) / 4), 1.75rem);
+}
+
+:global([data-theme='power']) .compact .value {
+  gap: 0;
+  padding: 0 2px;
+}
+
+:global([data-theme='power']) .compact .valueEditable::before,
+:global([data-theme='power']) .compact .valueEditable::after {
+  content: none;
+}
+
+:global([data-theme='power']) .input {
+  background: transparent;
+}
+
+/*
  * MASS : la valeur saisie est blanche sur la maquette (78,7 comme les kilos
  * de la séance), pas rouge. Le rouge y est réservé aux boutons et aux pavés.
  */
