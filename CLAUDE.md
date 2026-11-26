@@ -588,7 +588,14 @@ matériel et la durée avant d'écrire la moindre séance.
   plus clair). Tout sous `[data-theme='power']`. **L'essai ivoire « D » n'a
   PAS été retenu** : ne pas y revenir. À trois sélecteurs, le chiffre se règle
   sur la largeur de l'écran (`clamp`) : à taille fixe, « 102,5 » poussait le
-  bouton + hors du cadre.
+  bouton + hors du cadre. **LADIES, même traitement** (26 novembre) en
+  « Rosée Sculptée », thème CLAIR : boutons Commencer / Démarrer / Valider
+  en dégradé rose (`--femmes-degrade-action`, blanc 4,61:1), bord plus FONCÉ
+  que le bouton (un bord clair disparaît sur le fond poudré) ; sélecteurs
+  bordés, fond blanc → rose, grand chiffre en italique Oswald. « Séance
+  terminée » reste vert, le choix Maison / Salle n'est pas touché. Une case
+  VIDE (« à poser », « — ») s'écrit en petit, droit et gris sous POWER et
+  LADIES (`data-vide` posé par `Stepper`).
   `styles/touchesClaires.test.ts`. Tempo : variante TB (voir « Retours du
   23 novembre (séance POWER) »).
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,

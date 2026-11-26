@@ -268,6 +268,78 @@
 }
 
 /*
+ * LADIES : l'aspect des sélecteurs de MASS, en clair (26 novembre). Cadre
+ * fin, fond en dégradé blanc → rose poudré, libellé foncé, grand chiffre en
+ * italique (l'italique synthétique d'Oswald, celui des titres de LADIES).
+ * Deux sélecteurs au plus par ligne.
+ */
+:global([data-theme='femmes']) .label {
+  color: var(--ink);
+  font-size: 0.8125rem;
+}
+
+:global([data-theme='femmes']) .controls {
+  border: 1px solid var(--femmes-curseur-bord);
+  background: var(--femmes-curseur-fond);
+  box-shadow: var(--femmes-liseret-action);
+}
+
+:global([data-theme='femmes']) .button {
+  background: var(--femmes-curseur-bouton);
+  color: var(--accent-deep);
+}
+
+:global([data-theme='femmes']) .button:active {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+:global([data-theme='femmes']) .value,
+:global([data-theme='femmes']) .accent .value,
+:global([data-theme='femmes']) .input,
+:global([data-theme='femmes']) .accent .input {
+  color: var(--ink);
+  font-family: var(--font-cond);
+  font-size: 1.75rem;
+  font-style: italic;
+  font-weight: 700;
+}
+
+/* Un écran très étroit (320 px) : le chiffre rétrécit pour garder le + dans
+   le cadre ; dès 360 px il reprend sa taille pleine. */
+:global([data-theme='femmes']) .compact .value,
+:global([data-theme='femmes']) .compact .input {
+  font-size: clamp(1.125rem, calc((100vw - 270px) / 3), 1.75rem);
+}
+
+:global([data-theme='femmes']) .compact .value {
+  gap: 0;
+  padding: 0 2px;
+}
+
+:global([data-theme='femmes']) .compact .valueEditable::before,
+:global([data-theme='femmes']) .compact .valueEditable::after {
+  content: none;
+}
+
+:global([data-theme='femmes']) .input {
+  background: transparent;
+}
+
+/*
+ * POWER et LADIES : une case VIDE (« — », « à poser ») reste en petit, droit
+ * et en gris — en gros italique, « à poser » criait plus fort qu'un chiffre.
+ */
+:global([data-theme='power']) .value[data-vide],
+:global([data-theme='femmes']) .value[data-vide] {
+  color: var(--ink-3);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/*
  * MASS : la valeur saisie est blanche sur la maquette (78,7 comme les kilos
  * de la séance), pas rouge. Le rouge y est réservé aux boutons et aux pavés.
  */
