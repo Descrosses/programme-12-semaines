@@ -17,7 +17,7 @@
 import { useState } from 'react';
 import type { CibleSaisie } from '../data/ciblesNutrition';
 import type { LibraryFood } from '../data/foodLibrary';
-import type { JourneePerso } from '../data/planPerso';
+import type { JourneePerso, RepasId } from '../data/planPerso';
 import { JOURS_SEMAINE } from '../data/reglesRepasAutomatiques';
 import type { Catalogue } from '../engine/planPersoTotaux';
 import {
@@ -71,6 +71,7 @@ export function SemaineRepasSection({
   onChange,
   onRecomposer,
   onQuitter,
+  faits,
 }: {
   semaine: SemaineRepas;
   /** La cible d'aujourd'hui dans les réglages, pour dire si elle a changé. */
@@ -86,6 +87,8 @@ export function SemaineRepasSection({
   onChange: (suivante: SemaineRepas) => void;
   onRecomposer: () => void;
   onQuitter: () => void;
+  /** Les repas d'AUJOURD'HUI cochés « mangé », et le geste pour en cocher un. */
+  faits?: { pris: ReadonlySet<RepasId>; onBasculer: (repas: RepasId) => void };
 }) {
   const [jour, setJour] = useState(jourInitial);
   const [confirme, setConfirme] = useState<Confirmation>(null);
@@ -172,6 +175,8 @@ export function SemaineRepasSection({
         onCopier={null}
         semaine={{
           jour: nomJour,
+          // On ne coche que les repas du jour : la semaine est un modèle.
+          ...(faits && jour === jourInitial ? { faits } : {}),
           ajusteur: (creneau) => {
             const part = partDe(creneau);
             if (part === null) return undefined;

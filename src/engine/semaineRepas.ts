@@ -279,3 +279,41 @@ export function jourDeSemaine(iso: string): number {
   const [y, m, d] = iso.split('-').map(Number);
   return (new Date(Date.UTC(y!, m! - 1, d!)).getUTCDay() + 6) % 7;
 }
+
+/**
+ * Les repas COCHÉS « mangé » (Guillaume, 26 novembre : cocher un repas fait,
+ * plutôt que de le ressaisir dans « Ce que j'ai mangé »). Ils vivent dans le
+ * journal des repas pris (`mealLog`), sous une clé préfixée : aucun
+ * identifiant du plan historique ne peut s'y confondre.
+ */
+const PREFIXE_FAIT = 'semaine:';
+
+export const cleRepasFait = (repas: RepasId): string => `${PREFIXE_FAIT}${repas}`;
+
+/** Les créneaux cochés, parmi les repas pris d'une date. */
+export function repasFaits(pris: ReadonlySet<string>): Set<RepasId> {
+  const out = new Set<RepasId>();
+  for (const id of pris) {
+    if (id.startsWith(PREFIXE_FAIT)) out.add(id.slice(PREFIXE_FAIT.length) as RepasId);
+  }
+  return out;
+}
+
+/** Ce que pèsent les repas cochés d'une journée — tels qu'ils sont à l'écran. */
+export function mangeDesRepas(
+  journee: JourneePerso,
+  faits: ReadonlySet<RepasId>,
+  catalogue: Catalogue,
+): { kcal: number; proteinG: number; carbsG: number; fatG: number } {
+  const t = { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 };
+  for (const repas of faits) {
+    for (const l of journee[repas] ?? []) {
+      const m = macrosDeLigne(l, catalogue);
+      t.kcal += m.kcal;
+      t.proteinG += m.proteinG;
+      t.carbsG += m.carbsG;
+      t.fatG += m.fatG;
+    }
+  }
+  return t;
+}

@@ -118,6 +118,39 @@
   gap: 12px;
 }
 
+/* « Mangé » (semaine automatique) : 48 px pour le pouce, 26 pour l'œil. La
+   marge négative garde la pastille alignée sur le bord de la carte. */
+.fait {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  min-width: 0;
+  margin: 0 -10px 0 -11px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.faitPastille {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.faitOn {
+  border-color: var(--vert);
+  background: var(--vert);
+  color: var(--ink-on-accent);
+}
+
 /* La vignette du plat : 52 px, au-dessus de la cible tactile de 48. */
 .repasPhotoBouton {
   flex: none;

@@ -17,6 +17,9 @@ import { macrosDeJournee } from './planPersoTotaux';
 import {
   ajusterRepas,
   choisirRepasSemaine,
+  cleRepasFait,
+  mangeDesRepas,
+  repasFaits,
   cibleAChange,
   cibleDeSemaine,
   composerSemaine,
@@ -165,5 +168,34 @@ describe('autour de la semaine', () => {
     expect(jourDeSemaine('2026-11-23')).toBe(0);
     expect(jourDeSemaine('2026-11-26')).toBe(3);
     expect(jourDeSemaine('2026-11-29')).toBe(6);
+  });
+});
+
+describe('les repas cochés « mangé »', () => {
+  const journee = {
+    pdej: [{ foodId: 'skyr', qty: 200 }],
+    dejeuner: [
+      { foodId: 'riz', qty: 100 },
+      { foodId: 'poulet', qty: 100 },
+    ],
+    diner: [{ foodId: 'riz', qty: 200 }],
+  };
+
+  it('une clé à part dans le journal : rien du plan historique ne s’y confond', () => {
+    expect(cleRepasFait('pdej')).toBe('semaine:pdej');
+    expect([...repasFaits(new Set(['semaine:pdej', 'pdej', 'reveil', 'semaine:diner']))]).toEqual([
+      'pdej',
+      'diner',
+    ]);
+    expect(repasFaits(new Set(['pdej', 'dejeuner'])).size).toBe(0);
+  });
+
+  it('le compte = les repas cochés seulement, tels qu’ils sont', () => {
+    expect(mangeDesRepas(journee, new Set(), FOOD_LIBRARY).kcal).toBe(0);
+    const m = mangeDesRepas(journee, new Set(['pdej', 'dejeuner'] as const), FOOD_LIBRARY);
+    // Skyr 200 g (126) + riz 100 g (130) + poulet 100 g (165).
+    expect(m.kcal).toBeCloseTo(126 + 130 + 165, 6);
+    // Un créneau coché mais vide (repas retiré depuis) pèse zéro.
+    expect(mangeDesRepas(journee, new Set(['collation1'] as const), FOOD_LIBRARY).kcal).toBe(0);
   });
 });

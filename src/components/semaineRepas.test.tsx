@@ -175,3 +175,50 @@ describe('accepter la cible compose la semaine, une fois', () => {
     expect(src).not.toMatch(/planPerso: null/);
   });
 });
+
+describe('cocher un repas mangé (semaine automatique)', () => {
+  const plan = (faits?: { pris: ReadonlySet<'pdej' | 'dejeuner'> }) =>
+    renderToStaticMarkup(
+      <PlanPerso
+        kind="train"
+        journee={SEMAINE.jours[3]!}
+        preferes={['poulet']}
+        catalogue={FOOD_LIBRARY}
+        customs={[]}
+        onCreateCustom={() => {}}
+        cible={null}
+        onChange={() => {}}
+        onCopier={null}
+        semaine={{
+          jour: 'Jeudi',
+          ajusteur: () => undefined,
+          ...(faits ? { faits: { pris: faits.pris, onBasculer: () => {} } } : {}),
+        }}
+      />,
+    );
+
+  it('une coche par repas posé, dite au lecteur d’écran ; aucune sur un créneau vide', () => {
+    const h = plan({ pris: new Set(['pdej'] as const) });
+    expect(h).toContain('aria-label="Petit-déjeuner — mangé"');
+    expect(h).toContain('aria-label="Déjeuner — pas encore mangé"');
+    expect(h.match(/— (?:mangé|pas encore mangé)"/g)).toHaveLength(4);
+    expect(h).not.toContain('Collation du matin — ');
+    expect(texte(h)).toContain('Coche un repas quand il est mangé');
+  });
+
+  it('sans le geste (un autre jour que le jour même) : aucune coche', () => {
+    const h = plan();
+    expect(h).not.toMatch(/— (?:mangé|pas encore mangé)"/);
+    expect(texte(h)).not.toContain('Coche un repas');
+  });
+
+  it('on ne coche que les repas du jour, dans le journal des repas pris', () => {
+    const section = readFileSync(new URL('./SemaineRepasSection.tsx', import.meta.url), 'utf8');
+    expect(section).toContain('...(faits && jour === jourInitial ? { faits } : {})');
+    const ecran = readFileSync(new URL('../screens/NutritionScreen.tsx', import.meta.url), 'utf8');
+    expect(ecran).toContain('setMealEaten(todayIso, cleRepasFait(repas), !faits.has(repas))');
+    // Le journal ne se ressaisit plus : il devient le compte du jour.
+    expect(ecran).toContain("semaine !== null ? 'Mon compte du jour' : 'Ce que j’ai mangé'");
+    expect(ecran).toContain('+ Ajouter un aliment hors de mes repas');
+  });
+});

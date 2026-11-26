@@ -115,6 +115,18 @@ réinterprète pas.**
   la fin du questionnaire. Pas fait : le contrôle de cohérence avec la
   tendance déclarée sur 4 semaines (§1).
   `engine/reajustement.test.ts`, `components/pointDeuxSemaines.test.tsx`.
+  **Cocher un repas mangé** (Guillaume, 26 novembre : « cocher les repas
+  faits et pas ajouter "ce que j'ai mangé" qui paraît redondant ») — en
+  mode semaine seulement. Une coche par repas posé, à gauche (48 px, pastille
+  26, verte une fois mangé) ; SEULEMENT sur le jour même (la semaine est un
+  modèle : un autre jour n'a pas de coche). Rangé dans le journal existant
+  des repas pris (`mealLog`, clé `semaine:<créneau>` : aucun identifiant du
+  plan historique ne s'y confond), par DATE — le lendemain repart vierge.
+  « Ce que j'ai mangé » devient « Mon compte du jour » : repas cochés (tels
+  qu'ils sont à l'écran) + aliments ajoutés « hors de mes repas », le reste
+  à manger dessous. Hors semaine (« Mon plan », plan historique) : rien ne
+  change. `cleRepasFait`, `repasFaits`, `mangeDesRepas`
+  (`engine/semaineRepas.ts`).
 
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).

@@ -73,7 +73,13 @@ import {
   type CiblesNutrition,
   type MacrosCompletes,
 } from '../data/ciblesNutrition';
-import { PLAN_PERSO_VIDE, copierJournee, journeeVide, type PlanPerso } from '../data/planPerso';
+import {
+  PLAN_PERSO_VIDE,
+  copierJournee,
+  journeeVide,
+  type PlanPerso,
+  type RepasId,
+} from '../data/planPerso';
 import { PlanPerso as PlanPersoSection } from '../components/PlanPerso';
 import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepasSection';
 import { aujourdhuiLocal } from '../state/dernierExport';
@@ -81,8 +87,11 @@ import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
 import { pointDesDeuxSemaines, type ProfilNutrition } from '../engine/reajustement';
 import {
   cibleDeSemaine,
+  cleRepasFait,
   composerSemaine,
   jourDeSemaine,
+  mangeDesRepas,
+  repasFaits,
   type SemaineRepas,
 } from '../engine/semaineRepas';
 import { MacroBar } from '../components/MacroBar';
@@ -239,7 +248,24 @@ export function NutritionScreen({
    */
   if (!legacyPlan) {
     const resolue = cibleDuJour(kind, { menus: false, cibles });
-    const mange = extrasTotal(extras);
+    /*
+     * SEMAINE AUTOMATIQUE : un repas COCHÉ compte comme mangé (Guillaume, 26
+     * novembre : cocher un repas fait plutôt que de le ressaisir dans « Ce
+     * que j'ai mangé »). Le compte du jour = les repas cochés d'aujourd'hui,
+     * tels qu'ils sont à l'écran, plus les aliments ajoutés en plus.
+     */
+    const jourAujourdhui = jourDeSemaine(aujourdhuiLocal());
+    const faits = semaine === null ? new Set<RepasId>() : repasFaits(pris);
+    const journeeAujourdhui = semaine?.jours[jourAujourdhui] ?? {};
+    const repasPrevus = Object.values(journeeAujourdhui).filter((l) => (l?.length ?? 0) > 0).length;
+    const enPlus = extrasTotal(extras);
+    const desRepas = mangeDesRepas(journeeAujourdhui, faits, catalogue);
+    const mange: Macros = {
+      kcal: enPlus.kcal + desRepas.kcal,
+      proteinG: enPlus.proteinG + desRepas.proteinG,
+      carbsG: enPlus.carbsG + desRepas.carbsG,
+      fatG: enPlus.fatG + desRepas.fatG,
+    };
     const cibleJour = resolue?.cible ?? null;
     // Une macro non posée reste absente du reste : rien à comparer.
     const reste = cibleJour === null ? null : ecartCible(cibleJour, mange);
@@ -408,7 +434,15 @@ export function NutritionScreen({
           <SemaineRepasSection
             semaine={semaine}
             cibleActuelle={cibleSemaine}
-            jourInitial={jourDeSemaine(aujourdhuiLocal())}
+            jourInitial={jourAujourdhui}
+            faits={{
+              pris: faits,
+              onBasculer: (repas) =>
+                void (async () => {
+                  await setMealEaten(todayIso, cleRepasFait(repas), !faits.has(repas));
+                  setPris(await mealsEatenOn(todayIso));
+                })(),
+            }}
             cible={ciblePlan}
             preferes={preferes}
             catalogue={catalogue}
@@ -458,10 +492,19 @@ export function NutritionScreen({
           Ce qui a été mangé, et ce qu'il reste.
           Une seule liste, sans repas : il n'y en a pas à remplir.
         */}
-        <section className={styles.card}>
-          <h2 className={styles.cardTitle}>Ce que j’ai mangé</h2>
-          {extras.length === 0 ? (
-            <p className={styles.cardSub}>Rien de noté aujourd’hui.</p>
+        <section
+          className={styles.card}
+          {...(semaine !== null ? { 'data-compte-du-jour': '' } : {})}
+        >
+          <h2 className={styles.cardTitle}>
+            {semaine !== null ? 'Mon compte du jour' : 'Ce que j’ai mangé'}
+          </h2>
+          {extras.length === 0 && faits.size === 0 ? (
+            <p className={styles.cardSub}>
+              {semaine !== null
+                ? 'Coche tes repas au fil de la journée : le compte se fait tout seul.'
+                : 'Rien de noté aujourd’hui.'}
+            </p>
           ) : (
             <>
               <div className={styles.keyStat}>
@@ -471,6 +514,13 @@ export function NutritionScreen({
                 </div>
               </div>
               <MacroBar macros={mange} />
+              {semaine !== null && (
+                <p className={styles.fieldHint}>
+                  {faits.size} repas coché{faits.size > 1 ? 's' : ''} sur {repasPrevus}
+                  {extras.length > 0 &&
+                    ` · ${String(extras.length)} aliment${extras.length > 1 ? 's' : ''} en plus`}
+                </p>
+              )}
               <ExtrasDuRepas
                 extras={extras}
                 onRemove={async (id: number) => {
@@ -487,7 +537,7 @@ export function NutritionScreen({
             style={{ width: '100%', margin: '12px 0 0' }}
             onClick={() => setAjoutPour({ id: MEAL_LIBRE, name: 'Ce que j’ai mangé' })}
           >
-            + Ajouter un aliment
+            {semaine !== null ? '+ Ajouter un aliment hors de mes repas' : '+ Ajouter un aliment'}
           </button>
         </section>
 
