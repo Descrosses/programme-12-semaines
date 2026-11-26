@@ -22,11 +22,13 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import { EnTetePlateforme } from '../components/EnTetePlateforme';
+import { FamilleRetournee, type Rectangle } from '../components/FamilleRetournee';
 import { Icon } from '../components/Icon';
 import { Visuel } from '../components/Visuel';
 import {
   FAMILLES,
   programmeParId,
+  type Famille,
   type FamilleId,
   type ProgrammeDefinition,
 } from '../data/catalogue';
@@ -90,6 +92,8 @@ export function AccueilScreen({
 }) {
   const [etat, setEtat] = useState<Etat>(VIDE);
   const [pret, setPret] = useState(false);
+  /* La famille dont la carte est retournée, et la tuile d'où elle part. */
+  const [retournee, setRetournee] = useState<{ famille: Famille; depart: Rectangle } | null>(null);
 
   useEffect(() => {
     let vivant = true;
@@ -338,6 +342,15 @@ export function AccueilScreen({
           </button>
         </div>
 
+        {retournee !== null && (
+          <FamilleRetournee
+            famille={retournee.famille}
+            depart={retournee.depart}
+            onFermee={() => setRetournee(null)}
+            onVoir={() => onFamille(retournee.famille.id)}
+          />
+        )}
+
         <div className={styles.familles}>
           {FAMILLES.map((famille) => {
             const habillage = HABILLAGE[famille.id];
@@ -354,7 +367,15 @@ export function AccueilScreen({
                 type="button"
                 className={styles.famille}
                 style={{ '--teinte': habillage.teinte } as CSSProperties}
-                onClick={() => onFamille(famille.id)}
+                // La tuile se RETOURNE (26 novembre) ; « Voir les programmes »,
+                // au verso, mène au catalogue sur cette famille.
+                onClick={(e) => {
+                  const r = e.currentTarget.getBoundingClientRect();
+                  setRetournee({
+                    famille,
+                    depart: { top: r.top, left: r.left, width: r.width, height: r.height },
+                  });
+                }}
               >
                 {habillage.photo !== undefined && (
                   <span className={styles.famillePhoto} aria-hidden="true">

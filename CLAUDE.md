@@ -634,6 +634,17 @@ matériel et la durée avant d'écrire la moindre séance.
   sportif et les rubriques ; la fumée vit dans `styles/plateforme.module.css`
   (`.fumee`), prise par les trois écrans de la plateforme, jamais par ceux
   d'un programme. `styles/accueilCartes.test.ts`.
+- **Accueil : la carte d'une famille SE RETOURNE** (Guillaume, 26 novembre,
+  « volets explicatifs […] comme une carte qu'on retourne »). Toucher une
+  tuile la fait pivoter d'un demi-tour en s'agrandissant presque à la taille
+  de l'écran (`components/FamilleRetournee.tsx`, rendue dans `body` : sinon
+  le menu du bas passait devant). Le verso ne dit QUE le catalogue, mot pour
+  mot : sous-titre, résumé, puis « Ce que tu développes » = les `objectifs`
+  ÉCRITS de chaque programme (`qualitesDe`) — MASS FORCE n'en a pas, il n'en
+  reçoit pas ; ME, MYSELF & I n'a que son résumé. N'en inventer aucun.
+  « Voir les programmes » mène au catalogue sur la famille (ce que faisait
+  la tuile). Échap et ✕ ferment ; mouvement réduit = sans animation.
+  `components/familleRetournee.test.ts`.
 - **« Mon avant · après » — l'image à publier** (Guillaume, 23 novembre,
   maquette B2 thème POWER, « go comparatif »). Carte de l'écran Combine
   (`components/ComparatifPartage.tsx`) : combine INITIAL (S0) face aux tests
