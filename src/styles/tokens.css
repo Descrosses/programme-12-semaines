@@ -111,14 +111,32 @@
 
   /* ------------------------------------------------------------- macros */
   /*
-   * Trois teintes catégorielles, validées sur --surface-2 : bande de
-   * luminosité, plancher de chroma, séparation daltonienne et contraste.
-   * Choisies LOIN du feu tricolore et de --accent : une barre de macros n'est
-   * ni une alerte ni un bouton.
+   * Trois teintes catégorielles : glucides, protéines, lipides.
+   *
+   * VARIANTE « RELIEF » (Guillaume, 27 novembre, planche de 3 variantes,
+   * « go B, MASS suit aussi ») : les teintes d'avant (#3d8dc9, #cf5a86,
+   * #a87b22) « paraissaient ternes ». Mêmes familles de couleur, plus
+   * lumineuses ; un léger dégradé et un liseré clair, comme les boutons
+   * rouges POWER ; barre de 10 px. Contraste des aplats sur --surface :
+   * 5,6 / 5,1 / 8,7 (seuil 3:1 pour un remplissage).
+   *
+   * Le jaune des lipides est désormais proche de --orange (l'alerte) : il
+   * ne sert qu'à un REMPLISSAGE, jamais à un texte, et l'identité des macros
+   * passe toujours par la lettre écrite (G, P, L), jamais par la couleur.
+   *
+   * POWER et MASS seulement. LADIES, ME, MYSELF & I et la plateforme gardent
+   * leur palette À PLAT : leurs blocs remettent les jetons « relief » à zéro.
    */
-  --macro-glucides: #3d8dc9;
-  --macro-proteines: #cf5a86;
-  --macro-lipides: #a87b22;
+  --macro-glucides: #45a6ff;
+  --macro-proteines: #ff5e9c;
+  --macro-lipides: #f2c230;
+  --macro-glucides-relief: linear-gradient(180deg, #74beff 0%, #2f8fee 100%);
+  --macro-proteines-relief: linear-gradient(180deg, #ff8ab8 0%, #ec3f84 100%);
+  --macro-lipides-relief: linear-gradient(180deg, #ffd85e 0%, #e0a41a 100%);
+  --macro-liseret: inset 0 1px 0 rgb(255 255 255 / 38%), inset 0 -1px 0 rgb(0 0 0 / 22%);
+  --macro-piste-ombre: inset 0 1px 2px rgb(0 0 0 / 45%);
+  --macro-epaisseur: 10px;
+  --macro-espace: 3px;
 
   /* --------------------------------------------------------- blocs (§2) */
   /*
@@ -239,6 +257,14 @@
   --macro-glucides: #4b8fd0;
   --macro-proteines: #d4728f;
   --macro-lipides: #c49a3a;
+  /* Macros À PLAT : le relief est celui de POWER et de MASS seulement. */
+  --macro-glucides-relief: var(--macro-glucides);
+  --macro-proteines-relief: var(--macro-proteines);
+  --macro-lipides-relief: var(--macro-lipides);
+  --macro-liseret: none;
+  --macro-piste-ombre: none;
+  --macro-epaisseur: 8px;
+  --macro-espace: 2px;
   --bloc-test: #da1d28;
 
   /* Le voile des en-têtes : le graphite du fond, en composantes séparées. */
@@ -316,9 +342,11 @@
   --bleu: #3478c0;
   --bleu-ink: #6fb0ef;
 
-  --macro-glucides: #3d8dc9;
-  --macro-proteines: #cf5a86;
-  --macro-lipides: #a87b22;
+  /* Macros : MASS suit POWER (Guillaume, 27 novembre) — teintes vives ; le
+     relief (dégradé, liseré, 10 px) est hérité des jetons de :root. */
+  --macro-glucides: #45a6ff;
+  --macro-proteines: #ff5e9c;
+  --macro-lipides: #f2c230;
   --bloc-test: #c23c50;
 
   --ink-fort: #ffffff;
@@ -396,13 +424,26 @@
 
   /* Couleurs d'état : celles de POWER sont faites pour un fond SOMBRE
      (orange #ff9f1c : 1,9:1 sur ce fond). Assombries ici, mesurées :
-     fond / carte. Les couleurs des macros (remplissages, seuil 3:1) passent
-     telles quelles : 3,4 / 3,3 au plus bas. */
+     fond / carte. */
   --orange: #9a5200; /* 5,53 / 5,35 */
   --rouge: #b3261e; /* 6,16 / 5,96 */
   --bleu: #2f6aa8; /* blanc dessus 5,6 */
   --bleu-ink: #2a5f96; /* 6,23 / 6,03 */
   --bloc-test: #2f7d62; /* filet : 4,68 / 4,52 */
+  /* Macros : LADIES garde les teintes d'AVANT le relief de POWER (27
+     novembre), écrites ici pour ne plus en hériter — le jaune vif de POWER
+     tomberait à 1,5:1 sur ce fond clair. Remplissages, seuil 3:1 : 3,4 / 3,3
+     au plus bas. À plat, 8 px. */
+  --macro-glucides: #3d8dc9;
+  --macro-proteines: #cf5a86;
+  --macro-lipides: #a87b22;
+  --macro-glucides-relief: var(--macro-glucides);
+  --macro-proteines-relief: var(--macro-proteines);
+  --macro-lipides-relief: var(--macro-lipides);
+  --macro-liseret: none;
+  --macro-piste-ombre: none;
+  --macro-epaisseur: 8px;
+  --macro-espace: 2px;
   --shadow-card: 0 8px 24px rgb(192 90 122 / 12%);
   --shadow-action: 0 6px 16px rgb(177 79 110 / 28%);
 
@@ -493,6 +534,14 @@
   --macro-glucides: #3f4a66;
   --macro-proteines: #a8674e;
   --macro-lipides: #c5a775;
+  /* Macros À PLAT : le relief est celui de POWER et de MASS seulement. */
+  --macro-glucides-relief: var(--macro-glucides);
+  --macro-proteines-relief: var(--macro-proteines);
+  --macro-lipides-relief: var(--macro-lipides);
+  --macro-liseret: none;
+  --macro-piste-ombre: none;
+  --macro-epaisseur: 8px;
+  --macro-espace: 2px;
   --bloc-test: #7a5a2c;
 
   --ink-fort: #3f2d24;
