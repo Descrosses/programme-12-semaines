@@ -37,6 +37,7 @@ const VUES_RENDUES: readonly VueProgramme[] = [
   'week',
   'nutrition',
   'nutrition-principes',
+  'nutrition-calcul',
   'progress',
   'progress-volume',
   'combine',
@@ -102,8 +103,9 @@ describe('onglets déclarés par les programmes', () => {
     // Le combine mesure des maximums : MASS n'en prescrit aucun.
     expect(routes).not.toContain('combine');
     expect(vues).not.toContain('combine');
-    // L'écran Nutrition de POWER chiffre calories et macros ; le document de
-    // MASS 4 l'interdit explicitement.
+    // L'écran Nutrition de POWER peut ouvrir le plan personnel de Guillaume :
+    // jamais sous MASS. Depuis le 27 novembre MASS a sa cible calculée, mais
+    // par SA vue (`nutrition-principes`), qui n'ouvre jamais ce plan.
     expect(vues).not.toContain('nutrition');
     // L'écran Progrès de POWER suit squat, bench, deadlift et tractions.
     expect(vues).not.toContain('progress');
@@ -238,13 +240,15 @@ describe('calendrier des programmes', () => {
     }
   });
 
-  it('donne à MASS FORCE son combiné, et deux places « à venir » sans contenu emprunté', () => {
+  it('donne à MASS FORCE son combiné, sa nutrition calculée, et un Progrès « à venir »', () => {
     expect(moduleParId('mass-force')?.onglets).toEqual([
       { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
       { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
       { route: 'combine', label: 'Combiné', icon: 'stopwatch', vue: 'evaluation' },
       { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'a-venir' },
-      { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'a-venir' },
+      // Le calcul de l'appli lu avec le regard MASS (27 novembre) — une vue à
+      // part : jamais `nutrition`, qui peut ouvrir le plan historique de POWER.
+      { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition-calcul' },
       { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
     ]);
     // Ni le combine de POWER (1RM dans settings.oneRM), ni ses grammes.

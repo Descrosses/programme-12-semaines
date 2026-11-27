@@ -34,6 +34,7 @@ import {
   repartir,
   type ProfilCalcul,
 } from './calculCibles';
+import type { Regard } from '../data/reglesNutritionMass';
 
 /** Le profil gardé en base (§1) — jamais les réponses de sécurité. */
 export interface ProfilNutrition {
@@ -50,6 +51,12 @@ export interface ProfilNutrition {
   rythme: Rythme | null;
   /** AAAA-MM-JJ : la cible acceptée, ou le dernier point. */
   pointLe: string;
+  /**
+   * `regles-nutrition-mass.md` — la cible a été calculée avec le regard MASS :
+   * le point des deux semaines refait la répartition avec les mêmes règles.
+   * Absent : les règles communes (tous les profils d'avant le 27 novembre).
+   */
+  regard?: 'mass';
 }
 
 export interface Pesee {
@@ -77,8 +84,14 @@ export function ajouterJours(iso: string, n: number): string {
 }
 
 /** Le profil à garder, à partir du profil du calcul. */
-export function profilAGarder(p: ProfilCalcul, aujourdhui: string): ProfilNutrition {
+export function profilAGarder(
+  p: ProfilCalcul,
+  aujourdhui: string,
+  regard: Regard = 'commun',
+): ProfilNutrition {
   return {
+    // Les règles communes : le champ reste absent, le profil garde sa forme.
+    ...(regard === 'mass' ? { regard } : {}),
     sexe: p.sexe,
     age: p.age,
     ageLe: aujourdhui,
@@ -171,7 +184,7 @@ export function pointDesDeuxSemaines(
   const plancher = Math.max(PLANCHERS_KCAL[profil.sexe], depenseAuRepos(calcul));
   if (delta < 0 && kcal < plancher) return { cas: 'coach' };
 
-  const r = repartir(kcal, poidsDeReference(calcul), profil.objectif);
+  const r = repartir(kcal, poidsDeReference(calcul), profil.objectif, profil.regard ?? 'commun');
   return {
     cas: 'proposition',
     delta,

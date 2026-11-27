@@ -130,3 +130,15 @@ export function modulePourCycle(programmeId: string | null): ModuleProgramme {
 export function nutritionChiffree(programme: ModuleProgramme): boolean {
   return programme.onglets.some((o) => o.vue === 'nutrition');
 }
+
+/**
+ * La Nutrition de MASS : la cible calculée de l'appli, JAMAIS les menus du
+ * plan historique de POWER (`regles-nutrition-mass.md`, 27 novembre).
+ * `principes` : le programme garde ses principes en tête (MASS CONGESTION).
+ */
+export function nutritionMass(programme: ModuleProgramme): { principes: boolean } | null {
+  const vue = programme.onglets.find((o) => o.route === 'nutrition')?.vue;
+  if (vue === 'nutrition-principes') return { principes: true };
+  if (vue === 'nutrition-calcul') return { principes: false };
+  return null;
+}

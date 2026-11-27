@@ -33,7 +33,7 @@ import {
   type LectureAllergies,
 } from '../engine/exclusionsRepas';
 import { profilAGarder } from '../engine/reajustement';
-import { composerSemaine } from '../engine/semaineRepas';
+import { composerSemaine, nombreAdmis, repasParDefaut } from '../engine/semaineRepas';
 import {
   alimentsPourMonPlan,
   type EtatQuestionnaire,
@@ -242,6 +242,7 @@ export function CibleCalculee({
 export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
   const [lu, setLu] = useState<{
     famille: FamilleId | null;
+    programmeId: string | null;
     actuelle: CiblesNutrition | null;
     planHistorique: boolean;
     semaine: boolean;
@@ -260,9 +261,11 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
       if (!vivant) return;
       setLu({
         famille,
+        programmeId: cycle?.programmeId ?? null,
         actuelle: row.ciblesNutrition,
-        // LADIES n'affiche jamais le plan historique (`sansPlanHistorique`).
-        planHistorique: famille !== 'femmes' && row.legacyNutritionPlan,
+        // LADIES et MASS n'affichent jamais le plan historique
+        // (`sansPlanHistorique`) : il n'y a rien à masquer chez elles.
+        planHistorique: famille !== 'femmes' && famille !== 'mass' && row.legacyNutritionPlan,
         semaine: row.semaineRepas !== null,
         preferes: row.alimentsPreferes,
         suivi: row.profilNutrition !== null,
@@ -279,7 +282,9 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
   const aujourdhui = new Date().toISOString().slice(0, 10);
   // Lot 4 : le profil du calcul, gardé pour le point des deux semaines.
   const profil =
-    proposition.cas === 'proposee' ? profilAGarder(proposition.profil, aujourdhui) : null;
+    proposition.cas === 'proposee'
+      ? profilAGarder(proposition.profil, aujourdhui, proposition.regard)
+      : null;
   // §4 — les allergies écrites pré-cochent ce qu'elles nomment ; ce que la
   // personne avait déjà écarté reste écarté (jamais retiré ici).
   const allergies = lireAllergies(etat.profile.allergies);
@@ -322,6 +327,10 @@ export function CibleDuQuestionnaire({ etat }: { etat: EtatQuestionnaire }) {
                     FOOD_LIBRARY,
                     aujourdhui,
                     alimentsExclus(exclusions),
+                    // MASS en prise de masse : son nombre de repas par défaut
+                    // (`regles-nutrition-mass.md`, §6), jamais au-delà de ce
+                    // que la cible tient.
+                    nombreAdmis(repasParDefaut(lu.programmeId, profil), m.kcal),
                   ),
                 }),
             ...(sansListe ? { alimentsPreferes: aliments } : {}),

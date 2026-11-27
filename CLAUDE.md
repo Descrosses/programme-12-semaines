@@ -44,7 +44,8 @@ réinterprète pas.**
   automatique) : à la fin du questionnaire, carte « Ta cible »
   (`components/CibleCalculee.tsx`, moteur `engine/cibleProposee.ts`). Même
   lecture que le coach (`lireResume(resume(etat))`), donc même chiffre.
-  POWER, LADIES et importés seulement (§0 ; MASS : rien). Cas du §6
+  POWER, LADIES, importés, et MASS depuis le 27 novembre
+  (`regles-nutrition-mass.md`). Cas du §6
   (exclusion OU plancher) : « Ta cible sera posée par Guillaume », AUCUN
   chiffre ni raison détaillée. Chiffre d'abord, calcul REPLIÉ, UN bouton
   « Utiliser cette cible » → `ciblesNutrition` les deux jours ; cible en
@@ -195,6 +196,48 @@ réinterprète pas.**
   MASS n'affiche aujourd'hui aucune barre de macros : le réglage attend sa
   nutrition. `styles/macrosRelief.test.ts`.
 
+- `regles-nutrition-mass.md` — le REGARD MASS sur la nutrition (Guillaume,
+  27 novembre : MASS construit du muscle, POWER vise la performance). **Pas
+  un second système** : MASS reçoit le calcul commun, le fichier ne dit que
+  ce qui diffère EN PRISE DE MASSE. Cinq points tranchés par lui.
+  **Lot 1 — FAIT** (« texte validé, go MASS lot 1 ») : valeurs dans
+  `data/reglesNutritionMass.ts` (relues dans le `.md`, exemple du §12
+  rejoué : `reglesNutritionMass.test.tsx`). `Regard` = `'commun' | 'mass'`,
+  passé à `calculerCibles` et `repartir` : protéines **2,0 g/kg** (1,8
+  ailleurs) et alerte glucides sous **3 g/kg**, seulement si
+  `regardApplique` (MASS ET prise) — une perte ou un maintien sous MASS =
+  règles communes au gramme près. Le regard SUIT LA CIBLE : noté dans
+  `profilNutrition.regard` à l'acceptation (absent = commun, un ancien
+  profil garde sa forme), le point des 2 semaines refait la répartition
+  avec. `FAMILLES_AVEC_CALCUL` compte MASS. Repas par défaut d'une semaine
+  composée la 1re fois (`repasParDefaut`, plafonné par `nombreAdmis`) : 5
+  sous FORCE et HYPERTROPHIE, **4 sous CONGESTION** (son 1er principe écrit
+  « 4 prises par jour » ; DÉCIDÉ par Guillaume : « 4 repas, conseillé 5
+  pour une meilleure répartition des macros mais 4 est possible »). D'où le
+  CONSEIL des 5 repas (`conseilRepasMass`, `CONSEIL_REPAS_MASS`) : une
+  phrase au-dessus de « + Ajouter un repas », sous MASS en prise de masse,
+  tant que la semaine a moins de 5 repas et que la cible en tient 5 — un
+  conseil, rien ne se recompose seul.
+  Écran : `NutritionPrincipesScreen` enveloppe `NutritionScreen`
+  (`sansPlanHistorique` : JAMAIS le plan de POWER sous MASS, même réglage
+  allumé ; `avant`, `programmeId`). Vues : `nutrition-principes`
+  (CONGESTION : ses six principes « gardés » EN TÊTE, ouverts sans cible,
+  repliés avec) et `nutrition-calcul` (FORCE : le calcul seul) — jamais
+  `nutrition`. Le raccourci d'Aujourd'hui lit la cible posée, jamais les
+  menus (`nutritionMass`, `registre.ts`). Pas fait : le calcul du coach
+  (`#/admin`) reste aux règles communes. **Lots 2 à 5 PAS codés, chacun
+  attend son « go »** : collations à boire (2 avec whey, 2 sans, tous
+  programmes), « Remplacer » à apport égal (tous programmes), repères
+  d'horaires, carte « Créatine » sous POWER et MASS (texte du §11 VALIDÉ :
+  3 à 5 g/j de monohydrate, AUCUNE marque, norme NF EN 17444, phrase de
+  prudence toujours affichée). L'ebook de départ n'est ni reproduit ni
+  versé au dépôt (ses conditions l'interdisent) : seules des idées
+  générales, avec nos valeurs.
+  **Le même aliment plusieurs fois dans la journée est ACCEPTÉ** (Guillaume,
+  27 novembre : trois repas aux œufs, skyr matin et après-midi, « ce n'est
+  pas si dérangeant […] l'utilisateur choisira ») — écrit au §3 de
+  `regles-repas-automatiques.md`. Ne pas ajouter de règle « une seule fois
+  la même source de protéines ».
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 
@@ -970,8 +1013,8 @@ matériel et la durée avant d'écrire la moindre séance.
 - **Quantités alimentaires** : « Mon plan » n'en propose AUCUNE (il
   additionne et affiche l'écart). **Exception décidée par Guillaume (26
   novembre)** : la semaine de repas automatique, pour les programmes sans
-  plan propre (voir « Côté utilisateur, lot 2 »). Le plan historique et MASS
-  ne sont pas concernés.
+  plan propre (voir « Côté utilisateur, lot 2 »), MASS compris depuis le 27
+  novembre. Le plan historique n'est pas concerné.
 - **FEMMES 8 n'est pas un module, il a ses propres écrans.** L'App aiguille
   tout cycle `femmes8` vers `#/femmes/*` (et renvoie au catalogue un
   `#/femmes/*` sans cycle FEMMES). Ses séances vivent dans `femmesSeances`
@@ -1051,7 +1094,8 @@ matériel et la durée avant d'écrire la moindre séance.
      les séances restent fermés tant que les choix ne sont pas confirmés ET
      que chaque test a une référence AU MATÉRIEL CHOISI (une référence barre
      n'ouvre pas un cycle Smith). Onglet Combiné = `EvaluationScreen` ;
-     Progrès et Nutrition = vue `a-venir`, sans contenu. Superset biceps :
+     Progrès = vue `a-venir`, sans contenu ; Nutrition = `nutrition-calcul`
+     depuis le 27 novembre (`regles-nutrition-mass.md`). Superset biceps :
      3e rythme `transition` (repos court puis long), le chrono dit
      « Transition → … ». Combiné : bench barre/Smith, plus d'haltères.
      Reste à écrire par Guillaume : S2–S4.

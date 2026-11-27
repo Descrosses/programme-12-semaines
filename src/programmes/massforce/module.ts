@@ -147,15 +147,17 @@ export const MASS_FORCE: ModuleProgramme = {
 
   /*
    * Combiné : l'écran d'évaluation de MASS (lot 3), pas le combine de POWER.
-   * Progrès et Nutrition : places posées, contenu à venir (décision de
-   * Guillaume — « à mettre en place quand même »).
+   * Progrès : place posée, contenu à venir (décision de Guillaume — « à
+   * mettre en place quand même »). Nutrition : le calcul de l'appli lu avec
+   * le regard MASS (`regles-nutrition-mass.md`, « go MASS lot 1 », 27
+   * novembre) — jamais le plan au gramme près de POWER.
    */
   onglets: [
     { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
     { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
     { route: 'combine', label: 'Combiné', icon: 'stopwatch', vue: 'evaluation' },
     { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'a-venir' },
-    { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'a-venir' },
+    { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition-calcul' },
     { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
   ],
 

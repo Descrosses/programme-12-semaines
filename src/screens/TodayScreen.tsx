@@ -2,7 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import type { DayKind } from '../data/nutrition';
 import { cibleDuJour } from '../engine/cibleDuJour';
 import { WEEK_BLOCKS, blocInfo, isCombineDay } from '../data/program';
-import { modulePourCycle, nutritionChiffree } from '../programmes/registre';
+import { modulePourCycle, nutritionMass } from '../programmes/registre';
 import { textesCycle } from '../programmes/textesCycle';
 import type { ModuleProgramme } from '../programmes/types';
 import { DAY_LABELS, type DayIndex, type WeekIndex } from '../data/types';
@@ -248,11 +248,15 @@ export function TodayScreen({
    * plan en dur ici l'annonçait à des gens qui ne le voient nulle part
    * ailleurs.
    */
+  /* MASS : sa Nutrition ne montre jamais les menus du plan historique — le
+     raccourci non plus (c'était le défaut d'origine : 3 226 kcal annoncées
+     sous un cycle MASS). Seule sa cible posée ou calculée compte. */
+  const mass = programme === null ? null : nutritionMass(programme);
   const cibleNutrition =
     state.settingsRow === null
       ? null
       : (cibleDuJour(todayKind, {
-          menus: state.settingsRow.legacyNutritionPlan,
+          menus: mass === null && state.settingsRow.legacyNutritionPlan,
           cibles: state.settingsRow.ciblesNutrition,
         })?.cible ?? null);
 
@@ -403,15 +407,17 @@ export function TodayScreen({
               ils sont affichés, les cibles saisies sinon, et rien du tout
               quand il n'y a ni l'un ni l'autre.
             */}
-              {programme !== null && !nutritionChiffree(programme)
-                ? 'Des principes, pas de calories ni de grammes'
-                : cibleNutrition === null
+              {cibleNutrition === null
+                ? mass === null
                   ? 'Pose tes cibles dans les Réglages'
-                  : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal${
-                      cibleNutrition.proteinG === null
-                        ? ''
-                        : ` · ${String(cibleNutrition.proteinG)} g de protéines`
-                    }`}
+                  : mass.principes
+                    ? 'Tes principes, et une cible à faire calculer'
+                    : 'Fais calculer ta cible'
+                : `${cibleNutrition.kcal.toLocaleString('fr-FR')} kcal${
+                    cibleNutrition.proteinG === null
+                      ? ''
+                      : ` · ${String(cibleNutrition.proteinG)} g de protéines`
+                  }`}
             </span>
           </span>
           <span className={styles.nutriChevron} aria-hidden="true">

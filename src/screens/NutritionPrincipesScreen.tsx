@@ -1,49 +1,48 @@
 /**
- * Nutrition de MASS 4 : des principes, et aucun chiffre.
+ * Nutrition de MASS : les principes du programme, et la cible calculée.
  *
- * ── Pourquoi un écran à part, et pas une variante de l'écran de POWER ──────
+ * ── D'où l'on vient ───────────────────────────────────────────────────────
  *
- * Parce que le document de MASS 4 ne chiffre RIEN, et le dit en une phrase :
- * « Les règles du pilote s'appliquent : pas de calories, pas de macros
- * chiffrées, pas de grammes. »
+ * Le document de MASS CONGESTION ne chiffrait RIEN, et le disait en une
+ * phrase : « Les règles du pilote s'appliquent : pas de calories, pas de
+ * macros chiffrées, pas de grammes. » Cet écran n'affichait donc que six
+ * principes et la pesée.
  *
- * L'écran Nutrition de POWER 12 est l'exact opposé : un plan au gramme près,
- * des paliers de féculents par phase, un objectif de calories, trois barres de
- * macronutriments, un journal de repas. Tant que la barre du bas était écrite
- * en dur, un cycle MASS héritait de cet écran — il annonçait 3 226 kcal, 402 g
- * de glucides et 190 g de protéines à un programme qui n'en prescrit aucun.
- * Ce n'était pas un réglage à ajuster : c'était le mauvais écran.
+ * ── Ce qui a changé (Guillaume, 27 novembre, « go MASS lot 1 ») ───────────
+ *
+ * MASS reçoit le calcul de l'appli, lu avec le regard MASS
+ * (`regles-nutrition-mass.md`) : cible proposée à la fin du questionnaire,
+ * semaine de repas, point des deux semaines. Sa décision sur les principes
+ * de CONGESTION : « garder » — ils restent EN TÊTE d'écran, le calcul vient
+ * dessous. MASS FORCE n'a pas de principes à lui : il n'a que le calcul.
+ *
+ * Ce qui ne change PAS : ni le plan historique de Guillaume, ni ses menus,
+ * ne s'affichent sous MASS (`sansPlanHistorique`) — c'était le défaut
+ * d'origine, quand un cycle MASS héritait des 3 226 kcal de POWER.
  *
  * ── Ce qui est transcrit, et d'où ─────────────────────────────────────────
  *
- * Les six principes viennent du document de MASS 4, un par ligne, sans
- * ajout. L'application de référence en affiche huit, mais deux sont adressés
- * nommément à la personne pour qui elle a été écrite (« tes 2 L par jour »,
- * « ton questionnaire nutrition ») : ils n'ont pas leur place dans un
- * programme que quelqu'un d'autre suit.
- *
- * Le journal de pesée, lui, est repris : c'est le seul chiffre que le document
- * demande de suivre, et il le demande deux fois — ici au quotidien, et en
- * relevé officiel dans l'écran Mesures.
+ * Les six principes viennent du document de MASS CONGESTION, un par ligne,
+ * sans ajout. L'application de référence en affiche huit, mais deux sont
+ * adressés nommément à la personne pour qui elle a été écrite (« tes 2 L par
+ * jour », « ton questionnaire nutrition ») : ils n'ont pas leur place dans
+ * un programme que quelqu'un d'autre suit.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScreenHeader } from '../components/ScreenHeader';
+import type { DayIndex, WeekIndex } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
-import { Stepper, stepValue } from '../components/Stepper';
 import type { DayKind } from '../data/nutrition';
-import { humanDate } from '../engine/calendar';
-import { fr } from '../engine/format';
-import { allMeasurements, getMeasurement, saveMeasurement } from '../db/repo';
-import type { MeasurementRow } from '../db/db';
+import { NutritionScreen } from './NutritionScreen';
 import styles from './Screens.module.css';
 
 /**
- * Les principes, transcrits du document de MASS 4.
+ * Les principes, transcrits du document de MASS CONGESTION.
  *
  * Le titre est la règle telle qu'elle est écrite ; le texte qui suit ne
  * l'étend pas, il dit seulement comment l'appliquer. Aucune quantité n'y
- * figure, et c'est volontaire : le document l'interdit.
+ * figure : les chiffres sont ceux de la cible, plus bas.
  */
 const PRINCIPES: Array<{ titre: string; texte: string }> = [
   {
@@ -75,106 +74,92 @@ const PRINCIPES: Array<{ titre: string; texte: string }> = [
   },
 ];
 
-export function NutritionPrincipesScreen({
-  todayKind,
-  visuel,
-}: {
-  todayKind: DayKind;
-  /** Le bandeau de la famille (MASS), s'il existe. */
-  visuel?: VisuelNom;
-}) {
-  const todayIso = new Date().toISOString().slice(0, 10);
-  const [poids, setPoids] = useState<number | null>(null);
-  const [historique, setHistorique] = useState<MeasurementRow[]>([]);
-  const [charge, setCharge] = useState(true);
-
-  async function recharger() {
-    setPoids((await getMeasurement(todayIso))?.weightKg ?? null);
-    const toutes = await allMeasurements();
-    setHistorique(
-      toutes
-        .filter((r) => r.weightKg !== null)
-        .slice(-7)
-        .reverse(),
-    );
-    setCharge(false);
-  }
-
-  useEffect(() => {
-    void recharger();
-    // `todayIso` ne change pas pendant la vie de l'écran.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function enregistrer(v: number | null) {
-    setPoids(v);
-    await saveMeasurement(todayIso, { weightKg: v });
-    await recharger();
-  }
-
-  if (charge) return <div className={styles.loading}>Chargement…</div>;
-
+/**
+ * La carte des six principes. Ouverte tant qu'aucune cible n'est posée — ils
+ * sont alors tout le plan ; repliée ensuite (ils restent en tête d'écran, à
+ * un geste), pour que la journée chiffrée ne soit pas un écran plus bas.
+ */
+export function PrincipesMass({ ciblePosee }: { ciblePosee: boolean }) {
+  const [ouvert, setOuvert] = useState(!ciblePosee);
   return (
-    <div className={styles.screen}>
-      <ScreenHeader
-        eyebrow={todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}
-        title="Nutrition"
-        subtitle="Des principes, pas des grammes"
-        {...(visuel === undefined ? {} : { visuel })}
-      />
-
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Les principes</h2>
-        <p className={styles.cardSub}>
-          MASS CONGESTION ne chiffre ni les calories, ni les macronutriments, ni les grammes. Ces
-          six règles sont tout le plan alimentaire du programme.
-        </p>
-        {PRINCIPES.map((p) => (
+    <section className={styles.card} data-principes-mass>
+      <h2 className={styles.cardTitle}>Les principes</h2>
+      <p className={styles.cardSub}>
+        {ciblePosee
+          ? 'Les six règles de MASS CONGESTION. Ta cible chiffrée, juste en dessous, les complète : elle ne les remplace pas.'
+          : 'Les six règles de MASS CONGESTION. Tu peux t’en tenir là, ou faire calculer une cible chiffrée juste en dessous.'}
+      </p>
+      {ouvert &&
+        PRINCIPES.map((p) => (
           <div key={p.titre} className={`${styles.field} ${styles.principe}`}>
             <b>{p.titre}</b>
             <p className={styles.fieldHint}>{p.texte}</p>
           </div>
         ))}
-      </section>
-
-      <section className={styles.card}>
-        <h2 className={styles.cardTitle}>Poids du matin</h2>
-        <p className={styles.cardSub}>
-          À jeun, au réveil, plusieurs matins par semaine. C’est la moyenne qui compte, jamais une
-          pesée isolée : les courbes sont dans Progrès → Poids.
+      {ouvert && (
+        <p className={styles.fieldHint}>
+          Compléments : aucun avis ici, ce n’est pas le rôle de ce programme. Ces principes sont
+          généraux et ne remplacent pas un conseil de santé individuel.
         </p>
-        <div className={styles.field}>
-          <Stepper
-            label={`Poids — ${humanDate(todayIso)}`}
-            value={poids}
-            step={0.1}
-            min={40}
-            max={160}
-            unit="kg"
-            tone="accent"
-            emptyLabel="non pesé"
-            onStep={(d) => void enregistrer(stepValue(poids, d, 40, 160))}
-            onCommit={(v) => void enregistrer(v)}
-          />
-          {historique.length > 0 && (
-            <p className={styles.fieldHint}>
-              Dernières pesées :{' '}
-              {historique
-                .flatMap((r) =>
-                  r.weightKg === null
-                    ? []
-                    : [`${humanDate(r.date).split(' ').slice(1).join(' ')} ${fr(r.weightKg)}`],
-                )
-                .join(' · ')}
-            </p>
-          )}
-        </div>
-      </section>
+      )}
+      {ciblePosee && (
+        <button
+          type="button"
+          className={styles.secondary}
+          style={{ width: '100%', margin: '12px 0 0' }}
+          aria-expanded={ouvert}
+          onClick={() => setOuvert(!ouvert)}
+        >
+          {ouvert ? 'Replier les principes' : `Voir les ${String(PRINCIPES.length)} principes`}
+        </button>
+      )}
+    </section>
+  );
+}
 
-      <p className={styles.hint}>
-        Compléments : aucun avis ici, ce n’est pas le rôle de ce programme. Ces principes sont
-        généraux et ne remplacent pas un conseil de santé individuel.
-      </p>
-    </div>
+export function NutritionPrincipesScreen({
+  todayKind,
+  kindProgramme,
+  todayDay,
+  todayWeek,
+  onDayKindChange,
+  programmeId,
+  principes,
+  visuel,
+}: {
+  todayKind: DayKind;
+  kindProgramme: DayKind;
+  todayDay: DayIndex | null;
+  todayWeek: WeekIndex | null;
+  onDayKindChange: () => void;
+  /** `mass4`, `mass-force`… : décide du nombre de repas par défaut. */
+  programmeId: string;
+  /** MASS CONGESTION : ses six principes en tête. MASS FORCE : le calcul seul. */
+  principes: boolean;
+  /** Le bandeau de la famille (MASS), s'il existe. */
+  visuel?: VisuelNom;
+}) {
+  return (
+    <NutritionScreen
+      todayKind={todayKind}
+      kindProgramme={kindProgramme}
+      todayDay={todayDay}
+      todayWeek={todayWeek}
+      onDayKindChange={onDayKindChange}
+      // Jamais le plan historique de Guillaume sous MASS.
+      sansPlanHistorique
+      programmeId={programmeId}
+      entete={
+        <ScreenHeader
+          eyebrow={todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}
+          title="Nutrition"
+          subtitle={principes ? 'Tes principes et ta cible' : 'Ta cible et tes repas'}
+          {...(visuel === undefined ? {} : { visuel })}
+        />
+      }
+      {...(principes
+        ? { avant: ({ ciblePosee }) => <PrincipesMass ciblePosee={ciblePosee} /> }
+        : {})}
+    />
   );
 }
