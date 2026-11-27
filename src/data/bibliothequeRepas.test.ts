@@ -17,24 +17,12 @@ import { FOOD_LIBRARY } from './foodLibrary';
 import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
-/** La grille du 27 novembre (« go grille bibliothèque »), photos à venir. */
+/**
+ * La grille du 27 novembre (« go grille bibliothèque ») : les repas qui
+ * attendent ENCORE leur photo (15 livrées le 27 novembre).
+ */
 const GRILLE_27_NOVEMBRE = [
-  'tofu-brouille-pain-tomates-avocat',
-  'tofu-brouille-pdt-epinards',
-  'porridge-soja-banane-noix',
-  'yaourt-soja-avoine-fruits-rouges',
-  'yaourt-soja-banane-galettes-cacahuete',
-  'quinoa-soja-banane-fruits-rouges',
-  'omelette-patate-douce-epinards',
-  'oeufs-galettes-avocat-orange',
-  'skyr-banane-noix',
-  'fromage-blanc-fruits-rouges-kiwi-galettes',
-  'oeufs-jambon-pdt-tomates',
-  'pain-cacahuete-banane-soja',
   'yaourt-soja-banane-fruits-rouges-galettes',
-  'tofu-avocat-tomates-galettes',
-  'yaourt-soja-fruits-rouges-noix',
-  'yaourt-soja-kiwi-galettes',
   'galettes-cacahuete-pomme',
   'pois-chiches-tomates-concombre',
   'tofu-tomates-galettes',
@@ -86,7 +74,7 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('seuls les 33 repas de la grille du 27 novembre attendent leur photo', () => {
+  it('seuls des repas de la grille du 27 novembre attendent encore leur photo', () => {
     expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual(
       GRILLE_27_NOVEMBRE,
     );
