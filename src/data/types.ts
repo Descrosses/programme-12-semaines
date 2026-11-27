@@ -441,6 +441,17 @@ export interface ExerciseDef {
    * Rempli par MASS CONGESTION seulement ; ailleurs, absent.
    */
   consignesEnAvant?: readonly string[];
+  /**
+   * La technique de l'encadré découpée en ÉTAPES (variante C du 27 novembre,
+   * « go C ») : `series` = une étape par série, celle en cours s'allume ;
+   * `temps` = les temps d'UNE série, les mêmes à chaque série. Le texte est
+   * celui du document, coupé sans rien ajouter. Remplace dans l'encadré le
+   * premier élément de `consignesEnAvant` (la technique).
+   */
+  etapesExecution?: {
+    mode: 'series' | 'temps';
+    etapes: readonly { titre: string | null; texte: string }[];
+  };
   /** Règle §5 : chaque rep est une tentative de performance, on arrête si ça ralentit. */
   explosive?: boolean;
   /** Unité mesurée lors d'un test ou d'un saut. */

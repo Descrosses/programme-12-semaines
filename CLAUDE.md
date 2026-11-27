@@ -1325,6 +1325,15 @@ matériel et la durée avant d'écrire la moindre séance.
   rien ; la 4e série facultative y reste (ce n'est pas une exécution).
   Style fort dans le bloc « SÉANCE MASS » de `Session.module.css` (bord
   `--mass-rouge` 2 px, filet gauche 6 px, halo, titre `--accent-ink`).
+  **Variante C, « go C »** (planche de 3, 27 novembre) : la technique est
+  une FRISE (`etapesExecution`, `etapesExecution()` du module) — « trois
+  séries » coupée devant chaque « Série n : », une étape par série, celle
+  EN COURS allumée (« Série n — maintenant », `aria-current`), les faites
+  cochées en vert (« — faite ») ; dégressives coupées devant « puis
+  aussitôt », deux temps identiques à chaque série, rien d'allumé. Texte
+  COUPÉ, jamais réécrit (le test le recolle au caractère près). Séries
+  droites et superset : encadré simple. Variantes non retenues : A (frise
+  fixe), B (onglets, phrases coupées aux virgules).
   POWER et MASS FORCE inchangés. `components/consignesEnAvant.test.tsx`.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y

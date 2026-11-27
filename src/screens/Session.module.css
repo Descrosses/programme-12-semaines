@@ -2526,6 +2526,64 @@
   letter-spacing: 0.06em;
 }
 
+/* La frise des étapes (variante C) : une pastille numérotée par étape,
+   reliée par un trait ; l'étape en cours ressort, les faites sont cochées. */
+.etapesExecution {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.etapeExecution {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+.etapeExecution:last-child {
+  padding-bottom: 0;
+}
+
+.etapeExecution:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 28px;
+  bottom: 2px;
+  left: 12px;
+  width: 2px;
+  background: var(--line);
+}
+
+.etapePastille {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.etapeTitreExecution {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.etapeExecution[data-etat='a-venir'],
+.etapeExecution[data-etat='faite'] {
+  opacity: 0.55;
+}
+
+.etapeExecution[data-etat='faite'] .etapePastille {
+  background: var(--green, #2f6b45);
+}
+
 /* La fourchette de charge (MASS FORCE) : lisible d'un coup d'œil, la
    provenance en retrait. */
 .chargeCible {
@@ -3131,6 +3189,29 @@
   color: #f6f1ed;
   font-size: 1rem;
   line-height: 1.35;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution:not(:last-child)::after {
+  background: rgb(194 60 80 / 55%);
+}
+
+:global([data-theme='mass']) .ecranSeance .etapePastille {
+  background: var(--mass-rouge);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution[data-etat='en-cours'] .etapePastille {
+  box-shadow: 0 0 0 4px rgb(194 60 80 / 30%);
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution[data-etat='faite'] .etapePastille {
+  background: #2f6b45;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeTitreExecution {
+  color: #fff;
 }
 
 :global([data-theme='mass']) .ecranSeance .consignesEnAvantTitre {

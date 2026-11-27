@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { DayIndex } from '../data/types';
+import type { SetRow } from '../db/db';
 import type { ResolvedExercise } from '../engine/getSession';
 import { EMPTY_CONTEXT } from '../engine/types';
 import { EXERCICES_MASS4, TECHNIQUES } from '../programmes/mass4/exercices';
@@ -61,11 +62,68 @@ describe('CONGESTION — consignes d’exécution en tête de carte', () => {
     }
   });
 
-  it('mot pour mot : la technique, puis la consigne du mouvement', () => {
-    const h = carte(trouve('oiseau-machine'));
-    expect(h).toContain('Série 1 : 8 à 10 reps');
-    expect(h).toContain('Reverse pec deck.');
-    expect(h.indexOf('Série 1 : 8 à 10 reps')).toBeLessThan(h.indexOf('Reverse pec deck.'));
+  it('mot pour mot : la frise des séries, puis la consigne du mouvement', () => {
+    const e = trouve('oiseau-machine');
+    const h = carte(e);
+    // Le texte de la technique est COUPÉ, jamais réécrit : recollé, il
+    // redonne la phrase du document au caractère près.
+    const etapes = e.def.etapesExecution!;
+    expect(etapes.mode).toBe('series');
+    expect(etapes.etapes.map((x) => `${x.titre!} : ${x.texte}`).join(' ')).toBe(
+      TECHNIQUES['trois-series'],
+    );
+    expect(h.indexOf('Série 1')).toBeLessThan(h.indexOf('Reverse pec deck.'));
+    expect(h).toContain('data-etapes="series"');
+  });
+
+  it('variante C : la série en cours s’allume, les faites sont cochées', () => {
+    const e = trouve('oiseau-machine');
+    const avant = carte(e);
+    expect(avant.match(/data-etat="en-cours"/g)).toHaveLength(1);
+    expect(avant).toContain('Série 1 — maintenant');
+    expect(avant.match(/data-etat="a-venir"/g)).toHaveLength(2);
+    const apres = renderToStaticMarkup(
+      <ExerciseCard
+        ex={e}
+        savedSets={[{ exerciseId: e.id, setIndex: 0 } as SetRow]}
+        overrideKg={null}
+        timer={timer}
+        history={undefined}
+        media={null}
+        note={{ week: 1, day: 0, date: '' }}
+        onSaveSet={async () => {}}
+        onOverride={() => {}}
+      />,
+    );
+    expect(apres).toContain('Série 1 — faite');
+    expect(apres).toContain('Série 2 — maintenant');
+    expect(apres).toContain('aria-current="step"');
+  });
+
+  it('dégressives : deux temps coupés devant « puis aussitôt », sans série allumée', () => {
+    for (const id of ['developpe-militaire-smith', 'elevations-laterales']) {
+      const e = trouve(id);
+      const etapes = e.def.etapesExecution!;
+      expect(etapes.mode, id).toBe('temps');
+      expect(etapes.etapes).toHaveLength(2);
+      expect(etapes.etapes[1]!.texte.startsWith('puis aussitôt'), id).toBe(true);
+      expect(etapes.etapes.map((x) => x.texte).join(', '), id).toBe(e.def.consignesEnAvant![0]);
+      const h = carte(e);
+      expect(h, id).not.toContain('data-etat="en-cours"');
+      expect(h, id).toContain('data-etapes="temps"');
+    }
+  });
+
+  it('séries droites et superset : pas de frise, l’encadré simple', () => {
+    for (const e of mass4.filter((x) => x.def.consignesEnAvant !== undefined)) {
+      const techniqueAEtapes = e.notes.some(
+        (n) =>
+          n === TECHNIQUES['trois-series'] ||
+          n === TECHNIQUES['lourde-degressive'] ||
+          n === TECHNIQUES['degressive-max'],
+      );
+      expect(e.def.etapesExecution !== undefined, e.id).toBe(techniqueAEtapes);
+    }
   });
 
   it('une consigne qui répète la technique (dégressive) n’est dite qu’une fois', () => {
