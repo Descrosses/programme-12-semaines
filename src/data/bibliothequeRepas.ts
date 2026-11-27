@@ -519,7 +519,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Lentilles, patate douce, épinards',
     creneaux: PLAT,
     lignes: [l('lentilles', 250), l('pataeDouce', 250), l('epinards', 100), l('huile', 10)],
-    photoAVenir: true,
   },
   {
     id: 'pois-chiches-quinoa-crudites-avocat',
@@ -544,7 +543,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('tomates', 100),
       l('huile', 5),
     ],
-    photoAVenir: true,
   },
   {
     id: 'tofu-pates-tomates-champignons',

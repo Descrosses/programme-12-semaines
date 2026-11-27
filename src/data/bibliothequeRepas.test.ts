@@ -19,14 +19,9 @@ import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 /**
  * La grille du 27 novembre (« go grille bibliothèque ») : les repas qui
- * attendent ENCORE leur photo (29 livrées le 27 novembre).
+ * attendent ENCORE leur photo (31 livrées le 27 novembre).
  */
-const GRILLE_27_NOVEMBRE = [
-  'yaourt-soja-banane-fruits-rouges-galettes',
-  'fromage-blanc-pomme',
-  'lentilles-patate-douce-epinards',
-  'haricots-rouges-patate-douce-poivrons',
-];
+const GRILLE_27_NOVEMBRE = ['yaourt-soja-banane-fruits-rouges-galettes', 'fromage-blanc-pomme'];
 
 describe('la bibliothèque', () => {
   it('compte soixante-quatre repas : 31 photographiés + les 33 de la grille du 27 novembre', () => {

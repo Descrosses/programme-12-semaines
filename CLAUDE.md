@@ -150,8 +150,8 @@ réinterprète pas.**
 
   **Grille de la bibliothèque — FAITE** (Guillaume, 27 novembre, « go grille
   bibliothèque, pas d'exclusion soja ») : 33 repas ajoutés (64 au total),
-  `photoAVenir` tant que leur photo manque (vignette neutre) — 29 photos
-  livrées le 27 novembre, 4 attendent. Deux écartées parce qu'elles
+  `photoAVenir` tant que leur photo manque (vignette neutre) — 31 photos
+  livrées le 27 novembre, 2 attendent. Deux écartées parce qu'elles
   montraient un aliment d'une exclusion absent du repas (flocons d'avoine
   sur un repas sans gluten, fruits à coque sur fromage blanc-pomme) : une
   photo ne doit jamais faire croire qu'un repas « sûr » contient un
