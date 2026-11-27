@@ -193,6 +193,62 @@ export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
       'Squat unijambiste au landmine',
     ],
   },
+  /*
+   * Huit planches du 27 novembre (Guillaume), générées pour le brouillon des
+   * remplacements (`regles-remplacements.md`) et gardées ici en attendant :
+   * proposées tout de suite en remplacement sous POWER et à l'import.
+   * Vérifiées une à une (geste, matériel) ; virgules Nike effacées sur le
+   * good morning, les fentes, le RDL haltères et le glute bridge.
+   */
+  {
+    nom: 'Good morning barre',
+    fichier: 'power12-good-morning-barre.webp', // barre sur le haut du dos, charnière de hanche
+    alias: ['Good morning', 'Barbell good morning'],
+  },
+  {
+    nom: 'Fentes arrière haltères',
+    fichier: 'power12-fentes-arriere-halteres.webp', // un haltère dans chaque main
+    alias: ['Fente arrière haltères', 'Reverse lunge haltères', 'Dumbbell reverse lunge'],
+  },
+  {
+    nom: 'RDL haltères',
+    fichier: 'power12-rdl-halteres.webp', // haltères le long des cuisses jusqu'aux genoux
+    alias: [
+      'Romanian deadlift haltères',
+      'Soulevé de terre roumain haltères',
+      'Dumbbell RDL',
+      'Dumbbell romanian deadlift',
+    ],
+  },
+  {
+    nom: 'Glute bridge barre au sol',
+    fichier: 'power12-glute-bridge-barre.webp', // dos au sol, barre sur les hanches
+    alias: ['Glute bridge barre', 'Barbell glute bridge', 'Pont fessier barre'],
+  },
+  {
+    nom: 'Pull-through à la poulie basse',
+    fichier: 'power12-pull-through-poulie.webp', // dos à la poulie, corde entre les jambes
+    alias: ['Pull-through poulie', 'Cable pull-through', 'Pull through poulie'],
+  },
+  {
+    nom: 'Leg curl allongé',
+    fichier: 'power12-leg-curl-allonge.webp', // machine, à plat ventre
+    alias: ['Lying leg curl', 'Leg curl couché'],
+  },
+  {
+    nom: 'Single-leg RDL au landmine',
+    fichier: 'power12-single-leg-rdl-landmine.webp', // une main sur le bout de la barre, jambe libre tendue derrière
+    alias: ['Landmine single leg RDL', 'Landmine single-leg RDL', 'Single leg RDL landmine'],
+  },
+  {
+    nom: 'Développé haltère unilatéral à genou',
+    fichier: 'power12-developpe-haltere-genou.webp', // genou au sol du côté du bras qui pousse
+    alias: [
+      'Half-kneeling dumbbell press',
+      'Half kneeling single arm dumbbell press',
+      'Développé unilatéral haltère à genou',
+    ],
+  },
 ];
 
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */

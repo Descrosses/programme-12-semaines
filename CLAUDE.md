@@ -854,6 +854,14 @@ matériel et la durée avant d'écrire la moindre séance.
   remettait la barre devant, ou l'appui côté barre : une telle planche ne
   passe pas. L'athlète n'est pas tout à fait celui des autres planches
   (accepté par Guillaume) ; marques des chaussettes et du short effacées.
+  **Huit planches du brouillon des remplacements** (27 novembre, gardées
+  ici en attendant) : good morning barre, fentes arrière haltères, RDL
+  haltères, glute bridge barre au sol, pull-through poulie basse, leg curl
+  allongé, single-leg RDL au landmine, développé haltère unilatéral à genou.
+  « Leg curl allongé » existe AUSSI chez MASS CONGESTION : à l'import, ce nom
+  exact ne propose donc rien (deux planches possibles) ; « Lying leg curl »
+  propose celle de POWER. REFUSÉES : Pendlay row (buste trop redressé) et
+  glute-ham raise (extension du dos, pas flexion des genoux).
   Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
   (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
@@ -865,7 +873,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (44 au 27 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (52 au 27 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de

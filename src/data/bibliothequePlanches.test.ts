@@ -2,7 +2,8 @@
  * La bibliothèque des planches « en attente d'un programme » (Guillaume,
  * 26 novembre : « garde-les dans la bibliothèque dès que ce mouvement fera
  * partie d'un programme ») : Landmine press assis, Wall ball, Copenhague
- * plank, et (27 novembre) Landmine single leg squat.
+ * plank, et (27 novembre) Landmine single leg squat puis huit planches du brouillon
+ * des remplacements.
  *
  * Ces tests figent :
  * - chaque planche est retrouvée par son NOM et ses ALIAS, casse et accents
@@ -29,6 +30,18 @@ const PLANCHES = [
     'Landmine single leg squat',
     'power12-landmine-single-leg-squat',
     ['Landmine single-leg squat', 'Squat unijambiste landmine'],
+  ],
+  ['Good morning barre', 'power12-good-morning-barre', ['Good morning']],
+  ['Fentes arrière haltères', 'power12-fentes-arriere-halteres', ['Dumbbell reverse lunge']],
+  ['RDL haltères', 'power12-rdl-halteres', ['Dumbbell RDL']],
+  ['Glute bridge barre au sol', 'power12-glute-bridge-barre', ['Pont fessier barre']],
+  ['Pull-through à la poulie basse', 'power12-pull-through-poulie', ['Cable pull-through']],
+  ['Leg curl allongé', 'power12-leg-curl-allonge', ['Lying leg curl']],
+  ['Single-leg RDL au landmine', 'power12-single-leg-rdl-landmine', ['Landmine single leg RDL']],
+  [
+    'Développé haltère unilatéral à genou',
+    'power12-developpe-haltere-genou',
+    ['Half-kneeling dumbbell press'],
   ],
 ] as const;
 

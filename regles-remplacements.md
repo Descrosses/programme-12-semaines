@@ -44,17 +44,17 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 
 | Mouvement du programme | Jour | Remplaçant 1 | Remplaçant 2 |
 |---|---|---|---|
-| Bulgarian Split Squat | Lundi | Landmine single leg squat (planche ✓) | Fentes arrière haltères (planche à faire) |
-| Romanian Deadlift | Lundi | RDL haltères (planche à faire) | Good morning barre (planche à faire) |
-| Hip Thrust | Samedi | Glute bridge barre au sol (planche à faire) | Pull-through à la poulie basse (planche à faire) |
-| Nordic Curl | Samedi | Leg curl allongé, tempo 4-0-1-0 (planche à faire) | Glute-ham raise (planche à faire) |
-| Single-Leg RDL haltère | Samedi | RDL en appui décalé haltères (planche à faire) | Single-leg RDL au landmine (planche à faire) |
+| Bulgarian Split Squat | Lundi | Landmine single leg squat (planche ✓) | Fentes arrière haltères (planche ✓) |
+| Romanian Deadlift | Lundi | RDL haltères (planche ✓) | Good morning barre (planche ✓) |
+| Hip Thrust | Samedi | Glute bridge barre au sol (planche ✓) | Pull-through à la poulie basse (planche ✓) |
+| Nordic Curl | Samedi | Leg curl allongé, tempo 4-0-1-0 (planche ✓) | Glute-ham raise (planche à faire) |
+| Single-Leg RDL haltère | Samedi | RDL en appui décalé haltères (planche à faire) | Single-leg RDL au landmine (planche ✓) |
 
 ### Haut du corps — poussée
 
 | Mouvement du programme | Jour | Remplaçant 1 | Remplaçant 2 |
 |---|---|---|---|
-| Landmine Press half-kneeling | Mercredi | Landmine press assis (planche ✓) | Développé haltère unilatéral à genou (planche à faire) |
+| Landmine Press half-kneeling | Mercredi | Landmine press assis (planche ✓) | Développé haltère unilatéral à genou (planche ✓) |
 | Landmine Press debout | Dimanche | Landmine press assis (planche ✓) | Développé militaire haltère unilatéral debout (planche à faire) |
 | Incline Dumbbell Press | Dimanche | Développé incliné barre (planche à faire) | Développé incliné haltères prise neutre (planche à faire) |
 
@@ -89,8 +89,11 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 dans le programme lui-même (décision de Guillaume, 27 novembre). Dans le
 cycle 1, il reste un remplaçant au choix.
 
-**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 4 qui ont
-déjà leur planche et 46 à générer.
+**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 12 qui ont
+déjà leur planche et 38 à générer (au 27 novembre). Planches reçues et
+refusées : Pendlay row (buste trop redressé, il doit être parallèle au sol)
+et glute-ham raise (les cuisses restent à plat : c'est une extension du dos,
+pas une flexion des genoux).
 
 ---
 
