@@ -49,11 +49,28 @@ describe('« Je ne mange pas »', () => {
     expect(texte(h)).toContain(prudence);
   });
 
-  it('les créneaux que plus aucun repas ne remplit sont dits', () => {
-    expect(texte(rendu(['gluten', 'laitiers']))).toContain(
-      'la bibliothèque n’a aucun repas pour : petit-déjeuner, collation de l’après-midi',
+  it('grille du 27 novembre : même les 7 familles écartées ne vident aucun créneau', () => {
+    // La phrase « la bibliothèque n'a aucun repas pour… » reste en place,
+    // filet de sécurité si la bibliothèque rétrécit un jour. Aujourd'hui,
+    // aucune combinaison ne la déclenche, même à 6 repas.
+    const toutes: ExclusionId[] = [
+      'viande',
+      'poisson',
+      'oeufs',
+      'laitiers',
+      'arachide',
+      'fruitsCoque',
+      'gluten',
+    ];
+    const h = renderToStaticMarkup(
+      <JeNeMangePas
+        exclusions={toutes}
+        onChange={() => {}}
+        creneaux={['pdej', 'collation1', 'dejeuner', 'collation2', 'diner', 'collation3']}
+      />,
     );
-    expect(rendu(['arachide'])).not.toContain('data-creneaux-vides');
+    expect(h).not.toContain('data-creneaux-vides');
+    expect(texte(h)).toContain(prudence);
   });
 });
 

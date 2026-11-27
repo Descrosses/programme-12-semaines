@@ -148,6 +148,26 @@ réinterprète pas.**
   végétalien, 98 g de protéines pour 180 visés ; sans gluten ni laitiers,
   aucun petit-déjeuner ni collation (−40 %). `components/exclusionsRepas.test.tsx`.
 
+  **Grille de la bibliothèque — FAITE** (Guillaume, 27 novembre, « go grille
+  bibliothèque, pas d'exclusion soja ») : 33 repas ajoutés (64 au total),
+  `photoAVenir` tant que leur photo manque (vignette neutre). Règle au §5 de
+  `regles-repas-automatiques.md`, `GRILLE_BIBLIOTHEQUE` : au moins 7 repas par
+  type (petit-déjeuner, collation, plat) pour CHAQUE exclusion seule, au moins
+  5 pour CHAQUE paire (`data/grilleBibliotheque.test.ts`, 7 + 21 cas). Quatre
+  aliments sourcés NEVO-online 2025/9.0 (Ciqual en maintenance) : `tofu`,
+  `boissonSoja`, `yaourtSoja` (rangés `legumineuse`, crèmerie aux courses),
+  `galettesRiz`. **Pas d'exclusion soja** : « soja » écrit dans les
+  allergies reste « non reconnu ». Exclusions complétées (jambon blanc,
+  steak haché, noix, boulgour). Facteurs de courses ajoutés (épinards,
+  quinoa ; patate douce et pois chiches « à défaut », pois chiches aussi en
+  conserve). **Seuils 5 et 6 repas re-mesurés** : 1 200 kcal tous les deux
+  (au lieu de 1 500 / 1 900) — dès 1 200, 5 et 6 repas tiennent aussi bien
+  que 4. Plus aucune combinaison des 7 familles ne vide un créneau (la
+  phrase « aucun repas pour… » reste en filet). **Point ouvert** : la règle
+  « protéines avant la variété » sert beaucoup de tofu (jusqu'à 970 g un
+  jour sans exclusion, 1,2 kg/j en végétalien à 180 g) — limite « un repas
+  au tofu par jour » chiffrée, en attente de Guillaume.
+
   **Refonte « Journal » + nombre de repas** (Guillaume, 26 novembre, « go
   refonte C avec la possibilité d'ajouter un repas » — maquette C parmi
   trois). Mode SEMAINE de repas seulement : « Mon plan » et le plan

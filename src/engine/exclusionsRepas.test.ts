@@ -76,15 +76,35 @@ describe('la semaine sans ce que la personne ne mange pas', () => {
   });
 
   it('un créneau sans repas possible reste VIDE, jamais rempli par un repas écarté', () => {
-    // Sans gluten ni laitiers : aucun petit-déjeuner ni collation possible.
-    const s = semaine(['gluten', 'laitiers']);
+    // Depuis la grille du 27 novembre, AUCUNE combinaison des 7 familles ne
+    // vide un créneau (voir regles-repas-automatiques.md §5). Le cas est
+    // donc FABRIQUÉ : tout aliment d'un petit-déjeuner ou d'une collation est
+    // écarté, sauf ceux d'un plat, qui reste possible.
+    const plat = BIBLIOTHEQUE_REPAS.find((r) => r.id === 'poulet-riz-brocolis')!;
+    const garde = new Set(plat.lignes.map((l) => l.foodId));
+    const exclus = new Set(
+      BIBLIOTHEQUE_REPAS.filter((r) => r.creneaux.some((c) => c !== 'dejeuner' && c !== 'diner'))
+        .flatMap((r) => r.lignes.map((l) => l.foodId))
+        .filter((id) => !garde.has(id)),
+    );
+    // Précondition : plus aucun petit-déjeuner ni collation possible.
+    const possibles = BIBLIOTHEQUE_REPAS.filter(
+      (r) => r.creneaux.includes('pdej') || r.creneaux.includes('collation2'),
+    ).filter((r) => !repasExclu(r, exclus));
+    expect(possibles.map((r) => r.id)).toEqual([]);
+    const s = composerSemaine(
+      { kcal: 2150, proteinG: 180 },
+      [],
+      FOOD_LIBRARY,
+      '2026-11-26',
+      exclus,
+    );
     for (const j of s.jours) {
       expect(j.pdej).toBeUndefined();
       expect(j.collation2).toBeUndefined();
       expect(j.dejeuner).toBeDefined();
     }
-    const vus = aliments(s);
-    for (const id of alimentsExclus(['gluten', 'laitiers'])) expect(vus.has(id), id).toBe(false);
+    for (const id of exclus) expect(aliments(s).has(id), id).toBe(false);
   });
 
   it('sans exclusion : la semaine d’avant, à l’identique', () => {

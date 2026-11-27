@@ -51,12 +51,17 @@ table.
 | Carottes cuites | Carottes (crues) | 0,94 | Bognár t. 17 — Carrot, boiled | 103 |
 | Courgettes cuites | Courgettes (crues) | 0,73 | **Donnée faible** : Bognár t. 19 — Zucchini, stew, recette avec ingrédients | 3 |
 | Aubergine cuite | Aubergine (crue) | 0,80 | **Donnée faible** : Bognár t. 19 — Egg-plants, stew, recette avec ingrédients | 3 |
+| Épinards cuits | Épinards (crus) | 0,95 | Bognár t. 18 — Spinach, boiled | 6 |
+| Quinoa cuit | Quinoa (cru) | 3,42 | Bognár t. 29 — Quinoa, stewed | — |
+| Patate douce cuite | Patates douces (crues, épluchées) | 1,00 | **À défaut** : même ligne que la pomme de terre (Bognár n'a pas de patate douce) | 272 |
+| Pois chiches cuits | Pois chiches (secs) | 2,50 | **À défaut** : même ligne que les haricots (Bognár n'a pas de pois chiches) | 10 |
 
 Tout autre aliment (pesé cru ou « tel quel » : skyr, flocons, amandes,
 pain, fruits, crudités, aliments ajoutés à la main…) garde son poids.
 
 Les légumineuses existent aussi **en conserve** : leur poids égoutté est
-proche du poids cuit. L'écran le rappelle sous ces deux lignes.
+proche du poids cuit. L'écran le rappelle sous ces trois lignes (lentilles, haricots rouges,
+pois chiches).
 
 ---
 
@@ -77,7 +82,7 @@ On arrondit **toujours vers le haut** : mieux vaut un reste qu'un manque.
 | Rayon | Familles du catalogue |
 |---|---|
 | Viandes et poissons | protéines (sauf œufs et whey) |
-| Crèmerie et œufs | laitiers, œufs |
+| Crèmerie et œufs | laitiers, œufs, tofu et yaourt au soja (rayon frais) |
 | Fruits et légumes | fruits, légumes |
 | Épicerie | féculents (sauf pain), légumineuses, matières grasses, autres, whey |
 | Boulangerie | pain |

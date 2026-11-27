@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BIBLIOTHEQUE_REPAS } from './bibliothequeRepas';
 import { FOOD_LIBRARY } from './foodLibrary';
-import { ARRONDI_COURSES, EN_CONSERVE, RAYONS, RENDEMENTS } from './reglesCourses';
+import { ARRONDI_COURSES, EN_CONSERVE, RAYON_D_ALIMENT, RAYONS, RENDEMENTS } from './reglesCourses';
 
 const md = readFileSync(new URL('../../regles-courses.md', import.meta.url), 'utf8');
 const nombre = (t: string) => Number(t.replace(/\s/g, '').replace(',', '.'));
@@ -53,7 +53,7 @@ describe('regles-courses.md ↔ le code', () => {
 
   it('§1 — les légumineuses en conserve', () => {
     expect(md).toContain('existent aussi **en conserve**');
-    expect([...EN_CONSERVE].sort()).toEqual(['haricotsRouges', 'lentilles']);
+    expect([...EN_CONSERVE].sort()).toEqual(['haricotsRouges', 'lentilles', 'poisChiches']);
   });
 
   it('§2 — arrondis vers le haut : 10, puis 50 dès 1 000', () => {
@@ -67,5 +67,12 @@ describe('regles-courses.md ↔ le code', () => {
 
   it('§3 — les rayons, dans l’ordre', () => {
     expect(tableau('Rayon').map(([nom]) => nom)).toEqual(RAYONS.map((r) => r.nom));
+  });
+
+  it('§3 — tofu et yaourt au soja au rayon frais, comme le .md l’écrit', () => {
+    const cremerie = tableau('Rayon').find(([nom]) => nom === 'Crèmerie et œufs')![1]!;
+    expect(cremerie).toContain('tofu et yaourt au soja');
+    expect(RAYON_D_ALIMENT.tofu).toBe('cremerie');
+    expect(RAYON_D_ALIMENT.yaourtSoja).toBe('cremerie');
   });
 });

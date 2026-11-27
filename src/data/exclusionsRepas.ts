@@ -8,7 +8,7 @@ export const EXCLUSIONS = [
   {
     id: 'viande',
     nom: 'Viande',
-    aliments: ['poulet', 'dinde', 'boeuf'],
+    aliments: ['poulet', 'dinde', 'boeuf', 'steakHache5', 'jambonBlanc'],
     mots: ['végétarien', 'végétalien', 'vegan'],
   },
   {
@@ -39,13 +39,13 @@ export const EXCLUSIONS = [
   {
     id: 'fruitsCoque',
     nom: 'Fruits à coque',
-    aliments: ['amandes'],
+    aliments: ['amandes', 'noix'],
     mots: ['fruits à coque', 'fruit à coque', 'noix', 'amande', 'amandes', 'noisette', 'noisettes'],
   },
   {
     id: 'gluten',
     nom: 'Gluten',
-    aliments: ['pain', 'pates', 'semoule', 'avoine', 'floconsCroustillants'],
+    aliments: ['pain', 'pates', 'semoule', 'avoine', 'floconsCroustillants', 'boulgour'],
     mots: ['gluten', 'blé', 'coeliaque', 'cœliaque', 'maladie coeliaque'],
   },
 ] as const;

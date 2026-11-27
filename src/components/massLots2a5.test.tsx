@@ -56,7 +56,15 @@ const section = (n: number) => {
 
 // --------------------------------------------------------------- lot 2 ----
 describe('lot 2 — les collations à boire', () => {
-  const A_BOIRE = BIBLIOTHEQUE_REPAS.filter((r) => r.nom.startsWith('À boire : '));
+  // Les quatre du lot 2 (la grille du 27 novembre en ajoute une autre « À
+  // boire », sans whey : elle n'est pas de ce lot).
+  const LOT_2 = [
+    'shaker-avoine-whey-banane',
+    'shaker-avoine-whey-cacahuete-lait',
+    'smoothie-skyr-lait-avoine-fruits-rouges',
+    'smoothie-lait-banane-avoine-amandes',
+  ];
+  const A_BOIRE = BIBLIOTHEQUE_REPAS.filter((r) => LOT_2.includes(r.id));
 
   it('quatre, deux avec whey et deux sans — le tableau du .md, ligne par ligne', () => {
     const t = tableau('Collation à boire');

@@ -141,7 +141,10 @@ describe('TEST 4 — aliment personnalisé saisi pour 100 g', () => {
 
   it('il se cherche comme les autres', () => {
     expect(searchFoods('tofu', [MAISON]).map((f) => f.id)).toContain(MAISON.id);
-    expect(searchFoods('tofu', []).length).toBe(0);
+    // Le catalogue a son « Tofu nature » depuis le 27 novembre : on cherche
+    // le libellé de l'aliment personnalisé, que seul lui porte.
+    expect(searchFoods('tofu ferme', [MAISON]).map((f) => f.id)).toEqual([MAISON.id]);
+    expect(searchFoods('tofu ferme', []).length).toBe(0);
   });
 });
 
