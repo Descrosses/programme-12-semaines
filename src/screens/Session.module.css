@@ -2499,6 +2499,33 @@
   color: var(--ink);
 }
 
+/* Les consignes d'exécution en tête de carte (MASS CONGESTION) : toujours
+   visibles, jamais derrière un tiroir. Le style fort vit dans le bloc
+   « SÉANCE MASS » ; ici, une base lisible partout. */
+.consignesEnAvant {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.consignesEnAvant p {
+  margin: 0;
+}
+
+.consignesEnAvant p + p {
+  margin-top: 6px;
+}
+
+.consignesEnAvantTitre {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* La fourchette de charge (MASS FORCE) : lisible d'un coup d'œil, la
    provenance en retrait. */
 .chargeCible {
@@ -3088,6 +3115,30 @@
 
 :global([data-theme='mass']) .ecranSeance .vigilance b {
   color: #fff;
+}
+
+/* Consignes d'exécution (CONGESTION) : l'encadré qui doit sauter aux yeux —
+   bord bordeaux épais, halo, fond teinté, titre vieux rose. */
+:global([data-theme='mass']) .ecranSeance .consignesEnAvant {
+  position: relative;
+  margin: 12px -5px 0;
+  padding: 10px 14px 12px 16px;
+  border: 2px solid var(--mass-rouge);
+  border-left-width: 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(120 10 16 / 34%) 0%, rgb(60 5 8 / 24%) 100%);
+  box-shadow: var(--mass-halo-action);
+  color: #f6f1ed;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+:global([data-theme='mass']) .ecranSeance .consignesEnAvantTitre {
+  margin-bottom: 6px;
+  color: var(--accent-ink);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
 
 :global([data-theme='mass']) .ecranSeance .exSub {

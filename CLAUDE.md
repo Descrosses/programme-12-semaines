@@ -1313,6 +1313,19 @@ matériel et la durée avant d'écrire la moindre séance.
      noir ») ; contraste des titres mesuré ≥ 3,5:1. Accueil : la photo de
      l'athlète commence SOUS la barre d'état (sa tête est en haut du fichier,
      elle passait sous l'heure). La Séance MASS n'a toujours pas de trait.
+- **MASS CONGESTION : consignes d'exécution EN TÊTE de carte** (Guillaume, 27
+  novembre : « c'est la bonne exécution des consignes qui fait que le
+  programme est bon […] il ne se voit pas assez »). Encadré « Consignes
+  d'exécution » toujours visible, entre le travail et les séries
+  (`ExerciseDef.consignesEnAvant`, rempli par `consignesEnAvant()` de
+  `programmes/mass4/module.ts`) : la technique de la ligne (sauf séries
+  droites), puis la consigne du mouvement, MOT POUR MOT ; une consigne qui
+  répète la technique (les deux dégressives) n'est dite qu'une fois. Le
+  tiroir « Consignes » ne répète pas l'encadré et disparaît s'il n'a plus
+  rien ; la 4e série facultative y reste (ce n'est pas une exécution).
+  Style fort dans le bloc « SÉANCE MASS » de `Session.module.css` (bord
+  `--mass-rouge` 2 px, filet gauche 6 px, halo, titre `--accent-ink`).
+  POWER et MASS FORCE inchangés. `components/consignesEnAvant.test.tsx`.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

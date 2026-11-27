@@ -96,6 +96,7 @@ function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
   const seconde = secondePartiePour(ligne.technique);
   const mode = modePour(ligne, semaine);
   const frise = frisePour(ligne);
+  const enAvant = consignesEnAvant(ligne);
   return {
     id,
     name: e?.nom ?? id,
@@ -106,7 +107,35 @@ function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
     ...(fiche === undefined ? {} : { fiche }),
     ...(seconde === undefined ? {} : { secondPart: seconde }),
     ...(mode === null || frise === null ? {} : { alternance: { mode, frise } }),
+    ...(enAvant.length === 0 ? {} : { consignesEnAvant: enAvant }),
   };
+}
+
+/** Deux phrases qui disent la même chose, ponctuation et « avec » mis à part. */
+const memePhrase = (a: string, b: string) => {
+  const n = (t: string) =>
+    t
+      .toLowerCase()
+      .replace(/\bavec\b/g, ' ')
+      .replace(/[^\p{L}\p{N}≈%]+/gu, ' ')
+      .trim();
+  return n(a) === n(b);
+};
+
+/**
+ * Ce que l'encadré « Consignes d'exécution » montre en tête de carte : la
+ * technique de la ligne (sauf les séries droites, qui n'en ont pas), puis la
+ * consigne du mouvement. La consigne qui répète la technique (dégressives :
+ * « 6 reps lourdes avec 1 à 2 en réserve… » / « 6 reps lourdes (1 à 2 en
+ * réserve)… ») n'est dite qu'une fois. Textes du document, mot pour mot.
+ */
+export function consignesEnAvant(ligne: LigneMass4): string[] {
+  const out: string[] = [];
+  const technique = ligne.technique === 'droite' ? undefined : TECHNIQUES[ligne.technique];
+  if (technique !== undefined) out.push(technique);
+  const consigne = EXERCICES_MASS4[ligne.exerciceId]?.consigne;
+  if (consigne !== undefined && !out.some((t) => memePhrase(t, consigne))) out.push(consigne);
+  return out;
 }
 
 /** Ce qui s'écrit sous le nom du mouvement : la technique, puis le matériel. */
