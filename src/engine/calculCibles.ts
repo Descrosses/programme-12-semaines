@@ -29,6 +29,11 @@ import {
   type Rythme,
   type Travail,
 } from '../data/reglesCiblesNutrition';
+import {
+  GLUCIDES_ALERTE_G_KG_MASS_PRISE,
+  PROTEINES_G_KG_MASS_PRISE,
+  type Regard,
+} from '../data/reglesNutritionMass';
 
 export interface ProfilCalcul {
   sexe: 'homme' | 'femme';
@@ -134,12 +139,24 @@ const SIGNES = (x: number) =>
   x > 0 ? `+ ${fr(x * 100, 0)} %` : x < 0 ? `− ${fr(-x * 100, 0)} %` : '0 %';
 
 /**
+ * `regles-nutrition-mass.md`, §1 — le regard MASS ne s'applique qu'en PRISE
+ * de masse. Une perte ou un maintien sous MASS suivent les règles communes.
+ */
+export function regardApplique(regard: Regard, objectif: Objectif): boolean {
+  return regard === 'mass' && objectif === 'prise';
+}
+
+/**
  * §5 — la répartition des macros pour des calories et un poids de référence
  * donnés. Sert au calcul de départ ET au réajustement du §7 (mêmes règles,
  * mêmes arrondis).
  */
-export function repartir(kcal: number, ref: number, objectif: Objectif) {
-  const gKgProt = objectif === 'perte' ? PROTEINES_G_KG.perte : PROTEINES_G_KG.defaut;
+export function repartir(kcal: number, ref: number, objectif: Objectif, regard: Regard = 'commun') {
+  const gKgProt = regardApplique(regard, objectif)
+    ? PROTEINES_G_KG_MASS_PRISE
+    : objectif === 'perte'
+      ? PROTEINES_G_KG.perte
+      : PROTEINES_G_KG.defaut;
   const proteinG = arrondi(gKgProt * ref, ARRONDI.macroG);
   const lipPart = (LIPIDES.part * kcal) / 9;
   const lipMin = LIPIDES.minGKg * ref;
@@ -148,8 +165,13 @@ export function repartir(kcal: number, ref: number, objectif: Objectif) {
   return { gKgProt, proteinG, lipPart, lipMin, fatG, carbsG };
 }
 
-/** Le calcul complet, étape par étape. */
-export function calculerCibles(p: ProfilCalcul): ResultatCibles {
+/**
+ * Le calcul complet, étape par étape. `regard` : les règles communes, ou le
+ * regard MASS (`regles-nutrition-mass.md` : protéines à 2,0 g/kg et alerte
+ * glucides à 3 g/kg, en prise de masse seulement).
+ */
+export function calculerCibles(p: ProfilCalcul, regard: Regard = 'commun'): ResultatCibles {
+  const mass = regardApplique(regard, p.objectif);
   const repos = depenseAuRepos(p);
   const coef = coefficient(p);
   const totale = repos * coef.total;
@@ -158,7 +180,12 @@ export function calculerCibles(p: ProfilCalcul): ResultatCibles {
 
   const ref = poidsDeReference(p);
   const surRef = ref !== p.poidsKg;
-  const { gKgProt, proteinG, lipPart, lipMin, fatG, carbsG } = repartir(kcal, ref, p.objectif);
+  const { gKgProt, proteinG, lipPart, lipMin, fatG, carbsG } = repartir(
+    kcal,
+    ref,
+    p.objectif,
+    regard,
+  );
 
   const poidsLu = surRef
     ? `${fr(ref)} kg (poids de référence : IMC ${fr(imc(p))} ≥ ${IMC_POIDS_REFERENCE.seuil})`
@@ -190,7 +217,7 @@ export function calculerCibles(p: ProfilCalcul): ResultatCibles {
     },
     {
       libelle: 'Protéines',
-      calcul: `${fr(gKgProt)} g/kg × ${poidsLu}`,
+      calcul: `${fr(gKgProt)} g/kg${mass ? ' (prise de masse MASS)' : ''} × ${poidsLu}`,
       resultat: `${proteinG} g`,
     },
     {
@@ -213,8 +240,9 @@ export function calculerCibles(p: ProfilCalcul): ResultatCibles {
       `Sous le plancher de l’appli (${fr(plancher, 0)} kcal : ${PLANCHERS_KCAL[p.sexe].toLocaleString('fr-FR')} pour ${p.sexe === 'homme' ? 'un homme' : 'une femme'}, ou la dépense au repos) : la cible ne serait pas proposée automatiquement.`,
     );
   }
-  if (carbsG < GLUCIDES_ALERTE_G_KG * ref) {
-    alertes.push(`Glucides sous ${GLUCIDES_ALERTE_G_KG} g/kg.`);
+  const seuilGlucides = mass ? GLUCIDES_ALERTE_G_KG_MASS_PRISE : GLUCIDES_ALERTE_G_KG;
+  if (carbsG < seuilGlucides * ref) {
+    alertes.push(`Glucides sous ${seuilGlucides} g/kg.`);
   }
 
   const excl = exclusions(p);

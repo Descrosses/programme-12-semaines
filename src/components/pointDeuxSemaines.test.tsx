@@ -99,7 +99,8 @@ describe('le câblage', () => {
 
   it('le profil est enregistré quand la cible calculée est acceptée', () => {
     const src = lire('./CibleCalculee.tsx');
-    expect(src).toContain('profilAGarder(proposition.profil, aujourdhui)');
+    // Le regard (MASS ou commun) suit la cible dans le profil gardé.
+    expect(src).toContain('profilAGarder(proposition.profil, aujourdhui, proposition.regard)');
     expect(src).toContain('...(profil !== null ? { profilNutrition: profil } : {})');
     // Une cible acceptée avant le lot 4 : le suivi s'active d'un bouton.
     expect(src).toContain('Activer le point des 2 semaines');

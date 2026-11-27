@@ -38,6 +38,7 @@ import {
   type Creneau,
   type NombreRepas,
 } from '../data/reglesRepasAutomatiques';
+import { REPAS_PAR_DEFAUT_MASS } from '../data/reglesNutritionMass';
 import { repasExclu } from './exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from './planPersoTotaux';
 
@@ -79,6 +80,22 @@ export function nombresPossibles(kcal: number): NombreRepas[] {
 export function nombreAdmis(voulu: NombreRepas, kcal: number): NombreRepas {
   const possibles = nombresPossibles(kcal).filter((n) => n <= voulu);
   return possibles[possibles.length - 1] ?? NOMBRE_DE_REPAS_PAR_DEFAUT;
+}
+
+/**
+ * Le nombre de repas d'une semaine composée pour la première fois : 4, sauf
+ * sous MASS en prise de masse (`regles-nutrition-mass.md`, §6), où le
+ * programme a le sien. `profil` : celui gardé à l'acceptation de la cible —
+ * sans lui (cible posée à la main ou par le coach), 4.
+ */
+export function repasParDefaut(
+  programmeId: string | null,
+  profil: { regard?: 'mass'; objectif: string } | null,
+): NombreRepas {
+  if (programmeId === null || profil?.regard !== 'mass' || profil.objectif !== 'prise') {
+    return NOMBRE_DE_REPAS_PAR_DEFAUT;
+  }
+  return REPAS_PAR_DEFAUT_MASS[programmeId] ?? NOMBRE_DE_REPAS_PAR_DEFAUT;
 }
 
 /** §1 — les créneaux composés pour ce nombre de repas, dans l'ordre de la journée. */

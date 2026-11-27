@@ -20,13 +20,14 @@ describe('textes de l’écran Aujourd’hui, hors séance', () => {
     expect(textesCycle(null).sousAvant).toBe('Combine initial');
   });
 
-  it('MASS FORCE : semaine 1, quatre semaines, pas de raccourci vers une nutrition à venir', () => {
+  it('MASS FORCE : semaine 1, quatre semaines, et le raccourci vers sa nutrition calculée', () => {
     expect(textesCycle(moduleParId('mass-force'))).toEqual({
       sousAvant: 'Semaine 1',
       attente: 'Première séance',
       fin: '4 semaines bouclées',
       comparerCombines: false,
-      raccourciNutrition: false,
+      // Sa Nutrition n'est plus « à venir » (27 novembre) : le raccourci existe.
+      raccourciNutrition: true,
     });
   });
 

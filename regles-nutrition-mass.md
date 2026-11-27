@@ -1,11 +1,17 @@
 # Règles de la nutrition MASS
 
-> **Statut : BROUILLON, cinq points TRANCHÉS par Guillaume le 27 novembre
-> 2026** (« 1 garder, 2 : 2 g, 3 oui, 4 tous les programmes, 5 : la créatine
-> est essentielle pour MASS et POWER ») — ils sont marqués « Décidé » dans le
-> texte. Le reste (« Choix proposé ») n'a pas été contesté mais sera relu au
-> « go » de son lot ; **le texte du §11 (créatine) attend sa validation**.
-> **Rien n'est codé** ; aucun test ne relit encore ce fichier (§13).
+> **Statut : source de vérité pour le lot 1, CODÉ le 27 novembre 2026**
+> (Guillaume : « texte validé, go MASS lot 1 »). Cinq points tranchés par lui
+> (« 1 garder, 2 : 2 g, 3 oui, 4 tous les programmes, 5 : la créatine est
+> essentielle pour MASS et POWER »), marqués « Décidé » dans le texte.
+>
+> - **Lot 1 — codé** (§1 à §6, §9, §12) : le code transcrit ce fichier, un
+>   test relit ses tableaux et rejoue l'exemple
+>   (`data/reglesNutritionMass.test.ts`). Pour changer une règle : changer ce
+>   fichier ET le code.
+> - **Lots 2 à 5 — pas codés** (collations à boire, remplacement à apport
+>   égal, repères d'horaires, carte « Créatine ») : chacun attend son « go »
+>   (§13). Le texte de la carte « Créatine » (§11) est VALIDÉ.
 >
 > Comme `regles-cibles-nutrition.md`, chaque section sépare **ce que disent
 > les études** des **choix de l'appli**.
@@ -37,6 +43,21 @@ générales ont été retenues (§6, §7), avec nos propres valeurs.
 **Programmes concernés :** MASS FORCE, MASS CONGESTION, et MASS HYPERTROPHIE
 quand il existera.
 
+### Les valeurs du regard MASS
+
+| Réglage | Règles communes | MASS en prise de masse |
+|---|---|---|
+| Protéines | 1,8 g/kg | 2,0 g/kg |
+| Alerte glucides | sous 2 g/kg | sous 3 g/kg |
+
+| Programme MASS | Repas par défaut en prise de masse |
+|---|---|
+| MASS HYPERTROPHIE | 5 |
+| MASS FORCE | 5 |
+| MASS CONGESTION | 4 |
+
+Hors prise de masse, et hors MASS : 4 repas par défaut, comme partout.
+
 ---
 
 ## 1. Quand les réglages MASS s'appliquent
@@ -48,6 +69,15 @@ propre à MASS.
 
 L'appli ne devine pas l'objectif à la place de la personne : le questionnaire
 (copie du site) pose déjà la question.
+
+**Le regard suit la cible.** Il est noté dans le profil gardé quand la cible
+calculée est acceptée : le point des deux semaines refait alors la
+répartition avec les mêmes règles (protéines à 2,0 g/kg). Une cible acceptée
+sous un autre programme, ou posée à la main, garde les règles communes tant
+que la personne ne refait pas calculer sa cible sous MASS.
+
+**Jamais le plan historique.** Sous MASS, ni les menus ni les chiffres du
+plan personnel de Guillaume ne s'affichent, quel que soit le réglage.
 
 **Décidé (Guillaume, 27 novembre : « garder »).** MASS CONGESTION garde ses
 six principes en tête d'écran ; le calcul s'ajoute dessous.
@@ -128,9 +158,15 @@ moins quatre repas pour atteindre 1,6 g/kg/j, 0,55 g/kg par repas pour
 
 **Choix proposés :**
 
-- **5 repas par jour par défaut** quand la semaine est composée sous MASS en
-  prise de masse (4 ailleurs). La personne garde le choix 4 · 5 · 6
-  (`regles-repas-automatiques.md`, §1).
+- **5 repas par jour par défaut** quand la semaine est composée pour la
+  première fois sous MASS FORCE ou MASS HYPERTROPHIE en prise de masse (4
+  ailleurs). La personne garde le choix 4 · 5 · 6
+  (`regles-repas-automatiques.md`, §1), et un nombre que la cible ne tient
+  pas n'est jamais composé.
+- **MASS CONGESTION reste à 4 par défaut.** Le premier de ses six principes
+  écrit « 4 prises par jour » : une semaine de 5 repas sous ce principe se
+  contredirait à l'écran. Ajouté en codant le lot 1 (27 novembre) — **à
+  confirmer par Guillaume** ; la personne peut toujours passer à 5 ou 6.
 - **Des collations à boire** dans la bibliothèque : flocons d'avoine mixés,
   une source de protéines, un fruit, un peu de gras. Elles servent aux
   grosses cibles, où manger toutes ses calories devient difficile. Idée
@@ -214,9 +250,9 @@ coucher) ne sont pas repris : je n'ai pas de source à mettre en face.
 
 ## 11. Créatine — MASS et POWER
 
-> **BROUILLON — le texte ci-dessous attend la validation de Guillaume.**
-> Sa décision (27 novembre) : « pour MASS et POWER, la créatine est
-> essentielle. C'est LE complément alimentaire. »
+> **Texte VALIDÉ par Guillaume le 27 novembre 2026** (« texte validé »).
+> Pas encore codé : lot 5. Sa décision : « pour MASS et POWER, la créatine
+> est essentielle. C'est LE complément alimentaire. »
 
 **Ce que disent les études et les textes :**
 
@@ -315,15 +351,16 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
 
 ## 13. Lots de code — chacun attend son « go »
 
-1. **Ouvrir le calcul à MASS** : protéines à 2,0 g/kg en prise, alerte
-   glucides à 3 g/kg, 5 repas par défaut, écran Nutrition MASS (les six
-   principes de CONGESTION gardés en tête).
+1. **Ouvrir le calcul à MASS — FAIT (27 novembre)** : protéines à 2,0 g/kg
+   en prise, alerte glucides à 3 g/kg, repas par défaut, écran Nutrition
+   MASS (les six principes de CONGESTION gardés en tête, repliés une fois la
+   cible posée). Pas fait : le calcul du coach (`#/admin`) reste aux règles
+   communes.
 2. **Collations à boire** dans la bibliothèque (à faire avec la grille de la
    bibliothèque : mêmes photos, même mesure).
 3. **Remplacer à apport égal**, pour tous les programmes.
 4. **Repères d'horaires.**
-5. **Carte « Créatine »** sous POWER et MASS, une fois le texte du §11
-   validé.
+5. **Carte « Créatine »** sous POWER et MASS (texte du §11 validé).
 
 ---
 

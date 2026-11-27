@@ -86,12 +86,13 @@ describe('la cible proposée à la fin du questionnaire', () => {
     }
   });
 
-  it('POWER, LADIES et les programmes importés seulement (§0)', () => {
+  it('toutes les familles, MASS comprise depuis le 27 novembre ; rien sans cycle (§0)', () => {
     const familles: [FamilleId | null, string][] = [
       ['power', 'proposee'],
       ['femmes', 'proposee'],
       ['perso', 'proposee'],
-      ['mass', 'sans-objet'],
+      // MASS : le même calcul, lu avec son regard (`reglesNutritionMass.test.ts`).
+      ['mass', 'proposee'],
       [null, 'sans-objet'],
     ];
     for (const [f, cas] of familles) expect(proposerCible(reponses(), f).cas, String(f)).toBe(cas);

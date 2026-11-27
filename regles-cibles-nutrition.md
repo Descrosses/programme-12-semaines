@@ -26,8 +26,10 @@
 - Elle **réajuste** toutes les deux semaines selon le poids réel (§7),
   toujours en proposition.
 - Elle ne prescrit **aucune quantité d'aliment**.
-- **Familles concernées** : POWER, FEMMES, programmes importés.
-  **MASS CONGESTION** garde ses six principes sans chiffres.
+- **Familles concernées** : POWER, FEMMES, programmes importés, et **MASS**
+  depuis le 27 novembre 2026 — le même calcul, avec les quelques valeurs
+  propres à la prise de masse écrites dans `regles-nutrition-mass.md`.
+  **MASS CONGESTION** garde ses six principes en tête d'écran.
 
 ---
 

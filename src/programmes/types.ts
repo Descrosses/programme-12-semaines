@@ -62,6 +62,7 @@ export type VueProgramme =
   | 'week'
   | 'nutrition'
   | 'nutrition-principes'
+  | 'nutrition-calcul'
   | 'progress'
   | 'progress-volume'
   | 'combine'

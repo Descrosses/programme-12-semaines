@@ -96,6 +96,7 @@ import {
   mangeDesRepas,
   nombreAdmis,
   repasFaits,
+  repasParDefaut,
   type SemaineRepas,
 } from '../engine/semaineRepas';
 import { MacroBar } from '../components/MacroBar';
@@ -135,6 +136,8 @@ export function NutritionScreen({
   onDayKindChange,
   entete,
   sansPlanHistorique = false,
+  avant,
+  programmeId = null,
 }: {
   /** Le palier RETENU pour aujourd'hui — un choix de Guillaume s'il en a fait un. */
   todayKind: DayKind;
@@ -157,6 +160,17 @@ export function NutritionScreen({
    * soit le réglage.
    */
   sansPlanHistorique?: boolean;
+  /**
+   * Ce qu'un programme pose juste sous l'en-tête, avant la cible (MASS
+   * CONGESTION : ses six principes). Il reçoit l'état des cibles pour se
+   * replier une fois qu'une cible existe.
+   */
+  avant?: (etat: { ciblePosee: boolean }) => ReactNode;
+  /**
+   * Le programme en cours, pour le nombre de repas d'une semaine composée la
+   * première fois (`regles-nutrition-mass.md`, §6). Absent : 4.
+   */
+  programmeId?: string | null;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
@@ -440,6 +454,8 @@ export function NutritionScreen({
           />
         )}
 
+        {avant?.({ ciblePosee: cibleJour !== null })}
+
         {cibleJour === null ? (
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Aucune cible posée</h2>
@@ -619,7 +635,16 @@ export function NutritionScreen({
                 cible={cibleSemaine}
                 onComposer={() =>
                   void enregistreSemaine(
-                    composerSemaine(cibleSemaine, preferes, catalogue, todayIso, exclus),
+                    composerSemaine(
+                      cibleSemaine,
+                      preferes,
+                      catalogue,
+                      todayIso,
+                      exclus,
+                      // MASS en prise de masse : le nombre de repas de son
+                      // programme, plafonné par ce que la cible tient.
+                      nombreAdmis(repasParDefaut(programmeId, profil), cibleSemaine.kcal),
+                    ),
                   )
                 }
               />

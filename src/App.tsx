@@ -655,10 +655,23 @@ function renderScreen(
       );
 
     case 'nutrition-principes':
+    case 'nutrition-calcul':
+      /*
+       * MASS (Guillaume, 27 novembre) : le calcul de l'appli, lu avec le
+       * regard MASS. `nutrition-principes` (MASS CONGESTION) garde ses six
+       * principes en tête ; `nutrition-calcul` (MASS FORCE) n'a que le calcul.
+       * Ni l'un ni l'autre n'ouvre le plan historique de POWER.
+       */
       return (
         <NutritionPrincipesScreen
-          key={dataVersion}
+          key={`${dataVersion}-${todayKind}`}
           todayKind={todayKind}
+          kindProgramme={kindProgramme}
+          todayDay={todayDay}
+          todayWeek={todayWeek}
+          onDayKindChange={refresh}
+          programmeId={programme.id}
+          principes={onglet.vue === 'nutrition-principes'}
           {...visuelFamille(programme.id, 'nutrition')}
         />
       );
