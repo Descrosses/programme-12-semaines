@@ -32,7 +32,9 @@ import {
   CIBLE_MINIMALE,
   CRENEAUX_PAR_NOMBRE,
   LEVIERS,
+  ALERTE_PROTEINES,
   NOMBRE_DE_REPAS_PAR_DEFAUT,
+  PORTION_MAXIMALE,
   UN_REPAS_PAR_JOUR,
   NOMBRES_DE_REPAS,
   TOLERANCE_PART,
@@ -41,7 +43,7 @@ import {
 } from '../data/reglesRepasAutomatiques';
 import { REPAS_CONSEILLES_MASS_PRISE, REPAS_PAR_DEFAUT_MASS } from '../data/reglesNutritionMass';
 import { repasExclu } from './exclusionsRepas';
-import { macrosDeLigne, type Catalogue } from './planPersoTotaux';
+import { macrosDeJournee, macrosDeLigne, type Catalogue } from './planPersoTotaux';
 
 /** Ce que les quantités visent : calories obligatoires, protéines si posées. */
 export interface CibleRepas {
@@ -218,24 +220,35 @@ export function ajusterRepas(
   );
   const fixees = new Map<LignePerso, number>();
   for (const l of utiles.filter(piece)) {
-    fixees.set(l, arrondir(l.qty! * (prot(l) ? t.a : t.b), 'unité'));
+    fixees.set(l, plafonner(l.foodId, arrondir(l.qty! * (prot(l) ? t.a : t.b), 'unité')));
   }
-  const poidsFixes = pese(
-    [...fixees].map(([l, qty]) => ({ foodId: l.foodId, qty })),
-    catalogue,
-  );
-
-  // 2e passage : les aliments pesés visent ce qui reste.
-  const pesees = utiles.filter((l) => !piece(l));
-  const t2 = resoudre(
-    { kcal: vise.kcal - poidsFixes.kcal, proteinG: vise.proteinG - poidsFixes.proteinG },
-    pese(pesees.filter(prot), catalogue),
-    pese(
-      pesees.filter((l) => !prot(l)),
+  // 2e passage : les aliments pesés visent ce qui reste. Un aliment qui
+  // dépasserait sa portion maximale (§2) y est fixé, et le reste du repas est
+  // recalculé sans lui — les calories tiennent, les protéines manquent.
+  let pesees = utiles.filter((l) => !piece(l));
+  let t2 = { a: 1, b: 1 };
+  for (let tour = 0; tour <= pesees.length; tour++) {
+    const fx = pese(
+      [...fixees].map(([l, qty]) => ({ foodId: l.foodId, qty })),
       catalogue,
-    ),
-    avecProteines,
-  );
+    );
+    t2 = resoudre(
+      { kcal: vise.kcal - fx.kcal, proteinG: vise.proteinG - fx.proteinG },
+      pese(pesees.filter(prot), catalogue),
+      pese(
+        pesees.filter((l) => !prot(l)),
+        catalogue,
+      ),
+      avecProteines,
+    );
+    const trop = pesees.filter((l) => {
+      const max = PORTION_MAXIMALE[l.foodId];
+      return max !== undefined && l.qty! * (prot(l) ? t2.a : t2.b) > max;
+    });
+    if (trop.length === 0) break;
+    for (const l of trop) fixees.set(l, PORTION_MAXIMALE[l.foodId]!);
+    pesees = pesees.filter((l) => !trop.includes(l));
+  }
 
   return {
     ...repas,
@@ -246,6 +259,12 @@ export function ajusterRepas(
       return { foodId: l.foodId, qty };
     }),
   };
+}
+
+/** §2 — une quantité ramenée à la portion maximale de son aliment. */
+function plafonner(foodId: string, qty: number): number {
+  const max = PORTION_MAXIMALE[foodId];
+  return max === undefined ? qty : Math.min(qty, max);
 }
 
 /** §3 — le repas ajusté tient-il sa part, à la tolérance près ? */
@@ -427,4 +446,57 @@ export function mangeDesRepas(
     }
   }
   return t;
+}
+
+/** §6 — ce que dit l'encadré des protéines. */
+export type AlerteProteines = {
+  moyenneG: number;
+  cibleG: number;
+  nombre: NombreRepas;
+  /** Le nombre de repas qui en placerait le plus, s'il gagne assez. */
+  mieux: { nombre: NombreRepas; moyenneG: number } | null;
+};
+
+/** §6 — la moyenne quotidienne des protéines d'une semaine, arrondie. */
+function moyenneProteines(semaine: Pick<SemaineRepas, 'jours'>, catalogue: Catalogue): number {
+  const jours = semaine.jours;
+  if (jours.length === 0) return 0;
+  const total = jours.reduce((a, j) => a + macrosDeJournee(j, catalogue).proteinG, 0);
+  return Math.round(total / jours.length);
+}
+
+/**
+ * §6 — l'encadré, ou `null` : la semaine affichée tient ses protéines à 90 %
+ * près, ou la cible n'en a pas. Le nombre proposé est recalculé sur une
+ * semaine neuve (mêmes aliments, mêmes exclusions) : rien n'est enregistré.
+ */
+export function alerteProteines(
+  semaine: SemaineRepas,
+  preferes: readonly string[],
+  catalogue: Catalogue,
+  exclus: ReadonlySet<string> = new Set(),
+): AlerteProteines | null {
+  const cibleG = semaine.cible.proteinG;
+  if (cibleG === null || cibleG <= 0) return null;
+  const moyenneG = moyenneProteines(semaine, catalogue);
+  if (moyenneG >= cibleG * ALERTE_PROTEINES.seuil) return null;
+  const nombre = nombreDeRepas(semaine);
+  let mieux: AlerteProteines['mieux'] = null;
+  for (const n of nombresPossibles(semaine.cible.kcal).filter((x) => x > nombre)) {
+    const m = moyenneProteines(
+      composerSemaine(semaine.cible, preferes, catalogue, semaine.creeLe, exclus, n),
+      catalogue,
+    );
+    if (m - moyenneG >= ALERTE_PROTEINES.gainMinimalG && (mieux === null || m > mieux.moyenneG))
+      mieux = { nombre: n, moyenneG: m };
+  }
+  return { moyenneG, cibleG, nombre, mieux };
+}
+
+/** §6 — le texte de l'encadré, mot pour mot. */
+export function phraseAlerteProteines(a: AlerteProteines): string {
+  const debut = `Tes protéines ne sont pas atteintes : ${String(a.moyenneG)} g par jour en moyenne pour ${String(a.cibleG)} g visés.`;
+  return a.mieux === null
+    ? `${debut} Avec des portions réalistes et ce que tu ne manges pas, la bibliothèque ne peut pas monter plus haut, même avec plus de repas. « Changer ce repas » reste possible.`
+    : `${debut} Avec ${String(a.nombre)} repas par jour, il faudrait des portions trop grosses pour être mangées : MAJK les limite à des quantités réalistes. Avec ${String(a.mieux.nombre)} repas, ta semaine monterait à environ ${String(a.mieux.moyenneG)} g. C’est toi qui décides.`;
 }

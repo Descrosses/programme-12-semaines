@@ -86,3 +86,28 @@ export const GRILLE_BIBLIOTHEQUE = { seule: 7, paire: 5 } as const;
  * tout dernier si aucun autre repas ne passe.
  */
 export const UN_REPAS_PAR_JOUR: readonly string[] = ['tofu'];
+
+/**
+ * §2 — la portion maximale d'un aliment dans un repas ajusté (g, ml ou
+ * pièces, selon l'unité du catalogue). Un aliment absent n'a pas de maximum.
+ */
+export const PORTION_MAXIMALE: Readonly<Record<string, number>> = {
+  skyr: 300,
+  fromageBlanc: 300,
+  yaourtGrec: 300,
+  yaourtSoja: 300,
+  lait: 300,
+  boissonSoja: 300,
+  tofu: 250,
+  lentilles: 300,
+  haricotsRouges: 300,
+  poisChiches: 300,
+  oeuf: 5,
+};
+
+/**
+ * §6 — l'encadré des protéines : sous ce rapport (moyenne de la semaine ÷
+ * protéines visées), et un nombre de repas proposé s'il en place au moins
+ * ce gain par jour.
+ */
+export const ALERTE_PROTEINES = { seuil: 0.9, gainMinimalG: 5 } as const;
