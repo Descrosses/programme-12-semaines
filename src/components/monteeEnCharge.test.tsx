@@ -91,12 +91,21 @@ describe('les kilos', () => {
 
 describe('qui reçoit la montée en charge', () => {
   it('POWER : un seul mouvement par séance, le premier lift lourd, même après un explosif', () => {
-    const LOURDS = ['back-squat', 'pin-squat', 'bench-press', 'push-press', 'deadlift'];
+    const LOURDS = [
+      'back-squat',
+      'pin-squat',
+      'bench-press',
+      'push-press',
+      'deadlift',
+      'incline-db-press',
+    ];
     for (let w = 1; w <= 11; w++) {
       for (const j of JOURS) {
         const s = moduleParId('power12')!.getSession(w, j, CTX);
         if (s === null) continue;
-        const premier = s.exercises.find((e) => e.def.role === 'main');
+        const premier =
+          s.exercises.find((e) => e.def.role === 'main') ??
+          s.exercises.find((e) => e.def.id === 'incline-db-press');
         expect(marques('power12', w, j), `S${w} j${j}`).toEqual(premier ? [premier.id] : []);
         if (premier) expect(LOURDS, `S${w} j${j}`).toContain(premier.id);
       }
@@ -112,8 +121,11 @@ describe('qui reçoit la montée en charge', () => {
     expect(marques('power12', 6, 0)).toEqual(['pin-squat']);
     // Le squat du lundi n'ouvre pas la séance : les Pogo Jumps passent avant.
     expect(moduleParId('power12')!.getSession(1, 0, CTX)!.exercises[0]!.id).not.toBe('back-squat');
-    // Le dimanche n'a pas de mouvement lourd à la barre.
-    expect(marques('power12', 1, 6)).toEqual([]);
+    // Le dimanche n'a pas de lift principal : l'Incline Dumbbell Press, qui
+    // ouvre la séance, la reçoit (Guillaume, 27 novembre), sur les onze semaines.
+    for (let w = 1; w <= 11; w++) {
+      expect(marques('power12', w, 6), `S${w} dimanche`).toEqual(['incline-db-press']);
+    }
   });
 
   it('POWER : jamais les semaines de test (S0, S12), jamais le Speed Squat', () => {

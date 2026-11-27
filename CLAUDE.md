@@ -1024,7 +1024,11 @@ matériel et la durée avant d'écrire la moindre séance.
   arrondis au pas par `engine/monteeEnCharge.ts` (sans charge connue : des
   %, jamais un kilo). POWER : le premier lift `main` de la séance (squat,
   Pin Squat en S5-7, bench, push press, deadlift — même APRÈS un explosif),
-  combiné S8 compris, jamais en S0 ni S12. MASS FORCE : le mouvement évalué
+  combiné S8 compris, jamais en S0 ni S12. **Dimanche** (Guillaume, 27
+  novembre) : pas de lift principal, c'est l'Incline Dumbbell Press qui la
+  reçoit (kilos par haltère), lui seul ; +5 min (S1 : 64 → 69, fourchette
+  30-70 inchangée). Front Squat, tractions lestées, Speed Squat, RDL, Hip
+  Thrust : jamais (le 2e lourd d'une séance n'en a pas). MASS FORCE : le mouvement évalué
   qui ouvre chaque séance. Jamais MASS CONGESTION, FEMMES ni importés. Bloc
   `MonteeEnCharge` en tête de carte, retiré à la 1re série de travail ;
   « Fait → 1 min » lance le chrono ; RIEN n'est enregistré. Compté dans les
