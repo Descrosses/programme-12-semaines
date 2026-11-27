@@ -156,7 +156,7 @@ export const MASS_FORCE: ModuleProgramme = {
     { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
     { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
     { route: 'combine', label: 'Combiné', icon: 'stopwatch', vue: 'evaluation' },
-    { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'a-venir' },
+    { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'progress-force' },
     { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition-calcul' },
     { route: 'settings', label: 'Réglages', icon: 'settings', vue: 'settings' },
   ],

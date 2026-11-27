@@ -1166,7 +1166,7 @@ matériel et la durée avant d'écrire la moindre séance.
      les séances restent fermés tant que les choix ne sont pas confirmés ET
      que chaque test a une référence AU MATÉRIEL CHOISI (une référence barre
      n'ouvre pas un cycle Smith). Onglet Combiné = `EvaluationScreen` ;
-     Progrès = vue `a-venir`, sans contenu ; Nutrition = `nutrition-calcul`
+     Progrès = vue `progress-force` depuis le 27 novembre (voir plus bas) ; Nutrition = `nutrition-calcul`
      depuis le 27 novembre (`regles-nutrition-mass.md`). Superset biceps :
      3e rythme `transition` (repos court puis long), le chrono dit
      « Transition → … ». Combiné : bench barre/Smith, plus d'haltères.
@@ -1335,6 +1335,19 @@ matériel et la durée avant d'écrire la moindre séance.
   droites et superset : encadré simple. Variantes non retenues : A (frise
   fixe), B (onglets, phrases coupées aux virgules).
   POWER et MASS FORCE inchangés. `components/consignesEnAvant.test.tsx`.
+- **MASS FORCE : l'onglet Progrès** (audit POWER/MASS du 27 novembre, « go
+  code progrès FORCE », maquette validée). Vue `progress-force`
+  (`screens/massforce/ProgresForce.tsx`), moteur pur
+  `programmes/massforce/progres.ts` : une carte par mouvement du combiné
+  (développé couché, tirage vertical, squat, push press), au matériel choisi.
+  Référence la plus récente (1RM mesuré + date, ou « test sous-maximal :
+  60 kg × 8 »), cible de la prochaine séance = `chargePour` sur la semaine qui
+  suit la dernière séance FAITE (le test la compare au kilo à celle de la
+  séance), graphique (bande = fourchette, un point par séance en % de l'ancre,
+  vert réussie / rouge échec, jugé par `classer`), liste des séances. Rien
+  d'inventé : sans 1RM mesuré, pas de % (« un test direct au combiné
+  l'ouvrira ») ; push press et squat barre sans fourchette = charges réelles
+  seulement. `programmes/massforce/progres.test.tsx`.
 - **FEMMES 8, phase 2 : la confirmée rejoint l'intermédiaire, et c'est voulu.**
   La grille donne 4 tours fixes à la confirmée tandis que l'intermédiaire y
   monte de 3 à 4 : en semaine 5 les deux séances sont identiques. Le

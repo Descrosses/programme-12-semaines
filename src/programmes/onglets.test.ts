@@ -40,6 +40,7 @@ const VUES_RENDUES: readonly VueProgramme[] = [
   'nutrition-calcul',
   'progress',
   'progress-volume',
+  'progress-force',
   'combine',
   'evaluation',
   'mesures',
@@ -240,12 +241,13 @@ describe('calendrier des programmes', () => {
     }
   });
 
-  it('donne à MASS FORCE son combiné, sa nutrition calculée, et un Progrès « à venir »', () => {
+  it('donne à MASS FORCE son combiné, sa nutrition calculée, et son Progrès (27 novembre)', () => {
     expect(moduleParId('mass-force')?.onglets).toEqual([
       { route: 'today', label: 'Aujourd’hui', icon: 'play', vue: 'today' },
       { route: 'week', label: 'Semaine', icon: 'calendar', vue: 'week' },
       { route: 'combine', label: 'Combiné', icon: 'stopwatch', vue: 'evaluation' },
-      { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'a-venir' },
+      // Ses 4 mouvements du combiné (« go code progrès FORCE ») : plus « à venir ».
+      { route: 'progress', label: 'Progrès', icon: 'chart', vue: 'progress-force' },
       // Le calcul de l'appli lu avec le regard MASS (27 novembre) — une vue à
       // part : jamais `nutrition`, qui peut ouvrir le plan historique de POWER.
       { route: 'nutrition', label: 'Nutrition', icon: 'meal', vue: 'nutrition-calcul' },
