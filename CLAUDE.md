@@ -225,14 +225,38 @@ réinterprète pas.**
   repliés avec) et `nutrition-calcul` (FORCE : le calcul seul) — jamais
   `nutrition`. Le raccourci d'Aujourd'hui lit la cible posée, jamais les
   menus (`nutritionMass`, `registre.ts`). Pas fait : le calcul du coach
-  (`#/admin`) reste aux règles communes. **Lots 2 à 5 PAS codés, chacun
-  attend son « go »** : collations à boire (2 avec whey, 2 sans, tous
-  programmes), « Remplacer » à apport égal (tous programmes), repères
-  d'horaires, carte « Créatine » sous POWER et MASS (texte du §11 VALIDÉ :
-  3 à 5 g/j de monohydrate, AUCUNE marque, norme NF EN 17444, phrase de
-  prudence toujours affichée). L'ebook de départ n'est ni reproduit ni
-  versé au dépôt (ses conditions l'interdisent) : seules des idées
-  générales, avec nos valeurs.
+  (`#/admin`) reste aux règles communes.
+  **Lots 2 à 5 — FAITS** (« go MASS lot 2-3-4-5 », 27 novembre ;
+  `components/massLots2a5.test.tsx` relit tableaux et textes du `.md`) :
+  - **Lot 2, collations à boire** : quatre repas « À boire : … » dans la
+    bibliothèque (31 repas), deux avec whey, deux sans, AUX COLLATIONS
+    seulement, pour TOUS les programmes. La whey est du LAIT : écartée avec
+    « Produits laitiers » (§4 des règles des repas ; le test de sécurité le
+    vérifie) et rangée à l'épicerie dans les courses. **Photos à venir** :
+    `photoAVenir` + `VignetteRepas` (vignette neutre, jamais d'image
+    cassée) ; le test refuse un repas marqué ainsi qui a sa photo, et
+    l'inverse — déposer `public/repas/<id>.webp` ET retirer le marqueur.
+    Mesuré : elles entrent peu d'elles-mêmes dans une semaine (0 à 3 repas
+    sur 28 à 42) ; elles servent surtout par « Changer ce repas ».
+  - **Lot 3, « Remplacer » à apport égal** (`engine/equivalence.ts`,
+    `MACRO_CONSERVEE`) : même groupe → la quantité qui garde les protéines,
+    les glucides ou les lipides (fruits et légumes : inchangée) ; arrondie,
+    pièce entière ; une note sous la ligne dit d'où elle vient, oubliée dès
+    qu'on règle à la main. Les DEUX modes (semaine et « Mon plan » : c'est
+    la quantité de la personne, convertie — pas une quantité inventée).
+    Rien à convertir : groupes différents, quantité non posée, aliment déjà
+    dans le repas, macro absente.
+  - **Lot 4, repères d'horaires** : deux phrases (`REPERES_HORAIRES_MASS`)
+    en bas de la Nutrition MASS (`apres`), quel que soit l'objectif.
+  - **Lot 5, carte « Créatine »** (`data/creatine.ts`, texte VALIDÉ, comparé
+    au `.md` mot pour mot ; `CarteCreatine`) : POWER et MASS seulement
+    (prop `creatine`), JAMAIS LADIES ni le plan historique (qui garde sa
+    note « 5 g »). Repliée = titre seul : la dose ne s'affiche jamais sans
+    la phrase de prudence. AUCUNE marque, aucun lien, aucun code promo (le
+    test le refuse). « Compléments : aucun avis ici » retiré des principes
+    de CONGESTION.
+  L'ebook de départ n'est ni reproduit ni versé au dépôt (ses conditions
+  l'interdisent) : seules des idées générales, avec nos valeurs.
   **Le même aliment plusieurs fois dans la journée est ACCEPTÉ** (Guillaume,
   27 novembre : trois repas aux œufs, skyr matin et après-midi, « ce n'est
   pas si dérangeant […] l'utilisateur choisira ») — écrit au §3 de

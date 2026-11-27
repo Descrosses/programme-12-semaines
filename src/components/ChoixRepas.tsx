@@ -22,17 +22,16 @@ import { FicheRepas } from './FicheRepas';
 import { fr } from '../engine/format';
 import {
   alimentsNonDeclares,
-  photoDe,
   repasPourCreneau,
   type RepasBibliotheque,
 } from '../data/bibliothequeRepas';
 import type { RepasId } from '../data/planPerso';
 import { repasExclu } from '../engine/exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from '../engine/planPersoTotaux';
+import { VignetteRepas } from './VignetteRepas';
 import styles from './ChoixRepas.module.css';
 
 /** La base du site : les photos vivent dans `public/repas`. */
-const BASE = import.meta.env.BASE_URL;
 
 function kcalDe(repas: RepasBibliotheque, catalogue: Catalogue): number {
   return Math.round(repas.lignes.reduce((a, l) => a + macrosDeLigne(l, catalogue).kcal, 0));
@@ -120,15 +119,7 @@ export function ChoixRepas({
                 onClick={() => setDetail(r)}
                 aria-label={`Voir la composition : ${r.nom}`}
               >
-                <img
-                  className={styles.photo}
-                  src={`${BASE}${photoDe(r.id)}`}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  width={600}
-                  height={600}
-                />
+                <VignetteRepas repas={r} className={styles.photo} />
                 <span className={styles.texte}>
                   <span className={styles.nom}>{r.nom}</span>
                   <span className={styles.bas}>

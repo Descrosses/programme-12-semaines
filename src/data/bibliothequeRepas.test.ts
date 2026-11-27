@@ -18,8 +18,9 @@ import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 describe('la bibliothèque', () => {
-  it('compte vingt-sept repas, un par photographie', () => {
-    expect(BIBLIOTHEQUE_REPAS).toHaveLength(27);
+  it('compte trente et un repas : vingt-sept photographiés, quatre collations à boire', () => {
+    expect(BIBLIOTHEQUE_REPAS).toHaveLength(31);
+    expect(BIBLIOTHEQUE_REPAS.filter((r) => !r.photoAVenir)).toHaveLength(27);
   });
 
   it('aucun identifiant en double', () => {
@@ -40,11 +41,22 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('chaque repas a sa photo sur le disque', () => {
+  it('chaque repas a sa photo sur le disque — ou la déclare « à venir », jamais les deux', () => {
     const fichiers = new Set(readdirSync(new URL('../../public/repas', import.meta.url)));
     for (const r of BIBLIOTHEQUE_REPAS) {
-      expect(fichiers.has(`${r.id}.webp`), `photo manquante : ${r.id}`).toBe(true);
+      // `photoAVenir` : l'écran montre une vignette neutre. Le jour où la
+      // photo est déposée, ce test tombe tant que le marqueur n'est pas retiré.
+      expect(fichiers.has(`${r.id}.webp`), `photo de ${r.id}`).toBe(r.photoAVenir !== true);
     }
+  });
+
+  it('seules les quatre collations à boire attendent leur photo', () => {
+    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([
+      'shaker-avoine-whey-banane',
+      'shaker-avoine-whey-cacahuete-lait',
+      'smoothie-skyr-lait-avoine-fruits-rouges',
+      'smoothie-lait-banane-avoine-amandes',
+    ]);
   });
 
   it('aucune photo orpheline', () => {

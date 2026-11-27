@@ -51,6 +51,12 @@ export interface RepasBibliotheque {
   creneaux: readonly RepasId[];
   /** L'assiette de référence. Un point de départ, jamais une prescription. */
   lignes: readonly LignePerso[];
+  /**
+   * La photo n'existe pas encore : l'écran montre une vignette neutre
+   * (`VignetteRepas`). À retirer le jour où le fichier est déposé — le test
+   * refuse un repas marqué ainsi qui aurait sa photo, et l'inverse.
+   */
+  photoAVenir?: true;
 }
 
 const l = (foodId: string, qty: number): LignePerso => ({ foodId, qty });
@@ -59,6 +65,8 @@ const l = (foodId: string, qty: number): LignePerso => ({ foodId, qty });
 const MATIN: readonly RepasId[] = ['pdej', 'collation1', 'collation2'];
 const EN_CAS: readonly RepasId[] = ['collation1', 'collation2', 'pdej'];
 const PLAT: readonly RepasId[] = ['dejeuner', 'diner'];
+/** Les collations seulement : ni petit-déjeuner, ni plat. */
+const COLLATION: readonly RepasId[] = ['collation1', 'collation2'];
 
 export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
   // ------------------------------------------------- matin et collations --
@@ -274,6 +282,45 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('concombre', 60),
       l('huile', 10),
     ],
+  },
+  // ------------------------------------------------- collations à boire --
+  /*
+   * COLLATIONS À BOIRE (`regles-nutrition-mass.md`, §6 ; Guillaume, 27
+   * novembre : « oui », deux avec whey et deux sans, pour tous les
+   * programmes). Elles servent aux grosses cibles, où manger toutes ses
+   * calories devient difficile : tout se mixe ou se secoue. Recettes et
+   * quantités sont celles de l'appli ; le moteur les ajuste comme n'importe
+   * quel repas. Les flocons d'avoine se mixent crus.
+   *
+   * Photos À VENIR (générées par Guillaume) : vignette neutre en attendant.
+   */
+  {
+    id: 'shaker-avoine-whey-banane',
+    nom: 'À boire : flocons d’avoine, whey, banane',
+    creneaux: COLLATION,
+    lignes: [l('avoine', 60), l('whey', 30), l('banane', 1)],
+    photoAVenir: true,
+  },
+  {
+    id: 'shaker-avoine-whey-cacahuete-lait',
+    nom: 'À boire : flocons d’avoine, whey, lait, beurre de cacahuète',
+    creneaux: COLLATION,
+    lignes: [l('avoine', 50), l('whey', 30), l('lait', 250), l('beurreCacahuete', 15)],
+    photoAVenir: true,
+  },
+  {
+    id: 'smoothie-skyr-lait-avoine-fruits-rouges',
+    nom: 'À boire : skyr, lait, flocons d’avoine, fruits rouges',
+    creneaux: COLLATION,
+    lignes: [l('skyr', 200), l('lait', 200), l('avoine', 50), l('fruitsRouges', 100)],
+    photoAVenir: true,
+  },
+  {
+    id: 'smoothie-lait-banane-avoine-amandes',
+    nom: 'À boire : lait, banane, flocons d’avoine, amandes',
+    creneaux: COLLATION,
+    lignes: [l('lait', 300), l('banane', 1), l('avoine', 50), l('amandes', 20)],
+    photoAVenir: true,
   },
 ];
 

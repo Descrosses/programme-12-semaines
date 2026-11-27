@@ -85,6 +85,7 @@ import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepas
 import { aujourdhuiLocal } from '../state/dernierExport';
 import type { ExclusionId } from '../data/exclusionsRepas';
 import { alimentsExclus } from '../engine/exclusionsRepas';
+import { CarteCreatine } from '../components/CarteCreatine';
 import { CONSEIL_REPAS_MASS } from '../data/reglesNutritionMass';
 import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
 import { ResteDuJour } from '../components/ResteDuJour';
@@ -141,6 +142,8 @@ export function NutritionScreen({
   sansPlanHistorique = false,
   avant,
   programmeId = null,
+  creatine = false,
+  apres,
 }: {
   /** Le palier RETENU pour aujourd'hui — un choix de Guillaume s'il en a fait un. */
   todayKind: DayKind;
@@ -174,6 +177,13 @@ export function NutritionScreen({
    * première fois (`regles-nutrition-mass.md`, §6). Absent : 4.
    */
   programmeId?: string | null;
+  /**
+   * La carte « Créatine » (`regles-nutrition-mass.md`, §11) : POWER et MASS
+   * seulement. Jamais dans le plan historique, qui garde sa propre note.
+   */
+  creatine?: boolean;
+  /** Ce qu'un programme pose en bas d'écran (MASS : ses repères d'horaires). */
+  apres?: ReactNode;
 }) {
   const [rows, setRows] = useState<Measurement[] | null>(null);
   const [legacyPlan, setLegacyPlan] = useState<boolean | null>(null);
@@ -748,6 +758,8 @@ export function NutritionScreen({
           />
         )}
         {semaine === null && pesee}
+        {apres}
+        {creatine && <CarteCreatine />}
       </div>
     );
   }

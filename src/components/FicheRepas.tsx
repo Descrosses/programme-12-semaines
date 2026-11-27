@@ -19,12 +19,11 @@ import { Icon } from './Icon';
 import { MacroBar } from './MacroBar';
 import { fr } from '../engine/format';
 import { stateLabel } from '../data/foodLibrary';
-import { alimentsNonDeclares, photoDe, type RepasBibliotheque } from '../data/bibliothequeRepas';
+import { alimentsNonDeclares, type RepasBibliotheque } from '../data/bibliothequeRepas';
 import { arrondirMacros, macrosDeLigne, type Catalogue } from '../engine/planPersoTotaux';
 import type { Macros } from '../engine/nutrition';
+import { VignetteRepas } from './VignetteRepas';
 import styles from './FicheRepas.module.css';
-
-const BASE = import.meta.env.BASE_URL;
 
 export function macrosDuPlat(repas: RepasBibliotheque, catalogue: Catalogue): Macros {
   return arrondirMacros(
@@ -90,13 +89,12 @@ export function FicheRepas({
         </button>
       </div>
       <div className={styles.defilement}>
-        <img
+        <VignetteRepas
+          repas={repas}
           className={styles.photo}
-          src={`${BASE}${photoDe(repas.id)}`}
           alt={repas.nom}
-          width={600}
-          height={600}
-          decoding="async"
+          differee={false}
+          grande
         />
         <div className={styles.corps}>
           <h2 className={styles.nom}>{repas.nom}</h2>

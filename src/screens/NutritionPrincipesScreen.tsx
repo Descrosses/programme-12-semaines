@@ -34,6 +34,7 @@ import { ScreenHeader } from '../components/ScreenHeader';
 import type { DayIndex, WeekIndex } from '../data/types';
 import type { VisuelNom } from '../data/visuels';
 import type { DayKind } from '../data/nutrition';
+import { REPERES_HORAIRES_MASS } from '../data/reglesNutritionMass';
 import { NutritionScreen } from './NutritionScreen';
 import styles from './Screens.module.css';
 
@@ -97,9 +98,10 @@ export function PrincipesMass({ ciblePosee }: { ciblePosee: boolean }) {
           </div>
         ))}
       {ouvert && (
+        // « Compléments : aucun avis ici » a été retiré le 27 novembre : la
+        // carte « Créatine » existe désormais, en bas de cet écran.
         <p className={styles.fieldHint}>
-          Compléments : aucun avis ici, ce n’est pas le rôle de ce programme. Ces principes sont
-          généraux et ne remplacent pas un conseil de santé individuel.
+          Ces principes sont généraux et ne remplacent pas un conseil de santé individuel.
         </p>
       )}
       {ciblePosee && (
@@ -113,6 +115,23 @@ export function PrincipesMass({ ciblePosee }: { ciblePosee: boolean }) {
           {ouvert ? 'Replier les principes' : `Voir les ${String(PRINCIPES.length)} principes`}
         </button>
       )}
+    </section>
+  );
+}
+
+/**
+ * Les deux repères d'horaires de MASS (`regles-nutrition-mass.md`, §8) : des
+ * conseils en bas d'écran, jamais une contrainte ni un rappel.
+ */
+export function ReperesHoraires() {
+  return (
+    <section className={styles.card} data-reperes-horaires>
+      <h2 className={styles.cardTitle}>Repères d’horaires</h2>
+      {REPERES_HORAIRES_MASS.map((r) => (
+        <p key={r} className={styles.cardSub}>
+          {r}
+        </p>
+      ))}
     </section>
   );
 }
@@ -149,6 +168,8 @@ export function NutritionPrincipesScreen({
       // Jamais le plan historique de Guillaume sous MASS.
       sansPlanHistorique
       programmeId={programmeId}
+      creatine
+      apres={<ReperesHoraires />}
       entete={
         <ScreenHeader
           eyebrow={todayKind === 'train' ? 'jour d’entraînement' : 'jour de repos'}
