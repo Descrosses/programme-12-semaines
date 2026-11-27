@@ -26,10 +26,14 @@ export const RENDEMENTS: Readonly<Record<string, { achat: string; facteur: numbe
   carottes: { achat: 'Carottes (crues)', facteur: 0.94 },
   courgettes: { achat: 'Courgettes (crues)', facteur: 0.73 },
   aubergine: { achat: 'Aubergine (crue)', facteur: 0.8 },
+  epinards: { achat: 'Épinards (crus)', facteur: 0.95 },
+  quinoa: { achat: 'Quinoa (cru)', facteur: 3.42 },
+  pataeDouce: { achat: 'Patates douces (crues, épluchées)', facteur: 1 },
+  poisChiches: { achat: 'Pois chiches (secs)', facteur: 2.5 },
 };
 
 /** §1 — les légumineuses, qui existent aussi en conserve (poids égoutté ≈ cuit). */
-export const EN_CONSERVE: readonly string[] = ['lentilles', 'haricotsRouges'];
+export const EN_CONSERVE: readonly string[] = ['lentilles', 'haricotsRouges', 'poisChiches'];
 
 /** §2 — arrondis vers le haut. */
 export const ARRONDI_COURSES = { seuil: 1000, petit: 10, grand: 50 } as const;
@@ -67,4 +71,6 @@ export const RAYON_D_ALIMENT: Readonly<Record<string, RayonId>> = {
   oeuf: 'cremerie',
   pain: 'boulangerie',
   whey: 'epicerie',
+  tofu: 'cremerie',
+  yaourtSoja: 'cremerie',
 };

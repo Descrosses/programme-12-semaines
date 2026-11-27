@@ -18,8 +18,8 @@ import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 describe('la bibliothèque', () => {
-  it('compte trente et un repas, un par photographie', () => {
-    expect(BIBLIOTHEQUE_REPAS).toHaveLength(31);
+  it('compte soixante-quatre repas : 31 photographiés + les 33 de la grille du 27 novembre', () => {
+    expect(BIBLIOTHEQUE_REPAS).toHaveLength(64);
   });
 
   it('aucun identifiant en double', () => {
@@ -49,7 +49,7 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('aucun repas n’attend plus sa photo (les collations à boire ont la leur depuis le 27 novembre)', () => {
+  it('aucun repas n’attend plus sa photo (les 33 de la grille ont la leur depuis le 27 novembre)', () => {
     expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([]);
   });
 
@@ -119,7 +119,10 @@ describe('les assiettes de référence', () => {
     for (const r of BIBLIOTHEQUE_REPAS) {
       const kcal = r.lignes.reduce((a, x) => a + macrosDeLigne(x, FOOD_LIBRARY).kcal, 0);
       // Une collation descend bas, un plat monte haut — mais ni 80 ni 1 500.
-      expect(Math.round(kcal), `${r.id}`).toBeGreaterThan(250);
+      // Une collation SEULEMENT (jamais un petit-déjeuner) peut descendre à
+      // 150 : elle sert aux petites cibles, où une part tient 180 kcal.
+      const collationSeule = r.creneaux.every((c) => c.startsWith('collation'));
+      expect(Math.round(kcal), `${r.id}`).toBeGreaterThan(collationSeule ? 150 : 250);
       expect(Math.round(kcal), `${r.id}`).toBeLessThan(1200);
     }
   });
@@ -167,7 +170,7 @@ describe('les brocolis des plats sont des fleurettes, pas une purée', () => {
       ).not.toContain('brocolis');
   });
 
-  it('les trois plats aux brocolis portent « Brocolis cuits »', () => {
+  it('les quatre plats aux brocolis portent « Brocolis cuits »', () => {
     const avec = BIBLIOTHEQUE_REPAS.filter((r) =>
       r.lignes.some((l) => l.foodId === 'brocolisCuits'),
     );
@@ -175,6 +178,7 @@ describe('les brocolis des plats sont des fleurettes, pas une purée', () => {
       'dinde-pates-brocolis',
       'lentilles-riz-legumes',
       'poulet-riz-brocolis',
+      'tofu-riz-brocolis',
     ]);
     expect(FOOD_LIBRARY['brocolisCuits']?.label).toBe('Brocolis cuits');
   });

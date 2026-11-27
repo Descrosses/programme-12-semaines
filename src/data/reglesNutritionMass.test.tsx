@@ -303,10 +303,10 @@ describe('le conseil des 5 repas (Guillaume : « 4 repas, conseillé 5 […] mai
     // 5 ou 6 repas : plus rien à conseiller.
     expect(conseilRepasMass('mass4', prise, 5, 3000)).toBe(false);
     expect(conseilRepasMass('mass4', prise, 6, 3000)).toBe(false);
-    // Une cible qui ne tient pas 5 repas (sous 1 500 kcal) : on ne conseille
-    // pas ce que l'appli refuserait de composer.
-    expect(conseilRepasMass('mass4', prise, 4, 1400)).toBe(false);
-    expect(conseilRepasMass('mass4', prise, 4, 1500)).toBe(true);
+    // Une cible qui ne tient pas 5 repas (sous 1 200 kcal depuis la grille du
+    // 27 novembre) : on ne conseille pas ce que l'appli refuserait de composer.
+    expect(conseilRepasMass('mass4', prise, 4, 1100)).toBe(false);
+    expect(conseilRepasMass('mass4', prise, 4, 1200)).toBe(true);
   });
 
   it('jamais hors MASS, ni hors prise de masse, ni sans profil', () => {

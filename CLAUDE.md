@@ -148,6 +148,36 @@ réinterprète pas.**
   végétalien, 98 g de protéines pour 180 visés ; sans gluten ni laitiers,
   aucun petit-déjeuner ni collation (−40 %). `components/exclusionsRepas.test.tsx`.
 
+  **Grille de la bibliothèque — FAITE** (Guillaume, 27 novembre, « go grille
+  bibliothèque, pas d'exclusion soja ») : 33 repas ajoutés (64 au total),
+  `photoAVenir` tant que leur photo manque (vignette neutre) — les 33 photos
+  livrées le 27 novembre, plus aucun repas en attente. Deux écartées parce qu'elles
+  montraient un aliment d'une exclusion absent du repas (flocons d'avoine
+  sur un repas sans gluten, fruits à coque sur fromage blanc-pomme) : une
+  photo ne doit jamais faire croire qu'un repas « sûr » contient un
+  allergène. Les photos livrées avec leur titre incrusté sont recadrées
+  SOUS le titre (l'appli écrit le nom). Règle au §5 de
+  `regles-repas-automatiques.md`, `GRILLE_BIBLIOTHEQUE` : au moins 7 repas par
+  type (petit-déjeuner, collation, plat) pour CHAQUE exclusion seule, au moins
+  5 pour CHAQUE paire (`data/grilleBibliotheque.test.ts`, 7 + 21 cas). Quatre
+  aliments sourcés NEVO-online 2025/9.0 (Ciqual en maintenance) : `tofu`,
+  `boissonSoja`, `yaourtSoja` (rangés `legumineuse`, crèmerie aux courses),
+  `galettesRiz`. **Pas d'exclusion soja** : « soja » écrit dans les
+  allergies reste « non reconnu ». Exclusions complétées (jambon blanc,
+  steak haché, noix, boulgour). Facteurs de courses ajoutés (épinards,
+  quinoa ; patate douce et pois chiches « à défaut », pois chiches aussi en
+  conserve). **Seuils 5 et 6 repas re-mesurés** : 1 200 kcal tous les deux
+  (au lieu de 1 500 / 1 900) — dès 1 200, 5 et 6 repas tiennent aussi bien
+  que 4. Plus aucune combinaison des 7 familles ne vide un créneau (la
+  phrase « aucun repas pour… » reste en filet). **Au plus un repas au tofu
+  par jour** (« go limite tofu », 27 novembre ; §3 de
+  `regles-repas-automatiques.md`, `UN_REPAS_PAR_JOUR`) : sans elle, « les
+  protéines avant la variété » servait jusqu'à 970 g de tofu un jour sans
+  exclusion, 1,2 kg/j en végétalien à 180 g. Relâchée en TOUT DERNIER (un
+  créneau ne reste jamais vide pour elle) ; semaine composée seulement,
+  jamais « Changer ce repas ». Coût mesuré : végétalien à 180 g visés →
+  144-150 g au lieu de 170-177. `engine/limiteTofu.test.ts`.
+
   **Refonte « Journal » + nombre de repas** (Guillaume, 26 novembre, « go
   refonte C avec la possibilité d'ajouter un repas » — maquette C parmi
   trois). Mode SEMAINE de repas seulement : « Mon plan » et le plan
@@ -262,7 +292,8 @@ réinterprète pas.**
   27 novembre : trois repas aux œufs, skyr matin et après-midi, « ce n'est
   pas si dérangeant […] l'utilisateur choisira ») — écrit au §3 de
   `regles-repas-automatiques.md`. Ne pas ajouter de règle « une seule fois
-  la même source de protéines ».
+  la même source de protéines ». SEULE exception : le tofu (un repas par
+  jour, voir « Grille de la bibliothèque »).
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 

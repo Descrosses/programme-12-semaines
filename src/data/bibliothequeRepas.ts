@@ -318,6 +318,248 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     creneaux: COLLATION,
     lignes: [l('lait', 300), l('banane', 1), l('avoine', 50), l('amandes', 20)],
   },
+  // ============================================ grille du 27 novembre ==
+  /*
+   * LA GRILLE DE LA BIBLIOTHÈQUE (`regles-repas-automatiques.md`, §5 ;
+   * Guillaume, 27 novembre : « go grille bibliothèque, pas d'exclusion
+   * soja »). Trente-trois repas pour que chaque personne trouve au moins 7
+   * repas par type, quelle que soit son exclusion : sans laitiers, sans
+   * gluten, végétarien, et pour les petites cibles (collations légères).
+   * Assiettes de référence de l'appli ; le moteur les ajuste.
+   *
+   * Photos À VENIR (générées par Guillaume) : vignette neutre en attendant.
+   */
+  // --------------------------------------------------- petits-déjeuners --
+  {
+    id: 'tofu-brouille-pain-tomates-avocat',
+    nom: 'Tofu brouillé, pain complet, tomates, avocat',
+    creneaux: ['pdej'],
+    lignes: [l('tofu', 150), l('pain', 60), l('tomates', 100), l('avocat', 50)],
+  },
+  {
+    id: 'tofu-brouille-pdt-epinards',
+    nom: 'Tofu brouillé, pommes de terre, épinards',
+    creneaux: ['pdej'],
+    lignes: [l('tofu', 150), l('pommesDeTerre', 200), l('epinards', 100), l('huile', 5)],
+  },
+  {
+    id: 'porridge-soja-banane-noix',
+    nom: 'Porridge au soja, banane, noix',
+    creneaux: MATIN,
+    lignes: [l('avoine', 60), l('boissonSoja', 250), l('banane', 1), l('noix', 15)],
+  },
+  {
+    id: 'yaourt-soja-avoine-fruits-rouges',
+    nom: 'Yaourt au soja, flocons d’avoine, fruits rouges',
+    creneaux: MATIN,
+    lignes: [l('yaourtSoja', 250), l('avoine', 40), l('fruitsRouges', 100), l('confiture', 15)],
+  },
+  {
+    id: 'yaourt-soja-banane-galettes-cacahuete',
+    nom: 'Yaourt au soja, banane, galettes de riz, beurre de cacahuète',
+    creneaux: MATIN,
+    lignes: [l('yaourtSoja', 200), l('banane', 1), l('galettesRiz', 30), l('beurreCacahuete', 15)],
+  },
+  {
+    id: 'quinoa-soja-banane-fruits-rouges',
+    nom: 'Bol de quinoa au soja, banane, fruits rouges',
+    creneaux: ['pdej'],
+    lignes: [l('quinoa', 200), l('boissonSoja', 200), l('banane', 1), l('fruitsRouges', 80)],
+  },
+  {
+    id: 'omelette-patate-douce-epinards',
+    nom: 'Omelette, patate douce, épinards',
+    creneaux: ['pdej'],
+    lignes: [l('oeuf', 3), l('pataeDouce', 200), l('epinards', 100), l('huile', 5)],
+  },
+  {
+    id: 'oeufs-galettes-avocat-orange',
+    nom: 'Œufs, galettes de riz, avocat, orange',
+    creneaux: MATIN,
+    lignes: [l('oeuf', 3), l('galettesRiz', 30), l('avocat', 60), l('orange', 1)],
+  },
+  {
+    id: 'skyr-banane-noix',
+    nom: 'Skyr, banane, noix',
+    creneaux: MATIN,
+    lignes: [l('skyr', 250), l('banane', 1), l('noix', 15), l('confiture', 10)],
+  },
+  {
+    id: 'fromage-blanc-fruits-rouges-kiwi-galettes',
+    nom: 'Fromage blanc, fruits rouges, kiwi, galettes de riz',
+    creneaux: MATIN,
+    lignes: [l('fromageBlanc', 250), l('fruitsRouges', 100), l('kiwi', 1), l('galettesRiz', 30)],
+  },
+  {
+    id: 'oeufs-jambon-pdt-tomates',
+    nom: 'Œufs, jambon blanc, pommes de terre, tomates',
+    creneaux: ['pdej'],
+    lignes: [l('oeuf', 2), l('jambonBlanc', 60), l('pommesDeTerre', 200), l('tomates', 80)],
+  },
+  {
+    id: 'pain-cacahuete-banane-soja',
+    nom: 'Pain complet, beurre de cacahuète, banane, boisson au soja',
+    creneaux: MATIN,
+    lignes: [l('pain', 60), l('beurreCacahuete', 20), l('banane', 1), l('boissonSoja', 200)],
+  },
+  {
+    id: 'yaourt-soja-banane-fruits-rouges-galettes',
+    nom: 'Yaourt au soja, banane, fruits rouges, galettes de riz',
+    creneaux: MATIN,
+    lignes: [l('yaourtSoja', 250), l('banane', 1), l('fruitsRouges', 100), l('galettesRiz', 30)],
+  },
+  {
+    id: 'tofu-avocat-tomates-galettes',
+    nom: 'Tofu, avocat, tomates, galettes de riz',
+    creneaux: ['pdej'],
+    lignes: [l('tofu', 120), l('avocat', 60), l('tomates', 100), l('galettesRiz', 40)],
+  },
+  // --------------------------------------------------------- collations --
+  {
+    id: 'yaourt-soja-fruits-rouges-noix',
+    nom: 'Yaourt au soja, fruits rouges, noix',
+    creneaux: COLLATION,
+    lignes: [l('yaourtSoja', 200), l('fruitsRouges', 100), l('noix', 10)],
+  },
+  {
+    id: 'yaourt-soja-kiwi-galettes',
+    nom: 'Yaourt au soja, kiwi, galettes de riz',
+    creneaux: COLLATION,
+    lignes: [l('yaourtSoja', 200), l('kiwi', 1), l('galettesRiz', 20)],
+  },
+  {
+    id: 'galettes-cacahuete-pomme',
+    nom: 'Galettes de riz, beurre de cacahuète, pomme',
+    creneaux: COLLATION,
+    lignes: [l('galettesRiz', 30), l('beurreCacahuete', 15), l('pomme', 1)],
+  },
+  {
+    id: 'pois-chiches-tomates-concombre',
+    nom: 'Pois chiches, tomates, concombre, huile d’olive',
+    creneaux: COLLATION,
+    lignes: [l('poisChiches', 120), l('concombre', 100), l('tomates', 100), l('huile', 5)],
+  },
+  {
+    id: 'tofu-tomates-galettes',
+    nom: 'Tofu, tomates, galettes de riz',
+    creneaux: COLLATION,
+    lignes: [l('tofu', 100), l('tomates', 100), l('galettesRiz', 20)],
+  },
+  {
+    id: 'skyr-fruits-rouges',
+    nom: 'Skyr, fruits rouges',
+    creneaux: COLLATION,
+    lignes: [l('skyr', 200), l('fruitsRouges', 100)],
+  },
+  {
+    id: 'fromage-blanc-pomme',
+    nom: 'Fromage blanc, pomme',
+    creneaux: COLLATION,
+    lignes: [l('fromageBlanc', 200), l('pomme', 1)],
+  },
+  {
+    id: 'oeufs-durs-tomates-galettes',
+    nom: 'Œufs durs, tomates, galettes de riz',
+    creneaux: COLLATION,
+    lignes: [l('oeuf', 2), l('tomates', 100), l('galettesRiz', 20)],
+  },
+  {
+    id: 'jambon-galettes-concombre',
+    nom: 'Jambon blanc, galettes de riz, concombre',
+    creneaux: COLLATION,
+    lignes: [l('jambonBlanc', 80), l('galettesRiz', 30), l('concombre', 100)],
+  },
+  {
+    id: 'thon-galettes-tomates',
+    nom: 'Thon, galettes de riz, tomates',
+    creneaux: COLLATION,
+    lignes: [l('thon', 80), l('galettesRiz', 30), l('tomates', 100)],
+  },
+  {
+    id: 'boisson-soja-banane-avoine',
+    nom: 'À boire : boisson au soja, banane, flocons d’avoine',
+    creneaux: COLLATION,
+    lignes: [l('boissonSoja', 250), l('banane', 1), l('avoine', 20)],
+  },
+  // ----------------------------------------------------- plats (midi, soir) --
+  {
+    id: 'tofu-riz-brocolis',
+    nom: 'Tofu, riz, brocolis',
+    creneaux: PLAT,
+    lignes: [l('tofu', 200), l('riz', 250), l('brocolisCuits', 150), l('huile', 10)],
+  },
+  {
+    id: 'tofu-quinoa-poivrons-courgettes',
+    nom: 'Tofu, quinoa, poivrons, courgettes',
+    creneaux: PLAT,
+    lignes: [
+      l('tofu', 200),
+      l('quinoa', 250),
+      l('poivrons', 100),
+      l('courgettes', 100),
+      l('huile', 10),
+    ],
+  },
+  {
+    id: 'pois-chiches-semoule-courgettes-carottes',
+    nom: 'Pois chiches, semoule, courgettes, carottes',
+    creneaux: PLAT,
+    lignes: [
+      l('poisChiches', 200),
+      l('semoule', 250),
+      l('courgettes', 100),
+      l('carottes', 100),
+      l('huile', 10),
+    ],
+  },
+  {
+    id: 'lentilles-patate-douce-epinards',
+    nom: 'Lentilles, patate douce, épinards',
+    creneaux: PLAT,
+    lignes: [l('lentilles', 250), l('pataeDouce', 250), l('epinards', 100), l('huile', 10)],
+  },
+  {
+    id: 'pois-chiches-quinoa-crudites-avocat',
+    nom: 'Pois chiches, quinoa, tomates, concombre, avocat',
+    creneaux: PLAT,
+    lignes: [
+      l('poisChiches', 200),
+      l('quinoa', 200),
+      l('tomates', 100),
+      l('concombre', 100),
+      l('avocat', 60),
+    ],
+  },
+  {
+    id: 'haricots-rouges-patate-douce-poivrons',
+    nom: 'Haricots rouges, patate douce, poivrons, tomates',
+    creneaux: PLAT,
+    lignes: [
+      l('haricotsRouges', 250),
+      l('pataeDouce', 250),
+      l('poivrons', 100),
+      l('tomates', 100),
+      l('huile', 5),
+    ],
+  },
+  {
+    id: 'tofu-pates-tomates-champignons',
+    nom: 'Tofu, pâtes, tomates, champignons',
+    creneaux: PLAT,
+    lignes: [
+      l('tofu', 200),
+      l('pates', 250),
+      l('tomates', 150),
+      l('champignons', 100),
+      l('huile', 10),
+    ],
+  },
+  {
+    id: 'oeufs-riz-epinards',
+    nom: 'Œufs au plat, riz, épinards',
+    creneaux: PLAT,
+    lignes: [l('oeuf', 4), l('riz', 250), l('epinards', 150), l('huile', 5)],
+  },
 ];
 
 /** Le chemin de la photo d'un repas, relatif à la base du site. */

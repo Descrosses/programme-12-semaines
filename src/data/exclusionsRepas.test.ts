@@ -74,8 +74,11 @@ describe('§4 — le tableau du .md = le code', () => {
     }
     // Garde-fou du 27 novembre : la whey est bien servie par la bibliothèque.
     expect(utilises.has('whey')).toBe(true);
-    // Tout ce qui se fait avec de la farine de blé ou de l'avoine.
-    for (const id of famille('feculent').filter((x) => !['riz', 'pommesDeTerre'].includes(x))) {
+    // Tout ce qui se fait avec de la farine de blé ou de l'avoine. Les
+    // féculents SANS gluten sont nommés un par un : un nouveau féculent doit
+    // être classé, jamais oublié.
+    const sansGluten = ['riz', 'pommesDeTerre', 'pataeDouce', 'quinoa', 'galettesRiz'];
+    for (const id of famille('feculent').filter((x) => !sansGluten.includes(x))) {
       expect(ecartes('gluten'), id).toContain(id);
     }
   });

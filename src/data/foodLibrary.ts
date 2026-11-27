@@ -180,6 +180,22 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
     referenceState: 'cuit',
     category: 'feculent',
   },
+  /*
+   * Galettes de riz soufflé (grille de la bibliothèque, 27 novembre) : le
+   * pain des repas sans gluten. NEVO 3325 « Wafel rijst- naturel zonder
+   * zout », 2025/9.0 (RIVM) — voir le soja plus bas pour la source.
+   */
+  galettesRiz: {
+    label: 'Galettes de riz soufflé',
+    unit: 'g',
+    per: 100,
+    kcal: 390,
+    proteinG: 6.6,
+    carbsG: 81.8,
+    fatG: 3,
+    referenceState: 'na',
+    category: 'feculent',
+  },
   quinoa: {
     label: 'Quinoa cuit',
     unit: 'g',
@@ -240,6 +256,53 @@ const ALTERNATIVES: Record<string, FoodProduct> = {
     carbsG: 21,
     fatG: 2.5,
     referenceState: 'cuit',
+    category: 'legumineuse',
+  },
+  /*
+   * LE SOJA (grille de la bibliothèque, Guillaume, 27 novembre : « go grille
+   * bibliothèque »). Ce qui manquait pour nourrir un végétarien ou un
+   * végétalien, et pour remplacer les laitiers. Rangés avec les
+   * légumineuses : le soja en est une, et c'est leur groupe « Protéines ».
+   *
+   * VALEURS : table NEVO-online 2025/9.0 (RIVM, institut néerlandais de
+   * santé publique), pour 100 g — la table Ciqual de l'Anses était en
+   * maintenance le 27 novembre. Code NEVO entre parenthèses. Pas d'exclusion
+   * « soja » : décision de Guillaume (« pas d'exclusion soja »).
+   */
+  tofu: {
+    // NEVO 5519 « Tofu onbereid » (nature, non préparé).
+    label: 'Tofu nature',
+    unit: 'g',
+    per: 100,
+    kcal: 119,
+    proteinG: 12.4,
+    carbsG: 1.5,
+    fatG: 6.6,
+    referenceState: 'na',
+    category: 'legumineuse',
+  },
+  boissonSoja: {
+    // NEVO 870 « Drink soja- zonder suiker » (nature, sans sucre ajouté).
+    label: 'Boisson au soja nature',
+    unit: 'ml',
+    per: 100,
+    kcal: 35,
+    proteinG: 3.4,
+    carbsG: 1,
+    fatG: 1.8,
+    referenceState: 'na',
+    category: 'legumineuse',
+  },
+  yaourtSoja: {
+    // NEVO 5247 « alternative au yaourt à base de soja, sans sucre ».
+    label: 'Yaourt au soja nature',
+    unit: 'g',
+    per: 100,
+    kcal: 39,
+    proteinG: 4,
+    carbsG: 0,
+    fatG: 2.3,
+    referenceState: 'na',
     category: 'legumineuse',
   },
 

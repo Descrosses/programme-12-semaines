@@ -39,9 +39,10 @@ export const CRENEAUX_PAR_NOMBRE: Readonly<Record<NombreRepas, readonly Creneau[
 
 /**
  * §1 — la cible (kcal) sous laquelle un nombre de repas n'est pas proposé :
- * les collations de la bibliothèque dépasseraient leur part.
+ * les collations de la bibliothèque dépasseraient leur part (re-mesuré le
+ * 27 novembre avec la grille de la bibliothèque).
  */
-export const CIBLE_MINIMALE: Readonly<Record<NombreRepas, number>> = { 4: 0, 5: 1500, 6: 1900 };
+export const CIBLE_MINIMALE: Readonly<Record<NombreRepas, number>> = { 4: 0, 5: 1200, 6: 1200 };
 
 /** Les 4 repas par défaut (les semaines composées avant le choix du nombre). */
 export const CRENEAUX_AUTO = CRENEAUX_PAR_NOMBRE[NOMBRE_DE_REPAS_PAR_DEFAUT];
@@ -71,3 +72,17 @@ export const JOURS_SEMAINE = [
   'Samedi',
   'Dimanche',
 ] as const;
+
+/**
+ * §5 — la grille de la bibliothèque : le nombre de repas possibles, par type
+ * (petit-déjeuner, collation, plat), qu'une exclusion seule ou une paire
+ * d'exclusions doit laisser.
+ */
+export const GRILLE_BIBLIOTHEQUE = { seule: 7, paire: 5 } as const;
+
+/**
+ * §3 — les aliments qu'un seul repas par jour peut contenir, dans la semaine
+ * composée par l'appli (« Changer ce repas » n'est pas concerné). Relâché en
+ * tout dernier si aucun autre repas ne passe.
+ */
+export const UN_REPAS_PAR_JOUR: readonly string[] = ['tofu'];

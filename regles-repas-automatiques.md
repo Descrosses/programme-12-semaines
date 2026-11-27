@@ -57,22 +57,30 @@ collation de l'après-midi.
 | Nombre de repas | Cible minimale |
 |---|---|
 | 4 | aucune |
-| 5 | 1 500 kcal |
-| 6 | 1 900 kcal |
+| 5 | 1 200 kcal |
+| 6 | 1 200 kcal |
 
 Sous ce seuil, le choix n'est pas proposé, et l'écran dit pourquoi.
 
-**Pourquoi** (mesuré le 26 novembre, 24 cibles de 1 200 à 2 400 kcal, 7
-répartitions essayées) : une collation de la bibliothèque ne descend pas
-sous 150 à 200 kcal, même au plus bas de ses leviers. En dessous du seuil,
-les collations dépassent leur part et la journée avec : jusqu'à + 16 % à
-1 200 kcal en 5 repas, + 45 % en 6 repas. À partir du seuil, chaque jour
-tient entre − 5 % et + 5 % de ses calories. Des collations à 10 % de la
-journée ne tenaient qu'à partir de 2 600 kcal : elles sont à 12,5 % et 15 %.
+**Pourquoi** (re-mesuré le 27 novembre avec la grille de la bibliothèque,
+§5 : une cible tous les 10 kcal de 1 000 à 2 000, cinq niveaux de protéines
+de 5 à 10 % des calories, sans exclusion). Les collations légères de la
+grille (150 à 250 kcal) tiennent leur part des petites cibles. Dès 1 200 kcal
+— le plus petit plancher du §6 des règles des cibles —, 5 et 6 repas font
+aussi bien que 4 : pire jour à + 5,7 % en 5 repas et à + 6,1 % en 6 repas,
+contre + 6,3 % en 4 repas ; dès 1 500 kcal, + 5,3 % au pire. En dessous,
+seule une fiche de coach peut descendre, et les collations dépassent :
+jusqu'à + 7,5 % en 5 repas et + 24 % en 6 repas à 1 000-1 050 kcal.
 
-**Limite connue** : la bibliothèque compte 11 collations. À 5 et 6 repas,
-la même collation peut revenir tous les jours de la semaine ; « Changer ce
-repas » reste là.
+Mesure du 26 novembre, avant la grille (gardée pour mémoire) : seuils de
+1 500 et 1 900 kcal ; à 1 200 kcal, + 16 % en 5 repas, + 45 % en 6 repas. Des
+collations à 10 % de la journée ne tenaient qu'à partir de 2 600 kcal : elles
+sont à 12,5 % et 15 %.
+
+**Limite connue** : 34 repas de la bibliothèque se prennent en collation
+(grille comprise, petits-déjeuners proposés aussi en collation compris).
+À 5 et 6 repas, la même collation peut encore revenir plusieurs jours de la
+semaine ; « Changer ce repas » reste là.
 
 La cible utilisée est celle du **jour d'entraînement** (le calcul de l'appli
 donne la même les deux jours, §5 des règles des cibles).
@@ -124,7 +132,8 @@ Pour chaque jour, dans l'ordre des repas du §1 (ceux du nombre choisi), parmi l
 bibliothèque prévus pour ce créneau **qui tiennent leur part à ± 10 % une
 fois ajustés** (les autres restent dans la bibliothèque) :
 
-1. jamais deux fois le même repas le même jour ;
+1. jamais deux fois le même repas le même jour, et **au plus un repas au
+   tofu par jour** (voir plus bas) ;
 2. jamais le même repas que la veille au même créneau ;
 3. celui qui tient **le mieux ses protéines** une fois ajusté (écart compté
    par tranches de 10 % de sa part ; sans protéines dans la cible, règle
@@ -136,7 +145,7 @@ fois ajustés** (les autres restent dans la bibliothèque) :
 
 Si aucun repas ne passe, les règles se relâchent dans cet ordre plutôt que
 de laisser le créneau vide : d'abord la règle 2 (la veille), puis la
-tolérance de ± 10 %.
+tolérance de ± 10 %, et en tout dernier la limite du tofu.
 
 **Pourquoi les protéines avant la variété** (mesuré le 26 novembre, 7
 profils de 1 200 à 4 000 kcal) : variété d'abord, les 27 plats tournent
@@ -153,6 +162,17 @@ aux œufs, du skyr matin et après-midi, saumon et pâtes midi et soir : aucune
 règle ne l'interdit, et c'est voulu (Guillaume, 27 novembre : « ce n'est pas
 si dérangeant […] l'utilisateur choisira »). « Changer ce repas » est là
 pour ça. Ne pas ajouter de règle « une seule fois la même source ».
+
+**Une seule exception : au plus un repas au tofu par jour** (choix de
+l'appli, Guillaume, 27 novembre : « go limite tofu »). Les plats au tofu
+tiennent très bien leurs protéines, donc la règle 3 les choisissait sans
+cesse, à des quantités qu'on ne mange pas. Mesuré le 27 novembre, sans la
+limite : jusqu'à 970 g de tofu un jour pour quelqu'un qui mange de tout,
+1,2 kg par jour en végétalien à 180 g de protéines (2 150 kcal). Avec la
+limite : 395 g au plus ; aucune perte de protéines pour qui mange de tout,
+4 à 9 g de moins en végétarien, et en végétalien à 180 g visés, 144 à 150 g
+au lieu de 170 à 177 g. La limite ne vaut que pour la semaine composée par
+l'appli : « Changer ce repas » propose toujours tous les repas.
 
 ---
 
@@ -171,13 +191,13 @@ n'est pas reconnu lui est dit, mot pour mot.
 
 | Exclusion | Aliments écartés | Mots reconnus dans les allergies |
 |---|---|---|
-| Viande | poulet, dinde, bœuf | végétarien, végétalien, vegan |
+| Viande | poulet, dinde, bœuf, steak haché 5 %, jambon blanc | végétarien, végétalien, vegan |
 | Poisson | poisson blanc, saumon, thon | poisson, saumon, thon, cabillaud, végétarien, végétalien, vegan |
 | Œufs | œuf | œuf, oeuf, végétalien, vegan |
 | Produits laitiers | lait, skyr, fromage blanc, fromage frais, yaourt grec, whey | lactose, lait, laitier, laitiers, plv, végétalien, vegan |
 | Arachide | beurre de cacahuète | arachide, arachides, cacahuète, cacahuètes |
-| Fruits à coque | amandes | fruits à coque, fruit à coque, noix, amande, amandes, noisette, noisettes |
-| Gluten | pain complet, pâtes, semoule, flocons d'avoine, flocons croustillants | gluten, blé, coeliaque, cœliaque, maladie coeliaque |
+| Fruits à coque | amandes, noix | fruits à coque, fruit à coque, noix, amande, amandes, noisette, noisettes |
+| Gluten | pain complet, pâtes, semoule, flocons d'avoine, flocons croustillants, boulgour | gluten, blé, coeliaque, cœliaque, maladie coeliaque |
 
 - Un repas qui contient **un seul** aliment écarté n'entre plus dans la
   semaine, ni dans « Changer ce repas » (les deux modes : semaine et « Mon
@@ -198,7 +218,52 @@ n'est pas reconnu lui est dit, mot pour mot.
 
 ---
 
-## 5. Ce qui n'est pas encore fait
+## 5. La grille de la bibliothèque
 
-- Les régimes au-delà du tableau (sans porc : la bibliothèque n'a pas de
-  porc ; halal, casher : à décider par Guillaume).
+> **Choix de l'appli, 27 novembre 2026** (Guillaume : « go grille
+> bibliothèque, pas d'exclusion soja »). Une règle de sécurité autant que de
+> confort : un test la vérifie pour chaque exclusion et chaque paire.
+
+La bibliothèque doit permettre à chacun de composer sa semaine avec ce
+qu'elle propose, quelles que soient ses exclusions. Un repas « possible »
+est un repas qui ne contient aucun aliment écarté ; il est compté dans
+chaque type où il peut se prendre (un petit-déjeuner proposé aussi en
+collation compte dans les deux).
+
+| Exclusions cochées | Repas possibles par type, au moins |
+|---|---|
+| une seule (chacune des 7) | 7 |
+| deux (chacune des 21 paires) | 5 |
+
+Les trois types : petit-déjeuner, collation, plat (déjeuner et dîner).
+
+Retirer un repas ou ajouter un aliment écarté qui recrée un trou fait
+échouer le déploiement. Au-delà de deux exclusions, rien n'est garanti
+(végétalien sans gluten : 5 petits-déjeuners, 7 collations, 7 plats ; le
+même repas peut revenir plusieurs fois dans la semaine).
+
+Quatre aliments sont entrés au catalogue pour tenir cette grille. Source :
+**NEVO-online 2025/9.0** (RIVM, Pays-Bas), pour 100 g ou 100 ml — la table
+Ciqual de l'Anses était en maintenance le 27 novembre.
+
+| Aliment | kcal | Protéines | Glucides | Lipides | Code NEVO |
+|---|---|---|---|---|---|
+| Tofu nature | 119 | 12,4 | 1,5 | 6,6 | 5519 |
+| Boisson au soja nature | 35 | 3,4 | 1 | 1,8 | 870 |
+| Yaourt au soja nature | 39 | 4 | 0 | 2,3 | 5247 |
+| Galettes de riz soufflé | 390 | 6,6 | 81,8 | 3 | 3325 |
+
+**Pas d'exclusion « soja »** (décision de Guillaume). Une personne allergique
+au soja recevra des repas au tofu : le mot « soja » écrit dans ses allergies
+lui est rendu comme **non reconnu**, et la phrase de prudence reste affichée.
+
+Les 33 repas de la grille attendent leur photo : une vignette neutre les
+montre en attendant.
+
+---
+
+## 6. Ce qui n'est pas encore fait
+
+- Les régimes au-delà du tableau (sans porc : le jambon blanc est la seule
+  viande de porc de la bibliothèque, dans 2 repas, et il est écarté avec la
+  viande ; halal, casher : à décider par Guillaume).

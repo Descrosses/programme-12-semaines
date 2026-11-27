@@ -33,6 +33,7 @@ import {
   CRENEAUX_PAR_NOMBRE,
   LEVIERS,
   NOMBRE_DE_REPAS_PAR_DEFAUT,
+  UN_REPAS_PAR_JOUR,
   NOMBRES_DE_REPAS,
   TOLERANCE_PART,
   type Creneau,
@@ -280,6 +281,11 @@ function scoreDe(repas: RepasBibliotheque, preferes: ReadonlySet<string>): numbe
   return repas.lignes.filter((l) => preferes.has(l.foodId)).length / repas.lignes.length;
 }
 
+/** §3 — les aliments « un repas par jour » que ce repas contient. */
+function alimentsLimites(r: RepasBibliotheque): string[] {
+  return UN_REPAS_PAR_JOUR.filter((a) => r.lignes.some((l) => l.foodId === a));
+}
+
 /** §3 — les identifiants des repas choisis, jour par jour, créneau par créneau. */
 export function choisirRepasSemaine(
   preferes: readonly string[],
@@ -293,6 +299,7 @@ export function choisirRepasSemaine(
   const aime = new Set(preferes);
   const servis = new Map<string, number>();
   const ordre = new Map(BIBLIOTHEQUE_REPAS.map((r, i) => [r.id, i]));
+  const parId = new Map(BIBLIOTHEQUE_REPAS.map((r) => [r.id, r]));
   const jours: Partial<Record<RepasId, string>>[] = [];
 
   for (let j = 0; j < 7; j++) {
@@ -309,11 +316,17 @@ export function choisirRepasSemaine(
         tientSaPart(ajusterRepas(r, part, cible, catalogue), part, cible, catalogue),
       );
       const libres = (l: RepasBibliotheque[]) => l.filter((r) => !aujourdhui.has(r.id));
+      // §3 — au plus un repas au tofu par jour : relâché en tout dernier.
+      const dejaServis = new Set([...aujourdhui].flatMap((id) => alimentsLimites(parId.get(id)!)));
+      const sobres = (l: RepasBibliotheque[]) =>
+        l.filter((r) => alimentsLimites(r).every((a) => !dejaServis.has(a)));
       const pool =
         [
-          libres(tenus).filter((r) => r.id !== veille),
+          sobres(libres(tenus).filter((r) => r.id !== veille)),
+          sobres(libres(tenus)),
+          sobres(libres(tous).filter((r) => r.id !== veille)),
+          sobres(libres(tous)),
           libres(tenus),
-          libres(tous).filter((r) => r.id !== veille),
           libres(tous),
         ].find((l) => l.length > 0) ?? tous;
       const ecartP = new Map(pool.map((r) => [r.id, ecartProteines(r, part, cible, catalogue)]));

@@ -280,29 +280,33 @@ describe('§1 — 5 et 6 repas par jour', () => {
     });
 
     it(`${String(n)} repas : sous le seuil, la journée dépasse — c’est pour ça qu’il n’est pas proposé`, () => {
+      // Mesuré le 27 novembre (§1) : à 1 000 kcal, + 6 % en 5 repas, + 24 %
+      // en 6 repas. Seule une fiche de coach descend jusque-là.
+      const proteinG = n === 5 ? 50 : 85;
       const s = composerSemaine(
-        { kcal: 1200, proteinG: 100 },
+        { kcal: 1000, proteinG },
         [],
         FOOD_LIBRARY,
         '2026-11-26',
         new Set(),
         n,
       );
-      expect(Math.max(...s.jours.map((j) => kcalDe(j) / 1200 - 1))).toBeGreaterThan(0.1);
+      expect(CIBLE_MINIMALE[n]).toBeGreaterThan(1000);
+      expect(Math.max(...s.jours.map((j) => kcalDe(j) / 1000 - 1))).toBeGreaterThan(
+        n === 5 ? 0.05 : 0.2,
+      );
     });
   }
 
   it('le nombre proposé dépend de la cible ; un nombre refusé retombe sur le plus grand qui tient', () => {
-    expect(nombresPossibles(1400)).toEqual([4]);
-    expect(nombresPossibles(1499)).toEqual([4]);
-    expect(nombresPossibles(1500)).toEqual([4, 5]);
-    expect(nombresPossibles(1899)).toEqual([4, 5]);
-    expect(nombresPossibles(1900)).toEqual([4, 5, 6]);
+    expect(nombresPossibles(1100)).toEqual([4]);
+    expect(nombresPossibles(1199)).toEqual([4]);
+    expect(nombresPossibles(1200)).toEqual([4, 5, 6]);
     expect(nombreAdmis(6, 2150)).toBe(6);
-    expect(nombreAdmis(6, 1850)).toBe(5);
-    expect(nombreAdmis(6, 1400)).toBe(4);
-    expect(nombreAdmis(5, 1400)).toBe(4);
-    expect(nombreAdmis(4, 1200)).toBe(4);
+    expect(nombreAdmis(6, 1200)).toBe(6);
+    expect(nombreAdmis(6, 1100)).toBe(4);
+    expect(nombreAdmis(5, 1100)).toBe(4);
+    expect(nombreAdmis(4, 1000)).toBe(4);
   });
 
   it('la part d’un repas se lit au nombre de repas de la semaine', () => {

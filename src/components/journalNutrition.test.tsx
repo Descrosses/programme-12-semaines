@@ -205,14 +205,16 @@ describe('ajouter un repas (§1 : 4, 5 ou 6 repas par jour)', () => {
   });
 
   it('cible trop basse : pas de bouton, et l’écran dit à partir de quand', () => {
-    const h = section({ kcal: 1400, proteinG: 110 }, 4);
+    // Seule une fiche de coach descend sous 1 200 kcal.
+    const h = section({ kcal: 1100, proteinG: 90 }, 4);
     expect(h).toContain('data-ajouter-repas="refuse"');
     expect(h).not.toContain('data-ajouter-repas="propose"');
-    expect(texte(h)).toContain('Un repas de plus (5 par jour) : à partir de 1 500 kcal');
-    // 5 repas à 1 700 kcal : le 6e est refusé, avec son seuil à lui.
-    expect(texte(section({ kcal: 1700, proteinG: 130 }, 5))).toContain(
-      'Un repas de plus (6 par jour) : à partir de 1 900 kcal',
+    expect(texte(h)).toContain('Un repas de plus (5 par jour) : à partir de 1 200 kcal');
+    expect(texte(section({ kcal: 1100, proteinG: 90 }, 5))).toContain(
+      'Un repas de plus (6 par jour) : à partir de 1 200 kcal',
     );
+    // Dès 1 200 kcal, le plus petit plancher : le repas de plus est proposé.
+    expect(section({ kcal: 1200, proteinG: 100 }, 4)).toContain('data-ajouter-repas="propose"');
   });
 
   it('« Repas par jour » : un nombre refusé est désactivé ET expliqué', () => {
@@ -230,11 +232,11 @@ describe('ajouter un repas (§1 : 4, 5 ou 6 repas par jour)', () => {
       { n: 6, off: false, on: false },
     ]);
     expect(choix(2150)).not.toContain('data-nombre-refuse');
-    expect(boutons(choix(1700)).map((b) => b.off)).toEqual([false, false, true]);
-    expect(texte(choix(1700))).toContain('6 repas : à partir de 1 900 kcal');
-    expect(boutons(choix(1400)).map((b) => b.off)).toEqual([false, true, true]);
-    expect(texte(choix(1400))).toContain(
-      '5 repas : à partir de 1 500 kcal ; 6 repas : à partir de 1 900 kcal',
+    expect(boutons(choix(1200)).map((b) => b.off)).toEqual([false, false, false]);
+    expect(choix(1200)).not.toContain('data-nombre-refuse');
+    expect(boutons(choix(1100)).map((b) => b.off)).toEqual([false, true, true]);
+    expect(texte(choix(1100))).toContain(
+      '5 repas : à partir de 1 200 kcal ; 6 repas : à partir de 1 200 kcal',
     );
     // Ce que le nombre choisi compose, lu dans les règles.
     expect(texte(choix(2150, 6))).toContain(
