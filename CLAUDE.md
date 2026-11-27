@@ -177,6 +177,22 @@ réinterprète pas.**
   créneau ne reste jamais vide pour elle) ; semaine composée seulement,
   jamais « Changer ce repas ». Coût mesuré : végétalien à 180 g visés →
   144-150 g au lieu de 170-177. `engine/limiteTofu.test.ts`.
+  **Portions maximales par repas** (« go plafonds », 27 novembre ; §2 de
+  `regles-repas-automatiques.md`, `PORTION_MAXIMALE`) : skyr, fromage blanc,
+  yaourt grec, yaourt au soja 300 g ; lait, boisson au soja 300 ml ; tofu
+  250 g ; lentilles, haricots rouges, pois chiches 300 g ; 5 œufs. Un
+  aliment plafonné est FIXÉ et le reste du repas recalculé sans lui (les
+  calories tiennent, les protéines manquent). Féculents sans plafond. Une
+  quantité réglée à la main n'est jamais plafonnée. **Encadré des
+  protéines** (§6, `alerteProteines`, `ALERTE_PROTEINES`) : sous 90 % des
+  protéines visées en moyenne, au-dessus de « + Ajouter un repas » ; s'il y
+  a ≥ 5 g/jour à gagner avec 5 ou 6 repas, il le chiffre et finit par
+  « C’est toi qui décides. » (Guillaume : « lourdement insister […] mais
+  c'est lui qui décide ») ; sinon il dit que la bibliothèque ne peut pas
+  monter plus haut. Rien ne se recompose seul ; rien quand la cible a
+  changé. Mesuré à 2 150/180 : 4 → 6 repas = végétarien 138-150 → 160-164 g,
+  végétalien 116-124 → 134-138 g, qui mange de tout ≈ inchangé.
+  `engine/portionsEtProteines.test.ts`.
 
   **Refonte « Journal » + nombre de repas** (Guillaume, 26 novembre, « go
   refonte C avec la possibilité d'ajouter un repas » — maquette C parmi

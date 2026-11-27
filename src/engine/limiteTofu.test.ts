@@ -72,7 +72,7 @@ describe('§3 — au plus un repas au tofu par jour', () => {
     expect(jours.filter((j) => Object.values(j).some(auTofu)).length).toBe(7);
   });
 
-  it('végétalien à 180 g : au moins 140 g de protéines chaque jour (mesuré : 144 à 150)', () => {
+  it('végétalien à 180 g : au moins 110 g de protéines chaque jour (mesuré avec les portions maximales du §2 : 116 à 124)', () => {
     const s = composerSemaine(
       { kcal: 2150, proteinG: 180 },
       [],
@@ -81,7 +81,7 @@ describe('§3 — au plus un repas au tofu par jour', () => {
       alimentsExclus(['viande', 'poisson', 'oeufs', 'laitiers']),
     );
     for (const j of s.jours) {
-      expect(macrosDeJournee(j, FOOD_LIBRARY).proteinG).toBeGreaterThanOrEqual(140);
+      expect(macrosDeJournee(j, FOOD_LIBRARY).proteinG).toBeGreaterThanOrEqual(110);
       const tofu = Object.values(j)
         .flatMap((l) => l!)
         .filter((x) => x.foodId === 'tofu')

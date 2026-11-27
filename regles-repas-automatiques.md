@@ -114,6 +114,40 @@ bornes du levier b.
 **Les aliments à la pièce** (œuf, banane, pomme) ne se coupent pas : ils
 sont arrondis en premier, puis les aliments pesés visent ce qui reste.
 
+### Portions maximales par repas
+
+> **Choix de l'appli, 27 novembre 2026** (Guillaume : « go plafonds »).
+> Le levier × 2 servait jusqu'à 500 g de yaourt au soja, de lentilles ou
+> de haricots rouges, 500 ml de boisson au soja et 8 œufs dans un repas :
+> des quantités qu'on ne mange pas.
+
+| Aliment | Maximum par repas |
+|---|---|
+| Skyr nature | 300 g |
+| Fromage blanc 3 % | 300 g |
+| Yaourt grec | 300 g |
+| Yaourt au soja nature | 300 g |
+| Lait demi-écrémé | 300 ml |
+| Boisson au soja nature | 300 ml |
+| Tofu nature | 250 g |
+| Lentilles cuites | 300 g |
+| Haricots rouges cuits | 300 g |
+| Pois chiches cuits | 300 g |
+| Œuf entier | 5 |
+
+Un aliment qui dépasserait son maximum y est fixé, et **le reste du repas
+est recalculé sans lui** : les calories tiennent, ce sont les protéines qui
+manquent. Les féculents n'ont pas de maximum (un gros gabarit a besoin de
+450 à 500 g de riz cuit). La limite vaut pour la semaine composée et pour
+« Changer ce repas » (repas déjà ajustés) ; une quantité réglée à la main
+n'est jamais plafonnée.
+
+Coût mesuré (2 150 kcal, 180 g de protéines visés, 4 repas) : qui mange de
+tout, 171 à 182 g au lieu de 177 à 181 ; végétarien, 138 à 150 g au lieu de
+172 à 176 (le maximum de 5 œufs y compte pour l'essentiel : à 7 œufs, 160 à
+164 g) ; végétalien, 116 à 124 g au lieu de 144 à 150. Plus de repas en
+rattrape une partie (§6).
+
 ### Arrondis
 
 | Unité | Arrondi | Minimum |
@@ -262,7 +296,61 @@ montre en attendant.
 
 ---
 
-## 6. Ce qui n'est pas encore fait
+## 6. Quand la semaine manque ses protéines
+
+> **Choix de l'appli, 27 novembre 2026** (Guillaume : « il faut lourdement
+> insister sur le fait qu'avec seulement 4 repas, les quantités ne sont plus
+> réalistes pour atteindre sa cible, mais que c'est lui qui décide »).
+
+Pourquoi les protéines manquent (mesuré le 27 novembre) : les végétaux sont
+**peu concentrés en protéines** pour leurs calories, et les portions sont
+limitées (§2).
+
+| Aliment | Protéines pour 100 kcal |
+|---|---|
+| Poisson blanc | 22,0 g |
+| Poulet | 18,8 g |
+| Skyr nature | 15,6 g |
+| Tofu nature | 10,4 g |
+| Lentilles cuites | 7,8 g |
+| Pois chiches cuits | 5,7 g |
+
+Plus de repas permet de placer plus de portions. Mesuré à 2 150 kcal pour
+180 g de protéines visés :
+
+| Profil | 4 repas | 5 repas | 6 repas |
+|---|---|---|---|
+| Mange de tout | 171-182 g | 178-181 g | 178-180 g |
+| Végétarien | 138-150 g | 155-167 g | 160-164 g |
+| Végétalien | 116-124 g | 127-130 g | 134-138 g |
+
+Pour qui mange de tout, le nombre de repas ne change presque rien ; pour un
+végétarien, c'est le premier levier ; pour un végétalien, il aide sans
+combler l'écart.
+
+**La règle.** Sous la liste des repas, quand la moyenne de la semaine reste
+**sous 90 %** des protéines visées :
+
+- si une semaine à 5 ou 6 repas (permis par la cible, §1) en placerait **au
+  moins 5 g de plus par jour**, un encadré le dit, avec le meilleur nombre,
+  juste au-dessus de « + Ajouter un repas » :
+  « Tes protéines ne sont pas atteintes : {moyenne} g par jour en moyenne
+  pour {cible} g visés. Avec {n} repas par jour, il faudrait des portions
+  trop grosses pour être mangées : MAJK les limite à des quantités
+  réalistes. Avec {n2} repas, ta semaine monterait à environ {moyenne2} g.
+  C’est toi qui décides. »
+- sinon, un encadré le dit aussi, sans rien promettre :
+  « Tes protéines ne sont pas atteintes : {moyenne} g par jour en moyenne
+  pour {cible} g visés. Avec des portions réalistes et ce que tu ne manges
+  pas, la bibliothèque ne peut pas monter plus haut, même avec plus de
+  repas. « Changer ce repas » reste possible. »
+
+Rien ne se recompose seul. Pas d'encadré quand la cible a changé (le
+bandeau « Ta cible a changé » passe d'abord) ni sans protéines dans la cible.
+
+---
+
+## 7. Ce qui n'est pas encore fait
 
 - Les régimes au-delà du tableau (sans porc : le jambon blanc est la seule
   viande de porc de la bibliothèque, dans 2 repas, et il est écarté avec la

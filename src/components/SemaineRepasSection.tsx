@@ -28,7 +28,7 @@
  *   la cible ne tient pas n'est pas proposé, et l'écran dit pourquoi.
  */
 
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { CibleSaisie } from '../data/ciblesNutrition';
 import type { LibraryFood } from '../data/foodLibrary';
 import type { JourneePerso, RepasId } from '../data/planPerso';
@@ -51,12 +51,14 @@ import type { Catalogue } from '../engine/planPersoTotaux';
 import { ajouterJours } from '../engine/reajustement';
 import {
   ajusterRepas,
+  alerteProteines,
   cibleAChange,
   creneauxDe,
   nombreAdmis,
   nombreDeRepas,
   nombresPossibles,
   partDe,
+  phraseAlerteProteines,
   type CibleRepas,
   type SemaineRepas,
 } from '../engine/semaineRepas';
@@ -306,6 +308,12 @@ export function SemaineRepasSection({
   /** « + Ajouter un repas » : le nombre suivant, s'il tient sous cette cible. */
   const suivant = nombresPossibles(kcal).find((n) => n > nombre) ?? null;
   const lundi = ajouterJours(aujourdhui, -jourInitial);
+  /** §6 — l'encadré des protéines (rien quand la cible a changé). */
+  const alerte = useMemo(
+    () => (change ? null : alerteProteines(semaine, preferes, catalogue, exclus)),
+    // `exclus` est recréé à chaque rendu : on suit les exclusions elles-mêmes.
+    [change, semaine, preferes, catalogue, exclusions],
+  );
 
   /** Le nombre de repas choisi dans la confirmation ouverte. */
   const [choix, setChoix] = useState<NombreRepas>(nombre);
@@ -437,6 +445,15 @@ export function SemaineRepasSection({
         le dernier repas, là où on le cherche. Il passe par la recomposition :
         un repas de plus change la part de tous les autres.
       */}
+      {alerte !== null && confirme?.ou !== 'ajout' && (
+        <section
+          className={styles.bandeau}
+          data-alerte-proteines={alerte.mieux === null ? 'plafond' : 'repas'}
+          aria-label="Protéines"
+        >
+          <p className={styles.texte}>{phraseAlerteProteines(alerte)}</p>
+        </section>
+      )}
       {conseilRepas !== undefined && confirme?.ou !== 'ajout' && (
         <p className={styles.noteLarge} data-conseil-repas>
           {conseilRepas}
