@@ -1,9 +1,11 @@
 # Règles de la nutrition MASS
 
-> **Statut : BROUILLON du 27 novembre 2026 — rien n'est validé, rien n'est
-> codé.** Aucun test ne relit ce fichier tant que Guillaume ne l'a pas validé.
-> Les points marqués **À TRANCHER** attendent sa décision ; ma recommandation
-> est écrite à chaque fois.
+> **Statut : BROUILLON, cinq points TRANCHÉS par Guillaume le 27 novembre
+> 2026** (« 1 garder, 2 : 2 g, 3 oui, 4 tous les programmes, 5 : la créatine
+> est essentielle pour MASS et POWER ») — ils sont marqués « Décidé » dans le
+> texte. Le reste (« Choix proposé ») n'a pas été contesté mais sera relu au
+> « go » de son lot ; **le texte du §11 (créatine) attend sa validation**.
+> **Rien n'est codé** ; aucun test ne relit encore ce fichier (§13).
 >
 > Comme `regles-cibles-nutrition.md`, chaque section sépare **ce que disent
 > les études** des **choix de l'appli**.
@@ -47,10 +49,8 @@ propre à MASS.
 L'appli ne devine pas l'objectif à la place de la personne : le questionnaire
 (copie du site) pose déjà la question.
 
-**À TRANCHER n° 1.** MASS CONGESTION affiche aujourd'hui six principes sans
-chiffres. Ma recommandation : garder ces principes en tête d'écran et ajouter
-le calcul dessous. L'autre choix est de laisser CONGESTION sans chiffres et
-de n'ouvrir le calcul qu'à FORCE et HYPERTROPHIE.
+**Décidé (Guillaume, 27 novembre : « garder »).** MASS CONGESTION garde ses
+six principes en tête d'écran ; le calcul s'ajoute dessous.
 
 ---
 
@@ -85,14 +85,10 @@ gras en trop (Iraki 2019).
   dans un essai, avec une plus grande perte de gras dans le suivant (Antonio
   2014 et 2015, cités par Iraki 2019).
 
-**Choix proposé :** **2,0 g/kg/j** en prise de masse sous MASS, contre 1,8
-dans les règles communes. Même poids de référence au-delà d'un IMC de 30.
-
-**À TRANCHER n° 2.** 2,0 est un choix de l'appli à l'intérieur de la
-fourchette, pas une valeur d'étude. Rester à 1,8 serait tout aussi
-défendable ; monter à 2,2 aussi. Je recommande 2,0 : c'est le signe d'un
-regard MASS sans sortir de ce que les études soutiennent. Je déconseille
-d'aller au-delà de 2,2.
+**Choix de l'appli (Guillaume, 27 novembre : « 2 g »)** : **2,0 g/kg/j** en
+prise de masse sous MASS, contre 1,8 dans les règles communes. Même poids de
+référence au-delà d'un IMC de 30. C'est un choix à l'intérieur de la
+fourchette des études, pas une valeur d'étude.
 
 Coût, pour 80 kg : 16 g de protéines en plus par jour, 16 g de glucides en
 moins.
@@ -145,11 +141,10 @@ Limite connue : avec 2,0 g/kg répartis sur 5 repas (parts 20 / 15 / 25 / 15
 / 25 %), les deux collations portent 0,30 g/kg chacune, sous le repère de
 0,40. Les trois repas principaux sont entre 0,40 et 0,50.
 
-**À TRANCHER n° 3.** La whey (protéine en poudre) est déjà au catalogue mais
-n'entre dans aucun repas. Ma recommandation : deux collations à boire avec
-whey et deux sans (lait ou skyr à la place), proposées à **tous** les
-programmes — la bibliothèque est commune. La whey rejoint l'exclusion
-« Produits laitiers ».
+**Décidé (Guillaume, 27 novembre : « oui »).** Deux collations à boire avec
+whey (protéine en poudre, déjà au catalogue) et deux sans (lait ou skyr à
+la place), proposées à **tous** les programmes — la bibliothèque est
+commune. La whey rejoint l'exclusion « Produits laitiers ».
 
 ---
 
@@ -172,8 +167,8 @@ Exemple, avec les valeurs de notre catalogue : 150 g de poulet cuit
 La quantité est arrondie comme le reste (5 g ; une pièce reste entière) et
 reste modifiable. Aujourd'hui « Remplacer » garde la même quantité.
 
-**À TRANCHER n° 4.** Pour tous les programmes, ou MASS seulement ? Je
-recommande tous : le geste « Remplacer » est le même partout.
+**Décidé (Guillaume, 27 novembre) : pour tous les programmes.** Le geste
+« Remplacer » est le même partout.
 
 ---
 
@@ -212,15 +207,89 @@ coucher) ne sont pas repris : je n'ai pas de source à mettre en face.
 - **Le passage au palier supérieur** faute de résultat. Notre réajustement
   avance par 100 kcal, sur une mesure.
 - **Une journée unique répétée.** La semaine de repas en compose sept.
-- **Les compléments alimentaires.** L'appli n'en prescrit aucun.
-
-**À TRANCHER n° 5.** Une ligne d'information neutre sur la créatine (3 à
-5 g par jour, Iraki 2019) : oui ou non ? Je recommande **non** pour ce lot :
-c'est une décision à part, qui engage le ton de l'appli sur les compléments.
+- **Les compléments alimentaires de marque, et leur liste.** Seule la
+  créatine a sa place dans l'appli (§11), sans marque.
 
 ---
 
-## 11. Exemple calculé (homme, 30 ans, 180 cm, 80 kg)
+## 11. Créatine — MASS et POWER
+
+> **BROUILLON — le texte ci-dessous attend la validation de Guillaume.**
+> Sa décision (27 novembre) : « pour MASS et POWER, la créatine est
+> essentielle. C'est LE complément alimentaire. »
+
+**Ce que disent les études et les textes :**
+
+- la créatine monohydrate est le complément le plus efficace disponible
+  pour la capacité d'effort à haute intensité et la masse maigre pendant
+  l'entraînement (ISSN, Kreider 2017) ;
+- **3 à 5 g par jour** remplissent les réserves du muscle en 3 à 4 semaines ;
+  une phase de charge (environ 0,3 g/kg/j pendant 5 à 7 jours) va plus vite
+  mais n'est pas nécessaire (ISSN 2017) ; 3 à 5 g/j pour la musculation hors
+  saison (Iraki 2019) ;
+- seul effet indésirable rapporté de façon constante : une prise de poids ;
+  aucune preuve solide d'un effet néfaste sur les reins chez des personnes
+  en bonne santé — certains conseillent, par prudence, un avis médical en cas
+  de maladie rénale (ISSN 2017) ;
+- **en Europe**, l'allégation de santé autorisée (« la créatine améliore les
+  capacités physiques lors de séries successives d'exercices de courte durée
+  et de haute intensité ») vaut pour **3 g par jour** (registre de l'UE,
+  règlement 432/2012) : c'est la dose que portent la plupart des étiquettes ;
+- la norme **NF EN 17444** (2021, qui remplace la NF V94-001) encadre la
+  fabrication des compléments pour sportifs afin d'éviter les substances
+  dopantes.
+
+« Essentielle » est le mot de Guillaume. Les études disent « la plus
+efficace », pas « indispensable » : l'écran dit les deux.
+
+**Choix proposés :**
+
+- **Où** : une carte repliée « Créatine » sur l'écran Nutrition, sous POWER
+  et sous MASS. Rien sous LADIES ni ME, MYSELF & I tant que Guillaume ne le
+  demande pas.
+- **Aucune marque, aucun lien, aucun code promo.** L'appli donne des
+  critères de choix, pas un produit (voir « Pourquoi aucune marque »).
+- **Le texte**, mot pour mot :
+
+  > **Créatine**
+  >
+  > La créatine monohydrate est le complément le mieux étudié pour les
+  > efforts courts et intenses et pour la prise de muscle. Elle aide ; elle
+  > ne remplace ni l'entraînement ni l'assiette.
+  >
+  > **3 à 5 g par jour, tous les jours**, au moment qui t'arrange. Pas
+  > besoin de phase de charge : l'effet s'installe en 3 à 4 semaines.
+  >
+  > Choisis une créatine **monohydrate**, sans mélange. Un produit conforme
+  > à la norme antidopage NF EN 17444 limite le risque de substances
+  > interdites. MAJK ne recommande aucune marque.
+  >
+  > Demande l'avis de ton médecin avant d'en prendre si tu as une maladie
+  > des reins, un traitement en cours, ou si tu es enceinte ou allaitante.
+
+- **La phrase de prudence est toujours affichée** : l'appli ne garde pas les
+  réponses de sécurité du questionnaire, elle ne peut donc pas savoir à qui
+  la montrer.
+- Le plan historique de Guillaume garde sa propre note (« 5 g par jour ») :
+  c'est son plan personnel, il n'est pas touché.
+
+**Pourquoi aucune marque** (ma recommandation) :
+
+1. **L'indépendance.** Dès qu'une appli nomme une marque, tous ses conseils
+   de nutrition deviennent suspects. C'est la faiblesse de l'ebook de
+   départ : neuf produits d'une même marque et un code promo.
+2. **La responsabilité.** L'appli ne contrôle ni les lots, ni la formule, ni
+   la qualité d'un produit ; une marque peut changer sa recette sans prévenir.
+3. **Le cadre légal.** Un lien commercial (commission, partenariat) doit
+   être annoncé clairement comme de la publicité. À faire vérifier par un
+   juriste le jour où la question se pose.
+
+Si Guillaume veut un jour un partenariat, ce sera une décision d'affaires à
+part : un encart séparé, annoncé comme tel, jamais mêlé aux conseils.
+
+---
+
+## 12. Exemple calculé (homme, 30 ans, 180 cm, 80 kg)
 
 Réponses : assis, 5 000–8 000 pas, 5 séances de 45 à 75 min, prendre du
 poids à rythme modéré, programme MASS.
@@ -244,14 +313,17 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
 
 ---
 
-## 12. Lots de code, après validation
+## 13. Lots de code — chacun attend son « go »
 
 1. **Ouvrir le calcul à MASS** : protéines à 2,0 g/kg en prise, alerte
-   glucides à 3 g/kg, 5 repas par défaut, écran Nutrition MASS.
+   glucides à 3 g/kg, 5 repas par défaut, écran Nutrition MASS (les six
+   principes de CONGESTION gardés en tête).
 2. **Collations à boire** dans la bibliothèque (à faire avec la grille de la
    bibliothèque : mêmes photos, même mesure).
-3. **Remplacer à apport égal.**
+3. **Remplacer à apport égal**, pour tous les programmes.
 4. **Repères d'horaires.**
+5. **Carte « Créatine »** sous POWER et MASS, une fois le texte du §11
+   validé.
 
 ---
 
@@ -270,3 +342,10 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
   1,6 g/kg/j, borne haute de l'intervalle de confiance à 2,2.
 - Antonio J et al. *J Int Soc Sports Nutr*, 2014 et 2015 — apports de 4,4 et
   3,4 g/kg/j chez des pratiquants entraînés (cités par Iraki 2019).
+- Kreider RB et al. *International Society of Sports Nutrition position
+  stand: safety and efficacy of creatine supplementation in exercise, sport,
+  and medicine.* JISSN, 2017 — créatine monohydrate, 3 à 5 g/j, sécurité.
+- Commission européenne, registre des allégations de santé (règlement (UE)
+  n° 432/2012) — créatine : effet obtenu avec 3 g par jour.
+- AFNOR, norme NF EN 17444 (2021) — prévention du dopage, bonnes pratiques
+  de fabrication des denrées et compléments pour sportifs.
