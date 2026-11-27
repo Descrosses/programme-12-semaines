@@ -49,6 +49,7 @@ export const FICHES_POWER12: Readonly<Record<string, string>> = {
   'chest-supported-row': 'power12-chest-supported-row.webp',
   'face-pull': 'power12-face-pull.webp',
   'pallof-press': 'power12-pallof-press.webp',
+  'barbell-offset-hold': 'power12-barbell-offset-hold.webp', // un maintien : une pose, UN disque (voulu)
   'cable-external-rotation': 'power12-cable-external-rotation.webp',
 
   // --------------------------------------------------------- vendredi ---
@@ -173,6 +174,24 @@ export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
     nom: 'Copenhague plank',
     fichier: 'power12-copenhague-plank.webp', // gainage latéral sur avant-bras, pied sur le banc
     alias: ['Copenhagen plank', 'Copenhague planche', 'Copenhagen planche'],
+  },
+  /*
+   * Planche du 27 novembre (générée par Guillaume d'après des photos du
+   * mouvement, qui n'ont servi que de repère). Vérifiée : barre sur le CÔTÉ,
+   * avant-bras croisés sur son bout, appui sur la jambe la plus éloignée de
+   * la barre, jambe libre côté barre et en l'air, corps penché vers la barre
+   * (buste à angle droit avec elle). Marques des chaussettes et du short
+   * effacées par retouche locale ; aucun logo NFL.
+   */
+  {
+    nom: 'Landmine single leg squat',
+    fichier: 'power12-landmine-single-leg-squat.webp',
+    alias: [
+      'Landmine single-leg squat',
+      'Single leg landmine squat',
+      'Squat unijambiste landmine',
+      'Squat unijambiste au landmine',
+    ],
   },
 ];
 

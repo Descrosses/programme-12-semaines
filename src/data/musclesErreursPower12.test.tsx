@@ -19,9 +19,18 @@ import { MUSCLES_ERREURS_POWER12, infosFichePower12 } from './musclesErreursPowe
 import { EXERCICES_MASS4 } from '../programmes/mass4/exercices';
 
 describe('une entrée par planche, et rien de plus', () => {
-  it('les 38 planches ont leur texte', () => {
-    expect(Object.keys(MUSCLES_ERREURS_POWER12).sort()).toEqual(Object.keys(FICHES_POWER12).sort());
+  /*
+   * Planches arrivées APRÈS le tableau MAJK (révision 5) : leur texte n'existe
+   * pas encore et ne s'invente pas. La section reste absente sous la planche
+   * jusqu'à ce que Guillaume valide une ligne.
+   */
+  const EN_ATTENTE_DE_TEXTE = ['barbell-offset-hold'];
+
+  it('les 38 planches du tableau ont leur texte, les autres attendent le leur', () => {
+    const avecTexte = Object.keys(FICHES_POWER12).filter((id) => !EN_ATTENTE_DE_TEXTE.includes(id));
+    expect(Object.keys(MUSCLES_ERREURS_POWER12).sort()).toEqual(avecTexte.sort());
     expect(Object.keys(MUSCLES_ERREURS_POWER12)).toHaveLength(38);
+    for (const id of EN_ATTENTE_DE_TEXTE) expect(exercise(id).infosFiche, id).toBeUndefined();
   });
 
   it('au moins un muscle principal, une à trois erreurs, aucun texte vide', () => {
