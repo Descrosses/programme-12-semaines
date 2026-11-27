@@ -433,6 +433,25 @@ export interface ExerciseDef {
    * FORCE) ; POWER et MASS CONGESTION n'en ont pas, leur carte est inchangée.
    */
   vigilance?: string;
+  /**
+   * Les consignes d'exécution montrées EN TÊTE de la carte, dans un encadré
+   * toujours visible, au lieu du tiroir « Consignes » (Guillaume, 27
+   * novembre : sous CONGESTION, « c'est la bonne exécution des consignes qui
+   * fait que le programme est bon »). Texte du programme, mot pour mot.
+   * Rempli par MASS CONGESTION seulement ; ailleurs, absent.
+   */
+  consignesEnAvant?: readonly string[];
+  /**
+   * La technique de l'encadré découpée en ÉTAPES (variante C du 27 novembre,
+   * « go C ») : `series` = une étape par série, celle en cours s'allume ;
+   * `temps` = les temps d'UNE série, les mêmes à chaque série. Le texte est
+   * celui du document, coupé sans rien ajouter. Remplace dans l'encadré le
+   * premier élément de `consignesEnAvant` (la technique).
+   */
+  etapesExecution?: {
+    mode: 'series' | 'temps';
+    etapes: readonly { titre: string | null; texte: string }[];
+  };
   /** Règle §5 : chaque rep est une tentative de performance, on arrête si ça ralentit. */
   explosive?: boolean;
   /** Unité mesurée lors d'un test ou d'un saut. */

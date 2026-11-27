@@ -81,6 +81,57 @@ const MEASURE = {
   reps: { label: 'Reps', unit: '', step: 1, min: 0, max: 60 },
 } as const;
 
+/**
+ * La frise des consignes d'exécution (MASS CONGESTION, variante C) : une étape
+ * par série, celle en cours allumée, les faites cochées en vert ; ou les
+ * temps d'une série, les mêmes à chaque série (dégressives).
+ */
+function EtapesExecution({
+  etapes,
+  faites,
+  courante,
+}: {
+  etapes: NonNullable<ResolvedExercise['def']['etapesExecution']>;
+  faites: ReadonlySet<number>;
+  courante: number | undefined;
+}) {
+  const parSerie = etapes.mode === 'series';
+  return (
+    <ol className={styles.etapesExecution} data-etapes={etapes.mode}>
+      {etapes.etapes.map((e, i) => {
+        const etat = !parSerie
+          ? 'neutre'
+          : faites.has(i)
+            ? 'faite'
+            : i === courante
+              ? 'en-cours'
+              : 'a-venir';
+        return (
+          <li
+            key={i}
+            className={styles.etapeExecution}
+            data-etat={etat}
+            aria-current={etat === 'en-cours' ? 'step' : undefined}
+          >
+            <span className={styles.etapePastille} aria-hidden="true">
+              {etat === 'faite' ? '✓' : i + 1}
+            </span>
+            <span>
+              {e.titre !== null && (
+                <b className={styles.etapeTitreExecution}>
+                  {e.titre}
+                  {etat === 'en-cours' ? ' — maintenant' : etat === 'faite' ? ' — faite' : ''}
+                </b>
+              )}
+              {e.texte}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export function ExerciseCard({
   ex,
   savedSets,
@@ -212,11 +263,17 @@ export function ExerciseCard({
    */
   const fonction = fonctionTronc(ex.id);
 
+  // Ce que l'encadré de tête dit déjà ne se répète pas dans le tiroir.
+  const enAvant = ex.def.consignesEnAvant ?? [];
+  const notesTiroir = ex.notes.filter((n) => !enAvant.includes(n));
+  const intentTiroir =
+    ex.def.intent !== undefined && !enAvant.includes(ex.def.intent) ? ex.def.intent : undefined;
+
   const aDesConsignes =
     ex.adjustments.some((a) => a.source !== 'rouge') ||
     ex.contrast !== undefined ||
-    ex.notes.length > 0 ||
-    !!(ex.def.intent || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule);
+    notesTiroir.length > 0 ||
+    !!(intentTiroir || ex.def.cues?.length || ex.def.altBasicFit || ex.def.progressionRule);
 
   return (
     <article
@@ -240,6 +297,25 @@ export function ExerciseCard({
           <p className={styles.vigilance}>
             <b>Vigilance</b> — {ex.def.vigilance}
           </p>
+        )}
+        {enAvant.length > 0 && (
+          <section
+            className={styles.consignesEnAvant}
+            aria-label="Consignes d’exécution"
+            data-consignes-en-avant
+          >
+            <p className={styles.consignesEnAvantTitre}>Consignes d’exécution</p>
+            {ex.def.etapesExecution !== undefined && (
+              <EtapesExecution
+                etapes={ex.def.etapesExecution}
+                faites={new Set(savedSets.map((x) => x.setIndex))}
+                courante={courante}
+              />
+            )}
+            {(ex.def.etapesExecution === undefined ? enAvant : enAvant.slice(1)).map((c, i) => (
+              <p key={i}>{c}</p>
+            ))}
+          </section>
         )}
 
         <div className={styles.exSub}>
@@ -573,12 +649,12 @@ export function ExerciseCard({
                 <b>{a.what}</b> — {a.why}
               </p>
             ))}
-          {ex.notes.map((n, i) => (
+          {notesTiroir.map((n, i) => (
             <p key={`n${i}`}>{n}</p>
           ))}
-          {ex.def.intent && (
+          {intentTiroir && (
             <p>
-              <b>Intention :</b> {ex.def.intent}
+              <b>Intention :</b> {intentTiroir}
             </p>
           )}
           {ex.def.cues?.map((c, i) => (

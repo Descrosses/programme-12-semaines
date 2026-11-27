@@ -2499,6 +2499,91 @@
   color: var(--ink);
 }
 
+/* Les consignes d'exécution en tête de carte (MASS CONGESTION) : toujours
+   visibles, jamais derrière un tiroir. Le style fort vit dans le bloc
+   « SÉANCE MASS » ; ici, une base lisible partout. */
+.consignesEnAvant {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.consignesEnAvant p {
+  margin: 0;
+}
+
+.consignesEnAvant p + p {
+  margin-top: 6px;
+}
+
+.consignesEnAvantTitre {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* La frise des étapes (variante C) : une pastille numérotée par étape,
+   reliée par un trait ; l'étape en cours ressort, les faites sont cochées. */
+.etapesExecution {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.etapeExecution {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+.etapeExecution:last-child {
+  padding-bottom: 0;
+}
+
+.etapeExecution:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 28px;
+  bottom: 2px;
+  left: 12px;
+  width: 2px;
+  background: var(--line);
+}
+
+.etapePastille {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.etapeTitreExecution {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.etapeExecution[data-etat='a-venir'],
+.etapeExecution[data-etat='faite'] {
+  opacity: 0.55;
+}
+
+.etapeExecution[data-etat='faite'] .etapePastille {
+  background: var(--green, #2f6b45);
+}
+
 /* La fourchette de charge (MASS FORCE) : lisible d'un coup d'œil, la
    provenance en retrait. */
 .chargeCible {
@@ -3088,6 +3173,53 @@
 
 :global([data-theme='mass']) .ecranSeance .vigilance b {
   color: #fff;
+}
+
+/* Consignes d'exécution (CONGESTION) : l'encadré qui doit sauter aux yeux —
+   bord bordeaux épais, halo, fond teinté, titre vieux rose. */
+:global([data-theme='mass']) .ecranSeance .consignesEnAvant {
+  position: relative;
+  margin: 12px -5px 0;
+  padding: 10px 14px 12px 16px;
+  border: 2px solid var(--mass-rouge);
+  border-left-width: 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(120 10 16 / 34%) 0%, rgb(60 5 8 / 24%) 100%);
+  box-shadow: var(--mass-halo-action);
+  color: #f6f1ed;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution:not(:last-child)::after {
+  background: rgb(194 60 80 / 55%);
+}
+
+:global([data-theme='mass']) .ecranSeance .etapePastille {
+  background: var(--mass-rouge);
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-style: italic;
+  font-weight: 800;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution[data-etat='en-cours'] .etapePastille {
+  box-shadow: 0 0 0 4px rgb(194 60 80 / 30%);
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeExecution[data-etat='faite'] .etapePastille {
+  background: #2f6b45;
+}
+
+:global([data-theme='mass']) .ecranSeance .etapeTitreExecution {
+  color: #fff;
+}
+
+:global([data-theme='mass']) .ecranSeance .consignesEnAvantTitre {
+  margin-bottom: 6px;
+  color: var(--accent-ink);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
 
 :global([data-theme='mass']) .ecranSeance .exSub {

@@ -96,6 +96,8 @@ function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
   const seconde = secondePartiePour(ligne.technique);
   const mode = modePour(ligne, semaine);
   const frise = frisePour(ligne);
+  const enAvant = consignesEnAvant(ligne);
+  const etapes = etapesExecution(ligne);
   return {
     id,
     name: e?.nom ?? id,
@@ -106,7 +108,36 @@ function definition(ligne: LigneMass4, semaine: number): ExerciseDef {
     ...(fiche === undefined ? {} : { fiche }),
     ...(seconde === undefined ? {} : { secondPart: seconde }),
     ...(mode === null || frise === null ? {} : { alternance: { mode, frise } }),
+    ...(enAvant.length === 0 ? {} : { consignesEnAvant: enAvant }),
+    ...(etapes === undefined ? {} : { etapesExecution: etapes }),
   };
+}
+
+/** Deux phrases qui disent la même chose, ponctuation et « avec » mis à part. */
+const memePhrase = (a: string, b: string) => {
+  const n = (t: string) =>
+    t
+      .toLowerCase()
+      .replace(/\bavec\b/g, ' ')
+      .replace(/[^\p{L}\p{N}≈%]+/gu, ' ')
+      .trim();
+  return n(a) === n(b);
+};
+
+/**
+ * Ce que l'encadré « Consignes d'exécution » montre en tête de carte : la
+ * technique de la ligne (sauf les séries droites, qui n'en ont pas), puis la
+ * consigne du mouvement. La consigne qui répète la technique (dégressives :
+ * « 6 reps lourdes avec 1 à 2 en réserve… » / « 6 reps lourdes (1 à 2 en
+ * réserve)… ») n'est dite qu'une fois. Textes du document, mot pour mot.
+ */
+export function consignesEnAvant(ligne: LigneMass4): string[] {
+  const out: string[] = [];
+  const technique = ligne.technique === 'droite' ? undefined : TECHNIQUES[ligne.technique];
+  if (technique !== undefined) out.push(technique);
+  const consigne = EXERCICES_MASS4[ligne.exerciceId]?.consigne;
+  if (consigne !== undefined && !out.some((t) => memePhrase(t, consigne))) out.push(consigne);
+  return out;
 }
 
 /** Ce qui s'écrit sous le nom du mouvement : la technique, puis le matériel. */
@@ -277,3 +308,38 @@ export const MASS4: ModuleProgramme = {
 
 /** Exporté pour les tests : le détail d'une ligne, sans passer par la séance. */
 export const _exercicePour = exercicePour;
+
+/**
+ * La technique découpée en étapes (variante C, Guillaume, 27 novembre) :
+ * - « trois séries » : coupée devant chaque « Série n : », une étape par
+ *   série (titre « Série n », texte après les deux-points) ;
+ * - dégressives : coupée devant « puis aussitôt », deux temps qui se
+ *   répètent à chaque série.
+ * Rien n'est ajouté ni reformulé : seulement coupé. Les autres techniques
+ * n'ont pas d'étapes.
+ */
+export function etapesExecution(ligne: LigneMass4): ExerciseDef['etapesExecution'] {
+  const t = TECHNIQUES[ligne.technique];
+  if (t === undefined) return undefined;
+  if (ligne.technique === 'trois-series') {
+    const etapes = t
+      .split(/(?=Série \d+ : )/)
+      .map((morceau) => morceau.trim())
+      .map((morceau) => {
+        const m = /^(Série \d+) : (.*)$/.exec(morceau);
+        return { titre: m![1]!, texte: m![2]! };
+      });
+    return { mode: 'series', etapes };
+  }
+  if (ligne.technique === 'lourde-degressive' || ligne.technique === 'degressive-max') {
+    const i = t.indexOf(', puis aussitôt ');
+    return {
+      mode: 'temps',
+      etapes: [
+        { titre: null, texte: t.slice(0, i) },
+        { titre: null, texte: t.slice(i + 2) },
+      ],
+    };
+  }
+  return undefined;
+}
