@@ -415,7 +415,13 @@ export function getSession(
   if (week !== 0 && week !== 12) {
     // Dans POWER, le premier lift principal d'une séance est toujours à la
     // barre (squat, pin squat, bench, push press, deadlift) : le test le fige.
-    const premierLourd = finalExercises.find((e) => e.def.role === 'main');
+    //
+    // Le dimanche n'a pas de lift principal : c'est l'Incline Dumbbell Press,
+    // qui ouvre la séance chargé, qui reçoit la montée en charge (§6,
+    // décision de Guillaume du 27 novembre). Lui seul, et seulement là.
+    const premierLourd =
+      finalExercises.find((e) => e.def.role === 'main') ??
+      finalExercises.find((e) => e.def.id === 'incline-db-press');
     if (premierLourd) premierLourd.monteeEnCharge = true;
   }
 

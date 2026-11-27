@@ -63,7 +63,7 @@ La borne basse de chaque fourchette correspond aux semaines de deload, la borne 
 | Mercredi | 60-70 min | **84 min** | Force maximale (S5-7) |
 | Vendredi | ~60 min | **81 min** | Force maximale (S5-7) |
 
-Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat (§7). L'Explosive Cable Row et le Jump Squat restent ; le vendredi passe de 85-97 min à 72-75 min. **Le 23 novembre**, la montée en charge du §6 ajoute environ 5 minutes à chaque séance qui porte un mouvement lourd à la barre : le vendredi monte à 77-81 min, et Guillaume l'assume.
+Le vendredi est le cas le plus net, et il l'était déjà avant l'ajout du tronc : la séance dépassait les quatre-vingts minutes dès la semaine 1. L'arbitrage proposé — retirer l'Explosive Cable Row, 3 × 5 à RPE 6, environ cinq minutes — a été écarté : Guillaume préfère garder l'exercice et assumer la durée. **Le 22 novembre, il a tranché autrement** : 3 séries au plus par exercice, 4 pour le Push Press et le Speed Squat (§7). L'Explosive Cable Row et le Jump Squat restent ; le vendredi passe de 85-97 min à 72-75 min. **Le 23 novembre**, la montée en charge du §6 ajoute environ 5 minutes à chaque séance qui porte un mouvement lourd à la barre : le vendredi monte à 77-81 min, et Guillaume l'assume. **Le 27 novembre**, la même montée en charge passe sur l'Incline Dumbbell Press du dimanche : environ 5 minutes de plus, toujours dans la fourchette de 30-70 min.
 
 Pourquoi cet ordre : vendredi (neuronal, peu de dommages) potentialise samedi ; dimanche = haut du corps pour que les jambes récupèrent entre le deadlift du samedi et le squat du lundi.
 
@@ -103,6 +103,8 @@ Tu arrêtes l'exercice quand : la distance ou la hauteur baisse d'environ 5 %, l
 | 2 | 3 | 70 % de la charge de travail |
 | 3 | 2-3 | 85 % de la charge de travail |
 | 4 | 2 | 90-95 % de la charge de travail |
+
+**Le dimanche** (décision de Guillaume, 27 novembre) n'a pas de lift principal à la barre, mais l'Incline Dumbbell Press l'ouvre chargé : la montée en charge s'y fait, avec le même tableau, en kilos par haltère. Aucun autre mouvement de la séance n'en reçoit.
 
 1 min de repos entre ces séries, puis les séries de travail. Le but : générer progressivement une tension et un stress musculaire et tendineux suffisants pour être prêt pour les vraies séries de travail. Ces séries d'approche ne comptent pas dans les séries prescrites et ne s'enregistrent pas. Pas de montée en charge en semaine 0 ni en semaine 12 : les tests ont leurs propres paliers (§12). Elle ajoute environ 5 minutes aux séances concernées, comptées dans les durées du §3.
 
