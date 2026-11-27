@@ -37,7 +37,7 @@ import { ecartCible } from '../engine/cibleDuJour';
 import type { Macros } from '../engine/nutrition';
 import { ChoixRepas } from './ChoixRepas';
 import { FicheRepas } from './FicheRepas';
-import { photoDe, type RepasBibliotheque } from '../data/bibliothequeRepas';
+import type { RepasBibliotheque } from '../data/bibliothequeRepas';
 import { repasReconnu } from '../engine/repasReconnu';
 import { FoodSwapSheet } from './FoodSwapSheet';
 import {
@@ -63,6 +63,8 @@ import {
   quantitesAPoser,
   type Catalogue,
 } from '../engine/planPersoTotaux';
+import { quantiteEnMots, quantiteEquivalente } from '../engine/equivalence';
+import { VignetteRepas } from './VignetteRepas';
 import styles from './PlanPerso.module.css';
 
 /**
@@ -166,6 +168,8 @@ export function PlanPerso({
   const [ligneOuverte, setLigneOuverte] = useState<string | null>(null);
   /** Le repas dont les pastilles « + Ajouter un aliment » sont dépliées. */
   const [ajout, setAjout] = useState<RepasId | null>(null);
+  /** La conversion qui vient d'être proposée en remplaçant un aliment (§7). */
+  const [equivalence, setEquivalence] = useState<{ cle: string; texte: string } | null>(null);
   /** Le plat dont la fiche plein écran est ouverte (photo touchée). */
   const [fiche, setFiche] = useState<RepasBibliotheque | null>(null);
   /*
@@ -335,15 +339,7 @@ export function PlanPerso({
                         onClick={() => setFiche({ ...plat, lignes })}
                         aria-label={`Voir le plat en grand : ${plat.nom}`}
                       >
-                        <img
-                          className={styles.repasPhoto}
-                          src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
-                          alt=""
-                          width={600}
-                          height={600}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                        <VignetteRepas repas={plat} className={styles.repasPhoto} />
                       </button>
                     )}
                     <button
@@ -422,15 +418,7 @@ export function PlanPerso({
                         onClick={() => setFiche(plat)}
                         aria-label={`Voir le plat en grand : ${plat.nom}`}
                       >
-                        <img
-                          className={styles.repasPhoto}
-                          src={`${import.meta.env.BASE_URL}${photoDe(plat.id)}`}
-                          alt=""
-                          width={600}
-                          height={600}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                        <VignetteRepas repas={plat} className={styles.repasPhoto} />
                       </button>
                     )}
                     <button
@@ -542,7 +530,11 @@ export function PlanPerso({
                             horsListe={preferes.length > 0 && !preferes.includes(x.foodId)}
                             ouverte={ligneOuverte === cle}
                             onToggle={() => setLigneOuverte(ligneOuverte === cle ? null : cle)}
-                            onQty={(v) => onChange(poserQuantite(journee, repas.id, x.foodId, v))}
+                            onQty={(v) => {
+                              // La quantité réglée à la main n'est plus « la proposée ».
+                              setEquivalence(null);
+                              onChange(poserQuantite(journee, repas.id, x.foodId, v));
+                            }}
                             onRetirer={() => {
                               onChange(retirerAliment(journee, repas.id, x.foodId));
                               setLigneOuverte(null);
@@ -552,18 +544,42 @@ export function PlanPerso({
                             customs={customs}
                             onCreateCustom={onCreateCustom}
                             onChoisi={(nouveau) => {
+                              const remplacee = remplacerAliment(
+                                journee,
+                                repas.id,
+                                x.foodId,
+                                nouveau,
+                                catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
+                              );
+                              /*
+                                À APPORT ÉGAL (`regles-nutrition-mass.md`, §7) :
+                                même groupe → la quantité qui garde les
+                                protéines, les glucides ou les lipides de
+                                l'aliment remplacé. Si le nouvel aliment
+                                était déjà dans le repas, sa ligne garde SA
+                                quantité : rien à convertir.
+                              */
+                              const eq = lignes.some((l) => l.foodId === nouveau)
+                                ? null
+                                : quantiteEquivalente(x.foodId, x.qty, nouveau, catalogue);
+                              const neuf = catalogue[nouveau];
                               onChange(
-                                remplacerAliment(
-                                  journee,
-                                  repas.id,
-                                  x.foodId,
-                                  nouveau,
-                                  catalogue[x.foodId]?.unit === catalogue[nouveau]?.unit,
-                                ),
+                                eq === null
+                                  ? remplacee
+                                  : poserQuantite(remplacee, repas.id, nouveau, eq.qty),
+                              );
+                              setEquivalence(
+                                eq === null || neuf === undefined || x.qty === null
+                                  ? null
+                                  : {
+                                      cle: `${repas.id}|${nouveau}`,
+                                      texte: `Quantité proposée : ${quantiteEnMots(eq.qty, neuf.unit)}, pour les mêmes ${eq.conserve} que ${quantiteEnMots(x.qty, f.unit)} de ${f.label}. Tu peux la changer.`,
+                                    },
                               );
                               setRemplace(null);
                               setLigneOuverte(`${repas.id}|${nouveau}`);
                             }}
+                            {...(equivalence?.cle === cle ? { note: equivalence.texte } : {})}
                             onFermerRemplacement={() => setRemplace(null)}
                           />
                         );
@@ -683,7 +699,10 @@ export function LigneAliment({
   onChoisi,
   onCreateCustom,
   onFermerRemplacement,
+  note,
 }: {
+  /** La conversion proposée après un remplacement à apport égal. */
+  note?: string;
   food: LibraryFood;
   qty: number | null;
   kcal: number;
@@ -742,6 +761,12 @@ export function LigneAliment({
             onStep={(d) => onQty(stepValue(qty, d, 0, cfg.max))}
             onCommit={(v) => onQty(v)}
           />
+          {note !== undefined && (
+            // Remplacement à apport égal : on dit d'où vient la quantité.
+            <p className={styles.equivalence} data-equivalence>
+              {note}
+            </p>
+          )}
           {/*
             LA MÊME FEUILLE QUE LE PLAN HISTORIQUE, à deux chaînes près. Retirer
             reste un geste à part : vider le champ ne jette pas l'aliment.

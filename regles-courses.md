@@ -76,10 +76,10 @@ On arrondit **toujours vers le haut** : mieux vaut un reste qu'un manque.
 
 | Rayon | Familles du catalogue |
 |---|---|
-| Viandes et poissons | protéines (sauf œufs) |
+| Viandes et poissons | protéines (sauf œufs et whey) |
 | Crèmerie et œufs | laitiers, œufs |
 | Fruits et légumes | fruits, légumes |
-| Épicerie | féculents (sauf pain), légumineuses, matières grasses, autres |
+| Épicerie | féculents (sauf pain), légumineuses, matières grasses, autres, whey |
 | Boulangerie | pain |
 
 Dans un rayon, les articles sont rangés par ordre alphabétique.

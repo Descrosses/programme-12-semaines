@@ -698,3 +698,15 @@
 .prevu .macroLigne {
   display: block;
 }
+
+/* La quantité proposée après un remplacement à apport égal : d'où elle vient. */
+.equivalence {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--accent-ink);
+  border-radius: 6px;
+  background: var(--surface-3);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}

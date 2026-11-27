@@ -64,8 +64,16 @@ describe('§4 — le tableau du .md = le code', () => {
       EXCLUSIONS.find((e) => e.id === id)!.aliments as readonly string[];
     for (const id of famille('laitier')) expect(ecartes('laitiers'), id).toContain(id);
     for (const id of famille('proteine')) {
+      // La whey est rangée « protéine » au catalogue, mais c'est du LAIT : une
+      // personne qui écarte les laitiers ne doit jamais la recevoir.
+      if (id === 'whey') {
+        expect(ecartes('laitiers'), id).toContain(id);
+        continue;
+      }
       expect([...ecartes('viande'), ...ecartes('poisson'), ...ecartes('oeufs')], id).toContain(id);
     }
+    // Garde-fou du 27 novembre : la whey est bien servie par la bibliothèque.
+    expect(utilises.has('whey')).toBe(true);
     // Tout ce qui se fait avec de la farine de blé ou de l'avoine.
     for (const id of famille('feculent').filter((x) => !['riz', 'pommesDeTerre'].includes(x))) {
       expect(ecartes('gluten'), id).toContain(id);

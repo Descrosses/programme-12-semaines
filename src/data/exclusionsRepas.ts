@@ -26,7 +26,8 @@ export const EXCLUSIONS = [
   {
     id: 'laitiers',
     nom: 'Produits laitiers',
-    aliments: ['lait', 'skyr', 'fromageBlanc', 'fromageFrais', 'yaourtGrec'],
+    // La whey est une protéine DE LAIT : écartée avec les laitiers (27 novembre).
+    aliments: ['lait', 'skyr', 'fromageBlanc', 'fromageFrais', 'yaourtGrec', 'whey'],
     mots: ['lactose', 'lait', 'laitier', 'laitiers', 'plv', 'végétalien', 'vegan'],
   },
   {

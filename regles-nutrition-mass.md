@@ -1,17 +1,19 @@
 # Règles de la nutrition MASS
 
-> **Statut : source de vérité pour le lot 1, CODÉ le 27 novembre 2026**
-> (Guillaume : « texte validé, go MASS lot 1 »). Cinq points tranchés par lui
-> (« 1 garder, 2 : 2 g, 3 oui, 4 tous les programmes, 5 : la créatine est
-> essentielle pour MASS et POWER »), marqués « Décidé » dans le texte.
+> **Statut : source de vérité, CODÉE en entier le 27 novembre 2026.**
+> Cinq points tranchés par Guillaume (« 1 garder, 2 : 2 g, 3 oui, 4 tous les
+> programmes, 5 : la créatine est essentielle pour MASS et POWER »), marqués
+> « Décidé » dans le texte.
 >
-> - **Lot 1 — codé** (§1 à §6, §9, §12) : le code transcrit ce fichier, un
->   test relit ses tableaux et rejoue l'exemple
->   (`data/reglesNutritionMass.test.ts`). Pour changer une règle : changer ce
->   fichier ET le code.
-> - **Lots 2 à 5 — pas codés** (collations à boire, remplacement à apport
->   égal, repères d'horaires, carte « Créatine ») : chacun attend son « go »
->   (§13). Le texte de la carte « Créatine » (§11) est VALIDÉ.
+> - **Lot 1** (« texte validé, go MASS lot 1 ») : le calcul, §1 à §6, §9, §12.
+> - **Lots 2 à 5** (« go MASS lot 2-3-4-5 ») : collations à boire (§6),
+>   remplacement à apport égal (§7), repères d'horaires (§8), carte
+>   « Créatine » (§11).
+>
+> Le code transcrit ce fichier ; des tests relisent ses tableaux, rejouent
+> ses exemples et comparent ses textes mot pour mot
+> (`data/reglesNutritionMass.test.tsx`, `components/massLots2a5.test.tsx`).
+> Pour changer une règle ou un mot : changer ce fichier ET le code.
 >
 > Comme `regles-cibles-nutrition.md`, chaque section sépare **ce que disent
 > les études** des **choix de l'appli**.
@@ -194,6 +196,28 @@ whey (protéine en poudre, déjà au catalogue) et deux sans (lait ou skyr à
 la place), proposées à **tous** les programmes — la bibliothèque est
 commune. La whey rejoint l'exclusion « Produits laitiers ».
 
+### Les quatre collations à boire (codées le 27 novembre)
+
+| Collation à boire | Assiette de référence |
+|---|---|
+| Flocons d'avoine, whey, banane | avoine 60 g, whey 30 g, banane 1 |
+| Flocons d'avoine, whey, lait, beurre de cacahuète | avoine 50 g, whey 30 g, lait 250 ml, beurre de cacahuète 15 g |
+| Skyr, lait, flocons d'avoine, fruits rouges | skyr 200 g, lait 200 ml, avoine 50 g, fruits rouges 100 g |
+| Lait, banane, flocons d'avoine, amandes | lait 300 ml, banane 1, avoine 50 g, amandes 20 g |
+
+- Proposées aux **collations seulement** (matin, après-midi, soir) : ni au
+  petit-déjeuner, ni en plat.
+- Recettes et quantités sont celles de l'appli (choix de conception, à
+  corriger par Guillaume s'il le souhaite) ; le moteur les ajuste à la part
+  du repas comme n'importe quel plat.
+- Les quatre contiennent du lait et de l'avoine : elles sont écartées pour
+  qui ne mange ni laitiers ni gluten. Une collation à boire végétale attend
+  la grille de la bibliothèque (boisson au soja).
+- **Photos** générées par Guillaume le 27 novembre, au cadrage des autres
+  plats. Un repas sans photo afficherait une vignette neutre, jamais un
+  cadre cassé.
+- Liste de courses : la whey est rangée à l'épicerie (`regles-courses.md`).
+
 ---
 
 ## 7. Remplacer un aliment à apport égal
@@ -213,7 +237,20 @@ Exemple, avec les valeurs de notre catalogue : 150 g de poulet cuit
 (46,5 g de protéines) → 210 g de poisson blanc cuit.
 
 La quantité est arrondie comme le reste (5 g ; une pièce reste entière) et
-reste modifiable. Aujourd'hui « Remplacer » garde la même quantité.
+reste modifiable. L'écran dit d'où elle vient, sous la ligne : « Quantité
+proposée : 210 g, pour les mêmes protéines que 150 g de Poulet cuit. Tu peux
+la changer. »
+
+Précisions (codées le 27 novembre) :
+
+- **Dans les deux modes** : la semaine de repas et « Mon plan ». Dans « Mon
+  plan », ce n'est pas une quantité inventée : c'est la quantité que la
+  personne avait posée, convertie.
+- **Rien à convertir** (le comportement d'avant : même quantité si l'unité
+  est la même, sinon « à poser ») quand les deux aliments ne sont pas du
+  même groupe, quand la quantité n'était pas posée, quand le nouvel aliment
+  est déjà dans le repas (sa ligne garde sa quantité), ou quand l'un des
+  deux ne contient pas la macro du groupe.
 
 **Décidé (Guillaume, 27 novembre) : pour tous les programmes.** Le geste
 « Remplacer » est le même partout.
@@ -226,8 +263,9 @@ reste modifiable. Aujourd'hui « Remplacer » garde la même quantité.
 journée, dont un repas dans l'heure ou les deux heures avant et après la
 séance (Iraki 2019).
 
-**Choix proposé :** deux phrases de conseil sur l'écran Nutrition, jamais
-une contrainte ni un rappel :
+**Choix de l'appli (codé le 27 novembre) :** deux phrases de conseil en bas
+de l'écran Nutrition de MASS, quel que soit l'objectif — jamais une
+contrainte ni un rappel :
 
 - « Répartis tes repas dans la journée plutôt que de tout regrouper. »
 - « Place un repas avec des protéines dans les deux heures avant ou après ta
@@ -262,8 +300,8 @@ coucher) ne sont pas repris : je n'ai pas de source à mettre en face.
 
 ## 11. Créatine — MASS et POWER
 
-> **Texte VALIDÉ par Guillaume le 27 novembre 2026** (« texte validé »).
-> Pas encore codé : lot 5. Sa décision : « pour MASS et POWER, la créatine
+> **Texte VALIDÉ par Guillaume le 27 novembre 2026** (« texte validé ») et
+> CODÉ le même jour (lot 5). Sa décision : « pour MASS et POWER, la créatine
 > est essentielle. C'est LE complément alimentaire. »
 
 **Ce que disent les études et les textes :**
@@ -292,9 +330,10 @@ efficace », pas « indispensable » : l'écran dit les deux.
 
 **Choix proposés :**
 
-- **Où** : une carte repliée « Créatine » sur l'écran Nutrition, sous POWER
-  et sous MASS. Rien sous LADIES ni ME, MYSELF & I tant que Guillaume ne le
-  demande pas.
+- **Où** : une carte repliée « Créatine » en bas de l'écran Nutrition, sous
+  POWER et sous MASS. Rien sous LADIES ni ME, MYSELF & I tant que Guillaume
+  ne le demande pas. Repliée, elle ne montre que son titre : la dose ne
+  s'affiche jamais sans la phrase de prudence.
 - **Aucune marque, aucun lien, aucun code promo.** L'appli donne des
   critères de choix, pas un produit (voir « Pourquoi aucune marque »).
 - **Le texte**, mot pour mot :
@@ -315,9 +354,11 @@ efficace », pas « indispensable » : l'écran dit les deux.
   > Demande l'avis de ton médecin avant d'en prendre si tu as une maladie
   > des reins, un traitement en cours, ou si tu es enceinte ou allaitante.
 
-- **La phrase de prudence est toujours affichée** : l'appli ne garde pas les
-  réponses de sécurité du questionnaire, elle ne peut donc pas savoir à qui
-  la montrer.
+- **La phrase de prudence est montrée à tout le monde**, avec le reste du
+  texte : l'appli ne garde pas les réponses de sécurité du questionnaire,
+  elle ne peut donc pas savoir à qui la réserver.
+- Sous MASS CONGESTION, la phrase « Compléments : aucun avis ici » de la
+  carte des principes est retirée : elle contredirait cette carte.
 - Le plan historique de Guillaume garde sa propre note (« 5 g par jour ») :
   c'est son plan personnel, il n'est pas touché.
 
@@ -361,19 +402,20 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
 
 ---
 
-## 13. Lots de code — chacun attend son « go »
+## 13. Lots de code — tous FAITS le 27 novembre 2026
 
-1. **Ouvrir le calcul à MASS — FAIT (27 novembre)** : protéines à 2,0 g/kg
-   en prise, alerte glucides à 3 g/kg, repas par défaut et conseil des 5
-   repas, écran Nutrition
-   MASS (les six principes de CONGESTION gardés en tête, repliés une fois la
-   cible posée). Pas fait : le calcul du coach (`#/admin`) reste aux règles
-   communes.
-2. **Collations à boire** dans la bibliothèque (à faire avec la grille de la
-   bibliothèque : mêmes photos, même mesure).
-3. **Remplacer à apport égal**, pour tous les programmes.
-4. **Repères d'horaires.**
-5. **Carte « Créatine »** sous POWER et MASS (texte du §11 validé).
+1. **Ouvrir le calcul à MASS** : protéines à 2,0 g/kg en prise, alerte
+   glucides à 3 g/kg, repas par défaut et conseil des 5 repas, écran
+   Nutrition MASS (les six principes de CONGESTION gardés en tête, repliés
+   une fois la cible posée).
+2. **Collations à boire** : quatre dans la bibliothèque, avec leurs photos,
+   pour tous les programmes.
+3. **Remplacer à apport égal**, pour tous les programmes, dans les deux
+   modes.
+4. **Repères d'horaires**, en bas de l'écran Nutrition de MASS.
+5. **Carte « Créatine »** sous POWER et MASS.
+
+Pas fait : le calcul du coach (`#/admin`) reste aux règles communes.
 
 ---
 

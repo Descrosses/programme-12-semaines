@@ -18,8 +18,8 @@ import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 describe('la bibliothèque', () => {
-  it('compte vingt-sept repas, un par photographie', () => {
-    expect(BIBLIOTHEQUE_REPAS).toHaveLength(27);
+  it('compte trente et un repas, un par photographie', () => {
+    expect(BIBLIOTHEQUE_REPAS).toHaveLength(31);
   });
 
   it('aucun identifiant en double', () => {
@@ -40,11 +40,17 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('chaque repas a sa photo sur le disque', () => {
+  it('chaque repas a sa photo sur le disque — ou la déclare « à venir », jamais les deux', () => {
     const fichiers = new Set(readdirSync(new URL('../../public/repas', import.meta.url)));
     for (const r of BIBLIOTHEQUE_REPAS) {
-      expect(fichiers.has(`${r.id}.webp`), `photo manquante : ${r.id}`).toBe(true);
+      // `photoAVenir` : l'écran montre une vignette neutre. Le jour où la
+      // photo est déposée, ce test tombe tant que le marqueur n'est pas retiré.
+      expect(fichiers.has(`${r.id}.webp`), `photo de ${r.id}`).toBe(r.photoAVenir !== true);
     }
+  });
+
+  it('aucun repas n’attend plus sa photo (les collations à boire ont la leur depuis le 27 novembre)', () => {
+    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([]);
   });
 
   it('aucune photo orpheline', () => {

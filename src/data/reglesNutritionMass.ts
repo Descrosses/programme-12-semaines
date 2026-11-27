@@ -7,6 +7,7 @@
  * quand la personne suit un programme MASS ET vise une prise de masse.
  */
 
+import type { GroupeId } from './planPerso';
 import type { NombreRepas } from './reglesRepasAutomatiques';
 
 /** Le regard porté sur le calcul : les règles communes, ou celles de MASS. */
@@ -39,3 +40,21 @@ export const REPAS_CONSEILLES_MASS_PRISE: NombreRepas = 5;
 /** §6 — le conseil, mot pour mot. */
 export const CONSEIL_REPAS_MASS =
   '5 repas par jour sont conseillés pour mieux répartir tes protéines, tes glucides et tes lipides. 4 restent possibles.';
+
+/**
+ * §7 — remplacer un aliment à apport égal : ce que la nouvelle quantité
+ * conserve, selon le groupe de l'aliment remplacé. `null` : la quantité ne
+ * change pas (fruits et légumes).
+ */
+export const MACRO_CONSERVEE: Readonly<Record<GroupeId, 'proteinG' | 'carbsG' | 'fatG' | null>> = {
+  proteines: 'proteinG',
+  glucides: 'carbsG',
+  lipides: 'fatG',
+  vegetaux: null,
+};
+
+/** §8 — les deux repères d'horaires, mot pour mot. Des conseils, jamais des rappels. */
+export const REPERES_HORAIRES_MASS: readonly string[] = [
+  'Répartis tes repas dans la journée plutôt que de tout regrouper.',
+  'Place un repas avec des protéines dans les deux heures avant ou après ta séance.',
+];

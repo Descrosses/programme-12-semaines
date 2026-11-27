@@ -57,8 +57,14 @@ export const RAYON_DE_FAMILLE: Readonly<Record<FoodCategory, RayonId>> = {
   autre: 'epicerie',
 };
 
-/** §3 — les deux exceptions : les œufs à la crèmerie, le pain à la boulangerie. */
+/**
+ * §3 — les exceptions : les œufs à la crèmerie, le pain à la boulangerie, et
+ * la whey (protéine en poudre des collations à boire, 27 novembre) à
+ * l'épicerie — rangée « protéine » au catalogue, elle partait au rayon des
+ * viandes.
+ */
 export const RAYON_D_ALIMENT: Readonly<Record<string, RayonId>> = {
   oeuf: 'cremerie',
   pain: 'boulangerie',
+  whey: 'epicerie',
 };

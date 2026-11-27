@@ -174,7 +174,7 @@ n'est pas reconnu lui est dit, mot pour mot.
 | Viande | poulet, dinde, bœuf | végétarien, végétalien, vegan |
 | Poisson | poisson blanc, saumon, thon | poisson, saumon, thon, cabillaud, végétarien, végétalien, vegan |
 | Œufs | œuf | œuf, oeuf, végétalien, vegan |
-| Produits laitiers | lait, skyr, fromage blanc, fromage frais, yaourt grec | lactose, lait, laitier, laitiers, plv, végétalien, vegan |
+| Produits laitiers | lait, skyr, fromage blanc, fromage frais, yaourt grec, whey | lactose, lait, laitier, laitiers, plv, végétalien, vegan |
 | Arachide | beurre de cacahuète | arachide, arachides, cacahuète, cacahuètes |
 | Fruits à coque | amandes | fruits à coque, fruit à coque, noix, amande, amandes, noisette, noisettes |
 | Gluten | pain complet, pâtes, semoule, flocons d'avoine, flocons croustillants | gluten, blé, coeliaque, cœliaque, maladie coeliaque |
@@ -185,6 +185,8 @@ n'est pas reconnu lui est dit, mot pour mot.
 - Un mot des allergies est reconnu s'il **contient** un mot du tableau
   (casse et accents ignorés) ; « aucune », « rien », « non » et « RAS » ne
   sont pas des allergies. Le reste est montré comme **non reconnu**.
+- La whey (protéine en poudre des collations à boire) est une protéine de
+  lait : elle est rangée avec les produits laitiers.
 - L'avoine est rangée avec le gluten : sans mention « certifiée sans
   gluten », elle n'est pas sûre pour une personne cœliaque.
 - L'écran le redit toujours : **les exclusions ne couvrent que ces familles ;

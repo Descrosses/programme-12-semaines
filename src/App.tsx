@@ -651,6 +651,9 @@ function renderScreen(
           todayDay={todayDay}
           todayWeek={todayWeek}
           onDayKindChange={refresh}
+          // La carte « Créatine » : POWER et MASS (Guillaume, 27 novembre).
+          // L'écran ne la montre jamais dans le plan historique.
+          creatine
         />
       );
 
