@@ -18,9 +18,8 @@ import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 describe('la bibliothèque', () => {
-  it('compte trente et un repas : vingt-sept photographiés, quatre collations à boire', () => {
+  it('compte trente et un repas, un par photographie', () => {
     expect(BIBLIOTHEQUE_REPAS).toHaveLength(31);
-    expect(BIBLIOTHEQUE_REPAS.filter((r) => !r.photoAVenir)).toHaveLength(27);
   });
 
   it('aucun identifiant en double', () => {
@@ -50,13 +49,8 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('seules les quatre collations à boire attendent leur photo', () => {
-    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([
-      'shaker-avoine-whey-banane',
-      'shaker-avoine-whey-cacahuete-lait',
-      'smoothie-skyr-lait-avoine-fruits-rouges',
-      'smoothie-lait-banane-avoine-amandes',
-    ]);
+  it('aucun repas n’attend plus sa photo (les collations à boire ont la leur depuis le 27 novembre)', () => {
+    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([]);
   });
 
   it('aucune photo orpheline', () => {

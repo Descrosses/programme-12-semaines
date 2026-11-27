@@ -213,8 +213,9 @@ commune. La whey rejoint l'exclusion « Produits laitiers ».
 - Les quatre contiennent du lait et de l'avoine : elles sont écartées pour
   qui ne mange ni laitiers ni gluten. Une collation à boire végétale attend
   la grille de la bibliothèque (boisson au soja).
-- **Photos à venir** (générées par Guillaume) : en attendant, l'écran montre
-  une vignette neutre « Photo à venir », jamais un cadre cassé.
+- **Photos** générées par Guillaume le 27 novembre, au cadrage des autres
+  plats. Un repas sans photo afficherait une vignette neutre, jamais un
+  cadre cassé.
 - Liste de courses : la whey est rangée à l'épicerie (`regles-courses.md`).
 
 ---
@@ -407,8 +408,8 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
    glucides à 3 g/kg, repas par défaut et conseil des 5 repas, écran
    Nutrition MASS (les six principes de CONGESTION gardés en tête, repliés
    une fois la cible posée).
-2. **Collations à boire** : quatre dans la bibliothèque, pour tous les
-   programmes. Reste à faire : leurs quatre photos.
+2. **Collations à boire** : quatre dans la bibliothèque, avec leurs photos,
+   pour tous les programmes.
 3. **Remplacer à apport égal**, pour tous les programmes, dans les deux
    modes.
 4. **Repères d'horaires**, en bas de l'écran Nutrition de MASS.

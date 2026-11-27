@@ -162,13 +162,19 @@ describe('lot 2 — les collations à boire', () => {
     expect(rayonDe('poulet', FOOD_LIBRARY)).toBe('viandes');
   });
 
-  it('photo à venir : une vignette neutre, jamais une image cassée', () => {
-    for (const r of A_BOIRE) expect(r.photoAVenir, r.id).toBe(true);
-    const petite = renderToStaticMarkup(<VignetteRepas repas={A_BOIRE[0]!} className="x" />);
+  it('chacune a sa photo ; une photo à venir donnerait une vignette neutre, jamais une image cassée', () => {
+    for (const r of A_BOIRE) {
+      expect(r.photoAVenir, r.id).toBeUndefined();
+      const h = renderToStaticMarkup(<VignetteRepas repas={r} className="x" />);
+      expect(h, r.id).toContain(`repas/${r.id}.webp`);
+    }
+    // Le filet de sécurité, s'il resservait : un repas sans photo.
+    const sansPhoto = { ...A_BOIRE[0]!, photoAVenir: true as const };
+    const petite = renderToStaticMarkup(<VignetteRepas repas={sansPhoto} className="x" />);
     expect(petite).toContain('data-photo-a-venir');
     expect(petite).not.toContain('<img');
     const grande = renderToStaticMarkup(
-      <VignetteRepas repas={A_BOIRE[0]!} className="x" alt={A_BOIRE[0]!.nom} grande />,
+      <VignetteRepas repas={sansPhoto} className="x" alt={sansPhoto.nom} grande />,
     );
     expect(texte(grande)).toContain('Photo à venir');
     expect(grande).toContain('role="img"');

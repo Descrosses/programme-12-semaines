@@ -232,10 +232,11 @@ réinterprète pas.**
     bibliothèque (31 repas), deux avec whey, deux sans, AUX COLLATIONS
     seulement, pour TOUS les programmes. La whey est du LAIT : écartée avec
     « Produits laitiers » (§4 des règles des repas ; le test de sécurité le
-    vérifie) et rangée à l'épicerie dans les courses. **Photos à venir** :
-    `photoAVenir` + `VignetteRepas` (vignette neutre, jamais d'image
-    cassée) ; le test refuse un repas marqué ainsi qui a sa photo, et
-    l'inverse — déposer `public/repas/<id>.webp` ET retirer le marqueur.
+    vérifie) et rangée à l'épicerie dans les courses. Photos de Guillaume
+    (27 novembre, PNG 1254 px ramenés en WebP 600 px par le navigateur,
+    ~55 Ko). Filet gardé pour un futur repas sans photo : `photoAVenir` +
+    `VignetteRepas` (vignette neutre) ; le test refuse un repas marqué ainsi
+    qui a sa photo, et l'inverse.
     Mesuré : elles entrent peu d'elles-mêmes dans une semaine (0 à 3 repas
     sur 28 à 42) ; elles servent surtout par « Changer ce repas ».
   - **Lot 3, « Remplacer » à apport égal** (`engine/equivalence.ts`,

@@ -292,35 +292,31 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
    * quantités sont celles de l'appli ; le moteur les ajuste comme n'importe
    * quel repas. Les flocons d'avoine se mixent crus.
    *
-   * Photos À VENIR (générées par Guillaume) : vignette neutre en attendant.
+   * Photos générées par Guillaume (27 novembre), même cadrage que les autres.
    */
   {
     id: 'shaker-avoine-whey-banane',
     nom: 'À boire : flocons d’avoine, whey, banane',
     creneaux: COLLATION,
     lignes: [l('avoine', 60), l('whey', 30), l('banane', 1)],
-    photoAVenir: true,
   },
   {
     id: 'shaker-avoine-whey-cacahuete-lait',
     nom: 'À boire : flocons d’avoine, whey, lait, beurre de cacahuète',
     creneaux: COLLATION,
     lignes: [l('avoine', 50), l('whey', 30), l('lait', 250), l('beurreCacahuete', 15)],
-    photoAVenir: true,
   },
   {
     id: 'smoothie-skyr-lait-avoine-fruits-rouges',
     nom: 'À boire : skyr, lait, flocons d’avoine, fruits rouges',
     creneaux: COLLATION,
     lignes: [l('skyr', 200), l('lait', 200), l('avoine', 50), l('fruitsRouges', 100)],
-    photoAVenir: true,
   },
   {
     id: 'smoothie-lait-banane-avoine-amandes',
     nom: 'À boire : lait, banane, flocons d’avoine, amandes',
     creneaux: COLLATION,
     lignes: [l('lait', 300), l('banane', 1), l('avoine', 50), l('amandes', 20)],
-    photoAVenir: true,
   },
 ];
 
