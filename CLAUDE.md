@@ -860,11 +860,17 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (43 au 27 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (44 au 27 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de
   presque toutes les planches (décision de Guillaume attendue).
+- **Planche du Barbell Offset Hold** (Guillaume, 27 novembre) : 39e planche
+  du PROGRAMME (`FICHES_POWER12`, mercredi dès S5), pas de la bibliothèque.
+  UNE seule pose (un maintien, rien à découper) et UN seul disque — c'est
+  voulu, la charge décentrée fait l'exercice : ne pas « corriger » la barre.
+  Virgules Nike effacées. Pas de texte muscles/erreurs (arrivée après le
+  tableau MAJK) : `EN_ATTENTE_DE_TEXTE`, ne pas l'inventer.
 - **Contraste S9-11, carte du lourd** : elle porte AUSSI la planche du
   mouvement explosif (box jump, plyo push-up, broad jump), chaque bouton
   nommé (« Fiche — … ») ; elle ne se grise qu'une fois le saut de la DERNIÈRE

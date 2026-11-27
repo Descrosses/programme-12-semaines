@@ -49,6 +49,7 @@ export const FICHES_POWER12: Readonly<Record<string, string>> = {
   'chest-supported-row': 'power12-chest-supported-row.webp',
   'face-pull': 'power12-face-pull.webp',
   'pallof-press': 'power12-pallof-press.webp',
+  'barbell-offset-hold': 'power12-barbell-offset-hold.webp', // un maintien : une pose, UN disque (voulu)
   'cable-external-rotation': 'power12-cable-external-rotation.webp',
 
   // --------------------------------------------------------- vendredi ---

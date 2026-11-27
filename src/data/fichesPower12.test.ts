@@ -23,7 +23,7 @@ import { FICHES_MASS4 } from '../programmes/mass4/fiches';
 const DOSSIER = join(process.cwd(), 'public', 'fiches');
 
 describe('fiches de mouvement de POWER 12', () => {
-  it('couvre exactement les trente-huit planches livrées, ni plus ni moins', () => {
+  it('couvre exactement les trente-neuf planches livrées, ni plus ni moins', () => {
     expect(Object.keys(FICHES_POWER12).sort()).toEqual(
       [
         'ab-wheel',
@@ -41,6 +41,7 @@ describe('fiches de mouvement de POWER 12', () => {
         'jump-squat-db',
         'landmine-press-kneeling',
         'pallof-press',
+        'barbell-offset-hold',
         'plyo-push-up',
         'pogo-jumps',
         'push-press',
@@ -92,6 +93,8 @@ describe('fiches de mouvement de POWER 12', () => {
 
   it('pose la planche sur la définition servie à la carte', () => {
     expect(exercise('deadlift').fiche).toBe('fiches/power12-deadlift.webp');
+    // Planche du 27 novembre : un maintien, une seule pose, un seul disque.
+    expect(exercise('barbell-offset-hold').fiche).toBe('fiches/power12-barbell-offset-hold.webp');
     expect(exercise('broad-jump').fiche).toBe('fiches/power12-broad-jump.webp');
   });
 
