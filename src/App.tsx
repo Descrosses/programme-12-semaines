@@ -13,6 +13,7 @@ import { ParcoursScreen } from './screens/ParcoursScreen';
 import { CombineScreen } from './screens/CombineScreen';
 import { MesuresScreen } from './screens/MesuresScreen';
 import { NutritionPrincipesScreen } from './screens/NutritionPrincipesScreen';
+import { ProgresForceScreen } from './screens/massforce/ProgresForce';
 import { ProgressVolumeScreen } from './screens/ProgressVolumeScreen';
 import { NutritionScreen } from './screens/NutritionScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
@@ -633,6 +634,9 @@ function renderScreen(
 
     case 'progress-volume':
       return <ProgressVolumeScreen key={dataVersion} programme={programme} />;
+
+    case 'progress-force':
+      return <ProgresForceScreen key={dataVersion} programmeId={programme.id} />;
 
     case 'nutrition':
       /*

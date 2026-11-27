@@ -65,6 +65,7 @@ export type VueProgramme =
   | 'nutrition-calcul'
   | 'progress'
   | 'progress-volume'
+  | 'progress-force'
   | 'combine'
   | 'evaluation'
   | 'mesures'

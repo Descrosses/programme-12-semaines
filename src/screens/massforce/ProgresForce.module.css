@@ -1,0 +1,155 @@
+/* L'onglet Progrès de MASS FORCE : écran propre à MASS, couleurs en jetons. */
+
+.screen {
+  padding: 0 0 var(--bottom-space);
+}
+
+.cartes {
+  display: grid;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.carte {
+  padding: 14px;
+  border: 1px solid var(--mass-carte-bord, var(--line));
+  border-radius: 16px;
+  background: var(--mass-carte-fond, var(--surface));
+  box-shadow: var(--mass-liseret, none);
+}
+
+.nom {
+  margin: 0;
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.375rem;
+  font-style: italic;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.materiel {
+  margin: 2px 0 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+.cible {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--mass-rouge, var(--accent));
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgb(120 10 16 / 28%) 0%, rgb(60 5 8 / 18%) 100%);
+}
+
+.cible span {
+  color: var(--accent-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cible b {
+  font-family: 'Barlow Mass', var(--font-cond);
+  font-size: 1.625rem;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.ligne {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+  font-size: var(--fs-small);
+}
+
+.ligne span {
+  color: var(--ink-2);
+}
+
+.graphique {
+  display: block;
+  width: 100%;
+  margin: 12px 0 2px;
+}
+
+.bande {
+  fill: rgb(194 60 80 / 22%);
+  stroke: var(--mass-rouge, var(--accent));
+  stroke-width: 1.5;
+}
+
+.axe {
+  fill: var(--ink-2);
+  font-family: var(--font);
+  font-size: 12px;
+}
+
+.trace {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-dasharray: 3 3;
+  stroke-width: 1.5;
+}
+
+.point {
+  fill: var(--ink-3);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.point[data-resultat='reussie'] {
+  fill: var(--vert);
+}
+
+.point[data-resultat='echec'] {
+  fill: var(--rouge);
+}
+
+.seances {
+  margin: 8px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--mass-carte-bord, var(--line));
+  list-style: none;
+}
+
+.seances li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-small);
+}
+
+.seances i {
+  flex: none;
+  width: 64px;
+  color: var(--ink-2);
+  font-style: normal;
+}
+
+.seances em {
+  margin-left: auto;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.seances em[data-resultat='reussie'] {
+  color: var(--vert);
+}
+
+.seances em[data-resultat='echec'] {
+  color: var(--rouge);
+}
+
+.vide,
+.note {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
