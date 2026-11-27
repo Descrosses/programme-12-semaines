@@ -871,6 +871,11 @@ matériel et la durée avant d'écrire la moindre séance.
   voulu, la charge décentrée fait l'exercice : ne pas « corriger » la barre.
   Virgules Nike effacées. Pas de texte muscles/erreurs (arrivée après le
   tableau MAJK) : `EN_ATTENTE_DE_TEXTE`, ne pas l'inventer.
+  **Position = BRAS TENDUS** contre les cuisses, prise en pronation
+  (Guillaume, 27 novembre) : la consigne disait « rack avant » et
+  contredisait la planche ; l'alternative « comme une valise » reste, sans
+  sa condition « si le rack avant est inconfortable ».
+  `data/consigneOffsetHold.test.ts`.
 - **Contraste S9-11, carte du lourd** : elle porte AUSSI la planche du
   mouvement explosif (box jump, plyo push-up, broad jump), chaque bouton
   nommé (« Fiche — … ») ; elle ne se grise qu'une fois le saut de la DERNIÈRE

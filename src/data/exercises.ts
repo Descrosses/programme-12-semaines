@@ -252,6 +252,13 @@ const LIST: ExerciseDef[] = [
    * moindre, et la préhension n'est plus le facteur limitant. C'est le même
    * plan de travail par un autre facteur limitant, donc pas un doublon.
    */
+  /*
+   * Position : barre tenue BRAS TENDUS contre les cuisses (Guillaume, 27
+   * novembre, comme sur sa planche). La consigne disait « rack avant » ; elle
+   * contredisait la fiche. L'alternative (la barre tenue par une extrémité,
+   * comme une valise) reste, sans sa condition « si le rack avant est
+   * inconfortable ». `consigneOffsetHold.test.ts`.
+   */
   def({
     id: 'barbell-offset-hold',
     name: 'Barbell Offset Hold',
@@ -259,11 +266,11 @@ const LIST: ExerciseDef[] = [
     role: 'core',
     measure: 'kg',
     intent:
-      'Barre en rack avant, disques d’un seul côté. Tu ne bouges pas : tu refuses de pencher. Côtes basses, bassin neutre, regard droit devant.',
+      'Barre tenue bras tendus contre les cuisses, prise en pronation, disques d’un seul côté. Tu ne bouges pas : tu refuses de pencher. Côtes basses, bassin neutre, regard droit devant.',
     progressionRule:
       '+2,5 kg du côté chargé quand les 30 s tiennent des deux côtés sans la moindre inclinaison. La durée d’abord, la charge ensuite.',
     altBasicFit:
-      'Si le rack avant est inconfortable : même barre tenue à une extrémité, bras le long du corps, comme une valise — le bras de levier reste.',
+      'À défaut : même barre tenue à une extrémité, bras le long du corps, comme une valise — le bras de levier reste.',
     cues: [
       'Objectif : résister à la flexion latérale et à la rotation sous une charge excentrée, debout, sans que la préhension décide à la place du tronc.',
       'Sollicite les obliques, le carré des lombes et les fessiers du côté opposé à la charge.',
