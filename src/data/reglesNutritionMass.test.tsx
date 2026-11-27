@@ -29,15 +29,19 @@ import {
   type Pesee,
   type ProfilNutrition,
 } from '../engine/reajustement';
-import { repasParDefaut } from '../engine/semaineRepas';
+import { composerSemaine, conseilRepasMass, repasParDefaut } from '../engine/semaineRepas';
+import { SemaineRepasSection } from '../components/SemaineRepasSection';
+import { FOOD_LIBRARY } from './foodLibrary';
 import { moduleParId } from '../programmes/registre';
 import { nutritionMass } from '../programmes/registre';
 import { PrincipesMass } from '../screens/NutritionPrincipesScreen';
 import { tousLesProgrammes } from './catalogue';
 import { GLUCIDES_ALERTE_G_KG, PROTEINES_G_KG } from './reglesCiblesNutrition';
 import {
+  CONSEIL_REPAS_MASS,
   GLUCIDES_ALERTE_G_KG_MASS_PRISE,
   PROTEINES_G_KG_MASS_PRISE,
+  REPAS_CONSEILLES_MASS_PRISE,
   REPAS_PAR_DEFAUT_MASS,
 } from './reglesNutritionMass';
 
@@ -275,6 +279,74 @@ describe('le nombre de repas d’une semaine composée la première fois', () =>
     expect(lire('../screens/NutritionScreen.tsx')).toContain(
       `${lu}programmeId, profil), cibleSemaine.kcal)`,
     );
+  });
+});
+
+describe('le conseil des 5 repas (Guillaume : « 4 repas, conseillé 5 […] mais 4 est possible »)', () => {
+  const prise = { regard: 'mass' as const, objectif: 'prise' };
+
+  it('le nombre conseillé et la phrase, relus dans le .md', () => {
+    expect(REPAS_CONSEILLES_MASS_PRISE).toBe(5);
+    expect(md).toContain('moins de **5 repas** conseillés');
+    // La phrase affichée est celle du .md, mot pour mot (citation « > »).
+    const cite = md
+      .split('\n')
+      .filter((l) => l.trimStart().startsWith('> '))
+      .map((l) => l.trimStart().slice(2))
+      .join(' ');
+    expect(cite).toContain(CONSEIL_REPAS_MASS);
+  });
+
+  it('sous MASS en prise de masse, tant que la semaine a moins de 5 repas', () => {
+    expect(conseilRepasMass('mass4', prise, 4, 3000)).toBe(true);
+    expect(conseilRepasMass('mass-force', prise, 4, 3000)).toBe(true);
+    // 5 ou 6 repas : plus rien à conseiller.
+    expect(conseilRepasMass('mass4', prise, 5, 3000)).toBe(false);
+    expect(conseilRepasMass('mass4', prise, 6, 3000)).toBe(false);
+    // Une cible qui ne tient pas 5 repas (sous 1 500 kcal) : on ne conseille
+    // pas ce que l'appli refuserait de composer.
+    expect(conseilRepasMass('mass4', prise, 4, 1400)).toBe(false);
+    expect(conseilRepasMass('mass4', prise, 4, 1500)).toBe(true);
+  });
+
+  it('jamais hors MASS, ni hors prise de masse, ni sans profil', () => {
+    expect(conseilRepasMass('power12', prise, 4, 3000)).toBe(false);
+    expect(conseilRepasMass(null, prise, 4, 3000)).toBe(false);
+    expect(conseilRepasMass('mass4', { regard: 'mass', objectif: 'perte' }, 4, 3000)).toBe(false);
+    expect(conseilRepasMass('mass4', { objectif: 'prise' }, 4, 3000)).toBe(false);
+    expect(conseilRepasMass('mass4', null, 4, 3000)).toBe(false);
+  });
+
+  it('à l’écran : au-dessus de « + Ajouter un repas », seulement quand il est donné', () => {
+    const rendu = (conseil?: string) =>
+      renderToStaticMarkup(
+        <SemaineRepasSection
+          semaine={composerSemaine({ kcal: 3000, proteinG: 160 }, [], FOOD_LIBRARY, '2026-11-27')}
+          cibleActuelle={{ kcal: 3000, proteinG: 160 }}
+          jourInitial={4}
+          aujourdhui="2026-11-27"
+          cible={null}
+          preferes={[]}
+          catalogue={FOOD_LIBRARY}
+          customs={[]}
+          onCreateCustom={() => {}}
+          onChange={() => {}}
+          onRecomposer={() => {}}
+          onQuitter={() => {}}
+          {...(conseil === undefined ? {} : { conseilRepas: conseil })}
+        />,
+      );
+    expect(rendu()).not.toContain('data-conseil-repas');
+    const h = rendu(CONSEIL_REPAS_MASS);
+    expect(h.indexOf('data-conseil-repas')).toBeGreaterThan(-1);
+    expect(h.indexOf('data-conseil-repas')).toBeLessThan(h.indexOf('data-ajouter-repas'));
+    expect(texte(h)).toContain('5 repas par jour sont conseillés');
+    expect(texte(h)).toContain('4 restent possibles.');
+    const ecran = lire('../screens/NutritionScreen.tsx');
+    expect(ecran).toMatch(
+      /conseilRepasMass\(\s*programmeId,\s*profil,\s*nombreDeRepas\(semaine\),/,
+    );
+    expect(ecran).toContain('? { conseilRepas: CONSEIL_REPAS_MASS }');
   });
 });
 

@@ -28,3 +28,14 @@ export const REPAS_PAR_DEFAUT_MASS: Readonly<Record<string, NombreRepas>> = {
   mass8: 5,
   mass4: 4,
 };
+
+/**
+ * §6 — le nombre de repas CONSEILLÉ sous MASS en prise de masse (Guillaume,
+ * 27 novembre : « 4 repas, conseillé 5 pour une meilleure répartition des
+ * macros mais 4 est possible »). Un conseil affiché, jamais une contrainte.
+ */
+export const REPAS_CONSEILLES_MASS_PRISE: NombreRepas = 5;
+
+/** §6 — le conseil, mot pour mot. */
+export const CONSEIL_REPAS_MASS =
+  '5 repas par jour sont conseillés pour mieux répartir tes protéines, tes glucides et tes lipides. 4 restent possibles.';

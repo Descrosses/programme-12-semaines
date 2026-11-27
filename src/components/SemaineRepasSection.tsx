@@ -255,6 +255,7 @@ export function SemaineRepasSection({
   onExclusions,
   apresRepas,
   point,
+  conseilRepas,
 }: {
   semaine: SemaineRepas;
   /** La cible d'aujourd'hui dans les réglages, pour dire si elle a changé. */
@@ -282,6 +283,11 @@ export function SemaineRepasSection({
   apresRepas?: ReactNode;
   /** Le point des 2 semaines quand il n'est pas dû : sa date, et sa phrase. */
   point?: { resume: string; detail: ReactNode };
+  /**
+   * Un conseil sur le nombre de repas, dit au-dessus de « + Ajouter un
+   * repas » (MASS en prise de masse : `regles-nutrition-mass.md`, §6).
+   */
+  conseilRepas?: string;
 }) {
   const [jour, setJour] = useState(jourInitial);
   const exclus = alimentsExclus(exclusions);
@@ -431,6 +437,11 @@ export function SemaineRepasSection({
         le dernier repas, là où on le cherche. Il passe par la recomposition :
         un repas de plus change la part de tous les autres.
       */}
+      {conseilRepas !== undefined && confirme?.ou !== 'ajout' && (
+        <p className={styles.noteLarge} data-conseil-repas>
+          {conseilRepas}
+        </p>
+      )}
       {confirme?.ou === 'ajout' ? (
         <section className={styles.bandeau} data-semaine="ajouter-repas">
           {confirmation()}

@@ -163,10 +163,22 @@ moins quatre repas pour atteindre 1,6 g/kg/j, 0,55 g/kg par repas pour
   ailleurs). La personne garde le choix 4 · 5 · 6
   (`regles-repas-automatiques.md`, §1), et un nombre que la cible ne tient
   pas n'est jamais composé.
-- **MASS CONGESTION reste à 4 par défaut.** Le premier de ses six principes
-  écrit « 4 prises par jour » : une semaine de 5 repas sous ce principe se
-  contredirait à l'écran. Ajouté en codant le lot 1 (27 novembre) — **à
-  confirmer par Guillaume** ; la personne peut toujours passer à 5 ou 6.
+- **MASS CONGESTION reste à 4 par défaut** : le premier de ses six principes
+  écrit « 4 prises par jour ». **Décidé** (Guillaume, 27 novembre : « 4
+  repas, conseillé 5 pour une meilleure répartition des macros mais 4 est
+  possible »).
+- **Le conseil des 5 repas.** Sous MASS en prise de masse, tant que la
+  semaine compte moins de **5 repas** conseillés et que la cible en tient 5
+  (`regles-repas-automatiques.md`, §1), l'écran le dit au-dessus de
+  « + Ajouter un repas », mot pour mot :
+
+  > 5 repas par jour sont conseillés pour mieux répartir tes protéines, tes
+  > glucides et tes lipides. 4 restent possibles.
+
+  Un conseil, jamais une contrainte : rien ne se recompose tout seul.
+  Pourquoi 5 répartit mieux, avec 2,0 g/kg : à 4 repas les repas principaux
+  portent 0,50 à 0,60 g/kg de protéines (au-dessus du repère de 0,55) ; à 5,
+  ils en portent 0,40 à 0,50.
 - **Des collations à boire** dans la bibliothèque : flocons d'avoine mixés,
   une source de protéines, un fruit, un peu de gras. Elles servent aux
   grosses cibles, où manger toutes ses calories devient difficile. Idée
@@ -352,7 +364,8 @@ Rythme attendu : 285 kcal de surplus par jour, environ 0,26 kg par semaine
 ## 13. Lots de code — chacun attend son « go »
 
 1. **Ouvrir le calcul à MASS — FAIT (27 novembre)** : protéines à 2,0 g/kg
-   en prise, alerte glucides à 3 g/kg, repas par défaut, écran Nutrition
+   en prise, alerte glucides à 3 g/kg, repas par défaut et conseil des 5
+   repas, écran Nutrition
    MASS (les six principes de CONGESTION gardés en tête, repliés une fois la
    cible posée). Pas fait : le calcul du coach (`#/admin`) reste aux règles
    communes.

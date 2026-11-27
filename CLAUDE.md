@@ -212,7 +212,12 @@ réinterprète pas.**
   avec. `FAMILLES_AVEC_CALCUL` compte MASS. Repas par défaut d'une semaine
   composée la 1re fois (`repasParDefaut`, plafonné par `nombreAdmis`) : 5
   sous FORCE et HYPERTROPHIE, **4 sous CONGESTION** (son 1er principe écrit
-  « 4 prises par jour » — ajouté en codant, à confirmer par Guillaume).
+  « 4 prises par jour » ; DÉCIDÉ par Guillaume : « 4 repas, conseillé 5
+  pour une meilleure répartition des macros mais 4 est possible »). D'où le
+  CONSEIL des 5 repas (`conseilRepasMass`, `CONSEIL_REPAS_MASS`) : une
+  phrase au-dessus de « + Ajouter un repas », sous MASS en prise de masse,
+  tant que la semaine a moins de 5 repas et que la cible en tient 5 — un
+  conseil, rien ne se recompose seul.
   Écran : `NutritionPrincipesScreen` enveloppe `NutritionScreen`
   (`sansPlanHistorique` : JAMAIS le plan de POWER sous MASS, même réglage
   allumé ; `avant`, `programmeId`). Vues : `nutrition-principes`
@@ -228,6 +233,11 @@ réinterprète pas.**
   prudence toujours affichée). L'ebook de départ n'est ni reproduit ni
   versé au dépôt (ses conditions l'interdisent) : seules des idées
   générales, avec nos valeurs.
+  **Le même aliment plusieurs fois dans la journée est ACCEPTÉ** (Guillaume,
+  27 novembre : trois repas aux œufs, skyr matin et après-midi, « ce n'est
+  pas si dérangeant […] l'utilisateur choisira ») — écrit au §3 de
+  `regles-repas-automatiques.md`. Ne pas ajouter de règle « une seule fois
+  la même source de protéines ».
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 

@@ -148,6 +148,12 @@ plus cher qu'un plat qui revient ; « Changer ce repas » reste là.
 
 Aucun hasard : les mêmes réponses donnent la même semaine.
 
+**Le même aliment plusieurs fois dans la journée : accepté.** Trois repas
+aux œufs, du skyr matin et après-midi, saumon et pâtes midi et soir : aucune
+règle ne l'interdit, et c'est voulu (Guillaume, 27 novembre : « ce n'est pas
+si dérangeant […] l'utilisateur choisira »). « Changer ce repas » est là
+pour ça. Ne pas ajouter de règle « une seule fois la même source ».
+
 ---
 
 ## 4. Ce que la personne ne mange pas (exclusions)

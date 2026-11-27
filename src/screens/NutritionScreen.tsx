@@ -85,6 +85,7 @@ import { ProposerSemaine, SemaineRepasSection } from '../components/SemaineRepas
 import { aujourdhuiLocal } from '../state/dernierExport';
 import type { ExclusionId } from '../data/exclusionsRepas';
 import { alimentsExclus } from '../engine/exclusionsRepas';
+import { CONSEIL_REPAS_MASS } from '../data/reglesNutritionMass';
 import { PointDeuxSemaines } from '../components/PointDeuxSemaines';
 import { ResteDuJour } from '../components/ResteDuJour';
 import { pointDesDeuxSemaines, type ProfilNutrition } from '../engine/reajustement';
@@ -94,7 +95,9 @@ import {
   composerSemaine,
   jourDeSemaine,
   mangeDesRepas,
+  conseilRepasMass,
   nombreAdmis,
+  nombreDeRepas,
   repasFaits,
   repasParDefaut,
   type SemaineRepas,
@@ -569,6 +572,14 @@ export function NutritionScreen({
             cibleActuelle={cibleSemaine}
             jourInitial={jourAujourdhui}
             aujourdhui={aujourdhuiLocal()}
+            {...(conseilRepasMass(
+              programmeId,
+              profil,
+              nombreDeRepas(semaine),
+              (cibleSemaine ?? semaine.cible).kcal,
+            )
+              ? { conseilRepas: CONSEIL_REPAS_MASS }
+              : {})}
             apresRepas={
               <>
                 {aliments}

@@ -38,7 +38,7 @@ import {
   type Creneau,
   type NombreRepas,
 } from '../data/reglesRepasAutomatiques';
-import { REPAS_PAR_DEFAUT_MASS } from '../data/reglesNutritionMass';
+import { REPAS_CONSEILLES_MASS_PRISE, REPAS_PAR_DEFAUT_MASS } from '../data/reglesNutritionMass';
 import { repasExclu } from './exclusionsRepas';
 import { macrosDeLigne, type Catalogue } from './planPersoTotaux';
 
@@ -96,6 +96,27 @@ export function repasParDefaut(
     return NOMBRE_DE_REPAS_PAR_DEFAUT;
   }
   return REPAS_PAR_DEFAUT_MASS[programmeId] ?? NOMBRE_DE_REPAS_PAR_DEFAUT;
+}
+
+/**
+ * `regles-nutrition-mass.md`, §6 — faut-il dire « 5 repas sont conseillés » ?
+ * Sous un programme MASS, en prise de masse, tant que la semaine en compte
+ * moins et que la cible en tient 5. Jamais ailleurs.
+ */
+export function conseilRepasMass(
+  programmeId: string | null,
+  profil: { regard?: 'mass'; objectif: string } | null,
+  nombre: NombreRepas,
+  kcal: number,
+): boolean {
+  return (
+    programmeId !== null &&
+    programmeId in REPAS_PAR_DEFAUT_MASS &&
+    profil?.regard === 'mass' &&
+    profil.objectif === 'prise' &&
+    nombre < REPAS_CONSEILLES_MASS_PRISE &&
+    nombresPossibles(kcal).includes(REPAS_CONSEILLES_MASS_PRISE)
+  );
 }
 
 /** §1 — les créneaux composés pour ce nombre de repas, dans l'ordre de la journée. */
