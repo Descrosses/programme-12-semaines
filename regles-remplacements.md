@@ -85,6 +85,10 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 | Suitcase Carry | Flexion latérale | Samedi | Marche kettlebell en rack, d'un seul côté (planche à faire) | Marche kettlebell bras tendu au-dessus de la tête, d'un seul côté (planche à faire) |
 | Farmer Carry | Porté symétrique | Vendredi | Marche à la trap bar (planche à faire) | Marche avec deux kettlebells (planche à faire) |
 
+**Pendlay row** : dans POWER CYCLE 2, il remplacera l'Explosive Cable Row
+dans le programme lui-même (décision de Guillaume, 27 novembre). Dans le
+cycle 1, il reste un remplaçant au choix.
+
 **En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 4 qui ont
 déjà leur planche et 46 à générer.
 

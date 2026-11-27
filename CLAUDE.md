@@ -425,6 +425,11 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 | LADIES (ex-FEMMES) | Parcours de 8 étapes. Le cycle 1 (FEMMES 8, affiché LADIES CYCLE 1) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
+**POWER CYCLE 2 (`power-cycle2`, à venir) — décisions déjà prises**, à
+appliquer quand Guillaume l'écrira, RIEN à coder avant : le **Pendlay row
+remplace l'Explosive Cable Row** (Guillaume, 27 novembre, « décision
+prise »). Le POWER CYCLE 1 (`power12`) garde l'Explosive Cable Row.
+
 **Renommée LADIES** (Guillaume, 23 novembre, « go ladies ») : seuls les
 NOMS affichés changent (famille « LADIES », étapes « LADIES CYCLE n » /
 « LADIES TRANSITION n », aussi dans `regles-orientation-programmes.md`).
