@@ -150,9 +150,13 @@ réinterprète pas.**
 
   **Grille de la bibliothèque — FAITE** (Guillaume, 27 novembre, « go grille
   bibliothèque, pas d'exclusion soja ») : 33 repas ajoutés (64 au total),
-  `photoAVenir` tant que leur photo manque (vignette neutre) — 15 photos
-  livrées le 27 novembre, 18 attendent (la 12e livrée montrait des flocons
-  d'avoine sur un repas SANS gluten : écartée, à refaire). Règle au §5 de
+  `photoAVenir` tant que leur photo manque (vignette neutre) — 29 photos
+  livrées le 27 novembre, 4 attendent. Deux écartées parce qu'elles
+  montraient un aliment d'une exclusion absent du repas (flocons d'avoine
+  sur un repas sans gluten, fruits à coque sur fromage blanc-pomme) : une
+  photo ne doit jamais faire croire qu'un repas « sûr » contient un
+  allergène. Les photos livrées avec leur titre incrusté sont recadrées
+  SOUS le titre (l'appli écrit le nom). Règle au §5 de
   `regles-repas-automatiques.md`, `GRILLE_BIBLIOTHEQUE` : au moins 7 repas par
   type (petit-déjeuner, collation, plat) pour CHAQUE exclusion seule, au moins
   5 pour CHAQUE paire (`data/grilleBibliotheque.test.ts`, 7 + 21 cas). Quatre

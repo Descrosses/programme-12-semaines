@@ -19,27 +19,13 @@ import { macrosDeLigne } from '../engine/planPersoTotaux';
 
 /**
  * La grille du 27 novembre (« go grille bibliothèque ») : les repas qui
- * attendent ENCORE leur photo (15 livrées le 27 novembre).
+ * attendent ENCORE leur photo (29 livrées le 27 novembre).
  */
 const GRILLE_27_NOVEMBRE = [
   'yaourt-soja-banane-fruits-rouges-galettes',
-  'galettes-cacahuete-pomme',
-  'pois-chiches-tomates-concombre',
-  'tofu-tomates-galettes',
-  'skyr-fruits-rouges',
   'fromage-blanc-pomme',
-  'oeufs-durs-tomates-galettes',
-  'jambon-galettes-concombre',
-  'thon-galettes-tomates',
-  'boisson-soja-banane-avoine',
-  'tofu-riz-brocolis',
-  'tofu-quinoa-poivrons-courgettes',
-  'pois-chiches-semoule-courgettes-carottes',
   'lentilles-patate-douce-epinards',
-  'pois-chiches-quinoa-crudites-avocat',
   'haricots-rouges-patate-douce-poivrons',
-  'tofu-pates-tomates-champignons',
-  'oeufs-riz-epinards',
 ];
 
 describe('la bibliothèque', () => {

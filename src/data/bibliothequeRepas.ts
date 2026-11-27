@@ -433,28 +433,24 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Galettes de riz, beurre de cacahuète, pomme',
     creneaux: COLLATION,
     lignes: [l('galettesRiz', 30), l('beurreCacahuete', 15), l('pomme', 1)],
-    photoAVenir: true,
   },
   {
     id: 'pois-chiches-tomates-concombre',
     nom: 'Pois chiches, tomates, concombre, huile d’olive',
     creneaux: COLLATION,
     lignes: [l('poisChiches', 120), l('concombre', 100), l('tomates', 100), l('huile', 5)],
-    photoAVenir: true,
   },
   {
     id: 'tofu-tomates-galettes',
     nom: 'Tofu, tomates, galettes de riz',
     creneaux: COLLATION,
     lignes: [l('tofu', 100), l('tomates', 100), l('galettesRiz', 20)],
-    photoAVenir: true,
   },
   {
     id: 'skyr-fruits-rouges',
     nom: 'Skyr, fruits rouges',
     creneaux: COLLATION,
     lignes: [l('skyr', 200), l('fruitsRouges', 100)],
-    photoAVenir: true,
   },
   {
     id: 'fromage-blanc-pomme',
@@ -468,28 +464,24 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Œufs durs, tomates, galettes de riz',
     creneaux: COLLATION,
     lignes: [l('oeuf', 2), l('tomates', 100), l('galettesRiz', 20)],
-    photoAVenir: true,
   },
   {
     id: 'jambon-galettes-concombre',
     nom: 'Jambon blanc, galettes de riz, concombre',
     creneaux: COLLATION,
     lignes: [l('jambonBlanc', 80), l('galettesRiz', 30), l('concombre', 100)],
-    photoAVenir: true,
   },
   {
     id: 'thon-galettes-tomates',
     nom: 'Thon, galettes de riz, tomates',
     creneaux: COLLATION,
     lignes: [l('thon', 80), l('galettesRiz', 30), l('tomates', 100)],
-    photoAVenir: true,
   },
   {
     id: 'boisson-soja-banane-avoine',
     nom: 'À boire : boisson au soja, banane, flocons d’avoine',
     creneaux: COLLATION,
     lignes: [l('boissonSoja', 250), l('banane', 1), l('avoine', 20)],
-    photoAVenir: true,
   },
   // ----------------------------------------------------- plats (midi, soir) --
   {
@@ -497,7 +489,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Tofu, riz, brocolis',
     creneaux: PLAT,
     lignes: [l('tofu', 200), l('riz', 250), l('brocolisCuits', 150), l('huile', 10)],
-    photoAVenir: true,
   },
   {
     id: 'tofu-quinoa-poivrons-courgettes',
@@ -510,7 +501,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('courgettes', 100),
       l('huile', 10),
     ],
-    photoAVenir: true,
   },
   {
     id: 'pois-chiches-semoule-courgettes-carottes',
@@ -523,7 +513,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('carottes', 100),
       l('huile', 10),
     ],
-    photoAVenir: true,
   },
   {
     id: 'lentilles-patate-douce-epinards',
@@ -543,7 +532,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('concombre', 100),
       l('avocat', 60),
     ],
-    photoAVenir: true,
   },
   {
     id: 'haricots-rouges-patate-douce-poivrons',
@@ -569,14 +557,12 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
       l('champignons', 100),
       l('huile', 10),
     ],
-    photoAVenir: true,
   },
   {
     id: 'oeufs-riz-epinards',
     nom: 'Œufs au plat, riz, épinards',
     creneaux: PLAT,
     lignes: [l('oeuf', 4), l('riz', 250), l('epinards', 150), l('huile', 5)],
-    photoAVenir: true,
   },
 ];
 
