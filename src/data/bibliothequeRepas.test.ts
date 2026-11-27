@@ -17,12 +17,6 @@ import { FOOD_LIBRARY } from './foodLibrary';
 import { REPAS_PERSO } from './planPerso';
 import { macrosDeLigne } from '../engine/planPersoTotaux';
 
-/**
- * La grille du 27 novembre (« go grille bibliothèque ») : les repas qui
- * attendent ENCORE leur photo (31 livrées le 27 novembre).
- */
-const GRILLE_27_NOVEMBRE = ['yaourt-soja-banane-fruits-rouges-galettes', 'fromage-blanc-pomme'];
-
 describe('la bibliothèque', () => {
   it('compte soixante-quatre repas : 31 photographiés + les 33 de la grille du 27 novembre', () => {
     expect(BIBLIOTHEQUE_REPAS).toHaveLength(64);
@@ -55,10 +49,8 @@ describe('la bibliothèque', () => {
     }
   });
 
-  it('seuls des repas de la grille du 27 novembre attendent encore leur photo', () => {
-    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual(
-      GRILLE_27_NOVEMBRE,
-    );
+  it('aucun repas n’attend plus sa photo (les 33 de la grille ont la leur depuis le 27 novembre)', () => {
+    expect(BIBLIOTHEQUE_REPAS.filter((r) => r.photoAVenir).map((r) => r.id)).toEqual([]);
   });
 
   it('aucune photo orpheline', () => {

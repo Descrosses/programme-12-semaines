@@ -150,8 +150,8 @@ réinterprète pas.**
 
   **Grille de la bibliothèque — FAITE** (Guillaume, 27 novembre, « go grille
   bibliothèque, pas d'exclusion soja ») : 33 repas ajoutés (64 au total),
-  `photoAVenir` tant que leur photo manque (vignette neutre) — 31 photos
-  livrées le 27 novembre, 2 attendent. Deux écartées parce qu'elles
+  `photoAVenir` tant que leur photo manque (vignette neutre) — les 33 photos
+  livrées le 27 novembre, plus aucun repas en attente. Deux écartées parce qu'elles
   montraient un aliment d'une exclusion absent du repas (flocons d'avoine
   sur un repas sans gluten, fruits à coque sur fromage blanc-pomme) : une
   photo ne doit jamais faire croire qu'un repas « sûr » contient un
@@ -169,10 +169,14 @@ réinterprète pas.**
   conserve). **Seuils 5 et 6 repas re-mesurés** : 1 200 kcal tous les deux
   (au lieu de 1 500 / 1 900) — dès 1 200, 5 et 6 repas tiennent aussi bien
   que 4. Plus aucune combinaison des 7 familles ne vide un créneau (la
-  phrase « aucun repas pour… » reste en filet). **Point ouvert** : la règle
-  « protéines avant la variété » sert beaucoup de tofu (jusqu'à 970 g un
-  jour sans exclusion, 1,2 kg/j en végétalien à 180 g) — limite « un repas
-  au tofu par jour » chiffrée, en attente de Guillaume.
+  phrase « aucun repas pour… » reste en filet). **Au plus un repas au tofu
+  par jour** (« go limite tofu », 27 novembre ; §3 de
+  `regles-repas-automatiques.md`, `UN_REPAS_PAR_JOUR`) : sans elle, « les
+  protéines avant la variété » servait jusqu'à 970 g de tofu un jour sans
+  exclusion, 1,2 kg/j en végétalien à 180 g. Relâchée en TOUT DERNIER (un
+  créneau ne reste jamais vide pour elle) ; semaine composée seulement,
+  jamais « Changer ce repas ». Coût mesuré : végétalien à 180 g visés →
+  144-150 g au lieu de 170-177. `engine/limiteTofu.test.ts`.
 
   **Refonte « Journal » + nombre de repas** (Guillaume, 26 novembre, « go
   refonte C avec la possibilité d'ajouter un repas » — maquette C parmi
@@ -288,7 +292,8 @@ réinterprète pas.**
   27 novembre : trois repas aux œufs, skyr matin et après-midi, « ce n'est
   pas si dérangeant […] l'utilisateur choisira ») — écrit au §3 de
   `regles-repas-automatiques.md`. Ne pas ajouter de règle « une seule fois
-  la même source de protéines ».
+  la même source de protéines ». SEULE exception : le tofu (un repas par
+  jour, voir « Grille de la bibliothèque »).
 - `regles-orientation-programmes.md` — orienter vers un programme à partir du
   bilan sportif (validé le 23 novembre, codé : voir « Bilan sportif » plus bas).
 

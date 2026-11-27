@@ -132,7 +132,8 @@ Pour chaque jour, dans l'ordre des repas du §1 (ceux du nombre choisi), parmi l
 bibliothèque prévus pour ce créneau **qui tiennent leur part à ± 10 % une
 fois ajustés** (les autres restent dans la bibliothèque) :
 
-1. jamais deux fois le même repas le même jour ;
+1. jamais deux fois le même repas le même jour, et **au plus un repas au
+   tofu par jour** (voir plus bas) ;
 2. jamais le même repas que la veille au même créneau ;
 3. celui qui tient **le mieux ses protéines** une fois ajusté (écart compté
    par tranches de 10 % de sa part ; sans protéines dans la cible, règle
@@ -144,7 +145,7 @@ fois ajustés** (les autres restent dans la bibliothèque) :
 
 Si aucun repas ne passe, les règles se relâchent dans cet ordre plutôt que
 de laisser le créneau vide : d'abord la règle 2 (la veille), puis la
-tolérance de ± 10 %.
+tolérance de ± 10 %, et en tout dernier la limite du tofu.
 
 **Pourquoi les protéines avant la variété** (mesuré le 26 novembre, 7
 profils de 1 200 à 4 000 kcal) : variété d'abord, les 27 plats tournent
@@ -161,6 +162,17 @@ aux œufs, du skyr matin et après-midi, saumon et pâtes midi et soir : aucune
 règle ne l'interdit, et c'est voulu (Guillaume, 27 novembre : « ce n'est pas
 si dérangeant […] l'utilisateur choisira »). « Changer ce repas » est là
 pour ça. Ne pas ajouter de règle « une seule fois la même source ».
+
+**Une seule exception : au plus un repas au tofu par jour** (choix de
+l'appli, Guillaume, 27 novembre : « go limite tofu »). Les plats au tofu
+tiennent très bien leurs protéines, donc la règle 3 les choisissait sans
+cesse, à des quantités qu'on ne mange pas. Mesuré le 27 novembre, sans la
+limite : jusqu'à 970 g de tofu un jour pour quelqu'un qui mange de tout,
+1,2 kg par jour en végétalien à 180 g de protéines (2 150 kcal). Avec la
+limite : 395 g au plus ; aucune perte de protéines pour qui mange de tout,
+4 à 9 g de moins en végétarien, et en végétalien à 180 g visés, 144 à 150 g
+au lieu de 170 à 177 g. La limite ne vaut que pour la semaine composée par
+l'appli : « Changer ce repas » propose toujours tous les repas.
 
 ---
 

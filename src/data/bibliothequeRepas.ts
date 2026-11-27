@@ -407,7 +407,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Yaourt au soja, banane, fruits rouges, galettes de riz',
     creneaux: MATIN,
     lignes: [l('yaourtSoja', 250), l('banane', 1), l('fruitsRouges', 100), l('galettesRiz', 30)],
-    photoAVenir: true,
   },
   {
     id: 'tofu-avocat-tomates-galettes',
@@ -457,7 +456,6 @@ export const BIBLIOTHEQUE_REPAS: readonly RepasBibliotheque[] = [
     nom: 'Fromage blanc, pomme',
     creneaux: COLLATION,
     lignes: [l('fromageBlanc', 200), l('pomme', 1)],
-    photoAVenir: true,
   },
   {
     id: 'oeufs-durs-tomates-galettes',

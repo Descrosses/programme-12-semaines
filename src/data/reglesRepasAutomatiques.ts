@@ -79,3 +79,10 @@ export const JOURS_SEMAINE = [
  * d'exclusions doit laisser.
  */
 export const GRILLE_BIBLIOTHEQUE = { seule: 7, paire: 5 } as const;
+
+/**
+ * §3 — les aliments qu'un seul repas par jour peut contenir, dans la semaine
+ * composée par l'appli (« Changer ce repas » n'est pas concerné). Relâché en
+ * tout dernier si aucun autre repas ne passe.
+ */
+export const UN_REPAS_PAR_JOUR: readonly string[] = ['tofu'];
