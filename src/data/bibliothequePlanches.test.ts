@@ -2,7 +2,7 @@
  * La bibliothèque des planches « en attente d'un programme » (Guillaume,
  * 26 novembre : « garde-les dans la bibliothèque dès que ce mouvement fera
  * partie d'un programme ») : Landmine press assis, Wall ball, Copenhague
- * plank.
+ * plank, et (27 novembre) Landmine single leg squat.
  *
  * Ces tests figent :
  * - chaque planche est retrouvée par son NOM et ses ALIAS, casse et accents
@@ -25,6 +25,11 @@ const PLANCHES = [
   ['Landmine press assis', 'power12-landmine-press-assis', ['Seated landmine press']],
   ['Wall ball', 'power12-wall-ball', ['Wall balls']],
   ['Copenhague plank', 'power12-copenhague-plank', ['Copenhagen plank']],
+  [
+    'Landmine single leg squat',
+    'power12-landmine-single-leg-squat',
+    ['Landmine single-leg squat', 'Squat unijambiste landmine'],
+  ],
 ] as const;
 
 describe('bibliothèque : planches gardées pour les programmes à venir', () => {
@@ -44,6 +49,9 @@ describe('bibliothèque : planches gardées pour les programmes à venir', () =>
       { id: 'c', nom: 'Copenhague plank' },
       { id: 'd', nom: 'Copenhagen plank' },
       { id: 'e', nom: 'Wall' },
+      { id: 'f', nom: 'Landmine single leg squat' },
+      { id: 'g', nom: 'Squat unijambiste landmine' },
+      { id: 'h', nom: 'Landmine squat' },
     ];
     const p = proposerFiches(exercices, new Set(), candidatesNatives());
     const parExercice = Object.fromEntries(
@@ -54,6 +62,8 @@ describe('bibliothèque : planches gardées pour les programmes à venir', () =>
       b: 'fiches/power12-wall-ball.webp',
       c: 'fiches/power12-copenhague-plank.webp',
       d: 'fiches/power12-copenhague-plank.webp',
+      f: 'fiches/power12-landmine-single-leg-squat.webp',
+      g: 'fiches/power12-landmine-single-leg-squat.webp',
     });
   });
 

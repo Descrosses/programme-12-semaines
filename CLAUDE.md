@@ -841,6 +841,14 @@ matériel et la durée avant d'écrire la moindre séance.
   `fichesNatives.ts`) et PROPOSÉE à l'import sous son nom ET ses alias (une
   même image sous plusieurs noms reste une planche). Entrées du 26 novembre :
   Landmine press assis, Wall ball, Copenhague plank (`bibliothequePlanches.test.ts`).
+  Entrée du 27 novembre : **Landmine single leg squat** (générée par ChatGPT
+  après trois essais Gemini ratés, d'après des photos qui n'ont servi que de
+  repère). Ce qui fait l'exercice, vérifié : barre sur le CÔTÉ, appui sur la
+  jambe la plus ÉLOIGNÉE de la barre, jambe libre côté barre et en l'air,
+  corps penché vers la barre (buste à angle droit avec elle). Gemini
+  remettait la barre devant, ou l'appui côté barre : une telle planche ne
+  passe pas. L'athlète n'est pas tout à fait celui des autres planches
+  (accepté par Guillaume) ; marques des chaussettes et du short effacées.
   Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
   (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
@@ -852,7 +860,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (42 au 26 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (43 au 27 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de
