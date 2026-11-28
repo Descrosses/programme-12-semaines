@@ -47,7 +47,7 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 | Bulgarian Split Squat | Lundi | Landmine single leg squat (planche ✓) | Fentes arrière haltères (planche ✓) |
 | Romanian Deadlift | Lundi | RDL haltères (planche ✓) | Good morning barre (planche ✓) |
 | Hip Thrust | Samedi | Glute bridge barre au sol (planche ✓) | Pull-through à la poulie basse (planche ✓) |
-| Nordic Curl | Samedi | Leg curl allongé, tempo 4-0-1-0 (planche ✓) | Glute-ham raise (planche à faire) |
+| Nordic Curl | Samedi | Leg curl allongé, tempo 4-0-1-0 (planche ✓) | Glute-ham raise (planche ✓) |
 | Single-Leg RDL haltère | Samedi | RDL en appui décalé haltères (planche à faire) | Single-leg RDL au landmine (planche ✓) |
 
 ### Haut du corps — poussée
@@ -89,14 +89,14 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 dans le programme lui-même (décision de Guillaume, 27 novembre). Dans le
 cycle 1, il reste un remplaçant au choix.
 
-**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 19 qui ont
-déjà leur planche et 31 à générer (au 28 novembre). Le rowing haltère
+**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 20 qui ont
+déjà leur planche et 30 à générer (au 28 novembre). Le rowing haltère
 unilatéral sur banc et sa version explosive partagent la même planche,
 avec des consignes différentes (décision de Guillaume). Planches reçues et
 refusées : Pendlay row, deux fois (le buste se relève pendant le tirage :
-il doit rester parallèle au sol, seuls les bras bougent), glute-ham raise
-(les cuisses restent à plat : c'est une extension du dos, pas une flexion
-des genoux) et rotation externe allongé sur le côté (sur la 3e vignette, le
+il doit rester parallèle au sol, seuls les bras bougent), glute-ham raise,
+deux fois (extension du dos au lieu d'une flexion des genoux ; le 3e essai
+est gardé SANS sa vignette du milieu, qui avait la même erreur) et rotation externe allongé sur le côté (sur la 3e vignette, le
 coude quitte le flanc et le bras monte : ce n'est plus une rotation).
 
 ---

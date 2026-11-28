@@ -869,6 +869,9 @@ matériel et la durée avant d'écrire la moindre séance.
   (même collision de nom avec MASS CONGESTION que le leg curl), développé
   militaire haltère unilatéral. REFUSÉES : Pendlay row 2e essai (le buste se
   relève au tirage) et rotation externe allongé (le coude quitte le flanc).
+  **Glute-ham raise** (28 novembre, 3e essai) : planche à DEUX vignettes,
+  départ et arrivée ; celle du milieu est RETIRÉE (le buste s'y relevait en
+  pliant les hanches : l'erreur du mouvement). Ne pas la « compléter ».
   Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
   (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
@@ -880,7 +883,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (59 au 28 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (60 au 28 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de

@@ -302,6 +302,17 @@ export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
       'One-arm dumbbell shoulder press',
     ],
   },
+  /*
+   * Glute-ham raise (Guillaume, 28 novembre, 3e essai) : DEUX vignettes, le
+   * départ et l'arrivée. Celle du milieu a été retirée : le buste s'y
+   * relevait en pliant les hanches, l'erreur même du mouvement (seuls les
+   * genoux plient, le corps reste droit des genoux à la tête).
+   */
+  {
+    nom: 'Glute-ham raise',
+    fichier: 'power12-glute-ham-raise.webp', // machine GHD, genoux juste derrière le coussin
+    alias: ['Glute ham raise', 'GHR'],
+  },
 ];
 
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */

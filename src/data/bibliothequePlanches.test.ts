@@ -63,6 +63,7 @@ const PLANCHES = [
     'power12-developpe-militaire-haltere-unilateral',
     ['Single arm dumbbell overhead press'],
   ],
+  ['Glute-ham raise', 'power12-glute-ham-raise', ['Glute ham raise', 'GHR']],
 ] as const;
 
 describe('bibliothèque : planches gardées pour les programmes à venir', () => {
