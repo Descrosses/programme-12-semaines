@@ -425,6 +425,11 @@ pas : le bouton n'existe pas, il n'est pas seulement grisé.
 | LADIES (ex-FEMMES) | Parcours de 8 étapes. Le cycle 1 (FEMMES 8, affiché LADIES CYCLE 1) est **disponible** ; les 7 autres `a-venir` |
 | PERSO | Programme apporté par quelqu'un d'autre |
 
+**POWER CYCLE 2 (`power-cycle2`, à venir) — décisions déjà prises**, à
+appliquer quand Guillaume l'écrira, RIEN à coder avant : le **Pendlay row
+remplace l'Explosive Cable Row** (Guillaume, 27 novembre, « décision
+prise »). Le POWER CYCLE 1 (`power12`) garde l'Explosive Cable Row.
+
 **Renommée LADIES** (Guillaume, 23 novembre, « go ladies ») : seuls les
 NOMS affichés changent (famille « LADIES », étapes « LADIES CYCLE n » /
 « LADIES TRANSITION n », aussi dans `regles-orientation-programmes.md`).
@@ -849,6 +854,21 @@ matériel et la durée avant d'écrire la moindre séance.
   remettait la barre devant, ou l'appui côté barre : une telle planche ne
   passe pas. L'athlète n'est pas tout à fait celui des autres planches
   (accepté par Guillaume) ; marques des chaussettes et du short effacées.
+  **Huit planches du brouillon des remplacements** (27 novembre, gardées
+  ici en attendant) : good morning barre, fentes arrière haltères, RDL
+  haltères, glute bridge barre au sol, pull-through poulie basse, leg curl
+  allongé, single-leg RDL au landmine, développé haltère unilatéral à genou.
+  « Leg curl allongé » existe AUSSI chez MASS CONGESTION : à l'import, ce nom
+  exact ne propose donc rien (deux planches possibles) ; « Lying leg curl »
+  propose celle de POWER. REFUSÉES : Pendlay row (buste trop redressé) et
+  glute-ham raise (extension du dos, pas flexion des genoux).
+  **Sept planches du 28 novembre** : rowing haltère unilatéral sur banc
+  (UNE planche pour la version sur banc ET l'explosive : « même fiche, pas
+  les mêmes consignes »), Y-raise sur banc incliné, oiseau penché, rowing
+  machine appui poitrine, développé incliné barre, développé incliné Smith
+  (même collision de nom avec MASS CONGESTION que le leg curl), développé
+  militaire haltère unilatéral. REFUSÉES : Pendlay row 2e essai (le buste se
+  relève au tirage) et rotation externe allongé (le coude quitte le flanc).
   Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
   (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
@@ -860,7 +880,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (44 au 27 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (59 au 28 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de
@@ -871,6 +891,11 @@ matériel et la durée avant d'écrire la moindre séance.
   voulu, la charge décentrée fait l'exercice : ne pas « corriger » la barre.
   Virgules Nike effacées. Pas de texte muscles/erreurs (arrivée après le
   tableau MAJK) : `EN_ATTENTE_DE_TEXTE`, ne pas l'inventer.
+  **Position = BRAS TENDUS** contre les cuisses, prise en pronation
+  (Guillaume, 27 novembre) : la consigne disait « rack avant » et
+  contredisait la planche ; l'alternative « comme une valise » reste, sans
+  sa condition « si le rack avant est inconfortable ».
+  `data/consigneOffsetHold.test.ts`.
 - **Contraste S9-11, carte du lourd** : elle porte AUSSI la planche du
   mouvement explosif (box jump, plyo push-up, broad jump), chaque bouton
   nommé (« Fiche — … ») ; elle ne se grise qu'une fois le saut de la DERNIÈRE

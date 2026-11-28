@@ -2,7 +2,8 @@
  * La bibliothèque des planches « en attente d'un programme » (Guillaume,
  * 26 novembre : « garde-les dans la bibliothèque dès que ce mouvement fera
  * partie d'un programme ») : Landmine press assis, Wall ball, Copenhague
- * plank, et (27 novembre) Landmine single leg squat.
+ * plank, et (27 novembre) Landmine single leg squat puis huit planches du brouillon
+ * des remplacements.
  *
  * Ces tests figent :
  * - chaque planche est retrouvée par son NOM et ses ALIAS, casse et accents
@@ -29,6 +30,38 @@ const PLANCHES = [
     'Landmine single leg squat',
     'power12-landmine-single-leg-squat',
     ['Landmine single-leg squat', 'Squat unijambiste landmine'],
+  ],
+  ['Good morning barre', 'power12-good-morning-barre', ['Good morning']],
+  ['Fentes arrière haltères', 'power12-fentes-arriere-halteres', ['Dumbbell reverse lunge']],
+  ['RDL haltères', 'power12-rdl-halteres', ['Dumbbell RDL']],
+  ['Glute bridge barre au sol', 'power12-glute-bridge-barre', ['Pont fessier barre']],
+  ['Pull-through à la poulie basse', 'power12-pull-through-poulie', ['Cable pull-through']],
+  ['Leg curl allongé', 'power12-leg-curl-allonge', ['Lying leg curl']],
+  ['Single-leg RDL au landmine', 'power12-single-leg-rdl-landmine', ['Landmine single leg RDL']],
+  [
+    'Développé haltère unilatéral à genou',
+    'power12-developpe-haltere-genou',
+    ['Half-kneeling dumbbell press'],
+  ],
+  [
+    'Rowing haltère unilatéral sur banc',
+    'power12-rowing-haltere-banc',
+    // Même planche, autres consignes (Guillaume, 28 novembre).
+    ['Rowing haltère unilatéral explosif'],
+  ],
+  ['Y-raise allongé sur banc incliné', 'power12-y-raise-incline', ['Prone Y raise']],
+  ['Oiseau penché haltères', 'power12-oiseau-penche-halteres', ['Bent over reverse fly']],
+  [
+    'Rowing machine appui poitrine',
+    'power12-rowing-machine-poitrine',
+    ['Chest supported T-bar row'],
+  ],
+  ['Développé incliné barre', 'power12-developpe-incline-barre', ['Incline bench press']],
+  ['Développé incliné Smith', 'power12-developpe-incline-smith', ['Incline Smith press']],
+  [
+    'Développé militaire haltère unilatéral debout',
+    'power12-developpe-militaire-haltere-unilateral',
+    ['Single arm dumbbell overhead press'],
   ],
 ] as const;
 

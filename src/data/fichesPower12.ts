@@ -193,6 +193,115 @@ export const BIBLIOTHEQUE_LIBRE_POWER: readonly ExerciceLibre[] = [
       'Squat unijambiste au landmine',
     ],
   },
+  /*
+   * Huit planches du 27 novembre (Guillaume), générées pour le brouillon des
+   * remplacements (`regles-remplacements.md`) et gardées ici en attendant :
+   * proposées tout de suite en remplacement sous POWER et à l'import.
+   * Vérifiées une à une (geste, matériel) ; virgules Nike effacées sur le
+   * good morning, les fentes, le RDL haltères et le glute bridge.
+   */
+  {
+    nom: 'Good morning barre',
+    fichier: 'power12-good-morning-barre.webp', // barre sur le haut du dos, charnière de hanche
+    alias: ['Good morning', 'Barbell good morning'],
+  },
+  {
+    nom: 'Fentes arrière haltères',
+    fichier: 'power12-fentes-arriere-halteres.webp', // un haltère dans chaque main
+    alias: ['Fente arrière haltères', 'Reverse lunge haltères', 'Dumbbell reverse lunge'],
+  },
+  {
+    nom: 'RDL haltères',
+    fichier: 'power12-rdl-halteres.webp', // haltères le long des cuisses jusqu'aux genoux
+    alias: [
+      'Romanian deadlift haltères',
+      'Soulevé de terre roumain haltères',
+      'Dumbbell RDL',
+      'Dumbbell romanian deadlift',
+    ],
+  },
+  {
+    nom: 'Glute bridge barre au sol',
+    fichier: 'power12-glute-bridge-barre.webp', // dos au sol, barre sur les hanches
+    alias: ['Glute bridge barre', 'Barbell glute bridge', 'Pont fessier barre'],
+  },
+  {
+    nom: 'Pull-through à la poulie basse',
+    fichier: 'power12-pull-through-poulie.webp', // dos à la poulie, corde entre les jambes
+    alias: ['Pull-through poulie', 'Cable pull-through', 'Pull through poulie'],
+  },
+  {
+    nom: 'Leg curl allongé',
+    fichier: 'power12-leg-curl-allonge.webp', // machine, à plat ventre
+    alias: ['Lying leg curl', 'Leg curl couché'],
+  },
+  {
+    nom: 'Single-leg RDL au landmine',
+    fichier: 'power12-single-leg-rdl-landmine.webp', // une main sur le bout de la barre, jambe libre tendue derrière
+    alias: ['Landmine single leg RDL', 'Landmine single-leg RDL', 'Single leg RDL landmine'],
+  },
+  {
+    nom: 'Développé haltère unilatéral à genou',
+    fichier: 'power12-developpe-haltere-genou.webp', // genou au sol du côté du bras qui pousse
+    alias: [
+      'Half-kneeling dumbbell press',
+      'Half kneeling single arm dumbbell press',
+      'Développé unilatéral haltère à genou',
+    ],
+  },
+  /*
+   * Sept planches du 28 novembre (Guillaume), même usage. Le rowing haltère
+   * unilatéral sur banc et sa version explosive partagent UNE planche (« la
+   * même fiche, juste pas les mêmes consignes ») : deux noms, donc deux
+   * historiques, une image. Le développé incliné Smith n'est pas dans le
+   * brouillon des remplacements ; « Développé incliné Smith » existe aussi
+   * chez MASS CONGESTION : à l'import, ce nom exact ne propose rien.
+   * Marques des chaussettes et des chaussures effacées.
+   */
+  {
+    nom: 'Rowing haltère unilatéral sur banc',
+    fichier: 'power12-rowing-haltere-banc.webp', // genou et main sur le banc
+    alias: [
+      'Rowing haltère unilatéral explosif',
+      'Rowing unilatéral haltère',
+      'One-arm dumbbell row',
+      'Single arm dumbbell row',
+    ],
+  },
+  {
+    nom: 'Y-raise allongé sur banc incliné',
+    fichier: 'power12-y-raise-incline.webp', // à plat ventre, bras montés en Y
+    alias: ['Y-raise', 'Y raise incliné', 'Incline Y raise', 'Prone Y raise'],
+  },
+  {
+    nom: 'Oiseau penché haltères',
+    fichier: 'power12-oiseau-penche-halteres.webp', // debout, buste penché, bras ouverts
+    alias: ['Oiseau buste penché', 'Bent over reverse fly', 'Reverse fly haltères'],
+  },
+  {
+    nom: 'Rowing machine appui poitrine',
+    fichier: 'power12-rowing-machine-poitrine.webp', // T-bar à appui poitrine, disque
+    alias: ['Chest supported T-bar row', 'T-bar row appui poitrine', 'Rowing T-bar appui poitrine'],
+  },
+  {
+    nom: 'Développé incliné barre',
+    fichier: 'power12-developpe-incline-barre.webp', // barre libre, banc incliné dans un rack
+    alias: ['Développé incliné à la barre', 'Incline bench press', 'Incline barbell bench press'],
+  },
+  {
+    nom: 'Développé incliné Smith',
+    fichier: 'power12-developpe-incline-smith.webp', // barre guidée
+    alias: ['Incline Smith press', 'Smith incline bench press'],
+  },
+  {
+    nom: 'Développé militaire haltère unilatéral debout',
+    fichier: 'power12-developpe-militaire-haltere-unilateral.webp', // un bras, debout
+    alias: [
+      'Développé épaule haltère unilatéral debout',
+      'Single arm dumbbell overhead press',
+      'One-arm dumbbell shoulder press',
+    ],
+  },
 ];
 
 /** Le chemin servi pour un mouvement, ou `undefined` s'il n'a pas de fiche. */
