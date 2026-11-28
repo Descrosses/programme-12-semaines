@@ -14,6 +14,9 @@
   "power12-dead-bug-cable.webp": "1bf9f74d046f928f9a35580bf6c55d35fd51b2a0ba38119a54a8cc1cdef618d5",
   "power12-deadlift.webp": "d3744c31b733f45675b8736aa58f8e5525a4e0d1d8becf58ce14d306da6750a3",
   "power12-developpe-haltere-genou.webp": "35d8f51b35aca4023eb1f444a01a01bc859f1a789ad29d71f76ef4f5b5348436",
+  "power12-developpe-incline-barre.webp": "fa847634f3b491495014e46d4e398775e38f0e022aaab236951f7716d5ae1d8c",
+  "power12-developpe-incline-smith.webp": "4debe89f955093b7bb09535d2fdbe318b91bee0312bb3e60ba0dab4937d6857a",
+  "power12-developpe-militaire-haltere-unilateral.webp": "542f6e84b4c8ce43fa3322a415d708ad04140f5302ee4457e190b676204d42dd",
   "power12-explosive-cable-row.webp": "069c1ea55fbe5b642f3816098550a8249901e4bc7962bcd446477616012f5b79",
   "power12-face-pull.webp": "5928898853211f4206594daf11dc899aebafb45cadaa34731c4d35cb585011f1",
   "power12-farmer-carry.webp": "f31a0e9faf353337b3c060883d8b3b56225f5113b3dba76e7c1d32f6f1f7bd55",
@@ -34,6 +37,7 @@
   "power12-leg-curl-allonge.webp": "ccc33068e13055cbc7ebe59fbdfeb82f33eef9ea0b739784485492e973831e03",
   "power12-neutral-grip-pullup.webp": "e6eb835b680c47a68a4008ebe9b56591bd53befcffb6427b9317bd528434b217",
   "power12-nordic-curl.webp": "068f3df2e3b732943d4e04b035a3a21b74013486806cf8c42c585e987ab578c8",
+  "power12-oiseau-penche-halteres.webp": "b7fa8c71fe38c205dcdaa83afcd3bae6b88f17f51fc096360cbc10e9295a72cd",
   "power12-one-arm-cable-row.webp": "85b22353030892c966cba2c0cc2096f8d718c9b7f8519c5c312c85ec247b2cb3",
   "power12-pallof-press.webp": "581186f433fdb0a8a0ec9c6950f4040baa8b62c18db380da7025cbaad243c21c",
   "power12-plyo-push-up.webp": "0577104c812d94908c1999fd4754c31f2c09035b8bf30faafd23a0e60756b5ec",
@@ -44,11 +48,14 @@
   "power12-rdl.webp": "1851fd800db09d10f708c3dda46b507716c246e9f061a5816b89d1df445f5490",
   "power12-roman-side-bench.webp": "16f997c2819d51b2f75f2856f3ac197101750cd85d66f3df7e3a49807497d67b",
   "power12-rowing-buste-penche.webp": "60f915d81c8ad5e035a7ef4f17ce3f767cfe63ab5d7c9f1aa73287e3e305dcc4",
+  "power12-rowing-haltere-banc.webp": "3a1e7a529a70e5bd8e2d1a2112376de1b3ef2a11a12686f9b27bb918a8758fce",
+  "power12-rowing-machine-poitrine.webp": "b8dc9e867ee3c72636cdc716a1b51e9064668396bae75ac2669b7726b245303b",
   "power12-single-leg-rdl-landmine.webp": "18e62b2ca1b4064219c7bd9340b8bfc654619e115331a0d12569341a364561c5",
   "power12-single-leg-rdl.webp": "4d279e5d16878181fed72e10d959639ef21719e62cf870724a120333f5c186d1",
   "power12-strict-pullup.webp": "23ad65635f353bf4c33f2bed278c353ac0412b72610e987a0d4e60a62e0f5c51",
   "power12-suitcase-carry.webp": "1299ecfa781a390f643505bab6ae237eceafc36aac141b57fdddefd3b3776836",
   "power12-vertical-jump.webp": "7ab8de05d84a92b9827627347af469c33ee7be450cb0c3a7417b5bd0643dce02",
   "power12-wall-ball.webp": "c564e96f70fe49fa714a64e835baff45d2c305002794e578f358349182514fb5",
-  "power12-weighted-pullup.webp": "6f890df5344a4b5a0ac14c9997cfa732453460367819829f87ad1abf67d34a41"
+  "power12-weighted-pullup.webp": "6f890df5344a4b5a0ac14c9997cfa732453460367819829f87ad1abf67d34a41",
+  "power12-y-raise-incline.webp": "0b200bba09d41496c81732ed0b969fc16ba9675e422eea57f09fb1ead2cf2218"
 }

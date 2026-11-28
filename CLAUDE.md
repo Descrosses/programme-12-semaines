@@ -862,6 +862,13 @@ matériel et la durée avant d'écrire la moindre séance.
   exact ne propose donc rien (deux planches possibles) ; « Lying leg curl »
   propose celle de POWER. REFUSÉES : Pendlay row (buste trop redressé) et
   glute-ham raise (extension du dos, pas flexion des genoux).
+  **Sept planches du 28 novembre** : rowing haltère unilatéral sur banc
+  (UNE planche pour la version sur banc ET l'explosive : « même fiche, pas
+  les mêmes consignes »), Y-raise sur banc incliné, oiseau penché, rowing
+  machine appui poitrine, développé incliné barre, développé incliné Smith
+  (même collision de nom avec MASS CONGESTION que le leg curl), développé
+  militaire haltère unilatéral. REFUSÉES : Pendlay row 2e essai (le buste se
+  relève au tirage) et rotation externe allongé (le coude quitte le flanc).
   Toute nouvelle planche s'inscrit aussi dans `planches-power-relues.json`
   (après l'avoir regardée).
 - **Planches POWER : plus de logo NFL** (Guillaume, 26 novembre : « il y
@@ -873,7 +880,7 @@ matériel et la durée avant d'écrire la moindre séance.
   `visuels/`). Athlète, matériel et bannière « POWER » intacts ; 10 écussons
   passaient derrière un disque, un visage ou une main, protégés par un
   contour tracé à la main. Vérifié par détection automatique : 0 restant.
-  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (52 au 27 novembre)
+  `data/planchesSansLogo.test.ts` fige l'EMPREINTE des planches relues (59 au 28 novembre)
   (`__fixtures__/planches-power-relues.json`) : toute planche ajoutée ou
   remplacée se REGARDE (logo, marque) avant d'y être inscrite. **Reste,
   non traité** : la virgule Nike sur les chaussettes et les chaussures de

@@ -43,6 +43,26 @@ const PLANCHES = [
     'power12-developpe-haltere-genou',
     ['Half-kneeling dumbbell press'],
   ],
+  [
+    'Rowing haltère unilatéral sur banc',
+    'power12-rowing-haltere-banc',
+    // Même planche, autres consignes (Guillaume, 28 novembre).
+    ['Rowing haltère unilatéral explosif'],
+  ],
+  ['Y-raise allongé sur banc incliné', 'power12-y-raise-incline', ['Prone Y raise']],
+  ['Oiseau penché haltères', 'power12-oiseau-penche-halteres', ['Bent over reverse fly']],
+  [
+    'Rowing machine appui poitrine',
+    'power12-rowing-machine-poitrine',
+    ['Chest supported T-bar row'],
+  ],
+  ['Développé incliné barre', 'power12-developpe-incline-barre', ['Incline bench press']],
+  ['Développé incliné Smith', 'power12-developpe-incline-smith', ['Incline Smith press']],
+  [
+    'Développé militaire haltère unilatéral debout',
+    'power12-developpe-militaire-haltere-unilateral',
+    ['Single arm dumbbell overhead press'],
+  ],
 ] as const;
 
 describe('bibliothèque : planches gardées pour les programmes à venir', () => {

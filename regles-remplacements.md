@@ -55,19 +55,19 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 | Mouvement du programme | Jour | Remplaçant 1 | Remplaçant 2 |
 |---|---|---|---|
 | Landmine Press half-kneeling | Mercredi | Landmine press assis (planche ✓) | Développé haltère unilatéral à genou (planche ✓) |
-| Landmine Press debout | Dimanche | Landmine press assis (planche ✓) | Développé militaire haltère unilatéral debout (planche à faire) |
-| Incline Dumbbell Press | Dimanche | Développé incliné barre (planche à faire) | Développé incliné haltères prise neutre (planche à faire) |
+| Landmine Press debout | Dimanche | Landmine press assis (planche ✓) | Développé militaire haltère unilatéral debout (planche ✓) |
+| Incline Dumbbell Press | Dimanche | Développé incliné barre (planche ✓) | Développé incliné haltères prise neutre (planche à faire) |
 
 ### Haut du corps — tirage et épaules
 
 | Mouvement du programme | Jour | Remplaçant 1 | Remplaçant 2 |
 |---|---|---|---|
-| Chest-supported Dumbbell Row | Mercredi | Rowing buste penché (planche ✓) | Rowing machine appui poitrine (planche à faire) |
-| Face Pull | Mercredi | Oiseau penché haltères (planche à faire) | Y-raise allongé sur banc incliné (planche à faire) |
+| Chest-supported Dumbbell Row | Mercredi | Rowing buste penché (planche ✓) | Rowing machine appui poitrine (planche ✓) |
+| Face Pull | Mercredi | Oiseau penché haltères (planche ✓) | Y-raise allongé sur banc incliné (planche ✓) |
 | Rotation externe câble | Mercredi | Rotation externe haltère, allongé sur le côté (planche à faire) | Rotation externe à l'élastique (planche à faire) |
-| Explosive Cable Row | Vendredi | Pendlay row, barre repartant du sol (planche à faire) | Rowing haltère unilatéral explosif (planche à faire) |
+| Explosive Cable Row | Vendredi | Pendlay row, barre repartant du sol (planche à faire) | Rowing haltère unilatéral explosif (planche ✓) |
 | Tractions prise neutre | Dimanche | Tirage vertical poulie prise neutre (planche à faire) | Tractions supination (planche à faire) |
-| One-Arm Cable Row | Dimanche | Rowing haltère unilatéral sur banc (planche à faire) | Meadows row au landmine (planche à faire) |
+| One-Arm Cable Row | Dimanche | Rowing haltère unilatéral sur banc (planche ✓) | Meadows row au landmine (planche à faire) |
 
 ### Tronc et portés — même fonction que l'original
 
@@ -89,11 +89,15 @@ faire » : il faudra en générer une, vérifiée comme les autres.
 dans le programme lui-même (décision de Guillaume, 27 novembre). Dans le
 cycle 1, il reste un remplaçant au choix.
 
-**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 12 qui ont
-déjà leur planche et 38 à générer (au 27 novembre). Planches reçues et
-refusées : Pendlay row (buste trop redressé, il doit être parallèle au sol)
-et glute-ham raise (les cuisses restent à plat : c'est une extension du dos,
-pas une flexion des genoux).
+**En chiffres** : 25 mouvements remplaçables, 50 remplaçants, dont 19 qui ont
+déjà leur planche et 31 à générer (au 28 novembre). Le rowing haltère
+unilatéral sur banc et sa version explosive partagent la même planche,
+avec des consignes différentes (décision de Guillaume). Planches reçues et
+refusées : Pendlay row, deux fois (le buste se relève pendant le tirage :
+il doit rester parallèle au sol, seuls les bras bougent), glute-ham raise
+(les cuisses restent à plat : c'est une extension du dos, pas une flexion
+des genoux) et rotation externe allongé sur le côté (sur la 3e vignette, le
+coude quitte le flanc et le bras monte : ce n'est plus une rotation).
 
 ---
 
